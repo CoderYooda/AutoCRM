@@ -1,0 +1,50 @@
+<ul class="nav">
+    <li>
+        <a href="#">
+            <span class="nav-icon">
+                <i class="fa fa-calendar"></i>
+            </span>
+            <span class="nav-text">Календарь</span>
+        </a>
+    </li>
+    <li class="">
+        <a href="#">
+            <span class="nav-icon">
+                <i class="fa fa-sign-in"></i>
+			</span>
+            <span class="nav-text">Приход</span>
+        </a>
+    </li>
+    <li class="">
+        <a href="#">
+            <span class="nav-icon">
+                <i class="fa fa-sign-out"></i>
+			</span>
+            <span class="nav-text">Расход</span>
+        </a>
+    </li>
+    <li class="">
+        <a href="#">
+            <span class="nav-icon">
+                <i class="fa fa-money"></i>
+			</span>
+            <span class="nav-text">Продажа</span>
+        </a>
+    </li>
+    <li class="">
+        <a href="#">
+            <span class="nav-icon">
+                <i class="fa fa-clipboard"></i>
+			</span>
+            <span class="nav-text">Заказы</span>
+        </a>
+    </li>
+    <li class="">
+        <a href="#">
+            <span class="nav-icon">
+                <i class="fa fa-phone-square"></i>
+			</span>
+            <span class="nav-text">Звонки</span>
+        </a>
+    </li>
+</ul>

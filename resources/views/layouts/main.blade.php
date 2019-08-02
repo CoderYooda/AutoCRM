@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="AutoCrm" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/template.css') }}" rel="stylesheet">
+</head>
+<body>
+<div class="app" id="app">
+    <header class="app-header indigo box-shadow-6">
+        <div class="navbar navbar-expand-lg">
+            <!-- btn to toggle sidenav on small screen -->
+            <a class="d-lg-none mx-2" data-toggle="modal" data-target="#aside" data-pjax-state="">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
+                    <path d="M80 304h352v16H80zM80 248h352v16H80zM80 192h352v16H80z"></path>
+                </svg>
+            </a>
+            <span id="preload" style="position: absolute;left: 0;">
+            </span>
+            <!-- Page title -->
+            <!-- brand -->
+            <a href="{{ route('DashboardIndex') }}" class="navbar-brand ajax-nav">
+                <span class="hidden-folded d-inline">CRM</span>
+            </a>
+            <!-- / brand -->
+            <ul class="nav flex-row order-lg-2">
+                <!-- Notification -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link px-3" data-toggle="dropdown" data-pjax-state="">
+                        <i class="fa fa-bell text-muted"></i>
+                        <span class="badge badge-pill up danger">10</span>
+                    </a>
+                </li>
+                <!-- User dropdown menu -->
+                <li class="dropdown d-flex align-items-center">
+                    <a href="#" data-toggle="dropdown" class="d-flex align-items-center" data-pjax-state="">
+                            <span class="avatar w-32">
+                              <img src="../assets/images/a4.jpg" alt="...">
+                            </span>
+                    </a>
+                </li>
+            </ul>
+            <!-- Navbar collapse -->
+            <div class="collapse navbar-collapse  order-lg-1" id="navbarToggler">
+                <ul class="navbar-nav mt-2 mt-lg-0 mx-0 mx-lg-2 ">
+                    <li class="nav-item">
+                        <a href="{{ route('StoreIndex') }}" class="nav-link ajax-nav">
+                            Товары
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
+                            Услуги
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
+                            Деньги
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
+                            Сотрудники
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('PartnerIndex') }}" class="nav-link ajax-nav">
+                            Контрагенты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ReportIndex') }}" class="nav-link ajax-nav">
+                            Отчеты
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div id="aside" class="app-aside folded dark">
+        <div class="sidenav hv">
+            <div class="navbar lt">
+            </div>
+            <div class="flex hide-scroll">
+                <div class="scroll">
+                    <div class="show-text nav-active-text" data-nav="">
+                        @include('template.aside')
+                    </div>
+                </div>
+            </div>
+            <!-- sidenav bottom -->
+            <div class="py-2 mt-2 b-t no-shrink">
+                <ul class="nav no-border">
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">
+                                <i class="fa fa-power-off"></i>
+							</span>
+                            <span class="nav-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="content" class="app-content box-shadow-0" role="main">
+        <div class="content-header bg-white">
+            <div class="navbar">
+                <div class="collapse navbar-collapse  order-lg-1" id="navbarToggler">
+                    <ul class="navbar-nav mt-2 mt-lg-0 mx-0 mx-lg-2 ">
+                        <li class="nav-item">
+                            <a href="dashboard.8.html" class="nav-link" data-pjax-state="">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-pjax-state="">
+                                Apps
+                            </a>
+                            <div class="dropdown-menu mt-2 w pt-2 mt-2 animate fadeIn">
+                                <a href="app.user.html" class="dropdown-item" data-pjax-state="">
+                                    Users
+                                </a>
+                                <a href="app.message.html" class="dropdown-item" data-pjax-state="">
+                                    Messages
+                                </a>
+                                <a href="app.inbox.html" class="dropdown-item" data-pjax-state="">
+                                    Inbox
+                                </a>
+                                <a href="ui.calendar.html" class="dropdown-item" data-pjax-state="">
+                                    Calendar
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="input-group m-2 my-lg-0">
+                        <span class="input-group-btn">
+	  	      <button type="button" class="btn no-border no-bg no-shadow waves-effect"><i class="fa fa-search"></i></button>
+	  	    </span>
+                        <input type="text" class="form-control no-border no-bg no-shadow" placeholder="Search projects...">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="content-main d-flex flex" id="ajax-content">
+                @yield('content')
+        </div>
+        <div class="content-footer bg-white">
+            <div class="d-flex p-3">
+                <span class="text-sm text-muted flex">&copy; Copyright. Flatfull</span>
+                <div class="text-sm text-muted">Version 1.2.0</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ asset('js/app.js') }}" defer></script>
+</body>
+</html>
