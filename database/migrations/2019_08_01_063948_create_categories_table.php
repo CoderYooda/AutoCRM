@@ -16,8 +16,10 @@ class CreateCategoriesTable extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('category_id')->unsigned();
-            $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
+            $table->bigInteger('company_id')->unsigned()->nullable()->comment('Привязка к компании');
             $table->bigInteger('creator_id')->unsigned()->comment('Привязка к пользователю');
+            $table->boolean('locked')->comment('Замок');
+            $table->char('type')->nullable()->comment('Тип');
             $table->char('name', 20)->default('Без названия')->comment('Название категории');
             $table->timestamps();
         });

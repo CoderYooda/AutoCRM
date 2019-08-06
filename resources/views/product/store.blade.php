@@ -14,83 +14,20 @@
             </div>
         </form>
         <span class="m-b btn-groups pl-1">
-            <button class="btn btn-sm success mb-0">Новая категория</button>
-            <button class="btn btn-sm success mb-0">Новый товар</button>
+            <button onclick="openDialog('createProductCategory')" class="btn btn-sm success mb-0">Новая категория</button>
+            <button onclick="openDialog('createProduct')" class="btn btn-sm success mb-0">Новый товар</button>
         </span>
     </div>
     <div class="d-flex flex scroll-y">
-        <div class="d-flex flex-column flex white lt">
-            <div class="box">
-                <div class="box-header">
-                    <h2>Striped rows</h2>
-                    <small>
-                        Use .table-striped to add zebra-striping to any table row within the &lt;tbody>.
-                    </small>
-                </div>
-                <table class="table table-striped b-t">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="d-flex flex-column white flex lt">
+            <div id="ajax-table" class="white p-3 b-r d-table">
+                @include('product.elements.table_container')
             </div>
         </div>
-        <div class="d-flex flex-column b-l" style="width: 50px">
-            <div class="scrollable hover">
-                <div class="text-center text-sm py-3 d-flex flex-column" id="filter">
-                    <a href="#">A</a>
-                    <a href="#">B</a>
-                    <a href="#">C</a>
-                    <a href="#">D</a>
-                    <a href="#">E</a>
-                    <a href="#">F</a>
-                    <a href="#">G</a>
-                    <a href="#">H</a>
-                    <a href="#">I</a>
-                    <a href="#">J</a>
-                    <a href="#">K</a>
-                    <a href="#">L</a>
-                    <a href="#">M</a>
-                    <a href="#">N</a>
-                    <a href="#">O</a>
-                    <a href="#">P</a>
-                    <a href="#">Q</a>
-                    <a href="#">R</a>
-                    <a href="#">S</a>
-                    <a href="#">T</a>
-                    <a href="#">U</a>
-                    <a href="#">V</a>
-                    <a href="#">W</a>
-                    <a href="#">X</a>
-                    <a href="#">Y</a>
-                    <a href="#">Z</a>
-                </div>
-            </div>
-        </div>
+{{--        <div class="d-flex flex-column w-xxl">--}}
+{{--            <div class="scrollable hover">--}}
+{{--            </div>--}}
+{{--        </div>--}}
     </div>
 </div>
 @endsection

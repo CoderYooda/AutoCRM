@@ -1,0 +1,151 @@
+var containerId = 'dialogs';
+window.dialogs = [];
+
+document.addEventListener('mouseup', function(e){
+	e = e || window.event;
+	document.getElementsByTagName('body')[0].classList.remove('dialog-dragged');
+	Object.keys(dialogs).map(function(objectKey, index) {
+		var value = dialogs[objectKey];
+		value.dragged = false;
+	});
+});
+
+document.addEventListener('mousemove', function(e){
+	e = e || window.event;
+	Object.keys(dialogs).map(function(objectKey, index) {
+		var elem = dialogs[objectKey];
+		if(elem.dragged){
+			document.getElementsByTagName('body')[0].classList.add('dialog-dragged');
+			var d = document.getElementById(elem.tag);
+			var folderLeft = e.pageX - elem.ol;
+			if(e.pageX < (window.iw / 2)){
+				if(folderLeft < 0){d.style.left = 0 + 'px';} else {d.style.left = folderLeft + 'px';}
+			} else {
+				if((folderLeft + elem.width) > window.iw){d.style.left = (window.iw - elem.width)  + 'px';} else {d.style.left = folderLeft + 'px';}
+			}
+			var folderTop = e.pageY - elem.ot;
+			if(e.pageY < (window.ih / 2)){
+				if(folderTop < 0){d.style.top = 0 + 'px';} else {d.style.top = folderTop + 'px';}
+			} else {
+				if((folderTop + elem.height) > window.ih){d.style.top = (window.ih - elem.height)  + 'px';} else {d.style.top = folderTop + 'px';}
+			}
+		}
+	});
+});
+
+window.openDialog = function(tag) {
+	if (isXHRloading) { return; }
+	dReq = new XMLHttpRequest();
+	isXHRloading = true;
+	dReq.onload = function () {
+		var resp = JSON.parse(this.responseText);
+		if(!alreadyOpened(tag)){
+			appendDialog(resp, tag);
+		}
+		isXHRloading = false;
+	};
+	dReq.onerror = function () {
+		isXHRloading = false;
+	};
+
+	dReq.open("get", 'dialog_' + tag, true);
+	dReq.send();
+}
+
+window.closeDialog = function(event, id = null){
+	Object.keys(dialogs).map(function(key, index) {
+		var elem = dialogs[key];
+		var dial = document.getElementById(elem.tag);
+		if(id){
+			var dial = document.getElementById(id);
+			delete dialogs[key];
+			dial.remove();
+			downEventListners();
+		} else if(dial.contains(event.target)){
+			delete dialogs[key];
+			dial.remove();
+			downEventListners();
+		}
+	});
+
+}
+
+function appendDialog(resp, tag){
+
+	window.dialogs[tag] = [];
+	window.dialogs[tag].tag = tag;
+	document.getElementById(containerId).innerHTML += resp.html;
+	var position = dialogPosition(tag);
+	var dialog = document.getElementById(tag);
+	dialog.style.left = position.x + 'px';
+	dialog.style.top = position.y + 'px';
+	window.dialogs[tag].height = dialog.offsetHeight;
+	window.dialogs[tag].width = dialog.offsetWidth;
+
+	Object.keys(dialogs).map(function(key, index) {
+		var elem = dialogs[key];
+		var dial = document.getElementById(elem.tag);
+		dial.classList.remove('selected');
+	});
+	dialog.classList.add('selected');
+	downEventListners();
+}
+
+function downEventListners(){
+	Object.keys(dialogs).map(function(objectKey, index) {
+		var elem = dialogs[objectKey];
+		var tag = window.dialogs[elem.tag];
+		var d = document.getElementById(elem.tag);
+
+		d.addEventListener('mousedown', function(e){
+			e = e || window.event;
+			if(e.target.className == 'titlebar') {
+				tag.dragged = true;
+				tag.ol = e.pageX - d.offsetLeft;
+				tag.ot = e.pageY - d.offsetTop;
+			}
+			if(d.contains(e.target)){
+				Object.keys(dialogs).map(function(key, index) {
+					var elem = dialogs[key];
+					var dial = document.getElementById(elem.tag);
+					dial.classList.remove('selected');
+				});
+				d.classList.add('selected');
+			}
+		});
+	});
+}
+
+function alreadyOpened(tag){
+	console.info('Проверка на вхождение окна...');
+	if(document.getElementById(tag)){
+		flashDialog(tag);
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function flashDialog(tag){
+	Object.keys(dialogs).map(function(key, index) {
+		var elem = dialogs[key];
+		var dial = document.getElementById(elem.tag);
+		dial.classList.remove('selected');
+	});
+	var d = document.getElementById(tag);
+	d.classList.add('selected');
+	d.classList.add('flash');
+	setTimeout(function(){
+		d.classList.remove('flash');
+	}, 300);
+	console.info('Окно ' + tag + ' подсвечено');
+}
+
+function dialogPosition(tag){
+	var position = [];
+	var dialog = document.getElementById(tag);
+	position.x = (window.innerWidth - dialog.clientWidth) / 2;
+	position.y = (window.innerHeight - dialog.clientHeight) / 2;
+	window.dialogs[tag].position = position;
+	return position;
+}

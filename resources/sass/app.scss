@@ -7,6 +7,12 @@
 // Bootstrap
 @import '~font-awesome/scss/font-awesome';
 
+// Draggable Dialog
+@import '../modules/draggable-dialog/dialog.css';
+
+
+
+
 .text-theme,
 .text-hover-theme a:hover,
 .text-hover-theme .active > a {

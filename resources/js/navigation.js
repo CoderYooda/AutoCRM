@@ -4,11 +4,11 @@ const ajaxRequest = new (function () {
 
     function closeReq () {
         oLoadingBox.parentNode && document.getElementById('preload').removeChild(oLoadingBox);
-        bIsLoading = false;
+        isXHRloading = false;
     }
 
     function abortReq () {
-        if (!bIsLoading) { return; }
+        if (!isXHRloading) { return; }
         oReq.abort();
         closeReq();
     }
@@ -68,9 +68,9 @@ const ajaxRequest = new (function () {
     }
 
     function getPage (sPage) {
-        if (bIsLoading) { return; }
+        if (isXHRloading) { return; }
         oReq = new XMLHttpRequest();
-        bIsLoading = true;
+        isXHRloading = true;
         oReq.onload = ajaxLoad;
         oReq.onerror = ajaxError;
         if (sPage) { oPageInfo.url = filterURL(sPage, null); }
@@ -113,10 +113,6 @@ const ajaxRequest = new (function () {
         oPageInfo.title = document.title;
         history.replaceState(oPageInfo, oPageInfo.title, oPageInfo.url);
         for (var oLink, nIdx = 0, nLen = document.links.length; nIdx < nLen; document.links[nIdx++].onclick = processLink);
-
-
-        console.log(getQueryVariable('active_tab'));
-
         console.warn('Ссылки переработаны');
     }
 
@@ -196,9 +192,7 @@ const ajaxRequest = new (function () {
             511: "Network Authentication Required"
         };
 
-    var
-
-        oReq, bIsLoading = false, bUpdateURL = false;
+    var oReq, bUpdateURL = false;
     oLoadingBox.id = "ajax-loader";
     oCover.onclick = abortReq;
     oCover.innerHTML = '<i class="fa fa-refresh fa-spin text-md text-muted"></i>';

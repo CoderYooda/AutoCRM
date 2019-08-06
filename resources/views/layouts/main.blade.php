@@ -9,16 +9,10 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/template.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="fixed-aside fixed-content">
 <div class="app" id="app">
     <header class="app-header indigo box-shadow-6">
         <div class="navbar navbar-expand-lg">
-            <!-- btn to toggle sidenav on small screen -->
-            <a class="d-lg-none mx-2" data-toggle="modal" data-target="#aside" data-pjax-state="">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
-                    <path d="M80 304h352v16H80zM80 248h352v16H80zM80 192h352v16H80z"></path>
-                </svg>
-            </a>
             <span id="preload" style="position: absolute;left: 0;">
             </span>
             <!-- Page title -->
@@ -96,7 +90,7 @@
             <div class="py-2 mt-2 b-t no-shrink">
                 <ul class="nav no-border">
                     <li>
-                        <a href="#">
+                        <a onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             <span class="nav-icon">
                                 <i class="fa fa-power-off"></i>
 							</span>
@@ -157,6 +151,10 @@
         </div>
     </div>
 </div>
+<div id="dialogs"></div>
 <script src="{{ asset('js/app.js') }}" defer></script>
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
 </body>
 </html>

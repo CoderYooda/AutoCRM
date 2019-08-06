@@ -18,6 +18,7 @@ body {
     color: rgba(70, 90, 110, 0.85);
     font-size: 0.8rem;
     line-height: 1.6;
+    overflow-x: hidden;
     background-color: #f3f6f9; }
 
 *:focus {
@@ -903,6 +904,22 @@ Row
 /*
 Table
 */
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #dee2e6;
+}
+.table.table-bordered > thead > tr > th {
+    border-color: #dce0e3!important;
+}
+.table.table-bordered > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th {
+    border-color: #dce0e3!important;
+}
+.table-bordered thead th, .table-bordered thead td {
+    border-bottom-width: 1px;
+}
+.table-hover > thead tr:hover {
+    background-color: transparent!important;
+}
 .panel .table {
     border-color: rgba(120, 130, 140, 0.065) !important; }
 
@@ -3919,8 +3936,14 @@ Size
 .w-sm {
     width: 120px; }
 
+.w-62{
+    width: 62px;}
+
 .w {
     width: 190px; }
+
+.w-200 {
+    width: 200px; }
 
 .w-md {
     width: 240px; }
