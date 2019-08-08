@@ -1,6 +1,6 @@
 <div id="createProduct" class="dialog" style="width:600px;">
     <div class="titlebar">Добавление продукта</div>
-    <button onclick="closeDialog(event)">x</button>
+    <button class="btn_close" onclick="closeDialog(event)">x</button>
     <form action="{{ route('StoreProduct') }}" method="POST">
         <div class="row no-gutters align-items-stretch">
             <div class="col-md-4 light lt">
@@ -32,8 +32,15 @@
                             <input type="text" name="name" class="form-control" placeholder="Наименование (не более 255 символов)">
                         </div>
                         <div class="form-group">
-                            <label>Кат</label>
-                            <input type="text" name="category_id" class="form-control" placeholder="Кат">
+                            <label for="category_id">В категории</label>
+                            <div class="input-group mb-3">
+                                <select name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button onclick="openDialog('selectCategory', 2)" class="btn white" type="button"><i class="fa fa-bars"></i></button>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Артикул</label>

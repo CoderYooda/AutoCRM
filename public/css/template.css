@@ -857,6 +857,10 @@ Modal
   right: 0;
 }
 
+.modal-header {
+  padding: 0.6rem 1rem;
+}
+
 .aside {
   opacity: 1 !important;
   display: flex !important;

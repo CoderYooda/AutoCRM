@@ -58,6 +58,11 @@
 	border-radius: 3px;
 	overflow: hidden;
 	z-index: 10000;
+	max-height: 50%;
+}
+.mh50-dialog{
+	max-height: calc(50vh - 32px);
+	overflow-y: auto;
 }
 .dialog.selected{
 	z-index: 10000000;
@@ -102,7 +107,7 @@
 .dialog .buttonset {
 	float: right;
 }
-.dialog button {
+.dialog .btn_close {
 	-webkit-transition: 0.25s;
 	transition: 0.25s;
 	color: #fff;
@@ -124,7 +129,7 @@
 	padding: 0;
 	border: 0;
 	font-size: 1.4em;
-	background: #fa0;
+	background: #3f51b5;
 }
 .dialog>button.hover,
 .dialog>button.focus

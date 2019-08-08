@@ -13,7 +13,10 @@ class DialogController extends Controller
                 $dialog = ProductController::addProductDialog();
                 break;
             case 'createProductCategory':
-                $dialog = ProductController::addProductCategoryDialog();
+                $dialog = CategoryController::addCategoryDialog();
+                break;
+            case 'selectCategory':
+                $dialog = CategoryController::selectCategoryDialog();
                 break;
         }
 

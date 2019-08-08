@@ -9,6 +9,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Категории
     Route::get('/categories', 'CategoryController@index')->name('Categories');
+    Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
     Route::post('/categories/new', 'CategoryController@store')->name('StoreCategory');
 
     #Продукты
@@ -25,5 +26,5 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/report', 'ReportController@index')->name('ReportIndex');
 
     #Диалоги
-    Route::get('/dialog_{tag}', 'DialogController@openDialogByTag')->name('openDialog');
+    Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');
 });

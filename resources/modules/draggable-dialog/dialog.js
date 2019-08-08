@@ -33,13 +33,13 @@ document.addEventListener('mousemove', function(e){
 	});
 });
 
-window.openDialog = function(tag) {
+window.openDialog = function(tag, params = null, reload = false) {
 	if (isXHRloading) { return; }
 	dReq = new XMLHttpRequest();
 	isXHRloading = true;
 	dReq.onload = function () {
 		var resp = JSON.parse(this.responseText);
-		if(!alreadyOpened(tag)){
+		if(!alreadyOpened(tag) || reload){
 			appendDialog(resp, tag);
 		}
 		isXHRloading = false;
@@ -48,25 +48,66 @@ window.openDialog = function(tag) {
 		isXHRloading = false;
 	};
 
-	dReq.open("get", 'dialog_' + tag, true);
+	if(params != null){
+		params = '?params=' + params;
+	} else {
+		params = '';
+	}
+
+	dReq.open("get", 'dialog_' + tag + '_open' + params, true);
 	dReq.send();
 }
 
-window.closeDialog = function(event, id = null){
-	Object.keys(dialogs).map(function(key, index) {
-		var elem = dialogs[key];
-		var dial = document.getElementById(elem.tag);
-		if(id){
-			var dial = document.getElementById(id);
-			delete dialogs[key];
-			dial.remove();
-			downEventListners();
-		} else if(dial.contains(event.target)){
-			delete dialogs[key];
-			dial.remove();
-			downEventListners();
-		}
+window.selectCategory = function(id) {
+	if (isXHRloading) { return; }
+	dReq = new XMLHttpRequest();
+	isXHRloading = true;
+	dReq.onload = function () {
+		var resp = JSON.parse(this.responseText);
+		document.getElementById('category_list').innerHTML = resp.html;
+		isXHRloading = false;
+	};
+	dReq.onerror = function () {
+		isXHRloading = false;
+	};
+
+	dReq.open("get", 'categories/dialog/enter?category_id=' + id, true);
+	dReq.send();
+};
+
+window.pickCategory = function(id, name, event) {
+	var selects = document.getElementsByClassName('category_select');
+	[].forEach.call(selects, function(elem){
+		var str = '<option value="' + id + '">' + name + '</option selected>';
+		elem.innerHTML = str;
 	});
+	closeDialog(event)
+};
+
+
+
+window.closeDialog = function(event, id = null){
+	if(id){
+		console.log(id);
+		var dial = document.getElementById(id);
+		delete dialogs[id];
+		if(dial){
+			dial.remove();
+		}
+		downEventListners();
+	} else{
+		Object.keys(dialogs).map(function(key, index) {
+			var elem = dialogs[key];
+			var dial = document.getElementById(elem.tag);
+			if(dial.contains(event.target)){
+				delete dialogs[key];
+				if(dial){
+					dial.remove();
+				}
+				downEventListners();
+			}
+		});
+	}
 
 }
 

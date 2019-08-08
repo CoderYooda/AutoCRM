@@ -1,9 +1,16 @@
-<div class="list-group box">
-    @if(!$categories['parent']->locked)
-    <a href="{{ route('StoreIndex', ['category_id' => $categories['parent']->category_id]) }}" class="list-group-item ajax-nav">
-        <span class="float-right badge warning">10</span> Назад
-    </a>
-    @endif
+<div class="list-group list-modify mb-0 box">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            @if(!$categories['parent']->locked)
+                <a href="{{ route('StoreIndex', ['category_id' => $categories['parent']->category_id]) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
+            @endif
+            {{ $categories['parent']->name }}
+        </h5>
+        <a style="font-size: 18px;" onclick="openDialog('createProductCategory', {{ $categories['parent']->id }})" class="">
+            <i class="fa fa-plus"></i>
+        </a>
+    </div>
+
     @foreach($categories['stack'] as $category)
         @include('product.elements.table_folder')
     @endforeach
@@ -17,7 +24,7 @@
         <th>Наличие</th>
         <th>Заявки</th>
         <th>Цена</th>
-        <th class="w-62"></th>
+        <th class="w-62"><a onclick="openDialog('createProduct', {{ $categories['parent']->id }} )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a></th>
     </tr>
     </thead>
     <tbody>

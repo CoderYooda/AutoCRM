@@ -20,7 +20,6 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-
         $category = new Category();
         $category->fill($request->all());
         $category->creator_id = Auth::user()->id;
@@ -37,6 +36,30 @@ class CategoryController extends Controller
         } else {
             return redirect()->back();
         }
+    }
+
+    public static function addCategoryDialog()
+    {
+        if(request()->params){
+            $start_category_id = (int)request()->params;
+        } else {
+            $start_category_id = 2;
+        }
+
+        $category = Category::where('id', $start_category_id)->first();
+        return response()->json(['html' => view('product.dialog.add_product_category', compact('category'))->render()]);
+    }
+
+    public function enterDialog(Request $request)
+    {
+        $category = Category::where('id', (int)$request['category_id'])->with('childs')->first();
+        return response()->json(['html' => view('category.dialog.select_category_inner', compact('category'))->render()]);
+    }
+
+    public static function selectCategoryDialog()
+    {
+        $category = Category::where('id', (int)request()->params)->with('childs')->first();
+        return response()->json(['html' => view('category.dialog.select_category', compact('category'))->render()]);
     }
 
     public static function getCategories($request, $type = null)

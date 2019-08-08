@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\CategoryController;
 use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Auth;
@@ -42,12 +43,13 @@ class ProductController extends Controller
 
     public static function addProductDialog()
     {
-        return response()->json(['html' => view('product.dialog.add_product')->render()]);
-    }
-
-    public static function addProductCategoryDialog()
-    {
-        return response()->json(['html' => view('product.dialog.add_product_category')->render()]);
+        if(request()->params){
+            $start_category_id = (int)request()->params;
+        } else {
+            $start_category_id = 2;
+        }
+        $category = Category::where('id', $start_category_id)->first();
+        return response()->json(['html' => view('product.dialog.add_product', compact('category'))->render()]);
     }
 
     public function store(Request $request)

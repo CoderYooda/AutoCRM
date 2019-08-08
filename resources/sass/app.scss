@@ -52,3 +52,45 @@ nav.nav-border {
 
 .stroke-theme {
     stroke: #53a6fa; }
+
+.list-modify{
+    border: 1px solid #dee2e6;
+    border-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+.noarrow{
+    -webkit-appearance: none;
+    appearance: none;
+}
+.fake-disabled {
+     background-color: #fff!important;
+     opacity: 1;
+}
+.sp-p{
+    padding: 7px 16px;
+}
+.smd > i {
+    width: 20px!important;
+    height: 20px!important;
+    top: 0!important;
+}
+.smd input:checked + i:before {
+    width: 10px!important;
+    height: 10px!important;
+    left: 5px!important;
+    top: 5px!important;
+}
+.nlborder.list-group .list-group-item:last-child{
+    border:none!important;
+}
+.folder-link{
+    position: relative;
+    padding-left: 48px!important;
+}
+.folder-link > i{
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    font-size: 20px;
+}
