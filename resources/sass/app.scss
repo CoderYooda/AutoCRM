@@ -10,6 +10,9 @@
 // Draggable Dialog
 @import '../modules/draggable-dialog/dialog.css';
 
+// Draggable Dialog
+@import '~notification-js/src/notification.css';
+
 
 
 
@@ -93,4 +96,20 @@ nav.nav-border {
     left: 15px;
     top: 12px;
     font-size: 20px;
+}
+.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 40px;
+}
+.cat-but-padding{
+    width: 62px;
+    padding: 11px 5px;
+}
+.np{
+    padding: 0!important;
+}
+.lgi:hover, .lgi:focus, .lgi.hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }

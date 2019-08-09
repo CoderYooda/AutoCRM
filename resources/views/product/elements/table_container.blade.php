@@ -6,7 +6,7 @@
             @endif
             {{ $categories['parent']->name }}
         </h5>
-        <a style="font-size: 18px;" onclick="openDialog('createProductCategory', {{ $categories['parent']->id }})" class="">
+        <a style="font-size: 18px;" onclick="openDialog('createCategory', {{ $categories['parent']->id }})" class="">
             <i class="fa fa-plus"></i>
         </a>
     </div>

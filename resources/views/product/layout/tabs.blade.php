@@ -16,7 +16,7 @@
                                     <span class="nav-badge">
 				                    	<b class="badge badge-sm badge-pill warn">12</b>
 				                  	</span>
-                                    <span class="nav-text">Товары</span>
+                                    <span class="nav-text">Склад</span>
                                 </a>
                             </li>
                             <li data-tab="provider">

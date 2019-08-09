@@ -24,6 +24,8 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "notification-js": "^1.1.1",
+        "notifyjs": "^3.0.0",
         "select2": "^4.0.8"
     }
 }

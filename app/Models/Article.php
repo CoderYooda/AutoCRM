@@ -18,4 +18,9 @@ class Article extends Model
     {
         return $this->belongsTo('App\Models\Supplier', 'supplier_id');
     }
+
+    public function category()
+    {
+        return $this->belongsTo('App\Models\Category', 'category_id');
+    }
 }

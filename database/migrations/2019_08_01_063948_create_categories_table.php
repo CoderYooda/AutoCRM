@@ -20,7 +20,7 @@ class CreateCategoriesTable extends Migration
             $table->bigInteger('creator_id')->unsigned()->comment('Привязка к пользователю');
             $table->boolean('locked')->comment('Замок');
             $table->char('type')->nullable()->comment('Тип');
-            $table->char('name', 20)->default('Без названия')->comment('Название категории');
+            $table->char('name', 200)->default('Без названия')->comment('Название категории');
             $table->timestamps();
         });
     }

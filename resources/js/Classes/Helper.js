@@ -26,5 +26,27 @@ class Helper{
             });
         return result;
     }
+
+    createElementFromHTML(htmlString) {
+        var div = document.createElement('div');
+        div.innerHTML = htmlString.trim();
+        return div.firstChild;
+    }
+
+    insertAfter(newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+    removeElementsByClass(className){
+        var elements = document.getElementsByClassName(className);
+        while(elements.length > 0){
+            elements[0].parentNode.removeChild(elements[0]);
+        }
+    }
+    removeClassesByClass(className){
+        var elements = document.getElementsByClassName(className);
+        while(elements.length > 0){
+            elements[0].classList.remove(className);
+        }
+    }
 }
 export default Helper;

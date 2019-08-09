@@ -7,9 +7,12 @@ require('./navigation');                                            // Нави�
 import Pagination from './Classes/Pagination.js';
 import AxForm from './Classes/Form.js';
 import Helper from './Classes/Helper.js';
+import Category from './Classes/Category.js';
+
+window.helper = new Helper();
 window.pagination = new Pagination();
 window.axform = new AxForm();
-window.helper = new Helper();
+window.category = new Category();
 
 var myEfficientFn = helper.debounce(function() {
     console.log(1);

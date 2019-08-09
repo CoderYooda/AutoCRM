@@ -9,11 +9,18 @@ class DialogController extends Controller
     public function openDialogByTag($tag)
     {
         switch ($tag) {
-            case 'createProduct':
+            case 'createCategory':
+                $dialog = CategoryController::addCategoryDialog();
+                break;
+            case 'editCategory':
+                $dialog = CategoryController::editCategoryDialog();
+                break;
+            case (preg_match('/createProduct/', $tag) ? true : false):
                 $dialog = ProductController::addProductDialog();
                 break;
-            case 'createProductCategory':
-                $dialog = CategoryController::addCategoryDialog();
+            case (preg_match('/editProduct/', $tag) ? true : false):
+                $id = explode('=', $tag)[1];
+                $dialog = ProductController::editProductDialog($id);
                 break;
             case 'selectCategory':
                 $dialog = CategoryController::selectCategoryDialog();

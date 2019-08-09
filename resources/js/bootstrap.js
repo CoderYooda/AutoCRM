@@ -6,10 +6,21 @@ try {
     require('bootstrap');
 } catch (e) {}
 
+window.notification = require('notification-js/src/notification.js');
+notification.configProfile( 'global', {
+    behaviour: {
+        autoHide: 1,
+        limit: 5
+    },
+    animations: {
+        duration: [ 0.5, 0.5 ]
+    },
+} );
+
 
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-let token = document.head.querySelector('meta[name="csrf-token"]');
+window.token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {

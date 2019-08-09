@@ -6,7 +6,7 @@
     <td>@mdo</td>
     <td>@mdo</td>
     <td>
-        <a class="btn btn-sm badge success text-white"><i class="fa fa-eye"></i></a>
+        <a onclick="openDialog('editProduct={{ $article->id }}')" class="btn btn-sm badge success text-white"><i class="fa fa-eye"></i></a>
         <a class="btn btn-sm badge danger text-white"><i class="fa fa-remove"></i></a>
     </td>
 </tr>

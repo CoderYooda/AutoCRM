@@ -11,6 +11,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
     Route::post('/categories/new', 'CategoryController@store')->name('StoreCategory');
+    Route::post('/categories/remove={id}', 'CategoryController@remove')->name('RemoveCategory');
 
     #Продукты
     Route::get('/store', 'ProductController@index')->name('StoreIndex');

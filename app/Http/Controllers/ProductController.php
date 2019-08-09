@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\CategoryController;
+use App\Model\Catalog\Product;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
+use Illuminate\Support\Facades\Validator;
 use Auth;
 
 class ProductController extends Controller
 {
-
+    public function _construct(){
+        $status = 500;
+        $message = 'Внутренняя ощибка сервера';
+    }
 
     public function index(Request $request)
     { // точка входа в страницу
@@ -49,12 +54,33 @@ class ProductController extends Controller
             $start_category_id = 2;
         }
         $category = Category::where('id', $start_category_id)->first();
-        return response()->json(['html' => view('product.dialog.add_product', compact('category'))->render()]);
+        return response()->json(['html' => view('product.dialog.form_product', compact('category'))->render()]);
+    }
+
+    public static function editProductDialog($id = null)
+    {
+
+        $product = Article::where('id', $id)->first();
+        return response()->json(['html' => view('product.dialog.form_product', compact('product'))->render()]);
     }
 
     public function store(Request $request)
     {
-        $article = new Article();
+        $validation = Validator::make($request->all(), [
+            'name' => ['required', 'min:4', 'string', 'max:255'],
+            'category_id' => ['required',  'max:255', 'exists:categories,id'],
+            'article' => ['required', 'string', 'max:22'],
+        ]);
+
+        if($validation->fails()){
+            $this->status = 422;
+            if($request->ajax()){
+                return response()->json(['messages' => $validation->errors()], $this->status);
+            }
+        }
+
+
+        $article = Article::firstOrNew(['id' => (int)$request['id']]);
         $article->fill($request->all());
         $article->save();
         $article->company()->associate(Auth::user()->company()->first());
@@ -64,7 +90,7 @@ class ProductController extends Controller
         $content = view('product.elements.table_container', compact('articles', 'categories'))->render();
 
         if($request->ajax()){
-            return response()->json(['container' => 'ajax-table', 'html' => $content]);
+            return response()->json(['message' => 'Товар сохранён', 'container' => 'ajax-table', 'html' => $content]);
         } else {
             return redirect()->back();
         }
@@ -76,7 +102,15 @@ class ProductController extends Controller
     }
     public static function getArticles($request)
     {
-        return Article::where('category_id', $request['category_id'])->orderBy('created_at', 'DESC')->paginate(17);
+        $category = 0;
+        if($request['category_id'] == null){
+            if($request['active_tab'] == "store"){
+                $category = 2;
+            }
+        } else {
+            $category = (int)$request['category_id'];
+        }
+        return Article::where('category_id', $category)->orderBy('created_at', 'DESC')->paginate(24);
     }
 
 }

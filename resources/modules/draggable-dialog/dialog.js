@@ -40,6 +40,7 @@ window.openDialog = function(tag, params = null, reload = false) {
 	dReq.onload = function () {
 		var resp = JSON.parse(this.responseText);
 		if(!alreadyOpened(tag) || reload){
+            closeDialog(null, tag);
 			appendDialog(resp, tag);
 		}
 		isXHRloading = false;
@@ -58,37 +59,8 @@ window.openDialog = function(tag, params = null, reload = false) {
 	dReq.send();
 }
 
-window.selectCategory = function(id) {
-	if (isXHRloading) { return; }
-	dReq = new XMLHttpRequest();
-	isXHRloading = true;
-	dReq.onload = function () {
-		var resp = JSON.parse(this.responseText);
-		document.getElementById('category_list').innerHTML = resp.html;
-		isXHRloading = false;
-	};
-	dReq.onerror = function () {
-		isXHRloading = false;
-	};
-
-	dReq.open("get", 'categories/dialog/enter?category_id=' + id, true);
-	dReq.send();
-};
-
-window.pickCategory = function(id, name, event) {
-	var selects = document.getElementsByClassName('category_select');
-	[].forEach.call(selects, function(elem){
-		var str = '<option value="' + id + '">' + name + '</option selected>';
-		elem.innerHTML = str;
-	});
-	closeDialog(event)
-};
-
-
-
 window.closeDialog = function(event, id = null){
 	if(id){
-		console.log(id);
 		var dial = document.getElementById(id);
 		delete dialogs[id];
 		if(dial){
@@ -115,7 +87,9 @@ function appendDialog(resp, tag){
 
 	window.dialogs[tag] = [];
 	window.dialogs[tag].tag = tag;
-	document.getElementById(containerId).innerHTML += resp.html;
+	var node = helper.createElementFromHTML(resp.html);
+	document.getElementById(containerId).appendChild(node);
+	//document.getElementById(containerId).innerHTML += resp.html;
 	var position = dialogPosition(tag);
 	var dialog = document.getElementById(tag);
 	dialog.style.left = position.x + 'px';

@@ -58,7 +58,7 @@
 	border-radius: 3px;
 	overflow: hidden;
 	z-index: 10000;
-	max-height: 50%;
+	max-height: 90%;
 }
 .mh50-dialog{
 	max-height: calc(50vh - 32px);
@@ -82,6 +82,7 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: move;
+    padding-right: 40px;
 }
 .dialog .content {
 	position: absolute;

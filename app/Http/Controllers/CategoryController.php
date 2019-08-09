@@ -10,6 +10,10 @@ use Auth;
 
 class CategoryController extends Controller
 {
+    public function _construct(){
+        $status = 500;
+        $message = 'Внутренняя ощибка сервера';
+    }
 
     public function index()
     {
@@ -20,7 +24,8 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $category = new Category();
+
+        $category = Category::firstOrNew(['id' => (int)$request['id']]);
         $category->fill($request->all());
         $category->creator_id = Auth::user()->id;
         $category->company_id = Auth::user()->company()->first()->id;
@@ -32,10 +37,27 @@ class CategoryController extends Controller
         $content = view('product.elements.table_container', compact('articles', 'categories'))->render();
 
         if($request->ajax()){
-            return response()->json(['container' => 'ajax-table', 'html' => $content]);
+            return response()->json(['message' => 'Категория сохранена','container' => 'ajax-table', 'html' => $content]);
         } else {
             return redirect()->back();
         }
+    }
+
+    public function remove($id)
+    {
+        $category = Category::where('id', $id)->first();
+
+        if($category->childs()->count() > 0 || $category->articles()->count() > 0){
+            $this->status = 403;
+            $this->message = 'В категории присутствуют товары или категории, удаление невозможно.';
+        } else {
+            $category->delete();
+            $this->status = 200;
+            $this->message = 'Категория удалена';
+        }
+
+        return response()->json(['category_id' => $category->id, 'message' => $this->message], $this->status);
+
     }
 
     public static function addCategoryDialog()
@@ -46,8 +68,20 @@ class CategoryController extends Controller
             $start_category_id = 2;
         }
 
-        $category = Category::where('id', $start_category_id)->first();
-        return response()->json(['html' => view('product.dialog.add_product_category', compact('category'))->render()]);
+        $parent = Category::where('id', $start_category_id)->first();
+        return response()->json(['html' => view('product.dialog.form_category', compact('parent'))->render()]);
+    }
+
+    public static function editCategoryDialog()
+    {
+        if(request()->params){
+            $category_id = (int)request()->params;
+        } else {
+            abort(404);
+        }
+
+        $category = Category::where('id', $category_id)->first();
+        return response()->json(['html' => view('product.dialog.form_category', compact('category'))->render()]);
     }
 
     public function enterDialog(Request $request)

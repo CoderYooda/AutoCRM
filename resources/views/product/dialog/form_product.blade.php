@@ -1,7 +1,22 @@
-<div id="createProduct" class="dialog" style="width:600px;">
-    <div class="titlebar">Добавление продукта</div>
+<div
+    @if(isset($product))
+        id="editProduct={{ $product->id }}"
+    @else
+        id="createProduct"
+    @endif
+    class="dialog" style="width:600px;">
+    @if(isset($product))
+        <div class="titlebar">Редактирование '{{ $product->name }}'</div>
+    @else
+        <div class="titlebar">Добавление продукта</div>
+    @endif
+
     <button class="btn_close" onclick="closeDialog(event)">x</button>
     <form action="{{ route('StoreProduct') }}" method="POST">
+        @csrf
+        @if(isset($product))
+            <input type="hidden" name="id" value="{{ $product->id }}">
+        @endif
         <div class="row no-gutters align-items-stretch">
             <div class="col-md-4 light lt">
                 <div class="nav-active-border b-success left right box mb-0">
@@ -29,22 +44,29 @@
                     <div class="tab-pane animate fadeIn text-muted active" id="tab1">
                         <div class="form-group">
                             <label>Наименование</label>
-                            <input type="text" name="name" class="form-control" placeholder="Наименование (не более 255 символов)">
+                            <input type="text" name="name" @if(isset($product)) value="{{ $product->name }}" @endif class="form-control" placeholder="Наименование (не более 255 символов)">
                         </div>
                         <div class="form-group">
                             <label for="category_id">В категории</label>
                             <div class="input-group mb-3">
                                 <select name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @if(isset($category))
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @elseif(isset($product))
+
+                                        <option value="{{ $product->category()->first()->id }}">{{ $product->category()->first()->name }}</option>
+                                    @else
+                                        <option value="2">Корневая директория</option>
+                                    @endif
                                 </select>
                                 <div class="input-group-append">
-                                    <button onclick="openDialog('selectCategory', 2)" class="btn white" type="button"><i class="fa fa-bars"></i></button>
+                                    <button onclick="openDialog('selectCategory', @if(isset($product)){{ $product->category_id }}@else 2 @endif);" class="btn white" type="button"><i class="fa fa-bars"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Артикул</label>
-                            <input type="text" name="article" class="form-control" placeholder="Артикул детали (не более 64 символов)">
+                            <input type="text" name="article" @if(isset($product))value="{{ $product->article }}"@endif class="form-control" placeholder="Артикул детали (не более 64 символов)">
                         </div>
                     </div>
                     <div class="tab-pane animate fadeIn text-muted" id="tab2">
