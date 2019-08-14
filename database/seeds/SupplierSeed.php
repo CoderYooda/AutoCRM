@@ -12,8 +12,12 @@ class SupplierSeed extends Seeder
      */
     public function run()
     {
-        Supplier::create([
-            'name' => 'Не указан'
-        ]);
+        Supplier::create(['name' => 'RBI', 'company_id' => 1]);
+        Supplier::create(['name' => '555', 'company_id' => 1]);
+        Supplier::create(['name' => 'GMB', 'company_id' => 1]);
+        Supplier::create(['name' => 'Koyo', 'company_id' => 1]);
+        Supplier::create(['name' => 'RBH', 'company_id' => 1]);
+        Supplier::create(['name' => 'SWAG', 'company_id' => 1]);
+        Supplier::create(['name' => 'Quinton Hazell', 'company_id' => 1]);
     }
 }

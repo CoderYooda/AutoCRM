@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Controllers\ProductController;
 use Auth;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -24,6 +25,17 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $validation = Validator::make($request->all(), [
+            'name' => ['required', 'min:3', 'string', 'max:255'],
+            'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
+        ]);
+
+        if($validation->fails()){
+            $this->status = 422;
+            if($request->ajax()){
+                return response()->json(['messages' => $validation->errors()], $this->status);
+            }
+        }
 
         $category = Category::firstOrNew(['id' => (int)$request['id']]);
         $category->fill($request->all());
@@ -92,7 +104,7 @@ class CategoryController extends Controller
 
     public static function selectCategoryDialog()
     {
-        $category = Category::where('id', (int)request()->params)->with('childs')->first();
+        $category = Category::where('id', request()->params)->with('childs')->first();
         return response()->json(['html' => view('category.dialog.select_category', compact('category'))->render()]);
     }
 
@@ -104,8 +116,15 @@ class CategoryController extends Controller
      }else if($type != null) {
          $category_id = Category::where('type', $type)->first()->id;
      }
-     $categories['stack'] = Category::where('id',$category_id)->first()->childs()->orderBy('created_at', 'DESC')->get();
-     $categories['parent'] =  Category::where('id',$category_id)->first();
+
+     $cat = Category::where('id',$category_id)->first();
+
+     if($cat == null){
+         abort(404);
+     }
+
+     $categories['stack'] = $cat->childs()->orderBy('created_at', 'DESC')->get();
+     $categories['parent'] =  $cat;
         return $categories;
     }
 }

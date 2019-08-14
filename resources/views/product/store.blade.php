@@ -7,7 +7,7 @@
     <div class="navbar white no-radius box-shadow pos-rlt">
         <form class="flex">
             <div class="input-group">
-                <input type="text" class="form-control form-control-sm search" placeholder="Search" required="">
+                <input id="search" type="text" class="form-control form-control-sm search" placeholder="Search" required="">
                 <span class="input-group-append">
                     <button class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-search"></i></button>
                 </span>

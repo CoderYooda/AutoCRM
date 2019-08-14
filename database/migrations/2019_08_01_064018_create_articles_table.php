@@ -20,14 +20,15 @@ class CreateArticlesTable extends Migration
             $table->bigInteger('creator_id')->unsigned()->nullable()->comment('Привязка к пользователю');
             $table->bigInteger('supplier_id')->unsigned()->default(1)->comment('Привязка к производителю');
             $table->bigInteger('measurement_id')->unsigned()->nullable()->comment('Привязка к типу измерений');
-            $table->char('article', 64)->comment('Артикул детали');
+            $table->char('article', 64)->default(0)->comment('Артикул детали');
             $table->char('oem')->nullable()->comment('OEM детали');
             $table->char('storeCode')->nullable()->comment('Внутренний номер склада');
             $table->char('barcode')->nullable()->comment('Штрих код');
             $table->char('name')->comment('Наименование');
-            $table->integer('count')->nullable()->comment('Кол-во на складе');
-            $table->integer('blockedCount')->nullable()->comment('Зарезервировано в заказе');
+            $table->decimal('midprice')->unsigned()->default(0)->comment('Усредненная цена');
+            $table->integer('blockedCount')->default(0)->nullable()->comment('Зарезервировано в заказе');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

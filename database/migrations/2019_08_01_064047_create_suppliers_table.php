@@ -15,6 +15,7 @@ class CreateSuppliersTable extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('company_id')->unsigned()->nullable()->comment('Привязка к компании');
             $table->char('name')->comment('Наименование производителя');
             $table->timestamps();
         });

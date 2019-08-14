@@ -26,6 +26,7 @@
     "dependencies": {
         "notification-js": "^1.1.1",
         "notifyjs": "^3.0.0",
-        "select2": "^4.0.8"
+        "select2": "^4.0.8",
+        "sweetalert2": "^8.15.3"
     }
 }

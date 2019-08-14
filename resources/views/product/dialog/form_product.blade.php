@@ -14,6 +14,8 @@
     <button class="btn_close" onclick="closeDialog(event)">x</button>
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf
+        <input class="category_select" type="hidden" name="category_id" value="@if(isset($category)){{ $category->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@else 2 @endif">
+        <input class="supplier_select" type="hidden" name="supplier_id" value="@if(isset($product)){{ $product->supplier()->first()->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@endif">
         @if(isset($product))
             <input type="hidden" name="id" value="{{ $product->id }}">
         @endif
@@ -22,59 +24,44 @@
                 <div class="nav-active-border b-success left right box mb-0">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link block active" href="#" data-toggle="tab" data-target="#tab1">
+                            <a class="nav-link block active" href="#tab_base" data-toggle="tab" data-target="#tab_base">
                                 Основные
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link block" href="#" data-toggle="tab" data-target="#tab2">
-                                Настройка цен
+                            <a class="nav-link block" href="#tab_store" data-toggle="tab" data-target="#tab_store">
+                                Склад
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link block" href="#" data-toggle="tab" data-target="#tab3">
-                                Описание
-                            </a>
-                        </li>
+{{--                        <li class="nav-item">--}}
+{{--                            <a class="nav-link block" href="#" data-toggle="tab" data-target="#tab3">--}}
+{{--                                Настройка цен--}}
+{{--                                <span class="float-right helper_danger d-none-f">--}}
+{{--                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>--}}
+{{--                                </span>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                        <li class="nav-item">--}}
+{{--                            <a class="nav-link block" href="#" data-toggle="tab" data-target="#tab4">--}}
+{{--                                Описание--}}
+{{--                                <span class="float-right helper_danger d-none-f">--}}
+{{--                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>--}}
+{{--                                </span>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
                     </ul>
                 </div>
             </div>
             <div class="col-md-8 light lt">
                 <div class="tab-content p-3 mb-3">
-                    <div class="tab-pane animate fadeIn text-muted active" id="tab1">
-                        <div class="form-group">
-                            <label>Наименование</label>
-                            <input type="text" name="name" @if(isset($product)) value="{{ $product->name }}" @endif class="form-control" placeholder="Наименование (не более 255 символов)">
-                        </div>
-                        <div class="form-group">
-                            <label for="category_id">В категории</label>
-                            <div class="input-group mb-3">
-                                <select name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
-                                    @if(isset($category))
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @elseif(isset($product))
-
-                                        <option value="{{ $product->category()->first()->id }}">{{ $product->category()->first()->name }}</option>
-                                    @else
-                                        <option value="2">Корневая директория</option>
-                                    @endif
-                                </select>
-                                <div class="input-group-append">
-                                    <button onclick="openDialog('selectCategory', @if(isset($product)){{ $product->category_id }}@else 2 @endif);" class="btn white" type="button"><i class="fa fa-bars"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Артикул</label>
-                            <input type="text" name="article" @if(isset($product))value="{{ $product->article }}"@endif class="form-control" placeholder="Артикул детали (не более 64 символов)">
-                        </div>
-                    </div>
-                    <div class="tab-pane animate fadeIn text-muted" id="tab2">
-                        Components
-                    </div>
-                    <div class="tab-pane animate fadeIn text-muted" id="tab3">
-                        UI kits
-                    </div>
+                    @include('product.dialog.tabs.base')
+                    @include('product.dialog.tabs.store')
                 </div>
             </div>
             <div class="col-md-12 p-3">

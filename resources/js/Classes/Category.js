@@ -16,9 +16,18 @@ class Category{
         dReq.send();
     };
 
-    pick(id, name, event) {
-        var selects = document.getElementsByClassName('category_select');
+    pick(id, name, event, referal = null){
+        var selects;
+
+        if(referal != null && document.getElementById(ref).length > 0){
+            var cont = document.getElementById(ref);
+            selects = cont.getElementsByClassName('category_select');
+        } else {
+            selects = document.getElementsByClassName('category_select');
+        }
+
         [].forEach.call(selects, function(elem){
+            elem.value = id;
             var str = '<option value="' + id + '">' + name + '</option selected>';
             elem.innerHTML = str;
         });
@@ -28,8 +37,8 @@ class Category{
 
     remove(id) {
         if (isXHRloading) { return; }
-        var dReq = new XMLHttpRequest();
         isXHRloading = true;
+        var dReq = new XMLHttpRequest();
         dReq.onreadystatechange = function (e) {
             if (dReq.readyState === 4) {
                 var resp = JSON.parse(this.responseText);
@@ -43,7 +52,6 @@ class Category{
                 }
             }
         };
-
         dReq.onerror = function () {
             var resp = JSON.parse(this.responseText);
             console.log(resp.message);
@@ -54,11 +62,28 @@ class Category{
             //document.getElementById('category_list').innerHTML = resp.html;
             isXHRloading = false;
         };
-
-
-        dReq.open("post", 'categories/remove=' + id, true);
+        dReq.open("post", 'categories/'+id+'/delete' , true);
         dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
-        dReq.send();
+
+        Swal.fire({
+            title: 'Вы уверены?',
+            text: "действие необратимо",
+            type: 'warning',
+            animation: false,
+            showCancelButton: true,
+            cancelButtonText: 'Отменить',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Удалить!'
+        }).then((result) => {
+            if (result.value) {
+
+                dReq.send();
+            } else {
+                dReq.abort();
+                isXHRloading = false;
+            }
+        });
     };
 }
 export default Category;

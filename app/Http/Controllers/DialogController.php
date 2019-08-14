@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Supplier;
 
 class DialogController extends Controller
 {
     public function openDialogByTag($tag)
     {
         switch ($tag) {
+            case 'selectSupplier':
+                $dialog = SupplierController::addSupplierDialog();
+                break;
             case 'createCategory':
                 $dialog = CategoryController::addCategoryDialog();
                 break;

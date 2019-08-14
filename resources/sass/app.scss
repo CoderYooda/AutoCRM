@@ -70,6 +70,9 @@ nav.nav-border {
      background-color: #fff!important;
      opacity: 1;
 }
+.fake-disabled *{
+    background: red;
+}
 .sp-p{
     padding: 7px 16px;
 }
@@ -112,4 +115,40 @@ nav.nav-border {
 }
 .lgi:hover, .lgi:focus, .lgi.hover {
     background-color: rgba(0, 0, 0, 0.05);
+}
+.nv-helper{
+    width: 100%;
+}
+.is-invalid + .input-group-append > button{
+    border-color: #e3342f!important;
+}
+.swal2-container {
+    z-index: 10060;
+}
+.swal2-icon::before {
+    font-size: 2.75em!important;
+}
+.swal2-icon {
+    width: 3em!important;
+    height: 3em!important;
+    margin: 0.25em auto 0.875em!important;
+}
+.swal2-title {
+    font-size: 1.275em!important;
+}
+.swal2-styled {
+    font-size: 0.8em!important;
+    padding: 0.5rem 1.5rem!important;
+}
+.swal2-content {
+    font-size: 0.8em!important;
+}
+.swal2-actions {
+    margin: 0.8em auto 0!important;
+}
+.swal2-popup {
+    width: 18em!important;
+}
+.d-none-f{
+    display: none;
 }

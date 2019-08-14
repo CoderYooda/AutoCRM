@@ -7,15 +7,20 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Статистика и панель управления
     Route::get('/', 'DashboardController@index')->name('DashboardIndex');
 
+//    #Производители
+//    Route::get('/suppliers', 'SupplierController@index')->name('Categories');
+
     #Категории
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
     Route::post('/categories/new', 'CategoryController@store')->name('StoreCategory');
-    Route::post('/categories/remove={id}', 'CategoryController@remove')->name('RemoveCategory');
+    Route::post('/categories/{id}/delete', 'CategoryController@remove')->name('DeleteCategory');
 
     #Продукты
     Route::get('/store', 'ProductController@index')->name('StoreIndex');
-    Route::post('/store/new', 'ProductController@store')->name('StoreProduct');
+    Route::get('/store/search', 'ProductController@search')->name('StoreSearch');
+    Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
+    Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
 
     #Касса
     Route::get('/cash', 'CashController@index')->name('CashIndex');

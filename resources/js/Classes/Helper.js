@@ -1,4 +1,5 @@
 class Helper{
+
     debounce(func, wait, immediate) {
         var timeout;
         return function() {

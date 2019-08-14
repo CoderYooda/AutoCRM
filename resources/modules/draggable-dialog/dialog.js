@@ -34,6 +34,8 @@ document.addEventListener('mousemove', function(e){
 });
 
 window.openDialog = function(tag, params = null, reload = false) {
+    var e = e || window.event;
+    e.preventDefault();
 	if (isXHRloading) { return; }
 	dReq = new XMLHttpRequest();
 	isXHRloading = true;
@@ -89,7 +91,6 @@ function appendDialog(resp, tag){
 	window.dialogs[tag].tag = tag;
 	var node = helper.createElementFromHTML(resp.html);
 	document.getElementById(containerId).appendChild(node);
-	//document.getElementById(containerId).innerHTML += resp.html;
 	var position = dialogPosition(tag);
 	var dialog = document.getElementById(tag);
 	dialog.style.left = position.x + 'px';
@@ -97,11 +98,12 @@ function appendDialog(resp, tag){
 	window.dialogs[tag].height = dialog.offsetHeight;
 	window.dialogs[tag].width = dialog.offsetWidth;
 
-	Object.keys(dialogs).map(function(key, index) {
-		var elem = dialogs[key];
-		var dial = document.getElementById(elem.tag);
-		dial.classList.remove('selected');
-	});
+    Object.keys(dialogs).map(function(key, index) {
+        var elem = dialogs[key];
+        var dial = document.getElementById(elem.tag);
+        dial.classList.remove('selected');
+    });
+
 	dialog.classList.add('selected');
 	downEventListners();
 }

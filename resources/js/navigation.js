@@ -113,6 +113,9 @@ const ajaxRequest = new (function () {
         oPageInfo.title = document.title;
         history.replaceState(oPageInfo, oPageInfo.title, oPageInfo.url);
         for (var oLink, nIdx = 0, nLen = document.links.length; nIdx < nLen; document.links[nIdx++].onclick = processLink);
+
+        product.searchInit();
+
         console.warn('Ссылки переработаны');
     }
 
@@ -212,5 +215,6 @@ const ajaxRequest = new (function () {
     this.open = requestPage;
     this.stop = abortReq;
     window.rebuildLinks = init;
+    window.goto = getPage;
 
 })();
