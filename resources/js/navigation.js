@@ -33,20 +33,6 @@ const ajaxRequest = new (function () {
             default:
                 vMsg = nStatus + ": " + (oHTTPStatus[nStatus] || "Unknown");
                 switch (Math.floor(nStatus / 100)) {
-                    /*
-                    case 1:
-                        // Informational 1xx
-                        console.log("Information code " + vMsg);
-                        break;
-                    case 2:
-                        // Successful 2xx
-                        console.log("Successful code " + vMsg);
-                        break;
-                    case 3:
-                        // Redirection 3xx
-                        console.log("Redirection code " + vMsg);
-                        break;
-                    */
                     case 4:
                         /* Client Error 4xx */
                         alert("Client Error #" + vMsg);
@@ -67,11 +53,12 @@ const ajaxRequest = new (function () {
         return sURL.replace(rSearch, "") + ("?" + sURL.replace(rHost, "&").replace(rView, sViewMode ? "&" + sViewKey + "=" + sViewMode : "").slice(1)).replace(rEndQstMark, "");
     }
 
-    function getPage (sPage) {
+    function getPage (sPage, callback = null) {
         if (isXHRloading) { return; }
         oReq = new XMLHttpRequest();
         isXHRloading = true;
         oReq.onload = ajaxLoad;
+        oReq.onreadystatechange = callback;
         oReq.onerror = ajaxError;
         if (sPage) { oPageInfo.url = filterURL(sPage, null); }
         oReq.open("get", filterURL(oPageInfo.url, "json"), true);
@@ -216,5 +203,6 @@ const ajaxRequest = new (function () {
     this.stop = abortReq;
     window.rebuildLinks = init;
     window.goto = getPage;
+    window.getQueryVar = getQueryVariable;
 
 })();

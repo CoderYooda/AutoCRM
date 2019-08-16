@@ -75,7 +75,7 @@ class CategoryController extends Controller
     public static function addCategoryDialog()
     {
         if(request()->params){
-            $start_category_id = (int)request()->params;
+            $start_category_id = (int)request()->category_select;
         } else {
             $start_category_id = 2;
         }
@@ -110,21 +110,28 @@ class CategoryController extends Controller
 
     public static function getCategories($request, $type = null)
     {
+        if($request['search'] == null){
 
-     if($request['category_id'] != null){
-         $category_id = (int)$request['category_id'];
-     }else if($type != null) {
-         $category_id = Category::where('type', $type)->first()->id;
-     }
+        if($request['category_id'] != null){
+            $category_id = (int)$request['category_id'];
+        }else if($type != null) {
+            $category_id = Category::where('type', $type)->first()->id;
+        }
 
-     $cat = Category::where('id',$category_id)->first();
+        $parent = Category::where('id',$category_id)->first();
 
-     if($cat == null){
-         abort(404);
-     }
+        if($parent == null){
+            abort(404);
+        }
 
-     $categories['stack'] = $cat->childs()->orderBy('created_at', 'DESC')->get();
-     $categories['parent'] =  $cat;
+        $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
+        $categories['parent'] =  $parent;
+        } else {
+            $categories['stack'] = Category::where(function($q) use ($request){
+                $q->where('name', 'like', '%' . $request['search'] . '%');
+            })->get();
+            $categories['parent'] = null;
+        }
         return $categories;
     }
 }

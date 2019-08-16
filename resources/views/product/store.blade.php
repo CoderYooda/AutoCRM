@@ -5,14 +5,14 @@
 @section('tab')
 <div class="d-flex flex-column flex" id="user-list">
     <div class="navbar white no-radius box-shadow pos-rlt">
-        <form class="flex">
+        <div class="flex">
             <div class="input-group">
-                <input id="search" type="text" class="form-control form-control-sm search" placeholder="Search" required="">
+                <input id="search" type="text" value="{{ request('search') }}" class="form-control form-control-sm search"  placeholder="Поиск по складу">
                 <span class="input-group-append">
                     <button class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-search"></i></button>
                 </span>
             </div>
-        </form>
+        </div>
         <span class="m-b btn-groups pl-1">
             <button onclick="openDialog('createCategory')" class="btn btn-sm success mb-0">Новая категория</button>
             <button onclick="openDialog('createProduct')" class="btn btn-sm success mb-0">Новый товар</button>

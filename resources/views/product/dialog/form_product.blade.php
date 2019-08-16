@@ -1,11 +1,11 @@
 <div
-    @if(isset($product))
+    @if(isset($product) && $product->id != NULL)
         id="editProduct={{ $product->id }}"
     @else
         id="createProduct"
     @endif
     class="dialog" style="width:600px;">
-    @if(isset($product))
+    @if(isset($product) && $product->id != NULL)
         <div class="titlebar">Редактирование '{{ $product->name }}'</div>
     @else
         <div class="titlebar">Добавление продукта</div>
@@ -16,7 +16,7 @@
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="@if(isset($category)){{ $category->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@else 2 @endif">
         <input class="supplier_select" type="hidden" name="supplier_id" value="@if(isset($product)){{ $product->supplier()->first()->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@endif">
-        @if(isset($product))
+        @if(isset($product) && $product->id != NULL)
             <input type="hidden" name="id" value="{{ $product->id }}">
         @endif
         <div class="row no-gutters align-items-stretch">

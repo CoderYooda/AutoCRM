@@ -49,5 +49,26 @@ class Helper{
             elements[0].classList.remove(className);
         }
     }
+    insertParam(elem, key, value)
+    {
+        key = encodeURI(key); value = encodeURI(value);
+
+        var kvp = elem.getAttribute("href").split('&');
+
+        var i=kvp.length; var x; while(i--)
+        {
+            x = kvp[i].split('=');
+            if (x[0]==key)
+            {
+                x[1] = value;
+                kvp[i] = x.join('=');
+                break;
+            }
+        }
+        if(i<0) {kvp[kvp.length] = [key,value].join('=');}
+        console.log(kvp.join('&'));
+
+        elem.setAttribute("href", kvp.join('&'));
+    }
 }
 export default Helper;

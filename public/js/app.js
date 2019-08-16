@@ -24809,6 +24809,32 @@ function () {
         elements[0].classList.remove(className);
       }
     }
+  }, {
+    key: "insertParam",
+    value: function insertParam(elem, key, value) {
+      key = encodeURI(key);
+      value = encodeURI(value);
+      var kvp = elem.getAttribute("href").split('&');
+      var i = kvp.length;
+      var x;
+
+      while (i--) {
+        x = kvp[i].split('=');
+
+        if (x[0] == key) {
+          x[1] = value;
+          kvp[i] = x.join('=');
+          break;
+        }
+      }
+
+      if (i < 0) {
+        kvp[kvp.length] = [key, value].join('=');
+      }
+
+      console.log(kvp.join('&'));
+      elem.setAttribute("href", kvp.join('&'));
+    }
   }]);
 
   return Helper;
@@ -24969,20 +24995,30 @@ function () {
       if (document.getElementById("search")) {
         var el = document.getElementById("search");
         var searchFn = helper.debounce(function (e) {
-          self.search();
+          self.search(e);
         }, 400);
         el.addEventListener("keydown", searchFn);
         el.addEventListener("paste", searchFn);
         el.addEventListener("delete", searchFn);
       }
-    }
-  }, {
-    key: "search",
-    value: function search() {
-      if (isXHRloading) {
-        return;
+
+      var update_link = document.getElementsByClassName('update_url');
+      var search = getQueryVar('search');
+
+      if (search == 'undefined') {
+        search = '';
       }
 
+      [].forEach.call(update_link, function (elem) {
+        helper.insertParam(elem, 'search', search);
+      });
+    }
+  }, {
+    key: "activeTabInit",
+    value: function activeTabInit() {}
+  }, {
+    key: "checkTrinity",
+    value: function checkTrinity(search_str) {
       isXHRloading = true;
       var dReq = new XMLHttpRequest();
 
@@ -24991,7 +25027,8 @@ function () {
           var resp = JSON.parse(this.responseText);
 
           if (dReq.status === 200) {
-            console.log(123);
+            var badge = '<b class="badge badge-sm badge-pill warn">' + resp.brands.count + '</b>';
+            document.querySelector('#provider-tab .nav-badge').innerHTML = badge;
           } else {//notification.notify('error', resp.message);
           }
         }
@@ -25009,10 +25046,32 @@ function () {
         isXHRloading = false;
       };
 
-      dReq.open("get", '/store/search', true);
+      var badge = '<i class="fa fa-gear fa-spin"></i>';
+      document.querySelector('#provider-tab .nav-badge').innerHTML = badge;
+      dReq.open("get", '/providers/trinity/search_brands?search=' + search_str, true);
       dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
       dReq.send();
-      isXHRloading = false;
+    }
+  }, {
+    key: "search",
+    value: function search(e) {
+      if (isXHRloading) {
+        return;
+      }
+
+      var active_tab = getQueryVar('active_tab');
+
+      if (active_tab == 'undefined') {
+        active_tab = 'store';
+      }
+
+      if (e.target.value.length < 1) {
+        goto('/store?active_tab=' + active_tab + '&target=ajax-tab-content');
+      } else {
+        goto('/store?active_tab=' + active_tab + '&view_as=json&target=ajax-table&search=' + e.target.value);
+      }
+
+      this.checkTrinity(e.target.value);
     }
   }]);
 
@@ -25212,20 +25271,6 @@ var ajaxRequest = new function () {
         vMsg = nStatus + ": " + (oHTTPStatus[nStatus] || "Unknown");
 
         switch (Math.floor(nStatus / 100)) {
-          /*
-          case 1:
-              // Informational 1xx
-              console.log("Information code " + vMsg);
-              break;
-          case 2:
-              // Successful 2xx
-              console.log("Successful code " + vMsg);
-              break;
-          case 3:
-              // Redirection 3xx
-              console.log("Redirection code " + vMsg);
-              break;
-          */
           case 4:
             /* Client Error 4xx */
             alert("Client Error #" + vMsg);
@@ -25251,6 +25296,8 @@ var ajaxRequest = new function () {
   }
 
   function getPage(sPage) {
+    var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
     if (isXHRloading) {
       return;
     }
@@ -25258,6 +25305,7 @@ var ajaxRequest = new function () {
     oReq = new XMLHttpRequest();
     isXHRloading = true;
     oReq.onload = ajaxLoad;
+    oReq.onreadystatechange = callback;
     oReq.onerror = ajaxError;
 
     if (sPage) {
@@ -25419,6 +25467,7 @@ var ajaxRequest = new function () {
   this.stop = abortReq;
   window.rebuildLinks = init;
   window["goto"] = getPage;
+  window.getQueryVar = getQueryVariable;
 }();
 
 /***/ }),
@@ -25524,7 +25573,7 @@ window.openDialog = function (tag) {
   };
 
   if (params != null) {
-    params = '?params=' + params;
+    params = '?params=1' + params;
   } else {
     params = '';
   }

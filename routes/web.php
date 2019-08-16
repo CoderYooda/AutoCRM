@@ -18,9 +18,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Продукты
     Route::get('/store', 'ProductController@index')->name('StoreIndex');
+    Route::get('/store/test', 'ProductController@test')->name('test');
     Route::get('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
+
+    #Пставщики (внешние)
+    Route::get('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
 
     #Касса
     Route::get('/cash', 'CashController@index')->name('CashIndex');

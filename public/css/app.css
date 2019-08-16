@@ -14160,3 +14160,17 @@ nav.nav-border {
   display: none;
 }
 
+.table .compressed {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table .article {
+  max-width: 600px;
+}
+
+.table .brand {
+  max-width: 200px;
+}
+

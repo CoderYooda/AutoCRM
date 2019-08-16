@@ -57,25 +57,35 @@ class Product{
         if(document.getElementById("search")){
             var el = document.getElementById("search");
             var searchFn = helper.debounce(function(e) {
-                self.search();
+                self.search(e);
             }, 400);
             el.addEventListener("keydown", searchFn);
             el.addEventListener("paste", searchFn);
             el.addEventListener("delete", searchFn);
         }
+        var update_link = document.getElementsByClassName('update_url');
+        var search = getQueryVar('search');
+        if(search == 'undefined'){
+            search = '';
+        }
+        [].forEach.call(update_link, function(elem){
+            helper.insertParam(elem, 'search', search);
+        });
     }
 
-    search() {
-        if (isXHRloading) {
-            return;
-        }
+    activeTabInit(){
+
+    }
+
+    checkTrinity(search_str){
         isXHRloading = true;
         var dReq = new XMLHttpRequest();
         dReq.onreadystatechange = function (e) {
             if (dReq.readyState === 4) {
                 var resp = JSON.parse(this.responseText);
                 if (dReq.status === 200) {
-                    console.log(123);
+                    var badge = '<b class="badge badge-sm badge-pill warn">' + resp.brands.count + '</b>';
+                    document.querySelector('#provider-tab .nav-badge').innerHTML = badge;
                 } else {
                     //notification.notify('error', resp.message);
                 }
@@ -93,11 +103,27 @@ class Product{
             //document.getElementById('category_list').innerHTML = resp.html;
             isXHRloading = false;
         };
-
-        dReq.open("get", '/store/search', true);
+        var badge = '<i class="fa fa-gear fa-spin"></i>';
+        document.querySelector('#provider-tab .nav-badge').innerHTML = badge;
+        dReq.open("get", '/providers/trinity/search_brands?search=' + search_str, true);
         dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
         dReq.send();
-        isXHRloading = false;
+    }
+
+    search(e) {
+        if (isXHRloading) {
+            return;
+        }
+        var active_tab = getQueryVar('active_tab');
+        if(active_tab == 'undefined'){
+            active_tab = 'store';
+        }
+        if(e.target.value.length < 1){
+            goto('/store?active_tab=' + active_tab + '&target=ajax-tab-content');
+        } else {
+            goto('/store?active_tab=' + active_tab + '&view_as=json&target=ajax-table&search=' + e.target.value);
+        }
+        this.checkTrinity(e.target.value);
     }
 
 }

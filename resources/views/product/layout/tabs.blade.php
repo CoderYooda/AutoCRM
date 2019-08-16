@@ -11,59 +11,40 @@
                 <div class="sidenav mt-2">
                     <nav class="nav-border b-primary" data-nav>
                         <ul class="nav">
-                            <li data-tab="store">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
-                                    <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
-				                  	</span>
+                            <li id="store-tab" data-tab="store">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Склад</span>
                                 </a>
                             </li>
-                            <li data-tab="provider">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'provider']) }}">
+                            <li id="provider-tab" data-tab="provider">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'provider', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
 				                  	</span>
                                     <span class="nav-text">У поставщиков</span>
                                 </a>
                             </li>
-                            <li>
+                            <li id="income-tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'income']) }}">
-                                    <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
-				                  	</span>
                                     <span class="nav-text">Поступления</span>
                                 </a>
                             </li>
-                            <li>
+                            <li id="sales-tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'sales']) }}">
-                                    <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
-				                  	</span>
                                     <span class="nav-text">Продажи</span>
                                 </a>
                             </li>
-                            <li>
+                            <li id="client_orders-tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'client_orders']) }}">
-                                    <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
-				                  	</span>
                                     <span class="nav-text">Заказы клиентов</span>
                                 </a>
                             </li>
-                            <li>
+                            <li id="provider_orders-tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders']) }}">
-                                    <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
-				                  	</span>
                                     <span class="nav-text">Заказы поставщикам</span>
                                 </a>
                             </li>
-                            <li>
+                            <li id="adjustment-tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}">
-                                    <span class="nav-badge">
-				                    	<b class="badge badge-sm badge-pill warn">12</b>
-				                  	</span>
                                     <span class="nav-text">Корректировка</span>
                                 </a>
                             </li>

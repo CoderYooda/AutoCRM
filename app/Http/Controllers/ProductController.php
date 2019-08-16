@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use App\Http\Controllers\Providers\TrinityController;
 
 class ProductController extends Controller
 {
@@ -20,26 +21,53 @@ class ProductController extends Controller
         $message = 'Внутренняя ошибка сервера';
     }
 
+    public function test()
+    {
+        $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
+
+        //$items = $tp->searchItems('GH038170D', null, $searchType = 'full', $asArray = true);
+
+
+        $brands = $tp->searchBrands('123', $online = true, $asArray = true);
+
+        dd($brands);
+
+        foreach($items['data'] as $item){
+            echo $item['caption'];
+            echo '<br>';
+
+            echo $item['price'];
+            echo '<br>';
+        }
+
+        dd($tp->error);
+    }
+
+
+
     public function index(Request $request)
     { // точка входа в страницу
         $page_title = 'Товары';
+        if($request['search'] == 'undefined'){
+            $request['search'] = null;
+        }
 
         $target = HC::selectTarget(); // цель ajax подгрузки
 
-        if($request['active_tab'] === NULL){ // Определяем табуляцию
+        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'store';
         }
 
         $classname = $request['active_tab'] . 'Tab';
-
         $content = self::$classname($request);
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
-            return response()->json(['target' => $target ,'page' => $page_title, 'content' => $content->render()]);
+            return response()->json(['target' => $target,'page' => $page_title, 'content' => $content->render()]);
         } else {
             return $content;
         }
     }
+
 
     public function delete($id)
     {
@@ -56,13 +84,26 @@ class ProductController extends Controller
     {
         $articles = self::getArticles($request);
         $categories = CategoryController::getCategories($request, 'product');
-        return view('product.store', compact('articles', 'categories', 'request'));
+        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
+            return view('product.elements.table_container', compact('articles','categories', 'request'));
+        }
+        return view('product.store', compact('articles','categories', 'request', 'trinity'));
+    }
+
+    public static function providerTab($request)
+    {
+        $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
+        $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
+        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
+            return view('product.elements.provider.table_container', compact('brands','request'));
+        }
+        return view('product.provider', compact('brands', 'request'));
     }
 
     public static function addProductDialog()
     {
         if(request()->params){
-            $start_category_id = (int)request()->params;
+            $start_category_id = (int)request()->category_select;
         } else {
             $start_category_id = 2;
         }
@@ -145,18 +186,36 @@ class ProductController extends Controller
         return response()->json(['html' => view('product.elements.table_folders')->render()]);
     }
 
+
     public static function getArticles($request)
     {
+
         $category = 0;
-        if($request['category_id'] == null){
+        if($request['category_id'] == null && $request['search'] == null){
             if($request['active_tab'] == "store"){
                 $category = 2;
             }
         } else {
             $category = (int)$request['category_id'];
         }
-        return Article::where('category_id', $category)->orderBy('created_at', 'DESC')->paginate(24);
+
+        return Article::where(function($q) use ($request, $category){
+            if($category != 0) {
+                $q->where('category_id', $category);
+            }
+            if($request['search'] != null) {
+                $q->where('article', 'like', '%' . $request['search'] . '%');
+            }
+        })->orderBy('created_at', 'DESC')->paginate(24);
     }
+
+    public static function searchArticles($request)
+    {
+        $articles = Article::where('article', 'like', '%' . $request['search'] . '%')->orderBy('created_at', 'DESC')->paginate(24);
+        dd($articles);
+        return $articles;
+    }
+
 
     private static function validateRules($request)
     {

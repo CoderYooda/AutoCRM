@@ -1,15 +1,22 @@
 <div class="list-group list-modify mb-0 box">
+    @if(isset($categories['parent']))
     <div class="modal-header">
         <h5 class="modal-title">
-            @if(!$categories['parent']->locked)
-                <a href="{{ route('StoreIndex', ['category_id' => $categories['parent']->category_id]) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
-            @endif
-            {{ $categories['parent']->name }}
+                @if(!$categories['parent']->locked)
+                    <a href="{{ route('StoreIndex', ['category_id' => $categories['parent']->category_id]) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
+                @endif
+                {{ $categories['parent']->name }}
         </h5>
-        <a style="font-size: 18px;" onclick="openDialog('createCategory', {{ $categories['parent']->id }})" class="">
+        <a style="font-size: 18px;" onclick="openDialog('createCategory', '&category_select={{ $categories['parent']->id }}')" class="">
             <i class="fa fa-plus"></i>
         </a>
     </div>
+    @endif
+    @if($request['search'] != null)
+            <div class="modal-header">
+                <h5 class="modal-title">Поиск по складу по "{{ $request['search'] }}"</h5>
+            </div>
+        @endif
 
     @foreach($categories['stack'] as $category)
         @include('product.elements.table_folder')
@@ -24,7 +31,11 @@
         <th>Наличие</th>
         <th>Заявки</th>
         <th>Цена</th>
-        <th class="w-62"><a onclick="openDialog('createProduct', {{ $categories['parent']->id }} )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a></th>
+        <th class="w-62">
+            @if(isset($categories['parent']))
+            <a onclick="openDialog('createProduct', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>
+            @endif
+        </th>
     </tr>
     </thead>
     <tbody>

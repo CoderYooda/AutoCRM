@@ -52,7 +52,7 @@ window.openDialog = function(tag, params = null, reload = false) {
 	};
 
 	if(params != null){
-		params = '?params=' + params;
+		params = '?params=1' + params;
 	} else {
 		params = '';
 	}
