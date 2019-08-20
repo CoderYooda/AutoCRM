@@ -39,16 +39,24 @@ window.openDialog = function(tag, params = null, reload = false) {
 	if (isXHRloading) { return; }
 	dReq = new XMLHttpRequest();
 	isXHRloading = true;
+    dReq.onreadystatechange = function (e) {
+        if (dReq.readyState === 4) {
+            var resp = JSON.parse(this.responseText);
+            if(dReq.status === 200){
+                var resp = JSON.parse(this.responseText);
+                if(!alreadyOpened(resp.tag) || reload){
+                    closeDialog(null, resp.tag);
+                    appendDialog(resp, resp.tag);
+                }
+                isXHRloading = false;
+            }else{
+                notification.notify( 'error', resp.message);
+                isXHRloading = false;
+            }
+        }
+    };
 	dReq.onload = function () {
-		var resp = JSON.parse(this.responseText);
-		if(!alreadyOpened(tag) || reload){
-            closeDialog(null, tag);
-			appendDialog(resp, tag);
-		}
-		isXHRloading = false;
-	};
-	dReq.onerror = function () {
-		isXHRloading = false;
+
 	};
 
 	if(params != null){

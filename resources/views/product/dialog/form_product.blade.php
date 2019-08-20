@@ -1,6 +1,6 @@
 <div
     @if(isset($product) && $product->id != NULL)
-        id="editProduct={{ $product->id }}"
+        id="editProduct{{$product->id}}"
     @else
         id="createProduct"
     @endif
@@ -11,7 +11,7 @@
         <div class="titlebar">Добавление продукта</div>
     @endif
 
-    <button class="btn_close" onclick="closeDialog(event)">x</button>
+    <button class="btn_close" onclick="closeDialog(event)">×</button>
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="@if(isset($category)){{ $category->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@else 2 @endif">
@@ -67,6 +67,9 @@
             <div class="col-md-12 p-3">
                 <button type="submit" onclick="axform.send(this)" class="btn success pull-right">Сохранить</button>
             </div>
+        </div>
+        <div class="system_message">
+
         </div>
     </form>
 </div>

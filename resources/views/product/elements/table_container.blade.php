@@ -1,26 +1,12 @@
 <div class="list-group list-modify mb-0 box">
-    @if(isset($categories['parent']))
-    <div class="modal-header">
-        <h5 class="modal-title">
-                @if(!$categories['parent']->locked)
-                    <a href="{{ route('StoreIndex', ['category_id' => $categories['parent']->category_id]) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
-                @endif
-                {{ $categories['parent']->name }}
-        </h5>
-        <a style="font-size: 18px;" onclick="openDialog('createCategory', '&category_select={{ $categories['parent']->id }}')" class="">
-            <i class="fa fa-plus"></i>
-        </a>
-    </div>
+    @if(isset($request) && $request['search'] != null)
+        <div class="modal-header">
+            <h5 class="modal-title">Поиск по складу по "{{ $request['search'] }}"</h5>
+        </div>
     @endif
-    @if($request['search'] != null)
-            <div class="modal-header">
-                <h5 class="modal-title">Поиск по складу по "{{ $request['search'] }}"</h5>
-            </div>
-        @endif
-
-    @foreach($categories['stack'] as $category)
-        @include('product.elements.table_folder')
-    @endforeach
+    <div id="store_categories">
+        @include('category.list')
+    </div>
 </div>
 <table class="table table-bordered table-hover table-sm mb-3" style="white-space: nowrap;">
     <thead>

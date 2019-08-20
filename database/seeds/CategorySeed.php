@@ -27,7 +27,16 @@ class CategorySeed extends Seeder
             'company_id' => null,
             'creator_id' => 1,
             'locked' => true,
-            'type' => 'product',
+            'type' => 'store',
+        ]);
+
+        Category::create([
+            'name' => 'Контрагенты',
+            'category_id' => 1,
+            'company_id' => null,
+            'creator_id' => 1,
+            'locked' => true,
+            'type' => 'partner',
         ]);
     }
 }

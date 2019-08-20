@@ -66,8 +66,6 @@ class Helper{
             }
         }
         if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-        console.log(kvp.join('&'));
-
         elem.setAttribute("href", kvp.join('&'));
     }
 }

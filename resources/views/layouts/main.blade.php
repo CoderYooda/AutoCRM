@@ -33,7 +33,7 @@
                 <li class="dropdown d-flex align-items-center">
                     <a href="#" data-toggle="dropdown" class="d-flex align-items-center" data-pjax-state="">
                             <span class="avatar w-32">
-                              <img src="../assets/images/a4.jpg" alt="...">
+                              <img src="#" alt="...">
                             </span>
                     </a>
                 </li>

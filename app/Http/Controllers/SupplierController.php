@@ -13,9 +13,18 @@ class SupplierController extends Controller
         $message = 'Внутренняя ощибка сервера';
     }
 
-    public static function addSupplierDialog()
+    public static function addSupplierDialog($request)
     {
         $suppliers = Supplier::where('company_id', Auth::user()->company()->first()->id)->get();
-        return response()->json(['html' => view('supplier.dialog.list_suppliers', compact('suppliers'))->render()]);
+        return response()->json(['tag' => 'selectSupplier', 'html' => view('supplier.dialog.list_suppliers', compact('suppliers'))->render()]);
+    }
+
+    public static function silent_store($request)// Сохранение в автоматическом режиме, входные данные должны быть 100% достоверными
+    {
+        $supplier = Supplier::firstOrNew(['name' => $request['new_supplier_name'], 'company_id' => Auth::user()->company()->first()->id]);
+        $supplier->name = $request['new_supplier_name'];
+        $supplier->company_id = Auth::user()->company()->first()->id;
+        $supplier->save();
+        return $supplier;
     }
 }

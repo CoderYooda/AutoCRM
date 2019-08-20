@@ -3,31 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Supplier;
+use Illuminate\Http\Request;
 
 class DialogController extends Controller
 {
-    public function openDialogByTag($tag)
+    public function openDialogByTag($tag, Request $request)
     {
         switch ($tag) {
             case 'selectSupplier':
-                $dialog = SupplierController::addSupplierDialog();
+                $dialog = SupplierController::addSupplierDialog($request);
                 break;
             case 'createCategory':
-                $dialog = CategoryController::addCategoryDialog();
+                $dialog = CategoryController::addCategoryDialog($request);
                 break;
             case 'editCategory':
-                $dialog = CategoryController::editCategoryDialog();
+                $dialog = CategoryController::editCategoryDialog($request);
                 break;
             case (preg_match('/createProduct/', $tag) ? true : false):
-                $dialog = ProductController::addProductDialog();
+                $dialog = ProductController::addProductDialog($request);
                 break;
-            case (preg_match('/editProduct/', $tag) ? true : false):
-                $id = explode('=', $tag)[1];
-                $dialog = ProductController::editProductDialog($id);
+            case 'editProduct':
+                $dialog = ProductController::editProductDialog($request);
                 break;
             case 'selectCategory':
-                $dialog = CategoryController::selectCategoryDialog();
+                $dialog = CategoryController::selectCategoryDialog($request);
                 break;
+        }
+
+        if(!isset($dialog)){
+            return response()->json(['message' => 'Диалоговое окно не может быть вызвано'], 500);
         }
 
         return $dialog;

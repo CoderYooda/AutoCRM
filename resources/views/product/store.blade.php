@@ -3,7 +3,7 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'layouts.TabXHR' : 'product.layout.tabs')
 
 @section('tab')
-<div class="d-flex flex-column flex" id="user-list">
+<div class="d-flex flex-column flex">
     <div class="navbar white no-radius box-shadow pos-rlt">
         <div class="flex">
             <div class="input-group">

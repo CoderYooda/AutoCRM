@@ -1,11 +1,10 @@
 
 <tr>
-    <td title="{{ $brand->ident }}">
-        <div class="compressed article">{{ $brand->ident }}</div></td>
+    <td title="{{ str_replace("'",'"', htmlspecialchars_decode($brand->ident, ENT_QUOTES)) }}">
+        <div class="compressed article">{{ str_replace("'",'"', htmlspecialchars_decode($brand->ident, ENT_QUOTES)) }}</div></td>
     <td>{{ $brand->article }}</td>
     <td class="compressed brand">{{ $brand->producer }}</td>
     <td>
-{{--        <a onclick="openDialog('editProduct={{ $article->id }}')" class="btn btn-sm badge success text-white"><i class="fa fa-eye"></i></a>--}}
-{{--        <a onclick="product.remove({{ $article->id }})" class="btn btn-sm badge danger text-white"><i class="fa fa-remove"></i></a>--}}
+        <a onclick="openDialog('createProduct', '&brand={{ $brand->producer }}&article={{ $brand->article }}&provided_name={{ str_replace("'",'"', htmlspecialchars_decode($brand->ident, ENT_QUOTES)) }}' )" class="btn btn-sm badge danger text-white">Добавить</a>
     </td>
 </tr>

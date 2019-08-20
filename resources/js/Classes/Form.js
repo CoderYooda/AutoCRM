@@ -34,13 +34,16 @@ class AxForm{
         }).catch(function (error) {
             helper.removeElementsByClass('nv-helper');
             helper.removeClassesByClass('is-invalid');
-            if(error.response.data.messages){
 
+            if(error.response.data.system_message){
+                dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
+            }
+
+            if(error.response.data.messages){
                 var all_butt_butts = document.querySelectorAll(".helper_danger");
                 Array.prototype.forEach.call(all_butt_butts, function(el) {
                     el.setAttribute("style", "");
                 });
-
                 for(var error_stack in error.response.data.messages){
                     var error_stack_arr = error_stack.split('.');
 
@@ -55,26 +58,22 @@ class AxForm{
                         }
                         iteration++;
                     });
+
                     var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+
                     if(el.closest(".tab-pane")){
                         var tab_container_id = el.closest(".tab-pane").getAttribute('id');
                         var tab_butt = document.querySelector("a[href='#" + tab_container_id + "']");
                         tab_butt.querySelector(".helper_danger").setAttribute("style", "display:block!important;");
                     }
 
-                    //var tab = dialog.querySelector('[href='+error_stack+']:not([type="hidden"])');
-                    var iteration = 0;
-                    //Array.prototype.forEach.call(input, function(el) {
                     if(el.getAttribute('type') != 'hidden'){
                         el.classList.add('is-invalid');
                         var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
-                        iteration++;
                         el.parentNode.appendChild(node);
                     }
-                    //});
 
                 }
-
             }
             if(error.response.data.message){
                 notification.notify( 'error', error.response.data.message);

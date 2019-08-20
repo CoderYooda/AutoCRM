@@ -24560,7 +24560,6 @@ function () {
           var resp = JSON.parse(this.responseText);
 
           if (dReq.status === 200) {
-            console.log('category_id=' + resp.category_id);
             var element = document.getElementById('category_' + resp.category_id);
             notification.notify('success', resp.message);
             element.remove();
@@ -24572,7 +24571,6 @@ function () {
 
       dReq.onerror = function () {
         var resp = JSON.parse(this.responseText);
-        console.log(resp.message);
         isXHRloading = false;
       };
 
@@ -24671,6 +24669,10 @@ function () {
         helper.removeElementsByClass('nv-helper');
         helper.removeClassesByClass('is-invalid');
 
+        if (error.response.data.system_message) {
+          dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
+        }
+
         if (error.response.data.messages) {
           var all_butt_butts = document.querySelectorAll(".helper_danger");
           Array.prototype.forEach.call(all_butt_butts, function (el) {
@@ -24697,18 +24699,13 @@ function () {
               var tab_container_id = el.closest(".tab-pane").getAttribute('id');
               var tab_butt = document.querySelector("a[href='#" + tab_container_id + "']");
               tab_butt.querySelector(".helper_danger").setAttribute("style", "display:block!important;");
-            } //var tab = dialog.querySelector('[href='+error_stack+']:not([type="hidden"])');
-
-
-            var iteration = 0; //Array.prototype.forEach.call(input, function(el) {
+            }
 
             if (el.getAttribute('type') != 'hidden') {
               el.classList.add('is-invalid');
               var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
-              iteration++;
               el.parentNode.appendChild(node);
-            } //});
-
+            }
           }
         }
 
@@ -24832,7 +24829,6 @@ function () {
         kvp[kvp.length] = [key, value].join('=');
       }
 
-      console.log(kvp.join('&'));
       elem.setAttribute("href", kvp.join('&'));
     }
   }]);
@@ -24956,7 +24952,6 @@ function () {
 
       dReq.onerror = function () {
         var resp = JSON.parse(this.responseText);
-        console.log(resp.message);
         isXHRloading = false;
       };
 
@@ -25036,7 +25031,6 @@ function () {
 
       dReq.onerror = function () {
         var resp = JSON.parse(this.responseText);
-        console.log(resp.message);
         isXHRloading = false;
       };
 
@@ -25557,20 +25551,27 @@ window.openDialog = function (tag) {
   dReq = new XMLHttpRequest();
   isXHRloading = true;
 
-  dReq.onload = function () {
-    var resp = JSON.parse(this.responseText);
+  dReq.onreadystatechange = function (e) {
+    if (dReq.readyState === 4) {
+      var resp = JSON.parse(this.responseText);
 
-    if (!alreadyOpened(tag) || reload) {
-      closeDialog(null, tag);
-      appendDialog(resp, tag);
+      if (dReq.status === 200) {
+        var resp = JSON.parse(this.responseText);
+
+        if (!alreadyOpened(resp.tag) || reload) {
+          closeDialog(null, resp.tag);
+          appendDialog(resp, resp.tag);
+        }
+
+        isXHRloading = false;
+      } else {
+        notification.notify('error', resp.message);
+        isXHRloading = false;
+      }
     }
-
-    isXHRloading = false;
   };
 
-  dReq.onerror = function () {
-    isXHRloading = false;
-  };
+  dReq.onload = function () {};
 
   if (params != null) {
     params = '?params=1' + params;

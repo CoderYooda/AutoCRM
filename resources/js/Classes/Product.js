@@ -19,7 +19,6 @@ class Product{
         };
         dReq.onerror = function () {
             var resp = JSON.parse(this.responseText);
-            console.log(resp.message);
             isXHRloading = false;
         };
         dReq.onload = function () {
@@ -94,7 +93,6 @@ class Product{
 
         dReq.onerror = function () {
             var resp = JSON.parse(this.responseText);
-            console.log(resp.message);
             isXHRloading = false;
         };
 

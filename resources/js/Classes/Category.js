@@ -43,7 +43,6 @@ class Category{
             if (dReq.readyState === 4) {
                 var resp = JSON.parse(this.responseText);
                 if(dReq.status === 200){
-                    console.log('category_id='+resp.category_id);
                     var element = document.getElementById('category_'+resp.category_id);
                     notification.notify( 'success', resp.message);
                     element.remove();
@@ -54,7 +53,6 @@ class Category{
         };
         dReq.onerror = function () {
             var resp = JSON.parse(this.responseText);
-            console.log(resp.message);
             isXHRloading = false;
         };
         dReq.onload = function () {

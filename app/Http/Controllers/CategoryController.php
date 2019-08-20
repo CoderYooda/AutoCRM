@@ -46,10 +46,13 @@ class CategoryController extends Controller
 
         $categories = self::getCategories($request);
         $articles = ProductController::getArticles($request);
-        $content = view('product.elements.table_container', compact('articles', 'categories'))->render();
+
+        //$content = view('product.elements.table_container', compact('articles', 'categories'))->render();
+
+        $content = view('category.list', compact('articles', 'categories'))->render();
 
         if($request->ajax()){
-            return response()->json(['message' => 'Категория сохранена','container' => 'ajax-table', 'html' => $content]);
+            return response()->json(['message' => 'Категория сохранена','container' => $category->getRootType() . '_categories', 'html' => $content]);
         } else {
             return redirect()->back();
         }
@@ -61,7 +64,7 @@ class CategoryController extends Controller
 
         if($category->childs()->count() > 0 || $category->articles()->count() > 0){
             $this->status = 403;
-            $this->message = 'В категории присутствуют товары или категории, удаление невозможно.';
+            $this->message = 'Удаляемая категория не пуста, удаление невозможно.';
         } else {
             $category->delete();
             $this->status = 200;
@@ -72,28 +75,28 @@ class CategoryController extends Controller
 
     }
 
-    public static function addCategoryDialog()
+    public static function addCategoryDialog($request)
     {
-        if(request()->params){
-            $start_category_id = (int)request()->category_select;
+        if($request['category_select']){
+            $start_category_id = $request['category_select'];
         } else {
             $start_category_id = 2;
         }
-
         $parent = Category::where('id', $start_category_id)->first();
-        return response()->json(['html' => view('product.dialog.form_category', compact('parent'))->render()]);
+        return response()->json(['tag' => 'createCategory', 'html' => view('category.dialog.form_category', compact('parent'))->render()]);
     }
 
-    public static function editCategoryDialog()
+    public static function editCategoryDialog($request)
     {
-        if(request()->params){
-            $category_id = (int)request()->params;
+        if($request['params']){
+            $category_id = (int)$request['category_id'];
         } else {
             abort(404);
         }
 
         $category = Category::where('id', $category_id)->first();
-        return response()->json(['html' => view('product.dialog.form_category', compact('category'))->render()]);
+
+        return response()->json(['tag' => 'editCategory', 'html' => view('category.dialog.form_category', compact('category'))->render()]);
     }
 
     public function enterDialog(Request $request)
@@ -102,10 +105,15 @@ class CategoryController extends Controller
         return response()->json(['html' => view('category.dialog.select_category_inner', compact('category'))->render()]);
     }
 
-    public static function selectCategoryDialog()
+    public static function selectCategoryDialog($request)
     {
-        $category = Category::where('id', request()->params)->with('childs')->first();
-        return response()->json(['html' => view('category.dialog.select_category', compact('category'))->render()]);
+        $selected_id = 1;
+        if($request['selected_category_id'] != null){
+            $selected_id = $request['selected_category_id'];
+        }
+
+        $category = Category::where('id', (int)$selected_id)->with('childs')->first();
+        return response()->json(['tag' => 'selectCategory', 'html' => view('category.dialog.select_category', compact('category'))->render()]);
     }
 
     public static function getCategories($request, $type = null)
@@ -117,14 +125,13 @@ class CategoryController extends Controller
         }else if($type != null) {
             $category_id = Category::where('type', $type)->first()->id;
         }
-
         $parent = Category::where('id',$category_id)->first();
 
         if($parent == null){
             abort(404);
         }
 
-        $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
+        $categories['stack'] = $parent->childs()->where('company_id', Auth::user()->company()->first()->id)->orderBy('created_at', 'DESC')->get();
         $categories['parent'] =  $parent;
         } else {
             $categories['stack'] = Category::where(function($q) use ($request){

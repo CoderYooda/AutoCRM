@@ -12,7 +12,7 @@
         <div class="titlebar">Новая категория</div>
     @endif
 
-    <button class="btn_close" onclick="closeDialog(event)">x</button>
+    <button class="btn_close" onclick="closeDialog(event)">×</button>
     <form action="{{ route('StoreCategory') }}" method="POST">
     <div class="box mb-0">
         <div class="box-body">
@@ -32,10 +32,19 @@
                         @endif
                     </select>
                     <div class="input-group-append">
-                        <button onclick="openDialog('selectCategory', 2)" class="btn white" type="button"><i class="fa fa-bars"></i></button>
+
+                        <button onclick="openDialog('selectCategory', '&selected_category_id=
+
+                        @if(isset($parent))
+                        {{ $parent->id }}
+                        @elseif(isset($category))
+                        {{ $category->parent()->first()->id }}
+                        @endif
+                            ')" class="btn white" type="button"><i class="fa fa-bars"></i></button>
                     </div>
                 </div>
             </div>
+
             <div class="form-group mb-0">
                 <label for="category_id">Наименование</label>
                 <input type="text"

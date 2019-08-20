@@ -5,7 +5,7 @@ Auth::routes();
 
 Route::group(['middleware' => ['web', 'auth']], function () {
     #Статистика и панель управления
-    Route::get('/', 'DashboardController@index')->name('DashboardIndex');
+    Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
 
 //    #Производители
 //    Route::get('/suppliers', 'SupplierController@index')->name('Categories');
@@ -17,7 +17,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/categories/{id}/delete', 'CategoryController@remove')->name('DeleteCategory');
 
     #Продукты
-    Route::get('/store', 'ProductController@index')->name('StoreIndex');
+    Route::get('/store', 'ProductController@index')->name('StoreIndex'); // Строгое название
     Route::get('/store/test', 'ProductController@test')->name('test');
     Route::get('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
@@ -27,13 +27,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
 
     #Касса
-    Route::get('/cash', 'CashController@index')->name('CashIndex');
+    Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 
     #Контрагенты
-    Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');
+    Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
 
     #Отчеты
-    Route::get('/report', 'ReportController@index')->name('ReportIndex');
+    Route::get('/report', 'ReportController@index')->name('ReportIndex');// Строгое название
 
     #Диалоги
     Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');
