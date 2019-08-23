@@ -15,18 +15,19 @@ class CreateCarsTable extends Migration
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('mark_id')->unsigned()->comment('Привязка к марке');
-            $table->bigInteger('model_id')->unsigned()->comment('Привязка к модели');
-            $table->char('comment')->comment('Комментарий');
-            $table->integer('year')->comment('Год');
-            $table->char('vin', 17)->comment('Вин номер');
-            $table->char('gosNumber', 6)->comment('Гос номер');
-            $table->char('region', 3)->comment('Регион');
-            $table->char('bodyNumber')->comment('Номер кузова');
-            $table->char('engineNumber')->comment('Номер двигателя');
-            $table->char('engineSize')->comment('Объёем двигателя');
-            $table->char('axleNumber')->comment('Номер оси');
-            $table->char('pts')->comment('Номер ПТС');
+            $table->bigInteger('mark_id')->nullable()->unsigned()->comment('Привязка к марке');
+            $table->bigInteger('model_id')->nullable()->unsigned()->comment('Привязка к модели');
+            $table->bigInteger('partner_id')->nullable()->unsigned()->comment('Привязка к партнеру');
+            $table->char('comment')->nullable()->comment('Комментарий');
+            $table->integer('year')->nullable()->comment('Год');
+            $table->char('vin', 17)->nullable()->comment('Вин номер');
+            $table->char('gosNumber', 6)->nullable()->comment('Гос номер');
+            $table->char('region', 3)->nullable()->comment('Регион');
+            $table->char('bodyNumber')->nullable()->comment('Номер кузова');
+            $table->char('engineNumber')->nullable()->comment('Номер двигателя');
+            $table->char('engineSize')->nullable()->comment('Объёем двигателя');
+            $table->char('axleNumber')->nullable()->comment('Номер оси');
+            $table->char('pts')->nullable()->comment('Номер ПТС');
             $table->timestamps();
         });
     }

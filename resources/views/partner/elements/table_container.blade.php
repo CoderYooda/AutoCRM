@@ -8,23 +8,25 @@
         @include('category.list')
     </div>
 </div>
-{{--<table class="table table-bordered table-hover table-sm mb-3" style="white-space: nowrap;">--}}
-{{--    <thead>--}}
-{{--    <tr>--}}
-{{--        <th class="w-xxl">Модель</th>--}}
-{{--        <th class="w-sm">Артикул</th>--}}
-{{--        <th>Бренд</th>--}}
-{{--        <th>Наличие</th>--}}
-{{--        <th>Заявки</th>--}}
-{{--        <th>Цена</th>--}}
-{{--        <th class="w-62">--}}
-{{--        </th>--}}
-{{--    </tr>--}}
-{{--    </thead>--}}
-{{--    <tbody>--}}
-{{--    @foreach($articles as $article)--}}
-{{--        @include('product.elements.table_element')--}}
-{{--    @endforeach--}}
-{{--    </tbody>--}}
-{{--</table>--}}
-{{--{{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}--}}
+<table class="table table-bordered table-hover table-sm mb-3" style="white-space: nowrap;">
+    <thead>
+    <tr>
+        <th class="w-xxl">Модель</th>
+        <th class="w-sm">Артикул</th>
+        <th>Бренд</th>
+        <th>Наличие</th>
+        <th>Заявки</th>
+        <th>Цена</th>
+        <th class="w-62">
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($partners as $partner)
+        @include('partner.elements.table_element')
+    @endforeach
+    </tbody>
+</table>
+{{--@if($partners)--}}
+{{--    {{ $partner->setPath(route('PartnerIndex'))->appends(request()->only(['page', 'search', 'category_id']))->links() }}--}}
+{{--@endif--}}

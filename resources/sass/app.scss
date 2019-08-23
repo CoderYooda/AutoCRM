@@ -10,10 +10,13 @@
 // Draggable Dialog
 @import '../modules/draggable-dialog/dialog.css';
 
-// Draggable Dialog
+// Ntifications
 @import '~notification-js/src/notification.css';
 
+// Draggable Dialog
+@import '~flatpickr/dist/flatpickr.min.css';
 
+@import '~flatpickr/dist/themes/material_blue.css';
 
 
 .text-theme,
@@ -162,4 +165,8 @@ nav.nav-border {
 }
 .table .brand{
     max-width: 200px;
+}
+.flexed-navs > li{
+    flex: 1;
+    text-align: center;
 }

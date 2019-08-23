@@ -17,34 +17,11 @@ use stdClass;
 
 class ProductController extends Controller
 {
-    public function _construct(){
+    public function _construct()
+    {
         $status = 500;
         $message = 'Внутренняя ошибка сервера';
     }
-
-    public function test()
-    {
-        $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
-
-        //$items = $tp->searchItems('GH038170D', null, $searchType = 'full', $asArray = true);
-
-
-        $brands = $tp->searchBrands('123', $online = true, $asArray = true);
-
-        dd($brands);
-
-        foreach($items['data'] as $item){
-            echo $item['caption'];
-            echo '<br>';
-
-            echo $item['price'];
-            echo '<br>';
-        }
-
-        dd($tp->error);
-    }
-
-
 
     public function index(Request $request)
     { // точка входа в страницу

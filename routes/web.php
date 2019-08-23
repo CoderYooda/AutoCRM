@@ -31,6 +31,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
+    Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');
+
+    #Телефоны
+    Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
+
 
     #Отчеты
     Route::get('/report', 'ReportController@index')->name('ReportIndex');// Строгое название

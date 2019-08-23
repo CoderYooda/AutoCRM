@@ -37,6 +37,12 @@ class CategoryController extends Controller
             }
         }
 
+        if($request['id'] == $request['category_id']){
+            return response()->json([
+                'system_message' => view('messages.category_loop')->render(),
+            ], 422);
+        }
+
         $category = Category::firstOrNew(['id' => (int)$request['id']]);
         $category->fill($request->all());
         $category->creator_id = Auth::user()->id;
@@ -72,7 +78,6 @@ class CategoryController extends Controller
         }
 
         return response()->json(['category_id' => $category->id, 'message' => $this->message], $this->status);
-
     }
 
     public static function addCategoryDialog($request)

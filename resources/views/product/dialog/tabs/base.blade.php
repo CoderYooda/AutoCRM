@@ -9,7 +9,7 @@
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
-            <select name="category_id" disabled name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
+            <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
                 @if(isset($category))
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @elseif(isset($product))

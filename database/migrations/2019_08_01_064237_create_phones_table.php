@@ -17,7 +17,7 @@ class CreatePhonesTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->char('number')->comment('Номер телефона');
-            $table->char('type')->comment('тип телефона (Основной, домашний, рабочий)');
+            $table->boolean('main')->comment('тип телефона');
             $table->timestamps();
         });
     }

@@ -15,6 +15,8 @@ class CreatePartnerPhoneTable extends Migration
     {
         Schema::create('partner_phone', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('partner_id')->unsigned()->nullable()->comment('Привязка к партнеру');
+            $table->bigInteger('phone_id')->unsigned()->nullable()->comment('Привязка к телефону');
             $table->timestamps();
         });
     }

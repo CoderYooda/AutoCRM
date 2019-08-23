@@ -28,6 +28,12 @@ class DialogController extends Controller
             case 'selectCategory':
                 $dialog = CategoryController::selectCategoryDialog($request);
                 break;
+            case (preg_match('/addPartner/', $tag) ? true : false):
+                $dialog = PartnerController::addPartnerDialog($request);
+                break;
+            case 'editPartner':
+                $dialog = PartnerController::editPartnerDialog($request);
+                break;
         }
 
         if(!isset($dialog)){

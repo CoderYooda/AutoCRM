@@ -103,6 +103,10 @@ const ajaxRequest = new (function () {
 
         product.searchInit();
 
+        if(document.querySelector("#partner_index_page") !== null){
+            partner.init();
+        }
+
         console.warn('Ссылки переработаны');
     }
 

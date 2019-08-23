@@ -47,6 +47,7 @@ window.openDialog = function(tag, params = null, reload = false) {
                 if(!alreadyOpened(resp.tag) || reload){
                     closeDialog(null, resp.tag);
                     appendDialog(resp, resp.tag);
+                    helper.initDialogMethods();
                 }
                 isXHRloading = false;
             }else{

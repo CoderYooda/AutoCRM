@@ -33,18 +33,10 @@
                     </select>
                     <div class="input-group-append">
 
-                        <button onclick="openDialog('selectCategory', '&selected_category_id=
-
-                        @if(isset($parent))
-                        {{ $parent->id }}
-                        @elseif(isset($category))
-                        {{ $category->parent()->first()->id }}
-                        @endif
-                            ')" class="btn white" type="button"><i class="fa fa-bars"></i></button>
+                        <button onclick="openDialog('selectCategory', '&selected_category_id=@if(isset($parent)){{ $parent->id }}@elseif(isset($category)){{ $category->parent()->first()->id }}@endif')" class="btn white" type="button"><i class="fa fa-bars"></i></button>
                     </div>
                 </div>
             </div>
-
             <div class="form-group mb-0">
                 <label for="category_id">Наименование</label>
                 <input type="text"
@@ -57,6 +49,9 @@
     </div>
     <div class="modal-footer">
         <button class="btn success" onclick="axform.send(this)">Создать</button>
+    </div>
+    <div class="system_message">
+
     </div>
     </form>
 </div>

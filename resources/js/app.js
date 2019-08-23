@@ -4,6 +4,9 @@ require('../modules/draggable-dialog/dialog');                      // Диал�
 require('./navigation');                                            // Навигация XHR
 
 window.Swal = require('sweetalert2');
+window.flatpickr = require('flatpickr');
+import { Russian } from "flatpickr/dist/l10n/ru";
+window.flatpickr.localize(Russian);
 
 import Pagination from './Classes/Pagination.js';
 import AxForm from './Classes/Form.js';
@@ -11,7 +14,8 @@ import Helper from './Classes/Helper.js';
 import Category from './Classes/Category.js';
 import Product from './Classes/Product.js';
 import Supplier from './Classes/Supplier.js';
-
+import Partner from './Classes/Partner.js';
+import IMask from 'imask';
 
 window.helper = new Helper();
 window.pagination = new Pagination();
@@ -19,8 +23,9 @@ window.axform = new AxForm();
 window.category = new Category();
 window.product = new Product();
 window.supplier = new Supplier();
+window.partner = new Partner();
 
-var myEfficientFn = helper.debounce(function() {
-    console.log(1);
-}, 250);
-window.addEventListener('resize', myEfficientFn);
+// document.addEventListener('DOMContentLoaded', function()
+// {
+//
+// });
