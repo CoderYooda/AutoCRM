@@ -1,5 +1,10 @@
 <span id="category_{{ $category->id }}" class="d-flex lgi">
-    <a href="{{ route(ucfirst($category->getRootType()).'Index', ['category_id' => $category->id]) }}" class="flex-grow-1 folder-link ajax-nav" style="line-height: 42px">
+
+    @if(isset($cat_info) && $cat_info != NULL)
+        <a href="{{ route($cat_info['route'], array_merge($cat_info['params'], ['category_id' => $category->id])) }}" class="flex-grow-1 folder-link ajax-nav" style="line-height: 42px">
+    @else
+        <a href="{{ request()->headers->get('referer') }}" class="flex-grow-1 folder-link ajax-nav" style="line-height: 42px">
+    @endif
         <i class="fa fa-folder"></i>
 {{--        <span class="float-right badge warning">{{ $category->childs()->count() }}</span> --}}
         {{ $category->name }}

@@ -71,6 +71,11 @@
                             Отчеты
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('SettingsIndex') }}" class="nav-link ajax-nav">
+                            Настройки
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

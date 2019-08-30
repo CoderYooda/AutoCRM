@@ -50,15 +50,20 @@ class CategoryController extends Controller
         $category->locked = false;
         $category->save();
 
-        $categories = self::getCategories($request);
-        $articles = ProductController::getArticles($request);
+        //$categories = self::getCategories($request);
+        //$articles = ProductController::getArticles($request);
 
         //$content = view('product.elements.table_container', compact('articles', 'categories'))->render();
 
-        $content = view('category.list', compact('articles', 'categories'))->render();
+        //$content = view('category.list', compact('articles', 'categories'))->render();
 
         if($request->ajax()){
-            return response()->json(['message' => 'Категория сохранена','container' => $category->getRootType() . '_categories', 'html' => $content]);
+            return response()->json([
+                'message' => 'Категория сохранена',
+//                'container' => $category->getRootType() . '_categories',
+//                'html' => $content,
+                'redirect' => $request->headers->get('referer')
+            ]);
         } else {
             return redirect()->back();
         }
@@ -68,7 +73,11 @@ class CategoryController extends Controller
     {
         $category = Category::where('id', $id)->first();
 
-        if($category->childs()->count() > 0 || $category->articles()->count() > 0){
+        if($category->childs()->count() > 0 ||
+            $category->articles()->count() > 0 ||
+            $category->ddsarticles()->count() > 0 ||
+            $category->partners()->count() > 0
+        ){
             $this->status = 403;
             $this->message = 'Удаляемая категория не пуста, удаление невозможно.';
         } else {

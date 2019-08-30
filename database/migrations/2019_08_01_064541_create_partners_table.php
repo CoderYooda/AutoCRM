@@ -34,6 +34,7 @@ class CreatePartnersTable extends Migration
             $table->char('bik')->nullable()->comment('БИК');
             $table->char('kpp')->nullable()->comment('КПП');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

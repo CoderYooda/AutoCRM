@@ -34,6 +34,32 @@ class DialogController extends Controller
             case 'editPartner':
                 $dialog = PartnerController::editPartnerDialog($request);
                 break;
+            case 'selectPartner':
+                $dialog = PartnerController::selectPartnerDialog($request);
+                break;
+            case 'createCashbox':
+                $dialog = CashboxController::addCashboxDialog($request);
+                break;
+            case 'editCashbox':
+                $dialog = CashboxController::editCashboxDialog($request);
+                break;
+            case 'createStore':
+                $dialog = StoreController::addStoreDialog($request);
+                break;
+            case 'editStore':
+                $dialog = StoreController::editStoreDialog($request);
+                break;
+            case 'createDdsarticle':
+                $dialog = DdsarticleController::addDdsarticleDialog($request);
+                break;
+            case 'editDdsarticle':
+                $dialog = DdsarticleController::editDdsarticleDialog($request);
+                break;
+            case 'createEntrance':
+                $dialog = EntranceController::addEntranceDialog($request);
+                break;
+
+
         }
 
         if(!isset($dialog)){

@@ -2,8 +2,8 @@ class Helper{
 
     initDialogMethods(){
         console.info('Диалоговые методы вызваны');
-
         partner.initDialog();
+
     }
 
     debounce(func, wait, immediate) {

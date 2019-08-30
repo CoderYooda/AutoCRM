@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Partner extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = [];
 
     public $fields = [
@@ -41,6 +44,19 @@ class Partner extends Model
     public function phones()
     {
         return $this->belongsToMany('App\Models\Phone', 'partner_phone');
+    }
+
+    public function firstActivePhoneNumber()
+    {
+        $phones = $this->phones();
+        $num_out = 'Основной номер не указан';
+        if($phones){
+            $number = $phones->where('main', true)->first();
+            if($number){
+                $num_out = $number->number;
+            }
+        }
+        return $num_out;
     }
 
     public function passport()

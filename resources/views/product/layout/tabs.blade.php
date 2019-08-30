@@ -24,7 +24,7 @@
                                 </a>
                             </li>
                             <li id="income-tab">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'income']) }}">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Поступления</span>
                                 </a>
                             </li>

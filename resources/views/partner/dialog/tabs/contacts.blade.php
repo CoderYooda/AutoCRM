@@ -46,11 +46,11 @@
         </div>
         <button onclick="partner.addPhone(this)" type="button" class="btn btn-sm white">Добавить номер телефона</button>
     </div>
-    <div class="form-group">
+    <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>Адрес проживания</label>
         <input type="text" name="address"
                @if(isset($partner)) value="{{ $partner->address }}" @endif
-               class="form-control" placeholder="Адрес проживания">
+               class="form-control entrance" placeholder="Адрес проживания" @if(isset($partner) && !$partner['isfl']) disabled @endif>
     </div>
     <div class="form-group">
         <label>Email</label>

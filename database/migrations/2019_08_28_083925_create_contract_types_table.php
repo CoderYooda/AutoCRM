@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDdsCatsTable extends Migration
+class CreateContractTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateDdsCatsTable extends Migration
      */
     public function up()
     {
-        Schema::create('dds_cats', function (Blueprint $table) {
+        Schema::create('contract_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->char('name')->comment('Наименование категории');
-            $table->bigInteger('ddscat_id')->unsigned()->comment('Привязка к категории ддс');
+            $table->char('name')->comment('Наименование типа');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateDdsCatsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dds_cats');
+        Schema::dropIfExists('contrac_types');
     }
 }

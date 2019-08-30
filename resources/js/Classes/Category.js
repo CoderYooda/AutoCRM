@@ -19,8 +19,8 @@ class Category{
     pick(id, name, event, referal = null){
         var selects;
 
-        if(referal != null && document.getElementById(ref).length > 0){
-            var cont = document.getElementById(ref);
+        if(referal != null && document.getElementById(referal).length > 0){
+            var cont = document.getElementById(referal);
             selects = cont.getElementsByClassName('category_select');
         } else {
             selects = document.getElementsByClassName('category_select');

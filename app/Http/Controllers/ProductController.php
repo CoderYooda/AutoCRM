@@ -63,10 +63,14 @@ class ProductController extends Controller
         $articles = self::getArticles($request);
         $categories = CategoryController::getCategories($request, 'store');
 
+        $cat_info = [];
+        $cat_info['route'] = 'StoreIndex';
+        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-tab-content'];
+
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.elements.table_container', compact('articles','categories', 'request'));
+            return view('product.elements.table_container', compact('articles','categories', 'cat_info', 'request'));
         }
-        return view('product.store', compact('articles','categories', 'request', 'trinity'));
+        return view('product.store', compact('articles','categories', 'request', 'cat_info', 'trinity'));
     }
 
     public static function providerTab($request)
@@ -78,6 +82,15 @@ class ProductController extends Controller
         }
         return view('product.provider', compact('brands', 'request'));
     }
+
+    public static function entranceTab($request)
+    {
+        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
+            return view('product.entrance', compact('request'));
+        }
+        return view('product.entrance', compact('request'));
+    }
+
 
     public static function addProductDialog($request)
     {

@@ -19,11 +19,15 @@ class PartnerController extends Controller
 
         $categories = CategoryController::getCategories($request, 'partner');
 
+        $cat_info = [];
+        $cat_info['route'] = 'PartnerIndex';
+        $cat_info['params'] = ['target' => 'ajax-tab-content'];
+
         if($request['view_as'] != null && $request['view_as'] == 'json'){
-            $content = view('partner.index', compact('partners', 'categories', 'request'))->render();
+            $content = view('partner.index', compact('partners', 'categories', 'cat_info', 'request'))->render();
             return response()->json(['target' => $target , 'page' => 'Контрагенты', 'content' => $content]);
         } else {
-            return view('partner.index', compact('partners','categories', 'request'));
+            return view('partner.index', compact('partners','categories', 'cat_info', 'request'));
         }
 
     }
@@ -41,7 +45,6 @@ class PartnerController extends Controller
 
         if($request['category_select']){
             $category_select = (int)$request['category_select'];
-
         } else {
             $category_select = 3;
         }
@@ -51,7 +54,7 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
-
+        //dd($request);
         if($request['number']){
             $request['number'] = str_replace(' ', '', $request['number']);
         }
@@ -66,26 +69,22 @@ class PartnerController extends Controller
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
-
         $partner = Partner::firstOrNew(['id' => $request['id']]);
+        if($partner->exists){
+            $message = "Контрагент обновлен";
+        } else{
+            $message = "Контрагент создан";
+        }
         $partner->fill($request->only($partner->fields));
+        if(!$request['isfl']){
+            $partner->fio = $request['ur_fio'];
+        }
         $partner->user_id = null;
         $partner->save();
-
         $phones = PhoneController::upsertPhones($request);
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
-
         $partner->phones()->sync($phones->pluck('id'));
-
-
-
-// Создать авто
-// $partner->car_id =
-
-
-
-
         $partners = self::getPartners($request);
         $categories = CategoryController::getCategories($request, 'partner');
 
@@ -93,14 +92,37 @@ class PartnerController extends Controller
 
         if($request->ajax()){
             return response()->json([
-                'message' => 'Контрагент добавлен',
-                'container' => 'ajax-table',
-                'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
+                'message' => $message,
+                'container' => 'ajax-table-partner',
+                //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
+                'event' => 'PartnerStored',
                 'html' => $content
             ], 200);
         } else {
             return redirect()->back();
         }
+    }
+
+    public function delete($id)
+    {
+        $partner = Partner::where('id', $id)->first();
+        $message = 'Контрагент удален';
+        $status = 200;
+
+        if($partner->company()->first()->id != Auth::user()->company()->first()->id){
+            $message = 'Вам не разрешено удалять этого контрагента';
+            $status = 422;
+        }
+
+        if($status == 200){
+            if(!$partner->delete()){
+                $message = 'Ошибка зависимотей. Обратитесь к администратору';
+                $status = 500;
+            }
+        }
+
+
+        return response()->json(['id' => $partner->id, 'message' => $message], $status);
     }
 
     private static function validateRules($request)
@@ -123,7 +145,7 @@ class PartnerController extends Controller
 
         } elseif(!(bool)$request['isfl']){
             $rules = [
-                'fio' => ['required', 'min:4', 'string', 'max:255'],
+                'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             ];
         }
@@ -149,6 +171,24 @@ class PartnerController extends Controller
         }
 
         return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner'))->render()]);
+    }
+
+    public static function selectPartnerDialog($request)
+    {
+
+        $partners = Partner::where('company_id', Auth::user()->id)->get();
+        return response()->json(['tag' => 'selectPartner', 'html' => view('partner.dialog.select_partner', compact('partners'))->render()]);
+    }
+
+    public function dialogSearch(Request $request){
+        $partners = Partner::where('fio', 'LIKE', '%' . $request['string'] .'%')->orWhereHas('phones', function ($query) use ($request) {
+            $query->where('number', 'LIKE', '%' . $request['string'] .'%');
+        })->orderBy('id', 'DESC')->get();
+
+        $content = view('partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
+        return response()->json([
+            'html' => $content
+        ], 200);
     }
 
     public static function getPartners($request)

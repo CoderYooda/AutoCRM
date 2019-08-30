@@ -2,7 +2,11 @@
     <div class="modal-header">
         <h5 class="modal-title">
             @if(!$categories['parent']->locked)
-                <a href="{{ route('PartnerIndex', ['category_id' => $categories['parent']->category_id]) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
+                @if(isset($cat_info) && $cat_info != NULL)
+                    <a href="{{ route($cat_info['route'], array_merge($cat_info['params'], ['category_id' => $categories['parent']->category_id])) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
+                @else
+                    <a href="{{ route('PartnerIndex', ['category_id' => $categories['parent']->category_id]) }}" class="ajax-nav"><i class="fa fa-caret-square-o-left"></i></a>
+                @endif
             @endif
             {{ $categories['parent']->name }}
         </h5>

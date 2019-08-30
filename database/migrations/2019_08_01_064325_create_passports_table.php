@@ -16,7 +16,7 @@ class CreatePassportsTable extends Migration
         Schema::create('passports', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('partner_id')->unsigned();
-            $table->integer('number')->nullable()->comment('Номер паспорта');
+            $table->bigInteger('number')->nullable()->unsigned()->comment('Номер паспорта');
             $table->char('issued_by')->nullable()->comment('Выдан');
             $table->date('issued_date')->nullable()->comment('Дата выдачи');
             $table->char('issued_place')->nullable()->comment('Место выдачи');

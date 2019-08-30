@@ -13,6 +13,7 @@ class CategorySeed extends Seeder
     public function run()
     {
         Category::create([
+            'id' => 1,
             'name' => 'Корневая директория',
             'category_id' => 0,
             'company_id' => 1,
@@ -22,6 +23,7 @@ class CategorySeed extends Seeder
         ]);
 
         Category::create([
+            'id' => 2,
             'name' => 'Номенклатуры',
             'category_id' => 1,
             'company_id' => null,
@@ -31,12 +33,23 @@ class CategorySeed extends Seeder
         ]);
 
         Category::create([
+            'id' => 3,
             'name' => 'Контрагенты',
             'category_id' => 1,
             'company_id' => null,
             'creator_id' => 1,
             'locked' => true,
             'type' => 'partner',
+        ]);
+
+        Category::create([
+            'id' => 4,
+            'name' => 'Статьи ДДС',
+            'category_id' => 1,
+            'company_id' => null,
+            'creator_id' => 1,
+            'locked' => true,
+            'type' => 'dds',
         ]);
     }
 }

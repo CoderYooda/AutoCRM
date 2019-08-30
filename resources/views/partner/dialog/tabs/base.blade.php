@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted active" id="tab_base">
+<div class="tab-pane main_tab animate fadeIn text-muted active" id="tab_base">
 
     <div class="form-group">
         <label for="category_id">В категории</label>
@@ -18,17 +18,31 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+
+    <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>ФИО</label>
         <input type="text" name="fio"
                @if(isset($partner)) value="{{ $partner->fio }}" @endif
-               class="form-control" placeholder="ФИО">
+               class="form-control entrance" placeholder="ФИО" @if(isset($partner) && !$partner['isfl']) disabled @endif>
     </div>
-    <div class="form-group">
+
+    <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>Дата рождения</label>
         <input type="text" name="birthday"
                @if(isset($partner)) value="{{ $partner->birthday }}" @endif
-               class="form-control date_picker" placeholder="Выберите дату">
+               class="form-control date_picker entrance" placeholder="Выберите дату" @if(isset($partner) && !$partner['isfl']) disabled @endif>
+    </div>
+    <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @elseif(!isset($partner)) d-none-f @elseif(!isset($partner)) disabled @endif">
+        <label>Название компании</label>
+        <input type="text" name="companyName"
+               @if(isset($partner)) value="{{ $partner->companyName }}" @endif
+               class="form-control entrance" placeholder="Название компании" @if(isset($partner) && $partner['isfl']) disabled @endif>
+    </div>
+    <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @elseif(!isset($partner)) d-none-f @endif">
+        <label>Контактное лицо</label>
+        <input type="text" name="ur_fio"
+               @if(isset($partner)) value="{{ $partner->fio }}" @endif
+               class="form-control entrance" placeholder="Контактное лицо" @if(isset($partner) && $partner['isfl']) disabled @elseif(!isset($partner)) disabled @endif>
     </div>
     <div class="form-group">
         <label>Комментарий</label>

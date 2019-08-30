@@ -12,6 +12,12 @@ class AxForm{
             data: data
         }).then(function (response) {
 
+            if(response.data.event){
+                let event = new Event(response.data.event, {bubbles: true});
+                elem.dispatchEvent(event);
+                console.log("Событие " + response.data.event + " объявлено");
+            }
+
             if(response.data.redirect){
                 goto(response.data.redirect);
             } else {
@@ -60,7 +66,6 @@ class AxForm{
                     });
 
                     var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
-
                     if(el.closest(".tab-pane")){
                         var tab_container_id = el.closest(".tab-pane").getAttribute('id');
                         var tab_butt = document.querySelector("a[href='#" + tab_container_id + "']");

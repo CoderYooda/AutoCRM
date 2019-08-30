@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $guarded = [];
+    public $fields = [
+        'company_id',
+        'name',
+        'balance'
+    ];
 
     public function parent()
     {
@@ -21,6 +26,15 @@ class Category extends Model
     public function articles()
     {
         return $this->hasMany('App\Models\Article', 'category_id');
+    }
+    public function partners()
+    {
+        return $this->hasMany('App\Models\Partner', 'category_id');
+    }
+
+    public function ddsarticles()
+    {
+        return $this->hasMany('App\Models\DdsArticle', 'category_id');
     }
 
     public function getRootType() //Находит тип ближайшей залоченой категории и выдаёт роут редиректа

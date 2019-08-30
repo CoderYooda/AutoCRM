@@ -15,9 +15,9 @@ class CreateDdsArticlesTable extends Migration
     {
         Schema::create('dds_articles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('dds_type_id')->unsigned()->comment('Привязка к типу движения денежных средств');
+            $table->bigInteger('category_id')->unsigned()->nullable()->comment('Привязка к категории');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
-            $table->bigInteger('ddscat_id')->unsigned()->comment('Привязка к категории ддс');
+            $table->bigInteger('dds_types_id')->unsigned()->nullable()->comment('Привязка к виду ддс');
             $table->char('name')->comment('Наименование');
             $table->timestamps();
         });

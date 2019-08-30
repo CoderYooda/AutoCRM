@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\HelpController as HC;
+use App\Models\Category;
+use App\Models\DdsType;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\DdsArticle;
+use Auth;
+
+class DdsarticleController extends Controller
+{
+    public static function addDdsarticleDialog($request)
+    {
+        if($request['category_select']){
+            $category_select = (int)$request['category_select'];
+        } else {
+            $category_select = 4;
+        }
+        $category = Category::where('id', $category_select)->first();
+        $ddstypes = DdsType::all();
+
+        return response()->json(['tag' => 'createDdsarticle', 'html' => view('settings.dialog.form_ddsarticle', compact('request', 'category', 'ddstypes'))->render()]);
+    }
+
+    public function store(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'name' => ['required', 'min:3', 'string', 'max:255'],
+            'dds_types_id' => ['required'],
+        ]);
+
+        if($validation->fails()){
+            $this->status = 422;
+            if($request->ajax()){
+                return response()->json(['messages' => $validation->errors()], $this->status);
+            }
+        }
+
+        $Ddsarticle = DdsArticle::firstOrNew(['id' => (int)$request['id']]);
+        if($Ddsarticle->exists){
+            $message = 'Статья ДДС обновлена';
+        } else {
+            $message = 'Статья ДДС создана';
+        }
+
+        $Ddsarticle->fill($request->all());
+        $Ddsarticle->company_id = Auth::user()->company()->first()->id;
+        $Ddsarticle->save();
+
+        if($request->ajax()){
+            return response()->json([
+                'message' => $message,
+                'container' => 'ajax-table',
+                'redirect' => route('SettingsIndex', ['active_tab' => 'ddsarticle', 'category_id' => $Ddsarticle->category()->first()->id]),
+                ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public static function editDdsarticleDialog($request)
+    {
+        if($request['params']){
+            $id = (int)$request['id'];
+        } else {
+            abort(404);
+        }
+
+        $ddstypes = DdsType::all();
+
+        $Ddsarticle = Ddsarticle::where('id', $id)->first();
+
+        return response()->json(['tag' => 'editDdsarticle'.$Ddsarticle->id, 'html' => view('settings.dialog.form_Ddsarticle', compact('Ddsarticle','ddstypes'))->render()]);
+    }
+
+    public function delete($id)
+    {
+        $Ddsarticle = Ddsarticle::where('id', $id)->first();
+        $message = 'Статья ДДС удалена';
+        $status = 200;
+
+        if($Ddsarticle->company()->first()->id != Auth::user()->company()->first()->id){
+            $message = 'Вам не разрешено удалять эту статью ДДС';
+            $status = 422;
+        }
+
+        if($status == 200){
+            if(!$Ddsarticle->delete()){
+                $message = 'Ошибка зависимотей. Обратитесь к администратору';
+                $status = 500;
+            }
+        }
+
+
+        return response()->json(['id' => $Ddsarticle->id, 'message' => $message], $status);
+    }
+
+    public static function getDdsarticles($request)
+    {
+
+        $category = 4;
+        if($request['category_id']){
+            $category = (int)$request['category_id'];
+        }
+
+        return Ddsarticle::where('company_id', Auth::user()->id)->where(function($q) use ($request, $category){
+            if($category != 0) {
+                $q->where('category_id', $category);
+            }
+        })->orderBy('created_at', 'DESC')->get();
+    }
+}

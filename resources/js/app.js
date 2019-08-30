@@ -5,6 +5,7 @@ require('./navigation');                                            // Нави�
 
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
+
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);
 
@@ -15,6 +16,10 @@ import Category from './Classes/Category.js';
 import Product from './Classes/Product.js';
 import Supplier from './Classes/Supplier.js';
 import Partner from './Classes/Partner.js';
+import Entity from './Classes/Entity.js';
+
+
+
 import IMask from 'imask';
 
 window.helper = new Helper();
@@ -24,6 +29,7 @@ window.category = new Category();
 window.product = new Product();
 window.supplier = new Supplier();
 window.partner = new Partner();
+window.entity = new Entity();
 
 // document.addEventListener('DOMContentLoaded', function()
 // {
