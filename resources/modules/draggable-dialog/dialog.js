@@ -37,8 +37,8 @@ window.openDialog = function(tag, params = null, reload = false) {
     var e = e || window.event;
     e.preventDefault();
 	if (isXHRloading) { return; }
-	dReq = new XMLHttpRequest();
-	isXHRloading = true;
+	let dReq = new XMLHttpRequest();
+	window.isXHRloading = true;
     dReq.onreadystatechange = function (e) {
         if (dReq.readyState === 4) {
             var resp = JSON.parse(this.responseText);
@@ -47,12 +47,12 @@ window.openDialog = function(tag, params = null, reload = false) {
                 if(!alreadyOpened(resp.tag) || reload){
                     closeDialog(null, resp.tag);
                     appendDialog(resp, resp.tag);
-                    helper.initDialogMethods();
+                    window.helper.initDialogMethods();
                 }
-                isXHRloading = false;
+                window.isXHRloading = false;
             }else{
-                notification.notify( 'error', resp.message);
-                isXHRloading = false;
+                window.notification.notify( 'error', resp.message);
+                window.isXHRloading = false;
             }
         }
     };
@@ -110,7 +110,9 @@ function appendDialog(resp, tag){
     Object.keys(dialogs).map(function(key, index) {
         var elem = dialogs[key];
         var dial = document.getElementById(elem.tag);
-        dial.classList.remove('selected');
+        if(dial){
+            dial.classList.remove('selected');
+        }
     });
 
 	dialog.classList.add('selected');
@@ -134,7 +136,9 @@ function downEventListners(){
 				Object.keys(dialogs).map(function(key, index) {
 					var elem = dialogs[key];
 					var dial = document.getElementById(elem.tag);
-					dial.classList.remove('selected');
+					if(dial){
+                        dial.classList.remove('selected');
+                    }
 				});
 				d.classList.add('selected');
 			}

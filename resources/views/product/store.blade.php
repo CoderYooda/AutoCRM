@@ -20,7 +20,7 @@
     </div>
     <div class="d-flex flex scroll-y">
         <div class="d-flex flex-column white flex lt">
-            <div id="ajax-table" class="white p-3 b-r d-table">
+            <div id="ajax-table-product" class="white p-3 b-r d-table">
                 @include('product.elements.table_container')
             </div>
         </div>

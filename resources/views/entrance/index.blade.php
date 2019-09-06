@@ -10,9 +10,9 @@
             </span>
         </div>
         <div class="d-flex flex scroll-y">
-            <div class="d-flex flex-column flex lt">
-                <div id="ajax-table" class="p-3 b-r d-table">
-{{--                    @include('settings.elements.ddsarticle_container')--}}
+            <div class="d-flex flex-column white  flex lt">
+                <div id="ajax-table-entrance" class="p-3 b-r d-table">
+                    @include('entrance.table_container')
                 </div>
             </div>
         </div>

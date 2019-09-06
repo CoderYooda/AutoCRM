@@ -85,12 +85,37 @@ class ProductController extends Controller
 
     public static function entranceTab($request)
     {
+        $entrances = EntranceController::getEntrances($request);
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.entrance', compact('request'));
+            return view('product.entrance', compact('request', 'entrances'));
         }
-        return view('product.entrance', compact('request'));
+        return view('entrance.index', compact('request','entrances'));
     }
 
+    public static function selectProductDialog($request)
+    {
+        $stores = Store::where('company_id', Auth::user()->id)->get();
+        $products = Article::where('company_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
+        return response()->json(['tag' => 'selectProduct', 'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render()]);
+    }
+
+    public function addToList($id, Request $request){
+        $product = Article::where('id', $id)->first();
+        if(!$product){
+            return response()->json([
+                'message' => 'Товар не найден, возможно он был удалён',
+            ], 422);
+        }
+        if(!$product->canUserTake()){
+            return response()->json([
+                'message' => 'Доступ к этому товару запрещен.',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $product->id,
+            'html' => view('entrance.dialog.product_element', compact('product', 'request'))->render()
+        ]);
+    }
 
     public static function addProductDialog($request)
     {
@@ -102,6 +127,31 @@ class ProductController extends Controller
         $stores = Store::where('company_id', Auth::user()->id)->get();
         $category = Category::where('id', $category_select)->first();
         return response()->json(['tag' => 'createProduct', 'html' => view('product.dialog.form_product', compact('category', 'stores', 'request'))->render()]);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        $products = Article::where(function($q) use ($request){
+            if($request['store_id'] != NULL) {
+                $q->whereHas('stores', function ($query) use ($request) {
+                    return $query->where('store_id', $request['store_id']);
+                });
+            }
+        })
+        ->where(function($q) use ($request){
+            $q->where('name', 'LIKE', '%' . $request['string'] .'%');
+            $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
+            $q->orWhereHas('supplier', function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request['string'] .'%');
+            });
+        })
+
+        ->orderBy('id', 'DESC')->get();
+
+        $content = view('product.dialog.select_product_inner', compact('products', 'request'))->render();
+        return response()->json([
+            'html' => $content
+        ], 200);
     }
 
     public static function editProductDialog($request)
@@ -167,6 +217,14 @@ class ProductController extends Controller
         $article->save();
         $this->status = 200;
 
+
+//        $stores = Store::owned()->get();
+//
+//
+//        foreach($stores as $store){
+//            $store->articles()->syncWithoutDetaching($article->id);
+//        }
+
         if($request['store'] != NULL){
             foreach ($request['store'] as $id => $store_elem){
                 $store = Store::where('id', $id)->first();
@@ -194,8 +252,9 @@ class ProductController extends Controller
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
-                'container' => 'ajax-table',
-                'redirect' => route('StoreIndex', ['category_id' => $article->category()->first()->id, 'serach' => $request['search']]),
+                'container' => 'ajax-table-product',
+                //'redirect' => route('StoreIndex', ['category_id' => $article->category()->first()->id, 'serach' => $request['search']]),
+                'event' => 'ProductStored',
                 'html' => $content
                 ], $this->status);
         } else {
@@ -217,7 +276,6 @@ class ProductController extends Controller
             return false;
         }
     }
-
 
     public static function getArticles($request)
     {
@@ -259,12 +317,12 @@ class ProductController extends Controller
             'article' => ['required', 'string', 'max:64'],
         ];
 
-        foreach($request['store'] as $id => $store){
-            if(isset($store['isset']) && $store['isset'] == true){
-                $rules['store.' . $id . '.location'] = [ 'max:250'];
-                $rules['store.' . $id . '.isset'] = [ 'boolean'];
-            }
-        }
+//        foreach($request['store'] as $id => $store){
+//            if(isset($store['isset']) && $store['isset'] == true){
+//                $rules['store.' . $id . '.location'] = [ 'max:250'];
+//                $rules['store.' . $id . '.isset'] = [ 'boolean'];
+//            }
+//        }
 
         return $rules;
     }

@@ -15,7 +15,15 @@ class CreateArticleEntranceTable extends Migration
     {
         Schema::create('article_entrance', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->bigInteger('article_id')->unsigned()->comment('Привязка к товару');
+            $table->bigInteger('entrance_id')->unsigned()->comment('Привязка к поступлению');
+            $table->bigInteger('store_id')->unsigned()->comment('Привязка к поступлению');
+            $table->integer('count')->unsigned()->comment('Кол - во');
+            $table->double('price')->unsigned()->comment('Цена');
+            $table->double('total')->unsigned()->comment('Цена общая');
+            $table->double('nds_percent')->unsigned()->comment('% ндс');
+            $table->double('nds')->unsigned()->comment('ндс');
+            $table->boolean('nds_included')->unsigned()->comment('ндс в стоимости?');
         });
     }
 

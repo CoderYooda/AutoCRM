@@ -23,6 +23,7 @@ const ajaxRequest = new (function () {
             case 200:
                 vMsg = JSON.parse(this.responseText);
                 document.title = oPageInfo.title = vMsg.page;  //ajax-content
+                oPageInfo.class = vMsg.class;
                 document.getElementById(vMsg.target).innerHTML = vMsg.content;
                 if (bUpdateURL) {
                     history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
@@ -71,7 +72,7 @@ const ajaxRequest = new (function () {
             bUpdateURL = true;
             getPage(sURL);
         } else {
-            /* Ajax navigation is not supported */
+            /* Ajax навигация не поддерживается */
             location.assign(sURL);
         }
     }
@@ -93,7 +94,6 @@ const ajaxRequest = new (function () {
                 return decodeURIComponent(pair[1]);
             }
         }
-        console.log('Query variable %s not found', variable);
     }
 
     function init () {
@@ -106,6 +106,9 @@ const ajaxRequest = new (function () {
         if(document.querySelector("#partner_index_page") !== null){
             partner.init();
         }
+
+        window.helper.initPageMethods(oPageInfo.class);
+
 
         console.warn('Ссылки переработаны');
     }
@@ -120,6 +123,7 @@ const ajaxRequest = new (function () {
         oLoadingBox = document.createElement("div"), oCover = document.createElement("div"), oLoadingImg = new Image(),
         oPageInfo = {
             title: null,
+            class: 'cash',
             url: location.href
         }, oHTTPStatus = /* http://www.iana.org/assignments/http-status-codes/http-status-codes.xml */ {
             100: "Continue",

@@ -31122,6 +31122,28 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./resources/js/Classes/Cash/Cash.js":
+/*!*******************************************!*\
+  !*** ./resources/js/Classes/Cash/Cash.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cash = function Cash() {
+  _classCallCheck(this, Cash);
+
+  console.log('Окно денежных средств инициализировано');
+  this.active = true;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Cash);
+
+/***/ }),
+
 /***/ "./resources/js/Classes/Category.js":
 /*!******************************************!*\
   !*** ./resources/js/Classes/Category.js ***!
@@ -31341,6 +31363,292 @@ function () {
 
 /***/ }),
 
+/***/ "./resources/js/Classes/Entrance/EntranceDialog.js":
+/*!*********************************************************!*\
+  !*** ./resources/js/Classes/Entrance/EntranceDialog.js ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var createEntrance =
+/*#__PURE__*/
+function () {
+  function createEntrance(dialog) {
+    _classCallCheck(this, createEntrance);
+
+    console.log('Окно поступления инициализировано');
+    this.root_dialog = dialog;
+    this.items = [];
+    this.nds = true;
+    this.nds_included = true;
+    this.totalPrice = 0.0;
+    this.init();
+  }
+
+  _createClass(createEntrance, [{
+    key: "init",
+    value: function init() {
+      var object = this;
+      var event = '';
+
+      if (object.root_dialog.dataset.id) {
+        event = 'EntranceStored' + object.root_dialog.dataset.id;
+      } else {
+        event = 'EntranceStored';
+      }
+
+      console.log(event);
+      document.addEventListener(event, function (e) {
+        object.finitaLaComedia();
+      });
+      this.loadItemsIfExists();
+    }
+  }, {
+    key: "save",
+    value: function save(elem) {
+      if (window.isXHRloading) return;
+      var object = this;
+      window.axform.send(elem, function (e) {
+        object.finitaLaComedia();
+      });
+    }
+  }, {
+    key: "loadItemsIfExists",
+    value: function loadItemsIfExists() {
+      window.isXHRloading = true;
+      var object = this;
+      var entrance_id = this.root_dialog.dataset.id;
+
+      if (entrance_id && entrance_id !== 'undefined') {
+        window.axios({
+          method: 'post',
+          url: 'entrance/' + entrance_id + '/get_products',
+          data: {}
+        }).then(function (resp) {
+          [].forEach.call(resp.data.products, function (elem) {
+            object.items.push({
+              id: elem.id,
+              count: elem.pivot.count,
+              price: elem.pivot.price,
+              total: elem.pivot.total
+            });
+            var item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+            var inputs = item.getElementsByTagName('input');
+            [].forEach.call(inputs, function (elem) {
+              var fn = window.helper.debounce(function (e) {
+                object.recalculate(e);
+              }, 50);
+              elem.addEventListener("keydown", fn);
+              elem.addEventListener("paste", fn);
+              elem.addEventListener("delete", fn);
+            });
+          });
+        })["catch"](function (error) {
+          console.log(error);
+        })["finally"](function () {
+          object.setNDS();
+          window.isXHRloading = false;
+        });
+      } // let list_elems = this.root_dialog.querySelector('.product_list_elem');
+      // if(list_elems){
+      //     [].forEach.call(list_elems, function(elem){
+      //         object.addItem({id:resp.data.id, html:resp.data.html});
+      //     });
+      // }
+
+    }
+  }, {
+    key: "setTotalPrice",
+    value: function setTotalPrice(count) {
+      var container = this.root_dialog.querySelector('#total_price');
+      container.innerHTML = Number(count).toFixed(2);
+    }
+  }, {
+    key: "addItem",
+    value: function addItem(elem) {
+      var object = this;
+      var product_list = this.root_dialog.querySelector('.product_list');
+      this.items.push(elem);
+      var tbody = document.createElement('tbody');
+      tbody.innerHTML = elem.html;
+      product_list.prepend(tbody.firstChild);
+      window.notification.notify('success', 'Товар добавлен к списку');
+      var item = this.root_dialog.querySelector('#product_selected_' + elem.id);
+      var inputs = item.getElementsByTagName('input');
+      [].forEach.call(inputs, function (elem) {
+        var fn = window.helper.debounce(function (e) {
+          object.recalculate(e);
+        }, 50);
+        elem.addEventListener("keydown", fn);
+        elem.addEventListener("paste", fn);
+        elem.addEventListener("delete", fn);
+      });
+      this.recalculate();
+    }
+  }, {
+    key: "finitaLaComedia",
+    value: function finitaLaComedia() {
+      closeDialog(null, this.root_dialog.id);
+      delete window[this.root_dialog.id];
+    }
+  }, {
+    key: "removeItem",
+    value: function removeItem(id) {
+      this.items.splice(this.items.map(function (e) {
+        return e.id;
+      }).indexOf(id), 1);
+      this.root_dialog.querySelector('#product_selected_' + id).remove();
+      this.recalculate();
+    }
+  }, {
+    key: "addProduct",
+    value: function addProduct(id) {
+      var object = this;
+      window.axios({
+        method: 'post',
+        url: 'product/' + id + '/addtolist',
+        data: {
+          refer: this.root_dialog.id
+        }
+      }).then(function (resp) {
+        var isset = object.items.map(function (e) {
+          return e.id;
+        }).indexOf(resp.data.id);
+
+        if (isset < 0) {
+          object.addItem({
+            id: resp.data.id,
+            html: resp.data.html
+          });
+        } else {
+          window.notification.notify('error', 'Товар уже в списке');
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      })["finally"](function () {
+        window.isXHRloading = false;
+      });
+    }
+  }, {
+    key: "selectPartner",
+    value: function selectPartner(id) {
+      var object = this;
+      window.axios({
+        method: 'post',
+        url: 'partner/' + id + '/select',
+        data: {
+          refer: this.root_dialog.id
+        }
+      }).then(function (resp) {
+        var select = object.root_dialog.querySelector('select[name=partner_id]');
+        var input = object.root_dialog.querySelector('input[name=partner_id]');
+        var str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+        input.value = resp.data.id;
+        select.innerHTML = str;
+        window.notification.notify('success', 'Контрагент выбран');
+        document.dispatchEvent(new Event('PartnerSelected', {
+          bubbles: true
+        }));
+        console.log("Событие PartnerSelected вызвано"); //closeDialog(event);
+      })["catch"](function (error) {
+        console.log(error);
+      })["finally"](function () {
+        window.isXHRloading = false;
+      });
+    }
+  }, {
+    key: "openProductmodal",
+    value: function openProductmodal() {
+      window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
+    }
+  }, {
+    key: "openSelectPartnermodal",
+    value: function openSelectPartnermodal() {
+      window.openDialog('selectPartner', '&refer=' + this.root_dialog.id);
+    }
+  }, {
+    key: "recalculate",
+    value: function recalculate() {
+      console.log("Пересчет...");
+      var object = this;
+      this.items.forEach(function (elem) {
+        object.recalculateItem(elem.id);
+      });
+      var total_price = object.totalPrice;
+      object.items.map(function (e) {
+        total_price = total_price + Number(e.total);
+      });
+      object.setTotalPrice(total_price);
+    }
+  }, {
+    key: "setNDS",
+    value: function setNDS() {
+      this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
+      this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
+      this.recalculate();
+    }
+  }, {
+    key: "recalculateItem",
+    value: function recalculateItem(id) {
+      var object = this;
+      var item = this.root_dialog.querySelector('#product_selected_' + id);
+      var total = item.querySelector("input[name='products[" + id + "][total_price]']");
+      var count = item.querySelector("input[name='products[" + id + "][count]']");
+      var price = item.querySelector("input[name='products[" + id + "][price]']");
+      var nds_percent = item.querySelector("input[name='products[" + id + "][nds_percent]']");
+      var nds = item.querySelector("input[name='products[" + id + "][nds]']");
+      var vcount = Number(count.value);
+      var vprice = Number(price.value);
+      var vnds_percent = Number(nds_percent.value);
+      var vnds = Number(nds.value);
+      var vtotal = Number(total.value);
+
+      if (object.nds && !object.nds_included) {
+        vnds_percent = 20;
+        vtotal = vprice * vcount;
+        vnds = vtotal / 100 * vnds_percent;
+        vtotal = vnds + vtotal;
+      } else if (object.nds && object.nds_included) {
+        vnds_percent = 20;
+        vtotal = vprice * vcount;
+        vnds = vtotal / (100 + vnds_percent) * vnds_percent;
+      } else {
+        vtotal = vprice * vcount;
+        vnds = 0.00;
+        vnds_percent = 0;
+      }
+
+      nds_percent.value = vnds_percent.toFixed(2);
+      nds.value = vnds.toFixed(2);
+      total.value = vtotal.toFixed(2); // nds.value = Number(total.value).toFixed(2) * Number(nds_percent.value).toFixed(2);
+      //
+      // total.value = Number(total.value).toFixed(2) + Number(nds.value).toFixed(2);
+
+      object.items.map(function (e) {
+        if (e.id === id) {
+          e.total = vtotal;
+          e.count = vcount;
+          e.price = vprice;
+        }
+      });
+    }
+  }]);
+
+  return createEntrance;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (createEntrance);
+
+/***/ }),
+
 /***/ "./resources/js/Classes/Form.js":
 /*!**************************************!*\
   !*** ./resources/js/Classes/Form.js ***!
@@ -31376,11 +31684,10 @@ function () {
         data: data
       }).then(function (response) {
         if (response.data.event) {
-          var _event = new Event(response.data.event, {
+          var event = new Event(response.data.event, {
             bubbles: true
           });
-
-          elem.dispatchEvent(_event);
+          document.dispatchEvent(event);
           console.log("Событие " + response.data.event + " объявлено");
         }
 
@@ -31396,8 +31703,7 @@ function () {
           }
         }
 
-        if (dialog) {
-          closeDialog(event, dialog.getAttribute("id"));
+        if (dialog) {//closeDialog(event, dialog.getAttribute("id"));
         }
 
         if (response.data.message) {
@@ -31452,8 +31758,7 @@ function () {
         if (error.response.data.message) {
           notification.notify('error', error.response.data.message);
         }
-      })["finally"](function () {// always executed
-      });
+      })["finally"]();
     }
   }]);
 
@@ -31473,11 +31778,26 @@ function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Entrance_EntranceDialog__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Entrance/EntranceDialog */ "./resources/js/Classes/Entrance/EntranceDialog.js");
+/* harmony import */ var _Product_SelectProductDialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Product/SelectProductDialog */ "./resources/js/Classes/Product/SelectProductDialog.js");
+/* harmony import */ var _Partner_SelectPartnerDialog__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Partner/SelectPartnerDialog */ "./resources/js/Classes/Partner/SelectPartnerDialog.js");
+/* harmony import */ var _Cash_Cash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Cash/Cash */ "./resources/js/Classes/Cash/Cash.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+var classes = {
+  EntranceDialog: _Entrance_EntranceDialog__WEBPACK_IMPORTED_MODULE_0__["default"],
+  selectProductDialog: _Product_SelectProductDialog__WEBPACK_IMPORTED_MODULE_1__["default"],
+  selectPartnerDialog: _Partner_SelectPartnerDialog__WEBPACK_IMPORTED_MODULE_2__["default"],
+  cashPage: _Cash_Cash__WEBPACK_IMPORTED_MODULE_3__["default"]
+};
 
 var Helper =
 /*#__PURE__*/
@@ -31489,8 +31809,43 @@ function () {
   _createClass(Helper, [{
     key: "initDialogMethods",
     value: function initDialogMethods() {
-      console.info('Диалоговые методы вызваны');
-      partner.initDialog();
+      window.partner.initDialog();
+      window.product.initDialog();
+      var dialogs = document.getElementsByClassName('dialog');
+
+      if (dialogs) {
+        [].forEach.call(dialogs, function (elem) {
+          if (window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')) {
+            var classname = elem.id.replace(/[^a-zA-Z]/g, '');
+
+            try {
+              window[elem.id] = new classes[classname + 'Dialog'](elem);
+            } catch (err) {
+              console.log(classname + " - Такого конструктора не существует");
+            } //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
+
+          }
+        });
+      }
+    }
+  }, {
+    key: "initPageMethods",
+    value: function initPageMethods(className) {
+      if (className !== 'undefined') {
+        console.log('Поиск класса'); // try {
+        //     window[className] = new classes[className + 'Page']();
+        // } catch (err) {
+        //     console.log(className + " - Такого конструктора не существует");
+        // }
+
+        if (window[className] === null || !window[className].hasOwnProperty('root_dialog')) {
+          try {
+            window[className] = new classes[className + 'Page']();
+          } catch (err) {
+            console.log(className + " - Такого конструктора не существует");
+          }
+        }
+      }
     }
   }, {
     key: "debounce",
@@ -31510,6 +31865,11 @@ function () {
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);
       };
+    }
+  }, {
+    key: "ucFirst",
+    value: function ucFirst(string) {
+      return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
     }
   }, {
     key: "findGetParameter",
@@ -31682,39 +32042,7 @@ function () {
         dateFormat: "Y-m-d"
       });
       this.addPhoneMask();
-      this.addPassportMask();
-      this.searchInit();
-      var mytooltip = document.getElementsByClassName('my-tooltip');
-
-      if (mytooltip.length > 0) {
-        console.log('Инициализирует тултипы');
-        [].forEach.call(mytooltip, function (elem) {// new Tooltip(elem, {
-          //     placement: 'top', // or bottom, left, right, and variations
-          //     title: "Top"
-          // });
-        });
-      }
-    }
-  }, {
-    key: "pick",
-    value: function pick(id, fio, event) {
-      var referal = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-      var selects;
-
-      if (referal != null && document.getElementById(referal).length > 0) {
-        var cont = document.getElementById(referal);
-        selects = cont.getElementsByClassName('partner_select');
-      } else {
-        selects = document.getElementsByClassName('partner_select');
-      }
-
-      [].forEach.call(selects, function (elem) {
-        elem.value = id;
-        var str = '<option value="' + id + '">' + fio + '</option selected>';
-        elem.innerHTML = str;
-      });
-      notification.notify('success', 'Контрагент выбран');
-      closeDialog(event);
+      this.addPassportMask(); //this.searchInit();
     }
   }, {
     key: "activateTab",
@@ -31906,82 +32234,122 @@ function () {
         elem.closest('.phone').remove();
       }
     }
-  }, {
-    key: "searchInit",
-    value: function searchInit() {
-      var self = this;
-
-      if (document.getElementById("partner_search")) {
-        var el = document.getElementById("partner_search");
-        var searchFn = helper.debounce(function (e) {
-          self.searchPartner(e);
-        }, 400);
-        el.addEventListener("keydown", searchFn);
-        el.addEventListener("paste", searchFn);
-        el.addEventListener("delete", searchFn);
-        document.addEventListener("PartnerStored", searchFn);
-      }
-
-      var update_link = document.getElementsByClassName('update_url');
-      var search = getQueryVar('search');
-
-      if (search === 'undefined') {
-        search = '';
-      }
-
-      [].forEach.call(update_link, function (elem) {
-        helper.insertParam(elem, 'search', search);
-      });
-    }
-  }, {
-    key: "searchPartner",
-    value: function searchPartner(e) {
-      var el = document.getElementById("partner_search");
-      var string = el.value;
-      console.log("1111");
-
-      if (isXHRloading) {
-        return;
-      }
-
-      isXHRloading = true;
-      var dReq = new XMLHttpRequest();
-
-      dReq.onreadystatechange = function (e) {
-        if (dReq.readyState === 4) {
-          var resp = JSON.parse(this.responseText);
-
-          if (dReq.status === 200) {
-            var element = document.getElementById('search_partner_results');
-            element.innerHTML = resp.html;
-          } else {
-            notification.notify('error', resp.message);
-          }
-        }
-      };
-
-      dReq.onerror = function () {
-        var resp = JSON.parse(this.responseText);
-        isXHRloading = false;
-      };
-
-      dReq.onload = function () {
-        var resp = JSON.parse(this.responseText); //document.getElementById('category_list').innerHTML = resp.html;
-
-        isXHRloading = false;
-      };
-
-      dReq.open("post", 'partner/dialog/search?string=' + string, true); //dReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-      dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
-      dReq.send();
-    }
   }]);
 
   return Partner;
 }();
 
 /* harmony default export */ __webpack_exports__["default"] = (Partner);
+
+/***/ }),
+
+/***/ "./resources/js/Classes/Partner/SelectPartnerDialog.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/Classes/Partner/SelectPartnerDialog.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var selectPartnerDialog =
+/*#__PURE__*/
+function () {
+  function selectPartnerDialog(dialog) {
+    _classCallCheck(this, selectPartnerDialog);
+
+    console.log('Окно выбора контрагента инициализировано');
+    this.root_dialog = dialog;
+    this.refer = dialog.querySelector("#refer").value;
+    this.init(); //PartnerStored
+  }
+
+  _createClass(selectPartnerDialog, [{
+    key: "init",
+    value: function init() {
+      var object = this;
+      this.searchInit();
+      var event = 'PartnerStored';
+      document.addEventListener(event, function (e) {
+        object.searchPartner(el);
+      });
+    }
+  }, {
+    key: "finitaLaComedia",
+    value: function finitaLaComedia() {
+      closeDialog(null, this.root_dialog.id);
+      delete window[this.root_dialog.id];
+    }
+  }, {
+    key: "searchInit",
+    value: function searchInit() {
+      var object = this;
+      var el = object.root_dialog.querySelector("#partner_search");
+
+      if (el) {
+        var searchFn = window.helper.debounce(function (e) {
+          object.search(el);
+        }, 400);
+        el.addEventListener("keydown", searchFn);
+        el.addEventListener("paste", searchFn);
+        el.addEventListener("delete", searchFn);
+        document.addEventListener("PartnerStored", searchFn);
+        document.addEventListener("PartnerSelected", function () {
+          object.finitaLaComedia();
+        });
+      } // let search = getQueryVar('search');
+      // if(search === 'undefined'){
+      //     search = '';
+      // }
+      // let update_link = document.getElementsByClassName('update_url');
+      // [].forEach.call(update_link, function(elem){
+      //     window.helper.insertParam(elem, 'search', search);
+      // });
+
+    }
+  }, {
+    key: "search",
+    value: function search(el) {
+      var object = this;
+      var string = el.value;
+
+      if (isXHRloading) {
+        return;
+      }
+
+      window.isXHRloading = true;
+      var data = {};
+      data.string = string;
+
+      if (object.refer) {
+        data.refer = object.refer;
+      }
+
+      window.axios({
+        method: 'post',
+        url: 'partner/dialog/search',
+        data: data
+      }).then(function (resp) {
+        var results_container = object.root_dialog.querySelector('#search_partner_results');
+        results_container.innerHTML = resp.data.html;
+      })["catch"](function (error) {
+        console.log(error);
+      })["finally"](function () {
+        window.isXHRloading = false;
+      });
+    }
+  }]);
+
+  return selectPartnerDialog;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (selectPartnerDialog);
 
 /***/ }),
 
@@ -32008,6 +32376,11 @@ function () {
   }
 
   _createClass(Product, [{
+    key: "initDialog",
+    value: function initDialog() {
+      this.searchInit();
+    }
+  }, {
     key: "remove",
     value: function remove(id) {
       if (isXHRloading) {
@@ -32062,6 +32435,48 @@ function () {
           isXHRloading = false;
         }
       });
+    }
+  }, {
+    key: "add",
+    value: function add(id, event) {
+      var referal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var list;
+
+      if (referal != null && document.getElementById(referal).length > 0) {
+        var cont = document.getElementById(referal);
+        list = cont.getElementsByClassName('product_list');
+      } else {
+        list = document.getElementsByClassName('product_list');
+      }
+
+      isXHRloading = true;
+      axios({
+        method: 'post',
+        url: 'product/' + id + '/addtolist',
+        data: null
+      }).then(function (resp) {
+        [].forEach.call(list, function (elem) {
+          var element = document.getElementById('product_selected_' + resp.data.id);
+
+          if (element != null) {
+            notification.notify('error', 'Товар уже в списке');
+          } else {
+            var tbody = document.createElement('tbody');
+            tbody.innerHTML = resp.data.html;
+            elem.prepend(tbody.firstChild); // var div = element.closest('.addable').querySelector('.phones');
+            // elem.innerHTML = elem.innerHTML + resp.data.html;
+
+            notification.notify('success', 'Товар добавлен к списку');
+          }
+        });
+      })["catch"](function (error) {})["finally"](function () {
+        isXHRloading = false;
+      });
+    }
+  }, {
+    key: "removeListElement",
+    value: function removeListElement(elem) {
+      elem.closest('.product_list_elem').remove();
     }
   }, {
     key: "searchInit",
@@ -32154,6 +32569,88 @@ function () {
 }();
 
 /* harmony default export */ __webpack_exports__["default"] = (Product);
+
+/***/ }),
+
+/***/ "./resources/js/Classes/Product/SelectProductDialog.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/Classes/Product/SelectProductDialog.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var SelectProductDialog =
+/*#__PURE__*/
+function () {
+  function SelectProductDialog(dialog) {
+    _classCallCheck(this, SelectProductDialog);
+
+    console.log('Окно поиска товара инициализировано');
+    this.root_dialog = dialog;
+    this.search_obj = dialog.querySelector("#product_search");
+    this.store_obj = dialog.querySelector("#product_search_store");
+    this.results_obj = dialog.querySelector("#search_product_results");
+    this.refer = dialog.querySelector("#refer").value;
+    this.searchInit();
+  }
+
+  _createClass(SelectProductDialog, [{
+    key: "finitaLaComedia",
+    value: function finitaLaComedia() {
+      closeDialog(event);
+      delete window[this.root_dialog.id];
+    }
+  }, {
+    key: "searchInit",
+    value: function searchInit() {
+      var object = this;
+      var searchFn = window.helper.debounce(function (e) {
+        object.search(e);
+      }, 400);
+      this.search_obj.addEventListener("keydown", searchFn);
+      this.store_obj.addEventListener("change", searchFn);
+      this.search_obj.addEventListener("paste", searchFn);
+      this.search_obj.addEventListener("delete", searchFn);
+      document.addEventListener("ProductStored", searchFn);
+    }
+  }, {
+    key: "search",
+    value: function search() {
+      var object = this;
+      var string = this.search_obj.value;
+      var store_id = this.store_obj.value;
+      var data = {};
+      data.string = string;
+      data.store_id = store_id;
+
+      if (object.refer) {
+        data.refer = object.refer;
+      }
+
+      window.axios({
+        method: 'post',
+        url: 'product/dialog/search',
+        data: data
+      }).then(function (resp) {
+        object.results_obj.innerHTML = resp.data.html;
+      })["catch"](function (error) {
+        console.log(error);
+      })["finally"](function () {});
+    }
+  }]);
+
+  return SelectProductDialog;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (SelectProductDialog);
 
 /***/ }),
 
@@ -32345,6 +32842,7 @@ var ajaxRequest = new function () {
         vMsg = JSON.parse(this.responseText);
         document.title = oPageInfo.title = vMsg.page; //ajax-content
 
+        oPageInfo["class"] = vMsg["class"];
         document.getElementById(vMsg.target).innerHTML = vMsg.content;
 
         if (bUpdateURL) {
@@ -32410,7 +32908,7 @@ var ajaxRequest = new function () {
       bUpdateURL = true;
       getPage(sURL);
     } else {
-      /* Ajax navigation is not supported */
+      /* Ajax навигация не поддерживается */
       location.assign(sURL);
     }
   }
@@ -32435,8 +32933,6 @@ var ajaxRequest = new function () {
         return decodeURIComponent(pair[1]);
       }
     }
-
-    console.log('Query variable %s not found', variable);
   }
 
   function init() {
@@ -32453,6 +32949,7 @@ var ajaxRequest = new function () {
       partner.init();
     }
 
+    window.helper.initPageMethods(oPageInfo["class"]);
     console.warn('Ссылки переработаны');
   }
 
@@ -32472,6 +32969,7 @@ var ajaxRequest = new function () {
       oLoadingImg = new Image(),
       oPageInfo = {
     title: null,
+    "class": 'cash',
     url: location.href
   },
       oHTTPStatus =
@@ -32647,8 +33145,8 @@ window.openDialog = function (tag) {
     return;
   }
 
-  dReq = new XMLHttpRequest();
-  isXHRloading = true;
+  var dReq = new XMLHttpRequest();
+  window.isXHRloading = true;
 
   dReq.onreadystatechange = function (e) {
     if (dReq.readyState === 4) {
@@ -32660,13 +33158,13 @@ window.openDialog = function (tag) {
         if (!alreadyOpened(resp.tag) || reload) {
           closeDialog(null, resp.tag);
           appendDialog(resp, resp.tag);
-          helper.initDialogMethods();
+          window.helper.initDialogMethods();
         }
 
-        isXHRloading = false;
+        window.isXHRloading = false;
       } else {
-        notification.notify('error', resp.message);
-        isXHRloading = false;
+        window.notification.notify('error', resp.message);
+        window.isXHRloading = false;
       }
     }
   };
@@ -32727,7 +33225,10 @@ function appendDialog(resp, tag) {
   Object.keys(dialogs).map(function (key, index) {
     var elem = dialogs[key];
     var dial = document.getElementById(elem.tag);
-    dial.classList.remove('selected');
+
+    if (dial) {
+      dial.classList.remove('selected');
+    }
   });
   dialog.classList.add('selected');
   downEventListners();
@@ -32751,7 +33252,10 @@ function downEventListners() {
         Object.keys(dialogs).map(function (key, index) {
           var elem = dialogs[key];
           var dial = document.getElementById(elem.tag);
-          dial.classList.remove('selected');
+
+          if (dial) {
+            dial.classList.remove('selected');
+          }
         });
         d.classList.add('selected');
       }

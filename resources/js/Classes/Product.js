@@ -1,6 +1,11 @@
 
 class Product{
 
+
+    initDialog(){
+        this.searchInit();
+    }
+
     remove(id) {
         if (isXHRloading) { return; }
         isXHRloading = true;
@@ -48,6 +53,52 @@ class Product{
                 isXHRloading = false;
             }
         });
+    }
+
+    add(id, event, referal = null){
+        var list;
+
+        if(referal != null && document.getElementById(referal).length > 0){
+            var cont = document.getElementById(referal);
+            list = cont.getElementsByClassName('product_list');
+        } else {
+            list = document.getElementsByClassName('product_list');
+        }
+
+        isXHRloading = true;
+
+
+        axios({
+            method: 'post',
+            url: 'product/'+ id +'/addtolist',
+            data: null
+        }).then(function (resp) {
+            [].forEach.call(list, function(elem){
+                var element = document.getElementById('product_selected_' + resp.data.id);
+                if(element != null){
+                    notification.notify('error', 'Товар уже в списке');
+                } else {
+
+                    var tbody = document.createElement('tbody');
+                    tbody.innerHTML = resp.data.html;
+
+                    elem.prepend(tbody.firstChild);
+
+                    // var div = element.closest('.addable').querySelector('.phones');
+                    // elem.innerHTML = elem.innerHTML + resp.data.html;
+                    notification.notify( 'success', 'Товар добавлен к списку');
+                }
+            });
+
+        }).catch(function (error) {
+
+        }).finally(function () {
+            isXHRloading = false;
+        });
+    };
+
+    removeListElement(elem){
+        elem.closest('.product_list_elem').remove();
     }
 
     searchInit(){
@@ -107,6 +158,7 @@ class Product{
         dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
         dReq.send();
     }
+
 
     search(e) {
         if (isXHRloading) {

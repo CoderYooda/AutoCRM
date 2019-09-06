@@ -1,9 +1,58 @@
+import EntranceDialog from "./Entrance/EntranceDialog";
+import selectProductDialog from "./Product/SelectProductDialog";
+import selectPartnerDialog from "./Partner/SelectPartnerDialog";
+
+import cashPage from "./Cash/Cash";
+
+const classes = {
+    EntranceDialog,
+    selectProductDialog,
+    selectPartnerDialog,
+
+    cashPage,
+};
+
 class Helper{
 
     initDialogMethods(){
-        console.info('Диалоговые методы вызваны');
-        partner.initDialog();
+        window.partner.initDialog();
+        window.product.initDialog();
+        let dialogs = document.getElementsByClassName('dialog');
+        if(dialogs){
+            [].forEach.call(dialogs, function(elem){
+                if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
+                    var classname = elem.id.replace(/[^a-zA-Z]/g, '');
 
+                    try {
+                        window[elem.id] = new classes[classname + 'Dialog'](elem);
+                    } catch (err) {
+                        console.log(classname + " - Такого конструктора не существует");
+                    }
+
+                    //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
+                }
+            });
+        }
+    }
+
+    initPageMethods(className){
+        if(className !== 'undefined') {
+            console.log('Поиск класса');
+
+            // try {
+            //     window[className] = new classes[className + 'Page']();
+            // } catch (err) {
+            //     console.log(className + " - Такого конструктора не существует");
+            // }
+
+            if (window[className] === null || !window[className].hasOwnProperty('root_dialog')) {
+                try {
+                    window[className] = new classes[className + 'Page']();
+                } catch (err) {
+                    console.log(className + " - Такого конструктора не существует");
+                }
+            }
+        }
     }
 
     debounce(func, wait, immediate) {
@@ -20,6 +69,10 @@ class Helper{
             if (callNow) func.apply(context, args);
         };
     };
+
+    ucFirst(string){
+        return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
+    }
 
     findGetParameter(parameterName) {
         var result = null,

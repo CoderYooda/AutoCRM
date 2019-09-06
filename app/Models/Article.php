@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class Article extends Model
 {
@@ -28,6 +29,14 @@ class Article extends Model
 
     protected $guarded = [];
 
+    public function canUserTake(){
+        if($this->company_id == Auth::user()->company()->first()->id){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function company()
     {
         return $this->belongsTo('App\Models\Company', 'company_id');
@@ -48,4 +57,5 @@ class Article extends Model
         return $this->belongsToMany('App\Models\Store', 'article_store', 'article_id', 'store_id')
             ->withPivot('location', 'count', 'isset');
     }
+
 }

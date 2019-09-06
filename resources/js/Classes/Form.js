@@ -14,7 +14,7 @@ class AxForm{
 
             if(response.data.event){
                 let event = new Event(response.data.event, {bubbles: true});
-                elem.dispatchEvent(event);
+                document.dispatchEvent(event);
                 console.log("Событие " + response.data.event + " объявлено");
             }
 
@@ -30,11 +30,12 @@ class AxForm{
             }
 
             if(dialog){
-                closeDialog(event, dialog.getAttribute("id"));
+                //closeDialog(event, dialog.getAttribute("id"));
             }
             if(response.data.message){
                 notification.notify( 'success', response.data.message);
             }
+
             rebuildLinks();
 
         }).catch(function (error) {
@@ -83,9 +84,7 @@ class AxForm{
             if(error.response.data.message){
                 notification.notify( 'error', error.response.data.message);
             }
-        }).finally(function () {
-                // always executed
-        });
+        }).finally();
     }
 }
 export default AxForm;

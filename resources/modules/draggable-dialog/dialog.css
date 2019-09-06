@@ -64,6 +64,10 @@
 	max-height: calc(50vh - 32px);
 	overflow-y: auto;
 }
+.mh40-dialog {
+    max-height: calc(40vh - 20px);
+    overflow-y: auto;
+}
 .dialog.selected{
 	z-index: 10000000;
 }
@@ -72,17 +76,18 @@
 	color: #fff;
 }
 .dialog .titlebar {
-	height: 32px;
-	line-height: 32px;
-	border-bottom: 1px solid rgba(120, 130, 140, 0.13);
-	vertical-align: middle;
-	font-size: 1.2em;
-	padding: 0 8px 0 8px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	cursor: move;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+    vertical-align: middle;
+    font-size: 1.2em;
+    padding: 0 7px 0 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: move;
     padding-right: 40px;
+    background: #cecece;
 }
 .dialog .content {
 	position: absolute;
@@ -109,9 +114,7 @@
 	float: right;
 }
 .dialog .btn_close {
-	-webkit-transition: 0.25s;
-	transition: 0.25s;
-	color: #fff;
+	color: #666;
 }
 .dialog button::-moz-focus-inner {
 	border: 0;
@@ -122,16 +125,23 @@
 	cursor: pointer;
 }
 .dialog>button {
-	width: 32px;
-	height: 32px;
-	position: absolute;
-	top: 0;
-	right: 0;
-	padding: 0;
-	border: 0;
-	font-size: 1.4em;
-	background: #3f51b5;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    border: 0;
+    font-size: 1.6em;
+    background: #cecece;
 }
+.selected.dialog .btn_close {
+    color: #fff;
+}
+.selected.dialog>button {
+    background: #3f51b5;
+}
+
 .dialog>button.hover,
 .dialog>button.focus
 {

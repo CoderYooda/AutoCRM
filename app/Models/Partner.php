@@ -68,4 +68,13 @@ class Partner extends Model
     {
         return $this->hasOne('App\Models\Car');
     }
+
+    public function outputName() //Вывод имени или наименования компании
+    {
+        if($this->isfl){
+            return $this->fio;
+        } else {
+            return $this->companyName;
+        }
+    }
 }

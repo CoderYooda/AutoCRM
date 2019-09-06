@@ -177,11 +177,13 @@ class PartnerController extends Controller
     {
 
         $partners = Partner::where('company_id', Auth::user()->id)->get();
-        return response()->json(['tag' => 'selectPartner', 'html' => view('partner.dialog.select_partner', compact('partners'))->render()]);
+        return response()->json(['tag' => 'selectPartner', 'html' => view('partner.dialog.select_partner', compact('partners', 'request'))->render()]);
     }
 
     public function dialogSearch(Request $request){
-        $partners = Partner::where('fio', 'LIKE', '%' . $request['string'] .'%')->orWhereHas('phones', function ($query) use ($request) {
+        $partners = Partner::where('fio', 'LIKE', '%' . $request['string'] .'%')
+            ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
+            ->orWhereHas('phones', function ($query) use ($request) {
             $query->where('number', 'LIKE', '%' . $request['string'] .'%');
         })->orderBy('id', 'DESC')->get();
 
@@ -189,6 +191,19 @@ class PartnerController extends Controller
         return response()->json([
             'html' => $content
         ], 200);
+    }
+
+    public function select($id){
+        $partner = Partner::where('id', $id)->first();
+        if(!$partner){
+            return response()->json([
+                'message' => 'Контрагент не найден, возможно он был удалён',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $partner->id,
+            'name' => $partner->outputName()
+        ]);
     }
 
     public static function getPartners($request)

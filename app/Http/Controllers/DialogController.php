@@ -25,6 +25,9 @@ class DialogController extends Controller
             case 'editProduct':
                 $dialog = ProductController::editProductDialog($request);
                 break;
+            case 'selectProduct':
+                $dialog = ProductController::selectProductDialog($request);
+                break;
             case 'selectCategory':
                 $dialog = CategoryController::selectCategoryDialog($request);
                 break;
@@ -57,6 +60,9 @@ class DialogController extends Controller
                 break;
             case 'createEntrance':
                 $dialog = EntranceController::addEntranceDialog($request);
+                break;
+            case 'editEntrance':
+                $dialog = EntranceController::editEntranceDialog($request);
                 break;
 
 

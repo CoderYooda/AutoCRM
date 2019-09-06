@@ -4,11 +4,11 @@
         <div class="list-item " data-id="item-5">
             <span class="w-40 avatar circle blue-grey">
                 {{--<i class="on b-white avatar-right"></i>--}}
-                {{ mb_substr($partner->fio, 0, 1) }}
+                {{ mb_substr($partner->outputName(), 0, 1) }}
             </span>
             <div class="list-body b-r">
 
-                <a onclick="openDialog('editPartner', '&partner_id={{ $partner->id }}' )" class="item-title _500" >{{ $partner->fio }}</a>
+                <a onclick="openDialog('editPartner', '&partner_id={{ $partner->id }}' )" class="item-title _500" >{{ $partner->outputName() }}</a>
                 <div class="item-except text-sm text-muted h-1x">
                     {{ $partner->firstActivePhoneNumber() }}
                 </div>
@@ -25,9 +25,16 @@
                     @if($partner->category()->first() != null)<span class="badge badge-pill success">{{ $partner->category()->first()->name }}</span>@endif
                 </div>
             </div>
-            <button onclick="partner.pick({{ $partner->id }}, '{{ $partner->fio }}', event)" class="btn btn-icon white float-right">
-                <i class="fa fa-check"></i>
-            </button>
+            @if($request['refer'] != null)
+                <button onclick="{{$request['refer']}}.selectPartner({{ $partner->id }})" class="btn btn-icon white float-right">
+                    <i class="fa fa-check"></i>
+                </button>
+            @else
+
+            @endif
+{{--            <button onclick="partner.pick({{ $partner->id }}, '{{ $partner->outputName() }}', event)" class="btn btn-icon white float-right">--}}
+{{--                <i class="fa fa-check"></i>--}}
+{{--            </button>--}}
         </div>
     @endforeach
 @elseif($request && $request['string'] != null)

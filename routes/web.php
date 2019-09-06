@@ -25,9 +25,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
+    Route::post('/product/dialog/search', 'ProductController@dialogSearch')->name('ProductDialogSearch');
+    Route::post('/product/{id}/addtolist', 'ProductController@addToList')->name('ProductAddToList');
 
     #Поступления товаров
     Route::post('/entrance/new', 'EntranceController@store')->name('StoreEntrance');
+    Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
 
     #Пставщики (внешние)
     Route::get('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
@@ -52,11 +55,10 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');
     Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
     Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('DialogSearch');
+    Route::post('/partner/{id}/select', 'PartnerController@select')->name('SelectPartner');
 
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
-
-
 
     #Отчеты
     Route::get('/report', 'ReportController@index')->name('ReportIndex');// Строгое название

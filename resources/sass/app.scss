@@ -170,3 +170,39 @@ nav.nav-border {
     flex: 1;
     text-align: center;
 }
+w-280{
+    width: 280px!important;
+}
+.product_list_element_name{
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 200px;
+}
+.full_w_table{
+    margin-left: -15px;
+    margin-right: -15px;
+    width: calc(100% + 30px);
+    white-space: nowrap;
+}
+.table th, .table td {
+    vertical-align: middle;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+td > .nv-helper{
+    display: none;
+}
+td > .is-invalid{
+    padding: 0.25rem 0.5rem!important;
+    border-width: 2px!important;
+    background-image: none!important;
+}
+button.is-invalid{
+    border-color: #e3342f!important;
+    border-width: 2px;
+}

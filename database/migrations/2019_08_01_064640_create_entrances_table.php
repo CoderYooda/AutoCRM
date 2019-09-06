@@ -20,10 +20,10 @@ class CreateEntrancesTable extends Migration
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->decimal('totalPrice', 10, 2)->comment('Общая цена');
-            $table->integer('count')->comment('Новое кол-во');
-            $table->integer('count_before')->comment('Старое кол-во');
-            $table->integer('price')->comment('Новая цена');
-            $table->integer('price_before')->comment('Старая цена');
+            $table->boolean('nds')->comment('ндс');
+            $table->boolean('nds_included')->comment('ндс в стоимости?');
+            $table->boolean('locked')->comment('Замок');
+            $table->text('comment')->nullable()->comment('Комментарий');
             $table->timestamps();
         });
     }
