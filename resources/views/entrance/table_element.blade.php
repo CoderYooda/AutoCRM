@@ -9,6 +9,6 @@
     <td>{{ $entrance->comment }}</td>
     <td style="text-align: center;">@if($entrance->locked)<i class="fa fa-lock text-muted"></i>@endif</td>
     <td style="width: 20px; text-align: center;">
-        <a onclick="openDialog('editEntrance', '&entrance_id={{ $entrance->id }}')" class="btn btn-sm badge white text-muted"><i class="fa fa-eye"></i></a>
+        <a onclick="openDialog('entranceDialog', '&entrance_id={{ $entrance->id }}')" class="btn btn-sm badge white text-muted"><i class="fa fa-eye"></i></a>
     </td>
 </tr>

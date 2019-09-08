@@ -28,9 +28,9 @@ window.helper = new Helper();
 window.pagination = new Pagination();
 window.axform = new AxForm();
 window.category = new Category();
-window.product = new Product();
+//window.product = new Product();
 window.supplier = new Supplier();
-window.partner = new Partner();
+// window.partner = new Partner();
 window.entity = new Entity();
 
 // document.addEventListener('DOMContentLoaded', function()

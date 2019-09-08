@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted" id="tab_cars">
+<div class="tab-pane animate fadeIn text-muted" id="tab_cars{{ $class }}">
     @if(isset($partner) && $partner->car()->first())
         <input type="hidden" name="passport_id" value="{{$partner->car()->first()->id}}">
     @endif

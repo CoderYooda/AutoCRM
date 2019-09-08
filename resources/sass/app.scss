@@ -1,6 +1,9 @@
 // Variables
 @import 'variables';
 
+//Fonts
+@import 'fonts';
+
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
@@ -51,7 +54,7 @@ nav.nav-border {
 
 .sidenav .nav-border .active > a,
 .sidenav .nav-active-text .active > a {
-    color: #53a6fa; }
+    color: #5b73bd; }
 
 .fill-theme {
     fill: #53a6fa; }
@@ -206,3 +209,55 @@ button.is-invalid{
     border-color: #e3342f!important;
     border-width: 2px;
 }
+label {
+    color: #222;
+    font-weight: 500;
+    font-size: inherit;
+}
+
+button .fa-bars{
+    color: #929eb0;
+}
+.mw-280-e{
+    max-width: 280px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    text-overflow-ellipsis: color(red);
+}
+header .nav-item.active{
+    background: red;
+}
+.navfh{
+    height: 56px;
+    margin-top: -10px!important;
+    margin-bottom: -10px;
+}
+.navfh .nav-item a{
+    padding: 18px 1rem;
+}
+.category-aside:hover .actions{
+    display: flex!important;
+}
+.text-ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.category-aside .actions a{
+    padding: 8px 10px;
+    padding-right: 5px;
+    opacity: 0.5;
+}
+.category-aside .actions a:last-child{
+    padding-right: 10px;
+}
+.category-aside .actions a:hover{
+    opacity: 1;
+}
+.navbar input[name=search]{
+    height: 29px;
+}
+.modal-header {
+    border-radius: 0;
+ }

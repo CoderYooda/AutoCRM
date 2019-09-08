@@ -15,7 +15,7 @@
         </div>
         <span class="m-b btn-groups pl-1">
             <button onclick="openDialog('createCategory')" class="btn btn-sm success mb-0">Новая категория</button>
-            <button onclick="openDialog('createProduct')" class="btn btn-sm success mb-0">Новый товар</button>
+            <button onclick="openDialog('productDialog')" class="btn btn-sm success mb-0">Новый товар</button>
         </span>
     </div>
     <div class="d-flex flex scroll-y">
@@ -24,10 +24,6 @@
                 @include('product.elements.table_container')
             </div>
         </div>
-{{--        <div class="d-flex flex-column w-xxl">--}}
-{{--            <div class="scrollable hover">--}}
-{{--            </div>--}}
-{{--        </div>--}}
     </div>
 </div>
 @endsection

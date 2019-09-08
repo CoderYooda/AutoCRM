@@ -1,5 +1,5 @@
-@php $class = 'selectProduct' @endphp
-<div id="selectProduct" class="dialog" style="width:580px;">
+@php $class = 'selectProductDialog' @endphp
+<div id="selectProductDialog" class="dialog" style="width:580px;">
     <div class="titlebar">Поиск товаров</div>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="navbar white no-radius box-shadow pos-rlt">
@@ -19,7 +19,7 @@
                 <input id="product_search" type="text" class="form-control form-control-sm search" placeholder="Поиск товара" required="">
 
                 <span class="input-group-append">
-                    <button onclick="openDialog('createProduct')" class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-plus"></i></button>
+                    <button onclick="openDialog('productDialog')" class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-plus"></i></button>
                 </span>
             </div>
         </form>
@@ -31,7 +31,7 @@
             </div>
         </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer white">
         <button class="btn success" onclick="closeDialog(event)">Закрыть</button>
     </div>
 </div>

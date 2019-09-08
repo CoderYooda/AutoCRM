@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8" />
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="AutoCrm" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
@@ -11,7 +11,7 @@
 </head>
 <body class="fixed-aside fixed-content">
 <div class="app" id="app">
-    <header class="app-header indigo box-shadow-6">
+    <header class="app-header box-shadow-6">
         <div class="navbar navbar-expand-lg">
             <span id="preload" style="position: absolute;left: 0;">
             </span>
@@ -39,39 +39,39 @@
                 </li>
             </ul>
             <!-- Navbar collapse -->
-            <div class="collapse navbar-collapse  order-lg-1" id="navbarToggler">
-                <ul class="navbar-nav mt-2 mt-lg-0 mx-0 mx-lg-2 ">
-                    <li class="nav-item">
+            <div class="collapse navbar-collapse nav-active-theme order-lg-1" id="navbarToggler">
+                <ul class="nav navfh navbar-nav">
+                    <li id="store_link" class="nav-item">
                         <a href="{{ route('StoreIndex') }}" class="nav-link ajax-nav">
-                            Товары
+                            Склад
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
+                    <li id="services_link" class="nav-item">
+                        <a href="{{ route('ServicesIndex') }}" class="nav-link ajax-nav">
                             Услуги
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li id="cash_link" class="nav-item">
                         <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
                             Деньги
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
+                    <li id="employee_link" class="nav-item">
+                        <a href="{{ route('EmployeeIndex') }}" class="nav-link ajax-nav">
                             Сотрудники
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li id="partner_link" class="nav-item">
                         <a href="{{ route('PartnerIndex') }}" class="nav-link ajax-nav">
                             Контрагенты
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li id="report_link" class="nav-item">
                         <a href="{{ route('ReportIndex') }}" class="nav-link ajax-nav">
                             Отчеты
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li id="settings_link" class="nav-item">
                         <a href="{{ route('SettingsIndex') }}" class="nav-link ajax-nav">
                             Настройки
                         </a>

@@ -1,30 +1,44 @@
-import EntranceDialog from "./Entrance/EntranceDialog";
+import entranceDialog from "./Entrance/EntranceDialog";
 import selectProductDialog from "./Product/SelectProductDialog";
+import productDialog from "./Product/ProductDialog";
 import selectPartnerDialog from "./Partner/SelectPartnerDialog";
+import partnerDialog from "./Partner/PartnerDialog";
+import partnerPage from "./Partner/PartnerPage";
+import storePage from "./Store/StorePage";
+import settingsPage from "./Settings/SettingsPage";
+import servicesPage from "./Services/ServicesPage";
+import reportPage from "./Report/ReportPage";
+import employeePage from "./Employee/EmployeePage";
 
 import cashPage from "./Cash/Cash";
 
 const classes = {
-    EntranceDialog,
+    entranceDialog,
     selectProductDialog,
+    productDialog,
     selectPartnerDialog,
+    partnerDialog,
 
     cashPage,
+    partnerPage,
+    storePage,
+    settingsPage,
+    servicesPage,
+    reportPage,
+    employeePage,
 };
 
 class Helper{
 
     initDialogMethods(){
-        window.partner.initDialog();
-        window.product.initDialog();
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){
             [].forEach.call(dialogs, function(elem){
                 if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
-                    var classname = elem.id.replace(/[^a-zA-Z]/g, '');
 
+                    var classname = elem.id.replace(/[^a-zA-Z]/g, '');
                     try {
-                        window[elem.id] = new classes[classname + 'Dialog'](elem);
+                        window[elem.id] = new classes[classname](elem);
                     } catch (err) {
                         console.log(classname + " - Такого конструктора не существует");
                     }
@@ -35,23 +49,20 @@ class Helper{
         }
     }
 
-    initPageMethods(className){
+    initPageMethods(){
+
+        let className = window.location.pathname.substring(1);
         if(className !== 'undefined') {
-            console.log('Поиск класса');
-
-            // try {
-            //     window[className] = new classes[className + 'Page']();
-            // } catch (err) {
-            //     console.log(className + " - Такого конструктора не существует");
-            // }
-
-            if (window[className] === null || !window[className].hasOwnProperty('root_dialog')) {
+            if(!window[className]) {
                 try {
+                    console.log(className);
                     window[className] = new classes[className + 'Page']();
                 } catch (err) {
                     console.log(className + " - Такого конструктора не существует");
                 }
             }
+        } else {
+            console.warn('Ошибка в ' + className);
         }
     }
 
@@ -86,6 +97,7 @@ class Helper{
             });
         return result;
     }
+
 
     createElementFromHTML(htmlString) {
         var div = document.createElement('div');
@@ -126,6 +138,34 @@ class Helper{
         }
         if(i<0) {kvp[kvp.length] = [key,value].join('=');}
         elem.setAttribute("href", kvp.join('&'));
+    }
+    insertParamUrl(key, value)
+    {
+        key = encodeURI(key); value = encodeURI(value);
+
+        var kvp = document.location.search.substr(1).split('&');
+
+        var i=kvp.length; var x; while(i--)
+        {
+            x = kvp[i].split('=');
+
+            if (x[0]==key)
+            {
+                x[1] = value;
+                kvp[i] = x.join('=');
+                break;
+            }
+        }
+        if(i<0) {kvp[kvp.length] = [key,value].join('=');}
+
+        oPageInfo.title = 'search';
+        oPageInfo.url = this.getBaseUrl() + '?' + kvp.join('&');
+        history.replaceState(oPageInfo, oPageInfo.title, oPageInfo.url);
+        history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
+    }
+
+    getBaseUrl(){
+        return location.protocol + '//' + location.host + location.pathname
     }
 }
 export default Helper;

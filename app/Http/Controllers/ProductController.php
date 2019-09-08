@@ -23,28 +23,7 @@ class ProductController extends Controller
         $message = 'Внутренняя ошибка сервера';
     }
 
-    public function index(Request $request)
-    { // точка входа в страницу
-        $page_title = 'Товары';
-        if($request['search'] == 'undefined'){
-            $request['search'] = null;
-        }
 
-        $target = HC::selectTarget(); // цель ajax подгрузки
-
-        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
-            $request['active_tab'] = 'store';
-        }
-
-        $classname = $request['active_tab'] . 'Tab';
-        $content = self::$classname($request);
-
-        if($request['view_as'] != null && $request['view_as'] == 'json'){
-            return response()->json(['target' => $target,'page' => $page_title, 'content' => $content->render()]);
-        } else {
-            return $content;
-        }
-    }
 
 
     public function delete($id)
@@ -58,45 +37,14 @@ class ProductController extends Controller
         return response()->json(['product_id' => $product->id, 'message' => $this->message], $this->status);
     }
 
-    public static function storeTab($request)
-    {
-        $articles = self::getArticles($request);
-        $categories = CategoryController::getCategories($request, 'store');
-
-        $cat_info = [];
-        $cat_info['route'] = 'StoreIndex';
-        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-tab-content'];
-
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.elements.table_container', compact('articles','categories', 'cat_info', 'request'));
-        }
-        return view('product.store', compact('articles','categories', 'request', 'cat_info', 'trinity'));
-    }
-
-    public static function providerTab($request)
-    {
-        $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
-        $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.elements.provider.table_container', compact('brands','request'));
-        }
-        return view('product.provider', compact('brands', 'request'));
-    }
-
-    public static function entranceTab($request)
-    {
-        $entrances = EntranceController::getEntrances($request);
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.entrance', compact('request', 'entrances'));
-        }
-        return view('entrance.index', compact('request','entrances'));
-    }
-
     public static function selectProductDialog($request)
     {
         $stores = Store::where('company_id', Auth::user()->id)->get();
         $products = Article::where('company_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
-        return response()->json(['tag' => 'selectProduct', 'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render()]);
+        return response()->json([
+            'tag' => 'selectProductDialog',
+            'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render()
+        ]);
     }
 
     public function addToList($id, Request $request){
@@ -117,16 +65,29 @@ class ProductController extends Controller
         ]);
     }
 
-    public static function addProductDialog($request)
+    public static function productDialog($request)
     {
+        $tag = 'productDialog';
+
+        if($request['product_id']){
+            $tag .= $request['product_id'];
+            $product = Article::where('id', (int)$request['product_id'])->first();
+        } else {
+            $product = null;
+        }
+
         if($request['category_select']){
             $category_select = (int)$request['category_select'];
         } else {
             $category_select = 2;
         }
+
         $stores = Store::where('company_id', Auth::user()->id)->get();
         $category = Category::where('id', $category_select)->first();
-        return response()->json(['tag' => 'createProduct', 'html' => view('product.dialog.form_product', compact('category', 'stores', 'request'))->render()]);
+        return response()->json([
+            'tag' => $tag,
+            'html' => view('product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
+        ]);
     }
 
     public function dialogSearch(Request $request)
@@ -154,26 +115,26 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public static function editProductDialog($request)
-    {
-        $tag = 'editProduct';
-        if($request['product_id']){
-            $tag .= $request['product_id'];
-            $product = Article::where('id', (int)$request['product_id'])->first();
-        } else {
-            return response()->json(['message' => 'Недопустимое значение товара'], 500);
-        }
-        if($product){
-            $stores = Store::
-            where('company_id', Auth::user()->company()->first()->id)
-                ->with(['articles' => function($q) use ($product){
-                    $q->where('article_id', $product->id);
-                }])
-                ->get();
-        }
-
-        return response()->json(['tag' => $tag, 'html' => view('product.dialog.form_product', compact('product', 'stores'))->render()]);
-    }
+//    public static function editProductDialog($request)
+//    {
+//        $tag = 'editProduct';
+//        if($request['product_id']){
+//            $tag .= $request['product_id'];
+//            $product = Article::where('id', (int)$request['product_id'])->first();
+//        } else {
+//            return response()->json(['message' => 'Недопустимое значение товара'], 500);
+//        }
+//        if($product){
+//            $stores = Store::
+//            where('company_id', Auth::user()->company()->first()->id)
+//                ->with(['articles' => function($q) use ($product){
+//                    $q->where('article_id', $product->id);
+//                }])
+//                ->get();
+//        }
+//
+//        return response()->json(['tag' => $tag, 'html' => view('product.dialog.form_product', compact('product', 'stores'))->render()]);
+//    }
 
     public function store(Request $request)
     {

@@ -1,8 +1,10 @@
 <div
     @if(isset($product) && $product->id != NULL)
-        id="editProduct{{$product->id}}"
+        id="productDialog{{$product->id}}"
+        @php $class = 'productDialog' @endphp
     @else
-        id="createProduct"
+        id="productDialog"
+        @php $class = 'productDialog' @endphp
     @endif
     class="dialog" style="width:600px;">
     @if(isset($product) && $product->id != NULL)
@@ -11,7 +13,7 @@
         <div class="titlebar">Добавление продукта</div>
     @endif
 
-    <button class="btn_close" onclick="closeDialog(event)">×</button>
+    <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="@if(isset($category)){{ $category->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@else 2 @endif">
@@ -65,7 +67,7 @@
                 </div>
             </div>
             <div class="col-md-12 p-3">
-                <button type="submit" onclick="axform.send(this)" class="btn success pull-right">Сохранить</button>
+                <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right">Сохранить</button>
             </div>
         </div>
         <div class="system_message">

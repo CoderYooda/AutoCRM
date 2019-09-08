@@ -1,10 +1,10 @@
 <div
     @if(isset($entrance) && $entrance->id != NULL)
-        @php $class = 'Entrance' . $entrance->id @endphp
-        id="Entrance{{$entrance->id}}" data-id="{{$entrance->id}}"
+        @php $class = 'entranceDialog' . $entrance->id @endphp
+        id="entranceDialog{{$entrance->id}}" data-id="{{$entrance->id}}"
     @else
-        @php $class = 'Entrance' @endphp
-        id="Entrance"
+        @php $class = 'entranceDialog' @endphp
+        id="entranceDialog"
     @endif
     class="dialog entrance_dialog" style="width:800px;">
     @if(isset($entrance) && $entrance->id != NULL)
@@ -13,7 +13,7 @@
         <div class="titlebar">Новое поступление товара</div>
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-        <div class="modal-header" style="justify-content: normal;">
+        <div class="modal-header white" style="justify-content: normal;">
             <div class="b-r pr-3 mr-3">
                 <span class="item-title _500">Поступление</span>
                 <div class="item-except text-sm h-1x font-weight-bolder">
@@ -156,7 +156,7 @@
 
         </div>
         <div class="modal-footer">
-            <button class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button class="btn primary" onclick="{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">
 

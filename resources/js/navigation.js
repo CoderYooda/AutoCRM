@@ -29,7 +29,17 @@ const ajaxRequest = new (function () {
                     history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
                     bUpdateURL = false;
                 }
+
+
+                let tabs = document.querySelectorAll('.nav li');
+                [].forEach.call(tabs, function(li){
+                    li.classList.remove('active');
+                    if(window.helper.findGetParameter('active_tab') === li.dataset.tab){
+                        li.classList.add('active');
+                    }
+                });
                 rebuildLinks();
+                document.dispatchEvent(new Event('ajaxLoaded', {bubbles: true}));
                 break;
             default:
                 vMsg = nStatus + ": " + (oHTTPStatus[nStatus] || "Unknown");
@@ -101,11 +111,9 @@ const ajaxRequest = new (function () {
         history.replaceState(oPageInfo, oPageInfo.title, oPageInfo.url);
         for (var oLink, nIdx = 0, nLen = document.links.length; nIdx < nLen; document.links[nIdx++].onclick = processLink);
 
-        product.searchInit();
-
-        if(document.querySelector("#partner_index_page") !== null){
-            partner.init();
-        }
+        // if(document.querySelector("#partner_index_page") !== null){
+        //     partner.init();
+        // }
 
         window.helper.initPageMethods(oPageInfo.class);
 
@@ -211,6 +219,8 @@ const ajaxRequest = new (function () {
     this.stop = abortReq;
     window.rebuildLinks = init;
     window.goto = getPage;
+    window.filterUrl = filterURL;
+    window.oPageInfo = oPageInfo;
     window.getQueryVar = getQueryVariable;
 
 })();

@@ -16,10 +16,12 @@ html {
 
 body {
     color: rgba(70, 90, 110, 0.85);
-    font-size: 0.8rem;
+    font-size: 13px;
     line-height: 1.6;
     overflow-x: hidden;
-    background-color: #f3f6f9; }
+    background-color: #f3f6f9;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    -webkit-font-smoothing: subpixel-antialiased;}
 
 *:focus {
     outline: 0 !important; }
@@ -105,7 +107,7 @@ Buttons
 */
 .btn {
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 400;
     color: inherit;
     outline: 0 !important; }
 .btn:not([disabled]):hover, .btn:not([disabled]):focus, .btn:not([disabled]).active {
@@ -139,11 +141,11 @@ Buttons
     background-color: transparent; }
 
 .btn.b-primary:hover, .btn.b-primary:focus, .btn.b-primary.active, .btn.primary:hover, .btn.primary:focus, .btn.primary.active {
-    color: rgba(255, 255, 255, 0.85) !important;
-    background-color: #2e93f9; }
+    color: rgba(255, 255, 255, 1) !important;
+    background-color: #657fce; }
 
 .btn.b-primary:focus, .btn.b-primary:active, .btn.primary:focus, .btn.primary:active {
-    box-shadow: 0 0 0 3px rgba(83, 166, 250, 0.5); }
+    box-shadow: 0 0 0 3px rgba(91, 115, 189, 0.5); }
 
 .btn.b-accent:hover, .btn.b-accent:focus, .btn.b-accent.active, .btn.accent:hover, .btn.accent:focus, .btn.accent.active {
     color: rgba(255, 255, 255, 0.85) !important;
@@ -357,6 +359,10 @@ Dropdown menu
 /*
 Form
 */
+.form-control:focus {
+    border-color: #5b73bd;
+    box-shadow: 0 0 0 0.2rem rgba(91, 115, 189, 0.19);
+}
 .form-control {
     border-color: rgba(120, 130, 140, 0.2);
     border-radius: 0.25rem;
@@ -365,7 +371,7 @@ Form
     color: inherit;
     box-shadow: 0 0 0 0.2rem rgba(83, 166, 250, 0.25); }
 .form-control:not(.is-valid):not(.is-invalid):focus {
-    border-color: #53a6fa; }
+    border-color: #5b73bd; }
 
 .form-control,
 .col-form-legend,
@@ -439,7 +445,6 @@ input:checked + .active-checked {
 List Group
 */
 .list-group {
-    border-radius: 3px;
     background: #fff;
     padding-right: 0; }
 .list-group.no-radius .list-group-item {
@@ -597,7 +602,9 @@ Modal
     display: -ms-flexbox !important;
     display: flex !important;
     position: relative;
-    z-index: 1000; }
+    z-index: 1000;
+    background-color: #e0e0e0;
+}
 .aside.show {
     width: 100% !important;
     top: 0;
@@ -798,8 +805,15 @@ Navbar
 /*
 pagination
 */
+.navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+.page-link {
+    padding: 0.3rem 0.75rem;
+}
 .pagination a {
-    padding: .5rem .75rem;
+    padding: .3rem .75rem;
     border: 1px solid rgba(120, 130, 140, 0.13); }
 
 .pagination .page-link,
@@ -1549,6 +1563,8 @@ body {
     display: flex; }
 
 .app-header {
+    background-color: #1e2835e8;
+    color: #fff;
     position: fixed;
     z-index: 1040;
     left: 0;
@@ -1621,9 +1637,17 @@ body {
     max-height: calc(100% - 3.5rem); }
 
 
+//.action-icon
+
+
 /*
 List
 */
+
+.list-item .item-action-hovered{
+    display: none;
+}
+
 .list {
     padding-left: 0;
     padding-right: 0; }
@@ -1637,6 +1661,17 @@ List
     align-items: stretch;
     padding: 0.75rem 0.5rem;
     position: relative; }
+
+.list-item:hover{
+    background-color: rgba(50, 59, 71, 0.05);
+}
+.list-item:hover .item-action-hovered{
+    display: block;
+}
+.list-item:hover .item-action{
+    display: none;
+}
+
 .list-item > * {
     margin-left: 0.5rem;
     margin-right: 0.5rem; }
@@ -1861,7 +1896,7 @@ Nav plus
     position: absolute;
     top: 0;
     bottom: 0;
-    border-color: inherit;
+    border-color: #5b73bd;
     border-width: 3px;
     border-left-style: solid; }
 
@@ -3025,8 +3060,8 @@ Colors
     background-color: #1e2835; }
 
 .primary {
-    color: rgba(255, 255, 255, 0.85);
-    background-color: #53a6fa; }
+    color: rgba(255, 255, 255, 1);
+    background-color: #5b73bd; }
 .primary.lt,
 .primary .lt {
     background-color: #5facfa; }

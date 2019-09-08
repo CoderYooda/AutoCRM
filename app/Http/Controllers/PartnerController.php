@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\Paginator;
 use Auth;
 
 class PartnerController extends Controller
@@ -16,32 +17,51 @@ class PartnerController extends Controller
     {
         $target = HC::selectTarget();
         $partners = self::getPartners($request);
-
         $categories = CategoryController::getCategories($request, 'partner');
 
         $cat_info = [];
         $cat_info['route'] = 'PartnerIndex';
         $cat_info['params'] = ['target' => 'ajax-tab-content'];
 
+        if($categories['parent'] != null){
+            $page = $categories['parent']->name;
+        } else {
+            $page = 'Контрагенты';
+        }
+
         if($request['view_as'] != null && $request['view_as'] == 'json'){
             $content = view('partner.index', compact('partners', 'categories', 'cat_info', 'request'))->render();
-            return response()->json(['target' => $target , 'page' => 'Контрагенты', 'content' => $content]);
+            return response()->json([
+                'target' => $target,
+                'page' => $page,
+                'content' => $content
+            ]);
         } else {
-            return view('partner.index', compact('partners','categories', 'cat_info', 'request'));
+            return view('partner.index', compact('page', 'partners','categories', 'cat_info', 'request'));
         }
 
     }
 
-    public static function addPartnerDialog($request)
+    public static function partnerDialog($request)
     {
-        if($request['partner_select']){
-            $partner_select = (int)$request['partner_select'];
-            $partner = Partner::where('company_id', Auth::user()->id)->where('id', $partner_select)->first();
-            $tag = 'editPartner' . $partner->id;
+        $tag = 'partnerDialog';
+
+        if($request['partner_id']){
+            $tag .= $request['partner_id'];
+            $partner = Partner::where('id', (int)$request['partner_id'])->with('passport')->first();
         } else {
             $partner = null;
-            $tag = 'addPartner';
         }
+
+
+//        if($request['partner_select']){
+//            $partner_select = (int)$request['partner_select'];
+//            $partner = Partner::where('company_id', Auth::user()->id)->where('id', $partner_select)->first();
+//            $tag = 'partnerDialog' . $partner->id;
+//        } else {
+//            $partner = null;
+//            $tag = 'partnerDialog';
+//        }
 
         if($request['category_select']){
             $category_select = (int)$request['category_select'];
@@ -49,8 +69,17 @@ class PartnerController extends Controller
             $category_select = 3;
         }
         $category = Category::where('id', $category_select)->first();
+
         return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner', 'category', 'request'))->render()]);
     }
+
+//    public static function partnerDialog($request)
+//    {
+//        $tag = 'editPartner';
+
+//
+//        return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner'))->render()]);
+//    }
 
     public function store(Request $request)
     {
@@ -85,18 +114,18 @@ class PartnerController extends Controller
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
         $partner->phones()->sync($phones->pluck('id'));
-        $partners = self::getPartners($request);
-        $categories = CategoryController::getCategories($request, 'partner');
+        //$partners = self::getPartners($request);
+        //$categories = CategoryController::getCategories($request, 'partner');
 
-        $content = view('partner.elements.table_container', compact('partners', 'categories'))->render();
+        //$content = view('partner.elements.list_container', compact('partners', 'categories', 'request'))->render();
 
         if($request->ajax()){
             return response()->json([
                 'message' => $message,
-                'container' => 'ajax-table-partner',
+                //'container' => 'ajax-table-partner',
                 //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
                 'event' => 'PartnerStored',
-                'html' => $content
+                //'html' => $content
             ], 200);
         } else {
             return redirect()->back();
@@ -160,24 +189,13 @@ class PartnerController extends Controller
         return $rules;
     }
 
-    public static function editPartnerDialog($request)
-    {
-        $tag = 'editPartner';
-        if($request['partner_id']){
-            $tag .= $request['partner_id'];
-            $partner = Partner::where('id', (int)$request['partner_id'])->with('passport')->first();
-        } else {
-            return response()->json(['message' => 'Недопустимое значение партнера'], 500);
-        }
-
-        return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner'))->render()]);
-    }
-
     public static function selectPartnerDialog($request)
     {
-
-        $partners = Partner::where('company_id', Auth::user()->id)->get();
-        return response()->json(['tag' => 'selectPartner', 'html' => view('partner.dialog.select_partner', compact('partners', 'request'))->render()]);
+        $partners = Partner::where('company_id', Auth::user()->id)->paginate(12);
+        return response()->json([
+            'tag' => 'selectPartnerDialog',
+            'html' => view('partner.dialog.select_partner', compact('partners', 'request'))->render()
+        ]);
     }
 
     public function dialogSearch(Request $request){
@@ -185,11 +203,21 @@ class PartnerController extends Controller
             ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
             ->orWhereHas('phones', function ($query) use ($request) {
             $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-        })->orderBy('id', 'DESC')->get();
+        })->orderBy('id', 'DESC')->paginate(12);
 
         $content = view('partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
         return response()->json([
             'html' => $content
+        ], 200);
+    }
+
+    public function search(Request $request){
+
+        $partners = self::getPartners($request);
+        $content = view('partner.elements.list_container', compact('partners', 'request'))->render();
+        return response()->json([
+            'html' => $content,
+            'target' => 'ajax-table-partner',
         ], 200);
     }
 
@@ -208,23 +236,44 @@ class PartnerController extends Controller
 
     public static function getPartners($request)
     {
-        #TODO слить методы выборки сущьностей (6.10)
+        #TODO слить методы выборки сущностей (6.10)
 
         $category = 3;
-
         if($request['category_id']){
             $category = (int)$request['category_id'];
         }
 
-        return Partner::where('company_id', Auth::user()->company()->first()->id )->with('passport')->where(function($q) use ($request, $category){
-            if($category != 0) {
-                $q->where('category_id', $category);
-            }
-            if($request['search'] != null) {
-                $q->where('article', 'like', '%' . $request['search'] . '%');
-            }
-        })->orderBy('created_at', 'DESC')->paginate(24);
+        if($request['page']){
+            Paginator::currentPageResolver(function () use ($request) {
+                return (int)$request['page'];
+            });
+        }
 
+
+        $partners = Partner::where('company_id', Auth::user()->company()->first()->id )->with('passport')->where(function($q) use ($request, $category){
+            if($category != 3) {
+                $q->where('category_id', $category);
+            } else {
+
+            }
+
+            if($request['search'] != null) {
+                if (mb_strlen($request['search']) === 1) {
+                    $q->where('fio', 'LIKE', $request['search'] . '%' )
+                        ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+                } else {
+                    $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+                        ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+                        ->orWhereHas('phones', function ($query) use ($request) {
+                            $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+                        });
+                }
+            }
+
+
+        })->orderBy('created_at', 'DESC')->paginate(12);
+
+        return $partners;
     }
 
 }

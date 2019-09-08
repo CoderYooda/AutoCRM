@@ -11,26 +11,21 @@ use Auth;
 
 class EntranceController extends Controller
 {
-    public static function addEntranceDialog($request)
+    public static function entranceDialog($request)
     {
-        //$parent = Category::where('id', $start_category_id)->first();
-        $stores = Store::where('company_id', Auth::user()->id)->get();
-        return response()->json(['tag' => 'Entrance', 'html' => view('entrance.dialog.form_entrance', compact('stores'))->render()]);
-    }
-
-    public static function editEntranceDialog($request)
-    {
-        if($request['params']){
+        if($request['params'] && $request['entrance_id'] != null){
             $id = (int)$request['entrance_id'];
+            $entrance = Entrance::where('id', $id)->first();
+            $tag = 'entranceDialog'.$entrance->id;
         } else {
-            abort(404);
+            $entrance = null;
+            $tag = 'entranceDialog';
         }
-
-        $entrance = Entrance::where('id', $id)->first();
         $stores = Store::where('company_id', Auth::user()->id)->get();
         return response()->json([
-            'tag' => 'Entrance'.$entrance->id,
-            'html' => view('entrance.dialog.form_entrance', compact('entrance','stores'))->render()]);
+            'tag' => $tag,
+            'html' => view('entrance.dialog.form_entrance', compact('entrance','stores'))->render()
+        ]);
     }
 
     public function getEntranceProducts($id){

@@ -1,5 +1,5 @@
 class AxForm{
-    send(elem){
+    send(elem, callback = null){
 
         var dialog = elem.closest(".dialog");
         window.event.preventDefault();
@@ -35,6 +35,7 @@ class AxForm{
             if(response.data.message){
                 notification.notify( 'success', response.data.message);
             }
+            callback();
 
             rebuildLinks();
 
@@ -42,11 +43,11 @@ class AxForm{
             helper.removeElementsByClass('nv-helper');
             helper.removeClassesByClass('is-invalid');
 
-            if(error.response.data.system_message){
+            if(error.response && error.response.data.system_message){
                 dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
             }
 
-            if(error.response.data.messages){
+            if(error.response && error.response.data.messages){
                 var all_butt_butts = document.querySelectorAll(".helper_danger");
                 Array.prototype.forEach.call(all_butt_butts, function(el) {
                     el.setAttribute("style", "");
@@ -81,7 +82,7 @@ class AxForm{
 
                 }
             }
-            if(error.response.data.message){
+            if(error.response && error.response.data.message){
                 notification.notify( 'error', error.response.data.message);
             }
         }).finally();

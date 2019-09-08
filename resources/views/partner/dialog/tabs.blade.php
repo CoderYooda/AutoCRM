@@ -3,7 +3,7 @@
         <div class="nav-active-border b-success left right box mb-0">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link block main_tab active" href="#tab_base" data-toggle="tab" data-target="#tab_base">
+                    <a class="nav-link block main_tab active" href="#tab_base{{ $class }}" data-toggle="tab" data-target="#tab_base{{ $class }}">
                         Основные
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
@@ -11,7 +11,7 @@
                     </a>
                 </li>
                 <li class="nav-item ul_only @if(isset($partner) && $partner['isfl']) d-none-f @elseif(!isset($partner)) d-none-f @endif">
-                    <a class="nav-link block" href="#tab_company" data-toggle="tab" data-target="#tab_company">
+                    <a class="nav-link block" href="#tab_company{{ $class }}" data-toggle="tab" data-target="#tab_company{{ $class }}">
                         Организация
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
@@ -19,7 +19,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link block" href="#tab_contacts" data-toggle="tab" data-target="#tab_contacts">
+                    <a class="nav-link block" href="#tab_contacts{{ $class }}" data-toggle="tab" data-target="#tab_contacts{{ $class }}">
                         Контакты
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
@@ -27,7 +27,7 @@
                     </a>
                 </li>
                 <li class="nav-item fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
-                    <a class="nav-link block" href="#tab_passport" data-toggle="tab" data-target="#tab_passport">
+                    <a class="nav-link block" href="#tab_passport{{ $class }}" data-toggle="tab" data-target="#tab_passport{{ $class }}">
                         Паспорт
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>

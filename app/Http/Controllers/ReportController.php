@@ -8,16 +8,20 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function index(Request $request){
-
-        $products = Article::all();
+    public function index(Request $request)
+    {
         $target = HC::selectTarget();
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
-            $content = view('report.index', compact('products', 'request'))->render();
-            return response()->json(['target' => $target , 'content' => $content]);
+            $content = view('report.index', compact('request'))->render();
+            return response()->json([
+                'target' => $target,
+                'page' => 'Отчеты',
+                'content' => $content
+            ]);
         } else {
-            return view('report.index', compact('products', 'request'));
+            return view('report.index', compact('request'));
         }
+
     }
 }

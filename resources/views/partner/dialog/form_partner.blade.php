@@ -1,8 +1,10 @@
 <div
     @if(isset($partner) && $partner->id != NULL)
-        id="editPartner{{$partner->id}}"
+        id="partnerDialog{{$partner->id}}"
+        @php $class = 'partnerDialog' . $partner->id @endphp
     @else
-        id="addPartner"
+        id="partnerDialog"
+        @php $class = 'partnerDialog' @endphp
     @endif
     class="dialog" style="width:600px;">
     @if(isset($partner) && $partner->id != NULL)
@@ -11,7 +13,7 @@
         <div class="titlebar">Создание нового контрагента</div>
     @endif
 
-    <button class="btn_close" onclick="closeDialog(event)">×</button>
+    <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form id="act_form_partner" action="{{ route('StorePartner') }}" method="POST">
         @csrf
 {{--        <input class="category_select" type="hidden" name="category_id" value="@if(isset($category)){{ $category->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@else 2 @endif">--}}
@@ -24,18 +26,21 @@
         <input id="isul" type="radio" name="isfl" value="0" @if(isset($partner) && !$partner['isfl'])checked @endif style="display: none;">
         <input class="category_select" type="hidden" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@else 3 @endif">
 
+        <input type="hidden" name="page" value="@if(isset($request) && isset($request['page'])){{ $request['page'] }}@else 1 @endif">
+        <input type="hidden" name="search" value="@if(isset($request) && isset($request['search'])){{ $request['search'] }}@else @endif">
+
         <div class="p-3">
             <div class="nav-active-primary">
                 <ul class="nav nav-pills nav-sm flexed-navs">
                     <li class="nav-item">
-                        <a onclick="partner.activateTab('fl');" href="#" class="nav-link
+                        <a onclick="window.{{ $class }}.activateTab('fl');" class="nav-link fl-tab
                             @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif
                             " data-toggle="tab" data-target="#physial_tab">
                             Физическое лицо
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a onclick="partner.activateTab('ul');" href="#" class="nav-link
+                        <a onclick="window.{{ $class }}.activateTab('ul');" class="nav-link
                             @if(isset($partner) && !$partner['isfl']) active @endif
                             " data-toggle="tab" data-target="#uridical_tab">
                             Юридическое лицо
@@ -46,7 +51,7 @@
         </div>
         @include('partner.dialog.tabs')
         <div class="modal-footer">
-            <button type="submit" onclick="axform.send(this)" class="btn success pull-right">Сохранить</button>
+            <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right">Сохранить</button>
         </div>
 {{--        <div class="tab-content">--}}
 {{--            <div class="tab-pane @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif" id="physial_tab">--}}

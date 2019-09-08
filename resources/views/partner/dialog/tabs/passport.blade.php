@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif" id="tab_passport">
+<div class="tab-pane animate fadeIn text-muted fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif" id="tab_passport{{ $class }}">
     @if(isset($partner) && $partner->passport)
         <input class="entrance" type="hidden" name="passport_id" value="{{$partner->passport->id}}">
     @endif

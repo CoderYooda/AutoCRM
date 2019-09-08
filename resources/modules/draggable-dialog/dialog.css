@@ -46,19 +46,17 @@
 	border: 1px solid #aaa;
 }
 .dialog {
-	font-family: Verdana, sans-serif;
-	font-size: 12px;
-	font-weight: 400;
-	color: #666;
-	background: #fff;
 	margin: 0;
 	position: fixed;
-	border: 1px solid rgba(120, 130, 140, 0.13);
-	box-shadow: 0px 14px 26px rgba(0, 0, 0, 0.11);
-	border-radius: 3px;
+	box-shadow: 0 2px 10px rgba(0,0,0,.35);
+	border-radius: 4px;
 	overflow: hidden;
 	z-index: 10000;
 	max-height: 90%;
+}
+
+.dialog > form {
+	background: #fff;
 }
 .mh50-dialog{
 	max-height: calc(50vh - 32px);
@@ -72,15 +70,14 @@
 	z-index: 10000000;
 }
 .dialog.selected .titlebar{
-	background: #3f51b5;
+	background: #5b73bd;
 	color: #fff;
 }
 .dialog .titlebar {
     height: 40px;
     line-height: 40px;
-    border-bottom: 1px solid rgba(120, 130, 140, 0.13);
     vertical-align: middle;
-    font-size: 1.2em;
+	font-size: 15px;
     padding: 0 7px 0 15px;
     white-space: nowrap;
     overflow: hidden;
@@ -88,6 +85,7 @@
     cursor: move;
     padding-right: 40px;
     background: #cecece;
+	border-radius: 4px 4px 0 0;
 }
 .dialog .content {
 	position: absolute;
@@ -124,33 +122,29 @@
 {
 	cursor: pointer;
 }
-.dialog>button {
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0;
-    border: 0;
-    font-size: 1.6em;
-    background: #cecece;
+
+
+.dialog .btn_close:hover {
+	opacity: 1;
+	filter: none;
 }
-.selected.dialog .btn_close {
-    color: #fff;
-}
-.selected.dialog>button {
-    background: #3f51b5;
+.dialog .btn_close {
+	float: right;
+	background: url(/images/icons/cross.png) no-repeat 13px 15px;
+	opacity: 0.75;
+	color: transparent;
+	filter: alpha(opacity=75);
+	cursor: pointer;
+	outline: none;
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0;
+	border: 0;
 }
 
-.dialog>button.hover,
-.dialog>button.focus
-{
-	box-shadow: inset -16px 0 0 0 #e80, inset 16px 0 0 0 #e80;
-}
-.dialog>button.active {
-	background: #f55;
-	border: 1px solid #ddd;
-}
 .dialog .buttonset button {
 	height: 32px;
 	width: 64px;

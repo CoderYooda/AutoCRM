@@ -2,11 +2,11 @@
 
 @section('tab')
     <div class="d-flex flex-column flex">
-        <div class="navbar white no-radius box-shadow pos-rlt">
+        <div class="navbar no-radius box-shadow pos-rlt">
             <div class="flex">
             </div>
             <span class="m-b btn-groups pl-1">
-                <button onclick="openDialog('createEntrance')" class="btn btn-sm success mb-0">Новое поступление</button>
+                <button onclick="openDialog('entranceDialog')" class="btn btn-sm success mb-0">Новое поступление</button>
             </span>
         </div>
         <div class="d-flex flex scroll-y">

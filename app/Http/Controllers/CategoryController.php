@@ -146,7 +146,7 @@ class CategoryController extends Controller
         }
 
         $categories['stack'] = $parent->childs()->where('company_id', Auth::user()->company()->first()->id)->orderBy('created_at', 'DESC')->get();
-        $categories['parent'] =  $parent;
+        $categories['parent'] = $parent;
         } else {
             $categories['stack'] = Category::where(function($q) use ($request){
                 $q->where('name', 'like', '%' . $request['search'] . '%');

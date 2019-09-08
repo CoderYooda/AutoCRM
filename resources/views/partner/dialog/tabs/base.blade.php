@@ -1,13 +1,13 @@
-<div class="tab-pane main_tab animate fadeIn text-muted active" id="tab_base">
+<div class="tab-pane main_tab animate fadeIn text-muted active" id="tab_base{{ $class }}">
 
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
             <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
-                @if(isset($category))
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @elseif(isset($partner))
+                @if(isset($partner))
                     <option value="{{ $partner->category()->first()->id }}">{{ $partner->category()->first()->name }}</option>
+                @elseif(isset($category))
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @else
                     <option>Корневая директория</option>
                 @endif

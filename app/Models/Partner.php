@@ -77,4 +77,17 @@ class Partner extends Model
             return $this->companyName;
         }
     }
+
+    public function firstLetterOfName(){
+        return mb_strtoupper(mb_substr($this->outputName(), 0, 1));
+    }
+
+    public function isflText(){
+        if($this->isfl){
+            return 'Физическое лицо';
+        } else {
+            return 'Юридическое лицо';
+        }
+
+    }
 }

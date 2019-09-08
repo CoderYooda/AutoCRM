@@ -4,11 +4,11 @@
         <div class="list-item " data-id="item-5">
             <span class="w-40 avatar circle blue-grey">
                 {{--<i class="on b-white avatar-right"></i>--}}
-                {{ mb_substr($partner->outputName(), 0, 1) }}
+                {{ $partner->firstLetterOfName() }}
             </span>
-            <div class="list-body b-r">
+            <div class="list-body b-r mw-280-e">
 
-                <a onclick="openDialog('editPartner', '&partner_id={{ $partner->id }}' )" class="item-title _500" >{{ $partner->outputName() }}</a>
+                <a onclick="openDialog('partnerDialog', '&partner_id={{ $partner->id }}' )" class="item-title _500" >{{ $partner->outputName() }}</a>
                 <div class="item-except text-sm text-muted h-1x">
                     {{ $partner->firstActivePhoneNumber() }}
                 </div>
@@ -17,16 +17,13 @@
                 </div>
             </div>
             <div class="list-body">
-
+                Тип: {{ $partner->isflText() }}
                 <div class="item-except text-sm text-muted h-1x">
-                    <span class="badge badge-pill primary">дисконт</span> 898123882383
-                </div>
-                <div class="item-except text-sm text-muted h-1x">
-                    @if($partner->category()->first() != null)<span class="badge badge-pill success">{{ $partner->category()->first()->name }}</span>@endif
+                    Дисконт: в разработке
                 </div>
             </div>
             @if($request['refer'] != null)
-                <button onclick="{{$request['refer']}}.selectPartner({{ $partner->id }})" class="btn btn-icon white float-right">
+                <button onclick="try{window.{{$request['refer']}}.selectPartner({{ $partner->id }})}catch (e) {}" class="btn btn-icon white float-right">
                     <i class="fa fa-check"></i>
                 </button>
             @else

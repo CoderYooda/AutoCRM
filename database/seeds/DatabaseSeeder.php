@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeed::class);
         $this->call(DDSSeeder::class);
         $this->call(ContractTypesSeeder::class);
+        $this->call(CreateBasePartners::class);
     }
 }

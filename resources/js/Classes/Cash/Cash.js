@@ -1,7 +1,30 @@
-class Cash{
+class cashPage{
+
     constructor(){
-        console.log('Окно денежных средств инициализировано');
+        console.log('страница денег инициализировано');
         this.active = true;
+        this.init();
+    }
+
+    init(){
+        let object = this;
+        document.addEventListener('ajaxLoaded', function(e){
+            object.checkActive();
+        });
+        object.checkActive();
+    }
+
+    checkActive(){
+        let className = window.location.pathname.substring(1);
+        let link = document.getElementById('cash_link');
+        if(className === 'cash'){
+            link.classList.add('active');
+            this.active = true;
+        } else {
+            link.classList.remove('active');
+            this.active = false;
+        }
+
     }
 }
-export default Cash
+export default cashPage;

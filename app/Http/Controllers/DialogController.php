@@ -19,23 +19,23 @@ class DialogController extends Controller
             case 'editCategory':
                 $dialog = CategoryController::editCategoryDialog($request);
                 break;
-            case (preg_match('/createProduct/', $tag) ? true : false):
-                $dialog = ProductController::addProductDialog($request);
+            case 'productDialog':
+                $dialog = ProductController::productDialog($request);
                 break;
-            case 'editProduct':
-                $dialog = ProductController::editProductDialog($request);
-                break;
+//            case 'editProduct':
+//                $dialog = ProductController::editProductDialog($request);
+//                break;
             case 'selectProduct':
                 $dialog = ProductController::selectProductDialog($request);
                 break;
             case 'selectCategory':
                 $dialog = CategoryController::selectCategoryDialog($request);
                 break;
-            case (preg_match('/addPartner/', $tag) ? true : false):
-                $dialog = PartnerController::addPartnerDialog($request);
-                break;
-            case 'editPartner':
-                $dialog = PartnerController::editPartnerDialog($request);
+//            case (preg_match('/addPartner/', $tag) ? true : false):
+//                $dialog = PartnerController::addPartnerDialog($request);
+//                break;
+            case 'partnerDialog':
+                $dialog = PartnerController::partnerDialog($request);
                 break;
             case 'selectPartner':
                 $dialog = PartnerController::selectPartnerDialog($request);
@@ -58,14 +58,9 @@ class DialogController extends Controller
             case 'editDdsarticle':
                 $dialog = DdsarticleController::editDdsarticleDialog($request);
                 break;
-            case 'createEntrance':
-                $dialog = EntranceController::addEntranceDialog($request);
+            case 'entranceDialog':
+                $dialog = EntranceController::entranceDialog($request);
                 break;
-            case 'editEntrance':
-                $dialog = EntranceController::editEntranceDialog($request);
-                break;
-
-
         }
 
         if(!isset($dialog)){

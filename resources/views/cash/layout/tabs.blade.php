@@ -5,7 +5,7 @@
     <div class="fade aside aside-sm b-r w-200" id="content-aside">
         <div class="modal-dialog d-flex flex-column w-md light lt">
             <div class="navbar white no-radius box-shadow pos-rlt">
-                <span class="text-md">Товары</span>
+                <span class="text-md">Деньги</span>
             </div>
             <div class="scrollable hover">
                 <div class="sidenav mt-2">

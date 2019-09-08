@@ -20,7 +20,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/categories/{id}/delete', 'CategoryController@remove')->name('DeleteCategory');
 
     #Продукты
-    Route::get('/store', 'ProductController@index')->name('StoreIndex'); // Строгое название
+
     Route::get('/store/test', 'ProductController@test')->name('test');
     Route::get('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
@@ -33,7 +33,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
 
     #Пставщики (внешние)
-    Route::get('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
+    Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
 
     #Касса
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
@@ -47,11 +47,19 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/ddsarticle/{id}/delete', 'DdsarticleController@delete')->name('DeleteDdsarticle');
 
     #Склады
+    Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
     Route::post('/store/new', 'StoreController@store')->name('StoreStore');
     Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
 
+    #Услуги
+    Route::get('/services', 'ServicesController@index')->name('ServicesIndex');
+
+    #Сотрудники
+    Route::get('/employee', 'EmployeeController@index')->name('EmployeeIndex');
+
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
+    Route::post('/partner/search', 'PartnerController@search')->name('PageSearch');
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');
     Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
     Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('DialogSearch');

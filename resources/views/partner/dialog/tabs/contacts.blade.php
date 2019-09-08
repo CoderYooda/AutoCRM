@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted" id="tab_contacts">
+<div class="tab-pane animate fadeIn text-muted" id="tab_contacts{{ $class }}">
     <div class="form-group addable" id="phones_addable">
         <label>Номер телефона</label>
         <div class="phones">
@@ -17,7 +17,7 @@
                                 </div>
                             </span>
                             <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Удалить номер">
-                                <button onclick="partner.deletePhone(this)" class="input-group-text btn btn-icon white" type="button" style="height: auto">
+                                <button onclick="window.{{ $class }}.deletePhone(this)" class="input-group-text btn btn-icon white" type="button" style="height: auto">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </span>
@@ -37,14 +37,14 @@
                         </div>
                     </span>
                     <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Удалить номер">
-                        <button onclick="partner.deletePhone(this)" class="input-group-text btn btn-icon white" type="button" style="height: auto">
+                        <button onclick="window.{{ $class }}.deletePhone(this)" class="input-group-text btn btn-icon white" type="button" style="height: auto">
                             <i class="fa fa-trash"></i>
                         </button>
                     </span>
                 </div>
              @endif
         </div>
-        <button onclick="partner.addPhone(this)" type="button" class="btn btn-sm white">Добавить номер телефона</button>
+        <button onclick="window.{{ $class }}.addPhone(this)" type="button" class="btn btn-sm white">Добавить номер телефона</button>
     </div>
     <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>Адрес проживания</label>

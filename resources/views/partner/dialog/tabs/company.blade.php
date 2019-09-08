@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif" id="tab_company">
+<div class="tab-pane animate fadeIn text-muted ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif" id="tab_company{{ $class }}">
     <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif">
         <label>Юридический адрес</label>
         <input type="text" name="ur_address"
