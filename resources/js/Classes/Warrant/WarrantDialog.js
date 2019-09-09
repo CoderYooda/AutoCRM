@@ -84,12 +84,41 @@ class warrantDialog{
         });
     };
 
+    selectDdsarticle(id){
+        var object = this;
+        window.axios({
+            method: 'post',
+            url: 'ddsarticle/'+ id +'/select',
+            data: {refer:this.root_dialog.id}
+        }).then(function (resp) {
+
+            let select = object.root_dialog.querySelector('select[name=ddsarticle_id]');
+            let input = object.root_dialog.querySelector('input[name=ddsarticle_id]');
+            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            input.value = resp.data.id;
+            select.innerHTML = str;
+            window.notification.notify( 'success', 'Статья выбрана');
+            document.dispatchEvent(new Event('DdsarticleSelected', {bubbles: true}));
+            console.log("Событие DdsarticleSelected вызвано");
+            //closeDialog(event);
+
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    };
+
     openSelectPartnerModal(){
         window.openDialog('selectPartner', '&refer=' + this.root_dialog.id);
     }
 
     openSelectCashboxModal(){
         window.openDialog('selectCashbox', '&refer=' + this.root_dialog.id);
+    }
+
+    openSelectDdsarticleModal(){
+        window.openDialog('selectDdsarticle', '&refer=' + this.root_dialog.id);
     }
 
 }

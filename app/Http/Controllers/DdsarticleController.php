@@ -12,18 +12,39 @@ use Auth;
 
 class DdsarticleController extends Controller
 {
-    public static function addDdsarticleDialog($request)
-    {
-        if($request['category_select']){
-            $category_select = (int)$request['category_select'];
-        } else {
-            $category_select = 4;
-        }
-        $category = Category::where('id', $category_select)->first();
-        $ddstypes = DdsType::all();
 
-        return response()->json(['tag' => 'createDdsarticle', 'html' => view('settings.dialog.form_ddsarticle', compact('request', 'category', 'ddstypes'))->render()]);
+//    public static function ddsarticleDialog($request)
+//    {
+//        if($request['category_select']){
+//            $category_select = (int)$request['category_select'];
+//        } else {
+//            $category_select = 4;
+//        }
+//        $category = Category::where('id', $category_select)->first();
+//        $ddstypes = DdsType::all();
+//
+//        return response()->json(['tag' => 'createDdsarticle', 'html' => view('settings.dialog.form_ddsarticle', compact('request', 'category', 'ddstypes'))->render()]);
+//    }
+
+
+    public static function ddsarticleDialog($request)
+    {
+        if($request['params']){
+            $id = (int)$request['id'];
+            $ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
+            $tag = 'ddsarticleDialog'.$id;
+        } else {
+            $tag = 'ddsarticleDialog';
+            $ddsarticle = null;
+        }
+        $ddstypes = DdsType::all();
+        return response()->json([
+            'tag' => $tag,
+            'html' => view('settings.dialog.form_Ddsarticle', compact('ddsarticle','ddstypes', 'request'))->render()
+        ]);
     }
+
+
 
     public function store(Request $request)
     {
@@ -53,32 +74,16 @@ class DdsarticleController extends Controller
         if($request->ajax()){
             return response()->json([
                 'message' => $message,
-                'container' => 'ajax-table',
-                'redirect' => route('SettingsIndex', ['active_tab' => 'ddsarticle', 'category_id' => $Ddsarticle->category()->first()->id]),
+                'event' => 'DdsarticleStored'
                 ]);
         } else {
             return redirect()->back();
         }
     }
 
-    public static function editDdsarticleDialog($request)
-    {
-        if($request['params']){
-            $id = (int)$request['id'];
-        } else {
-            abort(404);
-        }
-
-        $ddstypes = DdsType::all();
-
-        $Ddsarticle = Ddsarticle::where('id', $id)->first();
-
-        return response()->json(['tag' => 'editDdsarticle'.$Ddsarticle->id, 'html' => view('settings.dialog.form_Ddsarticle', compact('Ddsarticle','ddstypes'))->render()]);
-    }
-
     public function delete($id)
     {
-        $Ddsarticle = Ddsarticle::where('id', $id)->first();
+        $Ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
         $message = 'Статья ДДС удалена';
         $status = 200;
 
@@ -98,6 +103,40 @@ class DdsarticleController extends Controller
         return response()->json(['id' => $Ddsarticle->id, 'message' => $message], $status);
     }
 
+    public static function selectDdsarticleDialog($request)
+    {
+        $ddsarticles = Ddsarticle::owned()->orderBy('id', 'DESC')->paginate(12);
+        return response()->json([
+            'tag' => 'selectDdsarticleDialog',
+            'html' => view('settings.dialog.select_ddsarticle', compact('ddsarticles', 'request'))->render()
+        ]);
+    }
+
+    public function select($id){
+        $ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
+        if(!$ddsarticle){
+            return response()->json([
+                'message' => 'Статья не найдена, возможно она была удалёна',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $ddsarticle->id,
+            'name' => $ddsarticle->name
+        ]);
+    }
+
+
+    public function dialogSearch(Request $request){
+        $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
+            ->orderBy('id', 'DESC')
+            ->paginate(12);
+
+        $content = view('settings.dialog.select_ddsarticle_inner', compact('ddsarticles', 'request'))->render();
+        return response()->json([
+            'html' => $content
+        ], 200);
+    }
+
     public static function getDdsarticles($request)
     {
 
@@ -106,7 +145,7 @@ class DdsarticleController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        return Ddsarticle::where('company_id', Auth::user()->id)->where(function($q) use ($request, $category){
+        return Ddsarticle::owned()->where('company_id', Auth::user()->id)->where(function($q) use ($request, $category){
             if($category != 0) {
                 $q->where('category_id', $category);
             }

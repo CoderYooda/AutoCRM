@@ -61,7 +61,7 @@ class selectPartnerDialog {
             data: data,
         }).then(function (resp) {
 
-            var results_container = object.root_dialog.querySelector('#search_partner_results');
+            var results_container = document.querySelector('#search_partner_results');
             results_container.innerHTML = resp.data.html;
 
         }).catch(function (error) {

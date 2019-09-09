@@ -50,6 +50,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Статьи движения денежных средств
     Route::post('/ddsarticle/new', 'DdsarticleController@store')->name('StoreDdsarticle');
     Route::post('/ddsarticle/{id}/delete', 'DdsarticleController@delete')->name('DeleteDdsarticle');
+    Route::post('/ddsarticle/{id}/select', 'DdsarticleController@select')->name('SelectDdsarticle');
+    Route::post('/ddsarticle/dialog/search', 'DdsarticleController@dialogSearch')->name('DdsarticleDialogSearch');
 
     #Склады
     Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название

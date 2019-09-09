@@ -22,18 +22,12 @@ class DialogController extends Controller
             case 'productDialog':
                 $dialog = ProductController::productDialog($request);
                 break;
-//            case 'editProduct':
-//                $dialog = ProductController::editProductDialog($request);
-//                break;
             case 'selectProduct':
                 $dialog = ProductController::selectProductDialog($request);
                 break;
             case 'selectCategory':
                 $dialog = CategoryController::selectCategoryDialog($request);
                 break;
-//            case (preg_match('/addPartner/', $tag) ? true : false):
-//                $dialog = PartnerController::addPartnerDialog($request);
-//                break;
             case 'partnerDialog':
                 $dialog = PartnerController::partnerDialog($request);
                 break;
@@ -42,6 +36,9 @@ class DialogController extends Controller
                 break;
             case 'selectCashbox':
                 $dialog = CashboxController::selectCashboxDialog($request);
+                break;
+            case 'selectDdsarticle':
+                $dialog = DdsarticleController::selectDdsarticleDialog($request);
                 break;
             case 'cashboxDialog':
                 $dialog = CashboxController::cashboxDialog($request);
@@ -52,11 +49,8 @@ class DialogController extends Controller
             case 'editStore':
                 $dialog = StoreController::editStoreDialog($request);
                 break;
-            case 'createDdsarticle':
-                $dialog = DdsarticleController::addDdsarticleDialog($request);
-                break;
-            case 'editDdsarticle':
-                $dialog = DdsarticleController::editDdsarticleDialog($request);
+            case 'ddsarticleDialog':
+                $dialog = DdsarticleController::ddsarticleDialog($request);
                 break;
             case 'entranceDialog':
                 $dialog = EntranceController::entranceDialog($request);

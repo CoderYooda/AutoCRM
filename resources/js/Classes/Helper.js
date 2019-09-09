@@ -3,8 +3,10 @@ import selectProductDialog from "./Product/SelectProductDialog";
 import productDialog from "./Product/ProductDialog";
 import selectPartnerDialog from "./Partner/SelectPartnerDialog";
 import selectCashboxDialog from "./Cashbox/SelectCashboxDialog";
+import selectDdsarticleDialog from "./Ddsarticle/SelectDdsarticleDialog";
 import partnerDialog from "./Partner/PartnerDialog";
 import cashboxDialog from "./Cashbox/CashboxDialog";
+import ddsarticleDialog from "./Ddsarticle/DdsarticleDialog";
 import warrantDialog from "./Warrant/WarrantDialog";
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -21,8 +23,10 @@ const classes = {
     productDialog,
     selectPartnerDialog,
     selectCashboxDialog,
+    selectDdsarticleDialog,
     partnerDialog,
     cashboxDialog,
+    ddsarticleDialog,
     warrantDialog,
 
     cashPage,

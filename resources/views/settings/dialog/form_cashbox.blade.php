@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn success" onclick="axform.send(this)">Сохранить</button>
+            <button class="btn success" onclick="window.{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message"></div>
     </form>

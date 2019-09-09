@@ -1,6 +1,6 @@
-class selectCashboxDialog{
+class selectDdsarticleDialog{
     constructor(dialog){
-        console.log('Окно выбора кассового аппарата инициализировано');
+        console.log('Окно выбора статьи дохода инициализировано');
         this.root_dialog = dialog;
         this.refer = dialog.querySelector("#refer").value;
         this.active = true;
@@ -10,7 +10,7 @@ class selectCashboxDialog{
     init(){
         let object = this;
         object.searchInit();
-        document.addEventListener("CashboxSelected", function(){
+        document.addEventListener("DdsarticleSelected", function(){
             object.finitaLaComedia();
         });
     }
@@ -25,13 +25,12 @@ class selectCashboxDialog{
 
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
-        window[this.root_dialog.id] = null;
         delete window[this.root_dialog.id];
     }
 
     searchInit(){
         let object = this;
-        let el = object.root_dialog.querySelector("#cashbox_search");
+        let el = object.root_dialog.querySelector("#ddsarticle_search");
         let searchFn = window.helper.debounce(function(e) {
             object.search(el);
         }, 400);
@@ -39,7 +38,7 @@ class selectCashboxDialog{
             el.addEventListener("keydown", searchFn);
             el.addEventListener("paste", searchFn);
             el.addEventListener("delete", searchFn);}
-        document.addEventListener("CashboxStored", searchFn);
+        document.addEventListener("DdsarticleStored", searchFn);
 
         // let search = getQueryVar('search');
         // if(search === 'undefined'){
@@ -52,7 +51,6 @@ class selectCashboxDialog{
     }
 
     search(el){
-
         let object = this;
         var string = el.value;
 
@@ -66,10 +64,11 @@ class selectCashboxDialog{
 
         window.axios({
             method: 'post',
-            url: 'cashbox/dialog/search',
+            url: 'ddsarticle/dialog/search',
             data: data,
         }).then(function (resp) {
-            var results_container = document.querySelector('#search_cashbox_results');
+
+            var results_container = document.querySelector('#search_ddsarticle_results');
             results_container.innerHTML = resp.data.html;
 
         }).catch(function (error) {
@@ -79,4 +78,4 @@ class selectCashboxDialog{
         });
     }
 }
-export default selectCashboxDialog;
+export default selectDdsarticleDialog;

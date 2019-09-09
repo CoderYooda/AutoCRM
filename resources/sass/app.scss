@@ -35,6 +35,7 @@
 .pace .pace-progress,
 .theme {
     color: rgba(255, 255, 255, 0.85) !important;
+    transition: background 0.2s;
     background-color: #53a6fa !important; }
 
 .b-theme,
@@ -226,7 +227,7 @@ button .fa-bars{
     text-overflow-ellipsis: color(red);
 }
 header .nav-item.active{
-    background: red;
+
 }
 .navfh{
     height: 56px;
