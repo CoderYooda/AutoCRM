@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class CashboxController extends Controller
 {
-    public static function addCashboxDialog($request)
-    {
-        return response()->json(['tag' => 'createCashbox', 'html' => view('settings.dialog.form_cashbox', compact('request'))->render()]);
-    }
-
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -47,25 +42,49 @@ class CashboxController extends Controller
         if($request->ajax()){
             return response()->json([
                 'message' => $message,
-                'container' => 'ajax-table',
-                'redirect' => route('SettingsIndex', ['active_tab' => 'cashbox']),
-                'html' => $content]);
+                //'container' => 'ajax-table',
+                'event' => 'CashboxStored'
+                //'html' => $content
+                ]);
         } else {
             return redirect()->back();
         }
     }
 
-    public static function editCashboxDialog($request)
+    public function dialogSearch(Request $request){
+        $cashboxes = Cashbox::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
+            ->orderBy('id', 'DESC')
+            ->paginate(12);
+
+        $content = view('settings.dialog.select_cashbox_inner', compact('cashboxes', 'request'))->render();
+        return response()->json([
+            'html' => $content
+        ], 200);
+    }
+
+    public static function cashboxDialog($request)
     {
+        $cashbox = null;
         if($request['params']){
-            $id = (int)$request['id'];
+            $id = (int)$request['cashbox_id'];
+            $cashbox = Cashbox::owned()->where('id', $id)->first();
+            $tag = 'cashboxDialog'.$cashbox->id;
         } else {
-            abort(404);
+            $tag = 'cashboxDialog';
         }
+        return response()->json([
+            'tag' => $tag,
+            'html' => view('settings.dialog.form_cashbox', compact('cashbox', 'request'))->render()
+        ]);
+    }
 
-        $cashbox = Cashbox::where('id', $id)->first();
-
-        return response()->json(['tag' => 'editCashbox'.$cashbox->id, 'html' => view('settings.dialog.form_cashbox', compact('cashbox'))->render()]);
+    public static function selectCashboxDialog($request)
+    {
+        $cashboxes = Cashbox::owned()->orderBy('id', 'DESC')->paginate(12);
+        return response()->json([
+            'tag' => 'selectCashboxDialog',
+            'html' => view('settings.dialog.select_cashbox', compact('cashboxes', 'request'))->render()
+        ]);
     }
 
     public function delete($id)
@@ -73,26 +92,36 @@ class CashboxController extends Controller
         $cashbox = Cashbox::where('id', $id)->first();
         $message = 'Касса удалена';
         $status = 200;
-
         if($cashbox->company()->first()->id != Auth::user()->company()->first()->id){
             $message = 'Вам не разрешено удалять эту кассу';
             $status = 422;
         }
-
         if($status == 200){
             if(!$cashbox->delete()){
                 $message = 'Ошибка зависимотей. Обратитесь к администратору';
                 $status = 500;
             }
         }
-
-
         return response()->json(['id' => $cashbox->id, 'message' => $message], $status);
     }
 
+    public function select($id){
+        $cashbox = Cashbox::where('id', $id)->first();
+        if(!$cashbox){
+            return response()->json([
+                'message' => 'Кассовый аппарат не найден, возможно он был удалён',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $cashbox->id,
+            'name' => $cashbox->name
+        ]);
+    }
+
+
     public static function getCashboxes($request)
     {
-        return Cashbox::where('company_id', Auth::user()->id)->get();
+        return Cashbox::where('company_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
     }
 
 }

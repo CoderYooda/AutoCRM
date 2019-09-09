@@ -1,8 +1,10 @@
 <div
     @if(isset($cashbox) && $cashbox->id != NULL)
-        id="editCashbox{{$cashbox->id}}"
+        @php $class = 'cashboxDialog' . $cashbox->id @endphp
+        id="cashboxDialog{{$cashbox->id}}"
     @else
-        id="createCashbox"
+        @php $class = 'cashboxDialog' @endphp
+        id="cashboxDialog"
     @endif
     class="dialog" style="width:300px;">
     @if(isset($cashbox) && $cashbox->id != NULL)

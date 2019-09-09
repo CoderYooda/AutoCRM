@@ -38,9 +38,14 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Касса
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 
+    #Кассовые операции
+    Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
+
     #Кассовые аппараты
     Route::post('/cashbox/new', 'CashboxController@store')->name('StoreCashbox');
     Route::post('/cashbox/{id}/delete', 'CashboxController@delete')->name('DeleteCashbox');
+    Route::post('/cashbox/{id}/select', 'CashboxController@select')->name('SelectCashbox');
+    Route::post('/cashbox/dialog/search', 'CashboxController@dialogSearch')->name('CashboxDialogSearch');
 
     #Статьи движения денежных средств
     Route::post('/ddsarticle/new', 'DdsarticleController@store')->name('StoreDdsarticle');
@@ -62,7 +67,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/partner/search', 'PartnerController@search')->name('PageSearch');
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');
     Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
-    Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('DialogSearch');
+    Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
     Route::post('/partner/{id}/select', 'PartnerController@select')->name('SelectPartner');
 
     #Телефоны

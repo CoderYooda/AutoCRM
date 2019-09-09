@@ -3,6 +3,7 @@ class cashPage{
     constructor(){
         console.log('страница денег инициализировано');
         this.active = true;
+        this.active_tab = window.helper.findGetParameter('active_tab');
         this.init();
     }
 
@@ -12,6 +13,10 @@ class cashPage{
             object.checkActive();
         });
         object.checkActive();
+    }
+
+    load(){
+        this.active_tab = window.helper.findGetParameter('active_tab');
     }
 
     checkActive(){

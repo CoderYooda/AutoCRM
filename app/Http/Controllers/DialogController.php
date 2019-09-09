@@ -40,11 +40,11 @@ class DialogController extends Controller
             case 'selectPartner':
                 $dialog = PartnerController::selectPartnerDialog($request);
                 break;
-            case 'createCashbox':
-                $dialog = CashboxController::addCashboxDialog($request);
+            case 'selectCashbox':
+                $dialog = CashboxController::selectCashboxDialog($request);
                 break;
-            case 'editCashbox':
-                $dialog = CashboxController::editCashboxDialog($request);
+            case 'cashboxDialog':
+                $dialog = CashboxController::cashboxDialog($request);
                 break;
             case 'createStore':
                 $dialog = StoreController::addStoreDialog($request);
@@ -60,6 +60,9 @@ class DialogController extends Controller
                 break;
             case 'entranceDialog':
                 $dialog = EntranceController::entranceDialog($request);
+                break;
+            case 'warrantDialog':
+                $dialog = WarrantController::warrantDialog($request);
                 break;
         }
 

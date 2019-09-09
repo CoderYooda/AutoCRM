@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Models\Warrant;
 use Illuminate\Http\Request;
 
 class CashController extends Controller

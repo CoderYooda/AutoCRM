@@ -58,10 +58,11 @@
                                 <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ж']) }}">Ж</a>
                                 <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'з']) }}">З</a>
                                 <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'и']) }}">И</a>
-                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'к']) }}">Й</a>
-                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'л']) }}">К</a>
-                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'м']) }}">Л</a>
-                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'н']) }}">М</a>
+                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'й']) }}">Й</a>
+                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'к']) }}">К</a>
+                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'л']) }}">Л</a>
+                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'м']) }}">М</a>
+                                <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'н']) }}">Н</a>
                                 <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'о']) }}">О</a>
                                 <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'п']) }}">П</a>
                                 <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'р']) }}">Р</a>

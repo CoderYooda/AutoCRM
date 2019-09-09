@@ -2,22 +2,28 @@ import entranceDialog from "./Entrance/EntranceDialog";
 import selectProductDialog from "./Product/SelectProductDialog";
 import productDialog from "./Product/ProductDialog";
 import selectPartnerDialog from "./Partner/SelectPartnerDialog";
+import selectCashboxDialog from "./Cashbox/SelectCashboxDialog";
 import partnerDialog from "./Partner/PartnerDialog";
+import cashboxDialog from "./Cashbox/CashboxDialog";
+import warrantDialog from "./Warrant/WarrantDialog";
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
 import settingsPage from "./Settings/SettingsPage";
 import servicesPage from "./Services/ServicesPage";
 import reportPage from "./Report/ReportPage";
 import employeePage from "./Employee/EmployeePage";
+import cashPage from "./Cash/CashPage";
 
-import cashPage from "./Cash/Cash";
 
 const classes = {
     entranceDialog,
     selectProductDialog,
     productDialog,
     selectPartnerDialog,
+    selectCashboxDialog,
     partnerDialog,
+    cashboxDialog,
+    warrantDialog,
 
     cashPage,
     partnerPage,
@@ -40,7 +46,7 @@ class Helper{
                     try {
                         window[elem.id] = new classes[classname](elem);
                     } catch (err) {
-                        console.log(classname + " - Такого конструктора не существует");
+                        window.helper.log(classname + " - Такого конструктора не существует");
                     }
 
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
@@ -55,15 +61,21 @@ class Helper{
         if(className !== 'undefined') {
             if(!window[className]) {
                 try {
-                    console.log(className);
                     window[className] = new classes[className + 'Page']();
                 } catch (err) {
-                    console.log(className + " - Такого конструктора не существует");
+                    window.helper.log(className + " - Такого конструктора не существует");
                 }
             }
         } else {
-            console.warn('Ошибка в ' + className);
+            window.helper.log('Ошибка в ' + className);
         }
+    }
+
+    log(mess){
+        console.log(mess);
+        setTimeout(function(){
+            console.clear();
+        }, 4000);
     }
 
     debounce(func, wait, immediate) {

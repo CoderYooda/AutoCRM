@@ -167,3 +167,8 @@
 	background: #1a7;
 	border-color: #ddd;
 }
+
+.dialog-color {
+    background-color: #5b73bd;
+    color: rgba(255, 255, 255, 0.85);
+}

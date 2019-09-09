@@ -54,10 +54,8 @@ class storePage{
 
 
     load(){
-        console.log('Load');
         this.checkCategory();
         var object = this;
-
         let search = document.getElementById('search');
         if(search){
             if(this.category_id && this.category_id !== 2 ){
@@ -65,7 +63,6 @@ class storePage{
                 search.value = null;
             }
         }
-
         this.searchInit();
     }
 

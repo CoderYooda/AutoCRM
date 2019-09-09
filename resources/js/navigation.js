@@ -3,7 +3,6 @@
 const ajaxRequest = new (function () {
 
     function closeReq () {
-        oLoadingBox.parentNode && document.getElementById('preload').removeChild(oLoadingBox);
         isXHRloading = false;
     }
 
@@ -11,10 +10,22 @@ const ajaxRequest = new (function () {
         if (!isXHRloading) { return; }
         oReq.abort();
         closeReq();
+        removePreloaders();
     }
 
     function ajaxError () {
         alert("Unknown error.");
+        removePreloaders();
+    }
+
+    function removePreloaders(){
+        let prs = document.getElementsByClassName("pr");
+        setTimeout(function(){
+            [].forEach.call(prs, function(pr){
+                pr.style.opacity = 0;
+            });
+        }, 300);
+
     }
 
     function ajaxLoad () {
@@ -40,6 +51,7 @@ const ajaxRequest = new (function () {
                 });
                 rebuildLinks();
                 document.dispatchEvent(new Event('ajaxLoaded', {bubbles: true}));
+                removePreloaders();
                 break;
             default:
                 vMsg = nStatus + ": " + (oHTTPStatus[nStatus] || "Unknown");
@@ -74,7 +86,6 @@ const ajaxRequest = new (function () {
         if (sPage) { oPageInfo.url = filterURL(sPage, null); }
         oReq.open("get", filterURL(oPageInfo.url, "json"), true);
         oReq.send();
-        oLoadingBox.parentNode || document.getElementById('preload').appendChild(oLoadingBox);
     }
 
     function requestPage (sURL) {
@@ -89,6 +100,12 @@ const ajaxRequest = new (function () {
 
     function processLink () {
         if (this.className.search(sAjaxClass) > -1) {
+            try{
+             this.querySelector(":scope > .pr").style.opacity = 1;
+            } catch (e) {
+
+            }
+            
             requestPage(this.href);
             return false;
         }
@@ -118,7 +135,7 @@ const ajaxRequest = new (function () {
         window.helper.initPageMethods(oPageInfo.class);
 
 
-        console.warn('Ссылки переработаны');
+        window.helper.log('Ссылки переработаны');
     }
 
     const

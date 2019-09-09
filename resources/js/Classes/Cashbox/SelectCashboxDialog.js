@@ -1,17 +1,24 @@
-class selectPartnerDialog {
+class selectCashboxDialog{
     constructor(dialog){
-        console.log('Окно выбора контрагента инициализировано');
+        console.log('Окно выбора кассового аппарата инициализировано');
         this.root_dialog = dialog;
         this.refer = dialog.querySelector("#refer").value;
         this.active = true;
         this.init();
-        //PartnerStored
     }
 
     init(){
         let object = this;
-        this.searchInit();
-        document.addEventListener("PartnerSelected", function(){
+        object.searchInit();
+        document.addEventListener("CashboxSelected", function(){
+            object.finitaLaComedia();
+        });
+    }
+
+    save(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(e){
             object.finitaLaComedia();
         });
     }
@@ -23,7 +30,7 @@ class selectPartnerDialog {
 
     searchInit(){
         let object = this;
-        let el = object.root_dialog.querySelector("#partner_search");
+        let el = object.root_dialog.querySelector("#cashbox_search");
         let searchFn = window.helper.debounce(function(e) {
             object.search(el);
         }, 400);
@@ -31,7 +38,7 @@ class selectPartnerDialog {
             el.addEventListener("keydown", searchFn);
             el.addEventListener("paste", searchFn);
             el.addEventListener("delete", searchFn);}
-        document.addEventListener("PartnerStored", searchFn);
+        document.addEventListener("CashboxStored", searchFn);
 
         // let search = getQueryVar('search');
         // if(search === 'undefined'){
@@ -57,11 +64,11 @@ class selectPartnerDialog {
 
         window.axios({
             method: 'post',
-            url: 'partner/dialog/search',
+            url: 'cashbox/dialog/search',
             data: data,
         }).then(function (resp) {
 
-            var results_container = object.root_dialog.querySelector('#search_partner_results');
+            var results_container = object.root_dialog.querySelector('#search_cashbox_results');
             results_container.innerHTML = resp.data.html;
 
         }).catch(function (error) {
@@ -71,4 +78,4 @@ class selectPartnerDialog {
         });
     }
 }
-export default selectPartnerDialog;
+export default selectCashboxDialog;

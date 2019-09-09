@@ -44,36 +44,44 @@
                     <li id="store_link" class="nav-item">
                         <a href="{{ route('StoreIndex') }}" class="nav-link ajax-nav">
                             Склад
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
                     <li id="services_link" class="nav-item">
                         <a href="{{ route('ServicesIndex') }}" class="nav-link ajax-nav">
                             Услуги
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
                     <li id="cash_link" class="nav-item">
                         <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
                             Деньги
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
                     <li id="employee_link" class="nav-item">
                         <a href="{{ route('EmployeeIndex') }}" class="nav-link ajax-nav">
                             Сотрудники
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
                     <li id="partner_link" class="nav-item">
                         <a href="{{ route('PartnerIndex') }}" class="nav-link ajax-nav">
                             Контрагенты
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
+
                     </li>
                     <li id="report_link" class="nav-item">
                         <a href="{{ route('ReportIndex') }}" class="nav-link ajax-nav">
                             Отчеты
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
                     <li id="settings_link" class="nav-item">
                         <a href="{{ route('SettingsIndex') }}" class="nav-link ajax-nav">
                             Настройки
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
                 </ul>

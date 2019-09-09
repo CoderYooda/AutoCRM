@@ -660,6 +660,45 @@ Modal animation
 .modal.show .fade-down {
     animation: fadeInDown 0.5s; }
 
+
+
+/*
+Preloader
+ */
+.pr {
+    opacity: 0;
+    line-height: 0;
+    -o-transition: opacity 350ms linear;
+    transition: opacity 350ms linear;
+}
+.pr_bt {
+    display: inline-block;
+    vertical-align: top;
+    width: 4px;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 50%;
+    margin-right: 2px;
+    opacity: 0.2;
+    -o-animation-duration: 750ms;
+    animation-duration: 750ms;
+    -o-animation-name: pr_bt_anim;
+    animation-name: pr_bt_anim;
+    -o-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+header .nav-item .pr{
+    position: absolute;
+    bottom: 9px;
+    text-align: center;
+    width: calc(100% - 2rem);
+}
+
+.pr_bt:first-child{-o-animation-delay:0ms;animation-delay:0ms}
+.pr_bt:nth-child(2){-o-animation-delay:180ms;animation-delay:180ms}
+.pr_bt:nth-child(3){-o-animation-delay:360ms;animation-delay:360ms}
+@-o-keyframes pr_bt_anim{0%{opacity:0.2}30%{opacity:1}to{opacity:0.2}}@keyframes pr_bt_anim{0%{opacity:0.2}30%{opacity:1}to{opacity:0.2}}
 /*
 Nav
 */
@@ -752,12 +791,15 @@ Nav
 .nav-active-border.left .nav-link:before {
     border-bottom-width: 0;
     right: auto;
-    border-left-width: 3px;
+    border-left-width: 2px;
     border-left-style: solid;
     border-left-color: transparent;
     left: 0;
     top: 50%;
     bottom: 50%; }
+.nav-active-border a.nav-link.active{
+    background: #5b73bd1f;
+}
 .nav-active-border.left .nav-link:hover:before, .nav-active-border.left .nav-link:focus:before, .nav-active-border.left .nav-link.active:before {
     top: 0%;
     bottom: 0%;

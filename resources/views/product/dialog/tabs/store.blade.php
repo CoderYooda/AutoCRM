@@ -17,7 +17,7 @@
                         {{ $store->name }}
                     </td>
                     <td>
-                        @if(isset($product)){{ $store->getArticlesCountById($product->id) }}@else 0 @endif
+                        @if(isset($product  )){{ $store->getArticlesCountById($product->id) }}@else 0 @endif
                     </td>
                 </tr>
             @endforeach

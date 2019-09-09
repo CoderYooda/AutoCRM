@@ -14,7 +14,7 @@
 {{--            </div>--}}
         </div>
         <span class="m-b btn-groups pl-1">
-            <button onclick="openDialog('createCashbox')" class="btn btn-sm success mb-0">Новая касса</button>
+            <button onclick="openDialog('cashboxDialog')" class="btn btn-sm success mb-0">Новая касса</button>
         </span>
     </div>
     <div class="d-flex flex scroll-y">

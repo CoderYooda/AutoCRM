@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted active" id="tab_base">
+<div class="tab-pane animate fadeIn p-3 text-muted active" id="tab_base">
     <div class="form-group">
         <label>Наименование</label>
         <input type="text" name="name"

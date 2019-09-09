@@ -1,7 +1,7 @@
 <div
     @if(isset($product) && $product->id != NULL)
         id="productDialog{{$product->id}}"
-        @php $class = 'productDialog' @endphp
+        @php $class = 'productDialog' . $product->id @endphp
     @else
         id="productDialog"
         @php $class = 'productDialog' @endphp
@@ -21,26 +21,43 @@
         @if(isset($product) && $product->id != NULL)
             <input type="hidden" name="id" value="{{ $product->id }}">
         @endif
+        <div class="nav-active-border b-info py-0 dialog-color">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#tab_base" data-toggle="tab" data-target="#tab_base">
+                        Основные
+                        <span class="float-right helper_danger d-none-f">
+                            <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tab_store" data-toggle="tab" data-target="#tab_store">
+                        Склад
+                    </a>
+                </li>
+            </ul>
+        </div>
         <div class="row no-gutters align-items-stretch">
-            <div class="col-md-4 light lt">
-                <div class="nav-active-border b-success left right box mb-0">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link block active" href="#tab_base" data-toggle="tab" data-target="#tab_base">
-                                Основные
-                                <span class="float-right helper_danger d-none-f">
-                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link block" href="#tab_store" data-toggle="tab" data-target="#tab_store">
-                                Склад
-                                <span class="float-right helper_danger d-none-f">
-                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
-                                </span>
-                            </a>
-                        </li>
+{{--            <div class="col-md-4 lt b-r">--}}
+{{--                <div class="nav-active-border b-primary left right box mb-0">--}}
+{{--                    <ul class="nav flex-column">--}}
+{{--                        <li class="nav-item">--}}
+{{--                            <a class="nav-link block active" href="#tab_base" data-toggle="tab" data-target="#tab_base">--}}
+{{--                                Основные--}}
+{{--                                <span class="float-right helper_danger d-none-f">--}}
+{{--                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>--}}
+{{--                                </span>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                        <li class="nav-item">--}}
+{{--                            <a class="nav-link block" href="#tab_store" data-toggle="tab" data-target="#tab_store">--}}
+{{--                                Склад--}}
+{{--                                <span class="float-right helper_danger d-none-f">--}}
+{{--                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>--}}
+{{--                                </span>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
 {{--                        <li class="nav-item">--}}
 {{--                            <a class="nav-link block" href="#" data-toggle="tab" data-target="#tab3">--}}
 {{--                                Настройка цен--}}
@@ -57,18 +74,18 @@
 {{--                                </span>--}}
 {{--                            </a>--}}
 {{--                        </li>--}}
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-8 light lt">
-                <div class="tab-content p-3 mb-3">
+{{--                    </ul>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+            <div class="col-md-12 lt">
+                <div class="tab-content mb-3">
                     @include('product.dialog.tabs.base')
                     @include('product.dialog.tabs.store')
                 </div>
             </div>
-            <div class="col-md-12 p-3">
-                <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right">Сохранить</button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right">Сохранить</button>
         </div>
         <div class="system_message">
 
