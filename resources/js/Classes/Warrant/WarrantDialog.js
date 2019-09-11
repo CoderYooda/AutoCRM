@@ -9,14 +9,7 @@ class warrantDialog{
 
     init(){
         let object = this;
-        let event = '';
-        if(object.root_dialog.dataset.id){
-            event = 'WarrantStored' + object.root_dialog.dataset.id;
-        } else {
-            event = 'WarrantStored';
-        }
-        console.log(event);
-        document.addEventListener(event, function(e){
+        document.addEventListener('WarrantStored', function(e){
             object.finitaLaComedia();
         });
     }
@@ -24,7 +17,8 @@ class warrantDialog{
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
-        window.axform.send(elem, function(e){
+        let form = this.root_dialog.getElementsByTagName('form')[0];
+        window.axform.send(form, function(e){
             object.finitaLaComedia();
         });
     }
@@ -44,8 +38,11 @@ class warrantDialog{
 
             let select = object.root_dialog.querySelector('select[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
+            let balance = object.root_dialog.querySelector('.partner_balance');
             let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            console.log(resp.data.balance);
             input.value = resp.data.id;
+            balance.innerHTML = resp.data.balance;
             select.innerHTML = str;
             window.notification.notify( 'success', 'Контрагент выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));

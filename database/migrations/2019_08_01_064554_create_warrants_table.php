@@ -20,11 +20,11 @@ class CreateWarrantsTable extends Migration
             $table->bigInteger('partner_id')->unsigned()->comment('Привязка к контрагенту');
             $table->bigInteger('ddsarticle_id')->unsigned()->comment('Привязка к кассовому аппарату');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
-            $table->double('summ', 10, 2)->comment('Сумма операции с двойной точностью');
-            $table->char('reason')->comment('Причина');
-            $table->char('comment')->comment('Комментарий');
+            $table->double('summ', 12, 2)->comment('Сумма операции с двойной точностью');
+            $table->char('reason')->nullable()->comment('Причина');
+            $table->char('comment')->nullable()->comment('Комментарий');
             $table->boolean('isIncoming')->comment('Входящая или исходящая операция');
-            $table->boolean('balance')->comment('Остаток в кассе после выполнения операции');
+            $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
             $table->timestamps();
         });
     }

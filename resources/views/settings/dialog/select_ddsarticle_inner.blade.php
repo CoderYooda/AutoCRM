@@ -8,7 +8,7 @@
             </span>
             <div class="list-body b-r mw-280-e">
 
-                <a onclick="openDialog('ddsarticleDialog', '&cashbox_id={{ $ddsarticle->id }}' )" class="item-title _500" >{{ $ddsarticle->name }}</a>
+                <a onclick="openDialog('ddsarticleDialog', '&ddsarticle_id={{ $ddsarticle->id }}' )" class="item-title _500" >{{ $ddsarticle->name }}</a>
                 <div class="item-except text-sm text-muted h-1x">
                     Посл. операция. TODO
                 </div>

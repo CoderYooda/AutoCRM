@@ -68,11 +68,9 @@
 }
 .dialog.selected{
 	z-index: 10000000;
+	opacity: 1;
 }
-.dialog.selected .titlebar{
-	background: #5b73bd;
-	color: #fff;
-}
+
 .dialog .titlebar {
     height: 40px;
     line-height: 40px;
@@ -84,7 +82,8 @@
     text-overflow: ellipsis;
     cursor: move;
     padding-right: 40px;
-    background: #cecece;
+	background: #1e2835;
+	color: #fff;
 	border-radius: 4px 4px 0 0;
 }
 .dialog .content {

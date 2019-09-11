@@ -11,22 +11,22 @@
                 <div class="sidenav mt-2">
                     <nav class="nav-border b-primary" data-nav>
                         <ul class="nav">
-                            <li id="setting-index-tab" data-tab="index">
+                            <li id="setting-index-tab" data-tab="index" data-default="true">
                                 <a href="{{ route('SettingsIndex', ['active_tab' => 'index', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Основное</span>
                                 </a>
                             </li>
-                            <li id="setting-cashbox-tab" data-tab="index">
+                            <li id="setting-cashbox-tab" data-tab="cashbox">
                                 <a href="{{ route('SettingsIndex', ['active_tab' => 'cashbox', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Кассы</span>
                                 </a>
                             </li>
-                            <li id="setting-cashbox-tab" data-tab="index">
+                            <li id="setting-cashbox-tab" data-tab="store">
                                 <a href="{{ route('SettingsIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Слады</span>
                                 </a>
                             </li>
-                            <li id="setting-cashbox-tab" data-tab="index">
+                            <li id="setting-cashbox-tab" data-tab="ddsarticle">
                                 <a href="{{ route('SettingsIndex', ['active_tab' => 'ddsarticle', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Статьи ДДС</span>
                                 </a>

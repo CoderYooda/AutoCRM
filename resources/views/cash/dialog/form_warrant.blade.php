@@ -1,16 +1,24 @@
 <div
     @if(isset($warrant) && $warrant->id != NULL)
         @php $class = 'warrantDialog' . $warrant->id @endphp
-        id="warrantDialog{{$warrant->id}}" data-id="{{$warrant->id}}"
+        id="warrantDialog{{$warrant->id}}"
     @else
         @php $class = 'warrantDialog' @endphp
         id="warrantDialog"
     @endif
     class="dialog warrant_dialog" style="width:400px;">
     @if(isset($warrant) && $warrant->id != NULL)
-        <div class="titlebar">Расходный ордер №{{ $warrant->id }}</div>
+        @if($warrant->isIncoming)
+            <div class="titlebar">Приходный ордер №{{ $warrant->id }}</div>
+        @else
+            <div class="titlebar">Расходный ордер №{{ $warrant->id }}</div>
+        @endif
     @else
-        <div class="titlebar">Новый расходный ордер</div>
+        @if($request['isIncoming'])
+            <div class="titlebar">Новый приходный ордер</div>
+        @else
+            <div class="titlebar">Новый расходный ордер</div>
+        @endif
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreWarrant') }}" method="POST">
@@ -22,10 +30,34 @@
         <input class="cashbox_select" type="hidden" name="cashbox_id" value=" @if(isset($warrant)){{ $warrant->cashbox()->first()->id }}@endif">
         <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle()->first()->id }}@endif">
 
+        <input type="hidden" name="isIncoming" value="@if(isset($warrant)){{ $warrant->isIncoming }}@elseif(isset($request['isIncoming'])){{ $request['isIncoming'] }}@else 1 @endif">
+
         <div class="no-gutters align-items-stretch">
+            <div class="padding dark">
+                <div class="row row-sm">
+                    <div class="col-sm-6">
+                        <div class="text-md text-white">
+                            <span class="text-muted">Дата</span> <span>@if(isset($warrant)){{ $warrant->do_date }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-md text-white">
+                            <span class="text-muted">Баланс</span> <span class="partner_balance text-warning">@if(isset($warrant)){{ $warrant->partner()->first()->balance }}@else 0 @endif</span>
+                        </div>
+
+{{--                        <div class="form-group mb-0">--}}
+{{--                            <label for="comment">Баланс клиента</label>--}}
+{{--                            <input type="text"  name="balance"--}}
+{{--                                   @if(isset($warrant)) value="{{ $warrant->partner()->first()->balance }}"@endif--}}
+{{--                                   class="form-control fake-disabled" disabled>--}}
+{{--                        </div>--}}
+                    </div>
+                </div>
+            </div>
         <div class="padding">
             <div class="form-group">
-                <label for="category_id">Поставщик</label>
+                <label for="category_id">Контрагент</label>
                 <div class="input-group">
                     <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
                         @if(isset($warrant) && $warrant->partner()->first() != null)
@@ -35,7 +67,7 @@
                         @endif
                     </select>
                     <div class="input-group-append">
-                        <button onclick="{{ $class }}.openSelectPartnerModal()"
+                        <button type="button" onclick="{{ $class }}.openSelectPartnerModal()"
                                 class="btn white" type="button"><i class="fa fa-bars"></i>
                         </button>
                     </div>
@@ -46,7 +78,7 @@
                 <div class="input-group">
                     <select name="cashbox_id" disabled class="cashbox_select form-control input-c noarrow fake-disabled" readonly>
                         @if(isset($warrant) && $warrant->cashbox()->first() != null)
-                            <option value="{{ $warrant->cashbox()->first()->id }}">{{ $warrant->cashbox()->first()->outputName() }}</option>
+                            <option value="{{ $warrant->cashbox()->first()->id }}">{{ $warrant->cashbox()->first()->name }}</option>
                         @else
                             <option>Не выбрано</option>
                         @endif
@@ -63,7 +95,7 @@
                 <div class="input-group">
                     <select name="ddsarticle_id" disabled class="cashbox_select form-control input-c noarrow fake-disabled" readonly>
                         @if(isset($warrant) && $warrant->ddsarticle()->first() != null)
-                            <option value="{{ $warrant->ddsarticle()->first()->id }}">{{ $warrant->ddsarticle()->first()->outputName() }}</option>
+                            <option value="{{ $warrant->ddsarticle()->first()->id }}">{{ $warrant->ddsarticle()->first()->name }}</option>
                         @else
                             <option>Не выбрано</option>
                         @endif
@@ -102,7 +134,8 @@
 
         </div>
         <div class="modal-footer">
-            <button class="btn primary" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
+            <button type="submit" class="btn success" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
         </div>
         <div class="system_message">
 

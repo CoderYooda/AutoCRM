@@ -27,15 +27,17 @@ const classes = {
     partnerDialog,
     cashboxDialog,
     ddsarticleDialog,
-    warrantDialog,
+    warrantDialog
+};
 
+const pages = {
     cashPage,
     partnerPage,
     storePage,
     settingsPage,
     servicesPage,
     reportPage,
-    employeePage,
+    employeePage
 };
 
 class Helper{
@@ -60,15 +62,16 @@ class Helper{
     }
 
     initPageMethods(){
-
         let className = window.location.pathname.substring(1);
         if(className !== 'undefined') {
             if(!window[className]) {
                 try {
-                    window[className] = new classes[className + 'Page']();
+                    window[className] = new pages[className + 'Page']();
                 } catch (err) {
                     window.helper.log(className + " - Такого конструктора не существует");
                 }
+            } else {
+                try {window[className].linked();} catch (err) {}
             }
         } else {
             window.helper.log('Ошибка в ' + className);
@@ -78,7 +81,7 @@ class Helper{
     log(mess){
         console.log(mess);
         setTimeout(function(){
-            console.clear();
+            //console.clear();
         }, 4000);
     }
 

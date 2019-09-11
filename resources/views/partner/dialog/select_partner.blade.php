@@ -2,7 +2,7 @@
 <div id="selectPartnerDialog" class="dialog" style="width:580px;">
     <div class="titlebar">Выбор контрагента</div>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
-    <div class="navbar white no-radius box-shadow pos-rlt">
+    <div class="navbar dark no-radius box-shadow pos-rlt">
         <form class="flex">
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
@@ -10,7 +10,7 @@
             <div class="input-group">
                 <input id="partner_search" type="text" class="form-control form-control-sm search" placeholder="Поиск контрагентов" required="">
                 <span class="input-group-append">
-                    <button onclick="openDialog('partnerDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новый контрагент</button>
+                    <button onclick="openDialog('partnerDialog')" class="btn white btn-sm no-shadow" type="button">Новый контрагент</button>
                 </span>
             </div>
         </form>
@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="modal-footer white">
-        <button class="btn success" onclick="window.{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+        <button class="btn white" onclick="window.{{ $class }}.finitaLaComedia(this)">Закрыть</button>
     </div>
     <div class="system_message">
 

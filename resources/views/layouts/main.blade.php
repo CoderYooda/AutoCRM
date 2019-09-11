@@ -54,7 +54,7 @@
                         </a>
                     </li>
                     <li id="cash_link" class="nav-item">
-                        <a href="{{ route('CashIndex') }}" class="nav-link ajax-nav">
+                        <a href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}" class="nav-link ajax-nav">
                             Деньги
                             <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
@@ -129,16 +129,16 @@
                                 Apps
                             </a>
                             <div class="dropdown-menu mt-2 w pt-2 mt-2 animate fadeIn">
-                                <a href="app.user.html" class="dropdown-item" data-pjax-state="">
+                                <a href="app.user.html" class="dropdown-item">
                                     Users
                                 </a>
-                                <a href="app.message.html" class="dropdown-item" data-pjax-state="">
+                                <a href="app.message.html" class="dropdown-item">
                                     Messages
                                 </a>
-                                <a href="app.inbox.html" class="dropdown-item" data-pjax-state="">
+                                <a href="app.inbox.html" class="dropdown-item">
                                     Inbox
                                 </a>
-                                <a href="ui.calendar.html" class="dropdown-item" data-pjax-state="">
+                                <a href="ui.calendar.html" class="dropdown-item">
                                     Calendar
                                 </a>
                             </div>

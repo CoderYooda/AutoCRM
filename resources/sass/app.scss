@@ -256,7 +256,7 @@ header .nav-item.active{
 .category-aside .actions a:hover{
     opacity: 1;
 }
-.navbar input[name=search]{
+.navbar input, .navbar button{
     height: 29px;
 }
 .modal-header {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class Partner extends Model
 {
@@ -88,6 +89,23 @@ class Partner extends Model
         } else {
             return 'Юридическое лицо';
         }
-
     }
+
+    public static function owned(){
+        $company_id = Auth::user()->company()->first()->id;
+        return self::where('company_id', $company_id);
+    }
+
+    public function addition($summ){
+        $this->balance = $this->balance + $summ;
+        $this->save();
+        return $this;
+    }
+
+    public function subtraction($summ){
+        $this->balance = $this->balance - $summ;
+        $this->save();
+        return $this;
+    }
+
 }

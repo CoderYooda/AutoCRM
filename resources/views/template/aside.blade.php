@@ -8,15 +8,15 @@
         </a>
     </li>
     <li class="">
-        <a href="#">
+        <a onclick="openDialog('warrantDialog', '&isIncoming=1')">
             <span class="nav-icon">
                 <i class="fa fa-sign-in"></i>
 			</span>
-            <span class="nav-text">Приход</span>
+            <span  class="nav-text">Приход</span>
         </a>
     </li>
     <li class="">
-        <a href="#">
+        <a onclick="openDialog('warrantDialog', '&isIncoming=0')">
             <span class="nav-icon">
                 <i class="fa fa-sign-out"></i>
 			</span>

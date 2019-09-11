@@ -47,6 +47,8 @@ const ajaxRequest = new (function () {
                     li.classList.remove('active');
                     if(window.helper.findGetParameter('active_tab') === li.dataset.tab){
                         li.classList.add('active');
+                    } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){
+                        li.classList.add('active');
                     }
                 });
                 rebuildLinks();

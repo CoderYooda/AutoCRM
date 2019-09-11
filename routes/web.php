@@ -35,11 +35,20 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Пставщики (внешние)
     Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
 
-    #Касса
+
+
+    #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 
     #Кассовые операции
     Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
+    Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
+
+    #Движение средств между кассами
+    Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название
+    Route::post('/cashmove/search', 'MoneyMoveController@search')->name('MoneyMovePageSearch');
+    #/Касса##############################################################################################
+
 
     #Кассовые аппараты
     Route::post('/cashbox/new', 'CashboxController@store')->name('StoreCashbox');
@@ -66,7 +75,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
-    Route::post('/partner/search', 'PartnerController@search')->name('PageSearch');
+    Route::post('/partner/search', 'PartnerController@search')->name('PartnerPageSearch');
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');
     Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
     Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');

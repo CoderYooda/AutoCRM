@@ -1,12 +1,12 @@
 <div
     @if(isset($ddsarticle) && $ddsarticle->id != NULL)
         @php $class = 'ddsarticleDialog' . $ddsarticle->id @endphp
-        id="ddsarticleDialog{{$Ddsarticle->id}}"
+        id="ddsarticleDialog{{$ddsarticle->id}}"
     @else
         @php $class = 'ddsarticleDialog' @endphp
         id="ddsarticleDialog"
     @endif
-    class="dialog" style="width:500px;">
+    class="dialog" style="width:300px;">
     @if(isset($ddsarticle) && $ddsarticle->id != NULL)
         <div class="titlebar">Редактирование '{{ $ddsarticle->name }}'</div>
     @else

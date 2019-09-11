@@ -30,17 +30,26 @@ class DdsarticleController extends Controller
     public static function ddsarticleDialog($request)
     {
         if($request['params']){
-            $id = (int)$request['id'];
+            $id = (int)$request['ddsarticle_id'];
             $ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
             $tag = 'ddsarticleDialog'.$id;
         } else {
             $tag = 'ddsarticleDialog';
             $ddsarticle = null;
         }
+
+        if($request['category_select']){
+            $category_select = (int)$request['category_select'];
+        } else {
+            $category_select = 4;
+        }
+
+        $category = Category::where('id', $category_select)->first();
+
         $ddstypes = DdsType::all();
         return response()->json([
             'tag' => $tag,
-            'html' => view('settings.dialog.form_Ddsarticle', compact('ddsarticle','ddstypes', 'request'))->render()
+            'html' => view('settings.dialog.form_ddsarticle', compact('ddsarticle','ddstypes', 'category', 'request'))->render()
         ]);
     }
 

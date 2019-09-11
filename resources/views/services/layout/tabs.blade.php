@@ -13,7 +13,7 @@
                             <ul class="nav">
                                 <li id="store-tab" data-tab="store">
                                     <a href="{{ route('ServicesIndex', ['active_tab' => 'services', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
-                                        <span class="nav-text">Деньги</span>
+                                        <span class="nav-text">Услуги</span>
                                     </a>
                                 </li>
                             </ul>

@@ -20,6 +20,7 @@ class CreatePartnersTable extends Migration
             $table->bigInteger('category_id')->unsigned()->comment('Привязка к категории');
 //            $table->bigInteger('car_id')->unsigned()->nullable()->comment('Привязка автомобиля');
             $table->boolean('isfl')->comment('физическое лицо?');
+            $table->double('balance')->default(0)->comment('Баланс');
             $table->char('fio')->nullable()->comment('ФИО');
             $table->date('birthday')->nullable()->comment('Дата рождения');
             $table->char('address')->nullable()->comment('Адрес');

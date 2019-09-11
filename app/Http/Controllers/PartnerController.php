@@ -191,7 +191,7 @@ class PartnerController extends Controller
 
     public static function selectPartnerDialog($request)
     {
-        $partners = Partner::where('company_id', Auth::user()->id)->paginate(12);
+        $partners = Partner::where('company_id', Auth::user()->id)->paginate(7);
         return response()->json([
             'tag' => 'selectPartnerDialog',
             'html' => view('partner.dialog.select_partner', compact('partners', 'request'))->render()
@@ -203,7 +203,7 @@ class PartnerController extends Controller
             ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
             ->orWhereHas('phones', function ($query) use ($request) {
             $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-        })->orderBy('id', 'DESC')->paginate(12);
+        })->orderBy('id', 'DESC')->paginate(20);
 
         $content = view('partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
         return response()->json([
@@ -230,6 +230,7 @@ class PartnerController extends Controller
         }
         return response()->json([
             'id' => $partner->id,
+            'balance' => $partner->balance,
             'name' => $partner->outputName()
         ]);
     }
@@ -237,19 +238,15 @@ class PartnerController extends Controller
     public static function getPartners($request)
     {
         #TODO слить методы выборки сущностей (6.10)
-
         $category = 3;
         if($request['category_id']){
             $category = (int)$request['category_id'];
         }
-
         if($request['page']){
             Paginator::currentPageResolver(function () use ($request) {
                 return (int)$request['page'];
             });
         }
-
-
         $partners = Partner::where('company_id', Auth::user()->company()->first()->id )->with('passport')->where(function($q) use ($request, $category){
             if($category != 3) {
                 $q->where('category_id', $category);
@@ -269,9 +266,7 @@ class PartnerController extends Controller
                         });
                 }
             }
-
-
-        })->orderBy('created_at', 'DESC')->paginate(12);
+        })->orderBy('created_at', 'DESC')->paginate(11);
 
         return $partners;
     }

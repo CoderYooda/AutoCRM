@@ -17,8 +17,8 @@ class CashController extends Controller
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'money';
         }
-
         $classname = $request['active_tab'] . 'Tab';
+        if($request['active_tab'] === 'null'){$classname = 'moneyTab';}
 //        $content = view('cash.operations', compact('products', 'request'));
         $content = self::$classname($request);
 
@@ -34,19 +34,19 @@ class CashController extends Controller
         }
     }
 
-    public static function moneyTab($request)
+    public static function warrantTab($request)
     {
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('cash.operations', compact('request'));
+            return view('cash.warrants', compact('request'));
         }
-        return view('cash.operations', compact('request'));
+        return view('cash.warrants', compact('request'));
     }
 
     public static function cashmoveTab($request)
     {
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('cash.operations', compact('request'));
+            return view('cash.cashmove', compact('request'));
         }
-        return view('cash.operations', compact('request'));
+        return view('cash.cashmove', compact('request'));
     }
 }
