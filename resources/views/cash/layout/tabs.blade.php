@@ -13,12 +13,12 @@
                 <div class="sidenav mt-2">
                     <nav class="nav-border b-primary" data-nav>
                         <ul class="nav">
-                            <li id="warrant-tab" data-tab="warrant" data-default="true" class="active tab">
+                            <li id="warrant-tab" data-tab="warrant" data-default="true" class="@if($request['active_tab'] == 'warrant' || $request['active_tab'] == null) active @endif tab">
                                 <a href="{{ route('CashIndex', ['active_tab' => 'warrant', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Деньги</span>
                                 </a>
                             </li>
-                            <li id="cashmove-tab" data-tab="cashmove" class="tab">
+                            <li id="cashmove-tab" data-tab="cashmove" class="@if($request['active_tab'] == 'cashmove') active @endif tab">
                                 <a href="{{ route('CashIndex', ['active_tab' => 'cashmove', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-badge">
 				                  	</span>
@@ -27,6 +27,14 @@
                             </li>
                         </ul>
                     </nav>
+                </div>
+            </div>
+            <div class="mt-auto">
+                <div class="box mb-0">
+                    <div class="box-body p-0">
+                        <canvas id="chart-doughnut" height="130" class="pb-3 pt-3" data-income="{{$income}}" data-outcome="{{ $outcome }}">
+                        </canvas>
+                    </div>
                 </div>
             </div>
         </div>

@@ -42,7 +42,7 @@ class CategorySeed extends Seeder
             'type' => 'partner',
         ]);
 
-        Category::create(['id' => 5, 'name' => 'Сотрудники', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+        Category::create(['id' => 5, 'name' => 'Сотрудники', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => true, 'type' => NULL,]);
         Category::create(['id' => 6, 'name' => 'Партнеры', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
         Category::create(['id' => 7, 'name' => 'Покупатели', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
 
@@ -55,5 +55,8 @@ class CategorySeed extends Seeder
             'locked' => true,
             'type' => 'dds',
         ]);
+
+        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
     }
 }

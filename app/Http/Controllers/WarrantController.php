@@ -23,8 +23,6 @@ class WarrantController extends Controller
             $warrant = null;
         }
 
-        $cashboxes = Cashbox::owned()->get();
-
         return response()->json([
             'tag' => $tag,
             'html' => view('cash.dialog.form_warrant', compact('partner', 'warrant', 'request'))->render()
@@ -34,7 +32,10 @@ class WarrantController extends Controller
     public function store(Request $request)
     {
         $request['company_id'] = Auth::user()->company()->first()->id;
-        $request['do_date'] = Carbon::now();
+        if($request['do_date'] == null){
+            $request['do_date'] = Carbon::now();
+        }
+
         $validation = Validator::make($request->all(), self::validateRules($request));
         if($validation->fails()){
             $this->status = 422;
@@ -76,6 +77,8 @@ class WarrantController extends Controller
         $warrant->fill($request->only($warrant->fields));
         $warrant->balance = $cashbox->balance;
         $warrant->save();
+        $warrant->created_at = $request['do_date'];
+        $warrant->save();
 
 
         if($request->ajax()){
@@ -87,6 +90,7 @@ class WarrantController extends Controller
             return redirect()->back();
         }
     }
+
     private static function validateRules($request)
     {
         $rules = null;
@@ -116,7 +120,6 @@ class WarrantController extends Controller
                 if(isset($request['date_end']) && $request['date_end'] != 'null'){
                     $q->where('do_date', '<=', Carbon::parse($request['date_end']));
                 }
-
             })
             ->where(function($q) use ($request){
                 if(isset($request['search']) && $request['search'] !== 'null') {
@@ -141,11 +144,53 @@ class WarrantController extends Controller
         return $warrants;
     }
 
+    public static function getIncomeCount($request){
+        $income =  Warrant::owned()
+            ->where(function($q) use ($request){
+                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
+                    $q->where('isIncoming',   boolval ($request['isIncoming']));
+                }
+            })
+            ->where(function($q) use ($request){
+                if(isset($request['date_start']) && $request['date_start'] != 'null'){
+                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
+                }
+                if(isset($request['date_end']) && $request['date_end'] != 'null'){
+                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
+                }
+            })->where('isIncoming', true)->sum('summ');
+        return $income;
+    }
+
+    public static function getOutcomeCount($request){
+        $outcome = Warrant::owned()
+            ->where(function($q) use ($request){
+                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
+                    $q->where('isIncoming',   boolval ($request['isIncoming']));
+                }
+            })
+            ->where(function($q) use ($request){
+                if(isset($request['date_start']) && $request['date_start'] != 'null'){
+                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
+                }
+                if(isset($request['date_end']) && $request['date_end'] != 'null'){
+                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
+                }
+            })->where('isIncoming', false)->sum('summ');
+        return $outcome;
+    }
+
     public function search(Request $request){
+        $income =  self::getIncomeCount($request);
+
+        $outcome = self::getOutcomeCount($request);
+
         $content = view('cash.elements.warrant_list_container', compact('request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'ajax-table-warrant',
+            'income' => $income,
+            'outcome' => $outcome,
         ], 200);
     }
 

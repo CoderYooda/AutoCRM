@@ -12,20 +12,21 @@ class cashPage{
         this.date_end = 'null';
         this.isIncoming = 'null';
         this.dates = null;
+        this.chartCircle = null;
         this.init();
+        this.chartInit();
     }
 
     linked(){
-
+        this.chartCircle.update();
     }
 
     init(){
         let object = this;
-
-
         object.initSearch();
         document.addEventListener('ajaxLoaded', function(e){
             object.checkActive();
+            object.chartInit();
             object.load();
         });
         object.checkActive();
@@ -36,6 +37,39 @@ class cashPage{
         document.addEventListener('WarrantStored', function(e){
             object.reload();
         });
+    }
+
+    chartInit(){
+        let object = this;
+        let cont = document.getElementById(object.root_id);
+        if(cont){
+            let doughnut = cont.querySelector('#chart-doughnut');
+            let options = {
+                type: 'pie',
+                data: {labels: ['Расход', 'Доход'],
+                    datasets: [{
+                        data: [
+                            doughnut.dataset.outcome,
+                            doughnut.dataset.income,
+                        ],
+                        borderColor: 'transparent',
+                        backgroundColor: [
+                            // "red",
+                            // "green",
+                            "#53a6fa",
+                            "#22b66e",
+                        ],
+                        label: 'Trafic'
+                    }]
+                },
+                options: {
+                    legend: {position: 'center', labels:{boxWidth: 12}},
+                    animation:{duration: 0},
+                    cutoutPercentage: 75
+                }
+            };
+            object.chartCircle = new chartjs(doughnut, options);
+        }
     }
 
     initSearch(){
@@ -76,6 +110,7 @@ class cashPage{
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
         this.date_end = 'null';
+        this.page = 1;
         this.reload();
     }
 
@@ -168,6 +203,11 @@ class cashPage{
             window.helper.insertParamUrl('isIncoming', object.isIncoming);
             window.rebuildLinks();
             object.load();
+            object.chartCircle.options.animation.duration = 1000;
+            object.chartCircle.data.datasets[0].data[1] = resp.data.income;
+            object.chartCircle.data.datasets[0].data[0] = resp.data.outcome;
+            object.chartCircle.update();
+            object.chartCircle.options.animation.duration = 0;
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

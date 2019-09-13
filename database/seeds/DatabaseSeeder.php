@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,5 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DDSSeeder::class);
         $this->call(ContractTypesSeeder::class);
         $this->call(CreateBasePartners::class);
+        $this->call(SettingsSeed::class);
+        $this->call(WarrantSeed::class);
     }
 }

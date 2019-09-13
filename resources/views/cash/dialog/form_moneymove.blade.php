@@ -1,0 +1,91 @@
+<div
+    @if(isset($moneymove) && $moneymove->id != NULL)
+        @php $class = 'moneymoveDialog' . $moneymove->id @endphp
+        id="moneymoveDialog{{$moneymove->id}}"
+    @else
+        @php $class = 'moneymoveDialog' @endphp
+        id="moneymoveDialog"
+    @endif
+    class="dialog moneymove_dialog" style="width:400px;">
+    @if(isset($moneymove) && $moneymove->id != NULL)
+        <div class="titlebar">Перемещение средств №{{ $moneymove->id }}</div>
+    @else
+        <div class="titlebar">Новое перемещение средств</div>
+    @endif
+    <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
+    <form action="{{ route('StoreMoneyMove') }}" method="POST">
+        @csrf
+        @if(isset($moneymove) && $moneymove->id != NULL)
+            <input type="hidden" name="id" value="{{ $moneymove->id }}">
+        @endif
+        <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($moneymove)){{ $moneymove->partner()->first()->id }}@endif">
+        <input class="in_cashbox_select" type="hidden" name="in_cashbox_id" value=" @if(isset($moneymove)){{ $moneymove->in_cashbox()->first()->id }}@endif">
+        <input class="out_cashbox_select" type="hidden" name="out_cashbox_id" value=" @if(isset($moneymove)){{ $moneymove->out_cashbox()->first()->id }}@endif">
+        @if(isset($moneymove))<input class="do_date" type="hidden" name="do_date" value="{{ $moneymove->do_date }}">@endif
+
+        <div class="no-gutters align-items-stretch">
+            <div class="padding dark">
+                <div class="row row-sm">
+                    <div class="col-sm-12">
+                        <div class="text-md text-white">
+                            <span class="text-muted">Дата</span> <span>@if(isset($moneymove)){{ \Carbon\Carbon::parse($moneymove->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="padding">
+            <div class="form-group">
+                <label for="category_id">Касса отправитель</label>
+                <div class="input-group">
+                    <select name="in_cashbox_id" disabled class="in_cashbox_select form-control input-c noarrow fake-disabled" readonly>
+                        @if(isset($moneymove) && $moneymove->in_cashbox()->first() != null)
+                            <option value="{{ $moneymove->in_cashbox()->first()->id }}">{{ $moneymove->in_cashbox()->first()->name }}</option>
+                        @else
+                            <option>Не выбрано</option>
+                        @endif
+                    </select>
+                    <div class="input-group-append">
+                        <button onclick="{{ $class }}.openSelectCashboxModal('In')"
+                                class="btn white" type="button"><i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="category_id">Касса получатель</label>
+                <div class="input-group">
+                    <select name="out_cashbox_id" disabled class="out_cashbox_select form-control input-c noarrow fake-disabled" readonly>
+                        @if(isset($moneymove) && $moneymove->out_cashbox()->first() != null)
+                            <option value="{{ $moneymove->out_cashbox()->first()->id }}">{{ $moneymove->out_cashbox()->first()->name }}</option>
+                        @else
+                            <option>Не выбрано</option>
+                        @endif
+                    </select>
+                    <div class="input-group-append">
+                        <button onclick="{{ $class }}.openSelectCashboxModal('Out')"
+                                class="btn white" type="button"><i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Сумма</label>
+                <input type="number" step="0.1" name="summ"
+                       @if(isset($moneymove)) value="{{ $moneymove->summ }}" @endif
+                       class="form-control" placeholder="Сумма">
+            </div>
+            <div class="form-group">
+                <label for="comment">Комментарий</label>
+                <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
+            <button type="submit" class="btn success" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
+        </div>
+        <div class="system_message">
+
+        </div>
+    </form>
+</div>

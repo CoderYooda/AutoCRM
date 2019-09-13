@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\DdsType;
+use App\Models\DdsArticle;
 
 class DDSSeeder extends Seeder
 {
@@ -27,6 +28,10 @@ class DDSSeeder extends Seeder
         DdsType::create(['id' => 13, 'name' => 'Оплата труда',]);
         DdsType::create(['id' => 14, 'name' => 'Оплата товаров, работ, услуг, сырья и иных оборотных активов',]);
         DdsType::create(['id' => 15, 'name' => 'Внутреннее перемещение наличных денежных средств',]);
+
+        DdsArticle::create(['id' => 1, 'category_id' => 8, 'name' => 'Выдача зп', 'company_id' => 1, 'dds_types_id' => 13]);
+        DdsArticle::create(['id' => 2, 'category_id' => 9, 'name' => 'Продажа товара', 'company_id' => 1, 'dds_types_id' => 1]);
+        DdsArticle::create(['id' => 3, 'category_id' => 9, 'name' => 'Погашение кредита', 'company_id' => 1, 'dds_types_id' => 3]);
     }
 }
 

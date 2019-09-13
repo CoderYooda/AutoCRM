@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "chart.js": "^2.8.0",
         "flatpickr": "^4.6.2",
         "imask": "^5.2.1",
         "notification-js": "^1.1.1",

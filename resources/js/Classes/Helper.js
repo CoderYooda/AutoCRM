@@ -8,6 +8,7 @@ import partnerDialog from "./Partner/PartnerDialog";
 import cashboxDialog from "./Cashbox/CashboxDialog";
 import ddsarticleDialog from "./Ddsarticle/DdsarticleDialog";
 import warrantDialog from "./Warrant/WarrantDialog";
+import moneymoveDialog from "./MoneyMove/MoneymoveDialog";
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
 import settingsPage from "./Settings/SettingsPage";
@@ -27,7 +28,8 @@ const classes = {
     partnerDialog,
     cashboxDialog,
     ddsarticleDialog,
-    warrantDialog
+    warrantDialog,
+    moneymoveDialog
 };
 
 const pages = {

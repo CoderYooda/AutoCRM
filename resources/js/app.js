@@ -5,6 +5,7 @@ require('./navigation');                                            // Нави�
 
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
+window.chartjs = require('chart.js');
 
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);

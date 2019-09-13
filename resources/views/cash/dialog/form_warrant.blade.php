@@ -29,6 +29,7 @@
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($warrant)){{ $warrant->partner()->first()->id }}@endif">
         <input class="cashbox_select" type="hidden" name="cashbox_id" value=" @if(isset($warrant)){{ $warrant->cashbox()->first()->id }}@endif">
         <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle()->first()->id }}@endif">
+        @if(isset($warrant))<input class="do_date" type="hidden" name="do_date" value="{{ $warrant->do_date }}">@endif
 
         <input type="hidden" name="isIncoming" value="@if(isset($warrant)){{ $warrant->isIncoming }}@elseif(isset($request['isIncoming'])){{ $request['isIncoming'] }}@else 1 @endif">
 
@@ -37,7 +38,7 @@
                 <div class="row row-sm">
                     <div class="col-sm-6">
                         <div class="text-md text-white">
-                            <span class="text-muted">Дата</span> <span>@if(isset($warrant)){{ $warrant->do_date }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
+                            <span class="text-muted">Дата</span> <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
                         </div>
 
                     </div>
@@ -45,13 +46,6 @@
                         <div class="text-md text-white">
                             <span class="text-muted">Баланс</span> <span class="partner_balance text-warning">@if(isset($warrant)){{ $warrant->partner()->first()->balance }}@else 0 @endif</span>
                         </div>
-
-{{--                        <div class="form-group mb-0">--}}
-{{--                            <label for="comment">Баланс клиента</label>--}}
-{{--                            <input type="text"  name="balance"--}}
-{{--                                   @if(isset($warrant)) value="{{ $warrant->partner()->first()->balance }}"@endif--}}
-{{--                                   class="form-control fake-disabled" disabled>--}}
-{{--                        </div>--}}
                     </div>
                 </div>
             </div>

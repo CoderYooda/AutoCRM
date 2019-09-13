@@ -15,7 +15,7 @@ class CashController extends Controller
         $target = HC::selectTarget(); // цель ajax подгрузки
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
-            $request['active_tab'] = 'money';
+            $request['active_tab'] = 'warrant';
         }
         $classname = $request['active_tab'] . 'Tab';
         if($request['active_tab'] === 'null'){$classname = 'moneyTab';}
@@ -36,17 +36,25 @@ class CashController extends Controller
 
     public static function warrantTab($request)
     {
+        $income =  WarrantController::getIncomeCount($request);
+        $outcome = WarrantController::getOutcomeCount($request);
+
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('cash.warrants', compact('request'));
+            return view('cash.warrants', compact('income','outcome', 'request'));
+        } else {
+            return view('cash.warrants', compact('income', 'outcome', 'request'));
         }
-        return view('cash.warrants', compact('request'));
+
     }
 
     public static function cashmoveTab($request)
     {
+        $income =  WarrantController::getIncomeCount($request);
+        $outcome = WarrantController::getOutcomeCount($request);
+
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('cash.cashmove', compact('request'));
+            return view('cash.cashmove', compact('income','outcome','request'));
         }
-        return view('cash.cashmove', compact('request'));
+        return view('cash.cashmove', compact('income','outcome', 'request'));
     }
 }

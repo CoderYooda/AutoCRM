@@ -20,9 +20,15 @@
                 </div>
             </div>
             @if($request['refer'] != null)
-                <button onclick="try{window.{{$request['refer']}}.selectCashbox({{ $cashbox->id }})}catch (e) {}" class="btn btn-icon white float-right">
-                    <i class="fa fa-check"></i>
-                </button>
+                @if($request['type'] != null)
+                    <button onclick="try{window.{{$request['refer']}}.select{{$request['type']}}Cashbox({{ $cashbox->id }})}catch (e) {}" class="btn btn-icon white float-right">
+                        <i class="fa fa-check"></i>
+                    </button>
+                @else
+                    <button onclick="try{window.{{$request['refer']}}.selectCashbox({{ $cashbox->id }})}catch (e) {}" class="btn btn-icon white float-right">
+                        <i class="fa fa-check"></i>
+                    </button>
+                @endif
             @else
 
             @endif

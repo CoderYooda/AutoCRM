@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWarrantsTable extends Migration
+class CreateMoneyMoveTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateWarrantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('warrants', function (Blueprint $table) {
+        Schema::create('money_move', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->dateTime('do_date')->comment('Дата исполнения');
-            $table->bigInteger('cashbox_id')->unsigned()->comment('Привязка к кассовому аппарату');
-            $table->bigInteger('partner_id')->unsigned()->comment('Привязка к контрагенту');
-            $table->bigInteger('ddsarticle_id')->unsigned()->comment('Привязка к кассовому аппарату');
+            $table->bigInteger('out_cashbox_id')->unsigned()->comment('Привязка к кассовому аппарату1');
+            $table->bigInteger('in_cashbox_id')->unsigned()->comment('Привязка к кассовому аппарату2');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->double('summ', 12, 2)->comment('Сумма операции с двойной точностью');
-            $table->char('reason')->nullable()->comment('Причина');
             $table->char('comment')->nullable()->comment('Комментарий');
-            $table->boolean('isIncoming')->comment('Входящая или исходящая операция');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
             $table->timestamps();
         });
@@ -36,6 +33,6 @@ class CreateWarrantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('warrants');
+        Schema::dropIfExists('money_move');
     }
 }
