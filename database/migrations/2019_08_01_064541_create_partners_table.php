@@ -26,6 +26,7 @@ class CreatePartnersTable extends Migration
             $table->char('address')->nullable()->comment('Адрес');
             $table->char('email')->nullable()->comment('Почтовый адрес');
             $table->char('comment')->nullable()->comment('Комментарий');
+            $table->char('barcode')->nullable()->comment('штрих-код');
             $table->char('companyName')->nullable()->comment('Наименование организации');
             $table->char('ur_address')->nullable()->comment('Юридический адрес');
             $table->char('fact_address')->nullable()->comment('Фактический адрес');

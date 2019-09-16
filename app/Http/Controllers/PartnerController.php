@@ -9,6 +9,7 @@ use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
+use Milon\Barcode\DNS1D;
 use Auth;
 
 class PartnerController extends Controller
@@ -62,6 +63,10 @@ class PartnerController extends Controller
 //            $partner = null;
 //            $tag = 'partnerDialog';
 //        }
+
+
+
+
 
         if($request['category_select']){
             $category_select = (int)$request['category_select'];
@@ -265,6 +270,7 @@ class PartnerController extends Controller
                             $query->where('number', 'LIKE', '%' . $request['search'] . '%');
                         });
                 }
+                $q->orWhere('barcode', $request['search']);
             }
         })->orderBy('created_at', 'DESC')->paginate(11);
 

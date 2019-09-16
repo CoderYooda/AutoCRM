@@ -89,4 +89,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Диалоги
     Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');
+
+    #Штрихкоды
+    Route::post('/barcode/search', 'BarcodeController@search')->name('BarcodeSearch');
 });

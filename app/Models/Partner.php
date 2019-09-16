@@ -22,6 +22,7 @@ class Partner extends Model
         'address',
         'email',
         'comment',
+        'barcode',
         'companyName',
         'ur_address',
         'fact_address',

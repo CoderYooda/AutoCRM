@@ -35,7 +35,9 @@ document.addEventListener('mousemove', function(e){
 
 window.openDialog = function(tag, params = null, reload = false) {
     var e = e || window.event;
-    e.preventDefault();
+    if(e){
+        e.preventDefault();
+    }
 	if (isXHRloading) { return; }
 	let dReq = new XMLHttpRequest();
 	window.isXHRloading = true;

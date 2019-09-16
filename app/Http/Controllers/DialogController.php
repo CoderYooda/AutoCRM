@@ -61,6 +61,9 @@ class DialogController extends Controller
             case 'warrantDialog':
                 $dialog = WarrantController::warrantDialog($request);
                 break;
+            case 'barcodeDialog':
+                $dialog = BarcodeController::barcodeDialog($request);
+                break;
         }
 
         if(!isset($dialog)){

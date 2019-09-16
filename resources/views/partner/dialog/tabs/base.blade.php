@@ -48,4 +48,14 @@
         <label>Комментарий</label>
         <textarea type="text" name="comment" class="form-control" placeholder="Комментарий">@if(isset($partner)){{ $partner->comment }}@endif</textarea>
     </div>
+    <div class="form-group">
+        <label>Штрих код (EAN 13)</label>
+        <input type="text" name="barcode" class="form-control" value="@if(isset($partner)){{ $partner->barcode }}@endif" placeholder="Штрих код">
+    </div>
+    @if(isset($partner) && $partner->barcode != null)
+    <div class="form-group">
+        <img style="max-width: 100%" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($partner->barcode) !!}" alt="barcode"   />
+    </div>
+    @endif
+
 </div>
