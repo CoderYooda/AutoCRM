@@ -261,3 +261,10 @@ header .nav-item.active{
 .modal-header {
     border-radius: 0;
  }
+.breadcrumb {
+    padding: 18px 1rem;
+}
+.table-hover tbody tr:hover {
+    color: #212529;
+    background-color: #f3f6f9;
+}

@@ -6,7 +6,7 @@
         @php $class = 'entranceDialog' @endphp
         id="entranceDialog"
     @endif
-    class="dialog entrance_dialog" style="width:800px;">
+    class="dialog entrance_dialog" style="width:880px;">
     @if(isset($entrance) && $entrance->id != NULL)
         <div class="titlebar">Поступление товара №{{ $entrance->id }}</div>
     @else
@@ -123,7 +123,7 @@
                 <table class="table table-sm table-hover b-t mh40-dialog d-block">
                     <thead class="text-muted">
                     <tr>
-                        <th width="40%">Наименование</th>
+                        <th width="30%">Наименование</th>
                         <th width="10%">Артикул</th>
                         <th width="10%" style="min-width: 60px;">Кол-во</th>
                         <th width="10%" style="min-width: 100px;">Цена</th>

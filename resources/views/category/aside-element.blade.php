@@ -5,7 +5,7 @@
     @else
         <a href="{{ request()->headers->get('referer') }}" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">
     @endif
-        <span class="nav-text text-ellipsis">{{ $category->name }}</span>
+        <span title="{{ $category->name }}" class="nav-text text-ellipsis"><i style="padding-right: 8px;" class="fa fa-folder-o text-muted"></i>{{ $category->name }}</span>
      </a>
     <div class="d-none actions" style="flex: none">
         <a onclick="openDialog('editCategory', '&category_id={{ $category->id }}')"><i class="fa fa-pencil"></i></a>

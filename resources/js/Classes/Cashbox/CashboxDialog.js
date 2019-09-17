@@ -1,7 +1,7 @@
 class cashboxDialog{
 
     constructor(dialog){
-        console.log('Окно кассового аппарата инициализировано');
+        console.log('Окно кассового аппарата инициализировано1');
         this.root_dialog = dialog;
         this.active = true;
         this.init();
@@ -26,5 +26,6 @@ class cashboxDialog{
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
     }
+
 }
 export default cashboxDialog;

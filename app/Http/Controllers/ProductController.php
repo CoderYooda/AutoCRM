@@ -208,7 +208,7 @@ class ProductController extends Controller
 
         $categories = CategoryController::getCategories($request, 'product');
         $articles = ProductController::getArticles($request);
-        $content = view('product.elements.table_container', compact('articles', 'categories'))->render();
+        $content = view('store.elements.table_container', compact('articles', 'categories', 'request'))->render();
 
         if($request->ajax()){
             return response()->json([

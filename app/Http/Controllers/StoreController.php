@@ -67,13 +67,9 @@ class StoreController extends Controller
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
-
-
         if($request['view_as'] == 'json' && $request['category_id'] != NULL && $request['target'] == 'ajax-table-store'){
             return view('store.elements.table_container', compact('articles','categories', 'cat_info', 'request'));
         }
-
-
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-store'){
             return view('store.elements.table_container', compact('articles','categories', 'cat_info', 'request'));
         }

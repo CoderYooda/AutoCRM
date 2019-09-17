@@ -58,5 +58,25 @@ class CategorySeed extends Seeder
 
         Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
         Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+
+        $json = json_decode(file_get_contents('public/demo/numenclatures.json'));
+        
+        $this->command->getOutput()->progressStart(count($json->categories));
+
+        foreach($json->categories as $cat){
+            $category = Category::create(['name' => $cat->name, 'category_id' => 2, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+            if($cat->childs != NULL){
+                foreach($cat->childs as $cat){
+                    $category2 = Category::create(['name' => $cat->name, 'category_id' => $category->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+                    if($cat->childs != NULL){
+                        foreach($cat->childs as $cat){
+                            $category3 = Category::create(['name' => $cat->name, 'category_id' => $category2->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+                        }
+                    }
+                }
+            }
+            $this->command->getOutput()->progressAdvance();
+        }
+        $this->command->getOutput()->progressFinish();
     }
 }

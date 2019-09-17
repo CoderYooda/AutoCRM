@@ -5,6 +5,7 @@ class barcodeDialog{
         this.root_dialog = dialog;
         this.active = true;
         this.init();
+        console.log(1);
     }
 
     init(){
@@ -14,5 +15,6 @@ class barcodeDialog{
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
     }
+
 }
 export default barcodeDialog;

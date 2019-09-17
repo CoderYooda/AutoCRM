@@ -24,6 +24,7 @@ class CreateArticlesTable extends Migration
             $table->char('oem')->nullable()->comment('OEM детали');
             $table->char('storeCode')->nullable()->comment('Внутренний номер склада');
             $table->char('barcode')->nullable()->comment('Штрих код');
+            $table->char('barcode_local')->nullable()->comment('Штрих код склада');
             $table->char('name')->comment('Наименование');
             $table->decimal('midprice')->unsigned()->default(0)->comment('Усредненная цена');
             $table->integer('blockedCount')->default(0)->nullable()->comment('Зарезервировано в заказе');

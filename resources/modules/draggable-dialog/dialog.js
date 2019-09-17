@@ -10,6 +10,19 @@ document.addEventListener('mouseup', function(e){
 	});
 });
 
+document.addEventListener('keydown', function(e){
+    if(e.key=='Escape'||e.key=='Esc'||e.keyCode==27){
+        e.preventDefault();
+        Object.keys(dialogs).map(function(objectKey, index) {
+            var elem = dialogs[objectKey];
+            var d = document.getElementById(elem.tag);
+            if(d.classList.contains('selected')){
+                window[elem.tag].finitaLaComedia();
+            }
+        });
+    }
+}, true);
+
 document.addEventListener('mousemove', function(e){
 	e = e || window.event;
 	Object.keys(dialogs).map(function(objectKey, index) {

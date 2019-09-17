@@ -4,7 +4,7 @@
 
 @section('tab')
 <div class="d-flex flex-column flex">
-    <div class="navbar white no-radius box-shadow pos-rlt">
+    <div class="navbar white no-radius box-shadow pos-rlt" style="z-index: 1010;">
         <div class="flex">
             <div class="input-group">
                 <input id="search" type="text" value="{{ request('search') }}" class="form-control form-control-sm search"  placeholder="Поиск по складу">
