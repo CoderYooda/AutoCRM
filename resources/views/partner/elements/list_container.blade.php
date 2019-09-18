@@ -1,13 +1,6 @@
 @php $partners = \App\Http\Controllers\PartnerController::getPartners($request) @endphp
-<ol class="breadcrumb mb-0">
-    <li class="breadcrumb-item">
-        <a href="#">Home</a>
-    </li>
-    <li class="breadcrumb-item">
-        <a href="#">Library</a>
-    </li>
-    <li class="breadcrumb-item active">Data</li>
-</ol>
+@php $category = \App\Http\Controllers\CategoryController::getCategory($request, 3) @endphp
+{!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
 <div class="scroll-y">
     @if( $partners->count() > 0)
         <div class="list">

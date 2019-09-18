@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn p-3 text-muted active" id="tab_base">
+<div class="tab-pane p-3 active" id="tab_base">
     <div class="form-group">
         <label>Наименование</label>
         <input type="text" name="name"
@@ -10,10 +10,10 @@
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
             <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
-                @if(isset($category))
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @elseif(isset($product))
+                @if(isset($product))
                     <option value="{{ $product->category()->first()->id }}">{{ $product->category()->first()->name }}</option>
+                @elseif(isset($category))
+                    <option value="{{ $category->id }}">{{ $category->name }}123123</option>
                 @else
                     <option>Корневая директория</option>
                 @endif

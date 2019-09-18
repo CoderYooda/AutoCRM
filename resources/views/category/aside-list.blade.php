@@ -1,7 +1,7 @@
 <div class="navbar white no-radius box-shadow pos-rlt">
 {{--    @if(isset($categories['parent']))--}}
 {{--    @endif--}}
-    <span class="text-md" id="category_header">
+    <span class="text-md compressed" id="category_header">
         @if($request['search'] === null)
             @if(!$categories['parent']->locked)
                 @if(isset($cat_info) && $cat_info != NULL)

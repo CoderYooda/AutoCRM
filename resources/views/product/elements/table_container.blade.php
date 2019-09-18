@@ -27,6 +27,7 @@
             <div class="d-flex flex-column flex" id="chat-list">
                 <div class="d-flex flex scrollable hover">
                     <div class="p-3">
+                        @if( $articles->count() > 0)
                         <table class="table table-bordered table-hover table-sm mb-3" style="white-space: nowrap;">
                             <thead>
                             <tr>
@@ -49,7 +50,15 @@
                             @endforeach
                             </tbody>
                         </table>
+                        123
                         {{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}
+                        @else
+                            <div class="no-result">
+                                <div class="p-4 text-center">
+                                    По данным критериям ничего нет.
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="p-3 white lt b-t mt-auto" id="chat-form">

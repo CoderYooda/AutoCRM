@@ -62,18 +62,17 @@ class StoreController extends Controller
     {
         $page = 'Склад';
 
-        $articles = ProductController::getArticles($request);
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
         if($request['view_as'] == 'json' && $request['category_id'] != NULL && $request['target'] == 'ajax-table-store'){
-            return view('store.elements.table_container', compact('articles','categories', 'cat_info', 'request'));
+            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-store'){
-            return view('store.elements.table_container', compact('articles','categories', 'cat_info', 'request'));
+            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
-        return view('store.store', compact('page', 'articles','categories', 'request', 'cat_info', 'trinity'));
+        return view('store.store', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 
 

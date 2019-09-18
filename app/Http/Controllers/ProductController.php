@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use sngrl\SphinxSearch\SphinxSearch;
 use App\Http\Controllers\Providers\TrinityController;
 use stdClass;
 
@@ -40,7 +41,7 @@ class ProductController extends Controller
     public static function selectProductDialog($request)
     {
         $stores = Store::where('company_id', Auth::user()->id)->get();
-        $products = Article::where('company_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
+        $products = Article::owned()->orderBy('id', 'DESC')->limit(30)->get();
         return response()->json([
             'tag' => 'selectProductDialog',
             'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render()
@@ -107,7 +108,7 @@ class ProductController extends Controller
             });
         })
 
-        ->orderBy('id', 'DESC')->get();
+        ->orderBy('id', 'DESC')->limit(30)->get();
 
         $content = view('product.dialog.select_product_inner', compact('products', 'request'))->render();
         return response()->json([
@@ -251,14 +252,18 @@ class ProductController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        return Article::where('company_id', Auth::user()->company()->first()->id )->where(function($q) use ($request, $category){
+        return Article::owned()->where(function($q) use ($request, $category){
             if($category != 0) {
                 $q->where('category_id', $category);
             }
             if($request['search'] != null) {
-                $q->where('article', 'like', '%' . $request['search'] . '%');
+                $q->where('name', 'LIKE', '%' . $request['search'] .'%');
+                $q->orWhere('article', 'LIKE', '%' . $request['search'] .'%');
+                $q->orWhereHas('supplier', function ($query) use ($request) {
+                    $query->where('name', 'LIKE', '%' . $request['search'] .'%');
+                });
             }
-        })->orderBy('created_at', 'DESC')->paginate(24);
+        })->orderBy('created_at', 'DESC')->paginate(21);
     }
 
     public static function searchArticles($request)

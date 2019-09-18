@@ -236,8 +236,21 @@ header .nav-item.active{
 .navfh .nav-item a{
     padding: 18px 1rem;
 }
+.category-aside{
+    overflow: hidden!important;
+}
+.category-aside .actions{
+    transform: translateX(100px);
+    transition: 200ms ease-out;
+    transition-delay: 0.5s;
+    position: absolute;
+    line-height: 36px;
+    right: 0;
+    background: #fff;
+}
 .category-aside:hover .actions{
-    display: flex!important;
+    transform: translateX(0px);
+    opacity: 1!important;
 }
 .text-ellipsis{
     white-space: nowrap;
@@ -245,8 +258,8 @@ header .nav-item.active{
     text-overflow: ellipsis;
 }
 .category-aside .actions a{
-    padding: 8px 10px;
-    padding-right: 5px;
+    padding: 8px 4px;
+    padding-right: 4px;
     opacity: 0.5;
 }
 .category-aside .actions a:last-child{
@@ -267,4 +280,9 @@ header .nav-item.active{
 .table-hover tbody tr:hover {
     color: #212529;
     background-color: #f3f6f9;
+}
+.compressed{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }

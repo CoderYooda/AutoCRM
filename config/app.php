@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         Milon\Barcode\BarcodeServiceProvider::class,
+        sngrl\SphinxSearch\SphinxSearchServiceProvider::class,
         /*
          * Application Service Providers...
          */

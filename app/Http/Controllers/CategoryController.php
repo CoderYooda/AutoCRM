@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    public static $breadcrumbs;
+
     public function _construct(){
         $status = 500;
         $message = 'Внутренняя ощибка сервера';
@@ -130,6 +132,15 @@ class CategoryController extends Controller
         return response()->json(['tag' => 'selectCategory', 'html' => view('category.dialog.select_category', compact('category'))->render()]);
     }
 
+    public static function getCategory($request, $root){
+        if($request['category_id'] != NULL){
+            $category = Category::where('id', $request['category_id'])->first();
+        } else {
+            $category = Category::where('id', $root)->first();
+        }
+        return $category;
+    }
+
     public static function getCategories($request, $type = null)
     {
         if($request['search'] == null){
@@ -155,4 +166,48 @@ class CategoryController extends Controller
         }
         return $categories;
     }
+
+    public static function drawCrumbs($category, $root){
+        self::$breadcrumbs = collect();
+        $html = '<ol class="breadcrumb mb-0">';
+        self::rec($category, 0);
+        foreach(self::$breadcrumbs as $index => $breadcrumb){
+
+            if($breadcrumb->id == 1 || $index == self::$breadcrumbs->count()){
+                $html .= '<li class="breadcrumb-item"><span>' . $breadcrumb->name . '</span></li>';
+            } else {
+                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" href = "' . request()->fullUrlWithQuery(['category_id' => $breadcrumb->id]) . '" >' . $breadcrumb->name . '</a></li>';
+            }
+        }
+
+
+        $html .= '</ol>';
+        return $html;
+    }
+
+    public static function rec($category, $root){
+        self::$breadcrumbs->prepend($category);
+        $parent = $category->parent()->first();
+        if($parent != null && $parent->id != 1){
+            self::rec($parent, $root);
+        }
+    }
+
+//    public function drawCrumbs($request, $root){
+//        $html = '<ol class="breadcrumb mb-0">';
+//
+//
+//        $breadcrumbs = [];
+//
+//        $breadcrumbs[] = $this->rec($breadcrumbs, $root, 0);
+//
+//        dd($breadcrumbs);
+//        foreach($breadcrumbs as $breadcrumb){
+//            $html .= '<li class="breadcrumb-item"><a href="#">' . $breadcrumb->name . '</a></li>';
+//        }
+//
+//
+//        $html .= '</ol>';
+//        return $html;
+//    }
 }

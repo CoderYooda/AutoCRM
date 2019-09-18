@@ -7,7 +7,7 @@
     @endif
         <span title="{{ $category->name }}" class="nav-text text-ellipsis"><i style="padding-right: 8px;" class="fa fa-folder-o text-muted"></i>{{ $category->name }}</span>
      </a>
-    <div class="d-none actions" style="flex: none">
+    <div class="actions" style="opacity: 0">
         <a onclick="openDialog('editCategory', '&category_id={{ $category->id }}')"><i class="fa fa-pencil"></i></a>
         <a onclick="category.remove({{ $category->id }})"><i class="fa fa-remove"></i></a>
     </div>

@@ -14,9 +14,9 @@ class WarrantSeed extends Seeder
     public function run()
     {
 
-        $this->command->getOutput()->progressStart(5000);
+        $this->command->getOutput()->progressStart(500);
 
-        for($i = 0; $i < 5000; $i++){
+        for($i = 0; $i < 500; $i++){
 
             $year = rand(20018, 2019);
             $month = rand(1, 12);

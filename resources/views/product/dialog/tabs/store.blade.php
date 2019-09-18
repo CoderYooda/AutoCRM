@@ -1,4 +1,4 @@
-<div class="tab-pane animate fadeIn text-muted" id="tab_store">
+<div class="tab-pane" id="tab_store">
     <div class="box">
 {{--        <div class="box-header">--}}
 {{--            <h3>Наличие на складах</h3>--}}

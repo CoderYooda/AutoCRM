@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Category extends Model
 {
@@ -51,5 +52,10 @@ class Category extends Model
         } else {
             return response()->json(['message' => 'Ошибка наследования категрории'], 500);
         }
+    }
+
+    public static function owned(){
+        $company_id = Auth::user()->company()->first()->id;
+        return self::where('company_id', $company_id);
     }
 }

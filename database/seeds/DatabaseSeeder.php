@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CreateBasePartners::class);
         $this->call(SettingsSeed::class);
         $this->call(WarrantSeed::class);
+        $this->call(ArticleSeed::class);
     }
 }

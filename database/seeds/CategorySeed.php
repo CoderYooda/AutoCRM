@@ -12,6 +12,9 @@ class CategorySeed extends Seeder
      */
     public function run()
     {
+        $statement = "ALTER TABLE categories AUTO_INCREMENT = 2000;";
+        DB::unprepared($statement);
+
         Category::create([
             'id' => 1,
             'name' => 'Корневая директория',

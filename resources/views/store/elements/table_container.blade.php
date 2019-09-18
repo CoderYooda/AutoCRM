@@ -1,3 +1,5 @@
+@php $articles = \App\Http\Controllers\ProductController::getArticles($request) @endphp
+@php $category = \App\Http\Controllers\CategoryController::getCategory($request, 2) @endphp
 <div class="content-main d-flex flex" style="height: 100%;">
     <!-- ############ Main START-->
     <div class="d-flex flex" data-plugin="chat">
@@ -25,15 +27,17 @@
         </div>
         <div class="d-flex flex white" id="content-body">
             <div class="d-flex flex-column flex" id="chat-list">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="#">Home</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="#">Library</a>
-                    </li>
-                    <li class="breadcrumb-item active">Data</li>
-                </ol>
+{{--                <ol class="breadcrumb mb-0">--}}
+{{--                    <li class="breadcrumb-item">--}}
+{{--                        <a href="#">Home</a>--}}
+{{--                    </li>--}}
+{{--                    <li class="breadcrumb-item">--}}
+{{--                        <a href="#">Library</a>--}}
+{{--                    </li>--}}
+{{--                    <li class="breadcrumb-item active">Data</li>--}}
+{{--                </ol>--}}
+                {!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
+                @if( $articles->count() > 0)
                 <div class="scrollable hover">
                     <div>
                         <table class="table table-hover table-sm mb-3" style="white-space: nowrap;">
@@ -47,7 +51,7 @@
                                 <th>Цена</th>
                                 <th class="w-62">
                                     @if(isset($categories['parent']))
-                                        <a onclick="openDialog('createProduct', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>
+                                        <a onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>
                                     @endif
                                 </th>
                             </tr>
@@ -61,6 +65,13 @@
 
                     </div>
                 </div>
+                @else
+                    <div class="no-result">
+                        <div class="p-4 text-center">
+                            По данным критериям ничего нет.
+                        </div>
+                    </div>
+                @endif
                 <div class="p-3 b-t mt-auto" id="chat-form">
                     <div class="d-flex align-items-center">
                         <div class="flex">

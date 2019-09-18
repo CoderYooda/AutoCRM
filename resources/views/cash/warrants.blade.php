@@ -22,11 +22,11 @@
                 </div>
             </div>
             <span class="m-b btn-groups pl-1">
-            <button onclick="openDialog('warrantDialog', '&isIncoming=1')" class="btn btn-sm white mb-0">Новый приходный ордер</button>
-            <button onclick="openDialog('warrantDialog', '&isIncoming=0')" class="btn btn-sm white mb-0">Новый расходный ордер</button>
-        </span>
+                <button onclick="openDialog('warrantDialog', '&isIncoming=1')" class="btn btn-sm white mb-0">Новый приходный ордер</button>
+                <button onclick="openDialog('warrantDialog', '&isIncoming=0')" class="btn btn-sm white mb-0">Новый расходный ордер</button>
+            </span>
         </div>
-        <div id="ajax-table-warrant" class="d-flex flex-column flex">
+        <div id="ajax-table-warrant" class="content-main d-flex flex-column flex">
             @include('cash.elements.warrant_list_container')
         </div>
     </div>

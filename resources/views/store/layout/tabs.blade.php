@@ -1,5 +1,7 @@
 @extends($request['view_as'] == 'json' ? 'layouts.XHR' : 'layouts.main')
 
+@section('title', $page ?? 'crm')
+
 @section('content')
 <div class="d-flex flex">
     <div class="fade aside aside-sm b-r w-200" id="content-aside">
