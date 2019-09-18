@@ -1,5 +1,5 @@
 @extends('layouts.main')
 
 @section('content')
-HOME
+HOME2
 @endsection

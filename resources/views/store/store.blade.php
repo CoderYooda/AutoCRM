@@ -14,7 +14,7 @@
                 <div class="navbar flex-nowrap white lt box-shadow" style="z-index: 1010;">
                     <div class="flex">
                         <div class="input-group">
-                            <input id="search" type="text" value="{{ request('search') }}" class="form-control form-control-sm search"  placeholder="Поиск по складу">
+                            <input id="search" name="search" type="text" value="{{ request('search') }}" class="form-control form-control-sm search"  placeholder="Поиск по складу">
                             <span class="input-group-append">
                                 <button class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-search"></i></button>
                             </span>
@@ -31,7 +31,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
