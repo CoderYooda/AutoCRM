@@ -11,6 +11,9 @@ class Scanner{
         let scanFN = window.helper.debounce(function(e) {
             if (object.UPC.length >= 6) {
                 console.log('barcode scanned:  ', object.UPC);
+                if(window.barcodeDialog){
+                    window.barcodeDialog.finitaLaComedia();
+                }
                 window.openDialog('barcodeDialog', '&upc=' + object.UPC);
             }
             setTimeout(function(){

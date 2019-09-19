@@ -23,7 +23,10 @@ class BarcodeController extends Controller
     }
 
     public static function barcodeDialog($request){
-        $articles = Article::where('barcode', $request['upc'])->get();
+        $articles = Article::where('barcode', $request['upc'])
+            ->orWhere('barcode_local', $request['upc'])
+            ->orWhere('storeCode', $request['upc'])
+            ->get();
         $partners = Partner::where('barcode', $request['upc'])->get();
 
         return response()->json([
