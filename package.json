@@ -29,7 +29,9 @@
         "imask": "^5.2.1",
         "notification-js": "^1.1.1",
         "notifyjs": "^3.0.0",
+        "rellax": "^1.10.0",
         "select2": "^4.0.10",
+        "simplebar": "^4.2.2",
         "sweetalert2": "^8.16.3",
         "tooltip-js": "^3.0.0",
         "tooltips-js": "^1.0.6"

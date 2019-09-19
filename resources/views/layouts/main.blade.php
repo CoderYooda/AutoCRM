@@ -9,7 +9,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/template.css') }}" rel="stylesheet">
 </head>
-<body class="fixed-aside fixed-content">
+<body class="fixed-aside fixed-content" style="padding-right: 0!important">
 <div class="app" id="app">
     <header class="app-header box-shadow-6">
         <div class="navbar navbar-expand-lg">
@@ -47,12 +47,12 @@
                             <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
-                    <li id="services_link" class="nav-item">
-                        <a href="{{ route('ServicesIndex') }}" class="nav-link ajax-nav">
-                            Услуги
-                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
-                        </a>
-                    </li>
+{{--                    <li id="services_link" class="nav-item">--}}
+{{--                        <a href="{{ route('ServicesIndex') }}" class="nav-link ajax-nav">--}}
+{{--                            Услуги--}}
+{{--                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
                     <li id="cash_link" class="nav-item">
                         <a href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}" class="nav-link ajax-nav">
                             Деньги

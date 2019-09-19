@@ -20,6 +20,7 @@ class Article extends Model
         'article',
         'oem',
         'storeCode',
+        'barcode_local',
         'barcode',
         'name',
         'midprice',

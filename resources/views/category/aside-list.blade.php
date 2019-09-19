@@ -14,10 +14,10 @@
         @endif
     </span>
 </div>
-<div class="scrollable hover scroll-y">
+<div class="" data-simplebar style="max-height: calc(100% - 118px);">
     <div class="sidenav mt-2">
         <nav class="nav-border b-primary" data-nav>
-            <ul class="nav" id="category_list_aside">
+            <ul class="nav" id="category_list_aside" >
                 @if($request['search'] === null)
                     @foreach($categories['stack'] as $category)
                         @include('category.aside-element')

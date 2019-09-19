@@ -21,6 +21,8 @@
 
 @import '~flatpickr/dist/themes/material_blue.css';
 
+@import '~simplebar/dist/simplebar.min.css';
+
 
 .text-theme,
 .text-hover-theme a:hover,
@@ -164,7 +166,7 @@ nav.nav-border {
     text-overflow: ellipsis;
 }
 .table .article{
-    max-width: 480px;
+    max-width: 20vw;
 }
 .table .brand{
     max-width: 200px;
@@ -258,9 +260,15 @@ header .nav-item.active{
     text-overflow: ellipsis;
 }
 .category-aside .actions a{
-    padding: 8px 4px;
-    padding-right: 4px;
+    padding: 8px 10px;
     opacity: 0.5;
+}
+
+.category-aside .actions a:first-child{
+    padding-right: 4px;
+}
+.category-aside .actions a:last-child{
+    padding-left: 4px;
 }
 .category-aside .actions a:last-child{
     padding-right: 10px;
@@ -285,4 +293,7 @@ header .nav-item.active{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+.simplebar-scrollbar:before {
+    background: #323b4769;
 }

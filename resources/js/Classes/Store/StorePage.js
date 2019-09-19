@@ -21,6 +21,8 @@ class storePage{
         document.addEventListener('ProductStored', function(e){
             object.reloadPage();
         });
+        console.log(1);
+        simplebar(document.getElementById('fof'));
     }
 
     reloadPage(){

@@ -1,6 +1,6 @@
 @php $articles = \App\Http\Controllers\ProductController::getArticles($request) @endphp
 @php $category = \App\Http\Controllers\CategoryController::getCategory($request, 2) @endphp
-<div class="content-main d-flex flex" style="height: 100%;">
+<div class="d-flex flex" style="height: 100%;">
     <!-- ############ Main START-->
     <div class="d-flex flex" data-plugin="chat">
         <div class="fade aside aside-sm" id="content-aside">
@@ -27,20 +27,11 @@
         </div>
         <div class="d-flex flex white" id="content-body">
             <div class="d-flex flex-column flex" id="chat-list">
-{{--                <ol class="breadcrumb mb-0">--}}
-{{--                    <li class="breadcrumb-item">--}}
-{{--                        <a href="#">Home</a>--}}
-{{--                    </li>--}}
-{{--                    <li class="breadcrumb-item">--}}
-{{--                        <a href="#">Library</a>--}}
-{{--                    </li>--}}
-{{--                    <li class="breadcrumb-item active">Data</li>--}}
-{{--                </ol>--}}
                 {!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
                 @if( $articles->count() > 0)
-                <div class="scrollable hover">
-                    <div>
-                        <table class="table table-hover table-sm mb-3" style="white-space: nowrap;">
+                <div class="" data-simplebar style="max-height: calc(100% - 118px);">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-3" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th class="w-xxl">Модель</th>
@@ -58,7 +49,7 @@
                             </thead>
                             <tbody>
                             @foreach($articles as $article)
-                                @include('product.elements.table_element')
+                                @include('store.elements.table_element')
                             @endforeach
                             </tbody>
                         </table>

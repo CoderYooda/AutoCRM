@@ -1,4 +1,4 @@
-<div class="tab-pane p-3 active" id="tab_base">
+<div class="tab-pane p-3 active" id="{{$class}}_tab_base">
     <div class="form-group">
         <label>Наименование</label>
         <input type="text" name="name"
@@ -13,7 +13,7 @@
                 @if(isset($product))
                     <option value="{{ $product->category()->first()->id }}">{{ $product->category()->first()->name }}</option>
                 @elseif(isset($category))
-                    <option value="{{ $category->id }}">{{ $category->name }}123123</option>
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @else
                     <option>Корневая директория</option>
                 @endif

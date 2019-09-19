@@ -16,6 +16,7 @@ html {
 
 body {
     color: rgba(70, 90, 110, 0.85);
+    padding-right: 0!important;
     font-size: 13px;
     line-height: 1.6;
     overflow-x: hidden;
@@ -1692,6 +1693,9 @@ List
 
 .list-item .item-action-hovered{
     display: none;
+    position: absolute;
+    top: 0;
+    line-height: 45px;
 }
 
 .list {

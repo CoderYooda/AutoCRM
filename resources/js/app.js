@@ -6,6 +6,8 @@ require('./navigation');                                            // Нави�
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
 window.chartjs = require('chart.js');
+window.simplebar = require('simplebar/dist/simplebar.min');
+
 
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);
@@ -19,7 +21,6 @@ import Supplier from './Classes/Supplier.js';
 import Partner from './Classes/Partner.js';
 import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
-
 
 
 
