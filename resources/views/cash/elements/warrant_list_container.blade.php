@@ -1,10 +1,10 @@
 @php $warrants = \App\Http\Controllers\WarrantController::getWarrants($request) @endphp
-<div class="d-flex flex scroll-y">
-    <div class="d-flex flex-column white flex lt">
-        <div class="white b-r d-table">
-            <div class="">
+<div class="d-flex flex white" data-simplebar style="max-height: calc(100% - 61px);">
+{{--    <div class="d-flex flex-column white flex lt">--}}
+{{--        <div class="white b-r d-table">--}}
+{{--            <div class="">--}}
                 @if( $warrants->count() > 0)
-                <div class="table-responsive">
+                <div class="">
                     <table class="table mb-0">
                         <thead>
                         <tr>
@@ -36,9 +36,9 @@
                         </div>
                     </div>
                 @endif
-            </div>
-        </div>
-    </div>
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 </div>
 <div class="p-3 b-t mt-auto">
     <div class="d-flex align-items-center">

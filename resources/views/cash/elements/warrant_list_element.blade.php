@@ -22,7 +22,7 @@
             <span class="text-sm text-primary">-{{ $warrant->summ }} <i class="fa fa-caret-down"></i></span>
         </td>
     @endif
-    <td>
+    <td style="position: relative;">
         <div class="item-action">
 {{--            <a href="#" class="active">--}}
 {{--                <i class="fa fa-pencil text-success"></i>--}}

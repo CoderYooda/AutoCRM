@@ -19,7 +19,7 @@ class MoneyMoveController extends Controller
         $tag = 'moneymoveDialog';
 
         if($request['moneymove_id']){
-            $moneymove = MoneyMoves::where('id', (int)$request['warrant_id'])->first();
+            $moneymove = MoneyMoves::where('id', (int)$request['moneymove_id'])->first();
             $tag .= $moneymove->id;
         } else {
             $moneymove = null;
@@ -46,45 +46,34 @@ class MoneyMoveController extends Controller
             }
         }
 
-        $warrant = Warrant::firstOrNew(['id' => $request['id']]);
+        $moneymove = MoneyMoves::firstOrNew(['id' => $request['id']]);
 
-        if($warrant->exists){
-            $message = "Ордер обновлен";
-            //$correct_summ = doubleval($warrant->summ) - doubleval($request['summ']);
-
-            if($warrant->isIncoming){
-                $warrant->partner()->first()->addition($warrant->summ);
-                $warrant->cashbox()->first()->subtraction($warrant->summ);
-            } else{
-                $warrant->partner()->first()->subtraction($warrant->summ);
-                $warrant->cashbox()->first()->addition($warrant->summ);
-            }
+        if($moneymove->exists){
+            $message = "Перемещение обновлено обновлен";
+            $moneymove->out_cashbox()->first()->subtraction($moneymove->summ);
+            $moneymove->in_cashbox()->first()->addition($moneymove->summ);
         } else{
-            $message = "Ордер создан";
+            $message = "Перемещение создано";
         }
 
-        $cashbox = Cashbox::owned()->where('id', $request['cashbox_id'])->first();
-        $partner = Partner::owned()->where('id', $request['partner_id'])->first();
+        $in_cashbox = Cashbox::owned()->where('id', $request['in_cashbox_id'])->first();
+        $out_cashbox = Cashbox::owned()->where('id', $request['out_cashbox_id'])->first();
 
-        if($request['isIncoming']){
-            $cashbox = $cashbox->addition($request['summ']);
-            $partner = $partner->subtraction($request['summ']);
-        } else{
-            $cashbox = $cashbox->subtraction($request['summ']);
-            $partner = $partner->addition($request['summ']);
-        }
 
-        $warrant->fill($request->only($warrant->fields));
-        $warrant->balance = $cashbox->balance;
-        $warrant->save();
-        $warrant->created_at = $request['do_date'];
-        $warrant->save();
+        $out_cashbox = $out_cashbox->addition($request['summ']);
+        $in_cashbox = $in_cashbox->subtraction($request['summ']);
+
+        $moneymove->fill($request->only($moneymove->fields));
+        $moneymove->in_balance = $in_cashbox->balance;
+        $moneymove->out_balance = $out_cashbox->balance;
+        $moneymove->created_at = $request['do_date'];
+        $moneymove->save();
 
 
         if($request->ajax()){
             return response()->json([
                 'message' => $message,
-                'event' => 'WarrantStored',
+                'event' => 'MoneymoveStored',
             ], 200);
         } else {
             return redirect()->back();
@@ -98,9 +87,24 @@ class MoneyMoveController extends Controller
         $content = view('cash.elements.moneymove_list_container', compact('request'))->render();
         return response()->json([
             'html' => $content,
-            'target' => 'ajax-table-warrant',
+            'target' => 'ajax-table-moneymove',
         ], 200);
     }
+
+    public static function getMoneymoves($request)
+    {
+        $moneymoves = MoneyMoves::owned()
+            ->orderBy('created_at', 'DESC')
+//            ->where(function($q) use ($request){
+//                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
+//                    $q->where('isIncoming',   boolval ($request['isIncoming']));
+//                }
+//            })
+            ->paginate(50);
+
+        return $moneymoves;
+    }
+
 
     private static function validateRules($request)
     {

@@ -139,7 +139,7 @@ class WarrantController extends Controller
                     }
                 }
             })
-            ->paginate(16);
+            ->paginate(25);
 
         return $warrants;
     }

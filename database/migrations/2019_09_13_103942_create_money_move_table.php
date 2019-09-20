@@ -21,7 +21,8 @@ class CreateMoneyMoveTable extends Migration
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->double('summ', 12, 2)->comment('Сумма операции с двойной точностью');
             $table->char('comment')->nullable()->comment('Комментарий');
-            $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
+            $table->double('in_balance', 12, 2)->comment('Остаток в кассе 1 после выполнения операции');
+            $table->double('out_balance', 12, 2)->comment('Остаток в кассе 2 после выполнения операции');
             $table->timestamps();
         });
     }

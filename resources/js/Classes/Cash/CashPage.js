@@ -37,6 +37,10 @@ class cashPage{
         document.addEventListener('WarrantStored', function(e){
             object.reload();
         });
+
+        document.addEventListener('MoneymoveStored', function(e){
+            object.reload();
+        });
     }
 
     chartInit(){
@@ -77,6 +81,7 @@ class cashPage{
             this.search = window.helper.findGetParameter('search');
         }
     }
+
     initDates(){
         let object = this;
         let startDateArray = [];
@@ -148,6 +153,7 @@ class cashPage{
             this.active = false;
         }
     }
+
     searchInit(){
 
         let object = this;
@@ -192,7 +198,7 @@ class cashPage{
             url: this.active_tab + '/search',
             data: data,
         }).then(function (resp) {
-            var results_container = document.getElementById('ajax-table-warrant');
+            var results_container = document.getElementById(resp.data.target);
             results_container.innerHTML = resp.data.html;
 
             window.helper.insertParamUrl('search', object.search);

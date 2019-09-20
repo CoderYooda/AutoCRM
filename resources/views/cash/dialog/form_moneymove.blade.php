@@ -18,7 +18,6 @@
         @if(isset($moneymove) && $moneymove->id != NULL)
             <input type="hidden" name="id" value="{{ $moneymove->id }}">
         @endif
-        <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($moneymove)){{ $moneymove->partner()->first()->id }}@endif">
         <input class="in_cashbox_select" type="hidden" name="in_cashbox_id" value=" @if(isset($moneymove)){{ $moneymove->in_cashbox()->first()->id }}@endif">
         <input class="out_cashbox_select" type="hidden" name="out_cashbox_id" value=" @if(isset($moneymove)){{ $moneymove->out_cashbox()->first()->id }}@endif">
         @if(isset($moneymove))<input class="do_date" type="hidden" name="do_date" value="{{ $moneymove->do_date }}">@endif
