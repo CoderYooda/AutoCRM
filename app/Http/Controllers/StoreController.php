@@ -17,6 +17,7 @@ class StoreController extends Controller
         if($request['search'] == 'undefined'){
             $request['search'] = null;
         }
+
         $target = HC::selectTarget(); // цель ajax подгрузки
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
@@ -31,7 +32,7 @@ class StoreController extends Controller
             return response()->json([
                 'target' => $target,
                 'page' => $page_title,
-                'html' => $content->render()
+                'content' => $content->render()
             ]);
         } else {
             return $content;
@@ -42,7 +43,7 @@ class StoreController extends Controller
     {
         $entrances = EntranceController::getEntrances($request);
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('entrance.index', compact('request', 'entrances'));
+            return view('product.entrance', compact('request', 'entrances'));
         }
         return view('entrance.index', compact('request','entrances'));
     }
@@ -51,26 +52,30 @@ class StoreController extends Controller
     {
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-provider'){
-            return view('provider.elements.table_container', compact('brands','request'));
+        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
+            return view('product.elements.provider.table_container', compact('brands','request'));
         }
-        return view('provider.index', compact('brands', 'request'));
+        return view('product.provider', compact('brands', 'request'));
     }
 
     public static function storeTab($request)
     {
         $page = 'Склад';
+
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
-
-        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
+        if($request['view_as'] == 'json' && $request['category_id'] != NULL && $request['target'] == 'ajax-table-store'){
             return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
-        } else {
-            return view('store.store', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
         }
+        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-store'){
+            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
+        }
+        return view('store.store', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
+
+
 
     public static function updateArticlePivot($store_id, $article_id, $param, $value)
     {
