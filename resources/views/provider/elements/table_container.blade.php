@@ -17,9 +17,9 @@
         </tr>
         </thead>
         <tbody>
-            @foreach($brands->data as $brand)
-                @include('product.elements.provider.table_element')
-            @endforeach
+        @foreach($brands->data as $brand)
+            @include('provider.elements.table_element')
+        @endforeach
         </tbody>
     </table>
 @else

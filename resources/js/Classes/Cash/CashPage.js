@@ -13,12 +13,13 @@ class cashPage{
         this.isIncoming = 'null';
         this.dates = null;
         this.chartCircle = null;
-        this.init();
-        this.chartInit();
+        this.init(); // Первый запуск
     }
 
-    linked(){
+    linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.chartCircle.update();
+        this.active_tab = window.helper.findGetParameter('active_tab');
+        window.helper.debugBar(this);
     }
 
     init(){
@@ -41,9 +42,11 @@ class cashPage{
         document.addEventListener('MoneymoveStored', function(e){
             object.reload();
         });
+
+        window.helper.debugBar(object);
     }
 
-    chartInit(){
+    chartInit(){ //Радиальная диаграмма
         let object = this;
         let cont = document.getElementById(object.root_id);
         if(cont){
@@ -58,8 +61,6 @@ class cashPage{
                         ],
                         borderColor: 'transparent',
                         backgroundColor: [
-                            // "red",
-                            // "green",
                             "#53a6fa",
                             "#22b66e",
                         ],
@@ -115,6 +116,13 @@ class cashPage{
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
         this.date_end = 'null';
+        this.page = 1;
+        this.reload();
+    }
+
+    resetSearch(){
+        document.getElementById('search').value = '';
+        this.search = '';
         this.page = 1;
         this.reload();
     }

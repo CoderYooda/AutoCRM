@@ -25,7 +25,7 @@
                 @else
                     <li class="d-flex flex category-aside" >
                         @if(isset($cat_info) && $cat_info != NULL)
-                            <a href="{{ route($cat_info['route']) }}" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">
+                            <a href="{{ route($cat_info['route'], ['active_tab' => request('active_tab')]) }}" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">
                                 <span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>
                             </a>
                         @endif

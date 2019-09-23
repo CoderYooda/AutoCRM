@@ -35,7 +35,7 @@ class PartnerController extends Controller
             return response()->json([
                 'target' => $target,
                 'page' => $page,
-                'content' => $content
+                'html' => $content
             ]);
         } else {
             return view('partner.index', compact('page', 'partners','categories', 'cat_info', 'request'));

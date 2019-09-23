@@ -35,7 +35,7 @@ const ajaxRequest = new (function () {
                 vMsg = JSON.parse(this.responseText);
                 document.title = oPageInfo.title = vMsg.page;  //ajax-content
                 oPageInfo.class = vMsg.class;
-                document.getElementById(vMsg.target).innerHTML = vMsg.content;
+                document.getElementById(vMsg.target).innerHTML = vMsg.html;
                 if (bUpdateURL) {
                     history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
                     bUpdateURL = false;
@@ -45,6 +45,7 @@ const ajaxRequest = new (function () {
                 let tabs = document.querySelectorAll('.nav li');
                 [].forEach.call(tabs, function(li){
                     li.classList.remove('active');
+                    console.log(window.helper.findGetParameter('active_tab'));
                     if(window.helper.findGetParameter('active_tab') === li.dataset.tab){
                         li.classList.add('active');
                     } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){
@@ -137,7 +138,7 @@ const ajaxRequest = new (function () {
         window.helper.initPageMethods(oPageInfo.class);
 
 
-        window.helper.log('Ссылки переработаны');
+        //window.helper.log('Ссылки переработаны');
     }
 
     const

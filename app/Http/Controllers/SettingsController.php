@@ -27,7 +27,10 @@ class SettingsController extends Controller
         $content = self::$classname($request);
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
-            return response()->json(['target' => $target,'page' => $this->page_title, 'content' => $content->render()]);
+            return response()->json([
+                'target' => $target,
+                'page' => $this->page_title,
+                'html' => $content->render()]);
         } else {
             return $content;
         }

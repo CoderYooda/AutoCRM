@@ -5,7 +5,10 @@
         <div class="navbar white no-radius box-shadow pos-rlt">
             <div class="d-flex flex-row flex">
                 <div class="input-group mr-2"  style="width: 200px;">
-                    <input id="search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поиск по складу">
+                    <input id="search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поиск по контрагенту">
+                    <div class="input-group-append">
+                        <button type="button" onclick="window.cash.resetSearch()" class="btn btn-sm white"><i class="fa fa-remove"></i></button>
+                    </div>
                 </div>
                 <div class="input-group mr-2"  style="width: 200px;">
                     <input id="warrant_date_start" type="text" name="warrant_date_start" value="{{ request('dates_range') }}" class="form-control form-control-sm warrant_date_start fake-disabled" placeholder="Даты">

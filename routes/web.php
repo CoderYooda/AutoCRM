@@ -22,7 +22,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Продукты
 
     Route::get('/store/test', 'ProductController@test')->name('test');
-    Route::get('/store/search', 'ProductController@search')->name('StoreSearch');
+    Route::post('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
     Route::post('/product/dialog/search', 'ProductController@dialogSearch')->name('ProductDialogSearch');
@@ -32,8 +32,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/entrance/new', 'EntranceController@store')->name('StoreEntrance');
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
 
-    #Пставщики (внешние)
+    #Поставщики (внешние)
     Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
+    Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
 
 
 

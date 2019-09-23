@@ -13,19 +13,19 @@
                 <div class="sidenav mt-2">
                     <nav class="nav-border b-primary" data-nav>
                         <ul class="nav">
-                            <li class="active" id="store-tab" data-tab="store">
+                            <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Склад</span>
                                 </a>
                             </li>
-                            <li id="provider-tab" data-tab="provider">
+                            <li data-tab="provider"  class="@if($request['active_tab'] == 'provider') active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'provider', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-badge">
 				                  	</span>
                                     <span class="nav-text">У поставщиков</span>
                                 </a>
                             </li>
-                            <li id="income-tab" data-tab="entrance">
+                            <li id="income-tab" data-tab="entrance" class="@if($request['active_tab'] == 'entrance') active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
                                     <span class="nav-text">Поступления</span>
                                 </a>

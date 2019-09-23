@@ -8,6 +8,8 @@ window.flatpickr = require('flatpickr');
 window.chartjs = require('chart.js');
 window.simplebar = require('simplebar/dist/simplebar.min');
 
+window.debug = true;
+
 
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);

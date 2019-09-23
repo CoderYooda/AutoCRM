@@ -35,7 +35,10 @@ class ProductController extends Controller
         $this->status = 200;
         $this->message = 'Товар удален';
 
-        return response()->json(['product_id' => $product->id, 'message' => $this->message], $this->status);
+        return response()->json([
+            'id' => $product->id,
+            'message' => $this->message
+        ], $this->status);
     }
 
     public static function selectProductDialog($request)
@@ -178,15 +181,6 @@ class ProductController extends Controller
 
         $article->save();
         $this->status = 200;
-
-
-//        $stores = Store::owned()->get();
-//
-//
-//        foreach($stores as $store){
-//            $store->articles()->syncWithoutDetaching($article->id);
-//        }
-
         if($request['store'] != NULL){
             foreach ($request['store'] as $id => $store_elem){
                 $store = Store::where('id', $id)->first();
@@ -206,18 +200,10 @@ class ProductController extends Controller
             }
         }
 
-
-        $categories = CategoryController::getCategories($request, 'product');
-        $articles = ProductController::getArticles($request);
-        $content = view('store.elements.table_container', compact('articles', 'categories', 'request'))->render();
-
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
-                'container' => 'ajax-table-product',
-                //'redirect' => route('StoreIndex', ['category_id' => $article->category()->first()->id, 'serach' => $request['search']]),
                 'event' => 'ProductStored',
-                'html' => $content
                 ], $this->status);
         } else {
             return redirect()->back();
@@ -244,7 +230,7 @@ class ProductController extends Controller
 
         $category = 0;
 
-        if($request['category_id'] == null && $request['search'] == null){
+        if($request['category_id'] === null || $request['serach'] != null){
             if($request['active_tab'] == "store"){
                 $category = 2;
             }
@@ -286,13 +272,23 @@ class ProductController extends Controller
             'article' => ['required', 'string', 'max:64'],
         ];
 
-//        foreach($request['store'] as $id => $store){
-//            if(isset($store['isset']) && $store['isset'] == true){
-//                $rules['store.' . $id . '.location'] = [ 'max:250'];
-//                $rules['store.' . $id . '.isset'] = [ 'boolean'];
-//            }
-//        }
-
         return $rules;
+    }
+
+
+
+    public function search(Request $request){ //DEPRECATED
+
+        $categories = CategoryController::getCategories($request, 'store');
+        $cat_info = [];
+        $cat_info['route'] = 'StoreIndex';
+        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
+
+
+        $content = view('store.elements.table_container', compact('categories', 'cat_info', 'request'))->render();
+        return response()->json([
+            'html' => $content,
+            'target' => 'ajax-table-store',
+        ], 200);
     }
 }

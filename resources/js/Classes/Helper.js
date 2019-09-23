@@ -59,6 +59,8 @@ class Helper{
                         window.helper.log(classname + " - Такого конструктора не существует");
                     }
 
+
+
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }
             });
@@ -75,6 +77,8 @@ class Helper{
                     window.helper.log(className + " - Такого конструктора не существует");
                 }
             } else {
+                console.log('Класс ' + className + ' Linked()')
+                // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
                 try {window[className].linked();} catch (err) {}
             }
         } else {
@@ -189,6 +193,19 @@ class Helper{
 
     getBaseUrl(){
         return location.protocol + '//' + location.host + location.pathname
+    }
+
+    debugBar(object){
+        let prev = document.getElementById('debug_bar');
+        if(prev){prev.remove();}
+        var elem = document.createElement('div');
+        elem.id = 'debug_bar';
+        elem.style.cssText = 'position: absolute;white-space:nowrap;width: min-content;height: min-content;opacity: 0.7;font-size: 10px;padding: 10px;z-index: 100000;bottom: 0;right: 0;background: rgb(0, 0, 0);';
+        elem.innerHTML = ''+
+            '<div>ID - ' + object.root_id + '</div>'+
+            '<div>Активно? - ' + object.active + '</div>'+
+            '<div>Табуляция - ' + object.active_tab + '</div>'+
+        document.body.appendChild(elem);
     }
 }
 export default Helper;

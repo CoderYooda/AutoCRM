@@ -27,7 +27,7 @@ class CashController extends Controller
                 'target' => $target,
                 'page' => $page_title,
                 'class' => 'Cash',
-                'content' => $content->render()
+                'html' => $content->render()
             ]);
         } else {
             return $content;

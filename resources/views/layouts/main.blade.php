@@ -42,7 +42,7 @@
             <div class="collapse navbar-collapse nav-active-theme order-lg-1" id="navbarToggler">
                 <ul class="nav navfh navbar-nav">
                     <li id="store_link" class="nav-item">
-                        <a href="{{ route('StoreIndex') }}" class="nav-link ajax-nav">
+                        <a href="{{ route('StoreIndex', ['active_tab' => 'store']) }}" class="nav-link ajax-nav">
                             Склад
                             <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>

@@ -32,16 +32,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
 {{--<div class="d-flex flex-column flex">--}}
 {{--    <div class="navbar white no-radius box-shadow pos-rlt">--}}
 {{--        <div class="flex">--}}

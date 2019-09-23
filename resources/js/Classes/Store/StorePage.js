@@ -3,77 +3,49 @@ class storePage{
     constructor(){
         console.log('страница склада инициализировано');
         this.active = true;
-        this.category_id = window.helper.findGetParameter('category_id');
-        this.page = window.helper.findGetParameter('page');
-        this.search = window.helper.findGetParameter('search');
+        this.active_tab = window.helper.findGetParameter('active_tab');
+        this.category_id = 2;
+        this.page = 1;
+        this.search = 'null';
+        this.root_category = 2;
         this.init();
+        this.linked();
     }
 
     init(){
         let object = this;
         document.addEventListener('ajaxLoaded', function(e){
             object.checkActive();
-            object.load();
+            object.linked();
         });
         object.checkActive();
-        object.searchInit();
-        object.checkCategory();
         document.addEventListener('ProductStored', function(e){
-            object.reloadPage();
+            object.prepareParams();
+            object.reload();
         });
-        console.log(1);
-        simplebar(document.getElementById('fof'));
+        //simplebar(document.getElementById('fof'));
     }
 
-    reloadPage(){
-        let cat_string;
-        if(this.category_id === null){
-            cat_string = 'category_id=';
-        } else {
-            cat_string = 'category_id=' + this.category_id;
-        }
-        let search_string;
-        if(this.search === null){
-            search_string = '&search=';
-        } else {
-            search_string = '&search=' + this.search;
-        }
-        let page_string;
-        if(this.page === null){
-            page_string = '&page=';
-        } else {
-            page_string = '&page=' + this.page;
-        }
-        window.goto(window.helper.getBaseUrl() + '?' + cat_string + search_string + page_string);
-    }
-
-    load(){
-        this.searchInit();
+    linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
+        this.active_tab = window.helper.findGetParameter('active_tab');
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
-    }
-
-
-    load(){
-        this.checkCategory();
-        var object = this;
-        let search = document.getElementById('search');
-        if(search){
-            if(this.category_id && this.category_id !== 2 ){
-                object.searchstring = null;
-                search.value = null;
-            }
-        }
+        window.helper.debugBar(this);
         this.searchInit();
     }
 
-    checkCategory(){
-        let category_id = window.helper.findGetParameter('category_id');
-        if(category_id){
-            this.category_id = category_id;
+    prepareParams(){
+        if(this.category_id === null){
+            this.category_id = '';
+        }
+        if(!this.search || this.search === 'null' || this.search === null){
+            this.search = '';
         } else {
-            this.category_id = null;
+            this.category_id = this.root_category;
+        }
+        if(this.page === null || this.page === 'null'){
+            this.page = 1;
         }
     }
 
@@ -91,53 +63,29 @@ class storePage{
 
     searchInit(){
         var object = this;
+        var search;
+        var searchFn;
         if(document.getElementById("search")){
-            var el = document.getElementById("search");
-            var searchFn = window.helper.debounce(function(e) {
-                object.searchFn(e);
+            search = document.getElementById("search");
+            searchFn = window.helper.debounce(function(e) {
+                object.search = search.value;
+                object.page = 1;
+                object.reload(e);
             }, 400);
-            el.addEventListener("keydown", searchFn);
-            el.addEventListener("paste", searchFn);
-            el.addEventListener("delete", searchFn);
-        }
-
+            search.addEventListener("keydown", searchFn);
+            search.addEventListener("paste", searchFn);
+            search.addEventListener("delete", searchFn);
+        } else
         if(document.getElementById("search_partner")){
-            var el = document.getElementById("search_partner");
-            var searchFn = window.helper.debounce(function(e) {
-                object.searchFn(e);
+            search = document.getElementById("search_partner");
+            searchFn = window.helper.debounce(function(e) {
+                object.search = search.value;
+                object.reload(e);
             }, 400);
-            el.addEventListener("keydown", searchFn);
-            el.addEventListener("paste", searchFn);
-            el.addEventListener("delete", searchFn);
+            search.addEventListener("keydown", searchFn);
+            search.addEventListener("paste", searchFn);
+            search.addEventListener("delete", searchFn);
         }
-
-        // var update_link = document.getElementsByClassName('update_url');
-        // var search = getQueryVar('search');
-        // if(search == 'undefined'){
-        //     search = '';
-        // }
-        // [].forEach.call(update_link, function(elem){
-        //     helper.insertParam(elem, 'search', search);
-        // });
-    }
-
-    searchFn(e) {
-
-        if (isXHRloading) { return; }
-        let active_tab = getQueryVar('active_tab');
-        if(active_tab == 'undefined'){
-            active_tab = 'store';
-        }
-
-        let search = e.target.value;
-
-        this.searchstring = search;
-        if(search.length < 1){
-            goto('/store?active_tab=' + active_tab + '&target=ajax-tab-content');
-        } else {
-            goto('/store?active_tab=' + active_tab + '&view_as=json&target=ajax-table-store&search=' + e.target.value);
-        }
-        this.checkTrinity(e.target.value);
     }
 
     checkTrinity(search_str){
@@ -145,20 +93,63 @@ class storePage{
 
         let data = {};
         data.search = search_str;
-
         window.axios({
             method: 'post',
             url: '/providers/trinity/search_brands',
             data: data
         }).then(function (resp) {
-
             var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
             let providertab = document.querySelector('#provider-tab .nav-badge');
             if(providertab){
                 providertab.innerHTML = badge;
             }
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    }
 
+    getUrlString(){
+        let url = '?view_as=json';
+        url += '&target=ajax-table-' + this.active_tab;
+        if(this.category_id !== null){
+            url += '&category_id=';
+            url += this.category_id;
+        }
+        if(this.search && this.search !== 'null' || this.search !== null){
+            url += '&search=';
+            url += this.search;
+        }
+        if(this.active_tab !== null || this.active_tab !== 'null'){
+            url += '&active_tab=';
+            url += this.active_tab;
+        }
+        if(this.page !== null || this.page !== 'null'){
+            url += '&page=';
+            url += this.page;
+        }
 
+        return url;
+    }
+
+    reload(){
+        let object = this;
+        object.prepareParams();
+        if (isXHRloading) { return; } window.isXHRloading = true;
+        window.axios({
+            method: 'get',
+            url: object.getUrlString(),
+        }).then(function (resp) {
+            var results_container = document.getElementById(resp.data.target);
+            results_container.innerHTML = resp.data.html;
+            if(object.search && object.search !== 'null') {
+                window.helper.insertParamUrl('search', object.search);
+            }
+            window.helper.insertParamUrl('category_id', object.category_id);
+            window.helper.insertParamUrl('active_tab', object.active_tab);
+            window.helper.insertParamUrl('page', object.page);
+            window.rebuildLinks();
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'layouts.TabXHR' : 'product.layout.tabs')
+@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'layouts.TabXHR' : 'store.layout.tabs')
 
 @section('tab')
     <div class="d-flex flex-column flex">
