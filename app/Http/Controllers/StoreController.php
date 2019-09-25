@@ -32,7 +32,7 @@ class StoreController extends Controller
             return response()->json([
                 'target' => $target,
                 'page' => $page_title,
-                'content' => $content->render()
+                'html' => $content->render()
             ]);
         } else {
             return $content;
@@ -52,10 +52,19 @@ class StoreController extends Controller
     {
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.elements.provider.table_container', compact('brands','request'));
+        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-provider'){
+            return view('provider.elements.table_container', compact('brands','request'));
         }
-        return view('product.provider', compact('brands', 'request'));
+        return view('provider.index', compact('brands', 'request'));
+    }
+
+    public static function shipmentsTab($request)
+    {
+        $shipments = ShipmentsController::getShipments($request);
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments'){
+            return view('shipments.elements.list_container', compact('request', 'shipments'));
+        }
+        return view('shipments.index', compact('request','shipments'));
     }
 
     public static function storeTab($request)

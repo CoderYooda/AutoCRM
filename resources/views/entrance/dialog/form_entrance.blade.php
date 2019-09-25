@@ -146,14 +146,6 @@
                 </div>
             </div>
         </div>
-{{--                <div class="form-group">--}}
-{{--                    <label>Артикул</label>--}}
-{{--                    <input type="text" name="article"--}}
-{{--                           @if(isset($product))value="{{ $product->article }}"@endif--}}
-{{--                           @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif--}}
-{{--                           class="form-control" placeholder="Артикул детали (не более 64 символов)">--}}
-{{--                </div>--}}
-
         </div>
         <div class="modal-footer">
             <button class="btn primary" onclick="{{ $class }}.save(this)">Сохранить</button>

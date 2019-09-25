@@ -17,7 +17,7 @@
     </div>
     <div id="partner_list" class="mh50-dialog">
         <div class="">
-            <div id="search_partner_results" class="nlborder box mb-0">
+            <div id="search_partner_results" class="nlborder box mb-0" >
                 @include('partner.dialog.select_partner_inner')
             </div>
         </div>

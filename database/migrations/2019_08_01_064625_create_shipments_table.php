@@ -17,9 +17,13 @@ class CreateShipmentsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('partner_id')->unsigned()->comment('Привязка к партнеру');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
-            $table->decimal('totalPrice', 10, 2)->comment('Общая цена');
+            $table->dateTime('do_date')->comment('Дата исполнения');
+            $table->decimal('summ', 12, 2)->comment('Общая цена');
+            $table->decimal('itogo', 12, 2)->comment('Итоговая цена');
             $table->integer('discount')->comment('Скидка');
             $table->boolean('inpercents')->comment('В процентах?');
+            $table->char('comment')->nullable()->comment('Комментарий');
+            $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
             $table->timestamps();
         });
     }

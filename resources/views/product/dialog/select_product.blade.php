@@ -25,10 +25,8 @@
         </form>
     </div>
     <div id="partner_list" class="mh50-dialog">
-        <div class="">
-            <div id="search_product_results" class="nlborder list-group box mb-0">
-                @include('product.dialog.select_product_inner')
-            </div>
+        <div id="search_product_results" class="nlborder list-group box mb-0" data-simplebar style="height: 400px">
+            @include('product.dialog.select_product_inner')
         </div>
     </div>
     <div class="modal-footer white">

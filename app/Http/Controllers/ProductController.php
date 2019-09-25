@@ -63,9 +63,14 @@ class ProductController extends Controller
                 'message' => 'Доступ к этому товару запрещен.',
             ], 422);
         }
+        if($request['type'] && $request['type'] === 'shipment'){
+            $content = view('shipments.dialog.product_element', compact('product', 'request'))->render();
+        } else {
+            $content = view('entrance.dialog.product_element', compact('product', 'request'))->render();
+        }
         return response()->json([
             'id' => $product->id,
-            'html' => view('entrance.dialog.product_element', compact('product', 'request'))->render()
+            'html' => $content
         ]);
     }
 

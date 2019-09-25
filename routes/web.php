@@ -36,6 +36,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
 
+    #Продажи
+    Route::post('/shipment/store', 'ShipmentsController@store')->name('StoreShipment');// Строгое название
+    Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
+    Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
+
 
 
     #Касса##############################################################################################

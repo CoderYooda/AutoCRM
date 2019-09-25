@@ -26,12 +26,12 @@
                                 </a>
                             </li>
                             <li id="income-tab" data-tab="entrance" class="@if($request['active_tab'] == 'entrance') active @endif tab">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}" class="ajax-nav">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Поступления</span>
                                 </a>
                             </li>
-                            <li id="sales-tab" data-tab="sales">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'sales']) }}">
+                            <li id="shipments-tab" data-tab="shipments" class="@if($request['active_tab'] == 'shipments') active @endif tab">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'shipments']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Продажи</span>
                                 </a>
                             </li>

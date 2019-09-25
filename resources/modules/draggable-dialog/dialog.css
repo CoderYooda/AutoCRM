@@ -64,7 +64,6 @@
 }
 .mh40-dialog {
     max-height: calc(40vh - 20px);
-    overflow-y: auto;
 }
 .dialog.selected{
 	z-index: 10000000;

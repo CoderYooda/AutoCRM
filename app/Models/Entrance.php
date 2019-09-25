@@ -34,9 +34,6 @@ class Entrance extends Model
        return $this->created_at->format('d.m.Y (H:i)');
     }
 
-//    public function articles(){
-//        $this->belongsTo('pp\Models\Article', 'article_id');
-//    }
 
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
