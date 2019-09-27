@@ -41,11 +41,10 @@ class StoreController extends Controller
 
     public static function entranceTab($request)
     {
-        $entrances = EntranceController::getEntrances($request);
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('product.entrance', compact('request', 'entrances'));
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance'){
+            return view('entrance.elements.list_container', compact('request'));
         }
-        return view('entrance.index', compact('request','entrances'));
+        return view('entrance.index', compact('request'));
     }
 
     public static function providerTab($request)
@@ -60,11 +59,18 @@ class StoreController extends Controller
 
     public static function shipmentsTab($request)
     {
-        $shipments = ShipmentsController::getShipments($request);
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments'){
-            return view('shipments.elements.list_container', compact('request', 'shipments'));
+            return view('shipments.elements.list_container', compact('request'));
         }
-        return view('shipments.index', compact('request','shipments'));
+        return view('shipments.index', compact('request'));
+    }
+
+    public static function client_ordersTab($request)
+    {
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders'){
+            return view('client_orders.elements.list_container', compact('request'));
+        }
+        return view('client_orders.index', compact('request'));
     }
 
     public static function storeTab($request)

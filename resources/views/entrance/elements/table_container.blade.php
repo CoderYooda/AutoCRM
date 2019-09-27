@@ -13,7 +13,7 @@
         </thead>
         <tbody>
             @foreach($entrances as $entrance)
-                @include('entrance.table_element')
+                @include('entrance.elements.table_element')
             @endforeach
         </tbody>
     </table>

@@ -33,13 +33,13 @@
         <div>
             Товары по запросу "{{ $request['string'] }}" не найдено
         </div>
-        <button onclick="openDialog('createProduct')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
+        <button onclick="openDialog('productDialog')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
     </div>
 @else
     <div class="padding text-center">
         <div>
             Товары не найдены
         </div>
-        <button onclick="openDialog('createProduct')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
+        <button onclick="openDialog('productDialog')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
     </div>
 @endif

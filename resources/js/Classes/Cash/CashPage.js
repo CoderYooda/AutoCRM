@@ -145,7 +145,7 @@ class cashPage{
             this.date_start = date_start;
             this.date_end = date_end;
             this.dates_range = [this.date_start, this.date_end];
-        } else { }
+        }
         this.searchInit();
         this.initDates();
     }

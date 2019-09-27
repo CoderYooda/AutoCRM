@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'layouts.TabXHR' : 'store.layout.tabs')
+@extends($request['view_as'] == 'json' && $request['target'] != null ? 'layouts.TabXHR' : 'store.layout.tabs')
 
 @section('tab')
     <div class="d-flex flex-column flex">
@@ -18,11 +18,11 @@
                 </div>
             </div>
             <span class="m-b btn-groups pl-1">
-                <button onclick="openDialog('entranceDialog')" class="btn btn-sm white mb-0">Новое поступление</button>
+                <button onclick="openDialog('client_orderDialog')" class="btn btn-sm white mb-0">Новый заказ</button>
             </span>
         </div>
-        <div id="ajax-table-entrance" class="content-main d-flex flex-column flex">
-            @include('entrance.elements.list_container')
+        <div id="ajax-table-client_orders" class="content-main d-flex flex-column flex">
+            @include('client_orders.elements.list_container')
         </div>
     </div>
 @endsection

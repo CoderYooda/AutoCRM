@@ -13,6 +13,9 @@ class MoneymoveSeed extends Seeder
      */
     public function run()
     {
+        $fake_user = \App\Models\User::where('id', 1)->first();
+        Auth::login($fake_user);
+
         $this->command->getOutput()->progressStart(300);
 
         for($i = 0; $i < 300; $i++){

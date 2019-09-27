@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/shipment/store', 'ShipmentsController@store')->name('StoreShipment');// Строгое название
     Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
+    Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
 
 
 

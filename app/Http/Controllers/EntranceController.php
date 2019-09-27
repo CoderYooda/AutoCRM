@@ -7,6 +7,7 @@ use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Entrance;
+use Carbon\Carbon;
 use Auth;
 
 class EntranceController extends Controller
@@ -60,10 +61,12 @@ class EntranceController extends Controller
 
         if($entrance->exists){
             $this->message = 'Поступление обновлено';
-            $event = 'EntranceStored' . $entrance->id;
         } else {
-            $entrance->company_id = Auth::user()->company()->first()->id;
-            $event = 'EntranceStored';
+            if(Auth::user() != null){
+                $entrance->company_id = Auth::user()->company()->first()->id;
+            } else {
+                $entrance->company_id = 1;
+            }
             $this->message = 'Поступление сохранено';
         }
         $entrance->fill($request->only($entrance->fields));
@@ -122,15 +125,11 @@ class EntranceController extends Controller
         }
         $entrance->save();
 
-        $entrances = self::getEntrances($request);
-        $content = view('entrance.table_container', compact('entrances'))->render();
-
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
                 'container' => 'ajax-table-entrance',
-                'event' => $event,
-                'html' => $content
+                'event' => 'EntranceStored',
             ], 200);
         } else {
             return redirect()->back();
@@ -139,7 +138,34 @@ class EntranceController extends Controller
 
     public static function getEntrances($request){
         return Entrance::where('company_id', Auth::user()->company()->first()->id)
-            ->orderBy('created_at', 'DESC')->paginate(24);
+            ->orderBy('created_at', 'DESC')
+            ->where(function($q) use ($request){
+                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
+                    $q->where('created_at',  '>=',  Carbon::parse($request['date_start']));
+                }
+                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
+                    $q->where('created_at', '<=', Carbon::parse($request['date_end']));
+                }
+            })
+            ->where(function($q) use ($request){
+                if(isset($request['search']) && $request['search'] !== 'null') {
+                    if (mb_strlen($request['search']) === 1) {
+                        $q->whereHas('partner', function ($q) use ($request) {
+                            $q->where('fio', 'LIKE', $request['search'] . '%' )
+                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+                        });
+                    } else {
+                        $q->whereHas('partner', function ($q) use ($request) {
+                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+                                ->orWhereHas('phones', function ($query) use ($request) {
+                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+                                });
+                        });
+                    }
+                }
+            })
+            ->paginate(16);
     }
 
     private static function validateRules($request)

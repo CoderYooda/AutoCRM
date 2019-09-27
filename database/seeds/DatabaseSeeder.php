@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Auth;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,5 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(WarrantSeed::class);
         $this->call(MoneymoveSeed::class);
         $this->call(ArticleSeed::class);
+        $this->call(EntranceSeed::class);
+
     }
 }

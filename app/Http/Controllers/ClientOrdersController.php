@@ -2,51 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Shipment;
-use Carbon\Carbon;
+use App\Models\ClientOrder;
 use Illuminate\Http\Request;
-use App\Models\Store;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Article;
-use Auth;
 
-class ShipmentsController extends Controller
+class ClientOrdersController extends Controller
 {
-
-    public static function shipmentDialog($request)
+    public static function client_orderDialog($request)
     {
-        $tag = 'shipmentDialog';
+        $tag = 'client_orderDialog';
 
-        if($request['shipment_id']){
-            $shipment = Shipment::where('id', (int)$request['shipment_id'])->first();
-            $tag .= $shipment->id;
+        if($request['client_order_id']){
+            $client_order = client_order::where('id', (int)$request['client_order_id'])->first();
+            $tag .= $client_order->id;
         } else {
-            $shipment = null;
+            $client_order = null;
         }
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('shipments.dialog.form_shipment', compact( 'shipment', 'stores',  'request'))->render()
+            'html' => view('client_orders.dialog.form_client_order', compact( 'client_order', 'stores',  'request'))->render()
         ]);
     }
 
     public function delete($id)
     {
-        $shipment = Shipment::where('id', $id)->first();
+        $client_order = client_order::where('id', $id)->first();
 
-        $shipment->delete();
+        $client_order->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';
 
         return response()->json([
-            'id' => $shipment->id,
+            'id' => $client_order->id,
             'message' => $this->message
         ], 200);
     }
 
     public function store(Request $request){
 
-        $shipment = Shipment::firstOrNew(['id' => $request['id']]);
+        $client_order = client_order::firstOrNew(['id' => $request['id']]);
 
 //        if($entrance->locked){
 //            return response()->json([
@@ -78,17 +72,17 @@ class ShipmentsController extends Controller
             }
         }
 
-        if($shipment->exists){
+        if($client_order->exists){
             $this->message = 'Продажа обновлена';
         } else {
-            $shipment->company_id = Auth::user()->company()->first()->id;
+            $client_order->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Продажа сохранена';
         }
-        $shipment->fill($request->only($shipment->fields));
-        $shipment->summ = 0;
-        $shipment->balance = 0;
-        $shipment->itogo = 0;
-        $shipment->save();
+        $client_order->fill($request->only($client_order->fields));
+        $client_order->summ = 0;
+        $client_order->balance = 0;
+        $client_order->itogo = 0;
+        $client_order->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
         foreach($request['products'] as $id => $product) {
@@ -98,10 +92,10 @@ class ShipmentsController extends Controller
 
             $vtotal = $vprice * $vcount;
 
-            $shipment->summ += $vtotal;
+            $client_order->summ += $vtotal;
             $actor_product = Article::where('id', $product['id'])->first();
 
-            $article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
+            $article_client_order = $client_order->articles()->where('article_id', $product['id'])->count();
 
             ### Пересчёт кол-ва с учетом предидущего поступления #######################################
 //            $store->articles()->syncWithoutDetaching($actor_product->id);
@@ -118,52 +112,52 @@ class ShipmentsController extends Controller
             ];
 
 
-            if($article_shipment > 0){
-                $shipment->articles()->updateExistingPivot($product['id'], $pivot_data);
+            if($article_client_order > 0){
+                $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
             } else {
-                $shipment->articles()->save($actor_product, $pivot_data);
+                $client_order->articles()->save($actor_product, $pivot_data);
             }
 
             //$store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
         }
 
-        $shipment->articles()->sync(array_column($request['products'], 'id'));
+        $client_order->articles()->sync(array_column($request['products'], 'id'));
 
         if($request['inpercents']){
-            $shipment->itogo = $shipment->summ - ($shipment->summ / 100 * $request['discount']);
+            $client_order->itogo = $client_order->summ - ($client_order->summ / 100 * $request['discount']);
         } else {
-            if($request['discount'] >= $shipment->summ){
-                $request['discount'] = $shipment->summ;
+            if($request['discount'] >= $client_order->summ){
+                $request['discount'] = $client_order->summ;
             }
             if($request['discount'] <= 0){
                 $request['discount'] = 0;
             }
-            $shipment->discount = $request['discount'];
-            $shipment->itogo = $shipment->summ - $request['discount'];
+            $client_order->discount = $request['discount'];
+            $client_order->itogo = $client_order->summ - $request['discount'];
         }
 
-        $shipment->save();
+        $client_order->save();
 
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
-                'event' => 'ShipmentStored',
+                'event' => 'client_orderStored',
             ], 200);
         } else {
             return redirect()->back();
         }
     }
 
-    public function getShipmentProducts($id){
-        $shipment = Shipment::where('id', $id)->first();
+    public function getclient_orderProducts($id){
+        $client_order = client_order::where('id', $id)->first();
 
         return response()->json([
-            'products' => $shipment->articles()->get()]);
+            'products' => $client_order->articles()->get()]);
     }
 
-    public static function getShipments($request)
+    public static function getClientOrders($request)
     {
-        $shipments = Shipment::owned()
+        $client_orders = ClientOrder::owned()
             ->orderBy('created_at', 'DESC')
             ->where(function($q) use ($request){
                 if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
@@ -193,7 +187,7 @@ class ShipmentsController extends Controller
             })
             ->paginate(16);
 
-        return $shipments;
+        return $client_orders;
     }
 
     private static function validateRules($request)

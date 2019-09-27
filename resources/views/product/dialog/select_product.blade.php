@@ -1,5 +1,5 @@
 @php $class = 'selectProductDialog' @endphp
-<div id="selectProductDialog" class="dialog" style="width:580px;">
+<div id="selectProductDialog" class="dialog white" style="width:580px;">
     <div class="titlebar">Поиск товаров</div>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="navbar white no-radius box-shadow pos-rlt">
@@ -24,8 +24,8 @@
             </div>
         </form>
     </div>
-    <div id="partner_list" class="mh50-dialog">
-        <div id="search_product_results" class="nlborder list-group box mb-0" data-simplebar style="height: 400px">
+    <div id="partner_list" class="mh50-dialog" data-simplebar style="height: 400px">
+        <div id="search_product_results" class="nlborder list-group box mb-0" >
             @include('product.dialog.select_product_inner')
         </div>
     </div>

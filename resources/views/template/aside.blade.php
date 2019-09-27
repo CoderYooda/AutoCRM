@@ -24,7 +24,7 @@
         </a>
     </li>
     <li class="">
-        <a href="#">
+        <a onclick="openDialog('shipmentDialog')" >
             <span class="nav-icon">
                 <i class="fa fa-money"></i>
 			</span>
