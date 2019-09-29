@@ -23,20 +23,8 @@
             <!-- / brand -->
             <ul class="nav flex-row order-lg-2">
                 <!-- Notification -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link px-3" data-toggle="dropdown" data-pjax-state="">
-                        <i class="fa fa-bell text-muted"></i>
-                        <span class="badge badge-pill up danger">10</span>
-                    </a>
-                </li>
-                <!-- User dropdown menu -->
-                <li class="dropdown d-flex align-items-center">
-                    <a href="#" data-toggle="dropdown" class="d-flex align-items-center" data-pjax-state="">
-                            <span class="avatar w-32">
-                              <img src="#" alt="...">
-                            </span>
-                    </a>
-                </li>
+                {!! \App\Http\Controllers\NotificationController::headerNotifications() !!}
+                {!! \App\Http\Controllers\UserController::headerUser() !!}
             </ul>
             <!-- Navbar collapse -->
             <div class="collapse navbar-collapse nav-active-theme order-lg-1" id="navbarToggler">
@@ -169,5 +157,10 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf
 </form>
+
+<div id="login-form" class="hide dark h-v d-flex flex align-items-center">
+
+</div>
+
 </body>
 </html>

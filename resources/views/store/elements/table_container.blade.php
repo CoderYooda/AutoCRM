@@ -1,7 +1,6 @@
 @php $articles = \App\Http\Controllers\ProductController::getArticles($request) @endphp
 @php $category = \App\Http\Controllers\CategoryController::getCategory($request, 2) @endphp
 <div class="d-flex flex" style="height: 100%;">
-    <!-- ############ Main START-->
     <div class="d-flex flex" data-plugin="chat">
         <div class="fade aside aside-sm" id="content-aside">
             <div class="d-flex flex-column w-250 b-r white modal-dialog">
@@ -34,7 +33,7 @@
                         <table class="table table-hover mb-3" style="white-space: nowrap;">
                             <thead>
                             <tr>
-                                <th class="w-xxl">Модель</th>
+                                <th class="w-xxl">Модель1</th>
                                 <th class="w-sm">Артикул</th>
                                 <th>Бренд</th>
                                 <th>Наличие</th>
@@ -77,46 +76,4 @@
             </div>
         </div>
     </div>
-    <!-- ############ Main END-->
 </div>
-
-
-
-
-{{--<div class="d-flex flex">--}}
-{{--<div class="fade aside aside-sm" id="content-aside">--}}
-{{--    <div class="d-flex flex-column w-xl b-r white modal-dialog" id="chat-nav">--}}
-{{--        @include('category.aside-list')--}}
-{{--        <div class="p-3 mt-auto">--}}
-{{--            <span class="text-sm text-muted">Yb</span>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--<div class="d-flex flex">--}}
-{{--    <div class="d-flex flex-column flex" >--}}
-{{--<table class="table table-bordered table-hover table-sm mb-3" style="white-space: nowrap;">--}}
-{{--    <thead>--}}
-{{--    <tr>--}}
-{{--        <th class="w-xxl">Модель</th>--}}
-{{--        <th class="w-sm">Артикул</th>--}}
-{{--        <th>Бренд</th>--}}
-{{--        <th>Наличие</th>--}}
-{{--        <th>Заявки</th>--}}
-{{--        <th>Цена</th>--}}
-{{--        <th class="w-62">--}}
-{{--            @if(isset($categories['parent']))--}}
-{{--            <a onclick="openDialog('createProduct', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>--}}
-{{--            @endif--}}
-{{--        </th>--}}
-{{--    </tr>--}}
-{{--    </thead>--}}
-{{--    <tbody>--}}
-{{--    @foreach($articles as $article)--}}
-{{--        @include('product.elements.table_element')--}}
-{{--    @endforeach--}}
-{{--    </tbody>--}}
-{{--</table>--}}
-{{--{{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}--}}
-{{--    </div>--}}
-{{--    </div>--}}
-{{--    </div>--}}

@@ -42,7 +42,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
 
-
+    #Заказы клиентов
+    Route::post('/clientorder/store', 'ClientOrdersController@store')->name('StoreClientOrder');// Строгое название
+    Route::post('/clientorder/{id}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
+    Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ShipmentPageSearch');
+    Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteShipment');
 
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название

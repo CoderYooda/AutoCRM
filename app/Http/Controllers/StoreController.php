@@ -39,6 +39,20 @@ class StoreController extends Controller
         }
     }
 
+    public static function storeTab($request)
+    {
+        $page = 'Склад';
+
+        $categories = CategoryController::getCategories($request, 'store');
+        $cat_info = [];
+        $cat_info['route'] = 'StoreIndex';
+        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
+            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
+        }
+        return view('store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
+    }
+
     public static function entranceTab($request)
     {
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance'){
@@ -72,24 +86,6 @@ class StoreController extends Controller
         }
         return view('client_orders.index', compact('request'));
     }
-
-    public static function storeTab($request)
-    {
-        $page = 'Склад';
-
-        $categories = CategoryController::getCategories($request, 'store');
-        $cat_info = [];
-        $cat_info['route'] = 'StoreIndex';
-        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
-        if($request['view_as'] == 'json' && $request['category_id'] != NULL && $request['target'] == 'ajax-table-store'){
-            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
-        }
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-store'){
-            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
-        }
-        return view('store.store', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
-    }
-
 
 
     public static function updateArticlePivot($store_id, $article_id, $param, $value)
@@ -128,18 +124,12 @@ class StoreController extends Controller
         $store->company_id = Auth::user()->company()->first()->id;
         $store->save();
 
-
-
-        $stores = self::getStores($request);
-
-        $content = view('settings.store', compact('stores', 'request'))->render();
-
         if($request->ajax()){
             return response()->json([
-                'message' => $message,
+                'message' => $this->message,
                 'container' => 'ajax-table-store',
-                'redirect' => route('SettingsIndex', ['active_tab' => 'store']),
-                'html' => $content]);
+                'event' => 'ProductStored',
+            ]);
         } else {
             return redirect()->back();
         }
@@ -152,7 +142,6 @@ class StoreController extends Controller
         } else {
             abort(404);
         }
-
         $store = Store::where('id', $id)->first();
 
         return response()->json(['tag' => 'editStore'.$store->id, 'html' => view('settings.dialog.form_store', compact('store'))->render()]);
@@ -180,8 +169,6 @@ class StoreController extends Controller
                 $status = 500;
             }
         }
-
-
         return response()->json(['id' => $store->id, 'message' => $message], $status);
     }
 

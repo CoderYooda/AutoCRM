@@ -23,6 +23,7 @@ import Supplier from './Classes/Supplier.js';
 import Partner from './Classes/Partner.js';
 import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
+import Auth from './Classes/Auth.js';
 
 
 
@@ -38,8 +39,5 @@ window.supplier = new Supplier();
 // window.partner = new Partner();
 window.entity = new Entity();
 window.scanner = new Scanner();
+window.auth = new Auth();
 
-// document.addEventListener('DOMContentLoaded', function()
-// {
-//
-// });

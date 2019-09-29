@@ -14,7 +14,6 @@ class EntranceSeed extends Seeder
         $fake_user = \App\Models\User::where('id', 1)->first();
         Auth::login($fake_user);
 
-
         $this->command->getOutput()->progressStart(300);
 
         for($i = 0; $i < 300; $i++){
@@ -35,7 +34,7 @@ class EntranceSeed extends Seeder
 
             $products = [];
             $products_count = rand(1, 10);
-            for($i = 0; $i < $products_count; $i++){
+            for($e = 0; $e < $products_count; $e++){
                 $product = \App\Models\Article::inRandomOrder()->first();
                 $products[$product->id]['id'] = $product->id;
                 $products[$product->id]['count'] = rand(1, 22);

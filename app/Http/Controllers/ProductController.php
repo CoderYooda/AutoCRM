@@ -24,9 +24,6 @@ class ProductController extends Controller
         $message = 'Внутренняя ошибка сервера';
     }
 
-
-
-
     public function delete($id)
     {
         $product = Article::where('id', $id)->first();

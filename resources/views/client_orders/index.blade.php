@@ -18,7 +18,7 @@
                 </div>
             </div>
             <span class="m-b btn-groups pl-1">
-                <button onclick="openDialog('client_orderDialog')" class="btn btn-sm white mb-0">Новый заказ</button>
+                <button onclick="openDialog('clientorderDialog')" class="btn btn-sm white mb-0">Новый заказ</button>
             </span>
         </div>
         <div id="ajax-table-client_orders" class="content-main d-flex flex-column flex">

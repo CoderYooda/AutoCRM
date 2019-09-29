@@ -31,12 +31,12 @@
                                 </a>
                             </li>
                             <li id="shipments-tab" data-tab="shipments" class="@if($request['active_tab'] == 'shipments') active @endif tab">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'shipments']) }}" class="ajax-nav update_url">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'shipments', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Продажи</span>
                                 </a>
                             </li>
                             <li id="client_orders-tab" data-tab="client_orders">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'client_orders']) }}">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Заказы клиентов</span>
                                 </a>
                             </li>

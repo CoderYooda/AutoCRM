@@ -16,7 +16,6 @@ class partnerDialog{
 
         //elem.addEventListener("click", this.activateTab('fl'));
     }
-
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
@@ -24,7 +23,6 @@ class partnerDialog{
             object.finitaLaComedia();
         });
     }
-
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
@@ -155,6 +153,23 @@ class partnerDialog{
         }
         this.addPhoneMask();
     }
+
+    toggleAccess(elem){
+        let object = this;
+        var account_datas = object.root_dialog.querySelectorAll('.account_data');
+        console.log(account_datas);
+
+        if(elem.value == 1){
+            [].forEach.call(account_datas, function(elem){
+                elem.classList.remove('hide');
+            });
+        } else {
+            [].forEach.call(account_datas, function(elem){
+                elem.classList.add('hide');
+            });
+        }
+    }
+
     canAddMorePhone(div){
         var elems = div.getElementsByClassName('phone');
         if(elems.length > 4){

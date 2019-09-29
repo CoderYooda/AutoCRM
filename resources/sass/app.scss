@@ -211,8 +211,7 @@ button.is-invalid{
     border-color: #e3342f!important;
     border-width: 2px;
 }
-label {
-    color: #222;
+label{
     font-weight: 500;
     font-size: inherit;
 }
@@ -296,4 +295,18 @@ header .nav-item.active{
 }
 .simplebar-scrollbar:before {
     background: #323b4769;
+}
+#login-form .title-sess{
+    font-size: 1.8rem;
+}
+#login-form{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
+    z-index: 10000000;
+}
+input:-internal-autofill-selected {
+    background-color: inherit;
+    color: inherit;
 }

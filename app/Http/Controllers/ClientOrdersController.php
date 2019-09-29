@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 
 class ClientOrdersController extends Controller
 {
-    public static function client_orderDialog($request)
+    public static function clientorderDialog($request)
     {
-        $tag = 'client_orderDialog';
+        $tag = 'clientorderDialog';
 
         if($request['client_order_id']){
-            $client_order = client_order::where('id', (int)$request['client_order_id'])->first();
+            $client_order = ClientOrder::where('id', (int)$request['client_order_id'])->first();
             $tag .= $client_order->id;
         } else {
             $client_order = null;

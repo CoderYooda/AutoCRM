@@ -35,7 +35,7 @@ class ShipmentSeed extends Seeder
 
             $products = [];
             $products_count = rand(1, 4);
-            for($i = 0; $i < $products_count; $i++){
+            for($e = 0; $e < $products_count; $e++){
                 $product = \App\Models\Article::inRandomOrder()->first();
                 $products[$product->id]['id'] = $product->id;
                 $products[$product->id]['count'] = rand(1, 22);

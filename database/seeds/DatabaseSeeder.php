@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MoneymoveSeed::class);
         $this->call(ArticleSeed::class);
         $this->call(EntranceSeed::class);
+        $this->call(ShipmentSeed::class);
 
     }
 }

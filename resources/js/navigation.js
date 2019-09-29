@@ -57,11 +57,11 @@ const ajaxRequest = new (function () {
                 removePreloaders();
                 break;
             default:
+                removePreloaders();
                 vMsg = nStatus + ": " + (oHTTPStatus[nStatus] || "Unknown");
                 switch (Math.floor(nStatus / 100)) {
                     case 4:
-                        /* Client Error 4xx */
-                        alert("Client Error #" + vMsg);
+                        window.auth.getLoginScreen();
                         break;
                     case 5:
                         /* Server Error 5xx */
@@ -88,6 +88,7 @@ const ajaxRequest = new (function () {
         oReq.onerror = ajaxError;
         if (sPage) { oPageInfo.url = filterURL(sPage, null); }
         oReq.open("get", filterURL(oPageInfo.url, "json"), true);
+        oReq.setRequestHeader('Accept','application/json');
         oReq.send();
     }
 
@@ -101,7 +102,7 @@ const ajaxRequest = new (function () {
         }
     }
 
-    function processLink () {
+    function processLink() {
         if (this.className.search(sAjaxClass) > -1) {
             try{
              this.querySelector(":scope > .pr").style.opacity = 1;

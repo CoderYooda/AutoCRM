@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Signup | Apply - Bootstrap 4 Web Application</title>
+    <title>{{ config('APP_NAME') }}</title>
     <meta name="description" content="Responsive, Bootstrap, BS4" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

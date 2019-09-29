@@ -71,9 +71,11 @@ class RegisterController extends Controller
         ]);
 
         $company = new Company();
+        $company->name = 'Новая компания';
+        $company->save();
 
-        $user->companies()->save($company);
-
+        $user->company()->associate($company);
+        $user->save();
         return $user;
     }
 }
