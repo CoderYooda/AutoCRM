@@ -105,7 +105,7 @@
     <div id="content" class="app-content box-shadow-0" role="main">
         <div class="content-header bg-white">
             <div class="navbar">
-                <div class="collapse navbar-collapse  order-lg-1" id="navbarToggler">
+                <div class="collapse navbar-collapse order-lg-1" id="navbarToggler">
                     <ul class="navbar-nav mt-2 mt-lg-0 mx-0 mx-lg-2 ">
                         <li class="nav-item">
                             <a href="dashboard.8.html" class="nav-link" data-pjax-state="">
@@ -134,15 +134,15 @@
                     </ul>
                     <form class="input-group m-2 my-lg-0">
                         <span class="input-group-btn">
-	  	      <button type="button" class="btn no-border no-bg no-shadow waves-effect"><i class="fa fa-search"></i></button>
-	  	    </span>
+                          <button type="button" class="btn no-border no-bg no-shadow waves-effect"><i class="fa fa-search"></i></button>
+                        </span>
                         <input type="text" class="form-control no-border no-bg no-shadow" placeholder="Search projects...">
                     </form>
                 </div>
             </div>
         </div>
         <div class="content-main d-flex flex" id="ajax-content">
-                @yield('content')
+            @yield('content')
         </div>
         <div class="content-footer bg-white">
             <div class="d-flex p-3">

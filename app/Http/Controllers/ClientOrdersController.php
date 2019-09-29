@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use App\Models\Article;
+use Auth;
 
 class ClientOrdersController extends Controller
 {
@@ -26,7 +30,7 @@ class ClientOrdersController extends Controller
 
     public function delete($id)
     {
-        $client_order = client_order::where('id', $id)->first();
+        $client_order = ClientOrder::where('id', $id)->first();
 
         $client_order->delete();
         $this->status = 200;
@@ -40,7 +44,7 @@ class ClientOrdersController extends Controller
 
     public function store(Request $request){
 
-        $client_order = client_order::firstOrNew(['id' => $request['id']]);
+        $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
 //        if($entrance->locked){
 //            return response()->json([
@@ -80,8 +84,8 @@ class ClientOrdersController extends Controller
         }
         $client_order->fill($request->only($client_order->fields));
         $client_order->summ = 0;
-        $client_order->balance = 0;
-        $client_order->itogo = 0;
+        //$client_order->balance = 0;
+        //$client_order->itogo = 0;
         $client_order->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
@@ -133,7 +137,7 @@ class ClientOrdersController extends Controller
                 $request['discount'] = 0;
             }
             $client_order->discount = $request['discount'];
-            $client_order->itogo = $client_order->summ - $request['discount'];
+            //$client_order->itogo = $client_order->summ - $request['discount'];
         }
 
         $client_order->save();
@@ -141,7 +145,7 @@ class ClientOrdersController extends Controller
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
-                'event' => 'client_orderStored',
+                'event' => 'clientOrderStored',
             ], 200);
         } else {
             return redirect()->back();
@@ -149,7 +153,7 @@ class ClientOrdersController extends Controller
     }
 
     public function getclient_orderProducts($id){
-        $client_order = client_order::where('id', $id)->first();
+        $client_order = ClientOrder::where('id', $id)->first();
 
         return response()->json([
             'products' => $client_order->articles()->get()]);

@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 
-class ClientOrder extends Model
+class ProviderOrder extends Model
 {
     public $fields = [
         'partner_id',
         'company_id',
-        //'do_date',
+        'do_date',
         'store_id',
         'summ',
         'discount',

@@ -41,7 +41,7 @@
                                 </a>
                             </li>
                             <li id="provider_orders-tab" data-tab="provider_orders">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders']) }}">
+                                <a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Заказы поставщикам</span>
                                 </a>
                             </li>

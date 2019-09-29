@@ -12,6 +12,7 @@ import moneymoveDialog from "./MoneyMove/MoneymoveDialog";
 import barcodeDialog from "./Barcode/BarcodeDialog";
 import shipmentDialog from "./Shipment/ShipmentDialog";
 import clientorderDialog from "./ClientOrder/ClientOrderDialog";
+import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
 import settingsPage from "./Settings/SettingsPage";
@@ -35,6 +36,7 @@ const classes = {
     moneymoveDialog,
     shipmentDialog,
     clientorderDialog,
+    providerorderDialog,
     barcodeDialog
 };
 

@@ -29,7 +29,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/product/{id}/addtolist', 'ProductController@addToList')->name('ProductAddToList');
 
     #Поступления товаров
-    Route::post('/entrance/new', 'EntranceController@store')->name('StoreEntrance');
+    Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
 
     #Поставщики (внешние)
@@ -45,8 +45,14 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Заказы клиентов
     Route::post('/clientorder/store', 'ClientOrdersController@store')->name('StoreClientOrder');// Строгое название
     Route::post('/clientorder/{id}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
-    Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ShipmentPageSearch');
-    Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteShipment');
+    Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
+    Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
+
+    #Заказы Поставщикам
+    Route::post('/providerorder/store', 'ProviderOrdersController@store')->name('StoreProviderOrder');// Строгое название
+    Route::post('/providerorder/{id}/get_clientorders', 'ProviderOrdersController@getProviderOrdersProducts')->name('GetProviderOrderProducts');
+    Route::post('/providerorder/search', 'ProviderOrdersController@search')->name('ProviderOrderPageSearch');
+    Route::post('/providerorder/{id}/delete', 'ProviderOrdersController@delete')->name('DeleteProviderOrder');
 
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название

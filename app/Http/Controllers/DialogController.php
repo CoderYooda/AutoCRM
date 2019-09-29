@@ -70,6 +70,9 @@ class DialogController extends Controller
             case 'clientorderDialog':
                 $dialog = ClientOrdersController::clientorderDialog($request);
                 break;
+            case 'providerorderDialog':
+                $dialog = ProviderOrdersController::providerorderDialog($request);
+                break;
         }
 
         if(!isset($dialog)){

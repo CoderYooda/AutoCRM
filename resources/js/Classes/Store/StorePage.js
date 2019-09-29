@@ -29,6 +29,18 @@ class storePage{
             object.prepareParams();
             object.reload();
         });
+        document.addEventListener('clientOrderStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
+        document.addEventListener('providerOrderStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
+        document.addEventListener('EntranceStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
         document.addEventListener('ShipmentStored', function(e){
             object.prepareParams();
             object.reload();

@@ -2,51 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Shipment;
-use Carbon\Carbon;
+use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
-use App\Models\Store;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Article;
+use Carbon\Carbon;
 use Auth;
 
-class ShipmentsController extends Controller
+class ProviderOrdersController extends Controller
 {
-
-    public static function shipmentDialog($request)
+    public static function providerOrderDialog($request)
     {
-        $tag = 'shipmentDialog';
+        $tag = 'providerorderDialog';
 
-        if($request['shipment_id']){
-            $shipment = Shipment::where('id', (int)$request['shipment_id'])->first();
-            $tag .= $shipment->id;
+        if($request['provider_order_id']){
+            $provider_order = ProviderOrder::where('id', (int)$request['provider_order_id'])->first();
+            $tag .= $provider_order->id;
         } else {
-            $shipment = null;
+            $provider_order = null;
         }
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('shipments.dialog.form_shipment', compact( 'shipment','request'))->render()
+            'html' => view('provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'))->render()
         ]);
     }
 
     public function delete($id)
     {
-        $shipment = Shipment::where('id', $id)->first();
+        $provider_order = ProviderOrder::where('id', $id)->first();
 
-        $shipment->delete();
+        $provider_order->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';
 
         return response()->json([
-            'id' => $shipment->id,
+            'id' => $provider_order->id,
             'message' => $this->message
         ], 200);
     }
 
     public function store(Request $request){
 
-        $shipment = Shipment::firstOrNew(['id' => $request['id']]);
+        $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
 //        if($entrance->locked){
 //            return response()->json([
@@ -78,17 +75,17 @@ class ShipmentsController extends Controller
             }
         }
 
-        if($shipment->exists){
+        if($provider_order->exists){
             $this->message = 'Продажа обновлена';
         } else {
-            $shipment->company_id = Auth::user()->company()->first()->id;
+            $provider_order->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Продажа сохранена';
         }
-        $shipment->fill($request->only($shipment->fields));
-        $shipment->summ = 0;
-        $shipment->balance = 0;
-        $shipment->itogo = 0;
-        $shipment->save();
+        $provider_order->fill($request->only($provider_order->fields));
+        $provider_order->summ = 0;
+        $provider_order->balance = 0;
+        $provider_order->itogo = 0;
+        $provider_order->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
         foreach($request['products'] as $id => $product) {
@@ -98,10 +95,10 @@ class ShipmentsController extends Controller
 
             $vtotal = $vprice * $vcount;
 
-            $shipment->summ += $vtotal;
+            $provider_order->summ += $vtotal;
             $actor_product = Article::where('id', $product['id'])->first();
 
-            $article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
+            $article_provider_order = $provider_order->articles()->where('article_id', $product['id'])->count();
 
             ### Пересчёт кол-ва с учетом предидущего поступления #######################################
 //            $store->articles()->syncWithoutDetaching($actor_product->id);
@@ -118,52 +115,52 @@ class ShipmentsController extends Controller
             ];
 
 
-            if($article_shipment > 0){
-                $shipment->articles()->updateExistingPivot($product['id'], $pivot_data);
+            if($article_provider_order > 0){
+                $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);
             } else {
-                $shipment->articles()->save($actor_product, $pivot_data);
+                $provider_order->articles()->save($actor_product, $pivot_data);
             }
 
             //$store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
         }
 
-        $shipment->articles()->sync(array_column($request['products'], 'id'));
+        $provider_order->articles()->sync(array_column($request['products'], 'id'));
 
         if($request['inpercents']){
-            $shipment->itogo = $shipment->summ - ($shipment->summ / 100 * $request['discount']);
+            $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
         } else {
-            if($request['discount'] >= $shipment->summ){
-                $request['discount'] = $shipment->summ;
+            if($request['discount'] >= $provider_order->summ){
+                $request['discount'] = $provider_order->summ;
             }
             if($request['discount'] <= 0){
                 $request['discount'] = 0;
             }
-            $shipment->discount = $request['discount'];
-            $shipment->itogo = $shipment->summ - $request['discount'];
+            $provider_order->discount = $request['discount'];
+            $provider_order->itogo = $provider_order->summ - $request['discount'];
         }
 
-        $shipment->save();
+        $provider_order->save();
 
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
-                'event' => 'ShipmentStored',
+                'event' => 'provider_orderStored',
             ], 200);
         } else {
             return redirect()->back();
         }
     }
 
-    public function getShipmentProducts($id){
-        $shipment = Shipment::where('id', $id)->first();
+    public function getProviderOrderProducts($id){
+        $provider_order = ProviderOrder::where('id', $id)->first();
 
         return response()->json([
-            'products' => $shipment->articles()->get()]);
+            'products' => $provider_order->articles()->get()]);
     }
 
-    public static function getShipments($request)
+    public static function getPoviderOrders($request)
     {
-        $shipments = Shipment::owned()
+        $provider_orders = providerorder::owned()
             ->orderBy('created_at', 'DESC')
             ->where(function($q) use ($request){
                 if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
@@ -193,7 +190,7 @@ class ShipmentsController extends Controller
             })
             ->paginate(16);
 
-        return $shipments;
+        return $provider_orders;
     }
 
     private static function validateRules($request)

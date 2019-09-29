@@ -32,7 +32,7 @@
         </a>
     </li>
     <li class="">
-        <a href="#">
+        <a href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
             <span class="nav-icon">
                 <i class="fa fa-clipboard"></i>
 			</span>
