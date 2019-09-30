@@ -10,9 +10,10 @@ class ClientOrder extends Model
     public $fields = [
         'partner_id',
         'company_id',
-        //'do_date',
+        'do_date',
         'store_id',
         'summ',
+        'itogo',
         'discount',
         'inpercents',
         'comment',
@@ -22,7 +23,7 @@ class ClientOrder extends Model
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
+        return $this->belongsToMany('App\Models\Article', 'article_client_orders', 'client_order_id', 'article_id')
             ->withPivot('count', 'price', 'total');
     }
 

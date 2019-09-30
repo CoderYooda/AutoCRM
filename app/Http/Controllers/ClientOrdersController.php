@@ -84,8 +84,8 @@ class ClientOrdersController extends Controller
         }
         $client_order->fill($request->only($client_order->fields));
         $client_order->summ = 0;
-        //$client_order->balance = 0;
-        //$client_order->itogo = 0;
+        $client_order->balance = 0;
+        $client_order->itogo = 0;
         $client_order->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
