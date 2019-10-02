@@ -152,7 +152,7 @@ class ClientOrdersController extends Controller
         }
     }
 
-    public function getclient_orderProducts($id){
+    public function getClientOrdersProducts($id){
         $client_order = ClientOrder::where('id', $id)->first();
 
         return response()->json([

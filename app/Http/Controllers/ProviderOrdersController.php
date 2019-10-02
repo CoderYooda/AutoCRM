@@ -6,6 +6,7 @@ use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Models\Article;
 use Auth;
 
 class ProviderOrdersController extends Controller
@@ -42,7 +43,6 @@ class ProviderOrdersController extends Controller
     }
 
     public function store(Request $request){
-
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
 //        if($entrance->locked){
@@ -76,10 +76,10 @@ class ProviderOrdersController extends Controller
         }
 
         if($provider_order->exists){
-            $this->message = 'Продажа обновлена';
+            $this->message = 'Заказ поставщику обновлен';
         } else {
             $provider_order->company_id = Auth::user()->company()->first()->id;
-            $this->message = 'Продажа сохранена';
+            $this->message = 'Заказ поставщику сохранен';
         }
         $provider_order->fill($request->only($provider_order->fields));
         $provider_order->summ = 0;
@@ -144,7 +144,7 @@ class ProviderOrdersController extends Controller
         if($request->ajax()){
             return response()->json([
                 'message' => $this->message,
-                'event' => 'provider_orderStored',
+                'event' => 'providerOrderStored',
             ], 200);
         } else {
             return redirect()->back();

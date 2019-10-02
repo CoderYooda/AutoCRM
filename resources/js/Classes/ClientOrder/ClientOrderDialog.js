@@ -55,14 +55,15 @@ class clientorderDialog{
 
             window.axios({
                 method: 'post',
-                url: 'shipment/' + shipment_id + '/get_products',
+                url: 'clientorder/' + shipment_id + '/get_clientorders',
                 data: {},
             }).then(function (resp) {
-
                 [].forEach.call(resp.data.products, function(elem){
                     object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
 
                     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+
+                    console.log(item);
                     let inputs = item.getElementsByTagName('input');
 
                     [].forEach.call(inputs, function(elem){

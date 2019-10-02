@@ -1,6 +1,6 @@
-<tr ondblclick="openDialog('client_orderDialog', '&client_order_id={{ $client_order->id }}')" class="list-item" id="client_order_{{ $client_order->id }}">
-    <td>{{ $shipment->id }}</td>
-    <td>{{ \Carbon\Carbon::parse($client_order->created_at)->format('d.m.Y') }}</td>
+<tr ondblclick="openDialog('provider_orderDialog', '&provider_order_id={{ $provider_order->id }}')" class="list-item" id="provider_order_{{ $provider_order->id }}">
+    <td>{{ $provider_order->id }}</td>
+    <td>{{ \Carbon\Carbon::parse($provider_order->created_at)->format('d.m.Y') }}</td>
 
     {{--<td>{{ $shipment->partner()->first()->outputName() }}</td>--}}
     {{--<td>{{ $shipment->ddsarticle()->first()->name }}</td>--}}
@@ -21,10 +21,10 @@
         <div class="item-action">
         </div>
         <div class="item-action-hovered">
-            <a onclick="openDialog('client_orderDialog', '&client_order_id={{ $client_order->id }}')" class="pr-2" >
+            <a onclick="openDialog('provider_orderDialog', '&provider_order_id={{ $provider_order->id }}')" class="pr-2" >
                 <i class="fa fa-pencil"></i>
             </a>
-            <a onclick="entity.remove('client_order', {{ $client_order->id }})">
+            <a onclick="entity.remove('provider_order', {{ $provider_order->id }})">
                 <i class="fa fa-remove"></i>
             </a>
         </div>

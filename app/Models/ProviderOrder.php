@@ -22,7 +22,7 @@ class ProviderOrder extends Model
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
+        return $this->belongsToMany('App\Models\Article', 'article_provider_orders', 'provider_order_id', 'article_id')
             ->withPivot('count', 'price', 'total');
     }
 

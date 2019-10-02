@@ -16,7 +16,7 @@ class CreateArticleProviderOrdersTable extends Migration
         Schema::create('article_provider_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('article_id')->unsigned()->comment('Привязка к товару');
-            $table->bigInteger('client_order_id')->unsigned()->comment('Привязка к поступлению');
+            $table->bigInteger('provider_order_id')->unsigned()->comment('Привязка к поступлению');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->integer('count')->unsigned()->comment('Кол - во');
             $table->double('price')->unsigned()->comment('Цена');
