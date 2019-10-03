@@ -167,16 +167,16 @@ class CategoryController extends Controller
         return $categories;
     }
 
-    public static function drawCrumbs($category, $root){
+    public static function drawCrumbs($category, $root = 0){
         self::$breadcrumbs = collect();
         $html = '<ol class="breadcrumb mb-0">';
-        self::rec($category, 0);
+        self::rec($category, $root);
         foreach(self::$breadcrumbs as $index => $breadcrumb){
 
             if($breadcrumb->id == 1 || $index == self::$breadcrumbs->count()){
                 $html .= '<li class="breadcrumb-item"><span>' . $breadcrumb->name . '</span></li>';
             } else {
-                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" href = "' . request()->fullUrlWithQuery(['category_id' => $breadcrumb->id]) . '" >' . $breadcrumb->name . '</a></li>';
+                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" href = "' . url()->current() . '?category_id=' . $breadcrumb->id . '" >' . $breadcrumb->name . '</a></li>';
             }
         }
 
@@ -188,7 +188,7 @@ class CategoryController extends Controller
     public static function rec($category, $root){
         self::$breadcrumbs->prepend($category);
         $parent = $category->parent()->first();
-        if($parent != null && $parent->id != 1){
+        if($parent != null && $parent->id != 1 && $category->id != $root){
             self::rec($parent, $root);
         }
     }

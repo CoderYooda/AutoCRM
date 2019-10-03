@@ -235,7 +235,10 @@ header .nav-item.active{
     margin-bottom: -10px;
 }
 .navfh .nav-item a{
-    padding: 18px 1rem;
+    padding: 0;
+    display: block;
+    line-height: 56px;
+    height: 56px;
 }
 .category-aside{
     overflow: hidden!important;

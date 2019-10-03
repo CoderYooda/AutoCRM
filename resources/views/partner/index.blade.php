@@ -3,6 +3,13 @@
 @section('title', $page ?? 'crm')
 
 @section('content')
+
+@php $category = \App\Http\Controllers\CategoryController::getCategory($request, 3) @endphp
+@php $categories = \App\Http\Controllers\CategoryController::getCategories($request, 'partner') @endphp
+@php $cat_info = [] @endphp
+@php $cat_info['route'] = 'PartnerIndex' @endphp
+@php $cat_info['params'] = ['target' => 'ajax-tab-content'] @endphp
+
 <div id="partner_index_page" class="d-flex flex">
     <div id="ajax-tab-content" class="d-flex flex">
         <div class="fade aside aside-sm b-r" id="content-aside">

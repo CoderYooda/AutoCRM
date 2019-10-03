@@ -4,9 +4,10 @@ class partnerPage{
         console.log('страница партнера инициализировано');
         this.active = true;
         this.root_id = 'partner_index_page';
-        this.category_id = window.helper.findGetParameter('category_id');
+        this.root_category = 3;
+        this.category_id = null;//window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
-        this.search = window.helper.findGetParameter('search');
+        this.search = null;
         this.init();
     }
 
@@ -47,10 +48,21 @@ class partnerPage{
     }
 
     load(){
-        this.searchInit();
+        this.category_id = window.helper.findGetParameter('category_id');
+        if(window.helper.findGetParameter('page') !== null){
+            this.page = window.helper.findGetParameter('page');
+        } else { this.page = 1}
+        if(window.helper.findGetParameter('search') !== null){
+            this.search = window.helper.findGetParameter('search');
+        } else { this.search = ''}
+        this.searchInit();this.searchInit();
+    }
+
+    linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
+        this.searchInit();
     }
 
     checkActive(){
@@ -69,35 +81,65 @@ class partnerPage{
         let object = this;
         let el = document.getElementById(object.root_id);
         if(el){
-            el = el.querySelector("input[name=search]");
-            if(el){
+            let search = el.querySelector("input[name=search]");
+            if(search){
                 let searchFn = window.helper.debounce(function(e) {
-                    object.searchFn(el);
+                    object.search = search.value;
+                    object.page = 1;
+                    object.searchFn();
                 }, 400);
-                el.addEventListener("keydown", searchFn);
-                el.addEventListener("paste", searchFn);
-                el.addEventListener("delete", searchFn);
+                search.addEventListener("keydown", searchFn);
+                search.addEventListener("paste", searchFn);
+                search.addEventListener("delete", searchFn);
                 //document.addEventListener("PartnerStored", searchFn);
             }
         }
     }
 
-    searchFn(el){
+    prepareParams(){
+        if(this.category_id === null){
+            this.category_id = '';
+        }
+        if(!this.search || this.search === 'null' || this.search === null){
+            this.search = '';
+        } else {
+            this.category_id = this.root_category;
+        }
+        if(this.page === null || this.page === 'null'){
+            this.page = 1;
+        }
+    }
+
+    getUrlString(){
+        let url = '?view_as=json';
+        url += '&target=ajax-table-partner';
+        if(this.category_id !== null){
+            url += '&category_id=';
+            url += this.category_id;
+        }
+        if(this.search && this.search !== 'null' && this.search !== '' && this.search !== null){
+            url += '&search=';
+            url += this.search;
+        }
+        if(this.page !== null || this.page !== 'null'){
+            url += '&page=';
+            url += this.page;
+        }
+        return url;
+    }
+
+    searchFn(){
         let object = this;
-        var string = el.value;
+        object.prepareParams();
         if (isXHRloading) { return; } window.isXHRloading = true;
-        let data = {};
-        data.search = string;
-        data.category_id = window.helper.findGetParameter('category_id');
         window.axios({
-            method: 'post',
-            url: 'partner/search',
-            data: data,
+            method: 'get',
+            url: object.getUrlString(),
         }).then(function (resp) {
-            var results_container = document.getElementById('ajax-table-partner');
+            var results_container = document.getElementById(resp.data.target);
             results_container.innerHTML = resp.data.html;
 
-            window.helper.insertParamUrl('search', string);
+            window.helper.insertParamUrl('search', object.search);
 
             let root = document.getElementById(object.root_id)
             let category_header = root.querySelector("#category_header");
@@ -106,7 +148,7 @@ class partnerPage{
 
             let list =
             '<li class="d-flex flex category-aside">'+
-            '<a href="http://autocrm/partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
+            '<a href="partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
             '<span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>'+
             '</a>'+
             '</li>';

@@ -45,7 +45,6 @@ const ajaxRequest = new (function () {
                 let tabs = document.querySelectorAll('.nav li');
                 [].forEach.call(tabs, function(li){
                     li.classList.remove('active');
-                    console.log(window.helper.findGetParameter('active_tab'));
                     if(window.helper.findGetParameter('active_tab') === li.dataset.tab){
                         li.classList.add('active');
                     } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){

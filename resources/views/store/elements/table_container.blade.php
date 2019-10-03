@@ -1,7 +1,7 @@
 @php $articles = \App\Http\Controllers\ProductController::getArticles($request) @endphp
 @php $category = \App\Http\Controllers\CategoryController::getCategory($request, 2) @endphp
 <div class="d-flex flex" style="height: 100%;">
-    <div class="d-flex flex" data-plugin="chat">
+    <div class="d-flex flex">
         <div class="fade aside aside-sm" id="content-aside">
             <div class="d-flex flex-column w-250 b-r white modal-dialog">
                 @include('category.aside-list')

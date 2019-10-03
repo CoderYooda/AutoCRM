@@ -1,7 +1,7 @@
 class storePage{
 
     constructor(){
-        console.log('страница склада инициализировано22');
+        console.log('страница склада инициализировано');
         this.active = true;
         this.active_tab = window.helper.findGetParameter('active_tab');
         this.category_id = 2;
@@ -66,7 +66,6 @@ class storePage{
             this.date_end = date_end;
             this.dates_range = [this.date_start, this.date_end];
         }
-        console.log(123);
         this.searchInit();
         this.initShipmentDates();
     }

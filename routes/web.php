@@ -90,6 +90,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Сотрудники
     Route::get('/employee', 'EmployeeController@index')->name('EmployeeIndex');
 
+    #Пользователь
+    Route::get('/user', 'UserController@index')->name('UserIndex');
+
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
     Route::post('/partner/search', 'PartnerController@search')->name('PartnerPageSearch');

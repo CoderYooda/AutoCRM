@@ -17,28 +17,21 @@ class PartnerController extends Controller
     public function index(Request $request)
     {
         $target = HC::selectTarget();
-        $partners = self::getPartners($request);
-        $categories = CategoryController::getCategories($request, 'partner');
-
-        $cat_info = [];
-        $cat_info['route'] = 'PartnerIndex';
-        $cat_info['params'] = ['target' => 'ajax-tab-content'];
-
-        if($categories['parent'] != null){
-            $page = $categories['parent']->name;
-        } else {
-            $page = 'Контрагенты';
-        }
-
-        if($request['view_as'] != null && $request['view_as'] == 'json'){
-            $content = view('partner.index', compact('partners', 'categories', 'cat_info', 'request'))->render();
+        if($request->expectsJson() && $request['search'] === NULL){
+            $content = view('partner.index', compact('request'))->render();
             return response()->json([
                 'target' => $target,
-                'page' => $page,
+                'page' => 'Контрагенты',
                 'html' => $content
             ]);
+        } elseif($request->expectsJson() && $request['search'] != NULL){
+            $content = view('partner.elements.list_container', compact('request'))->render();
+            return response()->json([
+                'html' => $content,
+                'target' => 'ajax-table-partner',
+            ], 200);
         } else {
-            return view('partner.index', compact('page', 'partners','categories', 'cat_info', 'request'));
+            return view('partner.index', compact('request'));
         }
 
     }
@@ -216,8 +209,8 @@ class PartnerController extends Controller
         ], 200);
     }
 
-    public function search(Request $request){
-
+    public function search(Request $request)
+    {
         $partners = self::getPartners($request);
         $content = view('partner.elements.list_container', compact('partners', 'request'))->render();
         return response()->json([
@@ -226,7 +219,8 @@ class PartnerController extends Controller
         ], 200);
     }
 
-    public function select($id){
+    public function select($id)
+    {
         $partner = Partner::where('id', $id)->first();
         if(!$partner){
             return response()->json([
