@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Models\Partner;
+use App\Models\SalarySchema;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Pagination\Paginator;
@@ -62,6 +63,25 @@ class UserController extends Controller
     public static function salesTab($request)
     {
         return view('user.tabs.sales', compact('request'));
+    }
+
+    public function saveSalarySchemaToUser(Request $request)
+    {
+        $user = Partner::where('id', $request['partner_id'])->first();
+
+        if($request['schema'] != null){
+            $data = [];
+            foreach($request['schema'] as $schema){
+                $data[$schema['id']] = [ 'value' =>  $schema['value']];
+            }
+            $user->salarySchemas()->sync($data);
+        }
+
+
+
+
+
+
     }
 
     public static function getUser($request)

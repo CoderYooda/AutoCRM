@@ -313,3 +313,22 @@ input:-internal-autofill-selected {
     background-color: inherit;
     color: inherit;
 }
+
+.action_panel{
+    display: none;
+}
+
+.can_action .action_hover:hover .action_panel{
+    display: block;
+}
+#shema_stored .list-group-item:last-child .arrow.bottom{
+    display: none;
+}
+#available_list .arrow.bottom{
+    display: none;
+}
+#shema_stored .list-group-item{
+    border-top: 0!important;
+    border-bottom-color: #22b66e!important;
+}
+

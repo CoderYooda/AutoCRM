@@ -32,6 +32,7 @@
         "rellax": "^1.10.0",
         "select2": "^4.0.10",
         "simplebar": "^4.2.2",
+        "sortablejs": "^1.10.1",
         "sweetalert2": "^8.16.3",
         "tooltip-js": "^3.0.0",
         "tooltips-js": "^1.0.6"

@@ -48,6 +48,11 @@ class Partner extends Model
         return $this->belongsToMany('App\Models\Phone', 'partner_phone');
     }
 
+    public function salarySchemas()
+    {
+        return $this->belongsToMany('App\Models\SalarySchema', 'salary_schemas_partner');
+    }
+
     public function firstActivePhoneNumber()
     {
         $phones = $this->phones();

@@ -10,6 +10,8 @@ window.simplebar = require('simplebar/dist/simplebar.min');
 
 window.debug = true;
 
+import Sortable from 'sortablejs';
+
 
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);
@@ -24,6 +26,8 @@ import Partner from './Classes/Partner.js';
 import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
 import Auth from './Classes/Auth.js';
+
+
 
 
 
