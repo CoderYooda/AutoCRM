@@ -68,7 +68,7 @@ class userPage{
 
             let name = elem.getAttribute('name');
 
-            elem.setAttribute('name', name.replace('convert', evt.newIndex));
+            elem.setAttribute('name', name.replace('convert', evt.newIndex + 1));
         });
     }
 
@@ -101,7 +101,6 @@ class userPage{
         new Sortable(available_list, {
             group: {
                 name: 'shared',
-                pull: 'clone',
                 put: 'false'
             },
             sort: false,
