@@ -20,9 +20,11 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsSeed::class);
         $this->call(WarrantSeed::class);
         $this->call(MoneymoveSeed::class);
-        //$this->call(ArticleSeed::class);
-        //$this->call(EntranceSeed::class);
-        //$this->call(ShipmentSeed::class);
+        $this->call(ArticleSeed::class);
+        $this->call(EntranceSeed::class);
+        $this->call(ShipmentSeed::class);
+        $this->call(ClientOrderSeed::class);
+        $this->call(SalarySchemasSeed::class);
 
     }
 }
