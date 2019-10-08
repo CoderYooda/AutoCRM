@@ -142,7 +142,7 @@ class ClientOrdersController extends Controller
 
         $client_order->save();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
                 'event' => 'clientOrderStored',
@@ -220,7 +220,7 @@ class ClientOrdersController extends Controller
         $events = [];
         foreach($client_orders as $order){
             $events[] = [
-                'title' => $order->itogo,
+                'title' => 'Заказ клиента #' . $order->id,
                 'start' => $order->do_date,
                 'end' => $order->do_date
             ];

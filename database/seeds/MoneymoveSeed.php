@@ -24,6 +24,9 @@ class MoneymoveSeed extends Seeder
             $out_cashbox = \App\Models\Cashbox::where('id', '!=', $in_cashbox->id)->inRandomOrder()->first();
 
             $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
 
             $moneymove = new \App\Http\Controllers\MoneyMoveController();
 

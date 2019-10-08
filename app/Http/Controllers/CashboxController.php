@@ -39,7 +39,7 @@ class CashboxController extends Controller
 
         $content = view('settings.cashbox', compact('cashboxes', 'request'))->render();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
                 //'container' => 'ajax-table',

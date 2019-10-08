@@ -141,7 +141,7 @@ class ProviderOrdersController extends Controller
 
         $provider_order->save();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
                 'event' => 'providerOrderStored',

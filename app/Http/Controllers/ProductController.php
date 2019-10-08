@@ -202,7 +202,7 @@ class ProductController extends Controller
             }
         }
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
                 'event' => 'ProductStored',

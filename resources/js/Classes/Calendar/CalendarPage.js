@@ -19,12 +19,24 @@ class calendarPage{
         this.init();
         this.sources = [];
 
-        this.warrantSource = {
+        this.incomingWarrantSource = {
             url: '/warrant/events',
             method: 'POST',
             extraParams: {
-                custom_param1: 'something',
-                custom_param2: 'somethingelse'
+                isIncoming: 1
+            },
+            failure: function() {
+                alert('there was an error while fetching events!');
+            },
+            color: 'yellow',   // a non-ajax option
+            textColor: 'black' // a non-ajax option
+        };
+
+        this.outcomingWarrantSource = {
+            url: '/warrant/events',
+            method: 'POST',
+            extraParams: {
+                isIncoming: false
             },
             failure: function() {
                 alert('there was an error while fetching events!');
@@ -37,8 +49,7 @@ class calendarPage{
             url: '/clientorder/events',
             method: 'POST',
             extraParams: {
-                custom_param1: 'something',
-                custom_param2: 'somethingelse'
+                isIncoming: 0
             },
             failure: function() {
                 alert('there was an error while fetching events!');
@@ -55,7 +66,9 @@ class calendarPage{
 
     linked(){
         let object = this;
+        object.sources = [];
         object.initCalendar();
+
     }
 
     initCalendar(){
@@ -138,6 +151,7 @@ class calendarPage{
 
                 if(source.internalEventSource.sourceId == object.sources[elem.dataset.source]){
                     source.remove();
+                    object.sources[elem.dataset.source] = null;
                 }
             });
         } else {

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class ClientOrderSeed extends Seeder
 {
@@ -20,6 +21,10 @@ class ClientOrderSeed extends Seeder
 
         for($i = 0; $i < 300; $i++){
 
+            $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
 
             $partner = \App\Models\Partner::inRandomOrder()->first();
             $inpercents = rand(0,1);
@@ -43,6 +48,7 @@ class ClientOrderSeed extends Seeder
             }
 
 
+            $fake_request['do_date'] = $date;
             $fake_request['partner_id'] = $partner->id;
             $fake_request['discount'] = $discount;
             $fake_request['inpercents'] = $inpercents;

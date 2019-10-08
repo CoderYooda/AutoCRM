@@ -59,7 +59,7 @@ class CategoryController extends Controller
 
         //$content = view('category.list', compact('articles', 'categories'))->render();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => 'Категория сохранена',
 //                'container' => $category->getRootType() . '_categories',

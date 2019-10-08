@@ -80,7 +80,7 @@ class DdsarticleController extends Controller
         $Ddsarticle->company_id = Auth::user()->company()->first()->id;
         $Ddsarticle->save();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
                 'event' => 'DdsarticleStored'

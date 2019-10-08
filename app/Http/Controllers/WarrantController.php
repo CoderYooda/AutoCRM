@@ -81,7 +81,7 @@ class WarrantController extends Controller
         $warrant->save();
 
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
                 'event' => 'WarrantStored',
@@ -197,6 +197,9 @@ class WarrantController extends Controller
     public function events(Request $request){
         $warrants = Warrant::owned()
             ->where(function($q) use ($request){
+                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null' && $request['isIncoming'] != ''){
+                    $q->where('isIncoming', $request['isIncoming']);
+                }
                 if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
                     $q->where('do_date',  '>=',  Carbon::parse($request['start']));
                 }

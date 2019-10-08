@@ -70,7 +70,7 @@ class MoneyMoveController extends Controller
         $moneymove->save();
 
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
                 'event' => 'MoneymoveStored',

@@ -25,6 +25,9 @@ class WarrantSeed extends Seeder
             $minute = rand(1, 60);
 
             $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
 
             $warrant = new \App\Http\Controllers\WarrantController();
 

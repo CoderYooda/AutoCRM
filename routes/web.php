@@ -23,7 +23,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     Route::get('/store/test', 'ProductController@test')->name('test');
     Route::post('/store/search', 'ProductController@search')->name('StoreSearch');
-    Route::post('/product/new', 'ProductController@store')->name('StoreProduct');
+    Route::post('/product/store', 'ProductController@store')->name('StoreProduct');
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
     Route::post('/product/dialog/search', 'ProductController@dialogSearch')->name('ProductDialogSearch');
     Route::post('/product/{id}/addtolist', 'ProductController@addToList')->name('ProductAddToList');

@@ -132,7 +132,7 @@ class StoreController extends Controller
         $store->company_id = Auth::user()->company()->first()->id;
         $store->save();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
                 'container' => 'ajax-table-store',

@@ -21,16 +21,14 @@
                                             <i></i>
                                         </label>
                                     </span>
-
-                                    {{--<small class="d-block text-muted">Min Li Chan</small>--}}
                                 </div>
                             </span>
                             <span class="list-item">
                                 <div class="list-body">
-                                    <span href="#" class="_500">Продажи</span>
+                                    <span href="#" class="_500">Приходные ордера</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
                                         <label class="ui-switch primary mt-1">
-                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="warrantSource">
+                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="incomingWarrantSource">
                                             <i></i>
                                         </label>
                                     </span>
@@ -38,10 +36,10 @@
                             </span>
                             <span class="list-item">
                                 <div class="list-body">
-                                    <span href="#" class="_500">Продажи</span>
+                                    <span href="#" class="_500">Расходные ордера</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
                                         <label class="ui-switch primary mt-1">
-                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="warrantSource">
+                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="outcomingWarrantSource">
                                             <i></i>
                                         </label>
                                     </span>

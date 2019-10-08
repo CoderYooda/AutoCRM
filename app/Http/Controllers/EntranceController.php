@@ -125,7 +125,7 @@ class EntranceController extends Controller
         }
         $entrance->save();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
                 'container' => 'ajax-table-entrance',

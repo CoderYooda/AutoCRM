@@ -25,7 +25,7 @@ window.axios.defaults.headers.common['Accept'] = 'application/json';
 
 window.token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+
 
     XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open   = function () {
@@ -34,6 +34,7 @@ if (token) {
         this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         this.setRequestHeader('Accept', 'application/json');
     };
+    //window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 
 } else {
     console.error('CSRF token not found');
