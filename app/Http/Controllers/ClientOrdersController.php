@@ -206,4 +206,26 @@ class ClientOrdersController extends Controller
 
         return $rules;
     }
+
+    public function events(Request $request){
+        $client_orders = ClientOrder::owned()
+            ->where(function($q) use ($request){
+                if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
+                    $q->where('do_date',  '>=',  Carbon::parse($request['start']));
+                }
+                if(isset($request['end']) && $request['end'] != 'null' && $request['end'] != ''){
+                    $q->where('do_date', '<=', Carbon::parse($request['end']));
+                }
+            })->get();
+        $events = [];
+        foreach($client_orders as $order){
+            $events[] = [
+                'title' => $order->itogo,
+                'start' => $order->do_date,
+                'end' => $order->do_date
+            ];
+        }
+
+        return response($events);
+    }
 }

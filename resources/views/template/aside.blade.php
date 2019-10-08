@@ -1,6 +1,6 @@
 <ul class="nav">
     <li>
-        <a href="#">
+        <a href="{{ route('CalendarIndex', ['target' => 'ajax-content']) }}" class="ajax-nav update_url">
             <span class="nav-icon">
                 <i class="fa fa-calendar"></i>
             </span>

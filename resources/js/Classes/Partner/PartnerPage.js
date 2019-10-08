@@ -22,6 +22,7 @@ class partnerPage{
 
         document.addEventListener('PartnerStored', function(e){
             object.reloadPage();
+            console.log(123);
         });
     }
 

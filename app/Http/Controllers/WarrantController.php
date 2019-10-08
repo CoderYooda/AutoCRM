@@ -194,4 +194,30 @@ class WarrantController extends Controller
         ], 200);
     }
 
+    public function events(Request $request){
+        $warrants = Warrant::owned()
+            ->where(function($q) use ($request){
+                if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
+                    $q->where('do_date',  '>=',  Carbon::parse($request['start']));
+                }
+                if(isset($request['end']) && $request['end'] != 'null' && $request['end'] != ''){
+                    $q->where('do_date', '<=', Carbon::parse($request['end']));
+                }
+            })->get();
+        $events = [];
+
+        foreach($warrants as $warrant){
+            $warrant->isIncoming ? $title = 'Приходный ордер' : $title = 'Расходный ордер';
+            $warrant->isIncoming ? $color = '#22b66e' : $color = '#53a6fa';
+            $events[] = [
+                'title' => $title . ' №' . $warrant->id,
+                'start' => $warrant->do_date,
+                'end' => $warrant->do_date,
+                'color' => $color
+            ];
+        }
+
+        return response($events);
+    }
+
 }

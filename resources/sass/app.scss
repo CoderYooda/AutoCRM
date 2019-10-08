@@ -24,6 +24,12 @@
 @import '~simplebar/dist/simplebar.min.css';
 
 
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+@import '~@fullcalendar/timegrid/main.css';
+@import '~@fullcalendar/list/main.css';
+
+
 .text-theme,
 .text-hover-theme a:hover,
 .text-hover-theme .active > a {
@@ -332,3 +338,46 @@ input:-internal-autofill-selected {
     border-bottom-color: #22b66e!important;
 }
 
+.fc-toolbar {
+    background-color: #ffffff!important;
+    color: #212529!important;
+    border-radius: 0!important;
+    margin: 0 !important;
+    padding: 6px 0;
+}
+.fc-toolbar {
+    border-radius: 0!important;
+    padding: 0.5rem 1rem!important;
+}
+.fc-toolbar button {
+    color: #212529!important;
+    background: #fff!important;
+    border: 1px solid rgba(120, 130, 140, 0.2)!important;
+    box-shadow: none!important;
+    margin-top: 0px!important;
+
+
+    padding: 0.25rem 0.5rem!important;
+    line-height: 1.5!important;
+    border-radius: 0.2rem!important;
+    font-size: 0.8rem!important;
+    font-weight: 400!important;
+    outline: 0 !important;
+}
+
+.fc-toolbar button:not([disabled]):hover, .fc-toolbar button:not([disabled]):focus, .fc-toolbar button:not([disabled]).fc-button-active {
+    color: inherit;
+    box-shadow: inset 0 -10rem 0px rgba(158, 158, 158, 0.2)!important;
+}
+.fc-toolbar h2 {
+    padding-top: 0px!important;
+    display: inline-block!important;
+}
+hr.fc-divider {
+    padding: 0!important;
+    border-width: 1px 0 0 0!important;
+}
+
+.fc-event {
+    border-radius: 2px!important;
+}

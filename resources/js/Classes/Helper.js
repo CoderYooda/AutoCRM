@@ -21,6 +21,7 @@ import reportPage from "./Report/ReportPage";
 import employeePage from "./Employee/EmployeePage";
 import cashPage from "./Cash/CashPage";
 import userPage from "./User/UserPage";
+import calendarPage from "./Calendar/CalendarPage";
 
 
 const classes = {
@@ -49,7 +50,8 @@ const pages = {
     servicesPage,
     reportPage,
     employeePage,
-    userPage
+    userPage,
+    calendarPage
 };
 
 class Helper{

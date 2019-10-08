@@ -43,6 +43,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
 
     #Заказы клиентов
+    Route::post('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
     Route::post('/clientorder/store', 'ClientOrdersController@store')->name('StoreClientOrder');// Строгое название
     Route::post('/clientorder/{id}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
     Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
@@ -58,6 +59,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 
     #Кассовые операции
+    Route::post('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
     Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
     Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
 
@@ -94,6 +96,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
+
+    #Календарь
+    Route::get('/calendar', 'CalendarController@index')->name('CalendarIndex');
 
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
