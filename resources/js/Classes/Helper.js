@@ -89,7 +89,9 @@ class Helper{
             } else {
                 console.log('Класс ' + className + ' Linked()')
                 // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
-                try {window[className].linked();} catch (err) {}
+                try {window[className].linked();} catch (err) {
+                    console.warn(err);
+                }
             }
         } else {
             window.helper.log('Ошибка в ' + className);

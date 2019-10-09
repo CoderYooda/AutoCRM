@@ -16,7 +16,7 @@
                                 <div class="list-body">
                                     <span href="#" class="_500 pt-2">Заказы клиентов</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label class="ui-switch primary mt-1">
+                                        <label class="ui-switch orange mt-1">
                                             <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="clientOrderSource">
                                             <i></i>
                                         </label>
@@ -27,7 +27,7 @@
                                 <div class="list-body">
                                     <span href="#" class="_500">Приходные ордера</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label class="ui-switch primary mt-1">
+                                        <label class="ui-switch success mt-1">
                                             <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="incomingWarrantSource">
                                             <i></i>
                                         </label>
@@ -38,7 +38,7 @@
                                 <div class="list-body">
                                     <span href="#" class="_500">Расходные ордера</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label class="ui-switch primary mt-1">
+                                        <label class="ui-switch light-blue mt-1">
                                             <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="outcomingWarrantSource">
                                             <i></i>
                                         </label>
@@ -47,10 +47,10 @@
                             </span>
                             <span class="list-item">
                                 <div class="list-body">
-                                    <span href="#" class="_500">Продажи</span>
+                                    <span href="#" class="_500">Поступления товаров</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label class="ui-switch primary mt-1">
-                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="warrantSource">
+                                        <label class="ui-switch cyan mt-1">
+                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="entranceSource">
                                             <i></i>
                                         </label>
                                     </span>
@@ -60,19 +60,8 @@
                                 <div class="list-body">
                                     <span href="#" class="_500">Продажи</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label class="ui-switch primary mt-1">
-                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="warrantSource">
-                                            <i></i>
-                                        </label>
-                                    </span>
-                                </div>
-                            </span>
-                            <span class="list-item">
-                                <div class="list-body">
-                                    <span href="#" class="_500">Продажи</span>
-                                    <span class="float-right ml-2" style="line-height: 0;">
-                                        <label class="ui-switch primary mt-1">
-                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="warrantSource">
+                                        <label class="ui-switch green mt-1">
+                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="shipmentSource">
                                             <i></i>
                                         </label>
                                     </span>

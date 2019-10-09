@@ -41,7 +41,7 @@ class MoneyMoveController extends Controller
         $validation = Validator::make($request->all(), self::validateRules($request));
         if($validation->fails()){
             $this->status = 422;
-            if($request->ajax()){
+            if($request->expectsJson()){
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }

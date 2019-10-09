@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Entrance extends Model
 {
@@ -34,6 +35,10 @@ class Entrance extends Model
        return $this->created_at->format('d.m.Y (H:i)');
     }
 
+    public static function owned(){
+        $company_id = Auth::user()->company()->first()->id;
+        return self::where('company_id', $company_id);
+    }
 
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();

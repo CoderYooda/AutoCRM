@@ -125,6 +125,11 @@ class EntranceController extends Controller
         }
         $entrance->save();
 
+        if($request['do_date'] != NULL){
+            $entrance->created_at = $request['do_date'];
+            $entrance->save();
+        }
+
         if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
@@ -177,7 +182,33 @@ class EntranceController extends Controller
             'products.*.count' => ['integer', 'max:9999'],
             'products.*.price' => ['integer', 'max:999999'],
         ];
-
         return $rules;
+    }
+
+    public function events(Request $request){
+        $entrances = Entrance::owned()
+            ->where(function($q) use ($request){
+                if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
+                    $q->where('created_at',  '>=',  Carbon::parse($request['start']));
+                }
+                if(isset($request['end']) && $request['end'] != 'null' && $request['end'] != ''){
+                    $q->where('created_at', '<=', Carbon::parse($request['end']));
+                }
+            })->get();
+        $events = [];
+        foreach($entrances as $entrance){
+            $events[] = [
+                'title' => 'Поступление #' . $entrance->id,
+                'start' => $entrance->created_at,
+                'end' => $entrance->created_at,
+                'color' => '#00bcd4',
+                'extendedProps' => [
+                    'modal' => 'entranceDialog',
+                    'alias' => 'entrance_id',
+                    'id' => $entrance->id
+                ]
+            ];
+        }
+        return response($events);
     }
 }

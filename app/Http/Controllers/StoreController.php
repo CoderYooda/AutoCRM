@@ -95,6 +95,13 @@ class StoreController extends Controller
         return view('provider_orders.index', compact('request'));
     }
 
+    public static function adjustmentTab($request)
+    {
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustments'){
+            return view('adjustments.elements.list_container', compact('request'));
+        }
+        return view('adjustments.index', compact('request'));
+    }
 
     public static function updateArticlePivot($store_id, $article_id, $param, $value)
     {

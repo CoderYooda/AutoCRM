@@ -264,7 +264,6 @@ class ProductController extends Controller
         return $articles;
     }
 
-
     private static function validateRules($request)
     {
         $rules = [
@@ -277,16 +276,12 @@ class ProductController extends Controller
         return $rules;
     }
 
-
-
     public function search(Request $request){ //DEPRECATED
 
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
-
-
         $content = view('store.elements.table_container', compact('categories', 'cat_info', 'request'))->render();
         return response()->json([
             'html' => $content,

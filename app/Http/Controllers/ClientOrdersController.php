@@ -67,7 +67,9 @@ class ClientOrdersController extends Controller
         }
 
 
-        $request['do_date'] = Carbon::now();
+        if($request['do_date'] == null){
+            $request['do_date'] = Carbon::now();
+        }
 
         if($validation->fails()){
             $this->status = 422;
@@ -222,7 +224,13 @@ class ClientOrdersController extends Controller
             $events[] = [
                 'title' => 'Заказ клиента #' . $order->id,
                 'start' => $order->do_date,
-                'end' => $order->do_date
+                'end' => $order->do_date,
+                'color' => '#ff9800',
+                'extendedProps' => [
+                    'modal' => 'clientorderDialog',
+                    'alias' => 'client_order_id',
+                    'id' => $order->id
+                ]
             ];
         }
 

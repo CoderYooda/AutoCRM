@@ -29,6 +29,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/product/{id}/addtolist', 'ProductController@addToList')->name('ProductAddToList');
 
     #Поступления товаров
+    Route::post('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
     Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
 
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
 
     #Продажи
+    Route::post('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
     Route::post('/shipment/store', 'ShipmentsController@store')->name('StoreShipment');// Строгое название
     Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');

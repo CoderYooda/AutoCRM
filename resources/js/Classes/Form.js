@@ -37,7 +37,7 @@ class AxForm{
             }
             callback();
 
-            rebuildLinks();
+            //rebuildLinks();
 
         }).catch(function (error) {
             helper.removeElementsByClass('nv-helper');

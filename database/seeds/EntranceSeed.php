@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class EntranceSeed extends Seeder
 {
@@ -30,18 +31,22 @@ class EntranceSeed extends Seeder
                 $nds_included = false;
             }
 
+            $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
+
             $fake_request = new \Illuminate\Http\Request();
 
             $products = [];
-            $products_count = rand(1, 10);
-            for($e = 0; $e < $products_count; $e++){
-                $product = \App\Models\Article::inRandomOrder()->first();
+            $products_bd = \App\Models\Article::inRandomOrder()->limit(rand(1, 6))->get();
+
+            foreach($products_bd as $product){
                 $products[$product->id]['id'] = $product->id;
                 $products[$product->id]['count'] = rand(1, 22);
                 $products[$product->id]['price'] = rand(1, 10000);
             }
-
-
+            $fake_request['do_date'] = $date;
             $fake_request['partner_id'] = $partner->id;
             $fake_request['store_id'] = $store->id;
             $fake_request['comment'] = $comment;

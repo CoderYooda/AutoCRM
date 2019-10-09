@@ -69,11 +69,13 @@ class ShipmentsController extends Controller
         }
 
 
-        $request['do_date'] = Carbon::now();
+        if($request['do_date'] == null){
+            $request['do_date'] = Carbon::now();
+        }
 
         if($validation->fails()){
             $this->status = 422;
-            if($request->ajax()){
+            if($request->expectsJson()){
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
@@ -207,5 +209,27 @@ class ShipmentsController extends Controller
         ];
 
         return $rules;
+    }
+    public function events(Request $request){
+        $client_orders = Shipment::owned()
+            ->where(function($q) use ($request){
+                if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
+                    $q->where('do_date',  '>=',  Carbon::parse($request['start']));
+                }
+                if(isset($request['end']) && $request['end'] != 'null' && $request['end'] != ''){
+                    $q->where('do_date', '<=', Carbon::parse($request['end']));
+                }
+            })->get();
+        $events = [];
+        foreach($client_orders as $order){
+            $events[] = [
+                'title' => 'Продажа №' . $order->id,
+                'start' => $order->do_date,
+                'end' => $order->do_date,
+                'color' =>'#4caf50',
+            ];
+        }
+
+        return response($events);
     }
 }

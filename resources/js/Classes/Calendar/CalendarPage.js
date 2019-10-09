@@ -25,11 +25,8 @@ class calendarPage{
             extraParams: {
                 isIncoming: 1
             },
-            failure: function() {
-                alert('there was an error while fetching events!');
-            },
-            color: 'yellow',   // a non-ajax option
-            textColor: 'black' // a non-ajax option
+            failure: this.sourceAddFailure(),
+            textColor: 'white'
         };
 
         this.outcomingWarrantSource = {
@@ -38,11 +35,8 @@ class calendarPage{
             extraParams: {
                 isIncoming: false
             },
-            failure: function() {
-                alert('there was an error while fetching events!');
-            },
-            color: 'yellow',   // a non-ajax option
-            textColor: 'black' // a non-ajax option
+            failure: this.sourceAddFailure(),
+            textColor: 'white'
         };
 
         this.clientOrderSource = {
@@ -51,12 +45,33 @@ class calendarPage{
             extraParams: {
                 isIncoming: 0
             },
-            failure: function() {
-                alert('there was an error while fetching events!');
+            failure: this.sourceAddFailure(),
+            textColor: 'white'
+        };
+
+        this.entranceSource = {
+            url: '/entrance/events',
+            method: 'POST',
+            extraParams: {
+                isIncoming: 0
             },
-            color: 'yellow',   // a non-ajax option
-            textColor: 'black' // a non-ajax option
+            failure: this.sourceAddFailure(),
+            textColor: 'white'
+        };
+
+        this.shipmentSource = {
+            url: '/shipment/events',
+            method: 'POST',
+            extraParams: {
+                isIncoming: 0
+            },
+            failure: this.sourceAddFailure(),
+            textColor: 'white'
         }
+    }
+
+    sourceAddFailure(){
+        console.log('there was an error while fetching events!');
     }
 
     init(){
@@ -68,7 +83,6 @@ class calendarPage{
         let object = this;
         object.sources = [];
         object.initCalendar();
-
     }
 
     initCalendar(){
@@ -81,7 +95,7 @@ class calendarPage{
             defaultView: 'dayGridMonth',
             navLinks: true,
             droppable: true,
-            editable: true,
+            editable: false,
             eventLimit: true,
             // customButtons: {
             //     myCustomButton: {
@@ -100,9 +114,15 @@ class calendarPage{
             },
             height: "parent",
             eventClick: function(info) {
-                alert('Event: ' + info.event.title);
-                alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                alert('View: ' + info.view.type);
+                try {
+                    openDialog(info.event.extendedProps.modal, '&' + info.event.extendedProps.alias + '=' + info.event.extendedProps.id);
+                } catch (e) {
+                    console.warn('Ошибка открытия окна');
+                }
+
+                // alert('Event: ' + info.event.title);
+                // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                // alert('View: ' + info.view.type);
 
                 // change the border color just for fun
                 info.el.style.borderColor = 'red';
@@ -143,12 +163,9 @@ class calendarPage{
     toggleSource(elem){
 
         let object = this;
-
-
         if(!elem.checked){
             let eventSources = object.calendar.getEventSources();
             [].forEach.call(eventSources, function(source){
-
                 if(source.internalEventSource.sourceId == object.sources[elem.dataset.source]){
                     source.remove();
                     object.sources[elem.dataset.source] = null;
@@ -161,57 +178,6 @@ class calendarPage{
                 object.sources[elem.dataset.source] = object.calendar.addEventSource(object[elem.dataset.source]).internalEventSource.sourceId;
             }
         }
-
-
-
-        // if(object.sources[elem.dataset.source] !== null){
-        //     if(!elem.checked){
-        //         object.calendar.getEventSources()[object.sources[elem.dataset.source]].remove();
-        //     }
-        // } else {
-        //     if(elem.checked){
-        //         object.sources[elem.dataset.source] = object.calendar.addEventSource(object[elem.dataset.source]).internalEventSource.sourceDefId;
-        //     }
-        // }
-
-
-
-
-
     }
-
-    loadEvents(start, end, timezone, callback){
-
-        let object = this;
-        if (isXHRloading) { return; } window.isXHRloading = true;
-        window.axios({
-            method: 'get',
-            url: '/clientorder/events?start=' + start.start.toDateString() + '&end=' + start.end.toDateString(),
-        }).then(function (resp) {
-            // allEventsConf.forEach(function(1){
-            //     cal.fullCalendar("renderEvent", {
-            //         id: conf.id,
-            //         title: conf.title,
-            //         start: conf.startDate.format("YYYY-MM-DD"),
-            //         end: conf.endDate.format("YYYY-MM-DD"),
-            //         url: conf.link
-            //     }, true);
-            // });
-            callback(resp.data);
-            //object.calendar.addEventSource(resp.data);
-            // object.calendar.addEventSource([
-            //         {
-            //             title: "16200.00",
-            //             start: "2019-10-08 09:23:22"
-            //         }
-            // ]);
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-    }
-
-
 }
 export default calendarPage;

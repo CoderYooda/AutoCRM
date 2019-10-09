@@ -18,7 +18,6 @@ class ClientOrderSeed extends Seeder
         $this->command->getOutput()->progressStart(300);
         $clientOrdersController = new \App\Http\Controllers\ClientOrdersController();
 
-
         for($i = 0; $i < 300; $i++){
 
             $date = Carbon::now()->addDays(rand(-365, 0));
@@ -46,8 +45,6 @@ class ClientOrderSeed extends Seeder
                 $products[$product->id]['count'] = rand(1, 22);
                 $products[$product->id]['price'] = rand(1, 10000);
             }
-
-
             $fake_request['do_date'] = $date;
             $fake_request['partner_id'] = $partner->id;
             $fake_request['discount'] = $discount;
