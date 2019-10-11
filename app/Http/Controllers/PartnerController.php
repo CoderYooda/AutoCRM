@@ -20,7 +20,7 @@ class PartnerController extends Controller
         if($request->expectsJson() && $request['search'] === NULL){
             $content = view('partner.index', compact('request'))->render();
             return response()->json([
-                'target' => $target,
+                'target' => 'ajax-content',
                 'page' => 'Контрагенты',
                 'html' => $content
             ]);

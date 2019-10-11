@@ -11,7 +11,7 @@ use Auth;
 
 class ProviderOrdersController extends Controller
 {
-    public static function providerOrderDialog($request)
+    public static function providerorderDialog($request)
     {
         $tag = 'providerorderDialog';
 
@@ -70,7 +70,7 @@ class ProviderOrdersController extends Controller
 
         if($validation->fails()){
             $this->status = 422;
-            if($request->ajax()){
+            if($request->expectsJson()){
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }

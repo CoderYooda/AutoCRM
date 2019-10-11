@@ -10,6 +10,7 @@ class SelectProductDialog{
         this.results_obj = dialog.querySelector("#search_product_results");
         this.refer = dialog.querySelector("#refer").value;
         this.searchInit();
+        this.markAsAdded();
     }
 
     finitaLaComedia(){
@@ -28,6 +29,25 @@ class SelectProductDialog{
         this.search_obj.addEventListener("paste", searchFn);
         this.search_obj.addEventListener("delete", searchFn);
         document.addEventListener("ProductStored", searchFn);
+    }
+
+    markAsAdded(){
+        let items_in_refer = [];
+
+        [].forEach.call(window[this.refer].items, function(elem){
+            items_in_refer.push(elem.id);
+        });
+
+        let items_in_selector = this.results_obj.querySelectorAll('.list-item');
+
+        [].forEach.call(items_in_selector, function(elem){
+
+            let button = elem.querySelector('.select_btn');
+            if(items_in_refer.includes(parseInt(button.dataset.id))){
+                button.classList.add('already_selected');
+            }
+        });
+        //console.log(items_in_refer);
     }
 
     search(){
@@ -50,6 +70,7 @@ class SelectProductDialog{
             data: data,
         }).then(function (resp) {
             object.results_obj.innerHTML = resp.data.html;
+            object.markAsAdded();
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

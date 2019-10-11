@@ -2,9 +2,9 @@
 {{--    @if(isset($categories['parent']))--}}
 {{--    @endif--}}
     <span class="text-md compressed" id="category_header">
-        @if($request['search'] === null)
-            @if(!$categories['parent']->locked)
-                @if(isset($cat_info) && $cat_info != NULL)
+        @if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
+            @if(isset($cat_info) && $cat_info != NULL)
+                @if($categories['parent']->id != $cat_info['root_id'])
                     <a href="{{ route($cat_info['route'], array_merge($cat_info['params'], ['category_id' => $categories['parent']->category_id])) }}" class="ajax-nav"><i class="fa fa-chevron-left"></i></a>
                 @endif
             @endif
@@ -18,7 +18,7 @@
     <div class="sidenav mt-2">
         <nav class="nav-border b-primary" data-nav>
             <ul class="nav" id="category_list_aside" >
-                @if($request['search'] === null)
+                @if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
                     @foreach($categories['stack'] as $category)
                         @include('category.aside-element')
                     @endforeach

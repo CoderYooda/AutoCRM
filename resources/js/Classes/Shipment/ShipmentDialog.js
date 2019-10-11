@@ -32,7 +32,6 @@ class shipmentDialog{
         } else {
             event = 'ShipmentStored';
         }
-        console.log(event);
         document.addEventListener(event, function(e){
             object.finitaLaComedia();
         });
@@ -113,6 +112,13 @@ class shipmentDialog{
         let object = this;
         let product_list = this.root_dialog.querySelector('.product_list');
         this.items.push(elem);
+
+        try{
+            window.selectProductDialog.markAsAdded();
+        }catch (e) {
+            console.log(e);
+        }
+
         let tbody = document.createElement('tbody');
         tbody.innerHTML = elem.html;
         product_list.prepend(tbody.firstChild);

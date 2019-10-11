@@ -31,20 +31,20 @@ class ClientOrdersController extends Controller
     public function delete($id)
     {
         $client_order = ClientOrder::where('id', $id)->first();
-
         $client_order->delete();
         $this->status = 200;
-        $this->message = 'Продажа удален';
-
+        $type = 'succes';
+        $this->message = 'Продажа удалена';
         return response()->json([
             'id' => $client_order->id,
+            'type' => $type,
             'message' => $this->message
         ], 200);
     }
 
     public function store(Request $request){
 
-        $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
+
 
 //        if($entrance->locked){
 //            return response()->json([
@@ -53,6 +53,14 @@ class ClientOrdersController extends Controller
 //        }
 
         $validation = Validator::make($request->all(), self::validateRules($request));
+        if($validation->fails()){
+            $this->status = 422;
+            if($request->expectsJson()){
+                return response()->json(['messages' => $validation->errors()], $this->status);
+            }
+        }
+
+        $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0){$request['inpercents'] = false;} else {
             $request['inpercents'] = true;
@@ -71,12 +79,7 @@ class ClientOrdersController extends Controller
             $request['do_date'] = Carbon::now();
         }
 
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
+
 
         if($client_order->exists){
             $this->message = 'Продажа обновлена';

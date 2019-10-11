@@ -9,6 +9,7 @@
 @php $cat_info = [] @endphp
 @php $cat_info['route'] = 'PartnerIndex' @endphp
 @php $cat_info['params'] = ['target' => 'ajax-tab-content'] @endphp
+@php $cat_info['root_id'] = 3 @endphp
 
 <div id="partner_index_page" class="d-flex flex">
     <div id="ajax-tab-content" class="d-flex flex">

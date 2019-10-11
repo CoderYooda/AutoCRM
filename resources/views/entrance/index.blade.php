@@ -21,7 +21,7 @@
                 <button onclick="openDialog('entranceDialog')" class="btn btn-sm white mb-0">Новое поступление</button>
             </span>
         </div>
-        <div id="ajax-table-entrance" class="content-main d-flex flex-column flex">
+        <div id="ajax-table-entrance" class="content-main d-flex flex-column flex white">
             @include('entrance.elements.list_container')
         </div>
     </div>

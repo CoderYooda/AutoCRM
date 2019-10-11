@@ -60,12 +60,8 @@ class clientorderDialog{
             }).then(function (resp) {
                 [].forEach.call(resp.data.products, function(elem){
                     object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
-
                     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-
-                    console.log(item);
                     let inputs = item.getElementsByTagName('input');
-
                     [].forEach.call(inputs, function(elem){
                         var fn = window.helper.debounce(function(e) {
                             object.recalculate(e);
@@ -114,6 +110,13 @@ class clientorderDialog{
         let object = this;
         let product_list = this.root_dialog.querySelector('.product_list');
         this.items.push(elem);
+
+        try{
+            window.selectProductDialog.markAsAdded();
+        }catch (e) {
+            console.log(e);
+        }
+
         let tbody = document.createElement('tbody');
         tbody.innerHTML = elem.html;
         product_list.prepend(tbody.firstChild);

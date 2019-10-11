@@ -17,7 +17,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
     Route::post('/categories/new', 'CategoryController@store')->name('StoreCategory');
-    Route::post('/categories/{id}/delete', 'CategoryController@remove')->name('DeleteCategory');
+    Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
 
     #Продукты
 
@@ -101,6 +101,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Календарь
     Route::get('/calendar', 'CalendarController@index')->name('CalendarIndex');
+
+    #Планировщик
+    Route::get('/schedule', 'ScheduleController@index')->name('ScheduleIndex');
 
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название

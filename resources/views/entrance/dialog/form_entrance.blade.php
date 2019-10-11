@@ -119,28 +119,29 @@
                         </label>
                     </div>
                 </div>
-
-                <table class="table table-sm table-hover b-t mh40-dialog d-block">
-                    <thead class="text-muted">
-                    <tr>
-                        <th width="30%">Наименование</th>
-                        <th width="10%">Артикул</th>
-                        <th width="10%" style="min-width: 60px;">Кол-во</th>
-                        <th width="10%" style="min-width: 100px;">Цена</th>
-                        <th width="10%" style="min-width: 70px;">НДС, %</th>
-                        <th width="10%" style="min-width: 100px;">НДС</th>
-                        <th width="10%" style="min-width: 100px;">Всего</th>
-                        <th width="10%"></th>
-                    </tr>
-                    </thead>
-                    <tbody class="product_list">
-                    @if(isset($entrance))
-                        @foreach($entrance->articles()->get() as $product)
-                            @include('entrance.dialog.product_element')
-                        @endforeach
-                    @endif
-                    </tbody>
-                </table>
+                <div data-simplebar style="max-height: 300px;">
+                    <table class="table table-sm table-hover b-t mh40-dialog d-block">
+                        <thead class="text-muted">
+                        <tr>
+                            <th width="30%">Наименование</th>
+                            <th width="10%">Артикул</th>
+                            <th width="10%" style="min-width: 60px;">Кол-во</th>
+                            <th width="10%" style="min-width: 100px;">Цена</th>
+                            <th width="10%" style="min-width: 70px;">НДС, %</th>
+                            <th width="10%" style="min-width: 100px;">НДС</th>
+                            <th width="10%" style="min-width: 100px;">Всего</th>
+                            <th width="10%"></th>
+                        </tr>
+                        </thead>
+                        <tbody class="product_list">
+                        @if(isset($entrance))
+                            @foreach($entrance->articles()->get() as $product)
+                                @include('entrance.dialog.product_element')
+                            @endforeach
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
                 <div class="input-group">
                     <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Добавить товар</button>
                 </div>

@@ -21,7 +21,7 @@
                 <button onclick="openDialog('clientorderDialog')" class="btn btn-sm white mb-0">Новый заказ</button>
             </span>
         </div>
-        <div id="ajax-table-client_orders" class="content-main d-flex flex-column flex">
+        <div id="ajax-table-client_orders" class="content-main d-flex flex-column flex white">
             @include('client_orders.elements.list_container')
         </div>
     </div>

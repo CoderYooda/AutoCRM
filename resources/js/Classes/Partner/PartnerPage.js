@@ -87,7 +87,7 @@ class partnerPage{
                 let searchFn = window.helper.debounce(function(e) {
                     object.search = search.value;
                     object.page = 1;
-                    object.searchFn();
+                    object.reload();
                 }, 400);
                 search.addEventListener("keydown", searchFn);
                 search.addEventListener("paste", searchFn);
@@ -164,6 +164,45 @@ class partnerPage{
         });
         // console.log(111);
         //goto('/partner/search?view_as=json&search=' + string);
+    }
+
+    reload(){
+        let object = this;
+        object.prepareParams();
+        if (isXHRloading) { return; } window.isXHRloading = true;
+        window.axios({
+            method: 'get',
+            url: object.getUrlString(),
+        }).then(function (resp) {
+            var results_container = document.getElementById(resp.data.target);
+            results_container.innerHTML = resp.data.html;
+            window.helper.insertParamUrl('search', object.search);
+            window.helper.insertParamUrl('category_id', object.category_id);
+            window.helper.insertParamUrl('page', object.page);
+
+            if(object.search.length > 0){
+                let root = document.getElementById(object.root_id)
+                let category_header = root.querySelector("#category_header");
+                let category_list = root.querySelector("#category_list_aside");
+                category_header.innerHTML = 'Поиск';
+
+                let list =
+                    '<li class="d-flex flex category-aside">'+
+                    '<a href="partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
+                    '<span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>'+
+                    '</a>'+
+                    '</li>';
+                category_list.innerHTML = list;
+            }
+
+
+            window.rebuildLinks();
+            object.load();
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 }
 export default partnerPage;

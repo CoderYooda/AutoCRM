@@ -21,7 +21,7 @@
                 <button onclick="openDialog('shipmentDialog')" class="btn btn-sm white mb-0">Новая продажа</button>
             </span>
         </div>
-        <div id="ajax-table-shipments" class="content-main d-flex flex-column flex">
+        <div id="ajax-table-shipments" class="content-main d-flex flex-column flex white">
             @include('shipments.elements.list_container')
         </div>
     </div>

@@ -1,7 +1,7 @@
 
 @if($products->count() > 0)
     @foreach($products as $product)
-        <div class="list-item " data-id="item-5">
+        <div class="list-item " data-id="{{ $product->id }}">
 {{--            <span class="w-40 avatar circle blue-grey">--}}
 {{--                --}}{{--<i class="on b-white avatar-right"></i>--}}
 {{--                --}}{{--                {{ mb_substr($partner->fio, 0, 1) }}--}}
@@ -19,8 +19,9 @@
                 </div>
             </div>
             @if($request['refer'] != null)
-                <button onclick="{{$request['refer']}}.addProduct({{ $product->id }})" class="btn btn-icon white float-right">
-                    <i class="fa fa-plus"></i>
+                <button data-id="{{ $product->id }}" onclick="{{$request['refer']}}.addProduct({{ $product->id }});" class="btn btn-icon white float-right select_btn">
+                    <i class="not_selected fa fa-plus"></i>
+                    <i class="selected fa fa-check"></i>
                 </button>
             @else
 

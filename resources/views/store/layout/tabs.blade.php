@@ -18,13 +18,13 @@
                                     <span class="nav-text">Склад</span>
                                 </a>
                             </li>
-                            <li data-tab="provider"  class="@if($request['active_tab'] == 'provider') active @endif tab">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'provider', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
-                                    <span class="nav-badge">
-				                  	</span>
-                                    <span class="nav-text">У поставщиков</span>
-                                </a>
-                            </li>
+                            {{--<li data-tab="provider"  class="@if($request['active_tab'] == 'provider') active @endif tab">--}}
+                                {{--<a href="{{ route('StoreIndex', ['active_tab' => 'provider', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">--}}
+                                    {{--<span class="nav-badge">--}}
+				                  	{{--</span>--}}
+                                    {{--<span class="nav-text">У поставщиков</span>--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
                             <li id="income-tab" data-tab="entrance" class="@if($request['active_tab'] == 'entrance') active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Поступления</span>
@@ -40,11 +40,11 @@
                                     <span class="nav-text">Заказы клиентов</span>
                                 </a>
                             </li>
-                            <li id="provider_orders-tab" data-tab="provider_orders" class="@if($request['active_tab'] == 'provider_orders') active @endif tab">
-                                <a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
-                                    <span class="nav-text">Заказы поставщикам</span>
-                                </a>
-                            </li>
+                            {{--<li id="provider_orders-tab" data-tab="provider_orders" class="@if($request['active_tab'] == 'provider_orders') active @endif tab">--}}
+                                {{--<a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">--}}
+                                    {{--<span class="nav-text">Заказы поставщикам</span>--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
                             <li id="adjustment-tab" data-tab="adjustment" class="@if($request['active_tab'] == 'adjustment') active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}" class="ajax-nav update_url">
                                     <span class="nav-text">Корректировка</span>

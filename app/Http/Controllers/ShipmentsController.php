@@ -146,7 +146,7 @@ class ShipmentsController extends Controller
 
         $shipment->save();
 
-        if($request->ajax()){
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
                 'event' => 'ShipmentStored',
@@ -227,6 +227,11 @@ class ShipmentsController extends Controller
                 'start' => $order->do_date,
                 'end' => $order->do_date,
                 'color' =>'#4caf50',
+                'extendedProps' => [
+                    'modal' => 'shipmentDialog',
+                    'alias' => 'shipment_id',
+                    'id' => $order->id
+                ]
             ];
         }
 

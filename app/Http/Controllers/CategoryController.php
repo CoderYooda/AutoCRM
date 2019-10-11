@@ -71,16 +71,17 @@ class CategoryController extends Controller
         }
     }
 
-    public function remove($id)
+    public function delete($id)
     {
         $category = Category::where('id', $id)->first();
-
+        $type = 'success';
         if($category->childs()->count() > 0 ||
             $category->articles()->count() > 0 ||
             $category->ddsarticles()->count() > 0 ||
             $category->partners()->count() > 0
         ){
-            $this->status = 403;
+            $this->status = 200;
+            $type = 'error';
             $this->message = 'Удаляемая категория не пуста, удаление невозможно.';
         } else {
             $category->delete();
@@ -88,7 +89,11 @@ class CategoryController extends Controller
             $this->message = 'Категория удалена';
         }
 
-        return response()->json(['category_id' => $category->id, 'message' => $this->message], $this->status);
+        return response()->json([
+            'id' => $category->id,
+            'type' => $type,
+            'message' => $this->message
+        ], $this->status);
     }
 
     public static function addCategoryDialog($request)

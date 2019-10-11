@@ -216,7 +216,12 @@ class WarrantController extends Controller
                 'title' => $title . ' №' . $warrant->id,
                 'start' => $warrant->do_date,
                 'end' => $warrant->do_date,
-                'color' => $color
+                'color' => $color,
+                'extendedProps' => [
+                    'modal' => 'warrantDialog',
+                    'alias' => 'warrant_id',
+                    'id' => $warrant->id
+                ]
             ];
         }
 

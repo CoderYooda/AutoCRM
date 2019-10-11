@@ -32,11 +32,11 @@
         </a>
     </li>
     <li class="">
-        <a href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-content']) }}" class="ajax-nav update_url">
+        <a onclick="openDialog('clientorderDialog')">
             <span class="nav-icon">
                 <i class="fa fa-clipboard"></i>
 			</span>
-            <span class="nav-text">Заказы</span>
+            <span class="nav-text">Заказ</span>
         </a>
     </li>
     <li class="">

@@ -1,13 +1,16 @@
 
 import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timegridPlugin from '@fullcalendar/timegrid';
-import timelinePlugin from '@fullcalendar/timeline';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import timegridPlugin from '@fullcalendar/timegrid';
+// import timelinePlugin from '@fullcalendar/timeline';
 import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
+// import listPlugin from '@fullcalendar/list';
 import ruLocale from '@fullcalendar/core/locales/ru';
 
-class calendarPage{
+// import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+
+class schedulePage{
 
     constructor(){
         console.log('страница Календаря инициализировано');
@@ -90,25 +93,28 @@ class calendarPage{
         var calendarEl = document.getElementById('dates');
 
         this.calendar = new Calendar(calendarEl, {
-            plugins: [ interactionPlugin, dayGridPlugin, listPlugin, timegridPlugin, timelinePlugin ],
+            plugins: [ interactionPlugin, resourceTimelinePlugin ],
             locale: ruLocale,
-            defaultView: 'dayGridMonth',
-            navLinks: true,
-            droppable: true,
-            editable: false,
-            selectable: true,
-            eventLimit: true,
-            // dateClick: function(info) {
-            //     console.log('Clicked on: ' + info.dateStr);
-            //     console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-            //     console.log('Current view: ' + info.view.type);
-            //     // change the day's background color just for fun
-            //     info.dayEl.style.backgroundColor = 'red';
-            // },
+            schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+            defaultView: 'resourceTimeline',
+            slotWidth: 60,
+            resources: [
+                {id: 'room101', name: 'Room 101'},
+                {id: 'room102', name: 'Room 102'},
+                {id: 'room201', name: 'Room 201'},
+                {id: 'room301', name: 'Room 301'},
+                {id: 'room401', name: 'Room 401'},
+                {id: 'room707', name: 'Room 707'}
+            ],
+            dateClick: function(info) {
+                console.log(info.resource.id);
+                // change the day's background color just for fun
+                //info.dayEl.style.backgroundColor = 'red';
+            },
             header: {
                 left:   'prev, today, next',
                 center: 'title',
-                right:  'Year, dayGridMonth, timeGridWeek, timeGridDay, listDay, ' //'month,agendaWeek,agendaDay,list'
+                right:  'resourceTimelineWeek, resourceTimelineYear, resourceTimelineFourDays, timeGridDay, listDay, ' //'month,agendaWeek,agendaDay,list'
             },
             height: "parent",
             eventClick: function(info) {
@@ -117,42 +123,8 @@ class calendarPage{
                 } catch (e) {
                     console.warn('Ошибка открытия окна');
                 }
-
-                // alert('Event: ' + info.event.title);
-                // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                // alert('View: ' + info.view.type);
-
-                // change the border color just for fun
                 info.el.style.borderColor = 'red';
             },
-            // viewDisplay: function (view) {
-            //     if (object.lastView == null) {
-            //         object.lastView = 'firstRun';
-            //     }
-            //     if (view.name !== lastView) {
-            //         if (view.name == 'agendaWeek') {
-            //             this.loadEvents();
-            //         }
-            //         object.lastView = view.name;
-            //     }
-            // },
-            //eventSources: [object.warrantSource],
-            // events: {
-            //     url: '/clientorder/events',
-            //     type: 'POST',
-            //     data:{
-            //         custom_param1: 'something',
-            //         custom_param2: 'somethingelse'
-            //     },
-            //     error: function() {
-            //         alert('there was an error while fetching events!');
-            //     },
-            //     color: 'yellow',   // a non-ajax option
-            //     textColor: 'black' // a non-ajax option
-            // }
-            // events: function(start, end, timezone, callback) {
-            //     object.loadEvents(start, end, timezone, callback);
-            // }
         });
 
         this.calendar.render();
@@ -178,4 +150,4 @@ class calendarPage{
         }
     }
 }
-export default calendarPage;
+export default schedulePage;

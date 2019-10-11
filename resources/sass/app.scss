@@ -28,6 +28,9 @@
 @import '~@fullcalendar/daygrid/main.css';
 @import '~@fullcalendar/timegrid/main.css';
 @import '~@fullcalendar/list/main.css';
+@import '~@fullcalendar/timeline/main.css';
+
+@import '~@fullcalendar/resource-timeline/main.css';
 
 
 .text-theme,
@@ -383,4 +386,29 @@ hr.fc-divider {
 .fc-icon {
     display: block!important;
     height: 19px!important;
+}
+.fc-unthemed .fc-list-empty {
+    background-color: #fff!important;
+}
+.select_btn .selected{
+    display: none;
+}
+.select_btn.already_selected .not_selected{
+    display: none;
+}
+.select_btn.already_selected .selected{
+    display: flex;
+}
+.select_btn.already_selected{
+    color: rgba(255, 255, 255, 0.85);
+    background-color: #22b66e;
+}
+.select_btn.already_selected:hover{
+    color: rgba(255, 255, 255, 1)!important;
+}
+.fc-resource-area.fc-widget-header{
+    width: 200px!important;
+}
+.fc-timeline .fc-divider {
+    display: none!important;
 }

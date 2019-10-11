@@ -5,32 +5,6 @@ class Entity{
 
     remove(tag, id) {
         if (isXHRloading) { return; }
-        isXHRloading = true;
-        var dReq = new XMLHttpRequest();
-        dReq.onreadystatechange = function (e) {
-            if (dReq.readyState === 4) {
-                var resp = JSON.parse(this.responseText);
-                if(dReq.status === 200){
-                    var element = document.getElementById(tag + '_' + resp.id);
-                    notification.notify( 'success', resp.message);
-                    element.remove();
-                }else{
-                    notification.notify( 'error', resp.message);
-                }
-            }
-        };
-        dReq.onerror = function () {
-            //var resp = JSON.parse(this.responseText);
-            isXHRloading = false;
-        };
-        dReq.onload = function () {
-            //var resp = JSON.parse(this.responseText);
-            //document.getElementById('category_list').innerHTML = resp.html;
-            isXHRloading = false;
-        };
-        dReq.open("post", tag + '/' + id + '/delete' , true);
-        dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
-
         Swal.fire({
             title: 'Вы уверены?',
             text: "действие необратимо",
@@ -43,12 +17,40 @@ class Entity{
             confirmButtonText: 'Удалить!'
         }).then((result) => {
             if (result.value) {
-                dReq.send();
+                isXHRloading = true;
+                axios({
+                    method: 'POST',
+                    url: tag + '/' + id + '/delete',
+                }).then(function (resp) {
+                    console.log(tag + '_' + resp.data.id);
+                    var element = document.getElementById(tag + '_' + resp.data.id);
+                    let type = 'success';
+                    if(resp.data.type != null){
+                        type = resp.data.type;
+                    }
+                    if(type === 'success'){
+                        element.remove();
+                    };
+                    notification.notify( type, resp.data.message);
+
+
+                }).catch(function (error) {
+                    console.log(error);
+                    notification.notify( 'error', error.data.message);
+                }).finally(function(){
+
+                    isXHRloading = false;
+                });
             } else {
-                dReq.abort();
-                isXHRloading = false;
             }
         });
+
+
+
+
+
+
+
     };
 }
 export default Entity;

@@ -1,9 +1,9 @@
 @extends($request['view_as'] == 'json' ? 'layouts.XHR' : 'layouts.main')
 
-@section('title', $page ?? 'Планировщик')
+@section('title', $page ?? 'crm')
 
 @section('content')
-    <div id="schedule_index_page" class="d-flex flex">
+    <div id="calendar_index_page" class="d-flex flex">
         <div id="ajax-tab-content" class="d-flex flex">
             <div class="fade aside aside-sm b-r" id="content-aside">
                 <div class="modal-dialog d-flex flex-column w-md light white lt">
@@ -17,7 +17,7 @@
                                     <span href="#" class="_500 pt-2">Заказы клиентов</span>
                                     <span class="float-right ml-2" style="line-height: 0;">
                                         <label class="ui-switch orange mt-1">
-                                            <input type="checkbox" onchange="calendar.toggleSource(this)" data-source="clientOrderSource">
+                                            <input type="checkbox" onchange="schedule.toggleSource(this)" data-source="clientOrderSource">
                                             <i></i>
                                         </label>
                                     </span>
@@ -68,6 +68,23 @@
                                 </div>
                             </span>
                         </div>
+                    </div>
+                    <div class="p-2 mt-auto p-3">
+                        <form action="{{ route('StoreCategory') }}" method="POST">
+                            @csrf
+                            <input class="category_select" type="hidden" name="category_id" value="@if(isset($categories['parent'])){{ $categories['parent']->id }}@else 3 @endif">
+                            @if(isset($category))
+                                <input type="hidden" name="id" value="{{ $category->id }}">
+                            @endif
+                            <div class="input-group">
+                                <input type="text" name="name" class="form-control form-control-sm" placeholder="Новая категория" required>
+                                <span class="input-group-append">
+                            <button class="btn btn-default btn-sm no-shadow" type="button" onclick="axform.send(this)">
+                                <i class="fa fa-plus text-muted"></i>
+                            </button>
+                        </span>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

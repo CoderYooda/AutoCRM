@@ -60,15 +60,21 @@
                         </a>
 
                     </li>
-                    <li id="report_link" class="nav-item">
-                        <a href="{{ route('ReportIndex') }}" class="nav-link ajax-nav">
-                            Отчеты
-                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
-                        </a>
-                    </li>
+                    {{--<li id="report_link" class="nav-item">--}}
+                        {{--<a href="{{ route('ReportIndex') }}" class="nav-link ajax-nav">--}}
+                            {{--Отчеты--}}
+                            {{--<div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
                     <li id="settings_link" class="nav-item">
                         <a href="{{ route('SettingsIndex') }}" class="nav-link ajax-nav">
                             Настройки
+                            <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
+                        </a>
+                    </li>
+                    <li id="shedule_link" class="nav-item">
+                        <a href="{{ route('ScheduleIndex') }}" class="nav-link ajax-nav">
+                            Планировщик
                             <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>

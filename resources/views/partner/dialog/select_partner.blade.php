@@ -15,8 +15,8 @@
             </div>
         </form>
     </div>
-    <div id="partner_list" class="mh50-dialog">
-        <div class="">
+    <div id="partner_list">
+        <div data-simplebar style="max-height: 500px;">
             <div id="search_partner_results" class="nlborder box mb-0" >
                 @include('partner.dialog.select_partner_inner')
             </div>
