@@ -40,4 +40,11 @@ class User extends Authenticatable
     public function company(){
         return $this->belongsTo('App\Models\Company', 'company_id');
     }
+
+    public function attachToCompany($company)
+    {
+        $this->company_id = $company->id;
+        $this->save();
+        return 1;
+    }
 }

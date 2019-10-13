@@ -27,14 +27,15 @@ window.token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
 
 
-    XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open   = function () {
-        this.origOpen.apply(this, arguments);
-        this.setRequestHeader('X-CSRF-TOKEN', token.content);
-        this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        this.setRequestHeader('Accept', 'application/json');
-    };
-    //window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    // XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
+    // XMLHttpRequest.prototype.open   = function () {
+    //     this.origOpen.apply(this, arguments);
+    //     this.setRequestHeader('X-CSRF-TOKEN', token.content);
+    //     this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    //     this.setRequestHeader('Accept', 'application/json');
+    // };
+    //
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 
 } else {
     console.error('CSRF token not found');

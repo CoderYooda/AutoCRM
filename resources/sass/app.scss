@@ -408,7 +408,15 @@ hr.fc-divider {
 }
 .fc-resource-area.fc-widget-header{
     width: 200px!important;
+
+
 }
 .fc-timeline .fc-divider {
     display: none!important;
+}
+.fc-resource-area .fc-cell-text {
+    white-space: nowrap!important;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
+    display: block!important;
 }

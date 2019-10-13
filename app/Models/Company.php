@@ -12,12 +12,17 @@ class Company extends Model
     public function stores(){
         return $this->hasMany('App\Models\Store', 'company_id');
     }
-
     public function checkAccessToStore($store){
         if($store == null || $this->stores()->where('id', $store->id)->first() == NULL){
             return false;
         } else {
             return true;
         }
+    }
+    public function inviteUser($user)
+    {
+        $user->company_id = $this->id;
+        $user->save();
+        return 1;
     }
 }

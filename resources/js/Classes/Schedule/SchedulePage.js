@@ -23,54 +23,11 @@ class schedulePage{
         this.sources = [];
 
         this.incomingWarrantSource = {
-            url: '/warrant/events',
-            method: 'POST',
-            extraParams: {
-                isIncoming: 1
-            },
+            url: '/employee/schedule',
+            method: 'get',
             failure: this.sourceAddFailure(),
             textColor: 'white'
         };
-
-        this.outcomingWarrantSource = {
-            url: '/warrant/events',
-            method: 'POST',
-            extraParams: {
-                isIncoming: false
-            },
-            failure: this.sourceAddFailure(),
-            textColor: 'white'
-        };
-
-        this.clientOrderSource = {
-            url: '/clientorder/events',
-            method: 'POST',
-            extraParams: {
-                isIncoming: 0
-            },
-            failure: this.sourceAddFailure(),
-            textColor: 'white'
-        };
-
-        this.entranceSource = {
-            url: '/entrance/events',
-            method: 'POST',
-            extraParams: {
-                isIncoming: 0
-            },
-            failure: this.sourceAddFailure(),
-            textColor: 'white'
-        };
-
-        this.shipmentSource = {
-            url: '/shipment/events',
-            method: 'POST',
-            extraParams: {
-                isIncoming: 0
-            },
-            failure: this.sourceAddFailure(),
-            textColor: 'white'
-        }
     }
 
     sourceAddFailure(){
@@ -95,17 +52,34 @@ class schedulePage{
         this.calendar = new Calendar(calendarEl, {
             plugins: [ interactionPlugin, resourceTimelinePlugin ],
             locale: ruLocale,
+            resourceLabelText: 'Сотрудники',
+            views: {
+                resourceTimelineMonth: {
+                    type: 'resourceTimeline',
+                    buttonText: 'Месяц',
+                    duration: { month: 1 },
+                    slotLabelFormat: [
+                        { weekday: 'short', day:'numeric' } // lower level of text
+                    ],
+                },
+                resourceTimelineSday: {
+                    type: 'resourceTimeline',
+                    buttonText: 'Неделя',
+                    duration: { weeks: 1 },
+                    slotDuration: {days: 1},
+                    slotLabelFormat: [
+                        { weekday: 'short', day:'numeric' } // lower level of text
+                    ],
+                }
+            },
             schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-            defaultView: 'resourceTimeline',
-            slotWidth: 60,
-            resources: [
-                {id: 'room101', name: 'Room 101'},
-                {id: 'room102', name: 'Room 102'},
-                {id: 'room201', name: 'Room 201'},
-                {id: 'room301', name: 'Room 301'},
-                {id: 'room401', name: 'Room 401'},
-                {id: 'room707', name: 'Room 707'}
-            ],
+            defaultView: 'resourceTimelineMonth',
+            slotWidth: 42,
+            selectable: true,
+            resources: {
+                url: '/employee/resources',
+                method: 'get',
+            },
             dateClick: function(info) {
                 console.log(info.resource.id);
                 // change the day's background color just for fun
@@ -114,7 +88,7 @@ class schedulePage{
             header: {
                 left:   'prev, today, next',
                 center: 'title',
-                right:  'resourceTimelineWeek, resourceTimelineYear, resourceTimelineFourDays, timeGridDay, listDay, ' //'month,agendaWeek,agendaDay,list'
+                right:  'resourceTimelineSday, resourceTimelineMonth'
             },
             height: "parent",
             eventClick: function(info) {

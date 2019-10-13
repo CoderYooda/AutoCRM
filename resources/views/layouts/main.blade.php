@@ -147,7 +147,7 @@
                 </div>
             </div>
         </div>
-        <div class="content-main d-flex flex" id="ajax-content">
+        <div class="d-flex flex" id="ajax-content">
             @yield('content')
         </div>
         <div class="content-footer bg-white">

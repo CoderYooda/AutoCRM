@@ -73,7 +73,7 @@
             </div>
             <div class="d-flex flex" id="content-body">
                 <div class="d-flex flex-column flex">
-                    <div class="d-flex flex scroll-y">
+                    <div class="d-flex flex">
                         <div id="ajax-table-calendar" class="d-flex flex-column flex white lt">
                             <div id="dates" style="margin: 0 -1px;">
 

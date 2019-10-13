@@ -22,6 +22,20 @@ class CreateBasePartners extends Seeder
 
             $user = json_decode($json, true);
 
+
+
+            if($i < 40){
+                Partner::create([
+                    'isfl' => 1,
+                    'category_id' => 5,
+                    'fio' => $user['lname'] . ' ' . $user['fname'] . ' ' . $user['patronymic'],
+                    'companyName' => '',
+                    'company_id' => 1,
+                    'created_at' => \Carbon\Carbon::now(),
+                    'updated_at' => \Carbon\Carbon::now(),
+                ]);
+            } else {
+
             $fl = rand(0, 1);
             if(!$fl){
                 $companyName = 'ИП ' . $user['lname'];
@@ -31,13 +45,14 @@ class CreateBasePartners extends Seeder
 
             Partner::create([
                 'isfl' => $fl,
-                'category_id' => rand(5, 7),
+                'category_id' => rand(6, 7),
                 'fio' => $user['lname'] . ' ' . $user['fname'] . ' ' . $user['patronymic'],
                 'companyName' => $companyName,
                 'company_id' => 1,
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
                 ]);
+            }
             $this->command->getOutput()->progressAdvance();
         }
         $this->command->getOutput()->progressFinish();

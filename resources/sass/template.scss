@@ -819,9 +819,10 @@ Nav
 Navbar
 */
 .navbar {
-    min-height: 3.5rem;
+    min-height: 56px;
     display: -ms-flexbox;
-    display: flex; }
+    display: flex;
+}
 .navbar .dropdown-menu-right {
     left: auto;
     right: 0; }
@@ -1599,7 +1600,9 @@ body {
     display: flex;
     -ms-flex-direction: column;
     min-width: 1300px;
-    flex-direction: column; }
+    flex-direction: column;
+    overflow: hidden;
+}
 
 .app {
     width: 100%;

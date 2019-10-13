@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
 use Milon\Barcode\DNS1D;
 use Auth;
+use SystemMessage;
+use App\Http\Controllers\SmsController;
+
 
 class PartnerController extends Controller
 {
@@ -116,6 +119,9 @@ class PartnerController extends Controller
         //$categories = CategoryController::getCategories($request, 'partner');
 
         //$content = view('partner.elements.list_container', compact('partners', 'categories', 'request'))->render();
+
+        SystemMessage::sendToAllButOne();
+        //SmsController::sendSMS();
 
         if($request->expectsJson()){
             return response()->json([

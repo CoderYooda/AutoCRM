@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Models\Category;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -62,5 +63,21 @@ class EmployeeController extends Controller
         })->orderBy('created_at', 'DESC')->paginate(11);
 
         return $employees;
+    }
+
+    public function resources(Request $request){
+        $categories = Category::owned()->where('type', 'employee')->get();
+        $employees = Partner::owned()
+            ->where(function($q) use ($request, $categories){
+                $q->whereIn('category_id', $categories->pluck('id'));
+            })->get();
+        $resources = [];
+        foreach($employees as $employee){
+            $resources[] = [
+                'id' => $employee->id,
+                'title' => $employee->outputName()
+            ];
+        }
+        return response($resources);
     }
 }

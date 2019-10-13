@@ -8,6 +8,7 @@ use App\Models\SalarySchema;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Pagination\Paginator;
+use Auth;
 
 class UserController extends Controller
 {
@@ -76,12 +77,6 @@ class UserController extends Controller
             }
             $user->salarySchemas()->sync($data);
         }
-
-
-
-
-
-
     }
 
     public static function getUser($request)
@@ -90,6 +85,13 @@ class UserController extends Controller
             $q->where('id', $request['id']);
         })->first();
         return $user;
+    }
+
+    public function getChannel(){ //Выделение канала для сокет вещания
+        $user = Auth::user();
+        return response()->json([
+            'channel' => 'app_base_channel:user_' . $user->id . '_channel'
+        ]);
     }
 
     public static function headerUser(){

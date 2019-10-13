@@ -25,6 +25,7 @@ class AdministratorSeed extends Seeder
         $user = User::create([
             'name' => 'Yooda',
             'email' => 'CoderYooda@gmail.com',
+            'phone' => '79524365064',
             'company_id' => $company->id,
             'password' => bcrypt('senatorov616322')
         ]);

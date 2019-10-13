@@ -21,7 +21,7 @@ class calendarPage{
 
         this.incomingWarrantSource = {
             url: '/warrant/events',
-            method: 'POST',
+            method: 'GET',
             extraParams: {
                 isIncoming: 1
             },
@@ -31,7 +31,7 @@ class calendarPage{
 
         this.outcomingWarrantSource = {
             url: '/warrant/events',
-            method: 'POST',
+            method: 'GET',
             extraParams: {
                 isIncoming: false
             },
@@ -41,7 +41,7 @@ class calendarPage{
 
         this.clientOrderSource = {
             url: '/clientorder/events',
-            method: 'POST',
+            method: 'GET',
             extraParams: {
                 isIncoming: 0
             },
@@ -51,7 +51,7 @@ class calendarPage{
 
         this.entranceSource = {
             url: '/entrance/events',
-            method: 'POST',
+            method: 'GET',
             extraParams: {
                 isIncoming: 0
             },
@@ -61,7 +61,7 @@ class calendarPage{
 
         this.shipmentSource = {
             url: '/shipment/events',
-            method: 'POST',
+            method: 'GET',
             extraParams: {
                 isIncoming: 0
             },

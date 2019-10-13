@@ -2,10 +2,11 @@ class Scanner{
     constructor(){
         this.init();
         this.UPC = '';
+        console.log('Сканер активен');
     }
 
     init(){
-        console.log('scanner init');
+
         let object = this;
 
         let scanFN = window.helper.debounce(function(e) {

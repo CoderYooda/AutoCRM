@@ -45,11 +45,20 @@ class CategoryController extends Controller
             ], 422);
         }
 
+        $type = null;
+        if($request['category_id'] != null){
+            $parent = Category::owned()->where('id', (int)$request['category_id'])->first();
+            if($parent && $parent->type != null){
+                $type = $parent->type;
+            }
+        }
+
         $category = Category::firstOrNew(['id' => (int)$request['id']]);
         $category->fill($request->all());
         $category->creator_id = Auth::user()->id;
         $category->company_id = Auth::user()->company()->first()->id;
         $category->locked = false;
+        $category->type = $type;
         $category->save();
 
         //$categories = self::getCategories($request);

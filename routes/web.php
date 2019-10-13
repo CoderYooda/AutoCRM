@@ -29,7 +29,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/product/{id}/addtolist', 'ProductController@addToList')->name('ProductAddToList');
 
     #Поступления товаров
-    Route::post('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
+    Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
     Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
 
@@ -38,14 +38,14 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
 
     #Продажи
-    Route::post('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
+    Route::get('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
     Route::post('/shipment/store', 'ShipmentsController@store')->name('StoreShipment');// Строгое название
     Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
 
     #Заказы клиентов
-    Route::post('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
+    Route::get('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
     Route::post('/clientorder/store', 'ClientOrdersController@store')->name('StoreClientOrder');// Строгое название
     Route::post('/clientorder/{id}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
     Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
@@ -61,7 +61,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 
     #Кассовые операции
-    Route::post('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
+    Route::get('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
     Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
     Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
 
@@ -92,12 +92,14 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/services', 'ServicesController@index')->name('ServicesIndex');
 
     #Сотрудники
+    Route::get('/employee/resources', 'EmployeeController@resources')->name('EmployeeResources');
     Route::get('/employee', 'EmployeeController@index')->name('EmployeeIndex');
 
 
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
+    Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
 
     #Календарь
     Route::get('/calendar', 'CalendarController@index')->name('CalendarIndex');
@@ -124,4 +126,19 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Штрихкоды
     Route::post('/barcode/search', 'BarcodeController@search')->name('BarcodeSearch');
+
+    Route::group(['prefix' => 'ws'], function(){
+
+        Route::get('/check-auth', function(){
+            return response()->json([
+                'auth' => Auth::check()
+            ]);
+        });
+
+        Route::get('/check-sub/{channel}', function($channel){
+            return response()->json([
+                'can' => Auth::check()
+            ]);
+        });
+    });
 });
