@@ -3,6 +3,10 @@
 
 Auth::routes();
 
+#СМС
+Route::post('/sms/confirmate', 'SmsController@confirmate')->name('SmsConfirmate');
+
+
 Route::group(['middleware' => ['web', 'auth']], function () {
     #Статистика и панель управления
     Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
@@ -118,8 +122,10 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
+
+
     #Отчеты
-    Route::get('/report', 'ReportController@index')->name('ReportIndex');// Строгое название
+    Route::get('/report', 'SmsController@index')->name('ReportIndex');// Строгое название
 
     #Диалоги
     Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');

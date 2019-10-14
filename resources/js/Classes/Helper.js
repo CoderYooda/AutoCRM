@@ -23,6 +23,7 @@ import cashPage from "./Cash/CashPage";
 import userPage from "./User/UserPage";
 import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
+import registerPage from "./Auth/RegisterPage";
 
 
 const classes = {
@@ -53,7 +54,8 @@ const pages = {
     employeePage,
     userPage,
     calendarPage,
-    schedulePage
+    schedulePage,
+    registerPage,
 };
 
 class Helper{

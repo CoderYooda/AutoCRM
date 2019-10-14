@@ -38,7 +38,7 @@ if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 
 } else {
-    console.error('CSRF token not found');
+    console.warn('CSRF токен не выдан, возможно Вы не авторизованы в системе');
 }
 
 

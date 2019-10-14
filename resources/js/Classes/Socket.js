@@ -20,7 +20,7 @@ class Socket{
         }).then(function (resp) {
             object.ownChannel = resp.data.channel;
         }).catch(function (error) {
-            console.log(error);
+            //console.log(error);
         }).finally(function () {
             object.connect();
         });

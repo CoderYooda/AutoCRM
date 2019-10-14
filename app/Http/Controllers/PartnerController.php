@@ -121,7 +121,9 @@ class PartnerController extends Controller
         //$content = view('partner.elements.list_container', compact('partners', 'categories', 'request'))->render();
 
         SystemMessage::sendToAllButOne();
-        SmsController::sendSMS();
+
+
+
 
         if($request->expectsJson()){
             return response()->json([

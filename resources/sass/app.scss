@@ -420,3 +420,21 @@ hr.fc-divider {
     text-overflow: ellipsis!important;
     display: block!important;
 }
+
+.md-form-group.is-invalid .invalid-feedback{
+    display: block;
+}
+.md-form-group.is-invalid .md-input{
+    border-color: #e3342f!important;
+}
+
+.sms-confirm{
+    position: absolute !important;
+    border-radius: 5px;
+    margin-bottom: 0 !important;
+    width: 100%;
+    z-index: 100000;
+    top: 33%;
+    box-shadow: 0 0 109px 32px #516eb061, 0 0 20px 8px #516eb061, inset 0px 0px 2px 2px #1e2835e3;
+    display: none;
+}
