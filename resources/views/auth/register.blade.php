@@ -2,18 +2,18 @@
 
 @section('content')
     <div class="py-5 text-center" style="position: relative">
-        <div class="p-4 box sms-confirm animate fadeIn">
+        <div id="sms-box" class="p-4 box sms-confirm animate fadeIn fadeOut">
             <h5 class="mt-4 font-bold text-center">Подтверждение номера</h5>
             <div class="form-group text-center">
                 <div class="mt-4 mb-4">
-                    <input class="w-200 m-auto form-control form-control-lg text-center" type="number" placeholder="Код из смс">
+                    <input onkeydown="window.register.typeSms(this)" maxlength="5" class="w-200 m-auto form-control form-control-lg text-center" type="text" placeholder="Код из смс">
                 </div>
             </div>
         </div>
         <div class="mx-auto w-xxl w-auto-xs">
             <div class="px-3">
 
-                <form onsubmit="register.submitForm(event)" id="registerForm" method="POST" action="{{ route('register') }}">
+                <form onsubmit="register.submitForm(this, event)" id="registerForm" method="POST" action="{{ route('register') }}">
                     @csrf
 
                     <div class="mx-auto w-xl w-auto-xs animate fadeIn text-left" >
@@ -34,7 +34,7 @@
                         <div class="md-form-group float-label @error('phone') is-invalid @enderror">
                             <input id="phone_input" class="md-input" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('phone')
-                            <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror

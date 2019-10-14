@@ -29,24 +29,37 @@ class SmsController extends Controller
         }
     }
 
-    public function confirmate(Request $request)
+    public function confirm(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users']
+            'code' => ['required', 'digits:5', 'integer']
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'validator' => $validator->errors()
+                'messages' => $validator->errors()
             ]);
         }
 
-        $sms = self::sendTo($request['phone']);
+        $sms = SmsConfirmation::where('ip', $request->ip())->first();
 
-        return response()->json([
-           'phone' =>  $request['phone'],
-            'sms' => $sms
-        ]);
+        if($sms->code != null && $sms->code == $request['code']){
+            $sms->confirmed = true;
+            $sms->save();
+            return response()->json(['status' => 'success'],200);
+        } else {
+            return response()->json(['status' => 'error'],200);
+        }
+    }
+
+    public static function smsConfirmed($request)
+    {
+        $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
+        if($sms != null && $sms->confirmed && !$sms->isblocked){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function sendTo($phone)
@@ -57,7 +70,7 @@ class SmsController extends Controller
         $data->to = $phone;
         $data->text = $confirm_code;
         $data->from = 'BB-CRM';
-        $data->test = 1;
+        $data->test = 0;
         $sms = $smsru->send_one($data);
         if ($sms->status == "OK") {
             $sms_confirmation = SmsConfirmation::firstOrNew(['ip' => request()->ip()]);
