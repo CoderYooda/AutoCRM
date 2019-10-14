@@ -9,9 +9,9 @@ use stdClass;
 class SmsController extends Controller
 {
     public static function sendSMS(){
-        $smsru = new SMS('88BBCA622-E3EC-0ED8-22AA-E72928269070');
+        $smsru = new SMS(env('SMS_RU_CODE'));
         $data = new stdClass();
-        $data->to = '79524245038';
+        $data->to = '79300841648';
         $data->text = 'Код подтверждения: 150752'; // Текст сообщения
         $data->from = 'BB-CRM'; // Если у вас уже одобрен буквенный отправитель, его можно указать здесь, в противном случае будет использоваться ваш отправитель по умолчанию
         // $data->time = time() + 7*60*60; // Отложить отправку на 7 часов
@@ -25,5 +25,9 @@ class SmsController extends Controller
         } else {
             dd($sms);
         }
+    }
+
+    public static function sendTo($phone){
+
     }
 }
