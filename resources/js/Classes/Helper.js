@@ -24,6 +24,7 @@ import userPage from "./User/UserPage";
 import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
+import loginPage from "./Auth/LoginPage";
 
 
 const classes = {
@@ -56,6 +57,7 @@ const pages = {
     calendarPage,
     schedulePage,
     registerPage,
+    loginPage,
 };
 
 class Helper{

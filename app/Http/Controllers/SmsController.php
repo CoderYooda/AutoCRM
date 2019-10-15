@@ -31,8 +31,10 @@ class SmsController extends Controller
 
     public function confirm(Request $request)
     {
+        $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
         $validator = Validator::make($request->all(), [
-            'code' => ['required', 'digits:5', 'integer']
+            'code' => ['required', 'digits:5', 'integer'],
+            'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
         ]);
 
         if($validator->fails()){
@@ -41,9 +43,10 @@ class SmsController extends Controller
             ]);
         }
 
-        $sms = SmsConfirmation::where('ip', $request->ip())->first();
+        $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
 
         if($sms->code != null && $sms->code == $request['code']){
+            $sms->attempts = $sms->attempts + 1;
             $sms->confirmed = true;
             $sms->save();
             return response()->json(['status' => 'success'],200);

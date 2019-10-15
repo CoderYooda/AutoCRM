@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('company_id')->unsigned()->nullable()->comment('Привязка к компании');
             $table->string('name');
             $table->string('phone')->unique();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

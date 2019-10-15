@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Partner;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -32,7 +33,7 @@ class RegisterController extends Controller
             'fio' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+//            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -51,27 +52,44 @@ class RegisterController extends Controller
                     return response()->json(['messages' => $validation->errors()],422);
                 }
             }
+
             if(!SmsController::smsConfirmed($request)){
                 $sms = SmsController::sendTo($request['phone']);
                 return response()->json(['sms' => $sms],200);
+            } else {
+                event(new Registered($user = $this->create($request->all())));
+                $this->guard()->login($user);
+                $redirect = '/';
+                $this->registered($request, $user) ?: $redirect = $this->redirectPath();
+
+                return response()->json(['redirect' => $redirect],200);
             }
         } else {
             $validation->validate();
         }
+
         if(SmsController::smsConfirmed($request)){
             event(new Registered($user = $this->create($request->all())));
             $this->guard()->login($user);
             return $this->registered($request, $user) ?: redirect($this->redirectPath());
         } else{
-            return false;
+            return redirect()->back()->with('sms', ['SMS не было подтвеждено']);
         }
     }
 
     protected function create(array $data)
     {
+
+        $name = explode( ' ', $data['name'] );
+
+        if(count($name) >= 2){
+            $name = $name[1];
+        } else {
+            $name = $data['name'];
+        }
+
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name' => $name,
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
@@ -82,6 +100,18 @@ class RegisterController extends Controller
 
         $user->company()->associate($company);
         $user->save();
+
+        $partner = new Partner();
+        $partner->isfl = true;
+        $partner->user_id = $user->id;
+        $partner->category_id = 3;
+        $partner->fio = $data['fio'];
+        $partner->company_id = $company->id;
+        $partner->save();
+
+
+
+
         return $user;
     }
 

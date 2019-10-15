@@ -6,6 +6,7 @@ class registerPage{
         this.form = document.getElementById('registerForm');
         this.smsBox = document.getElementById('sms-box');
         this.phoneMask = null;
+        this.info = document.getElementById('info');
         this.init();
     }
 
@@ -27,7 +28,8 @@ class registerPage{
                     method: 'post',
                     url: '/sms/confirm',
                     data: {
-                        code: elem.value
+                        code: elem.value,
+                        phone: document.querySelector('#phone_input').value
                     },
                 }).then(function (resp) {
                     if(resp.data.status === 'success'){
@@ -58,6 +60,12 @@ class registerPage{
             console.log(resp);
             if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK'){
                 object.smsBox.classList.add('d-block');
+            } else if(resp.data && resp.data.redirect !== 'undefined'){
+                console.log(resp.data);
+                window.location.replace(resp.data.redirect);
+            } else {
+                object.info.classList.remove('hide');
+                object.info.querySelector('.box-body').innerHTML = resp.data.sms.status_text;
             }
         }).catch(function (error) {
 
@@ -107,13 +115,13 @@ class registerPage{
         this.phoneMask = window.IMask(phone, {
                 mask: [
                     {
-                        mask: '+{7}(000)000-00-00',
+                        mask: '+{7} (000) 000-00-00',
                         startsWith: '7',
                         lazy: true,
                         country: 'Россия'
                     },
                     {
-                        mask: '{8}(000)000-00-00',
+                        mask: '{8} (000) 000-00-00',
                         startsWith: '8',
                         lazy: true,
                         country: 'Россия'

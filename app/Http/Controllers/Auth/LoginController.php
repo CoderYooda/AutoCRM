@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -36,6 +37,33 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function attemptLogin(Request $request)
+    {
+        //Try with email AND username fields
+        if (Auth::attempt([
+            'phone' => $request['phone'],
+            'password' => $request['password']
+        ],$request->has('remember'))
+        ){
+            return true;
+        }
+        return false;
+    }
+
+    protected function validateLogin(Request $request)
+    {
+        $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
+        $request->validate([
+            'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11'],
+            'password' => 'required|string',
+        ]);
+    }
+
+    public function username()
+    {
+        return 'phone';
     }
 
     public function login(Request $request)
