@@ -75,6 +75,9 @@ class storePage{
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
+        this.dates_range = ['null', 'null'];
+        this.date_start = 'null';
+        this.date_end = 'null';
         window.helper.debugBar(this);
         this.searchInit();
     }

@@ -152,12 +152,23 @@ class shipmentDialog{
         this.recalculate();
     }
 
-    addProduct(id){
+    addProduct(elem){
+
+        let store_id = elem.dataset.store_id;
+        let article_id = elem.dataset.article_id;
+        let count = elem.closest('table').querySelector('input').value;
+
         var object = this;
         window.axios({
             method: 'post',
-            url: 'product/'+ id +'/addtolist',
-            data: {refer:this.root_dialog.id, type:'shipment'}
+            url: 'product/addtolist',
+            data: {
+                refer:this.root_dialog.id,
+                type:'shipment',
+                store_id:store_id,
+                article_id:article_id,
+                count:count,
+            }
         }).then(function (resp) {
 
             var isset = object.items.map(function(e){

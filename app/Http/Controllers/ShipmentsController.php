@@ -101,10 +101,20 @@ class ShipmentsController extends Controller
             $article = Article::where('id', $product['id'])->first();
 
             $store_id = 1;
-            $store = Store::owned()->where('id', $article)->first();
+            $store = Store::owned()->where('id', $store_id)->first();
 
-            #Отнимаем со склада...
-            $store->decreaseArticleCount($id, $product['count']);
+            if($shipment->exists){
+                #Добавляем на склад исходное кол - во...
+                $store->increaseArticleCount($id, $shipment->getArticlesCountById($id));
+                #Отнимаем со склада новое кол-во...
+                $store->decreaseArticleCount($id, $product['count']);
+
+            } else {
+                #Отнимаем со склада кол-во...
+                $store->decreaseArticleCount($id, $product['count']);
+            }
+
+
 
             $vcount = $product['count'];
             $vprice = $product['price'];

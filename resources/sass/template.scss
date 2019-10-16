@@ -1720,15 +1720,29 @@ List
 
 .list-item.inblocked{
     display: block;
+    padding: 0!important;
 }
 
 .list-item.inblocked .inblock{
     display: flex;
+    padding: 0.75rem 0.5rem;
 }
 
 .list-item.inblocked .inblock > * {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+}
+
+.list-item .no-margin{
+    margin: 0!important;
+}
+
+.no-wrap{
+    white-space: nowrap;
+}
+
+#search_product_results th{
+    border-top: 0!important;
 }
 
 .table .list-item{

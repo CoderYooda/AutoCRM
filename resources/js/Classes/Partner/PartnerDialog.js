@@ -23,10 +23,12 @@ class partnerDialog{
             object.finitaLaComedia();
         });
     }
+
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
     }
+
     addPhoneMask(){
         var elements = this.root_dialog.querySelectorAll('.phone_input');
         [].forEach.call(elements, function(element){

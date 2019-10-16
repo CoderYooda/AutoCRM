@@ -1,4 +1,3 @@
-
 @if($products->count() > 0)
     <div id="product_select_accordion">
     @foreach($products as $product)
@@ -19,19 +18,45 @@
                 <button class="btn btn-icon white float-right select_btn" data-toggle="collapse" data-target="#stores{{ $product->id }}" aria-expanded="false" aria-controls="collapseExample">
                     <i class="fa fa-caret-down"></i>
                 </button>
-                @if($request['refer'] != null)
-                    <button data-id="{{ $product->id }}" onclick="{{$request['refer']}}.addProduct({{ $product->id }});" class="btn btn-icon white float-right select_btn">
-                        <i class="not_selected fa fa-plus"></i>
-                        <i class="selected fa fa-check"></i>
-                    </button>
-                @else
+                {{--@if($request['refer'] != null)--}}
+                    {{--<button data-id="{{ $product->id }}"  class="btn btn-icon white float-right select_btn">--}}
+                        {{--<i class="not_selected fa fa-plus"></i>--}}
+                        {{--<i class="selected fa fa-check"></i>--}}
+                    {{--</button>--}}
+                {{----}}
 
-                @endif
+                {{--@endif--}}
             </div>
-            <div class="collapse w-100" id="stores{{ $product->id }}" data-toggle="collapse" aria-labelledby="headingOne" data-parent="#product_select_accordion">
-                <div class="">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                </div>
+            <div class="no-margin collapse w-100 transition-70ms" id="stores{{ $product->id }}" data-toggle="collapse" aria-labelledby="headingOne" data-parent="#product_select_accordion">
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th style="width:60px;">Склад</th>
+                        <th>Доступно</th>
+                        <th>Кол-во</th>
+                        <th style="width:80px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($stores as $store)
+                        <tr>
+                            <td class="no-wrap">{{ $store->name }}</td>
+                            <td>{{ $store->getArticlesCountById($product->id) }}</td>
+                            <td>
+                                <div class="form-group mb-0">
+                                    <input type="number" class="form-control" placeholder="количество" value="1">
+                                </div>
+                            </td>
+
+                            <td>
+                                @if($request['refer'] != null)
+                                <button type="button" class="btn primary" data-article_id="{{ $product->id }}" data-store_id="{{ $store->id }}" onclick="{{$request['refer']}}.addProduct(this);">Добавить</button>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     @endforeach

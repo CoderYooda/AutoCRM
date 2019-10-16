@@ -40,15 +40,19 @@ class ProductController extends Controller
 
     public static function selectProductDialog($request)
     {
-        $stores = Store::where('company_id', Auth::user()->id)->get();
-        $products = Article::owned()->orderBy('id', 'DESC')->limit(30)->get();
+        $stores = Store::owned()->get();
+        $products = Article::owned()->orderBy('id', 'DESC')->limit(10)->get();
         return response()->json([
             'tag' => 'selectProductDialog',
-            'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render()
+            'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render(),
         ]);
     }
 
-    public function addToList($id, Request $request){
+    public function addToList(Request $request){
+
+        //$request TODO
+
+
         $product = Article::where('id', $id)->first();
         if(!$product){
             return response()->json([
@@ -98,7 +102,8 @@ class ProductController extends Controller
 
     public function dialogSearch(Request $request)
     {
-        $products = Article::where(function($q) use ($request){
+        $stores = Store::owned()->get();
+        $products = Article::owned()->where(function($q) use ($request){
             if($request['store_id'] != NULL) {
                 $q->whereHas('stores', function ($query) use ($request) {
                     return $query->where('store_id', $request['store_id']);
@@ -112,10 +117,9 @@ class ProductController extends Controller
                 $query->where('name', 'LIKE', '%' . $request['string'] .'%');
             });
         })
+        ->orderBy('id', 'DESC')->limit(10)->get();
 
-        ->orderBy('id', 'DESC')->limit(30)->get();
-
-        $content = view('product.dialog.select_product_inner', compact('products', 'request'))->render();
+        $content = view('product.dialog.select_product_inner', compact('products', 'stores', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);

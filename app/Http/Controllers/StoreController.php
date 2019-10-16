@@ -142,7 +142,7 @@ class StoreController extends Controller
 
         if($request->expectsJson()){
             return response()->json([
-                'message' => $this->message,
+                'message' => 'Склад создан',
                 'container' => 'ajax-table-store',
                 'event' => 'ProductStored',
             ]);

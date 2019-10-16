@@ -55,6 +55,8 @@ class Store extends Model
 
     public function decreaseArticleCount($article_id, $count)
     {
+        $this->articles()->syncWithoutDetaching($article_id);
+
         $current = (int)$this->getArticlesCountById($article_id);
 
         $total = $current - $count;

@@ -40,7 +40,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/product/store', 'ProductController@store')->name('StoreProduct');
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
     Route::post('/product/dialog/search', 'ProductController@dialogSearch')->name('ProductDialogSearch');
-    Route::post('/product/{id}/addtolist', 'ProductController@addToList')->name('ProductAddToList');
+    Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
 
     #Поступления товаров
     Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
