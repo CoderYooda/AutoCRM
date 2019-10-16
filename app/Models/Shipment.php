@@ -24,7 +24,7 @@ class Shipment extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count', 'price', 'total', 'store_id');
     }
 
     public function partner()

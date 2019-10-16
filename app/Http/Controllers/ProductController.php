@@ -51,9 +51,10 @@ class ProductController extends Controller
     public function addToList(Request $request){
 
         //$request TODO
+        //d($request);
+        //d($request);
 
-
-        $product = Article::where('id', $id)->first();
+        $product = Article::where('id', $request['article_id'])->first();
         if(!$product){
             return response()->json([
                 'message' => 'Товар не найден, возможно он был удалён',
@@ -71,6 +72,8 @@ class ProductController extends Controller
         }
         return response()->json([
             'id' => $product->id,
+            'store_id' => $request['store_id'],
+            'count' => $request['count'],
             'html' => $content
         ]);
     }

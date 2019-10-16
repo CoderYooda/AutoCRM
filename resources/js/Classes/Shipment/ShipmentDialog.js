@@ -57,9 +57,14 @@ class shipmentDialog{
                 url: 'shipment/' + shipment_id + '/get_products',
                 data: {},
             }).then(function (resp) {
-
                 [].forEach.call(resp.data.products, function(elem){
-                    object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
+                    object.items.push({
+                        id:elem.id,
+                        count:elem.pivot.count,
+                        price:elem.pivot.price,
+                        total:elem.pivot.total,
+                        store_id:elem.pivot.store_id,
+                    });
 
                     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
                     let inputs = item.getElementsByTagName('input');
@@ -156,7 +161,7 @@ class shipmentDialog{
 
         let store_id = elem.dataset.store_id;
         let article_id = elem.dataset.article_id;
-        let count = elem.closest('table').querySelector('input').value;
+        let count = elem.closest('tr').querySelector('input').value;
 
         var object = this;
         window.axios({
@@ -170,13 +175,23 @@ class shipmentDialog{
                 count:count,
             }
         }).then(function (resp) {
-
-            var isset = object.items.map(function(e){
+            var article_id = object.items.map(function(e){
                 return e.id;
             }).indexOf(resp.data.id);
 
-            if(isset < 0){
-                object.addItem({id:resp.data.id, html:resp.data.html});
+            var store_id = object.items.map(function(e){
+                return e.id;
+            }).indexOf(resp.data.id);
+
+            if(article_id < 0 && store_id < 0){
+
+                object.addItem({
+                    id:resp.data.id,
+                    store_id:resp.data.store_id,
+                    count:resp.data.count,
+                    html:resp.data.html
+                });
+
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
