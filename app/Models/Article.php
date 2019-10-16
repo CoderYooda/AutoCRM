@@ -64,4 +64,27 @@ class Article extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function getCountInStoreId($store_id)
+    {
+        $article = $this->stores()->where('id', $store_id)->first();
+
+        if($article){
+            $count = $article->pivot->count;
+        } else {
+            $count = 0;
+        }
+        return $count;
+    }
+
+    public function addToStore($store_id, $count)
+    {
+        $current = (int)$this->getArticlesCountById($article_id);
+
+        $total = $current + $count;
+
+        $this->articles()->owned()->updateExistingPivot($article_id, ['count' => $total]);
+
+        return $total;
+    }
+
 }

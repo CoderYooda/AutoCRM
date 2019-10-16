@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 
+
 class Store extends Model
 {
     protected $guarded = [];
@@ -33,5 +34,33 @@ class Store extends Model
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
         return self::where('company_id', $company_id);
+    }
+
+
+    /**
+     * increaseArticle
+     * Увеличивает кол-во товарa на складе на единицу $count
+     */
+
+    public function increaseArticleCount($article_id, $count)
+    {
+        $current = (int)$this->getArticlesCountById($article_id);
+
+        $total = $current + $count;
+
+        $this->articles()->updateExistingPivot($article_id, ['count' => $total]);
+
+        return $total;
+    }
+
+    public function decreaseArticleCount($article_id, $count)
+    {
+        $current = (int)$this->getArticlesCountById($article_id);
+
+        $total = $current - $count;
+
+        $this->articles()->updateExistingPivot($article_id, ['count' => $total]);
+
+        return $total;
     }
 }

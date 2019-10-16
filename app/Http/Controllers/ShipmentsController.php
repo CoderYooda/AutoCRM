@@ -48,6 +48,7 @@ class ShipmentsController extends Controller
 
         $shipment = Shipment::firstOrNew(['id' => $request['id']]);
 
+
 //        if($entrance->locked){
 //            return response()->json([
 //                'system_message' => view('messages.locked_error')->render(),
@@ -95,17 +96,27 @@ class ShipmentsController extends Controller
         //$store = Store::where('id', $request['store_id'])->first();
         foreach($request['products'] as $id => $product) {
 
+
+            #Целевой товар
+            $article = Article::where('id', $product['id'])->first();
+
+            $store_id = 1;
+            $store = Store::owned()->where('id', $article)->first();
+
+            #Отнимаем со склада...
+            $store->decreaseArticleCount($id, $product['count']);
+
             $vcount = $product['count'];
             $vprice = $product['price'];
 
             $vtotal = $vprice * $vcount;
 
             $shipment->summ += $vtotal;
-            $actor_product = Article::where('id', $product['id'])->first();
+
 
             $article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
 
-            ### Пересчёт кол-ва с учетом предидущего поступления #######################################
+            ### Пересчёт кол-ва с учетом предыдущего поступления #######################################
 //            $store->articles()->syncWithoutDetaching($actor_product->id);
 //            $beforeCount = $entrance->getArticlesCountById($actor_product->id);
 //            $count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
@@ -123,10 +134,10 @@ class ShipmentsController extends Controller
             if($article_shipment > 0){
                 $shipment->articles()->updateExistingPivot($product['id'], $pivot_data);
             } else {
-                $shipment->articles()->save($actor_product, $pivot_data);
+                $shipment->articles()->save($article, $pivot_data);
             }
 
-            //$store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
+            //$store->articles()->updateExistingPivot($article->id, ['count' => $count]);
         }
 
         $shipment->articles()->sync(array_column($request['products'], 'id'));

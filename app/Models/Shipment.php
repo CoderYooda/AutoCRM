@@ -29,7 +29,7 @@ class Shipment extends Model
 
     public function partner()
     {
-        return $this->belongsTo('App\Models\Partner', 'partner_id');
+        return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
     }
 
     public function normalizedData(){

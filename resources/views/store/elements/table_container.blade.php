@@ -28,7 +28,7 @@
             <div class="d-flex flex-column flex" id="chat-list">
                 {!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
                 @if( $articles->count() > 0)
-                <div class="" data-simplebar style="max-height: calc(100% - 118px);">
+                <div class="" data-simplebar style="max-height: calc(100% - 117px);">
                     <div class="table-responsive">
                         <table class="table table-hover mb-3" style="white-space: nowrap;">
                             <thead>

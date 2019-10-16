@@ -887,6 +887,10 @@ pagination
     border-top-right-radius: .2rem;
     border-bottom-right-radius: .2rem; }
 
+.pagination .page-link{
+    height: 27px;
+}
+
 .pagination-sm a {
     padding: .2195rem .5rem; }
 
@@ -1713,6 +1717,19 @@ List
     align-items: stretch;
     padding: 0.75rem 0.5rem;
     position: relative; }
+
+.list-item.inblocked{
+    display: block;
+}
+
+.list-item.inblocked .inblock{
+    display: flex;
+}
+
+.list-item.inblocked .inblock > * {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
 
 .table .list-item{
     display: table-row;

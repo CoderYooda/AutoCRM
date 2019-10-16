@@ -133,7 +133,6 @@ class EntranceController extends Controller
         if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
-                'container' => 'ajax-table-entrance',
                 'event' => 'EntranceStored',
             ], 200);
         } else {
