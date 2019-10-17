@@ -59,14 +59,14 @@ class shipmentDialog{
             }).then(function (resp) {
                 [].forEach.call(resp.data.products, function(elem){
                     object.items.push({
-                        id:elem.id,
-                        count:elem.pivot.count,
-                        price:elem.pivot.price,
-                        total:elem.pivot.total,
-                        store_id:elem.pivot.store_id,
+                        id:elem.product.id,
+                        count:elem.count,
+                        price:elem.price,
+                        total:elem.total,
+                        store_id:elem.store_id,
                     });
 
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+                    let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id + '_' + elem.store_id);
                     let inputs = item.getElementsByTagName('input');
 
                     [].forEach.call(inputs, function(elem){
@@ -128,7 +128,7 @@ class shipmentDialog{
         tbody.innerHTML = elem.html;
         product_list.prepend(tbody.firstChild);
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
+        let item = this.root_dialog.querySelector('#product_selected_' + elem.id + '_' + elem.store_id);
         let inputs = item.getElementsByTagName('input');
 
         [].forEach.call(inputs, function(elem){
@@ -139,7 +139,7 @@ class shipmentDialog{
             elem.addEventListener("paste", fn);
             elem.addEventListener("delete", fn);
         });
-        this.recalculate();
+        //this.recalculate();
     }
 
     finitaLaComedia(){
@@ -147,14 +147,21 @@ class shipmentDialog{
         delete window[this.root_dialog.id];
     }
 
-    removeItem(id){
-        this.items.splice(
-            this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
-        );
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
+    removeItem(store_id, id){
+        let object = this;
+
+        [].forEach.call(object.items, function(item){
+
+            if(item.id === id && item.store_id === store_id){
+                object.items.splice(
+                    object.items.indexOf(item), 1
+                );
+            }
+        });
+
+
+        this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id).remove();
+        object.recalculate();
     }
 
     addProduct(elem){
@@ -175,23 +182,22 @@ class shipmentDialog{
                 count:count,
             }
         }).then(function (resp) {
-            var article_id = object.items.map(function(e){
-                return e.id;
-            }).indexOf(resp.data.id);
+            console.log(resp);
+            let canAdd = true;
+            [].forEach.call(object.items, function(item){
+                if(item.store_id === parseInt(resp.data.product.store_id) && item.id === resp.data.product.product.id){
+                    canAdd = false;
+                }
+            });
 
-            var store_id = object.items.map(function(e){
-                return e.id;
-            }).indexOf(resp.data.id);
-
-            if(article_id < 0 && store_id < 0){
-
+            console.log(canAdd);
+            if(canAdd){
                 object.addItem({
-                    id:resp.data.id,
-                    store_id:resp.data.store_id,
-                    count:resp.data.count,
+                    id:resp.data.product.product.id,
+                    store_id:parseInt(resp.data.product.store_id),
+                    count:resp.data.product.count,
                     html:resp.data.html
                 });
-
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
@@ -239,7 +245,7 @@ class shipmentDialog{
         console.log("Пересчет...");
         var object = this;
         this.items.forEach(function(elem){
-            object.recalculateItem(elem.id);
+            object.recalculateItem(elem.store_id, elem.id);
         });
         var total_price = object.totalPrice;
         var itogo = object.itogo;
@@ -270,12 +276,13 @@ class shipmentDialog{
         object.setDiscount(discount_val);
     }
 
-    recalculateItem(id){
+    recalculateItem(store_id, id){
+        console.log(store_id, id);
         let object = this;
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + id + "][price]']");
+        let item = this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id);
+        let total = item.querySelector("input[name='products[" + store_id + "][" + id + "][total_price]']");
+        let count = item.querySelector("input[name='products[" + store_id + "][" + id + "][count]']");
+        let price = item.querySelector("input[name='products[" + store_id + "][" + id + "][price]']");
 
         let vcount = Number(count.value);
         let vprice = Number(price.value);
@@ -285,7 +292,7 @@ class shipmentDialog{
         total.value = vtotal.toFixed(2);
 
         object.items.map(function(e){
-            if(e.id === id){
+            if(e.id === id && e.store_id === store_id){
                 e.total = vtotal;
                 e.count = vcount;
                 e.price = vprice;

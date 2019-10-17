@@ -24,6 +24,10 @@ class ShipmentsController extends Controller
             $shipment = null;
         }
 
+       //dd($shipment->articles()->first());
+
+        //dd($shipment->elements()->get());
+
         return response()->json([
             'tag' => $tag,
             'html' => view('shipments.dialog.form_shipment', compact( 'shipment','request'))->render()
@@ -45,7 +49,7 @@ class ShipmentsController extends Controller
     }
 
     public function store(Request $request){
-
+        //dd($request);
         $shipment = Shipment::firstOrNew(['id' => $request['id']]);
 
 
@@ -94,63 +98,58 @@ class ShipmentsController extends Controller
         $shipment->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
-        foreach($request['products'] as $id => $product) {
+        $shipment_data = [];
+        foreach($request['products'] as $store_id => $products) {
+            foreach($products as $id => $product) {
+
+                #Целевой товар
+                $article = Article::where('id', $product['id'])->first();
+
+                $store = Store::owned()->where('id', $store_id)->first();
+
+                if($shipment->exists){
+                    #Добавляем на склад исходное кол - во...
+                    $store->increaseArticleCount($id, $shipment->getArticlesCountById($id));
+                    #Отнимаем со склада новое кол-во...
+                    $store->decreaseArticleCount($id, $product['count']);
+
+                } else {
+                    #Отнимаем со склада кол-во...
+                    $store->decreaseArticleCount($id, $product['count']);
+                }
+
+                $vcount = $product['count'];
+                $vprice = $product['price'];
+
+                $vtotal = $vprice * $vcount;
+
+                $shipment->summ += $vtotal;
 
 
-            #Целевой товар
-            $article = Article::where('id', $product['id'])->first();
+                $article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
 
-            $store_id = 1;
-            $store = Store::owned()->where('id', $store_id)->first();
+                ### Пересчёт кол-ва с учетом предыдущего поступления #######################################
+                #$store->articles()->syncWithoutDetaching($actor_product->id);
+                #$beforeCount = $entrance->getArticlesCountById($actor_product->id);
+                #$count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
+                #$count - Текущее кол-во на складе в наличии
+                #############################################################################################
 
-            if($shipment->exists){
-                #Добавляем на склад исходное кол - во...
-                $store->increaseArticleCount($id, $shipment->getArticlesCountById($id));
-                #Отнимаем со склада новое кол-во...
-                $store->decreaseArticleCount($id, $product['count']);
+                $pivot_data = [
+                    'store_id' => $store_id,
+                    'article_id' => $id,
+                    'shipment_id' => $shipment->id,
+                    'count' => $vcount,
+                    'price' => $vprice,
+                    'total' => $vtotal
+                ];
 
-            } else {
-                #Отнимаем со склада кол-во...
-                $store->decreaseArticleCount($id, $product['count']);
+                $shipment_data[] = $pivot_data;
             }
-
-
-
-            $vcount = $product['count'];
-            $vprice = $product['price'];
-
-            $vtotal = $vprice * $vcount;
-
-            $shipment->summ += $vtotal;
-
-
-            $article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
-
-            ### Пересчёт кол-ва с учетом предыдущего поступления #######################################
-//            $store->articles()->syncWithoutDetaching($actor_product->id);
-//            $beforeCount = $entrance->getArticlesCountById($actor_product->id);
-//            $count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
-            //$count - Текущее кол-во на складе в наличии
-            #############################################################################################
-
-            $pivot_data = [
-                'store_id' => 1,
-                'count' => $vcount,
-                'price' => $vprice,
-                'total' => $vtotal
-            ];
-
-
-            if($article_shipment > 0){
-                $shipment->articles()->updateExistingPivot($product['id'], $pivot_data);
-            } else {
-                $shipment->articles()->save($article, $pivot_data);
-            }
-
-            //$store->articles()->updateExistingPivot($article->id, ['count' => $count]);
         }
 
-        $shipment->articles()->sync(array_column($request['products'], 'id'));
+        #Удаление всех отношений и запись новых (кастомный sync)
+        $shipment->syncArticles($shipment->id, $shipment_data);
 
         if($request['inpercents']){
             $shipment->itogo = $shipment->summ - ($shipment->summ / 100 * $request['discount']);
@@ -181,7 +180,7 @@ class ShipmentsController extends Controller
         $shipment = Shipment::where('id', $id)->first();
 
         return response()->json([
-            'products' => $shipment->articles()->get()]);
+            'products' => $shipment->getArticles()]);
     }
 
     public static function getShipments($request)

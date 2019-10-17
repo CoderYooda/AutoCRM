@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Model\Catalog\Product;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Shipment;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -48,32 +49,40 @@ class ProductController extends Controller
         ]);
     }
 
-    public function addToList(Request $request){
+    public function addToList(Request $request)
+    {
+        $article = Article::where('id', $request['article_id'])
+            ->first();
 
-        //$request TODO
-        //d($request);
-        //d($request);
-
-        $product = Article::where('id', $request['article_id'])->first();
-        if(!$product){
+        if(!$article){
             return response()->json([
                 'message' => 'Товар не найден, возможно он был удалён',
             ], 422);
         }
-        if(!$product->canUserTake()){
+        if(!$article->canUserTake()){
             return response()->json([
                 'message' => 'Доступ к этому товару запрещен.',
             ], 422);
         }
+
+
+
+
         if($request['type'] && $request['type'] === 'shipment'){
+            $product = new StdClass();
+
+            $product->store_id = $request['store_id'];
+            $product->count = $request['count'];
+            $product->price = 1;
+            $product->total = 0;
+            $product->product = $article;
             $content = view('shipments.dialog.product_element', compact('product', 'request'))->render();
         } else {
+            $product = $article;
             $content = view('entrance.dialog.product_element', compact('product', 'request'))->render();
         }
         return response()->json([
-            'id' => $product->id,
-            'store_id' => $request['store_id'],
-            'count' => $request['count'],
+            'product' => $product,
             'html' => $content
         ]);
     }

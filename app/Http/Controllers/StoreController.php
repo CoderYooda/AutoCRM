@@ -192,4 +192,8 @@ class StoreController extends Controller
     {
         return Store::where('company_id', Auth::user()->id)->get();
     }
+
+    public static function getStoreById($id){
+        return Store::owned()->where('id', $id)->first();
+    }
 }

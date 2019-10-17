@@ -64,6 +64,12 @@ class Article extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function shipments()
+    {
+        return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'article_id', 'shipment_id')
+            ->withPivot('count', 'price', 'total', 'store_id', 'shipment_id');
+    }
+
     public function getCountInStoreId($store_id)
     {
         $article = $this->stores()->where('id', $store_id)->first();

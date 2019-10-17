@@ -130,20 +130,28 @@ class createEntrance{
         this.recalculate();
     }
 
-    addProduct(id){
+    addProduct(elem){
         var object = this;
+
+        let article_id = elem.dataset.article_id;
+        let count = elem.closest('div').querySelector('input[name="count"]').value
+
         window.axios({
             method: 'post',
-            url: 'product/'+ id +'/addtolist',
-            data: {refer:this.root_dialog.id}
+            url: 'product/addtolist',
+            data: {
+                refer:this.root_dialog.id,
+                article_id:article_id,
+                count:count,
+            }
         }).then(function (resp) {
 
             var isset = object.items.map(function(e){
                 return e.id;
-            }).indexOf(resp.data.id)
+            }).indexOf(resp.data.product.id);
 
             if(isset < 0){
-                object.addItem({id:resp.data.id, html:resp.data.html});
+                object.addItem({id:resp.data.product.id, html:resp.data.html});
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
@@ -153,6 +161,7 @@ class createEntrance{
             window.isXHRloading = false;
         });
     };
+
 
     selectPartner(id){
         var object = this;

@@ -11,20 +11,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(AdministratorSeed::class);
+        //$this->call(AdministratorSeed::class);
         $this->call(SupplierSeed::class);
         $this->call(CategorySeed::class);
         $this->call(DDSSeeder::class);
         $this->call(ContractTypesSeeder::class);
-        $this->call(CreateBasePartners::class);
+        //$this->call(CreateBasePartners::class);
         $this->call(SettingsSeed::class);
-        $this->call(WarrantSeed::class);
-        $this->call(MoneymoveSeed::class);
-        $this->call(ArticleSeed::class);
-        $this->call(EntranceSeed::class);
-        $this->call(ShipmentSeed::class);
-        $this->call(ClientOrderSeed::class);
-        $this->call(SalarySchemasSeed::class);
+        //$this->call(WarrantSeed::class);
+        //$this->call(MoneymoveSeed::class);
+//        $this->call(ArticleSeed::class);
+//        $this->call(EntranceSeed::class);
+//        $this->call(ShipmentSeed::class);
+//        $this->call(ClientOrderSeed::class);
+//        $this->call(SalarySchemasSeed::class);
 
     }
 }
