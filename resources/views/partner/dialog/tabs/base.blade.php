@@ -13,8 +13,9 @@
                 @endif
             </select>
             <div class="input-group-append">
-                <button onclick="openDialog('selectCategory', @if(isset($partner))'&selected_category_id={{ $partner->category_id }}'@else'&selected_category_id=3'@endif);"
+                <button onclick="{{ $class }}.openSelectCategoryDialog()"
                         class="btn white" type="button"><i class="fa fa-bars"></i></button>
+                {{--@if(isset($partner)) {{ $partner->category_id }} @else 3 @endif--}}
             </div>
         </div>
     </div>

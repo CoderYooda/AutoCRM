@@ -105,15 +105,32 @@ class CategoryController extends Controller
         ], $this->status);
     }
 
-    public static function addCategoryDialog($request)
+    public static function categoryDialog($request)
     {
         if($request['category_select']){
             $start_category_id = $request['category_select'];
         } else {
             $start_category_id = 2;
         }
-        $parent = Category::where('id', $start_category_id)->first();
-        return response()->json(['tag' => 'createCategory', 'html' => view('category.dialog.form_category', compact('parent'))->render()]);
+        $parent = Category::owned()->where('id', $start_category_id)->first();
+        return response()->json([
+            'tag' => 'categoryDialog',
+            'html' => view('category.dialog.form_category', compact('parent', 'request'))->render()
+        ]);
+    }
+
+    public function select($id)
+    {
+        $category = Category::owned()->where('id', $id)->first();
+        if(!$category){
+            return response()->json([
+                'message' => 'Категория не найдена, возможно она была удалёна',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $category->id,
+            'name' => $category->name
+        ]);
     }
 
     public static function editCategoryDialog($request)
@@ -124,7 +141,7 @@ class CategoryController extends Controller
             abort(404);
         }
 
-        $category = Category::where('id', $category_id)->first();
+        $category = Category::owned()->where('id', $category_id)->first();
 
         return response()->json(['tag' => 'editCategory', 'html' => view('category.dialog.form_category', compact('category'))->render()]);
     }
@@ -135,22 +152,26 @@ class CategoryController extends Controller
         return response()->json(['html' => view('category.dialog.select_category_inner', compact('category'))->render()]);
     }
 
+
+
     public static function selectCategoryDialog($request)
     {
         $selected_id = 1;
         if($request['selected_category_id'] != null){
             $selected_id = $request['selected_category_id'];
         }
-
-        $category = Category::where('id', (int)$selected_id)->with('childs')->first();
-        return response()->json(['tag' => 'selectCategory', 'html' => view('category.dialog.select_category', compact('category'))->render()]);
+        $category = Category::where('id', (int)$selected_id)->first();
+        return response()->json([
+            'tag' => 'selectCategory',
+            'html' => view('category.dialog.select_category', compact('category', 'request'))->render()
+        ]);
     }
 
     public static function getCategory($request, $root){
         if($request['category_id'] != NULL){
-            $category = Category::where('id', $request['category_id'])->first();
+            $category = Category::owned()->where('id', $request['category_id'])->first();
         } else {
-            $category = Category::where('id', $root)->first();
+            $category = Category::owned()->where('id', $root)->first();
         }
         return $category;
     }
@@ -162,18 +183,19 @@ class CategoryController extends Controller
         if($request['category_id'] != null){
             $category_id = (int)$request['category_id'];
         }else if($type != null) {
-            $category_id = Category::where('type', $type)->first()->id;
+            $category_id = Category::owned()->where('type', $type)->first()->id;
         }
+
         $parent = Category::where('id',$category_id)->first();
 
         if($parent == null){
             abort(404);
         }
 
-        $categories['stack'] = $parent->childs()->where('company_id', Auth::user()->company()->first()->id)->orderBy('created_at', 'DESC')->get();
+        $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
         $categories['parent'] = $parent;
         } else {
-            $categories['stack'] = Category::where(function($q) use ($request){
+            $categories['stack'] = Category::owned()->where(function($q) use ($request){
                 $q->where('name', 'like', '%' . $request['search'] . '%');
             })->get();
             $categories['parent'] = null;

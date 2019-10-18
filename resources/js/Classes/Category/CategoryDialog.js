@@ -1,10 +1,12 @@
 
-class ProductDialog{
+class CategoryDialog{
 
     constructor(dialog){
 
-        console.log('Окно создания товара инициализировано');
+        console.log('Окно создания категории инициализировано');
         this.root_dialog = dialog;
+        console.log(dialog.querySelector("#refer").value);
+        //this.refer = dialog.querySelector("#refer").value;
         // this.search_obj = dialog.querySelector("#product_search");
         // this.store_obj = dialog.querySelector("#product_search_store");
         // this.results_obj = dialog.querySelector("#search_product_results");
@@ -25,13 +27,5 @@ class ProductDialog{
         });
     }
 
-    openCategoryModal(category_selected = null){
-        window.openDialog('Dialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
-    }
-
-    openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategoryDialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
-    }
-
 }
-export default ProductDialog;
+export default CategoryDialog;

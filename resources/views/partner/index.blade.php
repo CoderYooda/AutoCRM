@@ -44,7 +44,7 @@
                         </div>
                     </form>
                     <span class="m-b btn-groups pl-1">
-                        <button onclick="openDialog('createCategory', '&category_select=3')" class="btn btn-sm white mb-0">Новая категория</button>
+                        <button onclick="openDialog('categoryDialog', '&category_select=3')" class="btn btn-sm white mb-0">Новая категория</button>
                         <button onclick="openDialog('partnerDialog')" class="btn btn-sm white mb-0">Новый контрагент</button>
                     </span>
                 </div>

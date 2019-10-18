@@ -28,6 +28,7 @@ class RegisterController extends Controller
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
         $request['name'] = $request['fio'];
+        //dd($request);
         //SmsController::sendTo($data['phone']);
         return Validator::make($request->all(), [
             'fio' => ['required', 'string', 'max:255'],

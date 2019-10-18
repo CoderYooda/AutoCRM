@@ -13,20 +13,20 @@ class DialogController extends Controller
             case 'selectSupplier':
                 $dialog = SupplierController::addSupplierDialog($request);
                 break;
-            case 'createCategory':
-                $dialog = CategoryController::addCategoryDialog($request);
+            case 'categoryDialog':
+                $dialog = CategoryController::categoryDialog($request);
                 break;
-            case 'editCategory':
-                $dialog = CategoryController::editCategoryDialog($request);
+            case 'selectCategory':
+                $dialog = CategoryController::selectCategoryDialog($request);
                 break;
+//            case 'editCategory':
+//                $dialog = CategoryController::editCategoryDialog($request);
+//                break;
             case 'productDialog':
                 $dialog = ProductController::productDialog($request);
                 break;
             case 'selectProduct':
                 $dialog = ProductController::selectProductDialog($request);
-                break;
-            case 'selectCategory':
-                $dialog = CategoryController::selectCategoryDialog($request);
                 break;
             case 'partnerDialog':
                 $dialog = PartnerController::partnerDialog($request);

@@ -19,7 +19,7 @@ class CategorySeed extends Seeder
             'id' => 1,
             'name' => 'Корневая директория',
             'category_id' => 0,
-            'company_id' => 1,
+            'company_id' => null,
             'creator_id' => 1,
             'locked' => true,
             'type' => 'main',
@@ -45,9 +45,9 @@ class CategorySeed extends Seeder
             'type' => 'partner',
         ]);
 
-        Category::create(['id' => 5, 'name' => 'Сотрудники', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => true, 'type' => 'employee',]);
-        Category::create(['id' => 6, 'name' => 'Партнеры', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-        Category::create(['id' => 7, 'name' => 'Покупатели', 'category_id' => 3, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+        Category::create(['id' => 5, 'name' => 'Сотрудники', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'employee',]);
+        Category::create(['id' => 6, 'name' => 'Поставщики', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'partner',]);
+        //Category::create(['id' => 7, 'name' => 'Покупатели', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
 
         Category::create([
             'id' => 4,
@@ -59,27 +59,27 @@ class CategorySeed extends Seeder
             'type' => 'dds',
         ]);
 
-        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'dds',]);
+        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'dds',]);
 
-        $json = json_decode(file_get_contents('public/demo/numenclatures.json'));
-        
-        $this->command->getOutput()->progressStart(count($json->categories));
-
-        foreach($json->categories as $cat){
-            $category = Category::create(['name' => $cat->name, 'category_id' => 2, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-            if($cat->childs != NULL){
-                foreach($cat->childs as $cat){
-                    $category2 = Category::create(['name' => $cat->name, 'category_id' => $category->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-                    if($cat->childs != NULL){
-                        foreach($cat->childs as $cat){
-                            $category3 = Category::create(['name' => $cat->name, 'category_id' => $category2->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-                        }
-                    }
-                }
-            }
-            $this->command->getOutput()->progressAdvance();
-        }
-        $this->command->getOutput()->progressFinish();
+//        $json = json_decode(file_get_contents('public/demo/numenclatures.json'));
+//
+//        $this->command->getOutput()->progressStart(count($json->categories));
+//
+//        foreach($json->categories as $cat){
+//            $category = Category::create(['name' => $cat->name, 'category_id' => 2, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+//            if($cat->childs != NULL){
+//                foreach($cat->childs as $cat){
+//                    $category2 = Category::create(['name' => $cat->name, 'category_id' => $category->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+//                    if($cat->childs != NULL){
+//                        foreach($cat->childs as $cat){
+//                            $category3 = Category::create(['name' => $cat->name, 'category_id' => $category2->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
+//                        }
+//                    }
+//                }
+//            }
+//            $this->command->getOutput()->progressAdvance();
+//        }
+//        $this->command->getOutput()->progressFinish();
     }
 }

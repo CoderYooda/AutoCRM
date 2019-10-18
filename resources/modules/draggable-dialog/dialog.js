@@ -187,6 +187,7 @@ function flashDialog(tag){
 }
 
 function dialogPosition(tag){
+    console.log(tag);
 	var position = [];
 	var dialog = document.getElementById(tag);
 	position.x = (window.innerWidth - dialog.clientWidth) / 2;

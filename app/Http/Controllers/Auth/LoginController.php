@@ -54,7 +54,9 @@ class LoginController extends Controller
 
     protected function validateLogin(Request $request)
     {
+
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
+        //
         $request->validate([
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11'],
             'password' => 'required|string',
@@ -105,4 +107,5 @@ class LoginController extends Controller
         }
 
     }
+
 }

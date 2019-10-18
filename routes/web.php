@@ -32,9 +32,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
     Route::post('/categories/new', 'CategoryController@store')->name('StoreCategory');
     Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
+    Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
 
     #Продукты
-
     Route::get('/store/test', 'ProductController@test')->name('test');
     Route::post('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/store', 'ProductController@store')->name('StoreProduct');

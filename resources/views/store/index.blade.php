@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <span class="m-b btn-groups pl-1">
-                        <button onclick="openDialog('createCategory')" class="btn btn-sm white mb-0">Новая категория</button>
+                        <button onclick="openDialog('categoryDialog')" class="btn btn-sm white mb-0">Новая категория</button>
                         <button onclick="openDialog('productDialog')" class="btn btn-sm white mb-0">Новый товар</button>
                     </span>
                 </div>

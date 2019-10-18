@@ -23,13 +23,12 @@ class registerPage{
                         country: 'Россия'
                     },
                     {
-                        mask: '+{7} (000) 000-00-00',
+                        mask: '{8} (000) 000-00-00',
                         startsWith: '8',
                         lazy: false,
                         country: 'Россия'
                     }
                 ],
-                lazy: false,
                 dispatch: function (appended, dynamicMasked) {
                     var number = (dynamicMasked.value + appended).replace(/\D/g,'');
 

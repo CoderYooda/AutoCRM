@@ -4,6 +4,7 @@ import productDialog from "./Product/ProductDialog";
 import selectPartnerDialog from "./Partner/SelectPartnerDialog";
 import selectCashboxDialog from "./Cashbox/SelectCashboxDialog";
 import selectDdsarticleDialog from "./Ddsarticle/SelectDdsarticleDialog";
+import selectCategoryDialog from "./Category/SelectCategoryDialog";
 import partnerDialog from "./Partner/PartnerDialog";
 import cashboxDialog from "./Cashbox/CashboxDialog";
 import ddsarticleDialog from "./Ddsarticle/DdsarticleDialog";
@@ -11,6 +12,7 @@ import warrantDialog from "./Warrant/WarrantDialog";
 import moneymoveDialog from "./MoneyMove/MoneymoveDialog";
 import barcodeDialog from "./Barcode/BarcodeDialog";
 import shipmentDialog from "./Shipment/ShipmentDialog";
+import categoryDialog from "./Category/CategoryDialog";
 import clientorderDialog from "./ClientOrder/ClientOrderDialog";
 import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
 import partnerPage from "./Partner/PartnerPage";
@@ -34,6 +36,7 @@ const classes = {
     selectPartnerDialog,
     selectCashboxDialog,
     selectDdsarticleDialog,
+    selectCategoryDialog,
     partnerDialog,
     cashboxDialog,
     ddsarticleDialog,
@@ -42,7 +45,8 @@ const classes = {
     shipmentDialog,
     clientorderDialog,
     providerorderDialog,
-    barcodeDialog
+    barcodeDialog,
+    categoryDialog,
 };
 
 const pages = {

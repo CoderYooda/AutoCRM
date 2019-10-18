@@ -15,7 +15,7 @@ class SupplierController extends Controller
 
     public static function addSupplierDialog($request)
     {
-        $suppliers = Supplier::where('company_id', Auth::user()->company()->first()->id)->get();
+        $suppliers = Supplier::owned()->get();
         return response()->json(['tag' => 'selectSupplier', 'html' => view('supplier.dialog.list_suppliers', compact('suppliers'))->render()]);
     }
 

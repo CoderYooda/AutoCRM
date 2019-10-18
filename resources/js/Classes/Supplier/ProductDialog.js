@@ -25,13 +25,5 @@ class ProductDialog{
         });
     }
 
-    openCategoryModal(category_selected = null){
-        window.openDialog('Dialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
-    }
-
-    openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategoryDialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
-    }
-
 }
 export default ProductDialog;

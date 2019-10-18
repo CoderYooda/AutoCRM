@@ -16,12 +16,20 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsTo('App\Models\Category', 'category_id');
+        return $this->belongsTo('App\Models\Category', 'category_id')
+            ->where(function($q){
+                $company_id = Auth::user()->company()->first()->id;
+                $q->where('company_id', $company_id)->orWhere('company_id', 1)->orWhere('company_id', NUll);
+            });
     }
 
     public function childs()
     {
-        return $this->hasMany('App\Models\Category', 'category_id');
+        return $this->hasMany('App\Models\Category', 'category_id')
+            ->where(function($q){
+                $company_id = Auth::user()->company()->first()->id;
+                $q->where('company_id', $company_id)->orWhere('company_id', 1)->orWhere('company_id', NUll);
+            });
     }
 
     public function articles()
@@ -56,6 +64,8 @@ class Category extends Model
 
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
+        return self::where(function($q) use ($company_id){
+            $q->where('company_id', $company_id)->orWhere('company_id', NUll);
+        });
     }
 }

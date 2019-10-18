@@ -57,15 +57,20 @@ class registerPage{
             //     phone:object.phoneMask._unmaskedValue
             // }
         }).then(function (resp) {
-            console.log(resp);
-            if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK'){
+            console.log(resp.data.sms);
+            if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK') {
+
                 object.smsBox.classList.add('d-block');
-            } else if(resp.data && resp.data.redirect !== 'undefined'){
-                console.log(resp.data);
-                window.location.replace(resp.data.redirect);
-            } else {
+
+            } else  if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'ERROR'){
+
                 object.info.classList.remove('hide');
                 object.info.querySelector('.box-body').innerHTML = resp.data.sms.status_text;
+
+            } else if(resp.data && resp.data.redirect !== 'undefined' && resp.data.redirect !== null){
+                window.location.replace(resp.data.redirect);
+            } else {
+                console.log(11);
             }
         }).catch(function (error) {
 
@@ -75,8 +80,6 @@ class registerPage{
             window.helper.removeClassesByClass('is-invalid');
 
             if(error.response && error.response.data.messages){
-
-                console.log(123);
                 for(let error_stack in error.response.data.messages){
                     let error_stack_arr = error_stack.split('.');
 
@@ -117,13 +120,13 @@ class registerPage{
                     {
                         mask: '+{7} (000) 000-00-00',
                         startsWith: '7',
-                        lazy: true,
+                        lazy: false,
                         country: 'Россия'
                     },
                     {
                         mask: '{8} (000) 000-00-00',
                         startsWith: '8',
-                        lazy: true,
+                        lazy: false,
                         country: 'Россия'
                     }
                 ],

@@ -25,9 +25,51 @@ class AdministratorSeed extends Seeder
         $user = User::create([
             'name' => 'Yooda',
             'email' => 'CoderYooda@gmail.com',
+            'phone' => '79524365062',
+            'company_id' => $company->id,
+            'password' => bcrypt('senatorov616322')
+        ]);
+
+        $user->save();
+        $user->company()->associate($company);
+        $company->stores()->save($store);
+
+
+        $company = new Company();
+        $company->name = 'Тестовый магазин';
+        $company->save();
+
+        $store = new Store();
+        $store->name = 'Основной склад';
+        $store->company_id = $company->id;
+
+        $user = User::create([
+            'name' => 'Сергей ',
+            'email' => 'CoderYooda2@gmail.com',
             'phone' => '79524365064',
             'company_id' => $company->id,
             'password' => bcrypt('senatorov616322')
+        ]);
+
+        $user->save();
+        $user->company()->associate($company);
+        $company->stores()->save($store);
+
+
+        $company = new Company();
+        $company->name = 'Дизайнерский магазин';
+        $company->save();
+
+        $store = new Store();
+        $store->name = 'Основной склад';
+        $store->company_id = $company->id;
+
+        $user = User::create([
+            'name' => 'Сергей',
+            'email' => 'Teftela@mail.ru',
+            'phone' => '89878148690',
+            'company_id' => $company->id,
+            'password' => bcrypt('123456789')
         ]);
 
         $user->save();

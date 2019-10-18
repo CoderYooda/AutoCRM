@@ -1,19 +1,20 @@
 <div
-    @if(isset($parent))
-        id="createCategory"
-    @elseif(isset($category))
-        id="editCategory"
+    @if(isset($category) && $category->id != NULL)
+        id="categoryDialog{{$category->id}}"
+    @php $class = 'categoryDialog' . $category->id @endphp
+    @else
+        id="categoryDialog"
+    @php $class = 'categoryDialog' @endphp
     @endif
 
     class="dialog" style="width:380px;">
     @if(isset($category))
-        <div class="titlebar">Редактируем "{{ $category->name }}"</div>
+        <div class="titlebar">Редактирование "{{ $category->name }}"</div>
     @else
         <div class="titlebar">Новая категория</div>
     @endif
 
-    <button class="btn_close" onclick="closeDialog(event)">×</button>
-    <form action="{{ route('StoreCategory') }}" method="POST">
+    <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <div class="box mb-0">
         <div class="box-body">
             @csrf
