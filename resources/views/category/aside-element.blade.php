@@ -9,7 +9,7 @@
      </a>
     @if(!$category->locked)
         <div class="actions" style="opacity: 0">
-            <a onclick="openDialog('editCategory', '&category_id={{ $category->id }}')"><i class="fa fa-pencil"></i></a>
+            <a onclick="openDialog('categoryDialog', '&category_id={{ $category->id }}')"><i class="fa fa-pencil"></i></a>
             {{--<a onclick="category.remove({{ $category->id }})"><i class="fa fa-remove"></i></a>--}}
             <a onclick="entity.remove('category', {{ $category->id }})"><i class="fa fa-remove"></i></a>
         </div>

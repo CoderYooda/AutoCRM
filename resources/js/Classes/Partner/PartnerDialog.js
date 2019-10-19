@@ -33,8 +33,8 @@ class partnerDialog{
         window.openDialog('categoryDialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
 
-    openSelectCategoryDialog(){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id);
+    openSelectCategoryDialog(category_selected = null){
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
 
     selectCategory(id){

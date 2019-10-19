@@ -1,5 +1,5 @@
 var io = require('socket.io')(6001,{
-        origins :'autocrm:*'
+        origins :'autocrm:* 192.168.1.64:*'
     }),
     request = require('request'),
     Redis = require('ioredis'),

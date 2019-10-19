@@ -1,5 +1,5 @@
 @if($products->count() > 0)
-    <div id="product_select_accordion">
+    <div id="product_select_accordion" >
     @foreach($products as $product)
         <div class="list-item inblocked" data-id="{{ $product->id }}">
             <div class="inblock">

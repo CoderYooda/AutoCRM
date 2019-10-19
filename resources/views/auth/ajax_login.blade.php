@@ -5,8 +5,8 @@
             <div class="mt-3 font-bold title-sess">Сессия была завершена</div>
         </div>
         <div class="md-form-group">
-            <input type="text" name="email" class="md-input text-center">
-            <label class="block w-100">Логин</label>
+            <input type="text" name="phone" class="md-input text-center">
+            <label class="block w-100">Телефон</label>
         </div>
         <div class="md-form-group">
             <input type="password" name="password" class="md-input text-center">

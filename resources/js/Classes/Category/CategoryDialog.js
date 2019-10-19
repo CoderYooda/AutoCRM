@@ -5,7 +5,8 @@ class CategoryDialog{
 
         console.log('Окно создания категории инициализировано');
         this.root_dialog = dialog;
-        console.log(dialog.querySelector("#refer").value);
+        this.init();
+        //console.log(dialog.querySelector("#refer").value);
         //this.refer = dialog.querySelector("#refer").value;
         // this.search_obj = dialog.querySelector("#product_search");
         // this.store_obj = dialog.querySelector("#product_search_store");
@@ -14,9 +15,21 @@ class CategoryDialog{
         //this.searchInit();
     }
 
+    init(){
+        let object = this;
+        document.addEventListener("PartnerSelected", function(){
+            object.finitaLaComedia();
+        });
+    }
+
+
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
+    }
+
+    openSelectCategoryDialog(category_selected = null){
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
 
     save(elem){

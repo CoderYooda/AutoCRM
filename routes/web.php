@@ -30,7 +30,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Категории
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
-    Route::post('/categories/new', 'CategoryController@store')->name('StoreCategory');
+    Route::post('/category/store', 'CategoryController@store')->name('StoreCategory');
     Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
 

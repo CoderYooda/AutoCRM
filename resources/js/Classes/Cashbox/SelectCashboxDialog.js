@@ -2,13 +2,16 @@ class selectCashboxDialog{
     constructor(dialog){
         console.log('Окно выбора кассового аппарата инициализировано');
         this.root_dialog = dialog;
-        this.refer = dialog.querySelector("#refer").value;
+        this.refer = null;
+        this.type = null;
         this.active = true;
         this.init();
     }
 
     init(){
         let object = this;
+        object.refer = object.root_dialog.querySelector("#refer").value;
+        object.type = object.root_dialog.querySelector("#type").value;
         object.searchInit();
         document.addEventListener("CashboxSelected", function(){
             object.finitaLaComedia();
@@ -62,6 +65,9 @@ class selectCashboxDialog{
         data.string = string;
         if(object.refer){
             data.refer = object.refer;
+        }
+        if(object.type){
+            data.type = object.type;
         }
 
         window.axios({

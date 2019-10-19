@@ -23,7 +23,7 @@ class AdministratorSeed extends Seeder
         $store->company_id = $company->id;
 
         $user = User::create([
-            'name' => 'Yooda',
+            'name' => 'Администратор',
             'email' => 'CoderYooda@gmail.com',
             'phone' => '79524365062',
             'company_id' => $company->id,
@@ -33,7 +33,7 @@ class AdministratorSeed extends Seeder
         $user->save();
         $user->company()->associate($company);
         $company->stores()->save($store);
-
+        #######################################
 
         $company = new Company();
         $company->name = 'Тестовый магазин';
@@ -44,7 +44,7 @@ class AdministratorSeed extends Seeder
         $store->company_id = $company->id;
 
         $user = User::create([
-            'name' => 'Сергей ',
+            'name' => 'Сергей',
             'email' => 'CoderYooda2@gmail.com',
             'phone' => '79524365064',
             'company_id' => $company->id,
@@ -55,7 +55,7 @@ class AdministratorSeed extends Seeder
         $user->company()->associate($company);
         $company->stores()->save($store);
 
-
+        #############################################
         $company = new Company();
         $company->name = 'Дизайнерский магазин';
         $company->save();

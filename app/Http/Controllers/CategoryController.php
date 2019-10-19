@@ -28,8 +28,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'string', 'max:255'],
-            'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
+            'name' => ['required', 'min:3', 'string', 'max:120'],
+            'category_id' => ['required', 'min:0', 'max:12', 'exists:categories,id'],
         ]);
 
         if($validation->fails()){
@@ -107,15 +107,25 @@ class CategoryController extends Controller
 
     public static function categoryDialog($request)
     {
+        $tag = 'categoryDialog';
+
+        if($request['category_id']){
+            $tag .= $request['category_id'];
+            $category = Category::owned()->where('id', (int)$request['category_id'])->first();
+        } else {
+            $category = null;
+        }
+
         if($request['category_select']){
             $start_category_id = $request['category_select'];
         } else {
             $start_category_id = 2;
         }
+
         $parent = Category::owned()->where('id', $start_category_id)->first();
         return response()->json([
-            'tag' => 'categoryDialog',
-            'html' => view('category.dialog.form_category', compact('parent', 'request'))->render()
+            'tag' => $tag,
+            'html' => view('category.dialog.form_category', compact('category', 'parent', 'request'))->render()
         ]);
     }
 
@@ -148,23 +158,60 @@ class CategoryController extends Controller
 
     public function enterDialog(Request $request)
     {
-        $category = Category::where('id', (int)$request['category_id'])->with('childs')->first();
-        return response()->json(['html' => view('category.dialog.select_category_inner', compact('category'))->render()]);
+        $class = 'selectCategoryDialog';
+        $data = self::findSelectedId($request);
+        $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
+        $root = $data['root'];
+        return response()->json([
+            'html' => view('category.dialog.select_category_inner', compact('root', 'class', 'category', 'request'))->render()
+        ]);
     }
-
-
 
     public static function selectCategoryDialog($request)
     {
-        $selected_id = 1;
-        if($request['selected_category_id'] != null){
-            $selected_id = $request['selected_category_id'];
-        }
-        $category = Category::where('id', (int)$selected_id)->first();
+        $data = self::findSelectedId($request);
+        $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
+        $root = $data['root'];
         return response()->json([
-            'tag' => 'selectCategory',
-            'html' => view('category.dialog.select_category', compact('category', 'request'))->render()
+            'tag' => 'selectCategoryDialog',
+            'html' => view('category.dialog.select_category', compact('root', 'category', 'request'))->render()
         ]);
+    }
+
+    private static function findSelectedId($request){
+        $selected_id = null;
+        $root = null;
+        if($request['refer']){
+            if(strpos($request['refer'], 'partnerDialog') !== false){
+                $root = 3;
+            }else if(strpos($request['refer'], 'employeeDialog') !== false){
+                $root = 5;
+            }else if(strpos($request['refer'], 'categoryDialog') !== false){
+                $root = 1;
+            }else if(strpos($request['refer'], 'productDialog') !== false){
+                $root = 2;
+            } else {
+                return response()->json([
+                    'message' => 'Не указан рефер',
+                ], 422);
+            }
+        } else {
+            return response()->json([
+                'message' => 'Не найден рефер окна.',
+            ], 422);
+        }
+        if($request['category_selected'] != null
+            && $request['category_selected'] != 'null'
+            && $request['category_selected'] != 'undefined'
+        ){
+            $selected_id = $request['category_selected'];
+        }
+        if($selected_id == null){
+            $selected_id = $root;
+        }
+        $data['selected_id'] = $selected_id;
+        $data['root'] = $root;
+        return $data;
     }
 
     public static function getCategory($request, $root){
@@ -223,7 +270,9 @@ class CategoryController extends Controller
 
     public static function rec($category, $root){
         self::$breadcrumbs->prepend($category);
+
         $parent = $category->parent()->first();
+
         if($parent != null && $parent->id != 1 && $category->id != $root){
             self::rec($parent, $root);
         }

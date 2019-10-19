@@ -7,9 +7,11 @@ class Socket{
         this.socket = null;
         this.channel = 'system:message';
         this.systemChannel = 'app_base_channel:systemMessage';
-        this.init();
+        //this.init();
         this.ownChannel = null;
+        this.allowedOrigins = "192.168.1.64:* autocrm:*";
         console.log('Сокеты подключены');
+
     }
 
     init(){
@@ -28,7 +30,7 @@ class Socket{
 
     connect(){
         let object = this;
-        object.socket = io(':6001');
+        object.socket = io('autocrm:6001',{origins:object.allowedOrigins});
         object.socket.on('connect', function(){
             object.socket.emit('subscribe', object.channel);
             object.socket.emit('subscribe',  object.ownChannel);

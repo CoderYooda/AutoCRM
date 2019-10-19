@@ -7,6 +7,9 @@
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
+            @if($request['type'])
+                <input id="type" type="hidden" name="type" value="{{ $request['type'] }}">
+            @endif
             <div class="input-group">
                 <input id="cashbox_search" type="text" class="form-control form-control-sm search" placeholder="Поиск кассового аппарата" required="">
                 <span class="input-group-append">

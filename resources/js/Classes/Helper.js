@@ -78,9 +78,6 @@ class Helper{
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
                     }
-
-
-
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }
             });
