@@ -30,7 +30,7 @@
                         <table class="table table-hover mb-3" style="white-space: nowrap;">
                             <thead>
                             <tr>
-                                <th class="w-xxl">Модель1</th>
+                                <th class="w-xxl">Модель</th>
                                 <th class="w-sm">Артикул</th>
                                 <th>Бренд</th>
                                 <th>Наличие</th>

@@ -139,7 +139,7 @@ class shipmentDialog{
             elem.addEventListener("paste", fn);
             elem.addEventListener("delete", fn);
         });
-        //this.recalculate();
+        this.recalculate();
     }
 
     finitaLaComedia(){
