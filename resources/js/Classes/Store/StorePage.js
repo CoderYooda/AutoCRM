@@ -45,6 +45,10 @@ class storePage{
             object.prepareParams();
             object.reload();
         });
+        document.addEventListener('CategoryStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
         object.initShipmentDates();
         //simplebar(document.getElementById('fof'));
     }

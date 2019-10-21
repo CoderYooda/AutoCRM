@@ -24,7 +24,6 @@ class CategoryController extends Controller
         dd($categories);
     }
 
-
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -73,7 +72,7 @@ class CategoryController extends Controller
                 'message' => 'Категория сохранена',
 //                'container' => $category->getRootType() . '_categories',
 //                'html' => $content,
-                'redirect' => $request->headers->get('referer')
+                'event' => 'CategoryStored'
             ]);
         } else {
             return redirect()->back();
@@ -143,6 +142,21 @@ class CategoryController extends Controller
         ]);
     }
 
+    public function dialogSearch(Request $request)
+    {
+        $categories = Category::owned()
+            ->where(function($q) use ($request){
+                $q->where('name', 'LIKE', '%' . $request['string'] .'%');
+            })
+            //->whereH()
+            ->orderBy('name', 'DESC')->limit(10)->get();
+        $searching = true;
+        $content = view('category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
+        return response()->json([
+            'html' => $content
+        ], 200);
+    }
+
     public static function editCategoryDialog($request)
     {
         if($request['params']){
@@ -172,9 +186,10 @@ class CategoryController extends Controller
         $data = self::findSelectedId($request);
         $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
         $root = $data['root'];
+        $searching = false;
         return response()->json([
             'tag' => 'selectCategoryDialog',
-            'html' => view('category.dialog.select_category', compact('root', 'category', 'request'))->render()
+            'html' => view('category.dialog.select_category', compact('root', 'searching', 'category', 'request'))->render()
         ]);
     }
 

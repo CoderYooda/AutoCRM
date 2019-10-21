@@ -12,6 +12,13 @@ class ProductDialog{
         //this.searchInit();
     }
 
+    init(){
+        let object = this;
+        // document.addEventListener("ProductStored", function(){
+        //     object.finitaLaComedia();
+        // });
+    }
+
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
@@ -27,6 +34,10 @@ class ProductDialog{
 
     openSelectCategoryDialog(category_selected = null){
         window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
+    }
+
+    openSelectSupplierDialog(){
+        window.openDialog('selectSupplier', '&refer=' + this.root_dialog.id);
     }
 
     selectCategory(id){
@@ -54,10 +65,34 @@ class ProductDialog{
         });
     };
 
+    selectSupplier(id){
+        var object = this;
+        window.axios({
+            method: 'post',
+            url: 'suppliers/'+ id +'/select',
+            data: {refer:this.root_dialog.id}
+        }).then(function (resp) {
+
+            let select = object.root_dialog.querySelector('select[name=supplier_id]');
+            let input = object.root_dialog.querySelector('input[name=supplier_id]');
+            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            input.value = resp.data.id;
+            select.innerHTML = str;
+            window.notification.notify( 'success', 'Производитель выбран');
+            document.dispatchEvent(new Event('SupplierSelected', {bubbles: true}));
+            console.log("Событие SupplierSelected вызвано");
+            //closeDialog(event);
+
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    };
+
     openCategoryModal(category_selected = null){
         window.openDialog('Dialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
-
 
 }
 export default ProductDialog;

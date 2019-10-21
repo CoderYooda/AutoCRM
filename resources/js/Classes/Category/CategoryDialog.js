@@ -17,8 +17,8 @@ class CategoryDialog{
 
     init(){
         let object = this;
-        document.addEventListener("PartnerSelected", function(){
-            object.finitaLaComedia();
+        document.addEventListener("CategorySelected", function(){
+           // object.finitaLaComedia();
         });
     }
 
@@ -31,6 +31,8 @@ class CategoryDialog{
     openSelectCategoryDialog(category_selected = null){
         window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
+
+
 
     save(elem){
         if(window.isXHRloading) return;

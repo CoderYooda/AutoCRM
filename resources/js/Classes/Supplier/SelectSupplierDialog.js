@@ -1,22 +1,21 @@
 
-class selectCategoryDialog{
+class SelectSupplierDialog{
 
     constructor(dialog){
 
-        console.log('Окно выбора категории инициализировано');
+        console.log('Окно производителя инициализировано');
         this.root_dialog = dialog;
+        this.search_obj = dialog.querySelector("#supplier_search");
+        // this.store_obj = dialog.querySelector("#product_search_store");
+        this.results_obj = dialog.querySelector("#search_supplier_results");
         this.refer = dialog.querySelector("#refer").value;
-        this.search_obj = dialog.querySelector("#category_search");
-        this.results_obj = dialog.querySelector("#search_category_results");
-        this.active = true;
         this.searchInit();
         this.init();
     }
 
     init(){
         let object = this;
-        //object.refer = object.root_dialog.querySelector("#refer").value;
-        document.addEventListener("CategorySelected", function(){
+        document.addEventListener("SupplierSelected", function(){
             object.finitaLaComedia();
         });
     }
@@ -30,12 +29,16 @@ class selectCategoryDialog{
         this.search_obj.addEventListener("keydown", searchFn);
         this.search_obj.addEventListener("paste", searchFn);
         this.search_obj.addEventListener("delete", searchFn);
-        document.addEventListener("CategoryStored", searchFn);
+        document.addEventListener("SupplierStored", searchFn);
     }
 
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
+    }
+
+    openSupplierDialog(){
+        window.openDialog('supplierDialog', '&refer=' + this.root_dialog.id);
     }
 
     save(elem){
@@ -46,38 +49,20 @@ class selectCategoryDialog{
         });
     }
 
-    openCategoryDialog(){
-        window.openDialog('categoryDialog', '&refer=' + this.root_dialog.id);
-    }
-
-    select(id) {
-        if (isXHRloading) { return; }
-        let object = this;
-        window.axios({
-            method: 'get',
-            url: 'categories/dialog/enter?category_selected=' + id + '&refer=' + object.refer,
-        }).then(function (resp) {
-            object.results_obj.innerHTML = resp.data.html;
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-    };
-
     search(){
         let object = this;
         var string = this.search_obj.value;
 
         let data = {};
         data.string = string;
+        data.searching = false;
         if(object.refer){
             data.refer = object.refer;
         }
 
         window.axios({
             method: 'post',
-            url: 'category/dialog/search',
+            url: 'suppliers/dialog/search',
             data: data,
         }).then(function (resp) {
             object.results_obj.innerHTML = resp.data.html;
@@ -87,5 +72,6 @@ class selectCategoryDialog{
         }).finally(function () {
         });
     }
+
 }
-export default selectCategoryDialog;
+export default SelectSupplierDialog;

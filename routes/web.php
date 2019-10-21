@@ -21,8 +21,10 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Статистика и панель управления
     Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
 
-//    #Производители
-//    Route::get('/suppliers', 'SupplierController@index')->name('Categories');
+    #Производители
+    Route::post('/suppliers/store', 'SupplierController@store')->name('StoreSupplier');
+    Route::post('/suppliers/dialog/search', 'SupplierController@dialogSearch')->name('SupplierDialogSearch');
+    Route::post('/suppliers/{id}/select', 'SupplierController@select')->name('SelectSupplier');
 
     #Настройки
     Route::get('/settings', 'SettingsController@index')->name('SettingsIndex'); // Строгое название
@@ -30,6 +32,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Категории
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
+    Route::post('/category/dialog/search', 'CategoryController@dialogSearch')->name('CategoryDialogSearch');
     Route::post('/category/store', 'CategoryController@store')->name('StoreCategory');
     Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');

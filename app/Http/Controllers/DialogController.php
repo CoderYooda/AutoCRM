@@ -11,7 +11,10 @@ class DialogController extends Controller
     {
         switch ($tag) {
             case 'selectSupplier':
-                $dialog = SupplierController::addSupplierDialog($request);
+                $dialog = SupplierController::selectSupplierDialog($request);
+                break;
+            case 'supplierDialog':
+                $dialog = SupplierController::supplierDialog($request);
                 break;
             case 'categoryDialog':
                 $dialog = CategoryController::categoryDialog($request);

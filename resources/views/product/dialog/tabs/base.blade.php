@@ -40,7 +40,7 @@
                 @endif
             </select>
             <div class="input-group-append">
-                <button onclick="openDialog('selectSupplier');" class="btn white" type="button"><i class="fa fa-bars"></i></button>
+                <button onclick="{{ $class }}.openSelectSupplierDialog()" class="btn white" type="button"><i class="fa fa-bars"></i></button>
             </div>
         </div>
     </div>

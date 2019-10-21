@@ -1,9 +1,9 @@
 
-class ProductDialog{
+class SupplierDialog{
 
     constructor(dialog){
 
-        console.log('Окно создания товара инициализировано');
+        console.log('Окно создания производителя инициализировано');
         this.root_dialog = dialog;
         // this.search_obj = dialog.querySelector("#product_search");
         // this.store_obj = dialog.querySelector("#product_search_store");
@@ -26,4 +26,4 @@ class ProductDialog{
     }
 
 }
-export default ProductDialog;
+export default SupplierDialog;

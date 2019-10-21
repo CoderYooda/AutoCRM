@@ -15,6 +15,8 @@ import shipmentDialog from "./Shipment/ShipmentDialog";
 import categoryDialog from "./Category/CategoryDialog";
 import clientorderDialog from "./ClientOrder/ClientOrderDialog";
 import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
+import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
+import supplierDialog from "./Supplier/SupplierDialog";
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
 import settingsPage from "./Settings/SettingsPage";
@@ -47,6 +49,8 @@ const classes = {
     providerorderDialog,
     barcodeDialog,
     categoryDialog,
+    selectSupplierDialog,
+    supplierDialog,
 };
 
 const pages = {
