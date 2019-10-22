@@ -12,6 +12,10 @@ class moneymoveDialog{
         document.addEventListener('MoneymoveStored', function(e){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('moneymove_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

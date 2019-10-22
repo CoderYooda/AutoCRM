@@ -21,7 +21,7 @@
 
     <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>ФИО</label>
-        <input type="text" name="fio"
+        <input type="text" name="fio" id="partner_dialog_focused"
                @if(isset($partner)) value="{{ $partner->fio }}" @endif
                class="form-control entrance" placeholder="ФИО" @if(isset($partner) && !$partner['isfl']) disabled @endif>
     </div>

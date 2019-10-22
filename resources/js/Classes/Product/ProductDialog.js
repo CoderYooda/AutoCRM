@@ -10,6 +10,7 @@ class ProductDialog{
         // this.results_obj = dialog.querySelector("#search_product_results");
         // this.refer = dialog.querySelector("#refer").value;
         //this.searchInit();
+        this.init();
     }
 
     init(){
@@ -17,6 +18,10 @@ class ProductDialog{
         // document.addEventListener("ProductStored", function(){
         //     object.finitaLaComedia();
         // });
+        let focused = document.getElementById('product_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     finitaLaComedia(){

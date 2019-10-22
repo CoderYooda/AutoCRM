@@ -3,6 +3,7 @@ class selectPartnerDialog {
         console.log('Окно выбора контрагента инициализировано');
         this.root_dialog = dialog;
         this.refer = dialog.querySelector("#refer").value;
+        this.search_obj = dialog.querySelector("#partner_search");
         this.active = true;
         this.init();
         //PartnerStored
@@ -14,6 +15,10 @@ class selectPartnerDialog {
         document.addEventListener("PartnerSelected", function(){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('select_partner_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     finitaLaComedia(){
@@ -45,12 +50,12 @@ class selectPartnerDialog {
 
     search(el){
         let object = this;
-        var string = el.value;
+        //var string = el.value;
 
         if (isXHRloading) { return; } window.isXHRloading = true;
 
         let data = {};
-        data.string = string;
+        data.string = object.search_obj.value;
         if(object.refer){
             data.refer = object.refer;
         }

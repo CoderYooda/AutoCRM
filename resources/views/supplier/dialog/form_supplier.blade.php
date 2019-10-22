@@ -25,7 +25,7 @@
 
                 <div class="form-group mb-0">
                     <label for="category_id">Наименование</label>
-                    <input type="text"
+                    <input type="text" id="supplier_dialog_focused"
                     @if(isset($supplier))
                         value="{{ $supplier->name }}"
                     @endif

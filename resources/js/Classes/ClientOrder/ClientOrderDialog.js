@@ -37,6 +37,10 @@ class clientorderDialog{
             object.finitaLaComedia();
         });
         this.loadItemsIfExists();
+        let focused = document.getElementById('clientorder_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

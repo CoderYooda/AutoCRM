@@ -1,10 +1,10 @@
 <div class="tab-pane p-3 active" id="{{$class}}_tab_base">
     <div class="form-group">
         <label>Наименование</label>
-        <input type="text" name="name"
+        <input type="text" name="name" id="product_dialog_focused"
                @if(isset($product)) value="{{ $product->name }}" @endif
                @if(isset($request['provided_name'])) value="{{ $request['provided_name'] }}" @endif
-               class="form-control" placeholder="Наименование (не более 255 символов)">
+               class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
     </div>
     <div class="form-group">
         <label for="category_id">В категории</label>

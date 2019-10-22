@@ -16,6 +16,10 @@ class selectCashboxDialog{
         document.addEventListener("CashboxSelected", function(){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('select_cashbox_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

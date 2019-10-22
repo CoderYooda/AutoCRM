@@ -1,11 +1,22 @@
 class AxForm{
-    send(elem, callback = null){
 
+    setActionButtons(boolean, elem){
+        let state;
+        if(boolean){
+            elem.removeAttribute('disabled');
+        } else {
+            elem.setAttribute('disabled', true);
+        }
+
+    }
+
+    send(elem, callback = null){
+        let object = this;
         var dialog = elem.closest(".dialog");
         window.event.preventDefault();
         var form = elem.closest("form");
         var data = new FormData(form);
-
+        object.setActionButtons(false, elem);
         axios({
             method: form.getAttribute("method"),
             url: form.getAttribute("action"),
@@ -38,7 +49,7 @@ class AxForm{
             callback();
 
             //rebuildLinks();
-
+            object.setActionButtons(true, elem);
         }).catch(function (error) {
             helper.removeElementsByClass('nv-helper');
             helper.removeClassesByClass('is-invalid');
@@ -85,7 +96,10 @@ class AxForm{
             if(error.response && error.response.data.message){
                 notification.notify( 'error', error.response.data.message);
             }
-        }).finally();
+            object.setActionButtons(true, elem);
+        }).finally(function(){
+            object.setActionButtons(true, elem);
+        });
     }
 }
 export default AxForm;

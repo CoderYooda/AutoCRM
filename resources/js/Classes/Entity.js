@@ -22,7 +22,6 @@ class Entity{
                     method: 'POST',
                     url: tag + '/' + id + '/delete',
                 }).then(function (resp) {
-                    console.log(tag + '_' + resp.data.id);
                     var element = document.getElementById(tag + '_' + resp.data.id);
                     let type = 'success';
                     if(resp.data.type != null){
@@ -31,6 +30,11 @@ class Entity{
                     if(type === 'success'){
                         element.remove();
                     };
+                    if(resp.data.event){
+                        let event = new Event(resp.data.event, {bubbles: true});
+                        document.dispatchEvent(event);
+                        console.log("Событие " + resp.data.event + " объявлено");
+                    }
                     notification.notify( type, resp.data.message);
 
 

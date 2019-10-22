@@ -4,44 +4,27 @@ class partnerDialog{
         console.log('Окно партнера инициализировано');
         this.root_dialog = dialog;
         this.active = true;
-        this.actionButtons = null;
         this.init();
     }
 
     init(){
         let object = this;
-        object.actionButtons = object.root_dialog.querySelectorAll('.action_button')
-
         window.flatpickr(".date_picker", {
             dateFormat: "Y-m-d",
         });
         this.addPhoneMask();
         this.addPassportMask();
-
+        let focused = document.getElementById('partner_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
         //elem.addEventListener("click", this.activateTab('fl'));
     }
-
-    setActionButtons(boolean){
-        [].forEach.call(this.actionButtons, function(actionButton){
-            let state
-            if(boolean){
-                state = 'enabled';
-            } else {
-                state = 'disabled';
-            }
-            actionButton.attr('disabled', state);
-        });
-    }
-
-
     save(elem){
         let object = this;
         if(!window.isXHRloading){
-            object.setActionButtons(false);
-            let object = this;
             window.axform.send(elem, function(e){
                 object.finitaLaComedia();
-                object.setActionButtons(true);
             });
         }
     }

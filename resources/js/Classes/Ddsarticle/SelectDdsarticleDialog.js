@@ -13,6 +13,10 @@ class selectDdsarticleDialog{
         document.addEventListener("DdsarticleSelected", function(){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('select_ddsarticle_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

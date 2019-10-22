@@ -10,6 +10,14 @@ class SupplierDialog{
         // this.results_obj = dialog.querySelector("#search_product_results");
         // this.refer = dialog.querySelector("#refer").value;
         //this.searchInit();
+        this.init();
+    }
+
+    init(){
+        let focused = document.getElementById('supplier_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     finitaLaComedia(){

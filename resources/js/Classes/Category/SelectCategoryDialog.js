@@ -20,6 +20,10 @@ class selectCategoryDialog{
         document.addEventListener("CategorySelected", function(){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('select_category_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     searchInit(){

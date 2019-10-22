@@ -11,6 +11,14 @@ class SelectProductDialog{
         this.refer = dialog.querySelector("#refer").value;
         this.searchInit();
         this.markAsAdded();
+        this.init();
+    }
+
+    init(){
+        let focused = document.getElementById('select_product_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     finitaLaComedia(){

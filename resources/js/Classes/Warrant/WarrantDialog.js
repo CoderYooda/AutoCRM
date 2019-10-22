@@ -12,6 +12,10 @@ class warrantDialog{
         document.addEventListener('WarrantStored', function(e){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('warrant_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

@@ -12,6 +12,10 @@ class cashboxDialog{
         document.addEventListener("CashboxStored", function(){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('cashbox_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

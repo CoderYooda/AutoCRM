@@ -22,7 +22,9 @@ class partnerPage{
 
         document.addEventListener('PartnerStored', function(e){
             object.reloadPage();
-            console.log(123);
+        });
+        document.addEventListener('PartnerRemoved', function(e){
+            object.reloadPage();
         });
     }
 

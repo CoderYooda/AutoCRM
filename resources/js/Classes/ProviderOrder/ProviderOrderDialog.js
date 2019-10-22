@@ -37,6 +37,10 @@ class providerOrderDialog{
             object.finitaLaComedia();
         });
         this.loadItemsIfExists();
+        let focused = document.getElementById('providerorder_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

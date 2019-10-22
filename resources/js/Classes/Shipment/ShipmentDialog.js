@@ -36,6 +36,10 @@ class shipmentDialog{
             object.finitaLaComedia();
         });
         this.loadItemsIfExists();
+        let focused = document.getElementById('shipment_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

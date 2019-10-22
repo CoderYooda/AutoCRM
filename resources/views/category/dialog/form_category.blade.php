@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group mb-0">
                     <label for="category_id">Наименование</label>
-                    <input type="text"
+                    <input type="text" id="category_dialog_focused"
                     @if(isset($category))
                         value="{{ $category->name }}"
                     @endif

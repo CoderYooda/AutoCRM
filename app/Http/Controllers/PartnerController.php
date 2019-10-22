@@ -157,7 +157,10 @@ class PartnerController extends Controller
         }
 
 
-        return response()->json(['id' => $partner->id, 'message' => $message], $status);
+        return response()->json([
+            'id' => $partner->id,
+            'event' => 'PartnerRemoved',
+            'message' => $message], $status);
     }
 
     private static function validateRules($request)

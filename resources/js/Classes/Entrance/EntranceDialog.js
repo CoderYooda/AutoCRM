@@ -23,6 +23,10 @@ class createEntrance{
             object.finitaLaComedia();
         });
         this.loadItemsIfExists();
+        let focused = document.getElementById('employee_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     save(elem){

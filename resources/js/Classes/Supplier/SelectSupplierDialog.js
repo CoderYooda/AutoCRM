@@ -18,6 +18,10 @@ class SelectSupplierDialog{
         document.addEventListener("SupplierSelected", function(){
             object.finitaLaComedia();
         });
+        let focused = document.getElementById('select_supplier_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
     }
 
     searchInit(){
