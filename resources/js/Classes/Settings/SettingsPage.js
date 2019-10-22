@@ -14,6 +14,10 @@ class settingsPage{
         object.checkActive();
     }
 
+    linked(){
+        let object = this;
+    }
+
     checkActive(){
         let className = window.location.pathname.substring(1);
         let link = document.getElementById('settings_link');

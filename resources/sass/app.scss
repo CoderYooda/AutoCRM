@@ -445,3 +445,6 @@ hr.fc-divider {
 .transition-70ms{
     transition: all 70ms ease-in-out 0s;
 }
+.loading, .loading a, .loading button, .loading input, .loading select{
+    cursor: progress!important;
+}

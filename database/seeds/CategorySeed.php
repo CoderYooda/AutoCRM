@@ -47,6 +47,7 @@ class CategorySeed extends Seeder
 
         Category::create(['id' => 5, 'name' => 'Сотрудники', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'employee',]);
         Category::create(['id' => 6, 'name' => 'Поставщики', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'partner',]);
+        Category::create(['id' => 7, 'name' => 'Клиенты', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'client',]);
         //Category::create(['id' => 7, 'name' => 'Покупатели', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
 
         Category::create([

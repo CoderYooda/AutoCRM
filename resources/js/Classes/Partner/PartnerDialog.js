@@ -4,10 +4,14 @@ class partnerDialog{
         console.log('Окно партнера инициализировано');
         this.root_dialog = dialog;
         this.active = true;
+        this.actionButtons = null;
         this.init();
     }
 
     init(){
+        let object = this;
+        object.actionButtons = object.root_dialog.querySelectorAll('.action_button')
+
         window.flatpickr(".date_picker", {
             dateFormat: "Y-m-d",
         });
@@ -16,12 +20,30 @@ class partnerDialog{
 
         //elem.addEventListener("click", this.activateTab('fl'));
     }
-    save(elem){
-        if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(e){
-            object.finitaLaComedia();
+
+    setActionButtons(boolean){
+        [].forEach.call(this.actionButtons, function(actionButton){
+            let state
+            if(boolean){
+                state = 'enabled';
+            } else {
+                state = 'disabled';
+            }
+            actionButton.attr('disabled', state);
         });
+    }
+
+
+    save(elem){
+        let object = this;
+        if(!window.isXHRloading){
+            object.setActionButtons(false);
+            let object = this;
+            window.axform.send(elem, function(e){
+                object.finitaLaComedia();
+                object.setActionButtons(true);
+            });
+        }
     }
 
     finitaLaComedia(){

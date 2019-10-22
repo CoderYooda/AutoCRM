@@ -6,6 +6,7 @@ class selectCategoryDialog{
         console.log('Окно выбора категории инициализировано');
         this.root_dialog = dialog;
         this.refer = dialog.querySelector("#refer").value;
+        this.root = dialog.querySelector("#root").value;
         this.search_obj = dialog.querySelector("#category_search");
         this.results_obj = dialog.querySelector("#search_category_results");
         this.active = true;
@@ -23,7 +24,6 @@ class selectCategoryDialog{
 
     searchInit(){
         let object = this;
-        console.log(object.search_obj, object.results_obj, object.refer,);
         var searchFn = window.helper.debounce(function(e) {
             object.search(e);
         }, 400);
@@ -71,6 +71,10 @@ class selectCategoryDialog{
 
         let data = {};
         data.string = string;
+
+        if(object.root){
+            data.root = object.root;
+        }
         if(object.refer){
             data.refer = object.refer;
         }

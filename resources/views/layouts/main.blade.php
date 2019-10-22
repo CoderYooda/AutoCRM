@@ -78,6 +78,9 @@
                             <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                         </a>
                     </li>
+                    <li id="shedule_link" class="nav-item">
+                        <input id="xhr" type="text">
+                    </li>
                 </ul>
             </div>
         </div>

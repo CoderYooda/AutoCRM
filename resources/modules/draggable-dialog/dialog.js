@@ -52,37 +52,59 @@ window.openDialog = function(tag, params = null, reload = false) {
         e.preventDefault();
     }
 	if (isXHRloading) { return; }
-	let dReq = new XMLHttpRequest();
-	window.isXHRloading = true;
-    dReq.onreadystatechange = function (e) {
-        if (dReq.readyState === 4) {
-            var resp = JSON.parse(this.responseText);
-            if(dReq.status === 200){
-                var resp = JSON.parse(this.responseText);
-                if(!alreadyOpened(resp.tag) || reload){
-                    closeDialog(null, resp.tag);
-                    appendDialog(resp, resp.tag);
-                    window.helper.initDialogMethods();
-                }
-                window.isXHRloading = false;
-            }else{
-                window.notification.notify( 'error', resp.message);
-                window.isXHRloading = false;
-            }
+    window.isXHRloading = true;
+    if(params != null){
+        params = '?params=1' + params;
+    } else {
+        params = '';
+    }
+    //
+    window.axios({
+        method: 'get',
+        url: 'dialog_' + tag + '_open' + params
+    }).then(function (resp) {
+        if(!alreadyOpened(resp.data.tag) || reload){
+            closeDialog(null, resp.data.tag);
+            appendDialog(resp.data, resp.data.tag);
+            window.helper.initDialogMethods();
         }
-    };
-	dReq.onload = function () {
+        window.isXHRloading = false;
+    }).catch(function (error) {
+        window.notification.notify( 'error', error.message);
+        window.isXHRloading = false;
+    }).finally(function () {
+        window.isXHRloading = false;
+    });
 
-	};
 
-	if(params != null){
-		params = '?params=1' + params;
-	} else {
-		params = '';
-	}
 
-	dReq.open("get", 'dialog_' + tag + '_open' + params, true);
-	dReq.send();
+	// let dReq = new XMLHttpRequest();
+	// window.isXHRloading = true;
+    // dReq.onreadystatechange = function (e) {
+    //     if (dReq.readyState === 4) {
+    //         var resp = JSON.parse(this.responseText);
+    //         if(dReq.status === 200){
+    //             var resp = JSON.parse(this.responseText);
+    //             if(!alreadyOpened(resp.tag) || reload){
+    //                 closeDialog(null, resp.tag);
+    //                 appendDialog(resp, resp.tag);
+    //                 window.helper.initDialogMethods();
+    //             }
+    //             window.isXHRloading = false;
+    //         }else{
+    //             window.notification.notify( 'error', resp.message);
+    //             window.isXHRloading = false;
+    //         }
+    //     }
+    // };
+	// dReq.onload = function () {
+    //
+	// };
+
+
+    //
+	// dReq.open("get", 'dialog_' + tag + '_open' + params, true);
+	// dReq.send();
 }
 
 window.closeDialog = function(event, id = null){

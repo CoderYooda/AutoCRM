@@ -19,6 +19,7 @@ class CreateCashboxesTable extends Migration
             $table->char('name')->comment('Название кассового аппарата');
             $table->integer('balance')->comment('текущий баланс');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

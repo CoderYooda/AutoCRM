@@ -144,17 +144,32 @@ class CategoryController extends Controller
 
     public function dialogSearch(Request $request)
     {
-        $categories = Category::owned()
-            ->where(function($q) use ($request){
-                $q->where('name', 'LIKE', '%' . $request['string'] .'%');
-            })
-            //->whereH()
-            ->orderBy('name', 'DESC')->limit(10)->get();
-        $searching = true;
-        $content = view('category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
-        return response()->json([
-            'html' => $content
-        ], 200);
+        $root_category = Category::owned()->where('id', $request['root'])->first();
+
+
+        if($request['string'] != null && $request['string'] != '' && $request['string'] != 'undefined'){
+            $categories = Category::owned()
+                ->where(function($q) use ($request){
+                    $q->where('name', 'LIKE', '%' . $request['string'] .'%');
+                })
+                ->where('type',  $root_category->type )
+                ->orderBy('name', 'DESC')->limit(10)->get();
+            $searching = true;
+            $content = view('category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
+            return response()->json([
+                'html' => $content
+            ], 200);
+        } else {
+            $data = self::findSelectedId($request);
+            $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
+            $root = $data['root'];
+            $searching = false;
+            return response()->json([
+                'tag' => 'selectCategoryDialog',
+                'html' => view('category.dialog.select_category_inner', compact('root', 'searching', 'category', 'request'))->render()
+            ]);
+        }
+
     }
 
     public static function editCategoryDialog($request)
@@ -176,8 +191,9 @@ class CategoryController extends Controller
         $data = self::findSelectedId($request);
         $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
         $root = $data['root'];
+        $searching = false;
         return response()->json([
-            'html' => view('category.dialog.select_category_inner', compact('root', 'class', 'category', 'request'))->render()
+            'html' => view('category.dialog.select_category_inner', compact('root', 'class', 'searching', 'category', 'request'))->render()
         ]);
     }
 

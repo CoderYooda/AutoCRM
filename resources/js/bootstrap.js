@@ -25,8 +25,6 @@ window.axios.defaults.headers.common['Accept'] = '*';
 
 window.token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
-
-
     // XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
     // XMLHttpRequest.prototype.open   = function () {
     //     this.origOpen.apply(this, arguments);
@@ -40,6 +38,31 @@ if (token) {
 } else {
     console.warn('CSRF токен не выдан, возможно Вы не авторизованы в системе');
 }
+
+axios.interceptors.request.use(function (config) {
+    document.body.classList.add('loading');
+    return config;
+}, function (error) {
+    document.body.classList.remove('loading');
+    window.isXHRloading = false;
+    return Promise.reject(error);
+});
+
+setInterval(function(){
+    document.getElementById('xhr').value = window.isXHRloading;
+}, 50);
+
+window.axios.interceptors.response.use(function (response) {
+    document.body.classList.remove('loading');
+    window.isXHRloading = false;
+    return response;
+}, function (error) {
+    document.body.classList.remove('loading');
+    window.isXHRloading = false;
+    return Promise.reject(error);
+}, function(e){
+
+});
 
 
 window.ih =  window.innerHeight;

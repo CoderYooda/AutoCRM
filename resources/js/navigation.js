@@ -79,16 +79,52 @@ const ajaxRequest = new (function () {
     }
 
     function getPage (sPage, callback = null) {
-        if (isXHRloading) { return; }
-        oReq = new XMLHttpRequest();
-        isXHRloading = true;
-        oReq.onload = ajaxLoad;
-        oReq.onreadystatechange = callback;
-        oReq.onerror = ajaxError;
+        if (window.isXHRloading) { return; }
+        window.isXHRloading = true;
         if (sPage) { oPageInfo.url = filterURL(sPage, null); }
-        oReq.open("get", filterURL(oPageInfo.url, "json"), true);
-        oReq.setRequestHeader('Accept','application/json');
-        oReq.send();
+        window.axios({
+            method: 'get',
+            url: filterURL(oPageInfo.url, "json")
+        }).then(function (resp) {
+            document.title = oPageInfo.title = resp.data.page;
+            oPageInfo.class = resp.data.class;
+
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            //document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            if (bUpdateURL) {
+                history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
+                bUpdateURL = false;
+            }
+            let tabs = document.querySelectorAll('.nav li');
+            [].forEach.call(tabs, function(li){
+                li.classList.remove('active');
+                if(window.helper.findGetParameter('active_tab') === li.dataset.tab){
+                    li.classList.add('active');
+                } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){
+                    li.classList.add('active');
+                }
+            });
+            rebuildLinks();
+            document.dispatchEvent(new Event('ajaxLoaded', {bubbles: true}));
+            removePreloaders();
+            window.isXHRloading = false;
+        }).catch(function (error) {
+            console.log(error);
+            window.isXHRloading = false;
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+
+
+        // oReq = new XMLHttpRequest();
+        // isXHRloading = true;
+        // oReq.onload = ajaxLoad;
+        // oReq.onreadystatechange = callback;
+        // oReq.onerror = ajaxError;
+        // if (sPage) { oPageInfo.url = filterURL(sPage, null); }
+        // oReq.open("get", filterURL(oPageInfo.url, "json"), true);
+        // oReq.setRequestHeader('Accept','application/json');
+        // oReq.send();
     }
 
     function requestPage (sURL) {

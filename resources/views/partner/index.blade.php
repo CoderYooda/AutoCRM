@@ -17,7 +17,7 @@
             <div class="modal-dialog d-flex flex-column w-md light lt">
                 @include('category.aside-list')
                 <div class="p-2 mt-auto p-3">
-                    <form action="{{ route('StoreCategory') }}" method="POST">
+                    <form onsubmit="axform.send(this)" action="{{ route('StoreCategory') }}" method="POST">
                         @csrf
                         <input class="category_select" type="hidden" name="category_id" value="@if(isset($categories['parent'])){{ $categories['parent']->id }}@else 3 @endif">
                         <div class="input-group">

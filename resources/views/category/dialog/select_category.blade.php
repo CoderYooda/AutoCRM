@@ -10,6 +10,12 @@
             </div>
         </div>
     </div>
+    @if(isset($request['refer']))
+        <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
+    @endif
+    @if(isset($root) && $root !== null)
+        <input id="root" type="hidden" name="root" value="{{ $root }}">
+    @endif
     <div id="search_category_results" class="mh50-dialog white" data-simplebar style="max-height: 400px;">
         @include('category.dialog.select_category_inner')
     </div>
