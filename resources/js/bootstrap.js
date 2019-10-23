@@ -48,9 +48,9 @@ axios.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-setInterval(function(){
-    document.getElementById('xhr').value = window.isXHRloading;
-}, 50);
+// setInterval(function(){
+//     document.getElementById('xhr').value = window.isXHRloading;
+// }, 50);
 
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');

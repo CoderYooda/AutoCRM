@@ -145,8 +145,6 @@ class CategoryController extends Controller
     public function dialogSearch(Request $request)
     {
         $root_category = Category::owned()->where('id', $request['root'])->first();
-
-
         if($request['string'] != null && $request['string'] != '' && $request['string'] != 'undefined'){
             $categories = Category::owned()
                 ->where(function($q) use ($request){
@@ -265,6 +263,7 @@ class CategoryController extends Controller
         }
 
         $parent = Category::where('id',$category_id)->first();
+        dd($parent);
 
         if($parent == null){
             abort(404);
@@ -293,8 +292,6 @@ class CategoryController extends Controller
                 $html .= '<li class="breadcrumb-item"><a class="ajax-nav" href = "' . url()->current() . '?category_id=' . $breadcrumb->id . '" >' . $breadcrumb->name . '</a></li>';
             }
         }
-
-
         $html .= '</ol>';
         return $html;
     }

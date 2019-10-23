@@ -1,5 +1,6 @@
 @php $articles = \App\Http\Controllers\ProductController::getArticles($request) @endphp
 @php $category = \App\Http\Controllers\CategoryController::getCategory($request, 2) @endphp
+{{--{{ dd($category) }}--}}
 <div class="d-flex flex" style="height: 100%;">
     <div class="d-flex flex">
         <div class="fade aside aside-sm" id="content-aside">

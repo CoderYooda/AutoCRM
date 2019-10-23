@@ -37,7 +37,7 @@
                 <div class="navbar white no-radius box-shadow pos-rlt">
                     <form class="flex">
                         <div class="input-group">
-                            <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поск контрагента" required>
+                            <input id="partner_search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поск контрагента" required>
                         </div>
                     </form>
                     <span class="m-b btn-groups pl-1">

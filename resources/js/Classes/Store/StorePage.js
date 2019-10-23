@@ -7,6 +7,7 @@ class storePage{
         this.category_id = 2;
         this.page = 1;
         this.search = 'null';
+
         this.root_category = 2;
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
