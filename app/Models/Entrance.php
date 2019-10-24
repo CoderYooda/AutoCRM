@@ -31,6 +31,16 @@ class Entrance extends Model
         return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
     }
 
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Models\Store', 'store_id');
+    }
+
     public function normalizedData(){
        return $this->created_at->format('d.m.Y (H:i)');
     }

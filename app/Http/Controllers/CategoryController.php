@@ -256,21 +256,20 @@ class CategoryController extends Controller
     {
         if($request['search'] == null){
 
-        if($request['category_id'] != null){
-            $category_id = (int)$request['category_id'];
-        }else if($type != null) {
-            $category_id = Category::owned()->where('type', $type)->first()->id;
-        }
+            if($request['category_id'] != null){
+                $category_id = (int)$request['category_id'];
+            }else if($type != null) {
+                $category_id = Category::owned()->where('type', $type)->first()->id;
+            }
 
-        $parent = Category::where('id',$category_id)->first();
-        dd($parent);
+            $parent = Category::owned()->where('id',$category_id)->first();
 
-        if($parent == null){
-            abort(404);
-        }
+            if($parent == null){
+                abort(404);
+            }
 
-        $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
-        $categories['parent'] = $parent;
+            $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
+            $categories['parent'] = $parent;
         } else {
             $categories['stack'] = Category::owned()->where(function($q) use ($request){
                 $q->where('name', 'like', '%' . $request['search'] . '%');

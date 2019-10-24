@@ -22,10 +22,11 @@ class Shipment extends Model
 
     protected $guarded = [];
 
+
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
-            ->with('shipments');
+            ->with('shipments')->withPivot('store_id', 'count');
     }
 
     public function stores()

@@ -10,7 +10,7 @@
                 <th>Поставщик</th>
                 <th>Сумма</th>
                 <th>Комментарий</th>
-                <th style="width: 20px;text-align: center;"><i class="fa fa-lock"></i></th>
+                {{--<th style="width: 20px;text-align: center;"><i class="fa fa-lock"></i></th>--}}
                 <th style="width:60px;"></th>
             </tr>
             </thead>

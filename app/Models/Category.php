@@ -19,7 +19,7 @@ class Category extends Model
         return $this->belongsTo('App\Models\Category', 'category_id')
             ->where(function($q){
                 $company_id = Auth::user()->company()->first()->id;
-                $q->where('company_id', $company_id)->orWhere('company_id', 1)->orWhere('company_id', NUll);
+                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
             });
     }
 
@@ -28,7 +28,7 @@ class Category extends Model
         return $this->hasMany('App\Models\Category', 'category_id')
             ->where(function($q){
                 $company_id = Auth::user()->company()->first()->id;
-                $q->where('company_id', $company_id)->orWhere('company_id', 1)->orWhere('company_id', NUll);
+                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
             });
     }
 

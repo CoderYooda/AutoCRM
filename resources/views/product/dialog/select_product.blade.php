@@ -8,23 +8,23 @@
             <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
             <div class="input-group">
-                <span class="input-group-prepend">
-                    <select id="product_search_store" name="store_id" class="store_select form-control form-control-sm input-c">
-                        <option value="">Все товары</option>
-                        @foreach($stores as $store)
-                            <option value="{{ $store->id }}">{{ $store->name }}</option>
-                        @endforeach
-                    </select>
-                </span>
+                {{--<span class="input-group-prepend">--}}
+                    {{--<select id="product_search_store" name="store_id" class="store_select form-control form-control-sm input-c">--}}
+                        {{--<option value="">Все товары</option>--}}
+                        {{--@foreach($stores as $store)--}}
+                            {{--<option value="{{ $store->id }}">{{ $store->name }}</option>--}}
+                        {{--@endforeach--}}
+                    {{--</select>--}}
+                {{--</span>--}}
                 <input id="product_search" type="text" class="form-control form-control-sm search" placeholder="Поиск товара" required="">
 
                 <span class="input-group-append">
-                    <button onclick="openDialog('productDialog')" class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-plus"></i></button>
+                    <button onclick="openDialog('productDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новый товар</button>
                 </span>
             </div>
         </form>
     </div>
-    <div id="partner_list" class="mh50-dialog" data-simplebar style="height: 400px">
+    <div id="partner_list" class="mh50-dialog" data-simplebar style="max-height: 400px">
         <div id="search_product_results" class="nlborder list-group box mb-0" >
             @include('product.dialog.select_product_inner')
         </div>

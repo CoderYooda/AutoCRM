@@ -6,7 +6,7 @@
     <td>{{ $entrance->partner()->first()->outputName() }}</td>
     <td>{{ $entrance->totalPrice }}</td>
     <td>{{ $entrance->comment }}</td>
-    <td style="text-align: center;">@if($entrance->locked)<i class="fa fa-lock text-muted"></i>@endif</td>
+    {{--<td style="text-align: center;">@if($entrance->locked)<i class="fa fa-lock text-muted"></i>@endif</td>--}}
 
     <td style="position: relative;">
         <div class="item-action">

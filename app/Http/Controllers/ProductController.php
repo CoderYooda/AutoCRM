@@ -261,8 +261,9 @@ class ProductController extends Controller
                 $q->where('category_id', $category);
             }
             if($request['search'] != null) {
-                $q->where('name', 'LIKE', '%' . $request['search'] .'%');
-                $q->orWhere('article', 'LIKE', '%' . $request['search'] .'%');
+                $q->where('id', null);
+                $q->orWhere('name', 'LIKE', '%' . $request['search'] . '%');
+                $q->orWhere('article', 'LIKE', '%' . $request['search'] . '%');
                 $q->orWhere('barcode', 'LIKE', $request['search']);
                 $q->orWhere('barcode_local', 'LIKE', $request['search']);
                 $q->orWhere('storeCode', 'LIKE', $request['search']);

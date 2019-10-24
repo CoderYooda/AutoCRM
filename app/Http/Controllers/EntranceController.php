@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -46,11 +45,12 @@ class EntranceController extends Controller
             ], 422);
         }
 
-        $validation = Validator::make($request->all(), self::validateRules($request));
+        $validation = Validator::make($request->all(), self::validateRules());
 
-        if($request['nds'] === null){$request['nds'] = false;}
-        if($request['nds_included'] === null){$request['nds_included'] = false;}
-        if($request['locked'] === null){$request['locked'] = false;}
+        #Подготовка Request`a
+            if($request['nds'] === null){$request['nds'] = false;}
+            if($request['nds_included'] === null){$request['nds_included'] = false;}
+            if($request['locked'] === null){$request['locked'] = false;}
 
         if($validation->fails()){
             $this->status = 422;
@@ -59,85 +59,128 @@ class EntranceController extends Controller
             }
         }
 
-        if($entrance->exists){
-            $this->message = 'Поступление обновлено';
-        } else {
-            if(Auth::user() != null){
-                $entrance->company_id = Auth::user()->company()->first()->id;
-            } else {
-                $entrance->company_id = 1;
-            }
-            $this->message = 'Поступление сохранено';
+        if($entrance->exists) {
+            $old_store_id = $entrance->store_id;
+            $entranceWasExisted = true;
         }
-        $entrance->fill($request->only($entrance->fields));
-        $entrance->totalPrice = 0;
-        $entrance->save();
 
-        $store = Store::where('id', $request['store_id'])->first();
-
-        foreach($request['products'] as $id => $product) {
-
-            $vcount = $product['count'];
-            $vprice = $product['price'];
-            $vnds_percent = 20;
-
-            if($request['nds'] && !$request['nds_included']){
-                $vtotal = $vprice * $vcount;
-                $vnds = $vtotal / 100 * $vnds_percent;
-                $vtotal = $vnds + $vtotal;
-            } else if($request['nds'] && $request['nds_included']){
-                $vtotal = $vprice * $vcount;
-                $vnds = $vtotal / ( 100 + $vnds_percent ) * $vnds_percent;
-            } else {
-                $vtotal = $vprice * $vcount;
-                $vnds = 0.00;
-            }
-
-            $entrance->totalPrice += $vtotal;
-            $actor_product = Article::where('id', $product['id'])->first();
-            $article_entrance = $entrance->articles()->where('article_id', $product['id'])->count();
-
-            ### Пересчёт кол-ва с учетом предидущего поступления #######################################
-            $store->articles()->syncWithoutDetaching($actor_product->id);
-            $beforeCount = $entrance->getArticlesCountById($actor_product->id);
-            $count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
-            //$count - Текущее кол-во на складе в наличии
-            #############################################################################################
-
-            $pivot_data = [
-                'store_id' => $store->id,
-                'count' => $vcount,
-                'price' => $vprice,
-                'total' => $vtotal,
-                'nds' => round($vnds, 2),
-                'nds_percent' => round($vnds_percent, 2),
-                'nds_included' => $request['nds_included']
-            ];
-
-
-            if($article_entrance > 0){
-                $entrance->articles()->updateExistingPivot($product['id'], $pivot_data);
-            } else {
-                $entrance->articles()->save($actor_product, $pivot_data);
-            }
-
-            $store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
-        }
-        $entrance->save();
-
-        if($request['do_date'] != NULL){
-            $entrance->created_at = $request['do_date'];
+        # Предварительно сохраняем поступление
+            $entrance->fill($request->only($entrance->fields));
+            $entrance->totalPrice = 0;
+            $entrance->company_id = Auth::user()->company()->first()->id;
             $entrance->save();
+
+        # Склад с которым оперируем
+            if(isset($entranceWasExisted) && $entranceWasExisted) {
+                $store = Store::owned()->where('id', $old_store_id)->first();
+            } else {
+                $store = Store::owned()->where('id', $request['store_id'])->first();
+            }
+
+        # Исходные состояния товаров к поступлению до операции
+            $previous_article_entrance = $entrance->articles()->get();
+
+        # Собираем товары в массив id шников из Request`a
+            $plucked_articles = [];
+            foreach($request['products'] as $id => $product) {
+                $plucked_articles[] = $id;
+            }
+
+        # Синхронизируем товары к складу
+            Store::owned()->where('id', $request['store_id'])->first()
+                ->articles()->syncWithoutDetaching($plucked_articles, false);
+
+        if(isset($entranceWasExisted) && $entranceWasExisted) {
+            # Исходные состояния товаров к складу из поступления
+                $previous_article_store = $store->articles()
+                    ->whereIn('article_id', $previous_article_entrance
+                        ->pluck('id')
+                        )->get();
+            # Отнимаем со склада все изначальные товары
+                foreach($previous_article_store as $article){
+                    $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
+                }
         }
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $this->message,
-                'event' => 'EntranceStored',
-            ], 200);
-        } else {
-            return redirect()->back();
+
+        $article_entrance_pivot_data = [];
+        foreach($request['products'] as $id => $product) {
+            $article_entrance_pivot_data[$id] = self::calculatePivotArticleEntrance($request, $store, $product);
         }
+
+        # Синхронизируем товары к поступлению
+            $entrance->articles()->sync($article_entrance_pivot_data, true);
+
+        #Обработка ответа
+            if(isset($entranceWasExisted) && $entranceWasExisted) {
+                $this->message = 'Поступление обновлено';
+            } else {
+                if(Auth::user() != null){ // Проверка для сидирования
+                    $entrance->company_id = Auth::user()->company()->first()->id;
+                } else {
+                    $entrance->company_id = 1;
+                }
+                $this->message = 'Поступление сохранено';
+            }
+
+        #Сохраняем поступление
+            $entrance->fill($request->only($entrance->fields));
+            $entrance->totalPrice = $entrance->articles()->sum('total');
+            $entrance->save();
+
+        #Если указана дата - сохраняем
+            if($request['do_date'] != NULL){
+                $entrance->created_at = $request['do_date'];
+                $entrance->save();
+            }
+
+        # Добавляем на склад все товары из поступления
+            foreach($entrance->articles()->get() as $article){
+                Store::owned()->where('id', $request['store_id'])->first()
+                    ->increaseArticleCount($article->id, $article->pivot->count);
+            }
+
+        #Ответ сервера
+            if($request->expectsJson()){
+                return response()->json([
+                    'message' => $this->message,
+                    'event' => 'EntranceStored',
+                ], 200);
+            } else {
+                return redirect()->back();
+            }
+    }
+
+    private static function calculatePivotArticleEntrance($request, $store, $product){
+        ### Рассчет товара для поступления ##########################
+        $data = [];
+
+        $vcount = $product['count'];
+        $vprice = $product['price'];
+        $vnds_percent = 20;
+
+        if($request['nds'] && !$request['nds_included']){
+            $vtotal = $vprice * $vcount;
+            $vnds = $vtotal / 100 * $vnds_percent;
+            $vtotal = $vnds + $vtotal;
+        } else if($request['nds'] && $request['nds_included']){
+            $vtotal = $vprice * $vcount;
+            $vnds = $vtotal / ( 100 + $vnds_percent ) * $vnds_percent;
+        } else {
+            $vtotal = $vprice * $vcount;
+            $vnds = 0.00;
+        }
+
+        $data = [
+            'store_id' => $store->id,
+            'count' => $product['count'],
+            'price' => $product['price'],
+            'total' => $vtotal,
+            'nds' => round($vnds, 2),
+            'nds_percent' => round($vnds_percent, 2),
+            'nds_included' => $request['nds_included'],
+        ];
+        return $data;
     }
 
     public static function getEntrances($request){
@@ -172,7 +215,7 @@ class EntranceController extends Controller
             ->paginate(16);
     }
 
-    private static function validateRules($request)
+    private static function validateRules()
     {
         $rules = [
             'partner_id' => ['required', 'exists:partners,id'],
@@ -209,5 +252,26 @@ class EntranceController extends Controller
             ];
         }
         return response($events);
+    }
+
+    public function delete($id)
+    {
+        $entrance = Entrance::where('id', $id)->first();
+
+        # Склад с которым оперируем
+            $store = $entrance->store()->first();
+
+        foreach($entrance->articles()->get() as $article){
+            $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
+        }
+
+        $entrance->delete();
+        $this->status = 200;
+        $this->message = 'Поступление удалено';
+
+        return response()->json([
+            'id' => $entrance->id,
+            'message' => $this->message
+        ], 200);
     }
 }

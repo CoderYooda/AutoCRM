@@ -49,6 +49,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
     Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
+    Route::post('/entrance/{id}/delete', 'EntranceController@delete')->name('DeleteEntrance');
 
     #Поставщики (внешние)
     Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
