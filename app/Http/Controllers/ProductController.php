@@ -51,20 +51,24 @@ class ProductController extends Controller
 
     public function addToList(Request $request)
     {
-        $article = Article::where('id', $request['article_id'])
-            ->first();
 
-        if(!$article){
-            return response()->json([
-                'message' => 'Товар не найден, возможно он был удалён',
-            ], 422);
-        }
-        if(!$article->canUserTake()){
-            return response()->json([
-                'message' => 'Доступ к этому товару запрещен.',
-            ], 422);
-        }
+        if($request['type'] && $request['type'] == 'clientOrder_quick'){
 
+        } else {
+            $article = Article::where('id', $request['article_id'])
+                ->first();
+
+            if(!$article){
+                return response()->json([
+                    'message' => 'Товар не найден, возможно он был удалён',
+                ], 422);
+            }
+            if(!$article->canUserTake()){
+                return response()->json([
+                    'message' => 'Доступ к этому товару запрещен.',
+                ], 422);
+            }
+        }
 
 
 
@@ -77,6 +81,18 @@ class ProductController extends Controller
             $product->total = 0;
             $product->product = $article;
             $content = view('shipments.dialog.product_element', compact('product', 'request'))->render();
+        } elseif($request['type'] && $request['type'] === 'clientOrder'){
+            $product = $article;
+            $content = view('client_orders.dialog.product_element', compact('product', 'request'))->render();
+
+        } elseif($request['type'] && $request['type'] === 'clientOrder_quick'){
+            $product = new StdClass();
+            $product->id = 'q_' . $request['article_id'];
+            $product->count = $request['count'];
+            $product->price = 0;
+            $product->total = 0;
+            $content = view('client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
+
         } else {
             $product = $article;
             $content = view('entrance.dialog.product_element', compact('product', 'request'))->render();

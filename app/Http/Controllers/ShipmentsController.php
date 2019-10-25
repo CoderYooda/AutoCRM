@@ -82,6 +82,7 @@ class ShipmentsController extends Controller
             $shipmentWasExisted = true;
             $this->message = 'Продажа обновлена';
         } else {
+            $shipmentWasExisted = false;
             $shipment->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Продажа сохранена';
         }
@@ -97,13 +98,15 @@ class ShipmentsController extends Controller
 
 //dd($shipment->articles()->get());
         
-
-        foreach($shipment->articles()->get() as $article){
-            $store = Store::owned()->where('id', $article->pivot->store_id)->first();
-            if($shipment->exists){
-                $store->decreaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
+        if($shipmentWasExisted){
+            foreach($shipment->articles()->get() as $article){
+                $store = Store::owned()->where('id', $article->pivot->store_id)->first();
+                if($shipment->exists){
+                    $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
+                }
             }
         }
+
 
 
 
@@ -126,7 +129,7 @@ class ShipmentsController extends Controller
             foreach($products as $id => $product) {
 
                 #Целевой товар
-                $article = Article::where('id', $product['id'])->first();
+                //$article = Article::where('id', $product['id'])->first();
 
                 $store = Store::owned()->where('id', $store_id)->first();
 
@@ -139,7 +142,7 @@ class ShipmentsController extends Controller
 
                 $shipment->summ += $vtotal;
 
-                $article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
+                //$article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
 
                 $pivot_data = [
                     'store_id' => $store_id,

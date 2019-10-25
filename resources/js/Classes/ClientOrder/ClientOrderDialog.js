@@ -26,14 +26,8 @@ class clientorderDialog{
         inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
-        let event = '';
-        if(object.root_dialog.dataset.id){
-            event = 'ShipmentStored' + object.root_dialog.dataset.id;
-        } else {
-            event = 'ShipmentStored';
-        }
-        console.log(event);
-        document.addEventListener(event, function(e){
+
+        document.addEventListener('ShipmentStored', function(e){
             object.finitaLaComedia();
         });
         this.loadItemsIfExists();
@@ -74,8 +68,8 @@ class clientorderDialog{
                         elem.addEventListener("paste", fn);
                         elem.addEventListener("delete", fn);
                     });
-
                 });
+                object.recalculate();
 
             }).catch(function (error) {
                 console.log(error);
@@ -154,20 +148,29 @@ class clientorderDialog{
         this.recalculate();
     }
 
-    addProduct(id){
+    addProduct(elem){
         var object = this;
+
+        let article_id = elem.dataset.article_id;
+        let count = elem.closest('div').querySelector('input[name="count"]').value
+
         window.axios({
             method: 'post',
-            url: 'product/'+ id +'/addtolist',
-            data: {refer:this.root_dialog.id, type:'shipment'}
+            url: 'product/addtolist',
+            data: {
+                refer:this.root_dialog.id,
+                article_id:article_id,
+                type:'clientOrder',
+                count:count,
+            }
         }).then(function (resp) {
 
             var isset = object.items.map(function(e){
                 return e.id;
-            }).indexOf(resp.data.id);
+            }).indexOf(resp.data.product.id);
 
             if(isset < 0){
-                object.addItem({id:resp.data.id, html:resp.data.html});
+                object.addItem({id:resp.data.product.id, html:resp.data.html});
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
@@ -177,6 +180,29 @@ class clientorderDialog{
             window.isXHRloading = false;
         });
     };
+
+    addQuickProduct(){
+        var object = this;
+        window.axios({
+            method: 'post',
+            url: 'product/addtolist',
+            data: {
+                refer:this.root_dialog.id,
+                article_id: object.items.length + 1,
+                type:'clientOrder_quick',
+                count:1,
+            }
+        }).then(function (resp) {
+
+            object.addItem({id:resp.data.product.id, html:resp.data.html});
+
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    };
+
 
     selectPartner(id){
         var object = this;
@@ -249,9 +275,9 @@ class clientorderDialog{
     recalculateItem(id){
         let object = this;
         let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + id + "][price]']");
+        let total = item.querySelector(".j_total_price");
+        let count = item.querySelector(".j_count");
+        let price = item.querySelector(".j_price");
 
         let vcount = Number(count.value);
         let vprice = Number(price.value);

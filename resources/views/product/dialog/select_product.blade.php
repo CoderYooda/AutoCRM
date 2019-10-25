@@ -17,7 +17,6 @@
                     {{--</select>--}}
                 {{--</span>--}}
                 <input id="product_search" type="text" class="form-control form-control-sm search" placeholder="Поиск товара" required="">
-
                 <span class="input-group-append">
                     <button onclick="openDialog('productDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новый товар</button>
                 </span>

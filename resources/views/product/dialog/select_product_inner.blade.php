@@ -20,6 +20,17 @@
                         <i class="fa fa-caret-down"></i>
                     </button>
                 @endif
+                @if($request['refer'] != null && strpos($request['refer'], 'clientorder') !== false)
+                    <div class="list-body">
+                        <div class="form-group mb-0">
+                            <input type="number" class="form-control" name="count" placeholder="количество" value="1">
+                        </div>
+                    </div>
+                    <button data-article_id="{{ $product->id }}"  onclick="{{$request['refer']}}.addProduct(this);" class="btn btn-icon white float-right select_btn">
+                        <i class="not_selected fa fa-plus"></i>
+                        <i class="selected fa fa-check"></i>
+                    </button>
+                @endif
                 @if($request['refer'] != null && strpos($request['refer'], 'entrance') !== false)
                     <div class="list-body">
                         <div class="form-group mb-0">
@@ -54,7 +65,7 @@
                                 </div>
                             </td>
 
-                            <td>
+                            <td >
                                 @if($request['refer'] != null)
                                 <button type="button" class="btn primary" data-article_id="{{ $product->id }}" data-store_id="{{ $store->id }}" onclick="{{$request['refer']}}.addProduct(this);">Добавить</button>
                                 @endif

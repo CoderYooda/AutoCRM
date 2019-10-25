@@ -15,6 +15,7 @@ html {
     background: #e2e9f1; }
 
 body {
+    user-select: none;
     color: rgba(70, 90, 110, 0.85);
     padding-right: 0!important;
     font-size: 13px;

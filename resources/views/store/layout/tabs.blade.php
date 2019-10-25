@@ -6,11 +6,11 @@
 <div class="d-flex flex">
     <div class="fade aside aside-sm b-r w-200" id="content-aside">
         <div class="modal-dialog light d-flex flex-column w-md lt">
-            <div class="navbar no-radius pos-rlt">
-                <span class="text-md">Склад</span>
-            </div>
+            {{--<div class="navbar no-radius pos-rlt">--}}
+                {{--<span class="text-md">Склад</span>--}}
+            {{--</div>--}}
             <div class="scrollable hover">
-                <div class="sidenav mt-2">
+                <div class="sidenav mt-5">
                     <nav class="nav-border b-primary" data-nav>
                         <ul class="nav">
                             <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif tab">

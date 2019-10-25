@@ -123,6 +123,7 @@
                         <tr>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
+                            <th width="10%">Производитель</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
@@ -137,8 +138,9 @@
                         @endif
                         </tbody>
                     </table>
-                    <div class="input-group">
-                        <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Добавить товар</button>
+                    <div class="btn-groups w-100">
+                            <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Товар из базы</button>
+                            <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="btn btn-fw white"><i class="fa fa-plus"></i> Быстрый товар</button>
                     </div>
                 </div>
             </div>

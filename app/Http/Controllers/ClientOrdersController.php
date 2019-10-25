@@ -45,7 +45,7 @@ class ClientOrdersController extends Controller
     public function store(Request $request){
 
 
-
+        //dd($request);
 //        if($entrance->locked){
 //            return response()->json([
 //                'system_message' => view('messages.locked_error')->render(),
@@ -53,6 +53,7 @@ class ClientOrdersController extends Controller
 //        }
 
         $validation = Validator::make($request->all(), self::validateRules($request));
+
         if($validation->fails()){
             $this->status = 422;
             if($request->expectsJson()){
@@ -74,7 +75,6 @@ class ClientOrdersController extends Controller
             }
         }
 
-
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
         }
@@ -94,43 +94,84 @@ class ClientOrdersController extends Controller
         $client_order->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
-        foreach($request['products'] as $id => $product) {
+        if($request['products']){
+            foreach($request['products'] as $id => $product) {
 
-            $vcount = $product['count'];
-            $vprice = $product['price'];
+                $vcount = $product['count'];
+                $vprice = $product['price'];
 
-            $vtotal = $vprice * $vcount;
+                $vtotal = $vprice * $vcount;
 
-            $client_order->summ += $vtotal;
-            $actor_product = Article::where('id', $product['id'])->first();
+                $client_order->summ += $vtotal;
+                $actor_product = Article::where('id', $product['id'])->first();
 
-            $article_client_order = $client_order->articles()->where('article_id', $product['id'])->count();
+                $article_client_order = $client_order->articles()->where('article_id', $product['id'])->count();
 
-            ### Пересчёт кол-ва с учетом предидущего поступления #######################################
-//            $store->articles()->syncWithoutDetaching($actor_product->id);
-//            $beforeCount = $entrance->getArticlesCountById($actor_product->id);
-//            $count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
-            //$count - Текущее кол-во на складе в наличии
-            #############################################################################################
+                $pivot_data = [
+                    'store_id' => 1,
+                    'count' => $vcount,
+                    'price' => $vprice,
+                    'total' => $vtotal
+                ];
 
-            $pivot_data = [
-                'store_id' => 1,
-                'count' => $vcount,
-                'price' => $vprice,
-                'total' => $vtotal
-            ];
-
-
-            if($article_client_order > 0){
-                $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
-            } else {
-                $client_order->articles()->save($actor_product, $pivot_data);
+                if($article_client_order > 0){
+                    $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
+                } else {
+                    $client_order->articles()->save($actor_product, $pivot_data);
+                }
             }
+        }
+        if($request['quick_products']) {
+            $plucked_ids = [];
+            foreach ($request['quick_products'] as $id => $product) {
 
-            //$store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
+                $vcount = $product['count'];
+                $vprice = $product['price'];
+
+                $vtotal = $vprice * $vcount;
+
+                $client_order->summ += $vtotal;
+
+                $supplier = SupplierController::silent_store($product);
+
+                $actor_product = Article::firstOrNew([
+                    'article' => $product['article'],
+                    'supplier_id' => $supplier->id,
+                    'company_id' => Auth::user()->company()->first()->id
+                ]);
+
+                if (!$actor_product->exists) {
+                    $actor_product->category_id = 10;
+                    $actor_product->name = $product['name'];
+                    $actor_product->save();
+                }
+
+                $plucked_ids[] = $actor_product->id;
+
+                $article_client_order = $client_order->articles()->where('article_id', $product['id'])->count();
+
+                $pivot_data = [
+                    'store_id' => null,
+                    'count' => $vcount,
+                    'price' => $vprice,
+                    'total' => $vtotal
+                ];
+
+                if ($article_client_order > 0) {
+                    $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
+                } else {
+                    $client_order->articles()->save($actor_product, $pivot_data);
+                }
+            }
         }
 
-        $client_order->articles()->sync(array_column($request['products'], 'id'));
+        if($request['products']) {
+            $client_order->articles()->sync(array_column($request['products'], 'id'));
+        }
+
+        if($request['quick_products']) {
+            $client_order->articles()->sync($plucked_ids);
+        }
 
         if($request['inpercents']){
             $client_order->itogo = $client_order->summ - ($client_order->summ / 100 * $request['discount']);
@@ -204,9 +245,16 @@ class ClientOrdersController extends Controller
         $rules = [
             'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
-            'products' => ['required'],
+            'products' => ['required_without:quick_products'],
             'products.*.count' => ['integer', 'max:9999'],
             'products.*.price' => ['integer', 'max:999999'],
+
+            'quick_products' => ['required_without:products'],
+            'quick_products.*.count' => ['integer', 'max:9999'],
+            'quick_products.*.price' => ['integer', 'max:999999'],
+            'quick_products.*.name' => ['required', 'min:4', 'string', 'max:255'],
+            'quick_products.*.article' => ['required', 'string', 'max:64'],
+            'quick_products.*.new_supplier_name' => ['required', 'string', 'max:64'],
         ];
 
         return $rules;
