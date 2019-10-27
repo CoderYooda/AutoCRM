@@ -122,6 +122,8 @@ class createEntrance{
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
+        //document.removeEventListener("PartnerSelected");
+        //document.removeEventListener("PartnerStored");
     }
 
     removeItem(id){

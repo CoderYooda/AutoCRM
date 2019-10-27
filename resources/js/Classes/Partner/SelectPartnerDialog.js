@@ -15,6 +15,7 @@ class selectPartnerDialog {
         document.addEventListener("PartnerSelected", function(){
             object.finitaLaComedia();
         });
+
         let focused = document.getElementById('select_partner_dialog_focused');
         if(focused){
             focused.focus();
@@ -30,13 +31,18 @@ class selectPartnerDialog {
         let object = this;
         let el = object.root_dialog.querySelector("#partner_search");
         let searchFn = window.helper.debounce(function(e) {
-            object.search(el);
+            object.search(object);
         }, 400);
         if(el){
             el.addEventListener("keydown", searchFn);
             el.addEventListener("paste", searchFn);
             el.addEventListener("delete", searchFn);}
-        document.addEventListener("PartnerStored", searchFn);
+
+
+
+        object.root_dialog.addEventListener("PartnerStored", function(){
+            object.search(object);
+        });
 
         // let search = getQueryVar('search');
         // if(search === 'undefined'){
@@ -48,8 +54,7 @@ class selectPartnerDialog {
         // });
     }
 
-    search(el){
-        let object = this;
+    search(object){
         //var string = el.value;
 
         if (isXHRloading) { return; } window.isXHRloading = true;
@@ -57,8 +62,9 @@ class selectPartnerDialog {
         let data = {};
         data.string = object.search_obj.value;
         if(object.refer){
-            data.refer = object.refer;
+            data.refer = object.root_dialog.querySelector("#refer").value;
         }
+
 
         window.axios({
             method: 'post',
@@ -73,6 +79,10 @@ class selectPartnerDialog {
             console.log(error);
         }).finally(function () {
             window.isXHRloading = false;
+            document.removeEventListener("PartnerStored", function(){
+                console.warn(object.root_dialog.querySelector("#refer").value);
+                object.search(object);
+            });
         });
     }
 }

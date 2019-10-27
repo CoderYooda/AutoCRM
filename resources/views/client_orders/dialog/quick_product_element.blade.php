@@ -11,7 +11,7 @@
     </td>
     <td>
         <input name="quick_products[{{ $product->id }}][count]" class="form-control form-control-sm j_count"
-               value="0"
+               value="1"
                type="number" >
     </td>
     <td>

@@ -33,7 +33,7 @@ class ClientOrdersController extends Controller
         $client_order = ClientOrder::where('id', $id)->first();
         $client_order->delete();
         $this->status = 200;
-        $type = 'succes';
+        $type = 'success';
         $this->message = 'Продажа удалена';
         return response()->json([
             'id' => $client_order->id,
@@ -156,7 +156,7 @@ class ClientOrdersController extends Controller
                     'price' => $vprice,
                     'total' => $vtotal
                 ];
-
+                dd($product);
                 if ($article_client_order > 0) {
                     $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
                 } else {
@@ -240,18 +240,33 @@ class ClientOrdersController extends Controller
         return $client_orders;
     }
 
+//    public function delete($id)
+//    {
+//        $client_order = ClientOrder::where('id', $id)->first();
+//
+//        $client_order->delete();
+//        $this->status = 200;
+//        $this->message = 'Заказ клиента удален';
+//
+//        return response()->json([
+//            'id' => $client_order->id,
+//            'message' => $this->message
+//        ], $this->status);
+//    }
+
+
     private static function validateRules($request)
     {
         $rules = [
             'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required_without:quick_products'],
-            'products.*.count' => ['integer', 'max:9999'],
-            'products.*.price' => ['integer', 'max:999999'],
+            'products.*.count' => ['integer', 'min:1', 'max:9999'],
+            'products.*.price' => ['integer', 'min:1', 'max:999999'],
 
             'quick_products' => ['required_without:products'],
-            'quick_products.*.count' => ['integer', 'max:9999'],
-            'quick_products.*.price' => ['integer', 'max:999999'],
+            'quick_products.*.count' => ['integer', 'min:1', 'max:9999'],
+            'quick_products.*.price' => ['integer', 'min:1', 'max:999999'],
             'quick_products.*.name' => ['required', 'min:4', 'string', 'max:255'],
             'quick_products.*.article' => ['required', 'string', 'max:64'],
             'quick_products.*.new_supplier_name' => ['required', 'string', 'max:64'],

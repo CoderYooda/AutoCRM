@@ -5,7 +5,7 @@
             <div class="inblock">
                 <i class="fa fa-cogs" style="font-size: 22px;"></i>
                 <div class="w-280 list-body b-r pr-2" style="max-height: 38px;overflow: hidden;flex: 2;">
-                    <a onclick="openDialog('editProduct', '&product_id={{ $product->id }}' )" class="item-title _500" >{{ $product->name }}</a>
+                    <a onclick="openDialog('productDialog', '&product_id={{ $product->id }}' )" class="item-title _500" >{{ $product->name }}</a>
                 </div>
                 <div class="list-body">
                     <div class="item-except text-sm text-muted h-1x">

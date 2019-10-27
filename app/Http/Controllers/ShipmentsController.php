@@ -38,6 +38,11 @@ class ShipmentsController extends Controller
     {
         $shipment = Shipment::where('id', $id)->first();
 
+        foreach($shipment->articles()->get() as $article){
+            $store = Store::owned()->where('id', $article->pivot->store_id)->first();
+            $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
+        }
+
         $shipment->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';
@@ -97,18 +102,12 @@ class ShipmentsController extends Controller
 
 
 //dd($shipment->articles()->get());
-        
         if($shipmentWasExisted){
             foreach($shipment->articles()->get() as $article){
                 $store = Store::owned()->where('id', $article->pivot->store_id)->first();
-                if($shipment->exists){
-                    $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
-                }
+                $store->increaseArticleCount($article->id, $article->pivot->count);
             }
         }
-
-
-
 
         # Собираем товары в массив id шников из Request`a
         foreach($request['products'] as $store_id => $products) {
@@ -121,15 +120,10 @@ class ShipmentsController extends Controller
             $store->articles()->syncWithoutDetaching($plucked_articles, false);
         }
 
-
-
         //$store = Store::where('id', $request['store_id'])->first();
         $shipment_data = [];
         foreach($request['products'] as $store_id => $products) {
             foreach($products as $id => $product) {
-
-                #Целевой товар
-                //$article = Article::where('id', $product['id'])->first();
 
                 $store = Store::owned()->where('id', $store_id)->first();
 
@@ -137,28 +131,23 @@ class ShipmentsController extends Controller
 
                 $vcount = $product['count'];
                 $vprice = $product['price'];
-
                 $vtotal = $vprice * $vcount;
-
                 $shipment->summ += $vtotal;
-
-                //$article_shipment = $shipment->articles()->where('article_id', $product['id'])->count();
-
                 $pivot_data = [
                     'store_id' => $store_id,
-                    'article_id' => $id,
+                    'article_id' => (int)$product['id'],
                     'shipment_id' => $shipment->id,
-                    'count' => $vcount,
-                    'price' => $vprice,
-                    'total' => $vtotal
+                    'count' => (int)$vcount,
+                    'price' => (double)$vprice,
+                    'total' => (double)$vtotal
                 ];
-
                 $shipment_data[] = $pivot_data;
             }
         }
 
         #Удаление всех отношений и запись новых (кастомный sync)
         $shipment->syncArticles($shipment->id, $shipment_data);
+
 
         if($request['inpercents']){
             $shipment->itogo = $shipment->summ - ($shipment->summ / 100 * $request['discount']);

@@ -8,7 +8,7 @@ class partnerPage{
         this.category_id = null;//window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = null;
-        this.search_obj = this.querySelector("#partner_search");
+        this.search_obj = document.querySelector("#partner_search");
         this.init();
     }
 

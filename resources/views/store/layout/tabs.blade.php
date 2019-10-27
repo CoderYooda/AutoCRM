@@ -15,7 +15,7 @@
                         <ul class="nav">
                             <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
-                                    <span class="nav-text">Склад</span>
+                                    <span class="nav-text">База товаров</span>
                                 </a>
                             </li>
                             {{--<li data-tab="provider"  class="@if($request['active_tab'] == 'provider') active @endif tab">--}}

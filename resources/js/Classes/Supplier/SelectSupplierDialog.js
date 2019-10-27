@@ -26,7 +26,6 @@ class SelectSupplierDialog{
 
     searchInit(){
         let object = this;
-        console.log(object.search_obj, object.results_obj, object.refer,);
         var searchFn = window.helper.debounce(function(e) {
             object.search(e);
         }, 400);

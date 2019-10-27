@@ -4,7 +4,7 @@
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>
     <td><input name="products[{{ $product->id }}][count]" class="form-control form-control-sm j_count"
-               @if(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
+               @if(isset($product->pivot->count)) value="{{$product->pivot->count}}"@elseif($request['count'] != null) value="{{$request['count']}}" @else value="0" @endif
                type="number" ></td>
     <td><input name="products[{{ $product->id }}][price]" class="form-control form-control-sm j_price"
                @if(isset($product->pivot->count)) value="{{$product->pivot->price}}"@else value="0" @endif

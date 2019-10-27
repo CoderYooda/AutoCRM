@@ -25,7 +25,15 @@ class AxForm{
 
             if(response.data.event){
                 let event = new Event(response.data.event, {bubbles: true});
+
+
+                let listns = document.getElementsByClassName(response.data.event + 'Listner');
+                [].forEach.call(listns, function(elem){
+                    elem.dispatchEvent(event);
+                });
+
                 document.dispatchEvent(event);
+
                 console.log("Событие " + response.data.event + " объявлено");
             }
 
