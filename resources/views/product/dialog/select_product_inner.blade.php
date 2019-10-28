@@ -15,22 +15,22 @@
                         <span class="badge badge-pill primary">Произв.</span> {{ $product->supplier()->first()->name }}
                     </div>
                 </div>
-                @if($request['refer'] != null && strpos($request['refer'], 'shipment') !== false)
+                @if($request['refer'] != null && ( strpos($request['refer'], 'shipment') !== false ||  strpos($request['refer'], 'clientorder') !== false))
                     <button class="btn btn-icon white float-right select_btn" data-toggle="collapse" data-target="#stores{{ $product->id }}" aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-caret-down"></i>
                     </button>
                 @endif
-                @if($request['refer'] != null && strpos($request['refer'], 'clientorder') !== false)
-                    <div class="list-body">
-                        <div class="form-group mb-0">
-                            <input type="number" class="form-control" name="count" placeholder="количество" value="1">
-                        </div>
-                    </div>
-                    <button data-article_id="{{ $product->id }}"  onclick="{{$request['refer']}}.addProduct(this);" class="btn btn-icon white float-right select_btn">
-                        <i class="not_selected fa fa-plus"></i>
-                        <i class="selected fa fa-check"></i>
-                    </button>
-                @endif
+                {{--@if($request['refer'] != null && strpos($request['refer'], 'clientorder') !== false)--}}
+                    {{--<div class="list-body">--}}
+                        {{--<div class="form-group mb-0">--}}
+                            {{--<input type="number" class="form-control" name="count" placeholder="количество" value="1">--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    {{--<button data-article_id="{{ $product->id }}"  onclick="{{$request['refer']}}.addProduct(this);" class="btn btn-icon white float-right select_btn">--}}
+                        {{--<i class="not_selected fa fa-plus"></i>--}}
+                        {{--<i class="selected fa fa-check"></i>--}}
+                    {{--</button>--}}
+                {{--@endif--}}
                 @if($request['refer'] != null && strpos($request['refer'], 'entrance') !== false)
                     <div class="list-body">
                         <div class="form-group mb-0">
@@ -43,7 +43,9 @@
                     </button>
                 @endif
             </div>
-            @if($request['refer'] != null && strpos($request['refer'], 'shipment') !== false)
+
+            @if($request['refer'] != null && ( strpos($request['refer'], 'shipment') !== false ||  strpos($request['refer'], 'clientorder') !== false))
+
             <div class="no-margin collapse w-100 transition-70ms" id="stores{{ $product->id }}" data-toggle="collapse" aria-labelledby="headingOne" data-parent="#product_select_accordion">
                 <table class="table mb-0">
                     <thead>

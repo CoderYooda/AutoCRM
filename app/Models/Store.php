@@ -31,11 +31,16 @@ class Store extends Model
         return $count;
     }
 
-    public static function owned(){
+    public static function owned()
+    {
         $company_id = Auth::user()->company()->first()->id;
         return self::where('company_id', $company_id);
     }
 
+    public static function getBufferStore()
+    {
+        return self::owned()->where('type', 'buffer')->first();
+    }
 
     /**
      * increaseArticle

@@ -124,6 +124,7 @@
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Производитель</th>
+                            <th width="10%">Склад</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
@@ -132,7 +133,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($client_order))
-                            @foreach($client_order->articles()->get() as $product)
+                            @foreach($client_order->getArticles() as $product)
                                 @include('client_orders.dialog.product_element')
                             @endforeach
                         @endif

@@ -17,6 +17,8 @@ class CreateStoresTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->char('name')->comment('Наименование склада');
+            $table->char('type')->default('casual')->comment('тип склада');
+            $table->boolean('locked')->default(false)->comment('Закрыт от удаления');
             $table->timestamps();
         });
     }

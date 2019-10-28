@@ -71,6 +71,7 @@ class shipmentDialog{
                     });
 
                     let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id + '_' + elem.store_id);
+
                     let inputs = item.getElementsByTagName('input');
 
                     [].forEach.call(inputs, function(elem){

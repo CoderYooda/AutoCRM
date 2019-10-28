@@ -5,6 +5,7 @@ class cashboxDialog{
         this.root_dialog = dialog;
         this.active = true;
         this.init();
+
     }
 
     init(){

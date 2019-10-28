@@ -1,5 +1,3 @@
-
-
 <tr class="product_list_elem" id="product_selected_{{ $product->product->id }}_{{ $product->store_id }}">
     <input name="products[{{ $product->store_id }}][{{ $product->product->id }}][id]" value="{{ $product->product->id }}" type="hidden" >
     <td title="{{ $product->product->name }}"><span class="product_list_element_name">{{ $product->product->name }}</span></td>

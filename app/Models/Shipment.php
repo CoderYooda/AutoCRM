@@ -41,6 +41,7 @@ class Shipment extends Model
         DB::table('article_shipment')
             ->where('shipment_id', $shipment_id)
             ->delete();
+        $relation = null;
         foreach($pivot_array as $pivot_data){
             $relation = DB::table('article_shipment')->insert($pivot_data);
         }
@@ -64,13 +65,6 @@ class Shipment extends Model
             $article->product = Article::owned()->where('id', $article->article_id)->withTrashed()->first();
         }
         return $articles;
-        //dd($articles);
-       // $data = [];
-//        foreach($articles as $article){
-//            //$data[] =
-//        }
-
-        //$articles = Article::owned()->
     }
 
     public function elements()

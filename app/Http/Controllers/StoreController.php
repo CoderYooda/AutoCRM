@@ -196,4 +196,13 @@ class StoreController extends Controller
     public static function getStoreById($id){
         return Store::owned()->where('id', $id)->first();
     }
+
+    public static function getStoreNameById($id){
+        $store = Store::owned()->where('id', $id)->first();
+        if($store){
+            return $store->name;
+        } else {
+            return 'Не найден';
+        }
+    }
 }

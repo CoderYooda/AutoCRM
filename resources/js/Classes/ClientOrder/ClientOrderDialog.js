@@ -30,7 +30,10 @@ class clientorderDialog{
         document.addEventListener('ShipmentStored', function(e){
             object.finitaLaComedia();
         });
+
+
         this.loadItemsIfExists();
+
         let focused = document.getElementById('clientorder_dialog_focused');
         if(focused){
             focused.focus();
@@ -48,18 +51,28 @@ class clientorderDialog{
     loadItemsIfExists(){
         window.isXHRloading = true;
         let object = this;
-        var shipment_id = this.root_dialog.dataset.id;
-        if(shipment_id && shipment_id !== 'undefined') {
+        var client_order_id = this.root_dialog.dataset.id;
+        if(client_order_id && client_order_id !== 'undefined') {
 
             window.axios({
                 method: 'post',
-                url: 'clientorder/' + shipment_id + '/get_clientorders',
+                url: 'clientorder/' + client_order_id + '/get_clientorders',
                 data: {},
             }).then(function (resp) {
+
                 [].forEach.call(resp.data.products, function(elem){
-                    object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+                    object.items.push({
+                        id:elem.product.id,
+                        count:elem.count,
+                        price:elem.price,
+                        total:elem.total,
+                        store_id:elem.store_id,
+                    });
+
+                    let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id + '_' + elem.store_id);
+
                     let inputs = item.getElementsByTagName('input');
+
                     [].forEach.call(inputs, function(elem){
                         var fn = window.helper.debounce(function(e) {
                             object.recalculate(e);
@@ -68,9 +81,9 @@ class clientorderDialog{
                         elem.addEventListener("paste", fn);
                         elem.addEventListener("delete", fn);
                     });
+
                 });
                 object.recalculate();
-
             }).catch(function (error) {
                 console.log(error);
             }).finally(function () {
@@ -112,14 +125,13 @@ class clientorderDialog{
         try{
             window.selectProductDialog.markAsAdded();
         }catch (e) {
-            console.log(e);
         }
 
         let tbody = document.createElement('tbody');
         tbody.innerHTML = elem.html;
         product_list.prepend(tbody.firstChild);
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
+        let item = this.root_dialog.querySelector('#product_selected_' + elem.id + '_' + elem.store_id);
         let inputs = item.getElementsByTagName('input');
 
         [].forEach.call(inputs, function(elem){
@@ -138,42 +150,74 @@ class clientorderDialog{
         delete window[this.root_dialog.id];
     }
 
-    removeItem(id){
-        this.items.splice(
-            this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
-        );
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
+    removeItem(store_id, id){
+
+        let object = this;
+        [].forEach.call(object.items, function(item){
+
+            if(item.id === id && item.store_id === store_id){
+                object.items.splice(
+                    object.items.indexOf(item), 1
+                );
+            }
+        });
+        this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id).remove();
+        object.recalculate();
     }
 
     addProduct(elem){
         var object = this;
 
+        let store_id = elem.dataset.store_id;
         let article_id = elem.dataset.article_id;
-        let count = elem.closest('div').querySelector('input[name="count"]').value
+        let count = elem.closest('tr').querySelector('input').value;
+
+
+
+        // let article_id = elem.dataset.article_id;
+        // let count = elem.closest('div').querySelector('input[name="count"]').value;
 
         window.axios({
             method: 'post',
             url: 'product/addtolist',
             data: {
                 refer:this.root_dialog.id,
-                article_id:article_id,
                 type:'clientOrder',
+                store_id:store_id,
+                article_id:article_id,
                 count:count,
             }
         }).then(function (resp) {
 
-            var isset = object.items.map(function(e){
-                return e.id;
-            }).indexOf(resp.data.product.id);
-
-            if(isset < 0){
-                object.addItem({id:resp.data.product.id, html:resp.data.html});
+            let canAdd = true;
+            [].forEach.call(object.items, function(item){
+                if(item.store_id === parseInt(resp.data.product.store_id) && item.id === resp.data.product.product.id){
+                    canAdd = false;
+                }
+            });
+            console.log(resp.data);
+            if(canAdd){
+                object.addItem({
+                    id:resp.data.product.product.id,
+                    store_id:parseInt(resp.data.product.store_id),
+                    count:resp.data.product.count,
+                    html:resp.data.html
+                });
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
+
+
+            //
+            // var isset = object.items.map(function(e){
+            //     return e.id;
+            // }).indexOf(resp.data.product.id);
+            //
+            // if(isset < 0){
+            //     object.addItem({id:resp.data.product.id, html:resp.data.html});
+            // } else {
+            //     window.notification.notify('error', 'Товар уже в списке');
+            // }
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -194,7 +238,15 @@ class clientorderDialog{
             }
         }).then(function (resp) {
 
-            object.addItem({id:resp.data.product.id, html:resp.data.html});
+            console.log(resp.data.product.id);
+            object.addItem({
+                id:resp.data.product.id,
+                store_id:'new',
+                count:resp.data.product.count,
+                price:resp.data.product.price,
+                total:resp.data.product.total,
+                html:resp.data.html
+            });
 
         }).catch(function (error) {
             console.log(error);
@@ -241,7 +293,7 @@ class clientorderDialog{
         console.log("Пересчет...");
         var object = this;
         this.items.forEach(function(elem){
-            object.recalculateItem(elem.id);
+            object.recalculateItem(elem.store_id, elem.id);
         });
         var total_price = object.totalPrice;
         var itogo = object.itogo;
@@ -272,12 +324,14 @@ class clientorderDialog{
         object.setDiscount(discount_val);
     }
 
-    recalculateItem(id){
+    recalculateItem(store_id, id){
+
+        console.log(store_id, id);
         let object = this;
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector(".j_total_price");
-        let count = item.querySelector(".j_count");
-        let price = item.querySelector(".j_price");
+        let item = this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id);
+        let total = item.querySelector("input[name='products[" + store_id + "][" + id + "][total_price]']");
+        let count = item.querySelector("input[name='products[" + store_id + "][" + id + "][count]']");
+        let price = item.querySelector("input[name='products[" + store_id + "][" + id + "][price]']");
 
         let vcount = Number(count.value);
         let vprice = Number(price.value);
@@ -287,12 +341,34 @@ class clientorderDialog{
         total.value = vtotal.toFixed(2);
 
         object.items.map(function(e){
-            if(e.id === id){
+            if(e.id === id && e.store_id === store_id){
                 e.total = vtotal;
                 e.count = vcount;
                 e.price = vprice;
             }
         });
+
+
+        // let object = this;
+        // let item = this.root_dialog.querySelector('#product_selected_' + id);
+        // let total = item.querySelector(".j_total_price");
+        // let count = item.querySelector(".j_count");
+        // let price = item.querySelector(".j_price");
+        //
+        // let vcount = Number(count.value);
+        // let vprice = Number(price.value);
+        // let vtotal = Number(total.value);
+        //
+        // vtotal = vprice * vcount;
+        // total.value = vtotal.toFixed(2);
+        //
+        // object.items.map(function(e){
+        //     if(e.id === id){
+        //         e.total = vtotal;
+        //         e.count = vcount;
+        //         e.price = vprice;
+        //     }
+        // });
     }
 
 

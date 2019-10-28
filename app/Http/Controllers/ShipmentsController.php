@@ -12,7 +12,6 @@ use Auth;
 
 class ShipmentsController extends Controller
 {
-
     public static function shipmentDialog($request)
     {
         $tag = 'shipmentDialog';
@@ -23,10 +22,6 @@ class ShipmentsController extends Controller
         } else {
             $shipment = null;
         }
-
-       //dd($shipment->articles()->first());
-
-        //dd($shipment->elements()->get());
 
         return response()->json([
             'tag' => $tag,

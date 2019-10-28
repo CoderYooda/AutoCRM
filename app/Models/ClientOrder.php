@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class ClientOrder extends Model
 {
@@ -20,6 +21,36 @@ class ClientOrder extends Model
     ];
 
     protected $guarded = [];
+
+    public function getArticles($data = null){
+        $articles = DB::table('article_client_orders')
+            ->where('client_order_id', $this->id)
+            ->where(function($q) use ($data){
+                if($data !== null && $data['store_id'] !== null){
+                    $q->where('store_id', $data['store_id']);
+                }
+                if($data !== null && $data['article'] !== null){
+                    $q->where('article_id', $data['article_id']);
+                }
+            })
+            ->get();
+        foreach($articles as $article){
+            $article->product = Article::owned()->where('id', $article->article_id)->withTrashed()->first();
+        }
+        return $articles;
+    }
+
+    public function syncArticles($client_order_id, $pivot_array)
+    {
+        DB::table('article_client_orders')
+            ->where('client_order_id', $client_order_id)
+            ->delete();
+        $relation = null;
+        foreach($pivot_array as $pivot_data){
+            $relation = DB::table('article_client_orders')->insert($pivot_data);
+        }
+        return $relation;
+    }
 
     public function articles()
     {
