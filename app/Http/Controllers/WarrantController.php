@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Partner;
+use stdClass;
 use Auth;
 
 class WarrantController extends Controller
@@ -23,9 +24,20 @@ class WarrantController extends Controller
             $warrant = null;
         }
 
+        $data = new stdClass();
+
+
+        if($request['partner_id']){
+            $partner = Partner::owned()->where('id', $request['partner_id'])->first();
+            if($partner){
+                $data->partner_selected = $partner;
+            }
+        }
+
+
         return response()->json([
             'tag' => $tag,
-            'html' => view('cash.dialog.form_warrant', compact( 'warrant', 'request'))->render()
+            'html' => view('cash.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
         ]);
     }
 

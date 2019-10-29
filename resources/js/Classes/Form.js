@@ -54,7 +54,7 @@ class AxForm{
             if(response.data.message){
                 notification.notify( 'success', response.data.message);
             }
-            callback();
+            callback(response);
 
             //rebuildLinks();
             object.setActionButtons(true, elem);

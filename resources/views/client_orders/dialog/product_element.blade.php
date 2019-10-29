@@ -21,8 +21,13 @@
     {{--</td>--}}
 {{--</tr>--}}
 
-<tr class="product_list_elem" id="product_selected_{{ $product->product->id }}_{{ $product->store_id }}">
+<tr style="@if(isset($product->complited) && $product->complited) background: #22b66e2e; @endif" class="product_list_elem" id="product_selected_{{ $product->product->id }}_{{ $product->store_id }}">
     <input name="products[{{ $product->store_id }}][{{ $product->product->id }}][id]" value="{{ $product->product->id }}" type="hidden" >
+    <td>
+        @if(isset($product->instock))
+            <span class="badge badge-pill @if($product->instock >= $product->count) success @else warn @endif pos-rlt text-sm mr-2">{{ $product->instock }}</span>
+        @endif
+    </td>
     <td title="{{ $product->product->name }}"><span class="product_list_element_name">{{ $product->product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->product->article }}</div></td>
     <td>{{ $product->product->supplier()->first()->name }}</td>

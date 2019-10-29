@@ -24,6 +24,8 @@ class CreateClientOrdersTable extends Migration
             $table->boolean('inpercents')->comment('В процентах?');
             $table->char('comment')->nullable()->comment('Комментарий');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
+            $table->char('status')->default('active')->comment('Статус заказа');
+            $table->char('color')->nullable()->comment('Маркировка');
             $table->timestamps();
         });
     }

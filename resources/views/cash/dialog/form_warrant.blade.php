@@ -26,7 +26,16 @@
         @if(isset($warrant) && $warrant->id != NULL)
             <input type="hidden" name="id" value="{{ $warrant->id }}">
         @endif
-        <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($warrant)){{ $warrant->partner()->first()->id }}@endif">
+        <input class="partner_select" type="hidden" name="partner_id" value="
+        @if(isset($warrant))
+            {{ $warrant->partner()->first()->id }}
+        @elseif(isset($data->partner_selected) && $data->partner_selected !== null)
+            {{ $data->partner_selected->id }}
+        @endif">
+
+
+
+
         <input class="cashbox_select" type="hidden" name="cashbox_id" value=" @if(isset($warrant)){{ $warrant->cashbox()->first()->id }}@endif">
         <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle()->first()->id }}@endif">
         @if(isset($warrant))<input class="do_date" type="hidden" name="do_date" value="{{ $warrant->do_date }}">@endif

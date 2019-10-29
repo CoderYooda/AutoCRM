@@ -70,6 +70,12 @@ class Article extends Model
             ->withPivot('count', 'price', 'total', 'store_id', 'shipment_id');
     }
 
+    public function getArticlesCountInAllStores(){
+        //$stores = Store::owned()->get();
+        $count = $this->stores()->sum('count');
+        return $count;
+    }
+
     public function getCountInStoreId($store_id)
     {
         $article = $this->stores()->where('id', $store_id)->first();

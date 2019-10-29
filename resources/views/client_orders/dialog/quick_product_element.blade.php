@@ -1,6 +1,9 @@
 <tr class="product_list_elem" id="product_selected_{{ $product->id }}_new">
     <input name="products[new][{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td>
+        {{--<span class="badge badge-pill success pos-rlt text-sm mr-2">5</span>--}}
+    </td>
+    <td>
         <input class="w-100 form-control form-control-sm" type="text" name="products[new][{{ $product->id }}][name]" >
     </td>
     <td>

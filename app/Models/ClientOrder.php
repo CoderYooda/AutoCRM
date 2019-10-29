@@ -18,6 +18,8 @@ class ClientOrder extends Model
         'discount',
         'inpercents',
         'comment',
+        'status',
+        'color',
     ];
 
     protected $guarded = [];
@@ -50,6 +52,10 @@ class ClientOrder extends Model
             $relation = DB::table('article_client_orders')->insert($pivot_data);
         }
         return $relation;
+    }
+
+    public function data(){
+        return $this->created_at->format('d.m H:i');
     }
 
     public function articles()

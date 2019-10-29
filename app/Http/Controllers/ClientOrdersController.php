@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientOrder;
 use App\Models\Store;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -18,6 +19,27 @@ class ClientOrdersController extends Controller
 
         if($request['client_order_id']){
             $client_order = ClientOrder::where('id', (int)$request['client_order_id'])->first();
+
+            $client_order->articles = $client_order->getArticles();
+
+            foreach($client_order->articles as $article){
+                $article->instock = $article->product->getArticlesCountInAllStores();
+                if($article->instock >= $article->count){
+                    $article->complited = true;
+                } else {
+                    $article->complited = false;
+                }
+            }
+            $total_complited = true;
+
+            foreach($client_order->articles as $article){
+                if(!$article->complited){
+                    $total_complited = false;
+                }
+            }
+
+            $client_order->total_complited = $total_complited;
+
             $tag .= $client_order->id;
         } else {
             $client_order = null;
@@ -52,6 +74,7 @@ class ClientOrdersController extends Controller
 //                'system_message' => view('messages.locked_error')->render(),
 //            ], 422);
 //        }
+
         $validation = Validator::make($request->all(), self::validateRules($request));
 
         if($validation->fails()){
@@ -78,8 +101,6 @@ class ClientOrdersController extends Controller
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
         }
-
-
 
         if($client_order->exists){
             $this->message = 'Продажа обновлена';
@@ -114,6 +135,23 @@ class ClientOrdersController extends Controller
         foreach($request['products'] as $store_id => $products) {
             foreach($products as $id => $product) {
                 if ($store_id === 'new') {
+
+                    $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
+
+                    if($stock_supplier){
+                        $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
+                        $article_errors[0] = '123';
+                        $supplier_errors[0] = '123';
+                        if($art !== null){
+                            return response()->json([
+                                'messages' => [
+                                    'products.' . $store_id . '.' . $product['id'] . '.article' => $article_errors,
+                                    'products.' . $store_id . '.' . $product['id'] . '.new_supplier_name' => $supplier_errors,
+                                ]
+                            ], 422);
+                        }
+                    }
+
                     $vcount = (int)$product['count'];
                     $vprice = (double)$product['price'];
                     $vtotal = $vprice * $vcount;
@@ -177,96 +215,6 @@ class ClientOrdersController extends Controller
         #Удаление всех отношений и запись новых (кастомный sync)
         $client_order->syncArticles($client_order->id, $client_order_data);
 
-
-//        $plucked_ids = [];
-//        if($request['products']){
-//            foreach($request['products'] as $store_id => $products) {
-//                if($store_id != 'new'){
-//                    $store = Store::owned()->where('id', $store_id)->first();
-//                    foreach($products as $id => $product) {
-//                        $vcount = $product['count'];
-//                        $vprice = $product['price'];
-//
-//                        $vtotal = $vprice * $vcount;
-//
-//                        $client_order->summ += $vtotal;
-//                        $actor_product = Article::where('id', $product['id'])->first();
-//                        $plucked_ids[] = $actor_product->id;
-//                        $article_client_order = $client_order->articles()->where('article_id', $product['id'])->count();
-//
-//                        $pivot_data = [
-//                            'store_id' => $store->id,
-//                            'count' => $vcount,
-//                            'price' => $vprice,
-//                            'total' => $vtotal
-//                        ];
-//
-//                        if($article_client_order > 0){
-//                            $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
-//                        } else {
-//                            $client_order->articles()->save($actor_product, $pivot_data);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        if($request['quick_products']) {
-//
-//            foreach ($request['quick_products'] as $id => $product) {
-//                $vcount = (int)$product['count'];
-//                $vprice = (double)$product['price'];
-//
-//                $vtotal = $vprice * $vcount;
-//
-//                $client_order->summ += $vtotal;
-//
-//                $supplier = SupplierController::silent_store($product);
-//
-//                //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
-//
-//
-//                $actor_product = Article::firstOrNew([
-//                    'article' => $product['article'],
-//                    'supplier_id' => $supplier->id,
-//                    'company_id' => Auth::user()->company()->first()->id
-//                ]);
-//
-//                if (!$actor_product->exists) {
-//                    $actor_product->category_id = 10;
-//                    $actor_product->name = $product['name'];
-//                    $actor_product->save();
-//                }
-//
-//
-//
-//                $plucked_ids[] = $actor_product->id;
-//
-//                //$article_client_order = $client_order->articles()->where('article_id', $product['id'])->count();
-//
-//                $pivot_data = [
-//                    'store_id' => null,
-//                    'count' => 5,//(int)$vcount,
-//                    'price' => (double)$vprice,
-//                    'total' => (double)$vtotal
-//                ];
-//
-//                //$client_order->articles()->save($actor_product, $pivot_data);
-//                if ($article_client_order > 0) {
-//                    $client_order->articles()->updateExistingPivot($product['id'], $pivot_data);
-//                } else {
-//                    $client_order->articles()->save($actor_product, $pivot_data);
-//                }
-//            }
-//        }
-////
-//        if($request['products']) {
-//            $client_order->articles()->sync($plucked_ids);
-//        }
-
-//        if($request['quick_products']) {
-//            $client_order->articles()->sync($plucked_ids);
-//        }
-
         if($request['inpercents']){
             $client_order->itogo = $client_order->summ - ($client_order->summ / 100 * $request['discount']);
         } else {
@@ -277,7 +225,7 @@ class ClientOrdersController extends Controller
                 $request['discount'] = 0;
             }
             $client_order->discount = $request['discount'];
-            //$client_order->itogo = $client_order->summ - $request['discount'];
+            $client_order->itogo = $client_order->summ - $request['discount'];
         }
 
         $client_order->save();
@@ -285,6 +233,7 @@ class ClientOrdersController extends Controller
         if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
+                'id' => $client_order->id,
                 'event' => 'clientOrderStored',
             ], 200);
         } else {

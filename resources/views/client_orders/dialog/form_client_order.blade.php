@@ -6,7 +6,7 @@
     @php $class = 'clientorderDialog' @endphp
     id="clientorderDialog"
     @endif
-    class="dialog client_order_dialog" style="width:880px;">
+    class="dialog client_order_dialog" style="width:950px;">
     @if(isset($client_order) && $client_order->id != NULL)
         <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
     @else
@@ -59,8 +59,30 @@
             </div>
         </div>
         @if(isset($client_order))
+        <div class="b-r pr-3 mr-3">
+            <span class="item-title _500">Дата оформления</span>
+            <div class="item-except font-weight-bolder h-1x">
+                    <span id="itogo_price">
+                            {{ $client_order->data() }}
+                    </span>
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
+        @endif
+        @if(isset($client_order))
             <div class="b-r pr-3 mr-3">
-                <button class="btn btn-fw success">Принять оплату</button>
+                <span class="item-title _500">Состояние заказа</span>
+                <div class="item-except font-weight-bolder h-1x">
+                    <span id="itogo_price">@if($client_order->total_complited)Укомплектован@elseНеукомплектован@endif</span>
+                </div>
+                <div class="item-tag tag hide">
+                </div>
+            </div>
+        @endif
+        @if(isset($client_order))
+            <div class="b-r pr-3 mr-3">
+                <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Принять оплату</button>
             </div>
         @endif
     </div>
@@ -94,7 +116,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12 form-group">
+                            <div class="@if(isset($client_order)) col-sm-6 @else col-sm-12 @endif form-group">
                                 <label for="discount">Скидка</label>
                                 <div class="input-group">
                                     <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($client_order) value="{{ $client_order->discount }}" @else value="0" @endif>
@@ -106,6 +128,20 @@
                                     </span>
                                 </div>
                             </div>
+                            @if(isset($client_order))
+                                <div class="col-sm-6 form-group">
+                                    <label for="discount">Статус заказа</label>
+                                    <div class="input-group">
+                                        <select name="status" class="form-control">
+                                            <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
+                                            <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
+                                            <option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>
+                                            <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
+                                        </select>
+                                    </span>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="col-sm-6 form-group">
@@ -121,6 +157,7 @@
                     <table class="table table-sm table-hover b-t mh40-dialog d-block" data-simplebar>
                         <thead class="text-muted">
                         <tr>
+                            <th width="30%">Наличие</th>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Производитель</th>
@@ -133,7 +170,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($client_order))
-                            @foreach($client_order->getArticles() as $product)
+                            @foreach($client_order->articles as $product)
                                 @include('client_orders.dialog.product_element')
                             @endforeach
                         @endif

@@ -43,9 +43,35 @@ class clientorderDialog{
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
-        window.axform.send(elem, function(e){
+        window.axform.send(elem, function(resp){
+            console.log(resp);
             object.finitaLaComedia();
         });
+    }
+
+    saveAndReopen(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(resp){
+            object.finitaLaComedia();
+            setTimeout(function(){
+                window.openDialog('clientorderDialog', '&client_order_id=' + resp.data.id);
+                console.log(123);
+            }, 200);
+
+        });
+    }
+
+    getPayment(){
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        partner = parseInt(partner);
+        //console.log(partner);
+        //var params;
+        //if(partner !== null){
+        //params = params + '&partner_id='+partner;
+        //}
+        //console.log(params);
+        openDialog('warrantDialog', '&isIncoming=1&partner_id='+partner);
     }
 
     loadItemsIfExists(){
@@ -237,8 +263,6 @@ class clientorderDialog{
                 count:1,
             }
         }).then(function (resp) {
-
-            console.log(resp.data.product.id);
             object.addItem({
                 id:resp.data.product.id,
                 store_id:'new',
@@ -326,27 +350,36 @@ class clientorderDialog{
 
     recalculateItem(store_id, id){
 
-        console.log(store_id, id);
         let object = this;
+
         let item = this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id);
-        let total = item.querySelector("input[name='products[" + store_id + "][" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + store_id + "][" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + store_id + "][" + id + "][price]']");
+        let total, count, price;
+        if(item !== null && item !== 'undefined' && item !== 'null') {
+            total = item.querySelector("input[name='products[" + store_id + "][" + id + "][total_price]']");
+            count = item.querySelector("input[name='products[" + store_id + "][" + id + "][count]']");
+            price = item.querySelector("input[name='products[" + store_id + "][" + id + "][price]']");
+            let vcount = Number(count.value);
+            let vprice = Number(price.value);
+            let vtotal = Number(total.value);
 
-        let vcount = Number(count.value);
-        let vprice = Number(price.value);
-        let vtotal = Number(total.value);
+            vtotal = vprice * vcount;
+            total.value = vtotal.toFixed(2);
 
-        vtotal = vprice * vcount;
-        total.value = vtotal.toFixed(2);
+            object.items.map(function(e){
+                if(e.id === id && e.store_id === store_id){
+                    e.total = vtotal;
+                    e.count = vcount;
+                    e.price = vprice;
+                }
+            });
+        } else {
 
-        object.items.map(function(e){
-            if(e.id === id && e.store_id === store_id){
-                e.total = vtotal;
-                e.count = vcount;
-                e.price = vprice;
-            }
-        });
+        }
+
+
+
+
+
 
 
         // let object = this;
