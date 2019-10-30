@@ -26,13 +26,16 @@ class WarrantController extends Controller
 
         $data = new stdClass();
 
-
         if($request['partner_id']){
             $partner = Partner::owned()->where('id', $request['partner_id'])->first();
             if($partner){
                 $data->partner_selected = $partner;
             }
         }
+
+        $cashbox = Auth::user()->company()->first()->cashboxes()->first();
+
+        $data->cashbox = $cashbox;
 
 
         return response()->json([

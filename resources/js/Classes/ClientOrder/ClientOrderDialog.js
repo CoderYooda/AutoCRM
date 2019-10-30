@@ -10,6 +10,7 @@ class clientorderDialog{
         this.init();
     }
 
+
     init(){
         let object = this;
 
@@ -31,6 +32,27 @@ class clientorderDialog{
             object.finitaLaComedia();
         });
 
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('EntranceStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            console.log(id);
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
+        // object.root_dialog.getElementsByTagName('form')[0].addEventListener('clientOrderStored',  function(){
+        //     let root_id = object.root_dialog.id;
+        //     object.freshContent(root_id,function(){
+        //         delete window[root_id];
+        //         delete window.dialogs[root_id];
+        //         window.helper.initDialogMethods();
+        //     });
+        // });
+
 
         this.loadItemsIfExists();
 
@@ -40,41 +62,83 @@ class clientorderDialog{
         }
     }
 
+    scanOperation(UPC){
+        console.log(UPC);
+    }
+
+    freshContent(id, callback = null){
+        let object = this;
+
+        //var store_id = this.store_obj.value;
+
+        let data = {};
+        //data.store_id = store_id;
+        if(object.refer){
+            data.refer = object.refer;
+        }
+
+        window.axios({
+            method: 'post',
+            url: 'clientorder/' + id + '/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            callback();
+        });
+    }
+
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            console.log(resp);
-            object.finitaLaComedia();
+            let root_id = object.root_dialog.id;
+            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+            object.root_dialog.setAttribute('id', 'clientorderDialog' + resp.data.id);
+            object.root_dialog.setAttribute('data-id', resp.data.id);
+            object.freshContent(resp.data.id, function(){
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['clientorderDialog' + resp.data.id] = drag_dialog;
+                drag_dialog.tag = 'clientorderDialog' + resp.data.id;
+                window.helper.initDialogMethods();
+            });
+
+
+
+            // let dialog = document.getElementById('clientorderDialog' + resp.data.id);
+            // console.log(dialog);
+            // window['clientorderDialog' + resp.data.id] = new clientorderDialog(dialog);
+
         });
     }
 
-    saveAndReopen(elem){
+    saveAndClose(elem){
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
             object.finitaLaComedia();
-            setTimeout(function(){
-                window.openDialog('clientorderDialog', '&client_order_id=' + resp.data.id);
-                console.log(123);
-            }, 200);
-
         });
     }
 
     getPayment(){
+
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
         partner = parseInt(partner);
         //console.log(partner);
-        //var params;
-        //if(partner !== null){
-        //params = params + '&partner_id='+partner;
-        //}
-        //console.log(params);
+        var params = '';
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
         openDialog('warrantDialog', '&isIncoming=1&partner_id='+partner);
     }
 
     loadItemsIfExists(){
+        console.log('Загружаем товары');
         window.isXHRloading = true;
         let object = this;
         var client_order_id = this.root_dialog.dataset.id;
@@ -85,7 +149,6 @@ class clientorderDialog{
                 url: 'clientorder/' + client_order_id + '/get_clientorders',
                 data: {},
             }).then(function (resp) {
-
                 [].forEach.call(resp.data.products, function(elem){
                     object.items.push({
                         id:elem.product.id,
@@ -193,16 +256,9 @@ class clientorderDialog{
 
     addProduct(elem){
         var object = this;
-
         let store_id = elem.dataset.store_id;
         let article_id = elem.dataset.article_id;
         let count = elem.closest('tr').querySelector('input').value;
-
-
-
-        // let article_id = elem.dataset.article_id;
-        // let count = elem.closest('div').querySelector('input[name="count"]').value;
-
         window.axios({
             method: 'post',
             url: 'product/addtolist',
@@ -221,7 +277,6 @@ class clientorderDialog{
                     canAdd = false;
                 }
             });
-            console.log(resp.data);
             if(canAdd){
                 object.addItem({
                     id:resp.data.product.product.id,
@@ -232,18 +287,6 @@ class clientorderDialog{
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
-
-
-            //
-            // var isset = object.items.map(function(e){
-            //     return e.id;
-            // }).indexOf(resp.data.product.id);
-            //
-            // if(isset < 0){
-            //     object.addItem({id:resp.data.product.id, html:resp.data.html});
-            // } else {
-            //     window.notification.notify('error', 'Товар уже в списке');
-            // }
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -337,9 +380,9 @@ class clientorderDialog{
         var discount_val;
 
         if(inpercents.checked){
-            discount_val = discount.value + '%';
+            discount_val = discount.value + ' %';
         } else {
-            discount_val = discount.value + 'р';
+            discount_val = discount.value + ' р';
         }
 
 

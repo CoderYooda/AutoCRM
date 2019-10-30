@@ -11,11 +11,28 @@ class Scanner{
 
         let scanFN = window.helper.debounce(function(e) {
             if (object.UPC.length >= 6) {
-                console.log('barcode scanned:  ', object.UPC);
-                if(window.barcodeDialog){
-                    window.barcodeDialog.finitaLaComedia();
+                console.log('Штрихкод отсканирован:', object.UPC);
+
+                var dialogs = document.getElementsByClassName('dialog');
+                let targeted = false;
+                [].forEach.call(dialogs, function(elem){
+                    if(elem.classList.contains('selected')){
+                        try{
+                            window[elem.id].scanOperation(object.UPC);
+                            targeted = true;
+                        } catch (e) {
+                            console.warn('Класс не содержит метода scanOperation');
+                        }
+
+                    }
+                });
+                if(targeted === false){
+                    if(window.barcodeDialog){
+                        window.barcodeDialog.finitaLaComedia();
+                    }
+                    window.openDialog('barcodeDialog', '&upc=' + object.UPC);
                 }
-                window.openDialog('barcodeDialog', '&upc=' + object.UPC);
+
             }
             setTimeout(function(){
                 object.UPC = '';

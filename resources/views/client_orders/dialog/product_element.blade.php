@@ -41,7 +41,7 @@
                @if(isset($product->count)) value="{{$product->price}}"@else value="0" @endif
                type="number" min="0" step="0.1" ></td>
     <td><input name="products[{{ $product->store_id }}][{{ $product->product->id }}][total_price]" class="form-control form-control-sm"
-               @if(isset($product->count)) value="{{$product->total}}"@else value="0.00" @endif
+               @if(isset($product->count)) value="{{sprintf("%.2f", $product->total)}}"@else value="0.00" @endif
                disabled type="number"></td>
     <td class="text-right">
         @if(isset($request) && $request['refer'] != null)

@@ -9,9 +9,15 @@ class Company extends Model
     public function members(){
         return $this->belongsToMany('App\Models\User', 'user_company');
     }
+
     public function stores(){
         return $this->hasMany('App\Models\Store', 'company_id');
     }
+
+    public function cashboxes(){
+        return $this->hasMany('App\Models\Cashbox', 'company_id');
+    }
+
     public function checkAccessToStore($store){
         if($store == null || $this->stores()->where('id', $store->id)->first() == NULL){
             return false;
@@ -19,6 +25,7 @@ class Company extends Model
             return true;
         }
     }
+
     public function inviteUser($user)
     {
         $user->company_id = $this->id;

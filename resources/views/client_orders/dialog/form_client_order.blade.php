@@ -1,19 +1,21 @@
-<div
-    @if(isset($client_order) && $client_order->id != NULL)
-    @php $class = 'clientorderDialog' . $client_order->id @endphp
-    id="clientorderDialog{{$client_order->id}}" data-id="{{$client_order->id}}"
-    @else
-    @php $class = 'clientorderDialog' @endphp
-    id="clientorderDialog"
+    @if(!$request['fresh'])
+        <div
+        @if(isset($client_order) && $client_order->id != NULL)
+        @php $class = 'clientorderDialog' . $client_order->id @endphp
+        id="clientorderDialog{{$client_order->id}}" data-id="{{$client_order->id}}"
+        @else
+        @php $class = 'clientorderDialog' @endphp
+        id="clientorderDialog"
+        @endif
+        class="dialog client_order_dialog " style="width:950px;">
     @endif
-    class="dialog client_order_dialog" style="width:950px;">
     @if(isset($client_order) && $client_order->id != NULL)
         <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
     @else
         <div class="titlebar">Новый заказ клиента</div>
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-    <div class="modal-header white" style="justify-content: normal;">
+    <div class="modal-header dark" style="justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
             {{--<span class="item-title _500">Поступление</span>--}}
             {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}
@@ -86,11 +88,13 @@
             </div>
         @endif
     </div>
-    <form action="{{ route('StoreClientOrder') }}" method="POST">
+    <form class="EntranceStoredListner clientOrderStoredListner" action="{{ route('StoreClientOrder') }}" method="POST">
         @csrf
         @if(isset($client_order) && $client_order->id != NULL)
             <input type="hidden" name="id" value="{{ $client_order->id }}">
             <input type="hidden" name="summ" value="{{ $client_order->summ }}">
+        @else
+            <input type="hidden" name="id" value="">
         @endif
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($client_order)){{ $client_order->partner()->first()->id }}@endif">
 
@@ -184,10 +188,15 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn primary" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+            <button class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+
         </div>
         <div class="system_message">
 
         </div>
     </form>
-</div>
+@if(!$request['fresh'])
+    </div>
+@endif

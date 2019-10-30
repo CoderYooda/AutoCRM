@@ -65,6 +65,39 @@ class ClientOrdersController extends Controller
         ], 200);
     }
 
+    public function fresh($id, Request $request)
+    {
+        $client_order = ClientOrder::where('id', (int)$id)->first();
+
+        $client_order->articles = $client_order->getArticles();
+
+        foreach($client_order->articles as $article){
+            $article->instock = $article->product->getArticlesCountInAllStores();
+            if($article->instock >= $article->count){
+                $article->complited = true;
+            } else {
+                $article->complited = false;
+            }
+        }
+        $total_complited = true;
+
+        foreach($client_order->articles as $article){
+            if(!$article->complited){
+                $total_complited = false;
+            }
+        }
+
+        $client_order->total_complited = $total_complited;
+
+        $request['fresh'] = true;
+        $class = 'clientorderDialog' . $id;
+        $content = view('client_orders.dialog.form_client_order', compact( 'client_order', 'stores', 'class', 'request'))->render();
+        return response()->json([
+            'html' => $content,
+            'target' => 'clientorderDialog' . $id,
+        ], 200);
+    }
+
     public function store(Request $request){
 
 
@@ -103,10 +136,10 @@ class ClientOrdersController extends Controller
         }
 
         if($client_order->exists){
-            $this->message = 'Продажа обновлена';
+            $this->message = 'Заказ обновлен';
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
-            $this->message = 'Продажа сохранена';
+            $this->message = 'Заказ сохранен';
         }
         $client_order->fill($request->only($client_order->fields));
         $client_order->summ = 0;
@@ -131,26 +164,37 @@ class ClientOrdersController extends Controller
 
         $client_order_data = [];
 
+        #### Проверка на дубли
+        $messages = [];
+        foreach($request['products'] as $store_id => $products) {
+            foreach($products as $id => $product) {
+                if ($store_id === 'new') {
+                    $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
+                    if($stock_supplier){
+                        $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
+                        if($art !== null) {
+                            $article_errors[0] = '';
+                            $supplier_errors[0] = '';
+                            $messages['products.' . $store_id . '.' . $product['id'] . '.article'] = $article_errors;
+                            $messages['products.' . $store_id . '.' . $product['id'] . '.new_supplier_name'] = $supplier_errors;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(count($messages) > 0){
+            return response()->json([
+                'messages' => $messages
+            ], 422);
+        }
+
         #### Сохраняем быстрые товары
         foreach($request['products'] as $store_id => $products) {
             foreach($products as $id => $product) {
                 if ($store_id === 'new') {
 
-                    $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
 
-                    if($stock_supplier){
-                        $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
-                        $article_errors[0] = '123';
-                        $supplier_errors[0] = '123';
-                        if($art !== null){
-                            return response()->json([
-                                'messages' => [
-                                    'products.' . $store_id . '.' . $product['id'] . '.article' => $article_errors,
-                                    'products.' . $store_id . '.' . $product['id'] . '.new_supplier_name' => $supplier_errors,
-                                ]
-                            ], 422);
-                        }
-                    }
 
                     $vcount = (int)$product['count'];
                     $vprice = (double)$product['price'];
