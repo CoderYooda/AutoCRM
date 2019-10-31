@@ -2,7 +2,7 @@
 <div id="selectDdsarticleDialog" class="dialog" style="width:450px;">
     <div class="titlebar">Выбор статьи</div>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
-    <div class="navbar white no-radius box-shadow pos-rlt">
+    <div class="navbar dark no-radius box-shadow pos-rlt">
         <form class="flex">
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
@@ -10,7 +10,7 @@
             <div class="input-group">
                 <input id="ddsarticle_search" type="text" class="form-control form-control-sm search" placeholder="Поиск статьи" required="">
                 <span class="input-group-append">
-                    <button onclick="openDialog('ddsarticleDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новая статья</button>
+                    <button onclick="openDialog('ddsarticleDialog')" class="btn white btn-sm no-shadow" type="button">Новая статья</button>
                 </span>
             </div>
         </form>

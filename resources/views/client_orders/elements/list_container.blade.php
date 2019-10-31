@@ -1,5 +1,5 @@
 @php $client_orders = \App\Http\Controllers\ClientOrdersController::getClientOrders($request) @endphp
-<div class="d-flex flex white" data-simplebar style="max-height: calc(100% - 61px);">
+<div class="d-flex flex white" data-simplebar style="max-height: calc(100% - 61px); min-width: 100%">
     @if( $client_orders->count() > 0)
     <div class="">
         <table class="table mb-0">

@@ -26,7 +26,7 @@
         @if(isset($warrant) && $warrant->id != NULL)
             <input type="hidden" name="id" value="{{ $warrant->id }}">
         @endif
-        @if(isset($data) && $data->partner_selected !== null)
+        @if(isset($data->partner_selected) && $data->partner_selected !== null)
             <input class="partner_select" type="hidden" name="partner_id" value="{{ $data->partner_selected->id }}">
         @else
             <input class="partner_select" type="hidden" name="partner_id" value="
@@ -38,13 +38,28 @@
         @endif
 
 
-        @if(isset($data) && $data->cashbox !== null)
-            <input class="cashbox_select" type="hidden" name="cashbox_id" value="{{ $data->cashbox->id }}">
-        @else
+
+
+        @if(isset($warrant))
             <input class="cashbox_select" type="hidden" name="cashbox_id" value="@if(isset($warrant)){{ $warrant->cashbox()->first()->id }}@else @endif">
+        @else
+            @if(isset($data) && $data->cashbox !== null)
+                <input class="cashbox_select" type="hidden" name="cashbox_id" value="{{ $data->cashbox->id }}">
+            @endif
         @endif
 
-        <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle()->first()->id }}@endif">
+
+        @if(isset($warrant))
+            <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle()->first()->id }}@endif">
+        @else
+            @if(isset($data->dds_article) && $data->dds_article !== null)
+                <input class="dds_article_select" type="hidden" name="ddsarticle_id" value="{{ $data->dds_article->id }}">
+            @else
+                <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value="">
+            @endif
+        @endif
+
+
         @if(isset($warrant))<input class="do_date" type="hidden" name="do_date" value="{{ $warrant->do_date }}">@endif
 
         <input type="hidden" name="isIncoming" value="@if(isset($warrant)){{ $warrant->isIncoming }}@elseif(isset($request['isIncoming'])){{ $request['isIncoming'] }}@else 1 @endif">
@@ -70,15 +85,18 @@
                 <label for="category_id">Контрагент</label>
                 <div class="input-group">
                     <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
-                        @if(isset($data) && $data->partner_selected !== null)
-                            <option value="{{ $data->partner_selected->id }}">{{ $data->partner_selected->outputName() }}</option>
+
+                        @if(isset($warrant) && $warrant->partner()->first() != null)
+                            <option value="{{ $warrant->partner()->first()->id }}">{{ $warrant->partner()->first()->outputName() }}</option>
                         @else
-                            @if(isset($warrant) && $warrant->partner()->first() != null)
-                                <option value="{{ $warrant->partner()->first()->id }}">{{ $warrant->partner()->first()->outputName() }}</option>
+                            @if(isset($data->partner_selected) && $data->partner_selected !== null)
+                                <option value="{{ $data->partner_selected->id }}">{{ $data->partner_selected->outputName() }}</option>
                             @else
                                 <option>Не выбрано</option>
                             @endif
                         @endif
+
+
                     </select>
                     <div class="input-group-append">
                         <button type="button" onclick="{{ $class }}.openSelectPartnerModal()"
@@ -117,7 +135,11 @@
                         @if(isset($warrant) && $warrant->ddsarticle()->first() != null)
                             <option value="{{ $warrant->ddsarticle()->first()->id }}">{{ $warrant->ddsarticle()->first()->name }}</option>
                         @else
-                            <option>Не выбрано</option>
+                            @if(isset($data->dds_article) && $data->dds_article !== null)
+                                <option value="{{ $data->dds_article->id }}">{{$data->dds_article->name }}</option>
+                            @else
+                                <option>Не выбрано</option>
+                            @endif
                         @endif
                     </select>
                     <div class="input-group-append">
@@ -130,13 +152,13 @@
             <div class="form-group">
                 <label>Сумма</label>
                 <input type="number" step="0.1" name="summ"
-                       @if(isset($warrant)) value="{{ $warrant->summ }}" @endif
-                       class="form-control" placeholder="Сумма">
+                       @if(isset($warrant)) value="{{ $warrant->summ }}" @elseif (isset($data->summ)) value="{{ $data->summ }}" @endif
+                       class="form-control warrant_dialog_focused" placeholder="Сумма">
             </div>
             <div class="form-group">
                 <label>Основание</label>
                 <input type="text" name="reason"
-                       @if(isset($warrant)) value="{{ $warrant->reason }}" @endif
+                       @if(isset($warrant)) value="{{ $warrant->reason }}" @elseif(isset($data->reason) && $data->reason !== null)  value="{{ $data->reason }}" @endif
                        class="form-control" placeholder="Основание">
             </div>
             <div class="form-group">

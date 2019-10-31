@@ -83,6 +83,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
     Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
     Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
+    Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
 
     #Движение средств между кассами
     Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cashbox;
+use App\Models\DdsArticle;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -33,6 +34,27 @@ class WarrantController extends Controller
             }
         }
 
+        if($request['itogo']){
+            $data->summ = $request['itogo'];
+        }
+        if($request['reason']){
+            $data->reason = $request['reason'];
+        }
+
+        if($request['warrant_type'] && $request['warrant_type'] !== null){
+            $dds_type_id = null;
+
+            switch ($request['warrant_type']){
+                case 'sale_of_goods' :
+                    $dds_type_id = 2;
+                    break;
+            }
+
+            if($dds_type_id !== null){
+                $data->dds_article = DdsArticle::owned()->where('id', $dds_type_id)->first();
+            }
+        }
+
         $cashbox = Auth::user()->company()->first()->cashboxes()->first();
 
         $data->cashbox = $cashbox;
@@ -58,8 +80,6 @@ class WarrantController extends Controller
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
-
-
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);
 
@@ -106,6 +126,23 @@ class WarrantController extends Controller
         }
     }
 
+    public function delete($id)
+    {
+        $warrant = Warrant::owned()->where('id', $id)->first();
+        $cashbox = Cashbox::owned()->where('id', $warrant->cashbox_id)->first();
+        $cashbox->subtraction($warrant->summ);
+        $warrant->delete();
+        $this->status = 200;
+        $type = 'success';
+        $this->message = 'Кассовый ордер удален';
+        return response()->json([
+            'id' => $warrant->id,
+            'type' => $type,
+            'message' => $this->message
+        ], 200);
+    }
+
+
     private static function validateRules($request)
     {
         $rules = null;
@@ -113,7 +150,7 @@ class WarrantController extends Controller
             'partner_id' => ['required','exists:partners,id'],
             'cashbox_id' => ['required','exists:cashboxes,id'],
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
-            'summ' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'summ' => ['required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:0', 'max:1000000'],
             'isIncoming' => ['boolean'],
         ];
         return $rules;

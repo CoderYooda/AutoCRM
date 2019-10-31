@@ -21,6 +21,6 @@ class DdsArticle extends Model
 
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
+        return self::where('company_id', $company_id)->orWhere('company_id', NUll);
     }
 }

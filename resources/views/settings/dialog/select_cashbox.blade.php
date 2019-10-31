@@ -2,7 +2,7 @@
 <div id="selectCashboxDialog" class="dialog" style="width:450px;">
     <div class="titlebar">Выбор кассового аппарата</div>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
-    <div class="navbar white no-radius box-shadow pos-rlt">
+    <div class="navbar dark no-radius box-shadow pos-rlt">
         <form class="flex">
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
@@ -13,7 +13,7 @@
             <div class="input-group">
                 <input id="cashbox_search" type="text" class="form-control form-control-sm search" placeholder="Поиск кассового аппарата" required="">
                 <span class="input-group-append">
-                    <button onclick="openDialog('cashboxDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новый кассовый аппарат</button>
+                    <button onclick="openDialog('cashboxDialog')" class="btn white btn-sm no-shadow" type="button">Новый кассовый аппарат</button>
                 </span>
             </div>
         </form>

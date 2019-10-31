@@ -93,6 +93,7 @@
         @if(isset($client_order) && $client_order->id != NULL)
             <input type="hidden" name="id" value="{{ $client_order->id }}">
             <input type="hidden" name="summ" value="{{ $client_order->summ }}">
+            <input type="hidden" name="itogo" value="{{ $client_order->itogo }}">
         @else
             <input type="hidden" name="id" value="">
         @endif
@@ -153,12 +154,12 @@
                         <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group mb-0">
                     <div for="category_id" class=" mb-3">
                         <b>Список приходных номенклатур</b>
                     </div>
 
-                    <table class="table table-sm table-hover b-t mh40-dialog d-block" data-simplebar>
+                    <table class="table table-sm table-hover b-t mh40-dialog d-block mb-0" data-simplebar style="min-height: 200px">
                         <thead class="text-muted">
                         <tr>
                             <th width="30%">Наличие</th>
@@ -180,14 +181,15 @@
                         @endif
                         </tbody>
                     </table>
-                    <div class="btn-groups w-100">
-                            <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Товар из базы</button>
-                            <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="btn btn-fw white"><i class="fa fa-plus"></i> Быстрый товар</button>
-                    </div>
+
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="white-space: nowrap">
+            <div class="btn-groups w-100">
+                <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Товар из базы</button>
+                <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="btn btn-fw white"><i class="fa fa-plus"></i> Быстрый товар</button>
+            </div>
             <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
             <button class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
             <button class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>

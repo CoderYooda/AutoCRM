@@ -96,7 +96,12 @@ class DdsarticleController extends Controller
         $message = 'Статья ДДС удалена';
         $status = 200;
 
-        if($Ddsarticle->company()->first()->id != Auth::user()->company()->first()->id){
+        if(!$Ddsarticle){
+            $message = 'Статья не найдена';
+            $status = 422;
+        }
+
+        if($Ddsarticle->locked){
             $message = 'Вам не разрешено удалять эту статью ДДС';
             $status = 422;
         }
@@ -154,7 +159,7 @@ class DdsarticleController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        return Ddsarticle::owned()->where('company_id', Auth::user()->id)->where(function($q) use ($request, $category){
+        return Ddsarticle::owned()->where(function($q) use ($request, $category){
             if($category != 0) {
                 $q->where('category_id', $category);
             }

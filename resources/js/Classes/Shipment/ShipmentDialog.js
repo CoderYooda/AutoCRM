@@ -10,6 +10,31 @@ class shipmentDialog{
         this.init();
     }
 
+    getPayment(){
+        let warrant_type = 'sale_of_goods';
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+        partner = parseInt(partner);
+        //console.log(partner);
+        var params = '';
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
+        if(warrant_type != null){
+            params += '&warrant_type='+warrant_type;
+        }
+        if(itogo != null){
+            params += '&itogo='+itogo;
+        }
+        if(id != null){
+            let reason = 'Реализация товара №' + id;
+            params += '&reason='+reason;
+        }
+
+        openDialog('warrantDialog', '&isIncoming=1'+params);
+    }
+
     init(){
         let object = this;
 

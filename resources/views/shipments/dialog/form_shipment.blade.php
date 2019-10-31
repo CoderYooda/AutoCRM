@@ -61,7 +61,7 @@
         @if(isset($shipment))
 
             <div class="b-r pr-3 mr-3">
-                <button class="btn btn-fw success">Принять оплату</button>
+                <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Принять оплату</button>
             </div>
         @endif
     </div>
@@ -70,6 +70,7 @@
         @if(isset($shipment) && $shipment->id != NULL)
             <input type="hidden" name="id" value="{{ $shipment->id }}">
             <input type="hidden" name="summ" value="{{ $shipment->summ }}">
+            <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
         @endif
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($shipment)){{ $shipment->partner()->first()->id }}@endif">
 

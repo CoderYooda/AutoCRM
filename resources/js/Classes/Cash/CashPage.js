@@ -17,9 +17,9 @@ class cashPage{
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
-        this.chartCircle.update();
-        this.active_tab = window.helper.findGetParameter('active_tab');
-        window.helper.debugBar(this);
+        // this.chartCircle.update();
+        // this.active_tab = window.helper.findGetParameter('active_tab');
+        // window.helper.debugBar(this);
     }
 
     init(){
