@@ -31,8 +31,10 @@ class storePage{
             object.reload();
         });
         document.addEventListener('clientOrderStored', function(e){
-            object.prepareParams();
-            object.reload();
+            if(object.active){
+                object.prepareParams();
+                object.reload();
+            }
         });
         document.addEventListener('providerOrderStored', function(e){
             object.prepareParams();
@@ -253,7 +255,6 @@ class storePage{
         }).then(function (resp) {
             var results_container = document.getElementById(resp.data.target);
             results_container.innerHTML = resp.data.html;
-
 
             window.helper.insertParamUrl('search', object.search);
             window.helper.insertParamUrl('active_tab', object.active_tab);

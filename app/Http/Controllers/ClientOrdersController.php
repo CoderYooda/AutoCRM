@@ -137,10 +137,16 @@ class ClientOrdersController extends Controller
 
         if($client_order->exists){
             $this->message = 'Заказ обновлен';
+            foreach($client_order->getArticles() as $article){
+                dd($article);
+                $store = Store::owned()->where('id', $article->pivot->store_id)->first();
+                $store->increaseArticleCount($article->id, $article->pivot->count);
+            }
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Заказ сохранен';
         }
+
         $client_order->fill($request->only($client_order->fields));
         $client_order->summ = 0;
         $client_order->balance = 0;
@@ -271,6 +277,8 @@ class ClientOrdersController extends Controller
             $client_order->discount = $request['discount'];
             $client_order->itogo = $client_order->summ - $request['discount'];
         }
+
+
 
         $client_order->save();
 

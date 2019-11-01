@@ -166,10 +166,10 @@ class WarrantController extends Controller
                 }
             })
             ->where(function($q) use ($request){
-                if(isset($request['date_start']) && $request['date_start'] != 'null'){
+                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
                     $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
                 }
-                if(isset($request['date_end']) && $request['date_end'] != 'null'){
+                if(isset($request['date_end']) && $request['date_end'] != 'null'  && $request['date_end'] != ''){
                     $q->where('do_date', '<=', Carbon::parse($request['date_end']));
                 }
             })

@@ -14,6 +14,7 @@ class StoreController extends Controller
     public function index(Request $request)
     { // точка входа в страницу
         $page_title = 'Склад';
+
         if($request['search'] == 'undefined'){
             $request['search'] = null;
         }
@@ -48,9 +49,11 @@ class StoreController extends Controller
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
         $cat_info['root_id'] = 2;
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
             return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
+
         return view('store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 

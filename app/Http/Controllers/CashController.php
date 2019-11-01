@@ -12,14 +12,20 @@ class CashController extends Controller
 
         $page_title = 'Деньги';
 
+        if($request['search'] == 'undefined'){
+            $request['search'] = null;
+        }
+
         $target = HC::selectTarget(); // цель ajax подгрузки
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'warrant';
         }
+
         $classname = $request['active_tab'] . 'Tab';
+
         if($request['active_tab'] === 'null'){$classname = 'moneyTab';}
-//        $content = view('cash.operations', compact('products', 'request'));
+
         $content = self::$classname($request);
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
@@ -39,8 +45,8 @@ class CashController extends Controller
         $income =  WarrantController::getIncomeCount($request);
         $outcome = WarrantController::getOutcomeCount($request);
 
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('cash.warrants', compact('income','outcome', 'request'));
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-warrant'){
+            return view('cash.elements.warrant_list_container', compact('income','outcome', 'request'));
         } else {
             return view('cash.warrants', compact('income', 'outcome', 'request'));
         }

@@ -1,7 +1,7 @@
 class clientorderDialog{
 
     constructor(dialog){
-        console.log('Окно Продажи Клиента инициализировано');
+        console.log('Окно заказа Клиента инициализировано');
         this.root_dialog = dialog;
         this.items = [];
         this.nds = true;

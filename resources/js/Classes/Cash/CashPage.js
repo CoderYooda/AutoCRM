@@ -17,18 +17,19 @@ class cashPage{
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
-        // this.chartCircle.update();
-        // this.active_tab = window.helper.findGetParameter('active_tab');
-        // window.helper.debugBar(this);
+        //this.chartCircle.update();
+        this.active_tab = window.helper.findGetParameter('active_tab');
+        window.helper.debugBar(this);
+        console.log('linked');
     }
 
     init(){
         let object = this;
         object.initSearch();
         document.addEventListener('ajaxLoaded', function(e){
-            object.checkActive();
-            object.chartInit();
-            object.load();
+            //object.checkActive();
+            //object.chartInit();
+            //object.load();
         });
         object.checkActive();
         object.load();
@@ -81,6 +82,7 @@ class cashPage{
         if(window.helper.findGetParameter('search') !== null){
             this.search = window.helper.findGetParameter('search');
         }
+        console.log('initSearch');
     }
 
     initDates(){
@@ -148,6 +150,7 @@ class cashPage{
         }
         this.searchInit();
         this.initDates();
+        console.log('load');
     }
 
     checkActive(){
@@ -191,20 +194,66 @@ class cashPage{
         }
     }
 
+    prepareParams(){
+        if(this.category_id === null){
+            this.category_id = '';
+        }
+        if(!this.search || this.search === 'null' || this.search === null){
+            this.search = '';
+        }
+        if(this.page === null || this.page === 'null'){
+            this.page = 1;
+        }
+        if(this.isIncoming === null || this.isIncoming === 'null'){
+            this.isIncoming = '';
+        }
+        if(this.date_start === null || this.date_start === 'null'){
+            this.date_start = '';
+        }
+        if(this.date_end === null || this.date_end === 'null'){
+            this.date_end = '';
+        }
+    }
+
+    getUrlString(){
+        let url = '?view_as=json';
+        url += '&target=ajax-table-' + this.active_tab;
+        if(this.search && this.search !== 'null' || this.search !== null){
+            url += '&search=';
+            url += this.search;
+        }
+        if(this.active_tab !== null || this.active_tab !== 'null'){
+            url += '&active_tab=';
+            url += this.active_tab;
+        }
+        if(this.page !== null || this.page !== 'null'){
+            url += '&page=';
+            url += this.page;
+        }
+        if(this.isIncoming !== null || this.isIncoming !== 'null'){
+            url += '&isIncoming=';
+            url += this.isIncoming;
+        }
+        if(this.date_start !== null || this.date_start !== 'null' || this.date_start !== ''){
+            url += '&date_start=';
+            url += this.date_start;
+        }
+        if(this.date_end !== null || this.date_end !== 'null' || this.date_end !== ''){
+            url += '&date_end=';
+            url += this.date_end;
+        }
+
+        return url;
+    }
+
+
     reload(){
         let object = this;
+        object.prepareParams();
         if (isXHRloading) { return; } window.isXHRloading = true;
-        let data = {};
-        data.search = object.search;
-        data.active_tab = object.active_tab;
-        data.page = object.page;
-        data.date_start = object.date_start;
-        data.date_end = object.date_end;
-        data.isIncoming = object.isIncoming;
         window.axios({
-            method: 'post',
-            url: this.active_tab + '/search',
-            data: data,
+            method: 'get',
+            url: object.getUrlString(),
         }).then(function (resp) {
             var results_container = document.getElementById(resp.data.target);
             results_container.innerHTML = resp.data.html;
@@ -227,6 +276,7 @@ class cashPage{
         }).finally(function () {
             window.isXHRloading = false;
         });
+        console.log('reload');
     }
 }
 export default cashPage;
