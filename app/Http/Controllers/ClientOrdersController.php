@@ -138,9 +138,8 @@ class ClientOrdersController extends Controller
         if($client_order->exists){
             $this->message = 'Заказ обновлен';
             foreach($client_order->getArticles() as $article){
-                dd($article);
-                $store = Store::owned()->where('id', $article->pivot->store_id)->first();
-                $store->increaseArticleCount($article->id, $article->pivot->count);
+                $store = Store::owned()->where('id', $article->store_id)->first();
+                $store->increaseArticleCount($article->product->id, $article->count);
             }
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
