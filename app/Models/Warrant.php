@@ -19,7 +19,9 @@ class Warrant extends Model
         'reason',
         'comment',
         'isIncoming',
-        'balance'
+        'balance',
+        'refer',
+        'refer_id',
     ];
 
     public function partner()
@@ -35,6 +37,11 @@ class Warrant extends Model
     public function cashbox()
     {
         return $this->belongsTo('App\Models\Cashbox', 'cashbox_id');
+    }
+
+    public function client_order()
+    {
+        return $this->belongsToMany('App\Models\ClientOrder', 'client_orders_warrant', 'warrant_id', 'client_order_id' );
     }
 
     public static function owned(){

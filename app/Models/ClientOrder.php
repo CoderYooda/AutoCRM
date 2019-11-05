@@ -83,8 +83,14 @@ class ClientOrder extends Model
         return $count;
     }
 
+    public function warrants()
+    {
+        return $this->belongsToMany('App\Models\Warrant', 'client_orders_warrant',  'client_order_id', 'warrant_id' );
+    }
+
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
         return self::where('company_id', $company_id);
     }
+
 }

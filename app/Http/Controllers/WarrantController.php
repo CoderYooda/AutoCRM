@@ -34,8 +34,8 @@ class WarrantController extends Controller
             }
         }
 
-        if($request['itogo']){
-            $data->summ = $request['itogo'];
+        if($request['ostatok']){
+            $data->summ = $request['ostatok'];
         }
         if($request['reason']){
             $data->reason = $request['reason'];
@@ -58,6 +58,8 @@ class WarrantController extends Controller
         $cashbox = Auth::user()->company()->first()->cashboxes()->first();
 
         $data->cashbox = $cashbox;
+
+
 
 
         return response()->json([
@@ -116,6 +118,10 @@ class WarrantController extends Controller
         $warrant->save();
 
 
+        $method = $warrant->refer;
+        $warrant->$method()->attach($warrant->refer_id, ['company_id' => Auth::user()->company_id]);
+
+
         if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
@@ -146,13 +152,21 @@ class WarrantController extends Controller
     private static function validateRules($request)
     {
         $rules = null;
+
         $rules = [
             'partner_id' => ['required','exists:partners,id'],
             'cashbox_id' => ['required','exists:cashboxes,id'],
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
-            'summ' => ['required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:0', 'max:1000000'],
             'isIncoming' => ['boolean'],
         ];
+
+        $rules['summ'] = ['required', 'between:0,99.99'];
+//        if(isset($request['max_summ']) && $request['max_summ'] != null){
+//            $rules['summ'] = ['required', 'between:0,' . $request['max_summ']];
+//        } else {
+//            $rules['summ'] = ['required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:0', 'max:1000000'];
+//        }
+
         return $rules;
     }
 

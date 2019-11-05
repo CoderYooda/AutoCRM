@@ -122,6 +122,7 @@ class ClientOrdersController extends Controller
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0){$request['inpercents'] = false;} else {
             $request['inpercents'] = true;
         }
+
         if($request['inpercents']){
             if((int)$request['discount'] >= 100){
                 $request['discount'] = 100;
@@ -137,10 +138,27 @@ class ClientOrdersController extends Controller
 
         if($client_order->exists){
             $this->message = 'Заказ обновлен';
-            foreach($client_order->getArticles() as $article){
-                $store = Store::owned()->where('id', $article->store_id)->first();
-                $store->increaseArticleCount($article->product->id, $article->count);
-            }
+
+        ####Производим действия со складом в зависимости статуса заказа
+
+                if($client_order->status !== 'complete' && isset($request['status']) && $request['status'] === 'complete'){
+                    foreach($client_order->getArticles() as $article){
+                        $store = Store::owned()->where('id', $article->store_id)->first();
+                        $store->decreaseArticleCount($article->product->id, $article->count);
+                    }
+                }
+
+                if($client_order->status === 'complete' && isset($request['status']) && $request['status'] !== 'complete'){
+                    foreach($client_order->getArticles() as $article){
+                        $store = Store::owned()->where('id', $article->store_id)->first();
+                        $store->increaseArticleCount($article->product->id, $article->count);
+                    }
+                }
+
+//            foreach($client_order->getArticles() as $article){
+//                $store = Store::owned()->where('id', $article->store_id)->first();
+//                $store->increaseArticleCount($article->product->id, $article->count);
+//            }
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Заказ сохранен';

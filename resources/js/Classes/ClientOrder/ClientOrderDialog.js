@@ -31,6 +31,11 @@ class clientorderDialog{
         document.addEventListener('ShipmentStored', function(e){
             object.finitaLaComedia();
         });
+        document.addEventListener('WarrantStored', function(e){
+            object.freshContent(object.root_dialog.dataset.id, function(){
+
+            });
+        });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('EntranceStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
@@ -129,7 +134,10 @@ class clientorderDialog{
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
         let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
         let id = this.root_dialog.querySelector('input[name=id]').value;
+        let refer = 'client_order';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         partner = parseInt(partner);
         //console.log(partner);
         var params = '';
@@ -145,6 +153,15 @@ class clientorderDialog{
         if(id != null){
             let reason = 'Реализация заказа №' + id;
             params += '&reason='+reason;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+ostatok;
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
         }
 
         openDialog('warrantDialog', '&isIncoming=1'+params);

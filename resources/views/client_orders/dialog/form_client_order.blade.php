@@ -7,7 +7,7 @@
         @php $class = 'clientorderDialog' @endphp
         id="clientorderDialog"
         @endif
-        class="dialog client_order_dialog " style="width:950px;">
+        class="dialog client_order_dialog " style="width:1000px;">
     @endif
     @if(isset($client_order) && $client_order->id != NULL)
         <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
@@ -72,6 +72,20 @@
             </div>
         </div>
         @endif
+
+        @if(isset($client_order))
+        <div class="b-r pr-3 mr-3">
+            <span class="item-title _500">Оплачено</span>
+            <div class="item-except @if($client_order->warrants()->sum('summ') >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
+                    <span id="payed_price">
+        {{ sprintf("%.2f", $client_order->warrants()->sum('summ')) }} р / {{ $client_order->itogo }} р
+                    </span>
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
+        @endif
+
         @if(isset($client_order))
             <div class="b-r pr-3 mr-3">
                 <span class="item-title _500">Состояние заказа</span>
@@ -82,7 +96,7 @@
                 </div>
             </div>
         @endif
-        @if(isset($client_order))
+        @if(isset($client_order) && ($client_order->warrants()->sum('summ') < $client_order->itogo) )
             <div class="b-r pr-3 mr-3">
                 <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Принять оплату</button>
             </div>
@@ -94,6 +108,7 @@
             <input type="hidden" name="id" value="{{ $client_order->id }}">
             <input type="hidden" name="summ" value="{{ $client_order->summ }}">
             <input type="hidden" name="itogo" value="{{ $client_order->itogo }}">
+            <input type="hidden" name="ostatok" value="{{ $client_order->itogo - $client_order->warrants()->sum('summ') }}">
         @else
             <input type="hidden" name="id" value="">
         @endif
@@ -191,8 +206,8 @@
                 <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="btn btn-fw white"><i class="fa fa-plus"></i> Быстрый товар</button>
             </div>
             <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
-            <button class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
-            <button class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
 
         </div>
         <div class="system_message">

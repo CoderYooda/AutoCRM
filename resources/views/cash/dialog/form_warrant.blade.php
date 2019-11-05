@@ -23,6 +23,15 @@
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreWarrant') }}" method="POST">
         @csrf
+
+        @if(isset($request) && $request['refer'] != NULL)
+            <input type="hidden" name="refer" value="{{ $request['refer'] }}">
+        @endif
+
+        @if(isset($request) && $request['refer_id'] != NULL)
+            <input type="hidden" name="refer_id" value="{{ $request['refer_id'] }}">
+        @endif
+
         @if(isset($warrant) && $warrant->id != NULL)
             <input type="hidden" name="id" value="{{ $warrant->id }}">
         @endif
@@ -63,7 +72,9 @@
         @if(isset($warrant))<input class="do_date" type="hidden" name="do_date" value="{{ $warrant->do_date }}">@endif
 
         <input type="hidden" name="isIncoming" value="@if(isset($warrant)){{ $warrant->isIncoming }}@elseif(isset($request['isIncoming'])){{ $request['isIncoming'] }}@else 1 @endif">
-
+        @if(isset($data->summ))
+            <input type="hidden" name="max_summ" value="{{ $data->summ }}">
+        @endif
         <div class="no-gutters align-items-stretch">
             <div class="padding dark">
                 <div class="row row-sm">
