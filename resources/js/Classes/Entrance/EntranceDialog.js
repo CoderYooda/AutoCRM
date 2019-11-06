@@ -27,12 +27,44 @@ class createEntrance{
         if(focused){
             focused.focus();
         }
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
     }
 
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
-        window.axform.send(elem, function(e){
+        window.axform.send(elem, function(resp){
+            console.log(resp);
+            let root_id = object.root_dialog.id;
+            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+            object.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
+            object.root_dialog.setAttribute('data-id', resp.data.id);
+            object.freshContent(resp.data.id, function(){
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['entranceDialog' + resp.data.id] = drag_dialog;
+                drag_dialog.tag = 'entranceDialog' + resp.data.id;
+                window.helper.initDialogMethods();
+            });
+        });
+    }
+
+    saveAndClose(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(resp){
             object.finitaLaComedia();
         });
     }
@@ -124,6 +156,31 @@ class createEntrance{
         delete window[this.root_dialog.id];
         //document.removeEventListener("PartnerSelected");
         //document.removeEventListener("PartnerStored");
+    }
+
+    freshContent(id, callback = null){
+        let object = this;
+
+        //var store_id = this.store_obj.value;
+
+        let data = {};
+        //data.store_id = store_id;
+        if(object.refer){
+            data.refer = object.refer;
+        }
+
+        window.axios({
+            method: 'post',
+            url: 'entrance/' + id + '/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            callback();
+        });
     }
 
     removeItem(id){
@@ -222,6 +279,42 @@ class createEntrance{
         this.recalculate();
     }
 
+    getPayment(){
+        let warrant_type = 'receipt_of_goods';
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+        let refer = 'entrance';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
+        partner = parseInt(partner);
+        //console.log(partner);
+        var params = '';
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
+        if(warrant_type != null){
+            params += '&warrant_type='+warrant_type;
+        }
+        if(itogo != null){
+            params += '&itogo='+itogo;
+        }
+        if(id != null){
+            let reason = 'Оплата поступления №' + id;
+            params += '&reason='+reason;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+ostatok;
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
+        }
+
+        openDialog('warrantDialog', '&isIncoming=0'+params);
+    }
 
     recalculateItem(id){
         let object = this;

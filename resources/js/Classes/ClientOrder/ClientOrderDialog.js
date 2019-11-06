@@ -31,15 +31,21 @@ class clientorderDialog{
         document.addEventListener('ShipmentStored', function(e){
             object.finitaLaComedia();
         });
-        document.addEventListener('WarrantStored', function(e){
-            object.freshContent(object.root_dialog.dataset.id, function(){
 
-            });
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
         });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('EntranceStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
-            console.log(id);
             if(id !== null){
                 let root_id = object.root_dialog.id;
                 object.freshContent(id,function(){

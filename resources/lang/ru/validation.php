@@ -24,7 +24,7 @@ return [
     'before'               => 'В поле :attribute должна быть дата до :date.',
     'before_or_equal'      => 'В поле :attribute должна быть дата до или равняться :date.',
     'between'              => [
-        'numeric' => 'Поле :attribute должно быть между :min и :max.',
+        'numeric' => 'Значение должно быть между :min и :max.',
         'file'    => 'Размер файла в поле :attribute должен быть между :min и :max Килобайт(а).',
         'string'  => 'Количество символов в поле :attribute должно быть между :min и :max.',
         'array'   => 'Количество элементов в поле :attribute должно быть между :min и :max.',

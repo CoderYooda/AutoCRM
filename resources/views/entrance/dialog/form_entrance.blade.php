@@ -13,7 +13,7 @@
         <div class="titlebar">Новое поступление товара</div>
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-        <div class="modal-header white" style="justify-content: normal;">
+        <div class="modal-header dark" style="justify-content: normal;">
             <div class="b-r pr-3 mr-3">
                 <span class="item-title _500">Поступление</span>
                 <div class="item-except text-sm h-1x font-weight-bolder">
@@ -36,25 +36,32 @@
                 <div class="item-tag tag hide">
                 </div>
             </div>
-            @if(isset($entrance))
+            @if(isset($entrance) && ($entrance->warrants()->sum('summ') < $entrance->totalPrice) )
                 <div class="b-r pr-3 mr-3">
-                    <div class="checkbox" style="line-height: 40px;" >
-                        <label class="ui-check mb-0">
-                            <input disabled name="locked" type="checkbox" value="1" @if($entrance->locked) checked @endif>
-                            <i class="dark-white"></i>
-                            Замок
-                        </label>
-                    </div>
-                </div>
-                <div class="b-r pr-3 mr-3">
-                    <button class="btn btn-fw success">Оплатить</button>
+                    <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>
                 </div>
             @endif
+            {{--@if(isset($entrance))--}}
+                {{--<div class="b-r pr-3 mr-3">--}}
+                    {{--<div class="checkbox" style="line-height: 40px;" >--}}
+                        {{--<label class="ui-check mb-0">--}}
+                            {{--<input disabled name="locked" type="checkbox" value="1" @if($entrance->locked) checked @endif>--}}
+                            {{--<i class="dark-white"></i>--}}
+                            {{--Замок--}}
+                        {{--</label>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="b-r pr-3 mr-3">--}}
+                    {{--<button class="btn btn-fw success">Оплатить</button>--}}
+                {{--</div>--}}
+            {{--@endif--}}
         </div>
-    <form action="{{ route('StoreEntrance') }}" method="POST">
+    <form class="WarrantStoredListner" action="{{ route('StoreEntrance') }}" method="POST">
         @csrf
         @if(isset($entrance) && $entrance->id != NULL)
             <input type="hidden" name="id" value="{{ $entrance->id }}">
+            <input type="hidden" name="itogo" value="{{ $entrance->totalPrice }}">
+            <input type="hidden" name="ostatok" value="{{ $entrance->totalPrice - $entrance->warrants()->sum('summ') }}">
         @endif
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($entrance)){{ $entrance->partner()->first()->id }}@endif">
 
@@ -149,7 +156,9 @@
         </div>
         </div>
         <div class="modal-footer">
-            <button class="btn primary" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+            <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
         </div>
         <div class="system_message">
 

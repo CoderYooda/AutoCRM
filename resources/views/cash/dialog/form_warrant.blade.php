@@ -54,6 +54,8 @@
         @else
             @if(isset($data) && $data->cashbox !== null)
                 <input class="cashbox_select" type="hidden" name="cashbox_id" value="{{ $data->cashbox->id }}">
+            @else
+                <input class="cashbox_select" type="hidden" name="cashbox_id" value="">
             @endif
         @endif
 

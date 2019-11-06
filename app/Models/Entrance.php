@@ -50,6 +50,11 @@ class Entrance extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function warrants()
+    {
+        return $this->belongsToMany('App\Models\Warrant', 'entrance_warrant',  'entrance_id', 'warrant_id' );
+    }
+
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
         if($article){

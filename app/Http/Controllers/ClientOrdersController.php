@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientOrder;
+use App\Models\Partner;
 use App\Models\Store;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -136,7 +137,14 @@ class ClientOrdersController extends Controller
             $request['do_date'] = Carbon::now();
         }
 
+
+
         if($client_order->exists){
+
+            #Прибавляем к балансу предидущего партнера
+            $client_order->partner()->first()
+                ->addition($client_order->itogo);
+
             $this->message = 'Заказ обновлен';
 
         ####Производим действия со складом в зависимости статуса заказа
@@ -195,7 +203,7 @@ class ClientOrdersController extends Controller
                     $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
                     if($stock_supplier){
                         $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
-                        if($art !== null) {
+                        if($art !== null && $art) {
                             $article_errors[0] = '';
                             $supplier_errors[0] = '';
                             $messages['products.' . $store_id . '.' . $product['id'] . '.article'] = $article_errors;
@@ -298,6 +306,14 @@ class ClientOrdersController extends Controller
 
 
         $client_order->save();
+
+        $client_order->partner()->first()
+            ->subtraction($client_order->itogo);
+
+
+
+
+
 
         if($request->expectsJson()){
             return response()->json([

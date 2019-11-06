@@ -45,8 +45,11 @@ class WarrantController extends Controller
             $dds_type_id = null;
 
             switch ($request['warrant_type']){
-                case 'sale_of_goods' :
+                case 'sale_of_goods':
                     $dds_type_id = 2;
+                    break;
+                case 'receipt_of_goods':
+                    $dds_type_id = 4;
                     break;
             }
 
@@ -74,6 +77,8 @@ class WarrantController extends Controller
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
         }
+
+        $request['summ'] = (double)$request['summ'];
 
         $validation = Validator::make($request->all(), self::validateRules($request));
         if($validation->fails()){
@@ -105,10 +110,10 @@ class WarrantController extends Controller
 
         if($request['isIncoming']){
             $cashbox = $cashbox->addition($request['summ']);
-            $partner = $partner->subtraction($request['summ']);
+            $partner = $partner->addition($request['summ']);
         } else{
             $cashbox = $cashbox->subtraction($request['summ']);
-            $partner = $partner->addition($request['summ']);
+            $partner = $partner->subtraction($request['summ']);
         }
 
         $warrant->fill($request->only($warrant->fields));
@@ -119,7 +124,11 @@ class WarrantController extends Controller
 
 
         $method = $warrant->refer;
-        $warrant->$method()->attach($warrant->refer_id, ['company_id' => Auth::user()->company_id]);
+
+        if($method !== null){
+            $warrant->$method()->attach($warrant->refer_id, ['company_id' => Auth::user()->company_id]);
+        }
+
 
 
         if($request->expectsJson()){
@@ -158,14 +167,14 @@ class WarrantController extends Controller
             'cashbox_id' => ['required','exists:cashboxes,id'],
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
             'isIncoming' => ['boolean'],
+            'summ' => ['required', 'numeric', 'between:0,99.99'],
         ];
 
-        $rules['summ'] = ['required', 'between:0,99.99'];
-//        if(isset($request['max_summ']) && $request['max_summ'] != null){
-//            $rules['summ'] = ['required', 'between:0,' . $request['max_summ']];
-//        } else {
-//            $rules['summ'] = ['required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:0', 'max:1000000'];
-//        }
+        if(isset($request['max_summ']) && $request['max_summ'] != null){
+            $rules['summ'] = ['required', 'numeric', 'between:0,' . $request['max_summ']];
+        } else {
+            $rules['summ'] = ['required',  'numeric', 'between:0,1000000.00'];
+        }
 
         return $rules;
     }

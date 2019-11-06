@@ -60,6 +60,11 @@ class EntranceController extends Controller
         }
 
         if($entrance->exists) {
+
+            #Прибавляем к балансу предидущего партнера
+            $entrance->partner()->first()
+                ->subtraction($entrance->totalPrice);
+
             $old_store_id = $entrance->store_id;
             $entranceWasExisted = true;
         }
@@ -134,21 +139,42 @@ class EntranceController extends Controller
                 $entrance->save();
             }
 
-        # Добавляем на склад все товары из поступления
+        #Добавляем на склад все товары из поступления
             foreach($entrance->articles()->get() as $article){
                 Store::owned()->where('id', $request['store_id'])->first()
                     ->increaseArticleCount($article->id, $article->pivot->count);
             }
 
+        #Добавляем к балансу контрагента
+        $entrance->partner()->first()
+            ->addition($entrance->totalPrice);
+
         #Ответ сервера
             if($request->expectsJson()){
                 return response()->json([
                     'message' => $this->message,
+                    'id' => $entrance->id,
                     'event' => 'EntranceStored',
                 ], 200);
             } else {
                 return redirect()->back();
             }
+    }
+
+    public function fresh($id, Request $request)
+    {
+        $entrance = Entrance::where('id', (int)$id)->first();
+        $stores = Store::owned()->get();
+        $request['fresh'] = true;
+        $class = 'entranceDialog' . $id;
+
+        $content = view('entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'request'))
+            ->render();
+
+        return response()->json([
+            'html' => $content,
+            'target' => 'entranceDialog' . $id,
+        ], 200);
     }
 
     private static function calculatePivotArticleEntrance($request, $store, $product){

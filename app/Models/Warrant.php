@@ -44,6 +44,11 @@ class Warrant extends Model
         return $this->belongsToMany('App\Models\ClientOrder', 'client_orders_warrant', 'warrant_id', 'client_order_id' );
     }
 
+    public function entrance()
+    {
+        return $this->belongsToMany('App\Models\Entrance', 'entrance_warrant', 'warrant_id', 'entrance_id' );
+    }
+
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
         return self::where('company_id', $company_id);
