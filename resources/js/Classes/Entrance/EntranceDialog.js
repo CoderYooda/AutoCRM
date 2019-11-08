@@ -18,10 +18,10 @@ class createEntrance{
         } else {
             event = 'EntranceStored';
         }
-        console.log(event);
-        document.addEventListener(event, function(e){
-            object.finitaLaComedia();
-        });
+        // console.log(event);
+        // document.addEventListener(event, function(e){
+        //     object.finitaLaComedia();
+        // });
         this.loadItemsIfExists();
         let focused = document.getElementById('employee_dialog_focused');
         if(focused){
@@ -45,7 +45,6 @@ class createEntrance{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            console.log(resp);
             let root_id = object.root_dialog.id;
             object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
             object.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);

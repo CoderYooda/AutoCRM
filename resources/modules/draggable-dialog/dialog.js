@@ -72,7 +72,7 @@ window.openDialog = function(tag, params = null, reload = false) {
     }).catch(function (error) {
         window.notification.notify( 'error', error.message);
         window.isXHRloading = false;
-    }).finally(function () {
+    }).then(function () {
         window.isXHRloading = false;
     });
 

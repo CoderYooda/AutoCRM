@@ -84,7 +84,7 @@ class selectCashboxDialog{
 
         }).catch(function (error) {
             console.log(error);
-        }).finally(function () {
+        }).then(function () {
             window.isXHRloading = false;
         });
     }

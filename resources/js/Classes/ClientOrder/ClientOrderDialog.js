@@ -97,7 +97,7 @@ class clientorderDialog{
             console.log('Вставили html');
         }).catch(function (error) {
             console.log(error);
-        }).finally(function () {
+        }).then(function () {
             callback();
         });
     }
@@ -211,7 +211,7 @@ class clientorderDialog{
                 object.recalculate();
             }).catch(function (error) {
                 console.log(error);
-            }).finally(function () {
+            }).then(function () {
                 window.isXHRloading = false;
             });
 
@@ -252,9 +252,8 @@ class clientorderDialog{
         }catch (e) {
         }
 
-        let tbody = document.createElement('tbody');
-        tbody.innerHTML = elem.html;
-        product_list.prepend(tbody.firstChild);
+        product_list.insertAdjacentHTML('afterbegin', elem.html);
+
         window.notification.notify( 'success', 'Товар добавлен к списку');
         let item = this.root_dialog.querySelector('#product_selected_' + elem.id + '_' + elem.store_id);
         let inputs = item.getElementsByTagName('input');
@@ -325,7 +324,7 @@ class clientorderDialog{
             }
         }).catch(function (error) {
             console.log(error);
-        }).finally(function () {
+        }).then(function () {
             window.isXHRloading = false;
         });
     };

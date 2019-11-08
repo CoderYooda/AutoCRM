@@ -18,7 +18,7 @@
             <div class="col-md-6 h-v white d-flex">
                 <div class="p-5 flex align-self-center">
                     <h1 class="display-4 _700 l-s-n-1x my-5">BB<span class="text-primary">crm</span> <br><span class="text-muted"> магазин автозапчастей</span></h1>
-                    <h5 class="text-muted mb-5 text-serif">Какой нибудь позитивный текст</h5>
+                    <h5 class="text-muted mb-5 text-serif"></h5>
                 </div>
             </div>
             <div class="col-md-6 d-flex py-5 align-items-center justify-content-center dark">

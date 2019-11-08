@@ -105,7 +105,7 @@ class AxForm{
                 notification.notify( 'error', error.response.data.message);
             }
             object.setActionButtons(true, elem);
-        }).finally(function(){
+        }).then(function(){
             object.setActionButtons(true, elem);
         });
     }
