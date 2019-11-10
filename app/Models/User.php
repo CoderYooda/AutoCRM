@@ -41,6 +41,14 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Company', 'company_id');
     }
 
+    public function partner(){
+        return $this->hasOne('App\Models\Partner', 'user_id');
+    }
+
+    public function getStoreFirst(){
+        return $this->partner()->first()->store()->first();
+    }
+
     public function attachToCompany($company)
     {
         $this->company_id = $company->id;

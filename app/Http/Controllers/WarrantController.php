@@ -124,7 +124,6 @@ class WarrantController extends Controller
 
 
         $method = $warrant->refer;
-
         if($method !== null){
             $warrant->$method()->attach($warrant->refer_id, ['company_id' => Auth::user()->company_id]);
         }

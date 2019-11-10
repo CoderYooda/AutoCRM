@@ -26,13 +26,12 @@ class Shipment extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
-            ->with('shipments')->withPivot('store_id', 'count');
+            ->withPivot('count', 'price', 'total');
     }
 
-    public function stores()
+    public function store()
     {
-        return $this->belongsToMany('App\Models\Store', 'article_shipment', 'shipment_id', 'store_id')
-            ->withPivot('count', 'price', 'total', 'store_id');
+        return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
 
@@ -89,6 +88,11 @@ class Shipment extends Model
             $count = 0;
         }
         return $count;
+    }
+
+    public function warrants()
+    {
+        return $this->belongsToMany('App\Models\Warrant', 'shipment_warrant',  'shipment_id', 'warrant_id' );
     }
 
     public static function owned(){

@@ -13,7 +13,10 @@ class shipmentDialog{
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let refer = 'shipment';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
         let id = this.root_dialog.querySelector('input[name=id]').value;
         partner = parseInt(partner);
         //console.log(partner);
@@ -26,6 +29,15 @@ class shipmentDialog{
         }
         if(itogo != null){
             params += '&itogo='+itogo;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+ostatok;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
         }
         if(id != null){
             let reason = 'Реализация товара №' + id;
@@ -51,15 +63,15 @@ class shipmentDialog{
         inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
-        let event = '';
-        if(object.root_dialog.dataset.id){
-            event = 'ShipmentStored' + object.root_dialog.dataset.id;
-        } else {
-            event = 'ShipmentStored';
-        }
-        document.addEventListener(event, function(e){
-            object.finitaLaComedia();
-        });
+        // let event = '';
+        // if(object.root_dialog.dataset.id){
+        //     event = 'ShipmentStored' + object.root_dialog.dataset.id;
+        // } else {
+        //     event = 'ShipmentStored';
+        // }
+        // document.addEventListener(event, function(e){
+        //     object.finitaLaComedia();
+        // });
         this.loadItemsIfExists();
         let focused = document.getElementById('shipment_dialog_focused');
         if(focused){
@@ -70,8 +82,52 @@ class shipmentDialog{
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
-        window.axform.send(elem, function(e){
+        window.axform.send(elem, function(resp){
+            let root_id = object.root_dialog.id;
+            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+            object.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
+            object.root_dialog.setAttribute('data-id', resp.data.id);
+            object.freshContent(resp.data.id, function(){
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['shipmentDialog' + resp.data.id] = drag_dialog;
+                drag_dialog.tag = 'shipmentDialog' + resp.data.id;
+                window.helper.initDialogMethods();
+            });
+        });
+    }
+
+    saveAndClose(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(resp){
             object.finitaLaComedia();
+        });
+    }
+
+    freshContent(id, callback = null){
+        let object = this;
+
+        //var store_id = this.store_obj.value;
+
+        let data = {};
+        //data.store_id = store_id;
+        if(object.refer){
+            data.refer = object.refer;
+        }
+
+        window.axios({
+            method: 'post',
+            url: 'shipment/' + id + '/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            callback();
         });
     }
 
@@ -92,10 +148,9 @@ class shipmentDialog{
                         count:elem.count,
                         price:elem.price,
                         total:elem.total,
-                        store_id:elem.store_id,
                     });
 
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id + '_' + elem.store_id);
+                    let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id);
 
                     let inputs = item.getElementsByTagName('input');
 
@@ -158,7 +213,7 @@ class shipmentDialog{
         tbody.innerHTML = elem.html;
         product_list.prepend(tbody.firstChild);
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id + '_' + elem.store_id);
+        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
         let inputs = item.getElementsByTagName('input');
 
         [].forEach.call(inputs, function(elem){
@@ -177,28 +232,20 @@ class shipmentDialog{
         delete window[this.root_dialog.id];
     }
 
-    removeItem(store_id, id){
-        let object = this;
-
-        [].forEach.call(object.items, function(item){
-
-            if(item.id === id && item.store_id === store_id){
-                object.items.splice(
-                    object.items.indexOf(item), 1
-                );
-            }
-        });
-
-
-        this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id).remove();
-        object.recalculate();
+    removeItem(id){
+        this.items.splice(
+            this.items.map(function(e){
+                return e.id
+            }).indexOf(id), 1
+        );
+        this.root_dialog.querySelector('#product_selected_' + id).remove();
+        this.recalculate();
     }
 
     addProduct(elem){
 
-        let store_id = elem.dataset.store_id;
         let article_id = elem.dataset.article_id;
-        let count = elem.closest('tr').querySelector('input').value;
+        let count = elem.closest('div').querySelector('input[name="count"]').value;
 
         var object = this;
         window.axios({
@@ -207,30 +254,40 @@ class shipmentDialog{
             data: {
                 refer:this.root_dialog.id,
                 type:'shipment',
-                store_id:store_id,
                 article_id:article_id,
                 count:count,
             }
         }).then(function (resp) {
-            console.log(resp);
-            let canAdd = true;
-            [].forEach.call(object.items, function(item){
-                if(item.store_id === parseInt(resp.data.product.store_id) && item.id === resp.data.product.product.id){
-                    canAdd = false;
-                }
-            });
 
-            console.log(canAdd);
-            if(canAdd){
-                object.addItem({
-                    id:resp.data.product.product.id,
-                    store_id:parseInt(resp.data.product.store_id),
-                    count:resp.data.product.count,
-                    html:resp.data.html
-                });
+            var isset = object.items.map(function(e){
+                return e.id;
+            }).indexOf(resp.data.product.id);
+
+            if(isset < 0){
+                object.addItem({id:resp.data.product.id, html:resp.data.html});
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }
+
+
+            // let canAdd = true;
+            // [].forEach.call(object.items, function(item){
+            //     if(item.store_id === parseInt(resp.data.product.store_id) && item.id === resp.data.product.product.id){
+            //         canAdd = false;
+            //     }
+            // });
+            //
+            // console.log(canAdd);
+            // if(canAdd){
+            //     object.addItem({
+            //         id:resp.data.product.product.id,
+            //         store_id:parseInt(resp.data.product.store_id),
+            //         count:resp.data.product.count,
+            //         html:resp.data.html
+            //     });
+            // } else {
+            //     window.notification.notify('error', 'Товар уже в списке');
+            // }
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -275,7 +332,7 @@ class shipmentDialog{
         console.log("Пересчет...");
         var object = this;
         this.items.forEach(function(elem){
-            object.recalculateItem(elem.store_id, elem.id);
+            object.recalculateItem(elem.id);
         });
         var total_price = object.totalPrice;
         var itogo = object.itogo;
@@ -306,13 +363,12 @@ class shipmentDialog{
         object.setDiscount(discount_val);
     }
 
-    recalculateItem(store_id, id){
-        console.log(store_id, id);
+    recalculateItem(id){
         let object = this;
-        let item = this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id);
-        let total = item.querySelector("input[name='products[" + store_id + "][" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + store_id + "][" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + store_id + "][" + id + "][price]']");
+        let item = this.root_dialog.querySelector('#product_selected_' + id);
+        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
+        let count = item.querySelector("input[name='products[" + id + "][count]']");
+        let price = item.querySelector("input[name='products[" + id + "][price]']");
 
         let vcount = Number(count.value);
         let vprice = Number(price.value);
@@ -322,7 +378,7 @@ class shipmentDialog{
         total.value = vtotal.toFixed(2);
 
         object.items.map(function(e){
-            if(e.id === id && e.store_id === store_id){
+            if(e.id === id){
                 e.total = vtotal;
                 e.count = vcount;
                 e.price = vprice;

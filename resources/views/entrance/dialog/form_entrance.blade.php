@@ -62,6 +62,8 @@
             <input type="hidden" name="id" value="{{ $entrance->id }}">
             <input type="hidden" name="itogo" value="{{ $entrance->totalPrice }}">
             <input type="hidden" name="ostatok" value="{{ $entrance->totalPrice - $entrance->warrants()->sum('summ') }}">
+        @else
+            <input type="hidden" name="id" value="">
         @endif
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($entrance)){{ $entrance->partner()->first()->id }}@endif">
 
@@ -91,7 +93,7 @@
                             <label>Склад</label>
                             <select name="store_id" class="form-control input-c">
                                 @foreach($stores as $store)
-                                    <option value="{{ $store->id }}" @if(isset($entrance) && $entrance->store_id == $store->id) selected @endif>{{ $store->name }}</option>
+                                    <option value="{{ $store->id }}" @if(isset($entrance) && $entrance->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
                                 @endforeach
                             </select>
                         </div>

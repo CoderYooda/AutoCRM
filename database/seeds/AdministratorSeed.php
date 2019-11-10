@@ -4,6 +4,7 @@ use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Store;
+use App\Models\Partner;
 
 class AdministratorSeed extends Seeder
 {
@@ -45,12 +46,6 @@ class AdministratorSeed extends Seeder
         $store->company_id = $company->id;
         $company->stores()->save($store);
 
-        $store = new Store();
-        $store->name = 'Склад в пути';
-        $store->company_id = $company->id;
-        $store->type = 'buffer';
-        $store->locked = true;
-        $company->stores()->save($store);
 
         $user = User::create([
             'name' => 'Сергей',
@@ -60,57 +55,21 @@ class AdministratorSeed extends Seeder
             'password' => bcrypt('senatorov616322')
         ]);
 
-        $user->save();
-        $user->company()->associate($company);
-
-
-        #############################################
-        $company = new Company();
-        $company->name = 'Дизайнерский магазин';
-        $company->save();
-
-        $store = new Store();
-        $store->name = 'Основной склад';
-        $store->company_id = $company->id;
-
-        $user = User::create([
-            'name' => 'Сергей',
-            'email' => 'Teftela@mail.ru',
-            'phone' => '89878148690',
+        Partner::create([
+            'isfl' => true,
+            'user_id' => $user->id,
+            'category_id' => 5,
+            'store_id' => $store->id,
+            'fio' => 'Сенаторов Сергей Андреевич',
+            'companyName' => $company->name,
             'company_id' => $company->id,
-            'password' => bcrypt('123456789')
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now()
         ]);
 
         $user->save();
         $user->company()->associate($company);
-        $company->stores()->save($store);
 
-        #######################################
-        $company = new Company();
-        $company->name = 'Магазин писателя';
-        $company->save();
 
-        $store = new Store();
-        $store->name = 'Основной склад';
-        $store->company_id = $company->id;
-        $company->stores()->save($store);
-
-        $store = new Store();
-        $store->name = 'Склад в пути';
-        $store->company_id = $company->id;
-        $store->type = 'buffer';
-        $store->locked = true;
-        $company->stores()->save($store);
-
-        $user = User::create([
-            'name' => 'Дмитрий',
-            'email' => 'posta.vk@mail.ru',
-            'phone' => '79507154922',
-            'company_id' => $company->id,
-            'password' => bcrypt('qwerty12345')
-        ]);
-
-        $user->save();
-        $user->company()->associate($company);
     }
 }

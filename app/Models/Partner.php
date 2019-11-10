@@ -16,6 +16,7 @@ class Partner extends Model
         'company_id',
         'user_id',
         'category_id',
+        'store_id',
         'isfl',
         'fio',
         'birthday',
@@ -41,6 +42,11 @@ class Partner extends Model
     public function category()
     {
         return $this->belongsTo('App\Models\Category', 'category_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
     public function phones()

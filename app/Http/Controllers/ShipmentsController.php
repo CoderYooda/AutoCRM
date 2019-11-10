@@ -48,6 +48,22 @@ class ShipmentsController extends Controller
         ], 200);
     }
 
+    public function fresh($id, Request $request)
+    {
+        $shipment = Shipment::where('id', (int)$id)->first();
+        $stores = Store::owned()->get();
+        $request['fresh'] = true;
+        $class = 'entranceDialog' . $id;
+
+        $content = view('shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'request'))
+            ->render();
+
+        return response()->json([
+            'html' => $content,
+            'target' => 'shipmentDialog' . $id,
+        ], 200);
+    }
+
     public function store(Request $request)
     {
         $shipment = Shipment::firstOrNew(['id' => $request['id']]);
@@ -97,19 +113,20 @@ class ShipmentsController extends Controller
 
 
 //dd($shipment->articles()->get());
+        $store = $shipment->store()->first();
+
         if($shipmentWasExisted){
             foreach($shipment->articles()->get() as $article){
-                $store = Store::owned()->where('id', $article->pivot->store_id)->first();
+
                 $store->increaseArticleCount($article->id, $article->pivot->count);
             }
         }
 
-        # Собираем товары в массив id шников из Request`a
-        foreach($request['products'] as $store_id => $products) {
+        if(count($request['products'])){
+            # Собираем товары в массив id шников из Request`a
             $plucked_articles = [];
-            $store = Store::owned()->where('id', $store_id)->first();
-            foreach($products as $id => $product) {
-                $plucked_articles[] = $id;
+            foreach($request['products'] as $product) {
+                $plucked_articles[] = $product['id'];
             }
             # Синхронизируем товары к складу
             $store->articles()->syncWithoutDetaching($plucked_articles, false);
@@ -117,27 +134,22 @@ class ShipmentsController extends Controller
 
         //$store = Store::where('id', $request['store_id'])->first();
         $shipment_data = [];
-        foreach($request['products'] as $store_id => $products) {
-            foreach($products as $id => $product) {
+        foreach($request['products'] as $product) {
 
-                $store = Store::owned()->where('id', $store_id)->first();
+            $store->decreaseArticleCount($product['id'], $product['count']);
 
-                $store->decreaseArticleCount($id, $product['count']);
-
-                $vcount = $product['count'];
-                $vprice = $product['price'];
-                $vtotal = $vprice * $vcount;
-                $shipment->summ += $vtotal;
-                $pivot_data = [
-                    'store_id' => $store_id,
-                    'article_id' => (int)$product['id'],
-                    'shipment_id' => $shipment->id,
-                    'count' => (int)$vcount,
-                    'price' => (double)$vprice,
-                    'total' => (double)$vtotal
-                ];
-                $shipment_data[] = $pivot_data;
-            }
+            $vcount = $product['count'];
+            $vprice = $product['price'];
+            $vtotal = $vprice * $vcount;
+            $shipment->summ += $vtotal;
+            $pivot_data = [
+                'article_id' => (int)$product['id'],
+                'shipment_id' => $shipment->id,
+                'count' => (int)$vcount,
+                'price' => (double)$vprice,
+                'total' => (double)$vtotal
+            ];
+            $shipment_data[] = $pivot_data;
         }
 
         #Удаление всех отношений и запись новых (кастомный sync)
@@ -162,6 +174,7 @@ class ShipmentsController extends Controller
         if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
+                'id' => $shipment->id,
                 'event' => 'ShipmentStored',
             ], 200);
         } else {

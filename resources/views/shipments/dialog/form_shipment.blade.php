@@ -13,7 +13,7 @@
         <div class="titlebar">Новая продажа</div>
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-    <div class="modal-header white" style="justify-content: normal;">
+    <div class="modal-header dark" style="justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
             {{--<span class="item-title _500">Поступление</span>--}}
             {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}
@@ -24,6 +24,16 @@
                 {{--@endif--}}
             {{--</div>--}}
         {{--</div>--}}
+        <div class="b-r pr-3 mr-3">
+            <span class="item-title _500">Магазин</span>
+            <div class="item-except font-weight-bolder h-1x">
+                    <span id="store_selected">
+                        {{ Auth::user()->getStoreFirst()->name }}
+                    </span>
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
         <div class="b-r pr-3 mr-3">
             <span class="item-title _500">Всего на сумму</span>
             <div class="item-except font-weight-bolder h-1x">
@@ -71,7 +81,11 @@
             <input type="hidden" name="id" value="{{ $shipment->id }}">
             <input type="hidden" name="summ" value="{{ $shipment->summ }}">
             <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
+            <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->warrants()->sum('summ') }}">
+        @else
+            <input type="hidden" name="id" value="">
         @endif
+        <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($shipment)){{ $shipment->partner()->first()->id }}@endif">
 
         <div class="no-gutters align-items-stretch">
@@ -125,7 +139,6 @@
                         <tr>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
-                            <th width="10%">Склад</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
@@ -134,7 +147,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($shipment))
-                            @foreach($shipment->getArticles() as $product)
+                            @foreach($shipment->articles()->get() as $product)
                                 @include('shipments.dialog.product_element')
                             @endforeach
                         @endif
@@ -147,7 +160,9 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn primary" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+            <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
         </div>
         <div class="system_message">
 

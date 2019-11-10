@@ -62,6 +62,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
+    Route::post('/shipment/{id}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');
 
     #Заказы клиентов
     Route::get('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
