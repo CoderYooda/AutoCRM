@@ -53,7 +53,7 @@ class StoreController extends Controller
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
             return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
-
+        $trinity = null; #TODO
         return view('store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 
