@@ -22,9 +22,6 @@ class DialogController extends Controller
             case 'selectCategory':
                 $dialog = CategoryController::selectCategoryDialog($request);
                 break;
-//            case 'editCategory':
-//                $dialog = CategoryController::editCategoryDialog($request);
-//                break;
             case 'productDialog':
                 $dialog = ProductController::productDialog($request);
                 break;
@@ -75,6 +72,9 @@ class DialogController extends Controller
                 break;
             case 'providerorderDialog':
                 $dialog = ProviderOrdersController::providerorderDialog($request);
+                break;
+            case 'selectProviderOrderDialog':
+                $dialog = ProviderOrdersController::selectProviderOrderDialog($request);
                 break;
             case 'adjustmentDialog':
                 $dialog = AdjustmentController::adjustmentDialog($request);

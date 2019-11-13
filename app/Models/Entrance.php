@@ -31,6 +31,11 @@ class Entrance extends Model
         return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
     }
 
+    public function providerorder()
+    {
+        return $this->belongsTo('App\Models\ProviderOrder', 'providerorder_id')->withTrashed();
+    }
+
     public function company()
     {
         return $this->belongsTo('App\Models\Company', 'company_id');

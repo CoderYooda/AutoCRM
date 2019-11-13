@@ -53,20 +53,24 @@
                     <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>
                 </div>
             @endif
-            {{--@if(isset($entrance))--}}
-                {{--<div class="b-r pr-3 mr-3">--}}
-                    {{--<div class="checkbox" style="line-height: 40px;" >--}}
-                        {{--<label class="ui-check mb-0">--}}
-                            {{--<input disabled name="locked" type="checkbox" value="1" @if($entrance->locked) checked @endif>--}}
-                            {{--<i class="dark-white"></i>--}}
-                            {{--Замок--}}
-                        {{--</label>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                {{--<div class="b-r pr-3 mr-3">--}}
-                    {{--<button class="btn btn-fw success">Оплатить</button>--}}
-                {{--</div>--}}
-            {{--@endif--}}
+            <div class="b-r pr-3 mr-3">
+                <div class="">
+                    <div class="input-group">
+                        <select name="providerorder_id" disabled class="providerorder_select form-control input-c noarrow fake-disabled" readonly>
+                            @if(isset($entrance) && $entrance->providerorder()->first() != null)
+                                <option value="{{ $entrance->providerorder()->first()->id }}">{{ $entrance->providerorder()->first()->id }}</option>
+                            @else
+                                <option>Не выбрано</option>
+                            @endif
+                        </select>
+                        <div class="input-group-append">
+                            <button onclick="{{ $class }}.openSelectProviderOrderModal()"
+                                    class="btn white" type="button"><i class="fa fa-bars"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     <form class="WarrantStoredListner" action="{{ route('StoreEntrance') }}" method="POST">
         @csrf
@@ -78,6 +82,7 @@
             <input type="hidden" name="id" value="">
         @endif
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($entrance)){{ $entrance->partner()->first()->id }}@endif">
+        <input class="providerorder_select" type="hidden" name="providerorder_id" value=" @if(isset($entrance)){{ $entrance->providerorder()->first()->id }}@endif">
 
         <div class="no-gutters align-items-stretch">
         <div class="padding">

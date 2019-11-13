@@ -91,6 +91,12 @@ nav.nav-border {
      background-color: #fff!important;
      opacity: 1;
 }
+
+.dark .fake-disabled {
+    background-color: transparent!important;
+    opacity: inherit;
+}
+
 .fake-disabled *{
     background: red;
 }

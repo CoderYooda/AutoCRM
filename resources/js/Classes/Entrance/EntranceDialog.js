@@ -229,6 +229,10 @@ class createEntrance{
         window.openDialog('selectPartner', '&refer=' + this.root_dialog.id);
     }
 
+    openSelectProviderOrderModal(){
+        window.openDialog('selectProviderOrderDialog', '&refer=' + this.root_dialog.id);
+    }
+
     recalculate(){
         console.log("Пересчет...");
         var object = this;

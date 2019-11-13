@@ -77,6 +77,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/providerorder/{id}/get_providerorders', 'ProviderOrdersController@getProviderOrderProducts')->name('GetProviderOrderProducts');
     Route::post('/providerorder/search', 'ProviderOrdersController@search')->name('ProviderOrderPageSearch');
     Route::post('/providerorder/{id}/delete', 'ProviderOrdersController@delete')->name('DeleteProviderOrder');
+    Route::post('/providerorder/dialog/search', 'ProviderOrdersController@dialogSearch')->name('ProviderOrderDialogSearch');
 
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название

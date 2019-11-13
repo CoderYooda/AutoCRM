@@ -28,6 +28,34 @@ class ProviderOrdersController extends Controller
         ]);
     }
 
+    public static function selectProviderOrderDialog($request)
+    {
+        $providerorders = ProviderOrder::owned()->orderBy('id', 'DESC')->limit(10)->get();
+        return response()->json([
+            'tag' => 'selectProviderOrderDialog',
+            'html' => view('provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
+        ]);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        $providerorders = ProviderOrder::owned()
+            ->where(function($q) use ($request){
+                $q->where('name', 'LIKE', '%' . $request['string'] .'%');
+                $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
+                $q->orWhereHas('supplier', function ($query) use ($request) {
+                    $query->where('name', 'LIKE', '%' . $request['string'] .'%');
+                });
+            })
+            ->orderBy('id', 'DESC')->limit(10)->get();
+
+        $content = view('provider_orders.dialog.select_providerorder_inner', compact('providerorders', 'request'))->render();
+        return response()->json([
+            'html' => $content
+        ], 200);
+    }
+
+
     public function delete($id)
     {
         $provider_order = ProviderOrder::where('id', $id)->first();

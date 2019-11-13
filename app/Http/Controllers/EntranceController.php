@@ -247,6 +247,7 @@ class EntranceController extends Controller
     {
         $rules = [
             'partner_id' => ['required', 'exists:partners,id'],
+            'providerorder_id' => ['required', 'exists:provider_orders,id'],
             'store_id' => ['required', 'exists:stores,id'],
             'products' => ['required'],
             'products.*.count' => ['integer', 'max:9999'],
