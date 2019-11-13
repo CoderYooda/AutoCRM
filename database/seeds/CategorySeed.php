@@ -12,8 +12,8 @@ class CategorySeed extends Seeder
      */
     public function run()
     {
-        $statement = "ALTER TABLE categories AUTO_INCREMENT = 2000;";
-        DB::unprepared($statement);
+        //$statement = "ALTER TABLE categories AUTO_INCREMENT = 2000;";
+        //DB::unprepared($statement);
 
         Category::create([
             'id' => 1,
@@ -50,37 +50,41 @@ class CategorySeed extends Seeder
         Category::create(['id' => 7, 'name' => 'Клиенты', 'category_id' => 3, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'client',]);
         Category::create(['id' => 10, 'name' => 'Неотсортированные', 'category_id' => 2, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'store',]);
 
+
+        $company_id = 2;
+        $creator_id = 2;
+
         Category::create([
             'id' => 4,
             'name' => 'Статьи ДДС',
             'category_id' => 1,
-            'company_id' => null,
-            'creator_id' => 1,
+            'company_id' => $company_id,
+            'creator_id' => $creator_id,
             'locked' => true,
             'type' => 'dds',
         ]);
 
-        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'dds',]);
-        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'dds',]);
+        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => true, 'type' => 'dds',]);
+        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => true, 'type' => 'dds',]);
 
-//        $json = json_decode(file_get_contents('public/demo/numenclatures.json'));
-//
-//        $this->command->getOutput()->progressStart(count($json->categories));
-//
-//        foreach($json->categories as $cat){
-//            $category = Category::create(['name' => $cat->name, 'category_id' => 2, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-//            if($cat->childs != NULL){
-//                foreach($cat->childs as $cat){
-//                    $category2 = Category::create(['name' => $cat->name, 'category_id' => $category->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-//                    if($cat->childs != NULL){
-//                        foreach($cat->childs as $cat){
-//                            $category3 = Category::create(['name' => $cat->name, 'category_id' => $category2->id, 'company_id' => 1, 'creator_id' => 1, 'locked' => false, 'type' => NULL,]);
-//                        }
-//                    }
-//                }
-//            }
-//            $this->command->getOutput()->progressAdvance();
-//        }
-//        $this->command->getOutput()->progressFinish();
+        $json = json_decode(file_get_contents('public/demo/numenclatures.json'));
+
+        $this->command->getOutput()->progressStart(count($json->categories));
+
+        foreach($json->categories as $cat){
+            $category = Category::create(['name' => $cat->name, 'category_id' => 2, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => false, 'type' => 'store',]);
+            if($cat->childs != NULL){
+                foreach($cat->childs as $cat){
+                    $category2 = Category::create(['name' => $cat->name, 'category_id' => $category->id, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => false, 'type' => 'store',]);
+                    if($cat->childs != NULL){
+                        foreach($cat->childs as $cat){
+                            $category3 = Category::create(['name' => $cat->name, 'category_id' => $category2->id, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => false, 'type' => 'store',]);
+                        }
+                    }
+                }
+            }
+            $this->command->getOutput()->progressAdvance();
+        }
+        $this->command->getOutput()->progressFinish();
     }
 }

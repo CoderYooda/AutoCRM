@@ -15,13 +15,14 @@ class ArticleSeed extends Seeder
 
         //DB::unprepared(file_get_contents('public/demo/articles.sql'));
 
-
+        $fake_user = \App\Models\User::where('id', 2)->first();
+        Auth::login($fake_user);
 
         $json = json_decode(file_get_contents('public/demo/articles.json'));
 
         $this->command->getOutput()->progressStart(count($json));
 
-        $categories = \App\Models\Category::where('id', '>', 1999)->orWhere('id', 2)->pluck('id')->toArray();
+        $categories = \App\Models\Category::where('type', 'store')->pluck('id')->toArray();
 
 
         foreach($json as $json_article){
@@ -30,9 +31,9 @@ class ArticleSeed extends Seeder
             $fake_request = new \Illuminate\Http\Request();
 
 
-            $fake_request['company_id'] = 1;
+            $fake_request['company_id'] = 2;
             $fake_request['category_id'] = $categories[(int)array_rand($categories, 1)];
-            $fake_request['creator_id'] = 1;
+            $fake_request['creator_id'] = 2;
             $fake_request['new_supplier_name'] = $json_article->brand;
             $fake_request['article'] = $json_article->article;
             $fake_request['name'] = $json_article->name;

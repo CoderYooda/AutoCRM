@@ -51,8 +51,8 @@ class Entity{
     };
 
     addProductToList(elem, object, type){ // Добавление элемента в список
-        let article_id = elem.dataset.id;
-        let count_elem = elem.closest('tr').querySelector('input[name="count"]');
+        let article_id = elem.closest('.list-item').dataset.id;
+        let count_elem = elem.closest('.list-item').querySelector('input[name="count"]');
         let count = 1;
         if(count_elem && count_elem !== null){
             count = count_elem.value;
