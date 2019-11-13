@@ -42,13 +42,13 @@
         <div>
             Контрагентов по запросу "{{ $request['string'] }}" не найдено
         </div>
-        <button onclick="openDialog('addPartner')" class="btn m-3 btn-sm success mb-0">Новый контрагент</button>
+        <button onclick="openDialog('cashboxDialog')" class="btn m-3 btn-sm success mb-0">Новый кассовый аппарат</button>
     </div>
 @else
     <div class="padding text-center">
         <div>
             Контрагентов нет
         </div>
-        <button onclick="openDialog('addPartner')" class="btn m-3 btn-sm success mb-0">Новый контрагент</button>
+        <button onclick="openDialog('cashboxDialog')" class="btn m-3 btn-sm success mb-0">Новый кассовый аппарат</button>
     </div>
 @endif

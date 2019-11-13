@@ -25,7 +25,19 @@
     </div>
     <div id="partner_list" class="mh50-dialog" data-simplebar style="max-height: 400px">
         <div id="search_product_results" class="nlborder list-group box mb-0" >
-            @include('product.dialog.select_product_inner')
+            <table class="table table-hover mb-0">
+                <thead>
+                <tr>
+                    <th style="width:50%;" class="text-left">Наименование</th>
+                    <th style="width:30%;">Артикул</th>
+                    <th style="width:20%;"></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @include('product.dialog.select_product_inner')
+                </tbody>
+            </table>
+
         </div>
     </div>
     <div class="modal-footer white">

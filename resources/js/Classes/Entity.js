@@ -1,9 +1,9 @@
 
-// Класс описывающий стандартные действия сущностей. Является абстрактным.
+// Класс описывающий стандартные действия сущностей.
 
 class Entity{
 
-    remove(tag, id) {
+    remove(tag, id) { // Удаление элемента списка с подтверждением
         if (isXHRloading) { return; }
         Swal.fire({
             title: 'Вы уверены?',
@@ -48,13 +48,84 @@ class Entity{
             } else {
             }
         });
-
-
-
-
-
-
-
     };
+
+    addProductToList(elem, object, type){ // Добавление элемента в список
+        let article_id = elem.dataset.id;
+        let count_elem = elem.closest('tr').querySelector('input[name="count"]');
+        let count = 1;
+        if(count_elem && count_elem !== null){
+            count = count_elem.value;
+        }
+        window.axios({
+            method: 'post',
+            url: 'product/addtolist',
+            data: {
+                refer:object.root_dialog.id,
+                type:type,
+                article_id:article_id,
+                count:count,
+            }
+        }).then(function (resp) {
+            var isset = object.items.map(function(e){
+                return e.id;
+            }).indexOf(resp.data.product.id);
+            if(isset < 0){
+                object.addItem({
+                    id:resp.data.product.id,
+                    html:resp.data.html
+                });
+            } else {
+                window.notification.notify('error', 'Товар уже в списке');
+            }
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    }
+
+    loadItemsToList(object, entity) { // Добавление элементов в стек при инициальзации списка
+        console.log('Загружаем товары');
+        window.isXHRloading = true;
+        var id = object.root_dialog.dataset.id;
+        if (id && id !== 'undefined') {
+            window.axios({
+                method: 'post',
+                url: entity + '/' + id + '/get_' + entity + 's',
+                data: {},
+            }).then(function (resp) {
+                [].forEach.call(resp.data.products, function (elem) {
+                    object.items.push({
+                        id: elem.id,
+                        count: elem.pivot.count,
+                        price: elem.pivot.price,
+                        total: elem.pivot.total,
+                    });
+
+                    let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+
+                    let inputs = item.getElementsByTagName('input');
+
+                    [].forEach.call(inputs, function (elem) {
+                        var fn = window.helper.debounce(function (e) {
+                            object.recalculate(e);
+                        }, 50);
+                        elem.addEventListener("keydown", fn);
+                        elem.addEventListener("paste", fn);
+                        elem.addEventListener("delete", fn);
+                    });
+
+                });
+                object.recalculate();
+            }).catch(function (error) {
+                console.log(error);
+            }).then(function () {
+                window.isXHRloading = false;
+            });
+        }
+    }
+
+
 }
 export default Entity;

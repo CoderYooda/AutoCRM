@@ -52,50 +52,7 @@ class providerOrderDialog{
     }
 
     loadItemsIfExists(){
-        window.isXHRloading = true;
-        let object = this;
-        var shipment_id = this.root_dialog.dataset.id;
-        if(shipment_id && shipment_id !== 'undefined') {
-
-            window.axios({
-                method: 'post',
-                url: 'shipment/' + shipment_id + '/get_products',
-                data: {},
-            }).then(function (resp) {
-
-                [].forEach.call(resp.data.products, function(elem){
-                    object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
-
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-                    let inputs = item.getElementsByTagName('input');
-
-                    [].forEach.call(inputs, function(elem){
-                        var fn = window.helper.debounce(function(e) {
-                            object.recalculate(e);
-                        }, 50);
-                        elem.addEventListener("keydown", fn);
-                        elem.addEventListener("paste", fn);
-                        elem.addEventListener("delete", fn);
-                    });
-
-                });
-
-            }).catch(function (error) {
-                console.log(error);
-            }).finally(function () {
-                window.isXHRloading = false;
-            });
-
-        }
-
-
-
-        // let list_elems = this.root_dialog.querySelector('.product_list_elem');
-        // if(list_elems){
-        //     [].forEach.call(list_elems, function(elem){
-        //         object.addItem({id:resp.data.id, html:resp.data.html});
-        //     });
-        // }
+        window.entity.loadItemsToList(this, 'providerorder');
     }
 
     setTotalPrice(count){
@@ -150,28 +107,8 @@ class providerOrderDialog{
         this.recalculate();
     }
 
-    addProduct(id){
-        var object = this;
-        window.axios({
-            method: 'post',
-            url: 'product/'+ id +'/addtolist',
-            data: {refer:this.root_dialog.id, type:'shipment'}
-        }).then(function (resp) {
-
-            var isset = object.items.map(function(e){
-                return e.id;
-            }).indexOf(resp.data.id);
-
-            if(isset < 0){
-                object.addItem({id:resp.data.id, html:resp.data.html});
-            } else {
-                window.notification.notify('error', 'Товар уже в списке');
-            }
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
+    addProduct(elem){
+        window.entity.addProductToList(elem, this, 'providerOrder');
     };
 
     selectPartner(id){

@@ -79,12 +79,7 @@ class ProductController extends Controller
 
         } elseif($request['type'] && $request['type'] === 'clientOrder'){
 
-            $product = new StdClass();
-            $product->store_id = $request['store_id'];
-            $product->count = $request['count'];
-            $product->price = 1;
-            $product->total = 0;
-            $product->product = $article;
+            $product = $article;
             $content = view('client_orders.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] === 'clientOrder_quick'){

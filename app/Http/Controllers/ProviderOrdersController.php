@@ -42,31 +42,9 @@ class ProviderOrdersController extends Controller
         ], 200);
     }
 
-    public function store(Request $request){
-        $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
-
-//        if($entrance->locked){
-//            return response()->json([
-//                'system_message' => view('messages.locked_error')->render(),
-//            ], 422);
-//        }
-
+    public function store(Request $request)
+    {
         $validation = Validator::make($request->all(), self::validateRules($request));
-
-        if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0){$request['inpercents'] = false;} else {
-            $request['inpercents'] = true;
-        }
-        if($request['inpercents']){
-            if((int)$request['discount'] >= 100){
-                $request['discount'] = 100;
-            }
-            if((int)$request['discount'] <= 0){
-                $request['discount'] = 0;
-            }
-        }
-
-
-        $request['do_date'] = Carbon::now();
 
         if($validation->fails()){
             $this->status = 422;
@@ -74,6 +52,9 @@ class ProviderOrdersController extends Controller
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
+        $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
+
+        $request['do_date'] = Carbon::now();
 
         if($provider_order->exists){
             $this->message = 'Заказ поставщику обновлен';
@@ -108,12 +89,10 @@ class ProviderOrdersController extends Controller
             #############################################################################################
 
             $pivot_data = [
-                'store_id' => 1,
                 'count' => $vcount,
                 'price' => $vprice,
                 'total' => $vtotal
             ];
-
 
             if($article_provider_order > 0){
                 $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);

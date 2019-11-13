@@ -77,6 +77,16 @@ class shipmentDialog{
         if(focused){
             focused.focus();
         }
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
     }
 
     save(elem){
@@ -209,9 +219,8 @@ class shipmentDialog{
             console.log(e);
         }
 
-        let tbody = document.createElement('tbody');
-        tbody.innerHTML = elem.html;
-        product_list.prepend(tbody.firstChild);
+        product_list.insertAdjacentHTML('afterbegin', elem.html);
+
         window.notification.notify( 'success', 'Товар добавлен к списку');
         let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
         let inputs = item.getElementsByTagName('input');
@@ -352,9 +361,9 @@ class shipmentDialog{
         var discount_val;
 
         if(inpercents.checked){
-            discount_val = discount.value + '%';
+            discount_val = discount.value + ' %';
         } else {
-            discount_val = discount.value + 'р';
+            discount_val = discount.value + ' р';
         }
 
 

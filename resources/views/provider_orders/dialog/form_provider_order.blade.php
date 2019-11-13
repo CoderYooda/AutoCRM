@@ -13,7 +13,7 @@
         <div class="titlebar">Новый заказ поставщику</div>
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-    <div class="modal-header white" style="justify-content: normal;">
+    <div class="modal-header dark" style="justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
             {{--<span class="item-title _500">Поступление</span>--}}
             {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}

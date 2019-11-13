@@ -74,7 +74,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Заказы Поставщикам
     Route::post('/providerorder/store', 'ProviderOrdersController@store')->name('StoreProviderOrder');// Строгое название
-    Route::post('/providerorder/{id}/get_providerorders', 'ProviderOrdersController@getProviderOrdersProducts')->name('GetProviderOrderProducts');
+    Route::post('/providerorder/{id}/get_providerorders', 'ProviderOrdersController@getProviderOrderProducts')->name('GetProviderOrderProducts');
     Route::post('/providerorder/search', 'ProviderOrdersController@search')->name('ProviderOrderPageSearch');
     Route::post('/providerorder/{id}/delete', 'ProviderOrdersController@delete')->name('DeleteProviderOrder');
 

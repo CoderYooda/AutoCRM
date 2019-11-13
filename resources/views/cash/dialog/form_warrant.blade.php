@@ -88,16 +88,40 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="text-md text-white">
-                            <span class="text-muted">Баланс</span> <span class="partner_balance text-warning">@if(isset($warrant)){{ $warrant->partner()->first()->balance }}@else 0 @endif</span>
+                            <span class="text-muted">Баланс</span> <span class="partner_balance text-warning">
+                                @if(isset($warrant))
+                                    {{ $warrant->partner()->first()->balance }}
+                                @elseif(isset($data->partner_selected) && $data->partner_selected !== null)
+                                    {{ $data->partner_selected->balance }}
+                                @else
+                                    0
+                                @endif
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
         <div class="padding">
+            <div class="form-group row">
+                <label for="partner_id" class="col-sm-3 col-form-label">Контрагент</label>
+                <div class="col-sm-9">
+                    <select onclick="{{ $class }}.openSelectPartnerModal()" name="partner_id" id="partner_id" class="partner_select form-control form-control-sm input-c noarrow fake-disabled" readonly>
+                        @if(isset($warrant) && $warrant->partner()->first() != null)
+                            <option value="{{ $warrant->partner()->first()->id }}">{{ $warrant->partner()->first()->outputName() }}</option>
+                        @else
+                            @if(isset($data->partner_selected) && $data->partner_selected !== null)
+                                <option value="{{ $data->partner_selected->id }}">{{ $data->partner_selected->outputName() }}</option>
+                            @else
+                                <option>Не выбрано</option>
+                            @endif
+                        @endif
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label for="category_id">Контрагент</label>
                 <div class="input-group">
-                    <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
+                    <select name="partner_id" disabled id="partner_id" class="partner_select form-control input-c noarrow fake-disabled" readonly>
 
                         @if(isset($warrant) && $warrant->partner()->first() != null)
                             <option value="{{ $warrant->partner()->first()->id }}">{{ $warrant->partner()->first()->outputName() }}</option>

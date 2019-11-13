@@ -132,9 +132,8 @@ class createEntrance{
             console.log(e);
         }
 
-        let tbody = document.createElement('tbody');
-        tbody.innerHTML = elem.html;
-        product_list.prepend(tbody.firstChild);
+        product_list.insertAdjacentHTML('afterbegin', elem.html);
+
         window.notification.notify( 'success', 'Товар добавлен к списку');
         let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
         let inputs = item.getElementsByTagName('input');
@@ -193,35 +192,7 @@ class createEntrance{
     }
 
     addProduct(elem){
-        var object = this;
-
-        let article_id = elem.dataset.article_id;
-        let count = elem.closest('div').querySelector('input[name="count"]').value
-
-        window.axios({
-            method: 'post',
-            url: 'product/addtolist',
-            data: {
-                refer:this.root_dialog.id,
-                article_id:article_id,
-                count:count,
-            }
-        }).then(function (resp) {
-
-            var isset = object.items.map(function(e){
-                return e.id;
-            }).indexOf(resp.data.product.id);
-
-            if(isset < 0){
-                object.addItem({id:resp.data.product.id, html:resp.data.html});
-            } else {
-                window.notification.notify('error', 'Товар уже в списке');
-            }
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
+        window.entity.addProductToList(elem, this, 'entrance');
     };
 
 

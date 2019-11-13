@@ -36,6 +36,18 @@
                 <div class="item-tag tag hide">
                 </div>
             </div>
+            @if(isset($entrance))
+                <div class="b-r pr-3 mr-3">
+                    <span class="item-title _500">Оплачено</span>
+                    <div class="item-except @if($entrance->warrants()->sum('summ') >= $entrance->totalPrice) text-success @endif font-weight-bolder h-1x">
+                    <span id="payed_price">
+                        {{ sprintf("%.2f", $entrance->warrants()->sum('summ')) }} р / {{ $entrance->totalPrice }} р
+                    </span>
+                    </div>
+                    <div class="item-tag tag hide">
+                    </div>
+                </div>
+            @endif
             @if(isset($entrance) && ($entrance->warrants()->sum('summ') < $entrance->totalPrice) )
                 <div class="b-r pr-3 mr-3">
                     <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>

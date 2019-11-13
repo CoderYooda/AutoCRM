@@ -78,7 +78,13 @@ class Article extends Model
 
     public function getCountInStoreId($store_id)
     {
-        $article = $this->stores()->where('id', $store_id)->first();
+//        $test = $this->whereHas('stores', function($q) use ($store_id){
+//            $q->where('id', $store_id);
+//        })->get();
+//
+//
+//        dd($test);
+        $article = $this->stores()->get()->where('id', $store_id)->first();
 
         if($article){
             $count = $article->pivot->count;

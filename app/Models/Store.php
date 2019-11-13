@@ -58,6 +58,10 @@ class Store extends Model
         return $total;
     }
 
+    public function getCountByArticle($article_id){ #TODO
+        $this->articles()->where('id', $article_id)->get();
+    }
+
     public function decreaseArticleCount($article_id, $count)
     {
         $this->articles()->syncWithoutDetaching($article_id);

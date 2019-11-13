@@ -68,14 +68,27 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-        @if(isset($shipment))
 
+        @if(isset($shipment))
+            <div class="b-r pr-3 mr-3">
+                <span class="item-title _500">Оплачено</span>
+                <div class="item-except @if($shipment->warrants()->sum('summ') >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
+                    <span id="payed_price">
+        {{ sprintf("%.2f", $shipment->warrants()->sum('summ')) }} р / {{ $shipment->itogo }} р
+                    </span>
+                </div>
+                <div class="item-tag tag hide">
+                </div>
+            </div>
+        @endif
+
+        @if(isset($shipment) && ($shipment->warrants()->sum('summ') < $shipment->itogo))
             <div class="b-r pr-3 mr-3">
                 <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Принять оплату</button>
             </div>
         @endif
     </div>
-    <form action="{{ route('StoreShipment') }}" method="POST">
+    <form class="WarrantStoredListner" action="{{ route('StoreShipment') }}" method="POST">
         @csrf
         @if(isset($shipment) && $shipment->id != NULL)
             <input type="hidden" name="id" value="{{ $shipment->id }}">
@@ -153,13 +166,13 @@
                         @endif
                         </tbody>
                     </table>
-                    <div class="input-group">
-                        <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Добавить товар</button>
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="white-space: nowrap">
+            <div class="btn-groups w-100">
+                <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Добавить товар</button>
+            </div>
             <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
             <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
             <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>

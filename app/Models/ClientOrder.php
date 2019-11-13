@@ -12,7 +12,6 @@ class ClientOrder extends Model
         'partner_id',
         'company_id',
         'do_date',
-        'store_id',
         'summ',
         'itogo',
         'discount',
@@ -23,24 +22,6 @@ class ClientOrder extends Model
     ];
 
     protected $guarded = [];
-
-    public function getArticles($data = null){
-        $articles = DB::table('article_client_orders')
-            ->where('client_order_id', $this->id)
-            ->where(function($q) use ($data){
-                if($data !== null && $data['store_id'] !== null){
-                    $q->where('store_id', $data['store_id']);
-                }
-                if($data !== null && $data['article'] !== null){
-                    $q->where('article_id', $data['article_id']);
-                }
-            })
-            ->get();
-        foreach($articles as $article){
-            $article->product = Article::owned()->where('id', $article->article_id)->withTrashed()->first();
-        }
-        return $articles;
-    }
 
     public function syncArticles($client_order_id, $pivot_array)
     {
@@ -67,6 +48,11 @@ class ClientOrder extends Model
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
     public function normalizedData(){

@@ -21,10 +21,12 @@ class ClientOrdersController extends Controller
         if($request['client_order_id']){
             $client_order = ClientOrder::where('id', (int)$request['client_order_id'])->first();
 
-            $client_order->articles = $client_order->getArticles();
+            $client_order->articles = $client_order->articles()->get();
 
             foreach($client_order->articles as $article){
-                $article->instock = $article->product->getArticlesCountInAllStores();
+
+
+                $article->instock = $article->getCountInStoreId($client_order->store_id);
                 if($article->instock >= $article->count){
                     $article->complited = true;
                 } else {
@@ -70,10 +72,10 @@ class ClientOrdersController extends Controller
     {
         $client_order = ClientOrder::where('id', (int)$id)->first();
 
-        $client_order->articles = $client_order->getArticles();
+        $client_order->articles = $client_order->articles()->get();
 
         foreach($client_order->articles as $article){
-            $article->instock = $article->product->getArticlesCountInAllStores();
+            $article->instock = $article->getCountInStoreId($client_order->store_id);
             if($article->instock >= $article->count){
                 $article->complited = true;
             } else {
@@ -99,16 +101,8 @@ class ClientOrdersController extends Controller
         ], 200);
     }
 
-    public function store(Request $request){
-
-
-        //dd($request);
-//        if($entrance->locked){
-//            return response()->json([
-//                'system_message' => view('messages.locked_error')->render(),
-//            ], 422);
-//        }
-
+    public function store(Request $request)
+    {
         $validation = Validator::make($request->all(), self::validateRules($request));
 
         if($validation->fails()){
@@ -117,7 +111,6 @@ class ClientOrdersController extends Controller
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
-
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0){$request['inpercents'] = false;} else {
@@ -140,7 +133,7 @@ class ClientOrdersController extends Controller
 
 
         if($client_order->exists){
-
+            $store = $client_order->store()->first();
             #Прибавляем к балансу предидущего партнера
             $client_order->partner()->first()
                 ->addition($client_order->itogo);
@@ -150,9 +143,9 @@ class ClientOrdersController extends Controller
         ####Производим действия со складом в зависимости статуса заказа
 
                 if($client_order->status !== 'complete' && isset($request['status']) && $request['status'] === 'complete'){
-                    foreach($client_order->getArticles() as $article){
-                        $store = Store::owned()->where('id', $article->store_id)->first();
-                        $store->decreaseArticleCount($article->product->id, $article->count);
+                    foreach($client_order->articles()->get() as $article){
+                        $store = $client_order->store()->first();
+                        $store->decreaseArticleCount($article->id, $article->count);
                     }
                 }
 
@@ -173,42 +166,38 @@ class ClientOrdersController extends Controller
         }
 
         $client_order->fill($request->only($client_order->fields));
+        $client_order->store_id = Auth::user()->getStoreFirst()->id;
         $client_order->summ = 0;
         $client_order->balance = 0;
         $client_order->itogo = 0;
         $client_order->save();
 
-        //$store = Store::where('id', $request['store_id'])->first();
+        $store = $client_order->store()->first();
 
         # Собираем товары в массив id шников из Request`a
-        foreach($request['products'] as $store_id => $products) {
-            if($store_id !== 'new'){
-                $plucked_articles = [];
-                $store = Store::owned()->where('id', $store_id)->first();
-                foreach($products as $id => $product) {
-                    $plucked_articles[] = $id;
-                }
-                # Синхронизируем товары к складу
-                $store->articles()->syncWithoutDetaching($plucked_articles, false);
+        $plucked_articles = [];
+        foreach($request['products'] as $id => $products) {
+            if($id !== 'new'){
+                $plucked_articles[] = $id;
             }
         }
-
+        # Синхронизируем товары к складу
+        $store->articles()->syncWithoutDetaching($plucked_articles, false);
         $client_order_data = [];
 
         #### Проверка на дубли
         $messages = [];
-        foreach($request['products'] as $store_id => $products) {
-            foreach($products as $id => $product) {
-                if ($store_id === 'new') {
-                    $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
-                    if($stock_supplier){
-                        $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
-                        if($art !== null && $art) {
-                            $article_errors[0] = '';
-                            $supplier_errors[0] = '';
-                            $messages['products.' . $store_id . '.' . $product['id'] . '.article'] = $article_errors;
-                            $messages['products.' . $store_id . '.' . $product['id'] . '.new_supplier_name'] = $supplier_errors;
-                        }
+        foreach($request['products'] as $id => $product) {
+
+            if ($id === 'new') {
+                $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
+                if($stock_supplier){
+                    $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
+                    if($art !== null && $art) {
+                        $article_errors[0] = '';
+                        $supplier_errors[0] = '';
+                        $messages['products.' . $product['id'] . '.article'] = $article_errors;
+                        $messages['products.' . $product['id'] . '.new_supplier_name'] = $supplier_errors;
                     }
                 }
             }
@@ -221,69 +210,56 @@ class ClientOrdersController extends Controller
         }
 
         #### Сохраняем быстрые товары
-        foreach($request['products'] as $store_id => $products) {
-            foreach($products as $id => $product) {
-                if ($store_id === 'new') {
+        foreach($request['products'] as $id => $product) {
+            if ($id === 'new') {
+                $vcount = (int)$product['count'];
+                $vprice = (double)$product['price'];
+                $vtotal = $vprice * $vcount;
+                $client_order->summ += $vtotal;
+                $supplier = SupplierController::silent_store($product);
+                //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
+                $actor_product = Article::firstOrNew([
+                    'article' => $product['article'],
+                    'supplier_id' => $supplier->id,
+                    'company_id' => Auth::user()->company()->first()->id
+                ]);
 
-
-
-                    $vcount = (int)$product['count'];
-                    $vprice = (double)$product['price'];
-                    $vtotal = $vprice * $vcount;
-                    $client_order->summ += $vtotal;
-                    $supplier = SupplierController::silent_store($product);
-                    //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
-                    $actor_product = Article::firstOrNew([
-                        'article' => $product['article'],
-                        'supplier_id' => $supplier->id,
-                        'company_id' => Auth::user()->company()->first()->id
-                    ]);
-
-                    if (!$actor_product->exists) {
-                        $actor_product->category_id = 10;
-                        $actor_product->name = $product['name'];
-                        $actor_product->save();
-                    }
-                    $store = Store::getBufferStore();
-                    $pivot_data = [
-                        'store_id' => $store->id,
-                        'article_id' => (int)$actor_product->id,
-                        'client_order_id' => $client_order->id,
-                        'count' => (int)$vcount,
-                        'price' => (double)$vprice,
-                        'total' => (double)$vtotal
-                    ];
-                    $client_order_data[] = $pivot_data;
+                if (!$actor_product->exists) {
+                    $actor_product->category_id = 10;
+                    $actor_product->name = $product['name'];
+                    $actor_product->save();
                 }
+                $store = $client_order->store()->first();
+                $pivot_data = [
+                    'store_id' => $store->id,
+                    'article_id' => (int)$actor_product->id,
+                    'client_order_id' => $client_order->id,
+                    'count' => (int)$vcount,
+                    'price' => (double)$vprice,
+                    'total' => (double)$vtotal
+                ];
+                $client_order_data[] = $pivot_data;
             }
-
         }
 
 
-        foreach($request['products'] as $store_id => $products) {
+        foreach($request['products'] as $id => $product) {
+            if ($id !== 'new') {
 
-            $store = Store::owned()->where('id', $store_id)->first();
+                //$store->decreaseArticleCount($id, $product['count']);
 
-            foreach($products as $id => $product) {
-
-                if ($store_id !== 'new') {
-
-                    //$store->decreaseArticleCount($id, $product['count']);
-
-                    $vcount = $product['count'];
-                    $vprice = $product['price'];
-                    $vtotal = $vprice * $vcount;
-                    $client_order->summ += $vtotal;
-                    $pivot_data = [
-                        'store_id' => $store->id,
-                        'article_id' => (int)$product['id'],
-                        'client_order_id' => $client_order->id,
-                        'count' => (int)$vcount,
-                        'price' => (double)$vprice,
-                        'total' => (double)$vtotal
-                    ];
-                    $client_order_data[] = $pivot_data;
-                }
+                $vcount = $product['count'];
+                $vprice = $product['price'];
+                $vtotal = $vprice * $vcount;
+                $client_order->summ += $vtotal;
+                $pivot_data = [
+                    'article_id' => (int)$product['id'],
+                    'client_order_id' => $client_order->id,
+                    'count' => (int)$vcount,
+                    'price' => (double)$vprice,
+                    'total' => (double)$vtotal
+                ];
+                $client_order_data[] = $pivot_data;
             }
         }
 
@@ -329,7 +305,7 @@ class ClientOrdersController extends Controller
     public function getClientOrdersProducts($id){
         $client_order = ClientOrder::where('id', $id)->first();
         return response()->json([
-            'products' => $client_order->getArticles()]);
+            'products' => $client_order->articles()->get()]);
     }
 
     public static function getClientOrders($request)

@@ -1,4 +1,4 @@
-<tr ondblclick="openDialog('provider_orderDialog', '&provider_order_id={{ $provider_order->id }}')" class="list-item" id="providerorder_{{ $provider_order->id }}">
+<tr ondblclick="openDialog('providerorderDialog', '&provider_order_id={{ $provider_order->id }}')" class="list-item" id="providerorder_{{ $provider_order->id }}">
     <td>{{ $provider_order->id }}</td>
     <td>{{ \Carbon\Carbon::parse($provider_order->created_at)->format('d.m.Y') }}</td>
 

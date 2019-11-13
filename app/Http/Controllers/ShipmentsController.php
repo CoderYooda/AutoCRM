@@ -34,7 +34,7 @@ class ShipmentsController extends Controller
         $shipment = Shipment::where('id', $id)->first();
 
         foreach($shipment->articles()->get() as $article){
-            $store = Store::owned()->where('id', $article->pivot->store_id)->first();
+            $store = $shipment->store()->first();
             $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
         }
 

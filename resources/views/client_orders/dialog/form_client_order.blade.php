@@ -7,7 +7,7 @@
         @php $class = 'clientorderDialog' @endphp
         id="clientorderDialog"
         @endif
-        class="dialog client_order_dialog " style="width:1000px;">
+        class="dialog client_order_dialog " style="width:1100px">
     @endif
     @if(isset($client_order) && $client_order->id != NULL)
         <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
@@ -26,6 +26,16 @@
                 {{--@endif--}}
             {{--</div>--}}
         {{--</div>--}}
+        <div class="b-r pr-3 mr-3">
+            <span class="item-title _500">Магазин</span>
+            <div class="item-except font-weight-bolder h-1x">
+                    <span id="store_selected">
+                        {{ Auth::user()->getStoreFirst()->name }}
+                    </span>
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
         <div class="b-r pr-3 mr-3">
             <span class="item-title _500">Всего на сумму</span>
             <div class="item-except font-weight-bolder h-1x">
@@ -181,7 +191,6 @@
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Производитель</th>
-                            <th width="10%">Склад</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>

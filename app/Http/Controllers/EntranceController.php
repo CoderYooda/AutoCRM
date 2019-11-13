@@ -13,6 +13,7 @@ class EntranceController extends Controller
 {
     public static function entranceDialog($request)
     {
+
         if($request['params'] && $request['entrance_id'] != null){
             $id = (int)$request['entrance_id'];
             $entrance = Entrance::where('id', $id)->first();
@@ -21,10 +22,11 @@ class EntranceController extends Controller
             $entrance = null;
             $tag = 'entranceDialog';
         }
+
         $stores = Store::where('company_id', Auth::user()->id)->get();
         return response()->json([
             'tag' => $tag,
-            'html' => view('entrance.dialog.form_entrance', compact('entrance','stores'))->render()
+            'html' => view('entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
         ]);
     }
 

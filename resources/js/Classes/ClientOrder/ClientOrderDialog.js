@@ -174,57 +174,7 @@ class clientorderDialog{
     }
 
     loadItemsIfExists(){
-        console.log('Загружаем товары');
-        window.isXHRloading = true;
-        let object = this;
-        var client_order_id = this.root_dialog.dataset.id;
-        if(client_order_id && client_order_id !== 'undefined') {
-
-            window.axios({
-                method: 'post',
-                url: 'clientorder/' + client_order_id + '/get_clientorders',
-                data: {},
-            }).then(function (resp) {
-                [].forEach.call(resp.data.products, function(elem){
-                    object.items.push({
-                        id:elem.product.id,
-                        count:elem.count,
-                        price:elem.price,
-                        total:elem.total,
-                        store_id:elem.store_id,
-                    });
-
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id + '_' + elem.store_id);
-
-                    let inputs = item.getElementsByTagName('input');
-
-                    [].forEach.call(inputs, function(elem){
-                        var fn = window.helper.debounce(function(e) {
-                            object.recalculate(e);
-                        }, 50);
-                        elem.addEventListener("keydown", fn);
-                        elem.addEventListener("paste", fn);
-                        elem.addEventListener("delete", fn);
-                    });
-
-                });
-                object.recalculate();
-            }).catch(function (error) {
-                console.log(error);
-            }).then(function () {
-                window.isXHRloading = false;
-            });
-
-        }
-
-
-
-        // let list_elems = this.root_dialog.querySelector('.product_list_elem');
-        // if(list_elems){
-        //     [].forEach.call(list_elems, function(elem){
-        //         object.addItem({id:resp.data.id, html:resp.data.html});
-        //     });
-        // }
+        window.entity.loadItemsToList(this, 'clientorder');
     }
 
     setTotalPrice(count){
@@ -250,12 +200,13 @@ class clientorderDialog{
         try{
             window.selectProductDialog.markAsAdded();
         }catch (e) {
+            console.log(e);
         }
 
         product_list.insertAdjacentHTML('afterbegin', elem.html);
 
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id + '_' + elem.store_id);
+        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
         let inputs = item.getElementsByTagName('input');
 
         [].forEach.call(inputs, function(elem){
@@ -274,7 +225,7 @@ class clientorderDialog{
         delete window[this.root_dialog.id];
     }
 
-    removeItem(store_id, id){
+    removeItem(id){
 
         let object = this;
         [].forEach.call(object.items, function(item){
@@ -290,43 +241,7 @@ class clientorderDialog{
     }
 
     addProduct(elem){
-        var object = this;
-        let store_id = elem.dataset.store_id;
-        let article_id = elem.dataset.article_id;
-        let count = elem.closest('tr').querySelector('input').value;
-        window.axios({
-            method: 'post',
-            url: 'product/addtolist',
-            data: {
-                refer:this.root_dialog.id,
-                type:'clientOrder',
-                store_id:store_id,
-                article_id:article_id,
-                count:count,
-            }
-        }).then(function (resp) {
-
-            let canAdd = true;
-            [].forEach.call(object.items, function(item){
-                if(item.store_id === parseInt(resp.data.product.store_id) && item.id === resp.data.product.product.id){
-                    canAdd = false;
-                }
-            });
-            if(canAdd){
-                object.addItem({
-                    id:resp.data.product.product.id,
-                    store_id:parseInt(resp.data.product.store_id),
-                    count:resp.data.product.count,
-                    html:resp.data.html
-                });
-            } else {
-                window.notification.notify('error', 'Товар уже в списке');
-            }
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            window.isXHRloading = false;
-        });
+        window.entity.addProductToList(elem, this, 'clientOrder');
     };
 
     addQuickProduct(){
@@ -395,12 +310,13 @@ class clientorderDialog{
         console.log("Пересчет...");
         var object = this;
         this.items.forEach(function(elem){
-            object.recalculateItem(elem.store_id, elem.id);
+            object.recalculateItem(elem.id);
         });
         var total_price = object.totalPrice;
         var itogo = object.itogo;
         var inpercents = object.root_dialog.querySelector('input[name=inpercents]');
         var discount = object.root_dialog.querySelector('input[name=discount]');
+
 
         object.items.map(function(e){
             total_price = total_price + Number(e.total);
@@ -426,16 +342,16 @@ class clientorderDialog{
         object.setDiscount(discount_val);
     }
 
-    recalculateItem(store_id, id){
+    recalculateItem(id){
 
         let object = this;
 
-        let item = this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id);
+        let item = this.root_dialog.querySelector('#product_selected_' + id);
         let total, count, price;
         if(item !== null && item !== 'undefined' && item !== 'null') {
-            total = item.querySelector("input[name='products[" + store_id + "][" + id + "][total_price]']");
-            count = item.querySelector("input[name='products[" + store_id + "][" + id + "][count]']");
-            price = item.querySelector("input[name='products[" + store_id + "][" + id + "][price]']");
+            total = item.querySelector("input[name='products[" + id + "][total_price]']");
+            count = item.querySelector("input[name='products[" + id + "][count]']");
+            price = item.querySelector("input[name='products[" + id + "][price]']");
             let vcount = Number(count.value);
             let vprice = Number(price.value);
             let vtotal = Number(total.value);
@@ -444,7 +360,7 @@ class clientorderDialog{
             total.value = vtotal.toFixed(2);
 
             object.items.map(function(e){
-                if(e.id === id && e.store_id === store_id){
+                if(e.id === id){
                     e.total = vtotal;
                     e.count = vcount;
                     e.price = vprice;
@@ -453,33 +369,6 @@ class clientorderDialog{
         } else {
 
         }
-
-
-
-
-
-
-
-        // let object = this;
-        // let item = this.root_dialog.querySelector('#product_selected_' + id);
-        // let total = item.querySelector(".j_total_price");
-        // let count = item.querySelector(".j_count");
-        // let price = item.querySelector(".j_price");
-        //
-        // let vcount = Number(count.value);
-        // let vprice = Number(price.value);
-        // let vtotal = Number(total.value);
-        //
-        // vtotal = vprice * vcount;
-        // total.value = vtotal.toFixed(2);
-        //
-        // object.items.map(function(e){
-        //     if(e.id === id){
-        //         e.total = vtotal;
-        //         e.count = vcount;
-        //         e.price = vprice;
-        //     }
-        // });
     }
 
 

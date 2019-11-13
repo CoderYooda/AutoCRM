@@ -20,8 +20,8 @@ class CreateProviderOrdersTable extends Migration
             $table->dateTime('do_date')->comment('Дата исполнения');
             $table->decimal('summ', 10, 2)->comment('Общая цена');
             $table->decimal('itogo', 12, 2)->comment('Итоговая цена');
-            $table->integer('discount')->comment('Скидка');
-            $table->boolean('inpercents')->comment('В процентах?');
+            $table->integer('discount')->default(0)->comment('Скидка');
+            $table->boolean('inpercents')->default(false)->comment('В процентах?');
             $table->char('comment')->nullable()->comment('Комментарий');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
             $table->timestamps();
