@@ -8,7 +8,7 @@
     @endif
     class="dialog entrance_dialog" style="width:880px;">
     @if(isset($entrance) && $entrance->id != NULL)
-        <div class="titlebar">Поступление товара №{{ $entrance->id }}</div>
+        <div class="titlebar">Поступление товара #{{ $entrance->id }} по заявке #{{ $entrance->providerorder()->first()->id }}</div>
     @else
         <div class="titlebar">Новое поступление товара</div>
     @endif
@@ -53,24 +53,6 @@
                     <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>
                 </div>
             @endif
-            <div class="b-r pr-3 mr-3">
-                <div class="">
-                    <div class="input-group">
-                        <select name="providerorder_id" disabled class="providerorder_select form-control input-c noarrow fake-disabled" readonly>
-                            @if(isset($entrance) && $entrance->providerorder()->first() != null)
-                                <option value="{{ $entrance->providerorder()->first()->id }}">{{ $entrance->providerorder()->first()->id }}</option>
-                            @else
-                                <option>Не выбрано</option>
-                            @endif
-                        </select>
-                        <div class="input-group-append">
-                            <button onclick="{{ $class }}.openSelectProviderOrderModal()"
-                                    class="btn white" type="button"><i class="fa fa-bars"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     <form class="WarrantStoredListner" action="{{ route('StoreEntrance') }}" method="POST">
         @csrf
@@ -89,23 +71,45 @@
             <div class="row row-sm">
                 <div class="col-sm-6">
                     <div class="row row-sm">
+
+
                         <div class="col-sm-12 form-group">
-                            <label for="category_id">Поставщик</label>
+                            <label for="category_id">Заявка поставщику</label>
                             <div class="input-group">
-                                <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
-                                    @if(isset($entrance) && $entrance->partner()->first() != null)
-                                        <option value="{{ $entrance->partner()->first()->id }}">{{ $entrance->partner()->first()->outputName() }}</option>
+                                <select name="providerorder_id" disabled class="providerorder_select form-control input-c noarrow fake-disabled" readonly>
+                                    @if(isset($entrance) && $entrance->providerorder()->first() != null)
+                                        <option value="{{ $entrance->providerorder()->first()->id }}">{{ $entrance->providerorder()->first()->outputName() }}</option>
                                     @else
                                         <option>Не выбрано</option>
                                     @endif
                                 </select>
                                 <div class="input-group-append">
-                                    <button onclick="{{ $class }}.openSelectPartnermodal()"
+                                    <button onclick="{{ $class }}.openSelectProviderOrderModal()"
                                             class="btn white" type="button"><i class="fa fa-bars"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
+
+                        {{--<div class="col-sm-12 form-group">--}}
+                            {{--<label for="category_id">Поставщик</label>--}}
+                            {{--<div class="input-group">--}}
+                                {{--<select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>--}}
+                                    {{--@if(isset($entrance) && $entrance->partner()->first() != null)--}}
+                                        {{--<option value="{{ $entrance->partner()->first()->id }}">{{ $entrance->partner()->first()->outputName() }}</option>--}}
+                                    {{--@else--}}
+                                        {{--<option>Не выбрано</option>--}}
+                                    {{--@endif--}}
+                                {{--</select>--}}
+                                {{--<div class="input-group-append">--}}
+                                    {{--<button onclick="{{ $class }}.openSelectPartnermodal()"--}}
+                                            {{--class="btn white" type="button"><i class="fa fa-bars"></i>--}}
+                                    {{--</button>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+
+
                         <div class="col-sm-12 form-group">
                             <label>Склад</label>
                             <select name="store_id" class="form-control input-c">

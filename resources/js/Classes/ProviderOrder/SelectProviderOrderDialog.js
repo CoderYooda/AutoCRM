@@ -1,28 +1,37 @@
 
-class SelectProductDialog{
+class selectProviderOrderDialog{
 
     constructor(dialog){
 
         console.log('Окно поиска заявки инициализировано');
         this.root_dialog = dialog;
-        this.search_obj = dialog.querySelector("#providerorder_search");
+        this.search_obj = null;//dialog.querySelector("#providerorder_search");
         //this.store_obj = dialog.querySelector("#product_search_store");
-        this.results_obj = dialog.querySelector("#search_providerorder_results");
+        //this.results_obj = dialog.querySelector("#search_providerorder_results");
         this.refer = dialog.querySelector("#refer").value;
-        this.searchInit();
-        this.markAsAdded();
+
+        this.articles_container = dialog.querySelector("#articles_container");
+        //this.searchInit();
+        //this.markAsAdded();
         this.init();
+
     }
 
     init(){
+        let object = this;
         let focused = document.getElementById('select_provider_order_dialog_focused');
+
+        document.addEventListener("ProviderOrderSelected", function(){
+            object.finitaLaComedia();
+        });
+
         if(focused){
             focused.focus();
         }
     }
 
     finitaLaComedia(){
-        closeDialog(event);
+        closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
     }
 
@@ -69,9 +78,6 @@ class SelectProductDialog{
         if(object.refer){
             data.refer = object.refer;
         }
-
-
-
         window.axios({
             method: 'post',
             url: 'providerorder/dialog/search',
@@ -85,6 +91,40 @@ class SelectProductDialog{
         });
     }
 
+    addProductsToList(){
+        let object = this;
+
+        let form = document.querySelector("#provider_order_form");
+        console.log(form.serializeArray() );
+        var data = new FormData(form);
+
+        window[object.refer].addProductsToList();
+
+    }
+
+    pickProviderOrder(id){
+        let object = this;
+        //var string = this.search_obj.value;
+        //var store_id = this.store_obj.value;
+
+        let data = {};
+        //data.string = string;
+        //data.store_id = store_id;
+        // if(object.refer){
+        //     data.refer = object.refer;
+        // }
+        window.axios({
+            method: 'post',
+            url: 'providerorder/' + id + '/loaditems',
+            data: data,
+        }).then(function (resp) {
+            object.articles_container.innerHTML = resp.data.html;
+            //object.markAsAdded();
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+        });
+    }
 
 }
-export default SelectProductDialog;
+export default selectProviderOrderDialog;

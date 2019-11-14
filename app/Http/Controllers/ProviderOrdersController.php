@@ -37,6 +37,20 @@ class ProviderOrdersController extends Controller
         ]);
     }
 
+    public function select($id)
+    {
+        $providerorder = ProviderOrder::owned()->where('id', $id)->first();
+        if(!$providerorder){
+            return response()->json([
+                'message' => 'Заявка клиента не найдена, возможно она была удалёна',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $providerorder->id,
+            'name' => $providerorder->outputName()
+        ]);
+    }
+
     public function dialogSearch(Request $request)
     {
         $providerorders = ProviderOrder::owned()
@@ -53,6 +67,13 @@ class ProviderOrdersController extends Controller
         return response()->json([
             'html' => $content
         ], 200);
+    }
+
+    public function loadItems($id, Request $request){
+        $providerorder = ProviderOrder::owned()->where('id', $id)->first();
+        return response()->json([
+            'html' => view('provider_orders.dialog.select_providerorder_items', compact( 'providerorder',  'request'))->render()
+        ]);
     }
 
 

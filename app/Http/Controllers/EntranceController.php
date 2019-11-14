@@ -24,6 +24,7 @@ class EntranceController extends Controller
         }
 
         $stores = Store::where('company_id', Auth::user()->id)->get();
+
         return response()->json([
             'tag' => $tag,
             'html' => view('entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()

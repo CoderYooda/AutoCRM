@@ -78,6 +78,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/providerorder/search', 'ProviderOrdersController@search')->name('ProviderOrderPageSearch');
     Route::post('/providerorder/{id}/delete', 'ProviderOrdersController@delete')->name('DeleteProviderOrder');
     Route::post('/providerorder/dialog/search', 'ProviderOrdersController@dialogSearch')->name('ProviderOrderDialogSearch');
+    Route::post('/providerorder/{id}/select', 'ProviderOrdersController@select')->name('SelectProviderOrder');
+    Route::post('/providerorder/{id}/loaditems', 'ProviderOrdersController@loadItems')->name('LoadItemsProviderOrder');
 
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название

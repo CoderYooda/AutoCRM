@@ -1,6 +1,6 @@
 @php $class = 'selectProviderOrderDialog' @endphp
-<div id="selectProviderOrderDialog" class="dialog white" style="width:580px;">
-    <div class="titlebar">Поиск заявки клиента</div>
+<div id="selectProviderOrderDialog" class="dialog white" style="width:1100px;">
+    <div class="titlebar">Поиск заявки поставщику</div>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="navbar white no-radius box-shadow pos-rlt">
         <form class="flex">
@@ -16,14 +16,15 @@
                         {{--@endforeach--}}
                     {{--</select>--}}
                 {{--</span>--}}
-                <input id="providerorder_search" type="text" class="form-control form-control-sm search" placeholder="Поиск товара" required="">
+                {{--<input id="providerorder_search" type="text" class="form-control form-control-sm search" placeholder="Поиск товара" required="">--}}
                 <span class="input-group-append">
-                    <button onclick="openDialog('providerOrderDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новая заявка</button>
+                    <button onclick="openDialog('providerorderDialog')" class="btn btn-default btn-sm no-shadow" type="button">Новая заявка</button>
                 </span>
             </div>
         </form>
     </div>
-    <div id="partner_list" class="mh50-dialog" data-simplebar style="max-height: 400px">
+    <div>
+
         <div id="search_providerorder_results" class="nlborder list-group box mb-0" >
             {{--<table class="table table-hover mb-0">--}}
                 {{--<thead>--}}
@@ -37,10 +38,15 @@
                     {{----}}
                 {{--</tbody>--}}
             {{--</table>--}}
+            {{--<div class="row">--}}
+                {{--<div class="col-6">1</div>--}}
+                {{--<div class="col-6">2</div>--}}
+            {{--</div>--}}
             @include('provider_orders.dialog.select_providerorder_inner')
         </div>
     </div>
     <div class="modal-footer white">
+        <button class="btn success" onclick="{{ $class }}.addProductsToList()">Добавить</button>
         <button class="btn success" onclick="closeDialog(event)">Закрыть</button>
     </div>
 </div>

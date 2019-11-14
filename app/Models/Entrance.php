@@ -11,6 +11,7 @@ class Entrance extends Model
     public $fields = [
         'partner_id',
         'company_id',
+        'providerorder_id',
         'store_id',
         'nds',
         'nds_included',
@@ -33,7 +34,7 @@ class Entrance extends Model
 
     public function providerorder()
     {
-        return $this->belongsTo('App\Models\ProviderOrder', 'providerorder_id')->withTrashed();
+        return $this->belongsTo('App\Models\ProviderOrder', 'providerorder_id'); //->withTrashed()
     }
 
     public function company()

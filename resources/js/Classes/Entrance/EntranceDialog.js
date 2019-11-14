@@ -221,6 +221,31 @@ class createEntrance{
         });
     };
 
+    selectProviderOrder(id){
+        var object = this;
+        window.axios({
+            method: 'post',
+            url: 'providerorder/'+ id +'/select',
+            data: {refer:this.root_dialog.id}
+        }).then(function (resp) {
+
+            let select = object.root_dialog.querySelector('select[name=providerorder_id]');
+            let input = object.root_dialog.querySelector('input[name=providerorder_id]');
+            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            input.value = resp.data.id;
+            select.innerHTML = str;
+            window.notification.notify( 'success', 'Заявка выбрана');
+            document.dispatchEvent(new Event('ProviderOrderSelected', {bubbles: true}));
+            console.log("Событие ProviderOrderSelected вызвано");
+            //closeDialog(event);
+
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    };
+
     openProductmodal(){
         window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
     }
@@ -231,6 +256,10 @@ class createEntrance{
 
     openSelectProviderOrderModal(){
         window.openDialog('selectProviderOrderDialog', '&refer=' + this.root_dialog.id);
+    }
+
+    addProductsToList(){
+        console.warn(1);
     }
 
     recalculate(){

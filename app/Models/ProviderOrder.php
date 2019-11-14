@@ -35,6 +35,11 @@ class ProviderOrder extends Model
         return $this->created_at->format('d.m.Y (H:i)');
     }
 
+    public function outputName() //Вывод имени или наименования
+    {
+        return 'Заявка поставщику №' . $this->id;
+    }
+
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
         if($article){

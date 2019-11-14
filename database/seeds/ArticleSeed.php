@@ -25,7 +25,7 @@ class ArticleSeed extends Seeder
         $categories = \App\Models\Category::where('type', 'store')->pluck('id')->toArray();
 
 
-        foreach($json as $json_article){
+        foreach($json as $index => $json_article){
 
             $article = new \App\Http\Controllers\ProductController();
             $fake_request = new \Illuminate\Http\Request();
@@ -44,7 +44,8 @@ class ArticleSeed extends Seeder
                 echo "ошибка записи";
             }
 
-
+            if($index > 500)
+                break;
             $this->command->getOutput()->progressAdvance();
         }
         $this->command->getOutput()->progressFinish();
