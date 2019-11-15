@@ -21,6 +21,8 @@ class CreateProviderOrdersTable extends Migration
             $table->decimal('summ', 10, 2)->comment('Общая цена');
             $table->decimal('itogo', 12, 2)->comment('Итоговая цена');
             $table->integer('discount')->default(0)->comment('Скидка');
+            $table->boolean('nds')->comment('ндс');
+            $table->boolean('nds_included')->comment('ндс в стоимости?');
             $table->boolean('inpercents')->default(false)->comment('В процентах?');
             $table->char('comment')->nullable()->comment('Комментарий');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');

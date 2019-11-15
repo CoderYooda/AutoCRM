@@ -1,5 +1,5 @@
 @php $class = 'selectProviderOrderDialog' @endphp
-<div id="selectProviderOrderDialog" class="dialog white" style="width:1100px;">
+<div id="selectProviderOrderDialog" class="dialog white" style="width:1200px;">
     <div class="titlebar">Поиск заявки поставщику</div>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="navbar white no-radius box-shadow pos-rlt">

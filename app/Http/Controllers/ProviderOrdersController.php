@@ -37,6 +37,37 @@ class ProviderOrdersController extends Controller
         ]);
     }
 
+    private static function calculatePivotArticleProviderOrder($request, $product){
+        ### Рассчет товара для поступления ##########################
+        $data = [];
+
+        $vcount = $product['count'];
+        $vprice = $product['price'];
+        $vnds_percent = 20;
+
+        if($request['nds'] && !$request['nds_included']){
+            $vtotal = $vprice * $vcount;
+            $vnds = $vtotal / 100 * $vnds_percent;
+            $vtotal = $vnds + $vtotal;
+        } else if($request['nds'] && $request['nds_included']){
+            $vtotal = $vprice * $vcount;
+            $vnds = $vtotal / ( 100 + $vnds_percent ) * $vnds_percent;
+        } else {
+            $vtotal = $vprice * $vcount;
+            $vnds = 0.00;
+        }
+
+        $data = [
+            'count' => $product['count'],
+            'price' => $product['price'],
+            'total' => $vtotal,
+            'nds' => round($vnds, 2),
+            'nds_percent' => round($vnds_percent, 2),
+            'nds_included' => $request['nds_included'],
+        ];
+        return $data;
+    }
+
     public function select($id)
     {
         $providerorder = ProviderOrder::owned()->where('id', $id)->first();
@@ -95,6 +126,16 @@ class ProviderOrdersController extends Controller
     {
         $validation = Validator::make($request->all(), self::validateRules($request));
 
+
+
+        #Подготовка Request`a
+        if($request['nds'] === null){$request['nds'] = false;} else {$request['nds'] = true;}
+        if($request['nds_included'] === null){
+            $request['nds_included'] = false;
+        } else {$request['nds_included'] = true;}
+        if($request['locked'] === null){$request['locked'] = false;}
+
+
         if($validation->fails()){
             $this->status = 422;
             if($request->expectsJson()){
@@ -118,6 +159,7 @@ class ProviderOrdersController extends Controller
         $provider_order->save();
 
         //$store = Store::where('id', $request['store_id'])->first();
+
         foreach($request['products'] as $id => $product) {
 
             $vcount = $product['count'];
@@ -131,17 +173,13 @@ class ProviderOrdersController extends Controller
             $article_provider_order = $provider_order->articles()->where('article_id', $product['id'])->count();
 
             ### Пересчёт кол-ва с учетом предидущего поступления #######################################
-//            $store->articles()->syncWithoutDetaching($actor_product->id);
-//            $beforeCount = $entrance->getArticlesCountById($actor_product->id);
-//            $count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
-            //$count - Текущее кол-во на складе в наличии
+            #$store->articles()->syncWithoutDetaching($actor_product->id);
+            #$beforeCount = $entrance->getArticlesCountById($actor_product->id);
+            #$count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
+            #$count - Текущее кол-во на складе в наличии
             #############################################################################################
 
-            $pivot_data = [
-                'count' => $vcount,
-                'price' => $vprice,
-                'total' => $vtotal
-            ];
+            $pivot_data = self::calculatePivotArticleProviderOrder($request, $product);
 
             if($article_provider_order > 0){
                 $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);
@@ -152,7 +190,15 @@ class ProviderOrdersController extends Controller
             //$store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
         }
 
-        $provider_order->articles()->sync(array_column($request['products'], 'id'));
+
+//        $article_providerorder_pivot_data = [];
+//        foreach($request['products'] as $id => $product) {
+//            $article_providerorder_pivot_data[$id] = self::calculatePivotArticleProviderOrder($request, $product);
+//        }
+//
+//        $provider_order->articles()->sync($article_providerorder_pivot_data, true);
+
+
 
         if($request['inpercents']){
             $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
@@ -167,6 +213,7 @@ class ProviderOrdersController extends Controller
             $provider_order->itogo = $provider_order->summ - $request['discount'];
         }
 
+        $provider_order->summ = $provider_order->articles()->sum('total');
         $provider_order->save();
 
         if($request->expectsJson()){
@@ -227,8 +274,8 @@ class ProviderOrdersController extends Controller
             'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required'],
-            'products.*.count' => ['integer', 'max:9999'],
-            'products.*.price' => ['integer', 'max:999999'],
+            'products.*.count' => ['integer', 'max:9999', 'min:1'],
+            'products.*.price' => ['integer', 'max:999999', 'min:1'],
         ];
 
         return $rules;

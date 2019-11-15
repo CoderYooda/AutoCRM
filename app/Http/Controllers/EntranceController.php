@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProviderOrder;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -186,28 +187,15 @@ class EntranceController extends Controller
 
         $vcount = $product['count'];
         $vprice = $product['price'];
-        $vnds_percent = 20;
 
-        if($request['nds'] && !$request['nds_included']){
-            $vtotal = $vprice * $vcount;
-            $vnds = $vtotal / 100 * $vnds_percent;
-            $vtotal = $vnds + $vtotal;
-        } else if($request['nds'] && $request['nds_included']){
-            $vtotal = $vprice * $vcount;
-            $vnds = $vtotal / ( 100 + $vnds_percent ) * $vnds_percent;
-        } else {
-            $vtotal = $vprice * $vcount;
-            $vnds = 0.00;
-        }
+        $vtotal = $vprice * $vcount;
+        $vnds = 0.00;
 
         $data = [
             'store_id' => $store->id,
             'count' => $product['count'],
             'price' => $product['price'],
             'total' => $vtotal,
-            'nds' => round($vnds, 2),
-            'nds_percent' => round($vnds_percent, 2),
-            'nds_included' => $request['nds_included'],
         ];
         return $data;
     }
@@ -247,7 +235,6 @@ class EntranceController extends Controller
     private static function validateRules()
     {
         $rules = [
-            'partner_id' => ['required', 'exists:partners,id'],
             'providerorder_id' => ['required', 'exists:provider_orders,id'],
             'store_id' => ['required', 'exists:stores,id'],
             'products' => ['required'],

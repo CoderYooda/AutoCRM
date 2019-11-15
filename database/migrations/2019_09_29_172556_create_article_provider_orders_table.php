@@ -20,6 +20,9 @@ class CreateArticleProviderOrdersTable extends Migration
             $table->integer('count')->unsigned()->comment('Кол - во');
             $table->double('price')->unsigned()->comment('Цена');
             $table->double('total')->unsigned()->comment('Цена общая');
+            $table->double('nds_percent')->unsigned()->comment('% ндс');
+            $table->double('nds')->unsigned()->comment('ндс');
+            $table->boolean('nds_included')->unsigned()->comment('ндс в стоимости?');
         });
     }
 

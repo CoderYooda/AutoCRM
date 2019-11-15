@@ -195,7 +195,6 @@ class createEntrance{
         window.entity.addProductToList(elem, this, 'entrance');
     };
 
-
     selectPartner(id){
         var object = this;
         window.axios({
@@ -258,8 +257,76 @@ class createEntrance{
         window.openDialog('selectProviderOrderDialog', '&refer=' + this.root_dialog.id);
     }
 
-    addProductsToList(){
-        console.warn(1);
+    addProductsToList(providerorder_id, data){
+        let object = this;
+
+        window.axios({
+            method: 'post',
+            url: 'product/addtolist',
+            data: {
+                refer:object.root_dialog.id,
+                type:'providerorder',
+                providerorder_id: providerorder_id,
+                data:data
+            }
+        }).then(function (resp) {
+
+            console.log(resp);
+
+            // var isset = object.items.map(function(e){
+            //     return e.id;
+            // }).indexOf(resp.data.product.id);
+
+
+            let product_list = object.root_dialog.querySelector('.product_list');
+
+            let items = [];
+
+            [].forEach.call(resp.data.products, function(elem){
+                console.log(elem);
+                items.push({
+                    'id': elem.id,
+                    'count': elem.count,
+                    'html': null,
+                    'price': elem.pivot.price,
+                    'total': 0,
+                });
+            });
+
+            object.items = items;
+
+            product_list.innerHTML = resp.data.html;
+
+            window.notification.notify( 'success', 'Товары добавлены к списку');
+
+            [].forEach.call(resp.data.products, function(elem) {
+                let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+                let inputs = item.getElementsByTagName('input');
+
+                [].forEach.call(inputs, function(elem){
+                    var fn = window.helper.debounce(function(e) {
+                        object.recalculate(e);
+                    }, 50);
+                    elem.addEventListener("keydown", fn);
+                    elem.addEventListener("paste", fn);
+                    elem.addEventListener("delete", fn);
+                });
+            });
+
+
+
+            object.recalculate();
+
+
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+
+        // [].forEach.call(data, function(elem){
+        //     console.log(elem);
+        // });
     }
 
     recalculate(){

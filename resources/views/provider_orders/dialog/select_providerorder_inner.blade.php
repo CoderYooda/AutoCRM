@@ -3,7 +3,7 @@
         <div class="col-4 no-pr" data-simplebar style="max-height: 400px;">
             <div class="b-r" style="height: 400px;">
             @foreach($providerorders as $providerorder)
-                <div class="list-item inblocked mini-list-element pointer" onclick="{{ $class }}.pickProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}">
+                <div id="providerorder_item_{{ $providerorder->id }}" class="providerorder_item list-item inblocked mini-list-element pointer" onclick="{{ $class }}.pickProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}">
                     <div class="inblock">
                         <i class="fa fa-cubes" style="font-size: 16px;"></i>
                         <div class="w-200 list-body b-r pr-2" style="max-height: 38px;overflow: hidden;flex: 2;">

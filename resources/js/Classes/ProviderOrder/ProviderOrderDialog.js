@@ -5,6 +5,7 @@ class providerOrderDialog{
         this.root_dialog = dialog;
         this.items = [];
         this.nds = true;
+        this.nds_included = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.init();
@@ -68,6 +69,12 @@ class providerOrderDialog{
     setDiscount(count){
         let container = this.root_dialog.querySelector('#percents_price');
         container.innerHTML = count;
+    }
+
+    setNDS() {
+        this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
+        this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
+        this.recalculate();
     }
 
     addItem(elem){
@@ -186,11 +193,32 @@ class providerOrderDialog{
         let count = item.querySelector("input[name='products[" + id + "][count]']");
         let price = item.querySelector("input[name='products[" + id + "][price]']");
 
+        let nds_percent = item.querySelector("input[name='products[" + id + "][nds_percent]']");
+        let nds = item.querySelector("input[name='products[" + id + "][nds]']");
+
         let vcount = Number(count.value);
         let vprice = Number(price.value);
+        let vnds_percent = Number(nds_percent.value);
+        let vnds = Number(nds.value);
         let vtotal = Number(total.value);
 
-        vtotal = vprice * vcount;
+        if(object.nds && !object.nds_included){
+            vnds_percent = 20;
+            vtotal = vprice * vcount;
+            vnds = vtotal / 100 * vnds_percent;
+            vtotal = vnds + vtotal;
+        } else if(object.nds && object.nds_included){
+            vnds_percent = 20;
+            vtotal = vprice * vcount;
+            vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
+        } else {
+            vtotal = vprice * vcount;
+            vnds = 0.00;
+            vnds_percent = 0;
+        }
+
+        nds_percent.value = vnds_percent.toFixed(2);
+        nds.value = vnds.toFixed(2);
         total.value = vtotal.toFixed(2);
 
         object.items.map(function(e){

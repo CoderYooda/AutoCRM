@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Model\Catalog\Product;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\ProviderOrder;
 use App\Models\Shipment;
 use App\Models\Store;
 use App\Models\User;
@@ -52,6 +53,38 @@ class ProductController extends Controller
     public function addToList(Request $request)
     {
 
+        if($request['data'] != null && count($request['data']) > 0){
+            if($request['type'] == 'providerorder'){
+                $providerorder = ProviderOrder::owned()->where('id', $request['providerorder_id'])->first();
+            }
+
+            $products = $providerorder->articles()->whereIn('article_id', array_column($request['data'], 'id'))->get();
+
+            foreach($products as $product){
+
+                foreach($request['data'] as $item){
+                    if($item['id'] === $product->id){
+                        $count = $item['count'];
+                    }
+                }
+                if($count != null){
+                    $product->count = $count;
+                } else {
+                    $product->count = 0;
+                }
+
+            }
+
+            $content = view('entrance.dialog.product_element_array', compact('products', 'request'))->render();
+
+            return response()->json([
+                'products' => $products,
+                'html' => $content
+            ]);
+
+        }
+
+
         if($request['type'] && $request['type'] == 'clientOrder_quick'){
 
         } else {
@@ -70,17 +103,17 @@ class ProductController extends Controller
             }
         }
 
-
-
         if($request['type'] && $request['type'] === 'shipment'){
-
             $product = $article;
             $content = view('shipments.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] === 'clientOrder'){
-
             $product = $article;
             $content = view('client_orders.dialog.product_element', compact('product', 'request'))->render();
+
+        } elseif($request['type'] && $request['type'] === 'providerOrder'){
+            $product = $article;
+            $content = view('provider_orders.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] === 'clientOrder_quick'){
             $product = new StdClass();

@@ -4657,24 +4657,28 @@ fieldset[disabled] .md-switch input + i:after {
     background-color: #9e9e9e;
     color: rgba(255, 255, 255, 0.85); }
 
-.mini-list-element .inblock{
-    //padding: 0!important;
-}
-.pointer{
-    cursor: pointer;
+.mini-list-element{
+    height: 44px;
 }
 
+.pointer{
+    cursor: pointer;}
+
 .no-pr{
-    padding-right: 0!important;
-}
+    padding-right: 0!important;}
+
 .no-pl{
-    padding-left: 0!important;
-}
+    padding-left: 0!important;}
+
 .inblock .compressed{
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
-}
+    text-overflow: ellipsis;}
+
 .h-20{
     height: 20px!important;
+}
+
+.providerorder_item.active{
+    background-color: rgba(102, 216, 24, 0.15);
 }

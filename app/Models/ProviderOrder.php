@@ -14,6 +14,8 @@ class ProviderOrder extends Model
         'store_id',
         'summ',
         'discount',
+        'nds',
+        'nds_included',
         'inpercents',
         'comment',
     ];
@@ -23,7 +25,7 @@ class ProviderOrder extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_provider_orders', 'provider_order_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
     }
 
     public function partner()

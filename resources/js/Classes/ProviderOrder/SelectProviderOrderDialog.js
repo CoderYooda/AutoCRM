@@ -6,7 +6,7 @@ class selectProviderOrderDialog{
         console.log('Окно поиска заявки инициализировано');
         this.root_dialog = dialog;
         this.search_obj = null;//dialog.querySelector("#providerorder_search");
-        //this.store_obj = dialog.querySelector("#product_search_store");
+        this.order_id = null;
         //this.results_obj = dialog.querySelector("#search_providerorder_results");
         this.refer = dialog.querySelector("#refer").value;
 
@@ -92,21 +92,36 @@ class selectProviderOrderDialog{
     }
 
     addProductsToList(){
+
         let object = this;
-
-        let form = document.querySelector("#provider_order_form");
-        console.log(form.serializeArray() );
-        var data = new FormData(form);
-
-        window[object.refer].addProductsToList();
-
+        let products = object.root_dialog.querySelectorAll('.providerorder_article_elem');
+        let data = [];
+        let providerorder_id = object.root_dialog.querySelector('input[name=providerorder_id]').value;
+        window[object.refer].selectProviderOrder(providerorder_id);
+        [].forEach.call(products, function(elem){
+            if(elem.querySelector('.checked_field').checked){
+                data.push({
+                    'id':parseInt(elem.dataset.id),
+                    'count':parseInt(elem.querySelector('.count_item').value),
+                });
+            }
+        });
+        window[object.refer].addProductsToList(providerorder_id, data);
     }
 
     pickProviderOrder(id){
         let object = this;
         //var string = this.search_obj.value;
         //var store_id = this.store_obj.value;
+        object.order_id = id;
 
+        let items = object.root_dialog.querySelectorAll('.providerorder_item');
+
+        [].forEach.call(items, function(elem){
+            elem.classList.remove('active');
+        });
+
+        object.root_dialog.querySelector('#providerorder_item_' + id).classList.add('active');
         let data = {};
         //data.string = string;
         //data.store_id = store_id;

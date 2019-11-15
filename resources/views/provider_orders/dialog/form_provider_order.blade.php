@@ -114,8 +114,28 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div for="category_id" class=" mb-3">
-                        <b>Список приходных номенклатур</b>
+                    <div for="category_id" class=" mb-3"><b>Список приходных номенклатур</b>
+                        <div class="pull-right checkbox">
+                            <b class="pr-2">НДС:</b>
+                            <label class="ui-check mb-0 pr-2">
+                                <input name="nds" type="checkbox" value="1"
+                                       @if(isset($provider_order) && $provider_order->nds) checked
+                                       @elseif(isset($provider_order) && !$provider_order->nds)
+                                       @else checked @endif
+                                       onclick="{{ $class }}.setNDS();">
+                                <i class="dark-white"></i>
+                                - есть
+                            </label>
+                            <label class="ui-check mb-0">
+                                <input name="nds_included" type="checkbox" value="1"
+                                       @if(isset($provider_order) && $provider_order->nds_included) checked
+                                       @elseif(isset($provider_order) && !$provider_order->nds_included)
+                                       @else checked @endif
+                                       onclick="{{ $class }}.setNDS();">
+                                <i class="dark-white"></i>
+                                - включена в стоимость
+                            </label>
+                        </div>
                     </div>
 
                     <table class="table table-sm table-hover b-t mh40-dialog d-block" data-simplebar>
@@ -125,6 +145,8 @@
                             <th width="10%">Артикул</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
+                            <th width="10%" style="min-width: 70px;">НДС, %</th>
+                            <th width="10%" style="min-width: 100px;">НДС</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
                             <th width="10%"></th>
                         </tr>

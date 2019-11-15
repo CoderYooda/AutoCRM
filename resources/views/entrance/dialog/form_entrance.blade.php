@@ -157,8 +157,6 @@
                             <th width="10%">Артикул</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
-                            <th width="10%" style="min-width: 70px;">НДС, %</th>
-                            <th width="10%" style="min-width: 100px;">НДС</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
                             <th width="10%"></th>
                         </tr>

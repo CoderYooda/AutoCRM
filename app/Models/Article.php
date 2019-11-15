@@ -70,6 +70,12 @@ class Article extends Model
             ->withPivot('count', 'price', 'total', 'shipment_id');
     }
 
+//    public function providerorder()
+//    {
+//        return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'article_id', 'shipment_id')
+//            ->withPivot('count', 'price', 'total', 'shipment_id');
+//    }
+
     public function getArticlesCountInAllStores(){
         //$stores = Store::owned()->get();
         $count = $this->stores()->sum('count');

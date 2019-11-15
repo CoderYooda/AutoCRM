@@ -21,8 +21,6 @@ class CreateEntrancesTable extends Migration
             $table->bigInteger('providerorder_id')->unsigned()->comment('Привязка к Заявкам');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->decimal('totalPrice', 10, 2)->comment('Общая цена');
-            $table->boolean('nds')->comment('ндс');
-            $table->boolean('nds_included')->comment('ндс в стоимости?');
             $table->boolean('locked')->comment('Замок');
             $table->text('comment')->nullable()->comment('Комментарий');
             $table->timestamps();
