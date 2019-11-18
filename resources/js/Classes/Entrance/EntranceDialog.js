@@ -283,7 +283,6 @@ class createEntrance{
             let items = [];
 
             [].forEach.call(resp.data.products, function(elem){
-                console.log(elem);
                 items.push({
                     'id': elem.id,
                     'count': elem.count,
@@ -299,23 +298,23 @@ class createEntrance{
 
             window.notification.notify( 'success', 'Товары добавлены к списку');
 
-            [].forEach.call(resp.data.products, function(elem) {
-                let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-                let inputs = item.getElementsByTagName('input');
+            // [].forEach.call(resp.data.products, function(elem) {
+            //     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+            //     let inputs = item.getElementsByTagName('input');
+            //
+            //     [].forEach.call(inputs, function(elem){
+            //         var fn = window.helper.debounce(function(e) {
+            //             object.recalculate(e);
+            //         }, 50);
+            //         elem.addEventListener("keydown", fn);
+            //         elem.addEventListener("paste", fn);
+            //         elem.addEventListener("delete", fn);
+            //     });
+            // });
 
-                [].forEach.call(inputs, function(elem){
-                    var fn = window.helper.debounce(function(e) {
-                        object.recalculate(e);
-                    }, 50);
-                    elem.addEventListener("keydown", fn);
-                    elem.addEventListener("paste", fn);
-                    elem.addEventListener("delete", fn);
-                });
-            });
 
 
-
-            object.recalculate();
+            //object.recalculate();
 
 
         }).catch(function (error) {
@@ -393,8 +392,8 @@ class createEntrance{
         let count = item.querySelector("input[name='products[" + id + "][count]']");
         let price = item.querySelector("input[name='products[" + id + "][price]']");
 
-        let nds_percent = item.querySelector("input[name='products[" + id + "][nds_percent]']");
-        let nds = item.querySelector("input[name='products[" + id + "][nds]']");
+        let nds_percent = item.querySelector("input[name=nds_percent]");
+        let nds = item.querySelector("input[name=nds]");
 
 
         let vcount = Number(count.value);

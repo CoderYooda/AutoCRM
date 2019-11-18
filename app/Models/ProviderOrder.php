@@ -10,6 +10,7 @@ class ProviderOrder extends Model
     public $fields = [
         'partner_id',
         'company_id',
+        'store_id',
         'do_date',
         'store_id',
         'summ',
@@ -31,6 +32,11 @@ class ProviderOrder extends Model
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
     public function normalizedData(){

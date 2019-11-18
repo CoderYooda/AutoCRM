@@ -19,8 +19,8 @@ class CreateArticleEntranceTable extends Migration
             $table->bigInteger('entrance_id')->unsigned()->comment('Привязка к поступлению');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->integer('count')->unsigned()->comment('Кол - во');
-            $table->double('price')->unsigned()->comment('Цена');
-            $table->double('total')->unsigned()->comment('Цена общая');
+            //$table->double('price')->unsigned()->comment('Цена');
+            //$table->double('total')->unsigned()->comment('Цена общая');
         });
     }
 

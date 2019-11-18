@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Article;
+use App\Models\Store;
 use Auth;
 
 class ProviderOrdersController extends Controller
@@ -21,6 +22,8 @@ class ProviderOrdersController extends Controller
         } else {
             $provider_order = null;
         }
+
+        $stores = Store::where('company_id', Auth::user()->id)->get();
 
         return response()->json([
             'tag' => $tag,

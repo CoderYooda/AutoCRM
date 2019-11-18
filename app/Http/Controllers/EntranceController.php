@@ -52,9 +52,9 @@ class EntranceController extends Controller
         $validation = Validator::make($request->all(), self::validateRules());
 
         #Подготовка Request`a
-            if($request['nds'] === null){$request['nds'] = false;}
-            if($request['nds_included'] === null){$request['nds_included'] = false;}
-            if($request['locked'] === null){$request['locked'] = false;}
+//            if($request['nds'] === null){$request['nds'] = false;}
+//            if($request['nds_included'] === null){$request['nds_included'] = false;}
+//            if($request['locked'] === null){$request['locked'] = false;}
 
         if($validation->fails()){
             $this->status = 422;
@@ -66,24 +66,24 @@ class EntranceController extends Controller
         if($entrance->exists) {
 
             #Прибавляем к балансу предидущего партнера
-            $entrance->partner()->first()
+            $entrance->providerorder()->first()->partner()->first()
                 ->subtraction($entrance->totalPrice);
 
-            $old_store_id = $entrance->store_id;
+            //$old_store_id = $entrance->store_id;
             $entranceWasExisted = true;
         }
 
         # Предварительно сохраняем поступление
             $entrance->fill($request->only($entrance->fields));
-            $entrance->totalPrice = 0;
+            //$entrance->totalPrice = 0;
             $entrance->company_id = Auth::user()->company()->first()->id;
             $entrance->save();
 
         # Склад с которым оперируем
             if(isset($entranceWasExisted) && $entranceWasExisted) {
-                $store = Store::owned()->where('id', $old_store_id)->first();
+                $store = $entrance->providerorder()->first()->store()->first();
             } else {
-                $store = Store::owned()->where('id', $request['store_id'])->first();
+                $store = Auth::user()->getStoreFirst();
             }
 
         # Исходные состояния товаров к поступлению до операции
@@ -96,8 +96,9 @@ class EntranceController extends Controller
             }
 
         # Синхронизируем товары к складу
-            Store::owned()->where('id', $request['store_id'])->first()
-                ->articles()->syncWithoutDetaching($plucked_articles, false);
+        //dd(Store::owned()->where('id', Auth::user()->getStoreFirst()->store_id)->first());
+
+        $store->articles()->syncWithoutDetaching($plucked_articles, false);
 
         if(isset($entranceWasExisted) && $entranceWasExisted) {
             # Исходные состояния товаров к складу из поступления
@@ -134,7 +135,7 @@ class EntranceController extends Controller
 
         #Сохраняем поступление
             $entrance->fill($request->only($entrance->fields));
-            $entrance->totalPrice = $entrance->articles()->sum('total');
+            //$entrance->totalPrice = $entrance->articles()->sum('total');
             $entrance->save();
 
         #Если указана дата - сохраняем
@@ -145,12 +146,11 @@ class EntranceController extends Controller
 
         #Добавляем на склад все товары из поступления
             foreach($entrance->articles()->get() as $article){
-                Store::owned()->where('id', $request['store_id'])->first()
-                    ->increaseArticleCount($article->id, $article->pivot->count);
+                $store->increaseArticleCount($article->id, $article->pivot->count);
             }
 
         #Добавляем к балансу контрагента
-        $entrance->partner()->first()
+        $entrance->providerorder()->first()->partner()->first()
             ->addition($entrance->totalPrice);
 
         #Ответ сервера
@@ -186,16 +186,16 @@ class EntranceController extends Controller
         $data = [];
 
         $vcount = $product['count'];
-        $vprice = $product['price'];
+        //$vprice = $product['price'];
 
-        $vtotal = $vprice * $vcount;
+        //$vtotal = $vprice * $vcount;
         $vnds = 0.00;
 
         $data = [
             'store_id' => $store->id,
             'count' => $product['count'],
-            'price' => $product['price'],
-            'total' => $vtotal,
+            //'price' => $product['price'],
+            //'total' => $vtotal,
         ];
         return $data;
     }
@@ -236,7 +236,7 @@ class EntranceController extends Controller
     {
         $rules = [
             'providerorder_id' => ['required', 'exists:provider_orders,id'],
-            'store_id' => ['required', 'exists:stores,id'],
+//            'store_id' => ['required', 'exists:stores,id'],
             'products' => ['required'],
             'products.*.count' => ['integer', 'max:9999'],
             'products.*.price' => ['integer', 'max:999999'],
@@ -276,7 +276,7 @@ class EntranceController extends Controller
         $entrance = Entrance::where('id', $id)->first();
 
         # Склад с которым оперируем
-            $store = $entrance->store()->first();
+            $store = $entrance->providerorder()->first()->store()->first();
 
         foreach($entrance->articles()->get() as $article){
             $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));

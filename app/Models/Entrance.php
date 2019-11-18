@@ -9,12 +9,8 @@ class Entrance extends Model
 {
 
     public $fields = [
-        'partner_id',
         'company_id',
         'providerorder_id',
-        'store_id',
-        'nds',
-        'nds_included',
         'locked',
         'comment',
     ];
@@ -24,7 +20,7 @@ class Entrance extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_entrance', 'entrance_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count');
     }
 
     public function partner()

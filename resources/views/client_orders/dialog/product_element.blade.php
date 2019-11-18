@@ -5,7 +5,7 @@
             <span class="badge badge-pill @if($product->instock >= $product->count) success @else warn @endif pos-rlt text-sm mr-2">{{ $product->instock }}</span>
         @endif
     </td>
-    <td title="{{ $product->name }}"><span class="product_list_element_name">{{ $product->name }}</span></td>
+    <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 200px">{{ $product->name }}</span></td>
 
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
 
