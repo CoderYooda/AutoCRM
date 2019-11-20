@@ -34,9 +34,23 @@ class providerOrderDialog{
             event = 'ShipmentStored';
         }
         console.log(event);
+
         document.addEventListener(event, function(e){
             object.finitaLaComedia();
         });
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
+            console.warn("Warrant повесили");
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
         this.loadItemsIfExists();
         let focused = document.getElementById('providerorder_dialog_focused');
         if(focused){
@@ -44,13 +58,130 @@ class providerOrderDialog{
         }
     }
 
+    freshContent(id, callback = null){
+        let object = this;
+
+        //var store_id = this.store_obj.value;
+
+        let data = {};
+        //data.store_id = store_id;
+        if(object.refer){
+            data.refer = object.refer;
+        }
+
+        window.axios({
+            method: 'post',
+            url: 'providerorder/' + id + '/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            callback();
+        });
+    }
+
+    getPayment(){
+        let warrant_type = 'pay_to_provider';
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+        let refer = 'providerorder';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
+        partner = parseInt(partner);
+        //console.log(partner);
+        var params = '';
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
+        if(warrant_type != null){
+            params += '&warrant_type='+warrant_type;
+        }
+        if(itogo != null){
+            params += '&itogo='+itogo;
+        }
+        if(id != null){
+            let reason = 'Оплата заказа №' + id;
+            params += '&reason='+reason;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+ostatok;
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
+        }
+        openDialog('warrantDialog', '&isIncoming=0'+params);
+    }
+
+    getBackPayment(){
+        let warrant_type = 'pay_to_provider';
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+        let refer = 'providerorder';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
+        partner = parseInt(partner);
+        var params = '';
+
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
+        if(warrant_type != null){
+            params += '&warrant_type='+warrant_type;
+        }
+        if(itogo != null){
+            params += '&itogo='+itogo;
+        }
+        if(id != null){
+            let reason = 'Возврат средств по заказу №' + id;
+            params += '&reason='+reason;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+Math.abs(ostatok);
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
+        }
+        openDialog('warrantDialog', '&isIncoming=1'+params);
+    }
+
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
-        window.axform.send(elem, function(e){
+        window.axform.send(elem, function(resp){
+            let root_id = object.root_dialog.id;
+            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+            object.root_dialog.setAttribute('id', 'providerorderDialog' + resp.data.id);
+            object.root_dialog.setAttribute('data-id', resp.data.id);
+            object.freshContent(resp.data.id, function(){
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['providerorderDialog' + resp.data.id] = drag_dialog;
+                drag_dialog.tag = 'providerorderDialog' + resp.data.id;
+                window.helper.initDialogMethods();
+            });
+        });
+    }
+
+    saveAndClose(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(resp){
             object.finitaLaComedia();
         });
     }
+
 
     loadItemsIfExists(){
         window.entity.loadItemsToList(this, 'providerorder');

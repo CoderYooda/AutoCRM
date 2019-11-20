@@ -7,7 +7,7 @@
         @php $class = 'entranceDialog' @endphp
         id="entranceDialog"
     @endif
-    class="dialog entrance_dialog" style="width:880px;">
+    class="dialog entrance_dialog" style="width:1100px;">
     @if(isset($entrance) && $entrance->id != NULL)
         <div class="titlebar">Поступление товара #{{ $entrance->id }} по заявке #{{ $entrance->providerorder()->first()->id }}</div>
     @else
@@ -27,35 +27,35 @@
                 <div class="item-tag tag hide">
                 </div>
             </div>
-            <div class="b-r pr-3 mr-3">
-                <span class="item-title _500">Всего на сумму</span>
-                <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
+            {{--<div class="b-r pr-3 mr-3">--}}
+                {{--<span class="item-title _500">Всего на сумму</span>--}}
+                {{--<div class="item-except font-weight-bolder h-1x">--}}
+                    {{--<span id="total_price">--}}
                         {{--@if(isset($entrance))@else 0.0 @endif--}}
-                    </span> р
-                </div>
-                <div class="item-tag tag hide">
-                </div>
-            </div>
+                    {{--</span> р--}}
+                {{--</div>--}}
+                {{--<div class="item-tag tag hide">--}}
+                {{--</div>--}}
+            {{--</div>--}}
 
-            @if(isset($entrance))
-                <div class="b-r pr-3 mr-3">
-                    <span class="item-title _500">Оплачено</span>
-                    <div class="item-except @if($entrance->warrants()->sum('summ') >= $entrance->totalPrice) text-success @endif font-weight-bolder h-1x">
-                    <span id="payed_price">
-                        {{ sprintf("%.2f", $entrance->warrants()->sum('summ')) }} р / {{ $entrance->totalPrice }} р
-                    </span>
-                    </div>
-                    <div class="item-tag tag hide">
-                    </div>
-                </div>
-            @endif
+            {{--@if(isset($entrance))--}}
+                {{--<div class="b-r pr-3 mr-3">--}}
+                    {{--<span class="item-title _500">Оплачено</span>--}}
+                    {{--<div class="item-except @if($entrance->warrants()->sum('summ') >= $entrance->totalPrice) text-success @endif font-weight-bolder h-1x">--}}
+                    {{--<span id="payed_price">--}}
+                        {{--{{ sprintf("%.2f", $entrance->warrants()->sum('summ')) }} р / {{ $entrance->totalPrice }} р--}}
+                    {{--</span>--}}
+                    {{--</div>--}}
+                    {{--<div class="item-tag tag hide">--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--@endif--}}
 
-            @if(isset($entrance) && ($entrance->warrants()->sum('summ') < $entrance->totalPrice) )
-                <div class="b-r pr-3 mr-3">
-                    <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>
-                </div>
-            @endif
+            {{--@if(isset($entrance) && ($entrance->warrants()->sum('summ') < $entrance->totalPrice) )--}}
+                {{--<div class="b-r pr-3 mr-3">--}}
+                    {{--<button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>--}}
+                {{--</div>--}}
+            {{--@endif--}}
         </div>
     <form class="WarrantStoredListner" action="{{ route('StoreEntrance') }}" method="POST">
         @csrf
@@ -173,13 +173,14 @@
                 <div for="category_id" class=" mb-3"><b>Список приходных номенклатур</b>
                 </div>
                 <div data-simplebar style="max-height: 300px;">
-                    <table class="table table-sm table-hover b-t mh40-dialog d-block">
+                    <table class="table table-sm table-hover b-t mb-0 d-block" style="min-height: 300px">
                         <thead class="text-muted">
                         <tr>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Пр-ль</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
+                            <th width="10%" style="min-width: 20px; white-space: nowrap">Поступило / Ожидается</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             {{--<th width="10%" style="min-width: 100px;">Всего</th>--}}
                             <th width="10%"></th>
@@ -187,6 +188,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($entrance))
+                            @php $providerorder = $entrance->providerorder()->first(); @endphp
                             @foreach($entrance->articles()->get() as $product)
                                 @include('entrance.dialog.product_element')
                             @endforeach

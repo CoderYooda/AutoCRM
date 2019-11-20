@@ -331,15 +331,15 @@ class createEntrance{
     recalculate(){
         console.log("Пересчет...");
         var object = this;
-        this.items.forEach(function(elem){
-            object.recalculateItem(elem.id);
-        });
-        var total_price = object.totalPrice;
+        // this.items.forEach(function(elem){
+        //     object.recalculateItem(elem.id);
+        // });
+        //var total_price = object.totalPrice;
 
-        object.items.map(function(e){
-            total_price = total_price + Number(e.total);
-        });
-        object.setTotalPrice(total_price);
+        // object.items.map(function(e){
+        //     total_price = total_price + Number(e.total);
+        // });
+        //object.setTotalPrice(total_price);
     }
 
     setNDS() {
@@ -392,30 +392,34 @@ class createEntrance{
         let count = item.querySelector("input[name='products[" + id + "][count]']");
         let price = item.querySelector("input[name='products[" + id + "][price]']");
 
-        let nds_percent = item.querySelector("input[name=nds_percent]");
-        let nds = item.querySelector("input[name=nds]");
+        //let nds_percent = item.querySelector("input[name=nds_percent]");
+        //let nds = item.querySelector("input[name=nds]");
 
 
         let vcount = Number(count.value);
         let vprice = Number(price.value);
-        let vnds_percent = Number(nds_percent.value);
-        let vnds = Number(nds.value);
-        let vtotal = Number(total.value);
+        //let vnds_percent = Number(nds_percent.value);
+        //let vnds = Number(nds.value);
+        //let vtotal = Number(total.value);
 
-        if(object.nds && !object.nds_included){
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = vtotal / 100 * vnds_percent;
-            vtotal = vnds + vtotal;
-        } else if(object.nds && object.nds_included){
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
-        } else {
-            vtotal = vprice * vcount;
-            vnds = 0.00;
-            vnds_percent = 0;
-        }
+        // if(object.nds && !object.nds_included){
+        //     vnds_percent = 20;
+        //     vtotal = vprice * vcount;
+        //     vnds = vtotal / 100 * vnds_percent;
+        //     vtotal = vnds + vtotal;
+        // } else if(object.nds && object.nds_included){
+        //     vnds_percent = 20;
+        //     vtotal = vprice * vcount;
+        //     vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
+        // } else {
+        //     vtotal = vprice * vcount;
+        //     vnds = 0.00;
+        //     vnds_percent = 0;
+        // }
+
+        vtotal = vprice * vcount;
+        vnds = 0.00;
+        vnds_percent = 0;
 
         nds_percent.value = vnds_percent.toFixed(2);
         nds.value = vnds.toFixed(2);

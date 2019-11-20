@@ -53,7 +53,6 @@ class storePage{
             object.reload();
         });
         object.initShipmentDates();
-        //simplebar(document.getElementById('fof'));
     }
 
     load(){

@@ -125,14 +125,46 @@ class ProviderOrdersController extends Controller
         ], 200);
     }
 
+    public function fresh($id, Request $request)
+    {
+        $provider_order = ProviderOrder::where('id', (int)$id)->first();
+
+        $provider_order->articles = $provider_order->articles()->get();
+
+        foreach($provider_order->articles as $article){
+            $article->instock = $article->getCountInStoreId($provider_order->store_id);
+            if($article->instock >= $article->count){
+                $article->complited = true;
+            } else {
+                $article->complited = false;
+            }
+        }
+        $total_complited = true;
+
+        foreach($provider_order->articles as $article){
+            if(!$article->complited){
+                $total_complited = false;
+            }
+        }
+
+        $provider_order->total_complited = $total_complited;
+
+        $request['fresh'] = true;
+        $class = 'providerorderDialog' . $id;
+        $content = view('provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores', 'class', 'request'))->render();
+        return response()->json([
+            'html' => $content,
+            'target' => 'providerorderDialog' . $id,
+        ], 200);
+    }
+
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), self::validateRules($request));
 
-
-
         #Подготовка Request`a
         if($request['nds'] === null){$request['nds'] = false;} else {$request['nds'] = true;}
+        if($request['inpercents'] === null){$request['inpercents'] = false;} else {$request['inpercents'] = true;}
         if($request['nds_included'] === null){
             $request['nds_included'] = false;
         } else {$request['nds_included'] = true;}
@@ -145,6 +177,16 @@ class ProviderOrdersController extends Controller
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
+
+        if($request['inpercents']){
+            if((int)$request['discount'] >= 100){
+                $request['discount'] = 100;
+            }
+            if((int)$request['discount'] <= 0){
+                $request['discount'] = 0;
+            }
+        }
+
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
         $request['do_date'] = Carbon::now();
@@ -222,6 +264,7 @@ class ProviderOrdersController extends Controller
         if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
+                'id' => $provider_order->id,
                 'event' => 'providerOrderStored',
             ], 200);
         } else {

@@ -33,6 +33,8 @@ class DDSSeeder extends Seeder
         DdsArticle::create(['id' => 2, 'category_id' => 9, 'name' => 'Продажа товара', 'company_id' => null, 'locked' => true, 'dds_types_id' => 1]);
         DdsArticle::create(['id' => 3, 'category_id' => 9, 'name' => 'Погашение кредита', 'company_id' => null, 'locked' => true, 'dds_types_id' => 3]);
         DdsArticle::create(['id' => 4, 'category_id' => 8, 'name' => 'Оплата поступления', 'company_id' => null, 'locked' => true, 'dds_types_id' => 14]);
+        DdsArticle::create(['id' => 5, 'category_id' => 8, 'name' => 'Оплата заказа', 'company_id' => null, 'locked' => true, 'dds_types_id' => 14]);
+        DdsArticle::create(['id' => 6, 'category_id' => 8, 'name' => 'Возврат средств', 'company_id' => null, 'locked' => true, 'dds_types_id' => 5]);
     }
 }
 

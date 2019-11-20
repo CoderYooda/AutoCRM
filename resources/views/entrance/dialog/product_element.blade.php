@@ -6,9 +6,14 @@
     <td><input name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
                @if($product->count != null) value="{{ $product->count }}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
-    <td><input name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
-               @if(isset($product->pivot->price)) value="{{$product->pivot->price}}"@else value="0" @endif
-               disabled type="number" min="0" step="0.1" ></td>
+    <td>
+        {{ $providerorder->getArticleEntredCount($product->id) }} / {{ $providerorder->getArticleCount($product->id) }}
+
+    </td>
+
+    <td>
+        {{ $providerorder->getArticlePrice($product->id) }}
+    </td>
     {{--<td><input name="products[{{ $product->id }}][nds_percent]" class="form-control form-control-sm"--}}
                {{--@if(isset($product->pivot->count)) value="{{$product->pivot->nds_percent}}"@else value="20" @endif--}}
                {{--disabled type="number" ></td>--}}

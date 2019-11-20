@@ -51,6 +51,9 @@ class WarrantController extends Controller
                 case 'receipt_of_goods':
                     $dds_type_id = 4;
                     break;
+                case 'pay_to_provider':
+                    $dds_type_id = 5;
+                    break;
             }
 
             if($dds_type_id !== null){

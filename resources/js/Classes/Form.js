@@ -87,13 +87,13 @@ class AxForm{
                     });
 
                     var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
-                    if(el.closest(".tab-pane")){
+                    if(el !== null && el.closest(".tab-pane")){
                         var tab_container_id = el.closest(".tab-pane").getAttribute('id');
                         var tab_butt = document.querySelector("a[href='#" + tab_container_id + "']");
                         tab_butt.querySelector(".helper_danger").setAttribute("style", "display:block!important;");
                     }
 
-                    if(el.getAttribute('type') != 'hidden'){
+                    if(el !== null && el.getAttribute('type') != 'hidden'){
                         el.classList.add('is-invalid');
                         var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
                         el.parentNode.appendChild(node);

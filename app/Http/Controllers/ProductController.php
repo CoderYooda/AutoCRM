@@ -54,6 +54,7 @@ class ProductController extends Controller
     {
 
         if($request['data'] != null && count($request['data']) > 0){
+
             if($request['type'] == 'providerorder'){
                 $providerorder = ProviderOrder::owned()->where('id', $request['providerorder_id'])->first();
             }
@@ -67,6 +68,7 @@ class ProductController extends Controller
                         $count = $item['count'];
                     }
                 }
+
                 if($count != null){
                     $product->count = $count;
                 } else {
@@ -75,7 +77,7 @@ class ProductController extends Controller
 
             }
 
-            $content = view('entrance.dialog.product_element_array', compact('products', 'request'))->render();
+            $content = view('entrance.dialog.product_element_array', compact('products', 'providerorder', 'request'))->render();
 
             return response()->json([
                 'products' => $products,

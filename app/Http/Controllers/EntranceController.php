@@ -24,7 +24,7 @@ class EntranceController extends Controller
             $tag = 'entranceDialog';
         }
 
-        $stores = Store::where('company_id', Auth::user()->id)->get();
+        $stores = Store::owned()->get();
 
         return response()->json([
             'tag' => $tag,
@@ -51,6 +51,9 @@ class EntranceController extends Controller
 
         $validation = Validator::make($request->all(), self::validateRules());
 
+
+
+
         #Подготовка Request`a
 //            if($request['nds'] === null){$request['nds'] = false;}
 //            if($request['nds_included'] === null){$request['nds_included'] = false;}
@@ -61,6 +64,24 @@ class EntranceController extends Controller
             if($request->ajax()){
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
+        }
+
+
+        $messages = [];
+        foreach($request['products'] as $id => $product) {
+            $providerorder_id = $request['providerorder_id'];
+            $providerorder = ProviderOrder::owned()->where('id', $providerorder_id)->first();
+            $entrance_count = $providerorder->getArticleEntredCount($id, $entrance->id);
+            $providers_count = $providerorder->getArticleCount($product['id']);
+            $form_count = (int)$product['count'];
+
+            if($entrance_count + $form_count > $providers_count){
+                $messages['products[' . $id . '][count]'][] = 'Ошибка';
+            }
+        }
+
+        if(count($messages) > 0){
+            return response()->json(['messages' => $messages], 422);
         }
 
         if($entrance->exists) {
@@ -214,17 +235,21 @@ class EntranceController extends Controller
             ->where(function($q) use ($request){
                 if(isset($request['search']) && $request['search'] !== 'null') {
                     if (mb_strlen($request['search']) === 1) {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', $request['search'] . '%' )
-                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+                        $q->whereHas('providerorder', function ($q) use ($request) {
+                            $q->whereHas('partner', function ($q) use ($request) {
+                                $q->where('fio', 'LIKE', $request['search'] . '%' )
+                                    ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+                            });
                         });
                     } else {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhereHas('phones', function ($query) use ($request) {
-                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                                });
+                        $q->whereHas('providerorder', function ($q) use ($request) {
+                            $q->whereHas('partner', function ($q) use ($request) {
+                                $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+                                    ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+                                    ->orWhereHas('phones', function ($query) use ($request) {
+                                        $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+                                    });
+                            });
                         });
                     }
                 }
@@ -238,8 +263,7 @@ class EntranceController extends Controller
             'providerorder_id' => ['required', 'exists:provider_orders,id'],
 //            'store_id' => ['required', 'exists:stores,id'],
             'products' => ['required'],
-            'products.*.count' => ['integer', 'max:9999'],
-            'products.*.price' => ['integer', 'max:999999'],
+            'products.*.count' => ['integer', 'min:1', 'max:9999'],
         ];
         return $rules;
     }

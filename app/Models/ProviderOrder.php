@@ -29,6 +29,49 @@ class ProviderOrder extends Model
             ->withPivot('count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
     }
 
+    public function getArticleCount($article_id)
+    {
+        return $this->articles()->where('article_id', $article_id)->first()->pivot->count;
+    }
+
+    public function entrances()
+    {
+        return $this->hasMany('App\Models\Entrance', 'providerorder_id');
+    }
+
+    public function getArticleEntredCount($article_id, $not_self_id = null)
+    {
+        if($not_self_id !== null){
+            $entrances = $this->entrances()->where('id', '!=', $not_self_id)->get();
+        } else {
+            $entrances = $this->entrances()->get();
+        }
+
+        $summ = 0;
+        foreach($entrances as $entrance){
+            $summ += $entrance->articles()->where('article_id', $article_id)->sum('count');
+        }
+
+        return $summ;
+    }
+
+    public function warrants()
+    {
+        return $this->belongsToMany('App\Models\Warrant', 'provider_order_warrant',  'providerorder_id', 'warrant_id' );
+    }
+
+    public function getWarrantPositive()
+    {
+        $minus = $this->warrants()->where('isIncoming', true)->sum('summ');
+        $plus = $this->warrants()->where('isIncoming', false)->sum('summ');
+        return $plus - $minus;
+    }
+
+    public function getArticlePrice($article_id)
+    {
+        return $this->articles()->where('article_id', $article_id)->first()->pivot->price;
+    }
+
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id');
