@@ -36,7 +36,7 @@ class ProviderOrder extends Model
 
     public function entrances()
     {
-        return $this->hasMany('App\Models\Entrance', 'providerorder_id');
+        return $this->belongsTo('App\Models\Entrance', 'providerorder_id');
     }
 
     public function getArticleEntredCount($article_id, $not_self_id = null)

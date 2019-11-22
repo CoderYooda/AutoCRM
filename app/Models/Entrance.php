@@ -52,6 +52,15 @@ class Entrance extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function migrateInStore($store, $newStore)
+    {
+        foreach($this->articles()->get() as $article){
+            $count = $article->pivot->count;
+            $store->decreaseArticleCount($article->id, $count);
+            $newStore->increaseArticleCount($article->id, $count);
+        }
+    }
+
     public function warrants()
     {
         return $this->belongsToMany('App\Models\Warrant', 'entrance_warrant',  'entrance_id', 'warrant_id' );

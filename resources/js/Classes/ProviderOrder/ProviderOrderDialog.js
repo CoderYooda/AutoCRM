@@ -33,10 +33,19 @@ class providerOrderDialog{
         } else {
             event = 'ShipmentStored';
         }
+
         console.log(event);
 
         document.addEventListener(event, function(e){
             object.finitaLaComedia();
+        });
+
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+            }
         });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){

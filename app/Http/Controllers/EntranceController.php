@@ -157,7 +157,7 @@ class EntranceController extends Controller
         #Сохраняем поступление
             $entrance->fill($request->only($entrance->fields));
             //$entrance->totalPrice = $entrance->articles()->sum('total');
-            $entrance->save();
+            $entrance->save(); 
 
         #Если указана дата - сохраняем
             if($request['do_date'] != NULL){

@@ -23,10 +23,30 @@ class Cashbox extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function warrants()
+    {
+        return $this->hasMany('App\Models\Warrant', 'cashbox_id' );
+    }
+
     public function addition($summ){
         $this->balance = $this->balance + $summ;
         $this->save();
         return $this;
+    }
+
+    public function getLastOperation()
+    {
+        $warrant = $this->warrants()->first();
+
+        if($warrant){
+            if($warrant->isIncoming){
+                return '+' . sprintf("%.2f", $warrant->summ) . ' (' . $warrant->ddsarticle()->first()->name . ')';
+            } else {
+                return '-' . sprintf("%.2f", $warrant->summ) . ' (' . $warrant->ddsarticle()->first()->name . ')';
+            }
+        } else {
+            return 0;
+        }
     }
 
     public function subtraction($summ){

@@ -117,7 +117,8 @@ class Entity{
                     });
 
                 });
-                object.recalculate();
+                // object.recalculate();
+                // document.body.appendChild(object.root_dialog.getElementsByTagName('form')[0]);
             }).catch(function (error) {
                 console.log(error);
             }).then(function () {

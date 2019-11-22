@@ -28,19 +28,10 @@
         <div class="col-8 no-pl" id="articles_container" >
         </div>
     </div>
-
-@elseif($request && $request['string'] != null)
-    <div class="padding text-center">
-        <div>
-            Товары по запросу "{{ $request['string'] }}" не найдено
-        </div>
-        <button onclick="openDialog('productDialog')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
-    </div>
 @else
     <div class="padding text-center">
         <div>
-            Товары не найдены
+            Заявок постащикам не найдено, <a href="#" class="text-success" onclick="openDialog('providerorderDialog')">создайте</a> первую
         </div>
-        <button onclick="openDialog('productDialog')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
     </div>
 @endif

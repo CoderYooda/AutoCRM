@@ -7,7 +7,7 @@
             <tr>
                 <th style="width:20px;">№</th>
                 <th>Дата</th>
-                <th>Покупатель</th>
+                <th>Поставщик</th>
                 <th>Сумма</th>
                 <th>Скидка</th>
                 <th style="width:120px;">Итого</th>

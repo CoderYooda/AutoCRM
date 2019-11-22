@@ -107,7 +107,7 @@
                     <div class="col-sm-6">
                         <div class="row row-sm">
                             <div class="col-sm-12 form-group">
-                                <label for="category_id">Покупатель</label>
+                                <label for="category_id">Поставщик</label>
                                 <div class="input-group">
                                     <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
                                         @if(isset($provider_order) && $provider_order->partner()->first() != null)
@@ -147,7 +147,7 @@
                     </div>
                     <div class="col-sm-6 form-group">
                         <label for="comment">Комментарий</label>
-                        <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
+                        <textarea style="resize: none;" class="form-control" name="comment" id="providerorder_dialog_focused" cols="30" rows="5">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                     </div>
                 </div>
                 <div class="form-group">

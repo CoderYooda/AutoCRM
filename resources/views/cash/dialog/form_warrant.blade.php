@@ -188,9 +188,9 @@
             </div>
             <div class="form-group">
                 <label>Сумма</label>
-                <input type="number" step="0.1" name="summ"
+                <input id="warrant_dialog_focused" type="number" step="0.1" name="summ"
                        @if(isset($warrant)) value="{{ $warrant->summ }}" @elseif (isset($data->summ)) value="{{ $data->summ }}" @endif
-                       class="form-control warrant_dialog_focused" placeholder="Сумма">
+                       class="form-control" placeholder="Сумма">
             </div>
             <div class="form-group">
                 <label>Основание</label>

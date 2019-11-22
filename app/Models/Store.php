@@ -53,6 +53,8 @@ class Store extends Model
 
         $total = $current + $count;
 
+        $this->articles()->syncWithoutDetaching($article_id, false);
+
         $this->articles()->updateExistingPivot($article_id, ['count' => $total]);
 
         return $total;

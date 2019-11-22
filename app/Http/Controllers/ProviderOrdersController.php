@@ -178,6 +178,8 @@ class ProviderOrdersController extends Controller
             }
         }
 
+//        $request['partner_id'] = Auth::user()->partner()->first()->id;
+
         if($request['inpercents']){
             if((int)$request['discount'] >= 100){
                 $request['discount'] = 100;
@@ -186,12 +188,19 @@ class ProviderOrdersController extends Controller
                 $request['discount'] = 0;
             }
         }
-
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
         $request['do_date'] = Carbon::now();
 
         if($provider_order->exists){
+            $store = Store::owned()->where('id', $request['store_id'])->first();
+
+            if($store->id !== $provider_order->store()->first()->id){
+                foreach($provider_order->entrances()->get() as $entrance){
+                    $entrance->migrateInStore($provider_order->store()->first(), $store);
+                }
+            }
+
             $this->message = 'Заказ поставщику обновлен';
         } else {
             $provider_order->company_id = Auth::user()->company()->first()->id;
@@ -202,6 +211,10 @@ class ProviderOrdersController extends Controller
         $provider_order->balance = 0;
         $provider_order->itogo = 0;
         $provider_order->save();
+
+        foreach($provider_order->entrances()->get() as $entrance){
+            $entrance->increaseInStore($provider_order->store()->first());
+        }
 
         //$store = Store::where('id', $request['store_id'])->first();
 
