@@ -66,6 +66,13 @@ class Shipment extends Model
         return $articles;
     }
 
+    public function getWarrantPositive()
+    {
+        $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
+        $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
+        return $plus - $minus;
+    }
+
     public function elements()
     {
         return $this->articles->merge($this->stores);

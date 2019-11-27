@@ -51,9 +51,6 @@ class EntranceController extends Controller
 
         $validation = Validator::make($request->all(), self::validateRules());
 
-
-
-
         #Подготовка Request`a
 //            if($request['nds'] === null){$request['nds'] = false;}
 //            if($request['nds_included'] === null){$request['nds_included'] = false;}
@@ -76,7 +73,7 @@ class EntranceController extends Controller
             $form_count = (int)$product['count'];
 
             if($entrance_count + $form_count > $providers_count){
-                $messages['products[' . $id . '][count]'][] = 'Ошибка';
+                $messages['products[' . $id . '][count]'][] = 'Кол-во не может быть больше чем в заявке';
             }
         }
 
@@ -92,13 +89,19 @@ class EntranceController extends Controller
 
             //$old_store_id = $entrance->store_id;
             $entranceWasExisted = true;
+            $request['partner_id'] = $entrance->partner()->first()->id;
+        } else {
+            $entranceWasExisted = false;
+            $request['partner_id'] = Auth::user()->partner()->first()->id;
         }
-
         # Предварительно сохраняем поступление
             $entrance->fill($request->only($entrance->fields));
             //$entrance->totalPrice = 0;
             $entrance->company_id = Auth::user()->company()->first()->id;
+            $entrance->partner_id = Auth::user()->partner()->first()->id;
             $entrance->save();
+
+
 
         # Склад с которым оперируем
             if(isset($entranceWasExisted) && $entranceWasExisted) {

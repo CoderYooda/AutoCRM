@@ -14,19 +14,19 @@
         <div class="titlebar">Новое поступление товара</div>
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-        <div class="modal-header dark" style="justify-content: normal;">
-            <div class="b-r pr-3 mr-3">
-                <span class="item-title _500">Поступление</span>
-                <div class="item-except text-sm h-1x font-weight-bolder">
-                    @if(isset($entrance) && $entrance->id != NULL)
-                        №{{ $entrance->id }}
-                    @else
-                        Новое
-                    @endif
-                </div>
-                <div class="item-tag tag hide">
-                </div>
-            </div>
+        {{--<div class="modal-header dark" style="justify-content: normal;">--}}
+            {{--<div class="b-r pr-3 mr-3">--}}
+                {{--<span class="item-title _500">Поступление</span>--}}
+                {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}
+                    {{--@if(isset($entrance) && $entrance->id != NULL)--}}
+                        {{--№{{ $entrance->id }}--}}
+                    {{--@else--}}
+                        {{--Новое--}}
+                    {{--@endif--}}
+                {{--</div>--}}
+                {{--<div class="item-tag tag hide">--}}
+                {{--</div>--}}
+            {{--</div>--}}
             {{--<div class="b-r pr-3 mr-3">--}}
                 {{--<span class="item-title _500">Всего на сумму</span>--}}
                 {{--<div class="item-except font-weight-bolder h-1x">--}}
@@ -56,7 +56,7 @@
                     {{--<button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>--}}
                 {{--</div>--}}
             {{--@endif--}}
-        </div>
+        {{--</div>--}}
     <form class="WarrantStoredListner" action="{{ route('StoreEntrance') }}" method="POST">
         @csrf
         @if(isset($entrance) && $entrance->id != NULL)
@@ -71,102 +71,70 @@
 
         <div class="no-gutters align-items-stretch">
         <div class="padding">
-            <div class="row row-sm">
+            <div class="row mb-3">
                 <div class="col-sm-6">
-                    <div class="row row-sm">
-
-
-                        <div class="col-sm-12 form-group">
-                            <label for="category_id">Заявка поставщику</label>
-                            <div class="input-group">
-                                <select name="providerorder_id" disabled class="providerorder_select form-control input-c noarrow fake-disabled" readonly>
-                                    @if(isset($entrance) && $entrance->providerorder()->first() != null)
-                                        <option value="{{ $entrance->providerorder()->first()->id }}">{{ $entrance->providerorder()->first()->outputName() }}</option>
-                                    @else
-                                        <option>Не выбрано</option>
-                                    @endif
-                                </select>
-                                <div class="input-group-append">
-                                    <button onclick="{{ $class }}.openSelectProviderOrderModal()"
-                                            class="btn white" type="button"><i class="fa fa-bars"></i>
+                    <div class="row">
+                        <div class="col-sm-12 form-group mb-0">
+                            <div class="form-group row">
+                                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заявка поставщику</label>
+                                <div class="col-sm-9">
+                                    <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select">
+                                        @if(isset($entrance) && $entrance->providerorder()->first() != null)
+                                            {{ $entrance->providerorder()->first()->outputName() }}
+                                        @else
+                                            Не выбрано
+                                        @endif
                                     </button>
+
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+
+                                <label class="col-sm-3 no-pr col-form-label">Коментарий к поступлению</label>
+                                <div class="col-sm-9">
+                                    <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12 form-group">
-
-                            <input name="nds" type="hidden" value="1"
-                                   @if(isset($entrance) && $entrance->providerorder()->first()->nds) checked
-                                   @elseif(isset($entrance) && !$entrance->providerorder()->first()->nds)
-                                   @else checked @endif
-                                   >
-
-                            <input name="nds_included" type="hidden" value="1"
-                                   @if(isset($entrance) && $entrance->providerorder()->first()->nds_included) checked
-                                   @elseif(isset($entrance) && !$entrance->providerorder()->first()->nds_included)
-                                   @else checked @endif
-                            >
-
-                            @if(isset($entrance) && $entrance->providerorder()->first() != null)
-
-                            @endif
-
-                            {{--<div class="pull-right checkbox">--}}
-                                {{--<b class="pr-2">НДС:</b>--}}
-                                {{--<label class="ui-check mb-0 pr-2">--}}
-                                    {{--<input name="nds" type="checkbox" value="1"--}}
-                                           {{--@if(isset($entrance) && $entrance->nds) checked--}}
-                                           {{--@elseif(isset($entrance) && !$entrance->nds)--}}
-                                           {{--@else checked @endif--}}
-                                           {{--onclick="{{ $class }}.setNDS();">--}}
-                                    {{--<i class="dark-white"></i>--}}
-                                    {{--- есть--}}
-                                {{--</label>--}}
-                                {{--<label class="ui-check mb-0">--}}
-                                    {{--<input name="nds_included" type="checkbox" value="1"--}}
-                                           {{--@if(isset($entrance) && $entrance->nds_included) checked--}}
-                                           {{--@elseif(isset($entrance) && !$entrance->nds_included)--}}
-                                           {{--@else checked @endif--}}
-                                           {{--onclick="{{ $class }}.setNDS();">--}}
-                                    {{--<i class="dark-white"></i>--}}
-                                    {{--- включена в стоимость--}}
-                                {{--</label>--}}
-                            {{--</div>--}}
-                        </div>
-
-
-                        {{--<div class="col-sm-12 form-group">--}}
-                            {{--<label for="category_id">Поставщик</label>--}}
-                            {{--<div class="input-group">--}}
-                                {{--<select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>--}}
-                                    {{--@if(isset($entrance) && $entrance->partner()->first() != null)--}}
-                                        {{--<option value="{{ $entrance->partner()->first()->id }}">{{ $entrance->partner()->first()->outputName() }}</option>--}}
-                                    {{--@else--}}
-                                        {{--<option>Не выбрано</option>--}}
-                                    {{--@endif--}}
-                                {{--</select>--}}
-                                {{--<div class="input-group-append">--}}
-                                    {{--<button onclick="{{ $class }}.openSelectPartnermodal()"--}}
-                                            {{--class="btn white" type="button"><i class="fa fa-bars"></i>--}}
-                                    {{--</button>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-
-
-                        {{--<div class="col-sm-12 form-group">--}}
-                            {{--<label>Склад</label>--}}
-                            {{--<select name="store_id" class="form-control input-c">--}}
-                                {{--@foreach($stores as $store)--}}
-                                    {{--<option value="{{ $store->id }}" @if(isset($entrance) && $entrance->providerorder()->first()->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>--}}
-                                {{--@endforeach--}}
-                            {{--</select>--}}
-                        {{--</div>--}}
                     </div>
                 </div>
-                <div class="col-sm-6 form-group">
-                    <label for="comment">Комментарий</label>
-                    <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
+                <div class="col-sm-6 form-group mb-0">
+                    @if(isset($entrance))
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <span class="nav-link d-flex flex-row text-muted">
+                                <span class="flex">Дата поступления</span>
+                                <span class="text-sm">
+				                		{{ $entrance->normalizedData() }}
+				                	</span>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link d-flex flex-row text-muted">
+                                <span class="flex">Поставщик</span>
+                                <span class="text-sm">
+				                		{{ $entrance->providerorder()->first()->partner()->first()->outputName() }}
+				                	</span>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link d-flex flex-row text-muted">
+                                <span class="flex">Общая сумма</span>
+                                <span class="text-sm">
+				                		{{ $entrance->providerorder()->first()->getWarrantPositive() }} р.
+				                	</span>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link d-flex flex-row text-muted">
+                                <span class="flex">Принимающий</span>
+                                <span class="text-sm">
+				                		{{ $entrance->partner()->first()->outputName() }}
+				                	</span>
+                            </span>
+                        </li>
+                    </ul>
+                    @endif
                 </div>
             </div>
             <div class="form-group">

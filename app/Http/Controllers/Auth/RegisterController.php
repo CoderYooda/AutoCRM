@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\Partner;
+use App\Models\Store;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -102,12 +103,20 @@ class RegisterController extends Controller
         $user->company()->associate($company);
         $user->save();
 
+        $store = new Store();
+        $store->company_id = $company->id;
+        $store->type = 'casual';
+        $store->locked = 0;
+        $store->name = 'Первый магазин';
+        $store->save();
+
         $partner = new Partner();
         $partner->isfl = true;
         $partner->user_id = $user->id;
         $partner->category_id = 3;
         $partner->fio = $data['fio'];
         $partner->company_id = $company->id;
+        $partner->store_id = $store->id;
         $partner->save();
 
 

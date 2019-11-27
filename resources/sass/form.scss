@@ -1,0 +1,33 @@
+.button_select{
+  position: relative;
+  padding-right: calc(1.6em + 0.75rem);
+}
+
+.button_select::after {
+  font-family: "FontAwesome";
+  font-weight: 400;
+  content: "\f0c9";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: calc(1.6em + 0.75rem + 0px);
+  width: calc(1.6em + 0.75rem + 0px);
+  text-align: center;
+  line-height: calc(1.6em + 0.75rem + 0px);
+}
+
+.form-control.is-invalid {
+  border-color: #e3342f;
+  padding-right: calc(1.6em + 0.75rem);
+  background-image: none!important;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}

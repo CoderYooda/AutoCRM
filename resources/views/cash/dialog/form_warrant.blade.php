@@ -6,7 +6,7 @@
         @php $class = 'warrantDialog' @endphp
         id="warrantDialog"
     @endif
-    class="dialog warrant_dialog" style="width:400px;">
+    class="dialog warrant_dialog" style="width:500px;">
     @if(isset($warrant) && $warrant->id != NULL)
         @if($warrant->isIncoming)
             <div class="titlebar">Приходный ордер №{{ $warrant->id }}</div>
@@ -103,116 +103,82 @@
             </div>
         <div class="padding">
             <div class="form-group row">
-                <label for="partner_id" class="col-sm-3 col-form-label">Контрагент</label>
+                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контрагент</label>
                 <div class="col-sm-9">
-                    <select onclick="{{ $class }}.openSelectPartnerModal()" name="partner_id" id="partner_id" class="partner_select form-control form-control-sm input-c noarrow fake-disabled" readonly>
+                    <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="form-control text-left button_select">
                         @if(isset($warrant) && $warrant->partner()->first() != null)
-                            <option value="{{ $warrant->partner()->first()->id }}">{{ $warrant->partner()->first()->outputName() }}</option>
+                            {{ $warrant->partner()->first()->outputName() }}
                         @else
                             @if(isset($data->partner_selected) && $data->partner_selected !== null)
-                                <option value="{{ $data->partner_selected->id }}">{{ $data->partner_selected->outputName() }}</option>
+                                {{ $data->partner_selected->outputName() }}
                             @else
-                                <option>Не выбрано</option>
+                                Не выбрано
                             @endif
                         @endif
-                    </select>
+                    </button>
+
                 </div>
             </div>
-            <div class="form-group">
-                <label for="category_id">Контрагент</label>
-                <div class="input-group">
-                    <select name="partner_id" disabled id="partner_id" class="partner_select form-control input-c noarrow fake-disabled" readonly>
 
-                        @if(isset($warrant) && $warrant->partner()->first() != null)
-                            <option value="{{ $warrant->partner()->first()->id }}">{{ $warrant->partner()->first()->outputName() }}</option>
-                        @else
-                            @if(isset($data->partner_selected) && $data->partner_selected !== null)
-                                <option value="{{ $data->partner_selected->id }}">{{ $data->partner_selected->outputName() }}</option>
-                            @else
-                                <option>Не выбрано</option>
-                            @endif
-                        @endif
-
-
-                    </select>
-                    <div class="input-group-append">
-                        <button type="button" onclick="{{ $class }}.openSelectPartnerModal()"
-                                class="btn white" type="button"><i class="fa fa-bars"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="category_id">Касса</label>
-                <div class="input-group">
-                    <select name="cashbox_id" disabled class="cashbox_select form-control input-c noarrow fake-disabled" readonly>
+            <div class="form-group row">
+                <label for="partner_id" class="col-sm-3 col-form-label">Касса</label>
+                <div class="col-sm-9">
+                    <button onclick="{{ $class }}.openSelectCashboxModal()" type="button" name="cashbox_id" class="form-control text-left button_select">
                         @if(isset($warrant) && $warrant->cashbox()->first() != null)
-                            <option value="{{ $warrant->cashbox()->first()->id }}">{{ $warrant->cashbox()->first()->name }}</option>
+                            {{ $warrant->cashbox()->first()->name }}
                         @else
-                            @if(isset($data) && $data->cashbox !== null)
-                                <option value="{{ $data->cashbox->id }}">{{ $data->cashbox->name }}</option>
+                            @if(isset($data->cashbox) && $data->cashbox !== null)
+                                {{ $data->cashbox->name }}
                             @else
-                                <option>Не выбрано</option>
+                                Не выбрано
                             @endif
                         @endif
-
-
-                    </select>
-                    <div class="input-group-append">
-                        <button onclick="{{ $class }}.openSelectCashboxModal()"
-                                class="btn white" type="button"><i class="fa fa-bars"></i>
-                        </button>
-                    </div>
+                    </button>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="category_id">Статья</label>
-                <div class="input-group">
-                    <select name="ddsarticle_id" disabled class="cashbox_select form-control input-c noarrow fake-disabled" readonly>
+
+            <div class="form-group row">
+                <label for="partner_id" class="col-sm-3 col-form-label">Статья</label>
+                <div class="col-sm-9">
+                    <button onclick="{{ $class }}.openSelectDdsarticleModal()" type="button" name="ddsarticle_id" class="form-control text-left button_select">
                         @if(isset($warrant) && $warrant->ddsarticle()->first() != null)
-                            <option value="{{ $warrant->ddsarticle()->first()->id }}">{{ $warrant->ddsarticle()->first()->name }}</option>
+                            {{ $warrant->ddsarticle()->first()->name }}
                         @else
                             @if(isset($data->dds_article) && $data->dds_article !== null)
-                                <option value="{{ $data->dds_article->id }}">{{$data->dds_article->name }}</option>
+                                {{ $data->dds_article->name }}
                             @else
-                                <option>Не выбрано</option>
+                                Не выбрано
                             @endif
                         @endif
-                    </select>
-                    <div class="input-group-append">
-                        <button onclick="{{ $class }}.openSelectDdsarticleModal()"
-                                class="btn white" type="button"><i class="fa fa-bars"></i>
-                        </button>
-                    </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" >Сумма</label>
+                <div class="col-sm-9">
+                    <input id="warrant_dialog_focused" type="number" name="summ"
+                           @if(isset($warrant)) value="{{ $warrant->summ }}" @elseif (isset($data->summ)) value="{{ $data->summ }}" @else value="0" @endif
+                           class="form-control" placeholder="Сумма">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" >Основание</label>
+                <div class="col-sm-9">
+                    <input type="text" name="reason"
+                           @if(isset($warrant)) value="{{ $warrant->reason }}" @elseif(isset($data->reason) && $data->reason !== null)  value="{{ $data->reason }}" @endif
+                           class="form-control" placeholder="Основание">
                 </div>
             </div>
             <div class="form-group">
-                <label>Сумма</label>
-                <input id="warrant_dialog_focused" type="number" step="0.1" name="summ"
-                       @if(isset($warrant)) value="{{ $warrant->summ }}" @elseif (isset($data->summ)) value="{{ $data->summ }}" @endif
-                       class="form-control" placeholder="Сумма">
-            </div>
-            <div class="form-group">
-                <label>Основание</label>
-                <input type="text" name="reason"
-                       @if(isset($warrant)) value="{{ $warrant->reason }}" @elseif(isset($data->reason) && $data->reason !== null)  value="{{ $data->reason }}" @endif
-                       class="form-control" placeholder="Основание">
-            </div>
-            <div class="form-group">
-                <label for="comment">Комментарий</label>
-                <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
+                <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
             </div>
         </div>
-{{--                <div class="form-group">--}}
-{{--                    <label>Артикул</label>--}}
-{{--                    <input type="text" name="article"--}}
-{{--                           @if(isset($product))value="{{ $product->article }}"@endif--}}
-{{--                           @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif--}}
-{{--                           class="form-control" placeholder="Артикул детали (не более 64 символов)">--}}
-{{--                </div>--}}
-
         </div>
         <div class="modal-footer">
+            @if(isset($warrant))
+            <button type="button" class="btn white" onclick="window.helper.printDocument('warrant', {{ $warrant->id }})" >Печать</button>
+            @endif
             <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button type="submit" class="btn success" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
         </div>

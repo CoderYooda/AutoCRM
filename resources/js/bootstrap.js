@@ -53,10 +53,14 @@ axios.interceptors.request.use(function (config) {
 // }, 50);
 
 window.axios.interceptors.response.use(function (response) {
+    console.log(response);
     document.body.classList.remove('loading');
     window.isXHRloading = false;
     return response;
 }, function (error) {
+    if (error.response.status === 401) {
+        window.location.href = "/login";
+    }
     document.body.classList.remove('loading');
     window.isXHRloading = false;
     return Promise.reject(error);

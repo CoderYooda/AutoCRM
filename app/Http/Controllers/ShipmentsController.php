@@ -97,6 +97,8 @@ class ShipmentsController extends Controller
         if($shipment->exists){
             $shipmentWasExisted = true;
             $this->message = 'Продажа обновлена';
+            #Отнимаем с баланса контрагента
+            $shipment->partner()->first()->addition($shipment->itogo);
         } else {
             $shipmentWasExisted = false;
             $shipment->company_id = Auth::user()->company()->first()->id;
@@ -168,6 +170,9 @@ class ShipmentsController extends Controller
             $shipment->discount = $request['discount'];
             $shipment->itogo = $shipment->summ - $request['discount'];
         }
+
+        #Добавляем к балансу контрагента
+        $shipment->partner()->first()->subtraction($shipment->itogo);
 
         $shipment->save();
 

@@ -28,6 +28,7 @@ class CreateProviderOrdersTable extends Migration
             $table->char('comment')->nullable()->comment('Комментарий');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

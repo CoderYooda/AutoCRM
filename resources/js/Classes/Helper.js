@@ -172,6 +172,28 @@ class Helper{
             elements[0].classList.remove(className);
         }
     }
+
+    printDocument(data){
+        axios({
+            method: form.getAttribute("method"),
+            url: form.getAttribute("action"),
+            data: data
+        }).then(function (response) {
+
+        }).catch(function (error) {
+
+        });
+
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+    }
+
     insertParam(elem, key, value)
     {
         key = encodeURI(key); value = encodeURI(value);

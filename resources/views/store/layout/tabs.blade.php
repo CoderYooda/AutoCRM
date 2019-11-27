@@ -42,7 +42,7 @@
                             </li>
                             <li id="provider_orders-tab" data-tab="provider_orders" class="@if($request['active_tab'] == 'provider_orders') active @endif tab">
                                 <a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
-                                    <span class="nav-text">Заказы поставщикам</span>
+                                    <span class="nav-text">Заявки поставщикам</span>
                                 </a>
                             </li>
                             <li id="adjustment-tab" data-tab="adjustment" class="@if($request['active_tab'] == 'adjustment') active @endif tab">

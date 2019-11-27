@@ -173,6 +173,42 @@ class clientorderDialog{
         openDialog('warrantDialog', '&isIncoming=1'+params);
     }
 
+    getBackPayment(){
+        let warrant_type = 'sale_of_goods';
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+        let refer = 'client_order';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
+        partner = parseInt(partner);
+        var params = '';
+
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
+        if(warrant_type != null){
+            params += '&warrant_type='+warrant_type;
+        }
+        if(itogo != null){
+            params += '&itogo='+itogo;
+        }
+        if(id != null){
+            let reason = 'Возврат средств по заказу №' + id;
+            params += '&reason='+reason;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+Math.abs(ostatok);
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
+        }
+        openDialog('warrantDialog', '&isIncoming=0'+params);
+    }
+
     loadItemsIfExists(){
         window.entity.loadItemsToList(this, 'clientorder');
     }

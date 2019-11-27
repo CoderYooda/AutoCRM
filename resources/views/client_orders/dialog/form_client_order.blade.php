@@ -86,9 +86,9 @@
         @if(isset($client_order))
         <div class="b-r pr-3 mr-3">
             <span class="item-title _500">Оплачено</span>
-            <div class="item-except @if($client_order->warrants()->sum('summ') >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
+            <div class="item-except @if($client_order->getWarrantPositive() >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
                     <span id="payed_price">
-        {{ sprintf("%.2f", $client_order->warrants()->sum('summ')) }} р / {{ $client_order->itogo }} р
+        {{ sprintf("%.2f", $client_order->getWarrantPositive()) }} р / {{ $client_order->itogo }} р
                     </span>
             </div>
             <div class="item-tag tag hide">
@@ -106,9 +106,14 @@
                 </div>
             </div>
         @endif
-        @if(isset($client_order) && ($client_order->warrants()->sum('summ') < $client_order->itogo) )
+        @if(isset($client_order) && ($client_order->getWarrantPositive() < $client_order->itogo) )
             <div class="b-r pr-3 mr-3">
                 <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Принять оплату</button>
+            </div>
+        @endif
+        @if(isset($client_order) && ($client_order->getWarrantPositive() > $client_order->itogo) )
+            <div class="b-r pr-3 mr-3">
+                <button onclick="{{ $class }}.getBackPayment()" class="btn btn-fw success">Вернуть средства</button>
             </div>
         @endif
     </div>
@@ -118,7 +123,7 @@
             <input type="hidden" name="id" value="{{ $client_order->id }}">
             <input type="hidden" name="summ" value="{{ $client_order->summ }}">
             <input type="hidden" name="itogo" value="{{ $client_order->itogo }}">
-            <input type="hidden" name="ostatok" value="{{ $client_order->itogo - $client_order->warrants()->sum('summ') }}">
+            <input type="hidden" name="ostatok" value="{{ $client_order->itogo - $client_order->getWarrantPositive() }}">
         @else
             <input type="hidden" name="id" value="">
         @endif

@@ -72,9 +72,9 @@
         @if(isset($shipment))
             <div class="b-r pr-3 mr-3">
                 <span class="item-title _500">Оплачено</span>
-                <div class="item-except @if($shipment->warrants()->sum('summ') >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
+                <div class="item-except @if($shipment->getWarrantPositive() >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
                     <span id="payed_price">
-        {{ sprintf("%.2f", $shipment->warrants()->sum('summ')) }} р / {{ $shipment->itogo }} р
+        {{ sprintf("%.2f", $shipment->getWarrantPositive()) }} р / {{ $shipment->itogo }} р
                     </span>
                 </div>
                 <div class="item-tag tag hide">
@@ -82,9 +82,14 @@
             </div>
         @endif
 
-        @if(isset($shipment) && ($shipment->warrants()->sum('summ') < $shipment->itogo))
+        @if(isset($shipment) && ($shipment->getWarrantPositive() < $shipment->itogo))
             <div class="b-r pr-3 mr-3">
                 <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Принять оплату</button>
+            </div>
+        @endif
+        @if(isset($shipment) && ($shipment->getWarrantPositive() > $shipment->itogo) )
+            <div class="b-r pr-3 mr-3">
+                <button onclick="{{ $class }}.getBackPayment()" class="btn btn-fw success">Вернуть средства</button>
             </div>
         @endif
     </div>
@@ -94,7 +99,7 @@
             <input type="hidden" name="id" value="{{ $shipment->id }}">
             <input type="hidden" name="summ" value="{{ $shipment->summ }}">
             <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
-            <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->warrants()->sum('summ') }}">
+            <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->getWarrantPositive() }}">
         @else
             <input type="hidden" name="id" value="">
         @endif
@@ -105,41 +110,33 @@
             <div class="padding">
                 <div class="row row-sm">
                     <div class="col-sm-6">
-                        <div class="row row-sm">
-                            <div class="col-sm-12 form-group">
-                                <label for="category_id">Покупатель</label>
-                                <div class="input-group">
-                                    <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
-                                        @if(isset($shipment) && $shipment->partner()->first() != null)
-                                            <option value="{{ $shipment->partner()->first()->id }}">{{ $shipment->partner()->first()->outputName() }}</option>
-                                        @else
-                                            <option>Не выбрано</option>
-                                        @endif
-                                    </select>
-                                    <div class="input-group-append">
-                                        <button onclick="{{ $class }}.openSelectPartnermodal()"
-                                                class="btn white" type="button"><i class="fa fa-bars"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="form-group row">
+                            <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
+                            <div class="col-sm-9">
+                                <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                                    @if(isset($shipment) && $shipment->partner()->first() != null)
+                                        {{ $shipment->partner()->first()->outputName() }}
+                                    @else
+                                        <option>Не выбрано</option>
+                                    @endif
+                                </button>
                             </div>
-                            <div class="col-sm-12 form-group">
-                                <label for="discount">Скидка</label>
-                                <div class="input-group">
-                                    <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment) value="{{ $shipment->discount }}" @else value="0" @endif>
-                                    <span class="input-group-append">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3" for="discount">Скидка</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment) value="{{ $shipment->discount }}" @else value="0" @endif>
+                                <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>
                                             <input id="inpercents" name="inpercents" type="checkbox" @if($shipment && $shipment->inpercents) checked @endif>
                                         </div>
                                     </span>
-                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6 form-group">
-                        <label for="comment">Комментарий</label>
-                        <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($shipment)){{ $shipment->comment }}@endif</textarea>
+                        <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="comment" cols="30" rows="4">@if(isset($shipment)){{ $shipment->comment }}@endif</textarea>
                     </div>
                 </div>
                 <div class="form-group">

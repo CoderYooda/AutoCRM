@@ -69,6 +69,13 @@ class ClientOrder extends Model
         return $count;
     }
 
+    public function getWarrantPositive()
+    {
+        $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
+        $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
+        return $plus - $minus;
+    }
+
     public function warrants()
     {
         return $this->belongsToMany('App\Models\Warrant', 'client_orders_warrant',  'client_order_id', 'warrant_id' );

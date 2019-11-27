@@ -6,6 +6,8 @@
 
 @import 'icons';
 
+@import 'form';
+
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
@@ -24,6 +26,8 @@
 @import '~flatpickr/dist/themes/material_blue.css';
 
 @import '~simplebar/dist/simplebar.min.css';
+
+@import '~tippy.js/dist/tippy.css';
 
 
 @import '~@fullcalendar/core/main.css';
@@ -225,12 +229,12 @@ td > .nv-helper{
 }
 td > .is-invalid{
     padding: 0.25rem 0.5rem!important;
-    border-width: 2px!important;
+    border-width: 1px!important;
     background-image: none!important;
 }
 button.is-invalid{
     border-color: #e3342f!important;
-    border-width: 2px;
+    border-width: 1px;
 }
 label{
     font-weight: 500;

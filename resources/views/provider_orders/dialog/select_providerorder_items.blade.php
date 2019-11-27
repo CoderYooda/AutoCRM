@@ -3,6 +3,7 @@
     <input type="hidden" name="providerorder_id" value="{{ $providerorder->id }}">
     <div data-simplebar style="max-height: 400px;">
         @foreach($providerorder->articles()->get() as $article)
+            {{ $providerorder->getArticleEntredCount($article->id) }}
             @php $count = $article->pivot->count - $providerorder->getArticleEntredCount($article->id) @endphp
             <div class="providerorder_article_elem list-item inblocked mini-list-element pointer" data-id="{{  $article->id }}">
                 <div class="inblock">
@@ -10,7 +11,7 @@
                     {{--<i class="fa fa-cog" style="font-size: 16px;"></i>--}}
                     <div class="w-200 list-body b-r pr-2 compressed" style="max-height: 38px;overflow: hidden;flex: 2;">
                         <label class="md-check h-20 pr-2">
-                            <input class="checked_field" id="article_provider_order_{{ $article->id }}" name="products[{{  $article->id }}][iclude]" type="checkbox" @if(!$count) @else checked @endif>
+                            <input class="checked_field" id="article_provider_order_{{ $article->id }}" name="products[{{  $article->id }}][iclude]" type="checkbox" @if($count <= 0) @else checked @endif>
                             <i class="success"></i>
                         </label>
                         <span class="item-title _500" >

@@ -144,7 +144,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
-
+    #Документы
+    Route::get('/document', 'DocumentsController@document')->name('Document');
 
     #Отчеты
     Route::get('/report', 'SmsController@index')->name('ReportIndex');// Строгое название

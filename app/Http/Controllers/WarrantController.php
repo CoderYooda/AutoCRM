@@ -146,8 +146,19 @@ class WarrantController extends Controller
     public function delete($id)
     {
         $warrant = Warrant::owned()->where('id', $id)->first();
-        $cashbox = Cashbox::owned()->where('id', $warrant->cashbox_id)->first();
-        $cashbox->subtraction($warrant->summ);
+
+        $cashbox = $warrant->cashbox()->first();
+        $partner = $warrant->partner()->first();
+
+        if($warrant->isIncoming){
+            $cashbox->subtraction($warrant->summ);
+            $partner->subtraction($warrant->summ);
+        } else{
+            $cashbox->addition($warrant->summ);
+            $partner->addition($warrant->summ);
+        }
+
+
         $warrant->delete();
         $this->status = 200;
         $type = 'success';

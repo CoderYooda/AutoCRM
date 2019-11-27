@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Partner;
 use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -115,6 +116,9 @@ class ProviderOrdersController extends Controller
     {
         $provider_order = ProviderOrder::where('id', $id)->first();
 
+        #Отнимаем с баланса контрагента
+        $provider_order->partner()->first()->subtraction($provider_order->itogo);
+
         $provider_order->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';
@@ -178,7 +182,7 @@ class ProviderOrdersController extends Controller
             }
         }
 
-//        $request['partner_id'] = Auth::user()->partner()->first()->id;
+        $partner = Partner::owned()->where('id', $request['partner_id'])->first();
 
         if($request['inpercents']){
             if((int)$request['discount'] >= 100){
@@ -201,10 +205,18 @@ class ProviderOrdersController extends Controller
                 }
             }
 
+            #Отнимаем с баланса контрагента
+            $provider_order->partner()->first()->subtraction($provider_order->itogo);
+
+
             $this->message = 'Заказ поставщику обновлен';
+
+            $wasExisted = true;
         } else {
+
             $provider_order->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Заказ поставщику сохранен';
+            $wasExisted = false;
         }
         $provider_order->fill($request->only($provider_order->fields));
         $provider_order->summ = 0;
@@ -212,9 +224,9 @@ class ProviderOrdersController extends Controller
         $provider_order->itogo = 0;
         $provider_order->save();
 
-        foreach($provider_order->entrances()->get() as $entrance){
-            $entrance->increaseInStore($provider_order->store()->first());
-        }
+//        foreach($provider_order->entrances()->get() as $entrance){
+//            $entrance->increaseInStore($provider_order->store()->first());
+//        }
 
         //$store = Store::where('id', $request['store_id'])->first();
 
@@ -270,6 +282,9 @@ class ProviderOrdersController extends Controller
             $provider_order->discount = $request['discount'];
             $provider_order->itogo = $provider_order->summ - $request['discount'];
         }
+
+        #Добавляем к балансу контрагента
+        $provider_order->partner()->first()->addition($provider_order->itogo);
 
         $provider_order->summ = $provider_order->articles()->sum('total');
         $provider_order->save();

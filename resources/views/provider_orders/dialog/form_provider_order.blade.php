@@ -37,6 +37,16 @@
                 <div class="item-tag tag hide">
                 </div>
             </div>
+            <div class="b-r pr-3 mr-3">
+                <span class="item-title _500">Итого</span>
+                <div class="item-except font-weight-bolder h-1x">
+                    <span id="total_price">
+                        @if(isset($provider_order)){{ $provider_order->itogo }} @else 0.0 @endif
+                    </span> р
+                </div>
+                <div class="item-tag tag hide">
+                </div>
+            </div>
             {{--<div class="b-r pr-3 mr-3">--}}
                 {{--<span class="item-title _500">Итого</span>--}}
                 {{--<div class="item-except font-weight-bolder h-1x">--}}
@@ -52,10 +62,10 @@
             @if(isset($provider_order))
             <div class="b-r pr-3 mr-3">
                 <span class="item-title _500">Оплачено</span>
-                <div class="item-except @if($provider_order->getWarrantPositive() === $provider_order->summ) text-success
-                    @elseif($provider_order->getWarrantPositive() > $provider_order->summ) text-danger @endif font-weight-bolder h-1x">
+                <div class="item-except @if($provider_order->getWarrantPositive() === $provider_order->itogo) text-success
+                    @elseif($provider_order->getWarrantPositive() > $provider_order->itogo) text-danger @endif font-weight-bolder h-1x">
                     <span id="payed_price">
-                        {{ sprintf("%.2f", $provider_order->getWarrantPositive()) }} р / <span id="itogo_price">{{ $provider_order->summ }}</span> р
+                        {{ sprintf("%.2f", $provider_order->getWarrantPositive()) }} р / <span id="itogo_price">{{ $provider_order->itogo }}</span> р
                     </span>
                 </div>
                 <div class="item-tag tag hide">
@@ -77,12 +87,12 @@
             {{--<button class="btn btn-fw success">Принять оплату</button>--}}
             {{--</div>--}}
             {{--@endif--}}
-            @if(isset($provider_order) && ($provider_order->getWarrantPositive() < $provider_order->summ) )
+            @if(isset($provider_order) && ($provider_order->getWarrantPositive() < $provider_order->itogo) )
                 <div class="b-r pr-3 mr-3">
                     <button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>
                 </div>
             @endif
-            @if(isset($provider_order) && ($provider_order->getWarrantPositive() > $provider_order->summ) )
+            @if(isset($provider_order) && ($provider_order->getWarrantPositive() > $provider_order->itogo) )
                 <div class="b-r pr-3 mr-3">
                     <button onclick="{{ $class }}.getBackPayment()" class="btn btn-fw success">Вернуть средства</button>
                 </div>
@@ -93,8 +103,8 @@
         @if(isset($provider_order) && $provider_order->id != NULL)
             <input type="hidden" name="id" value="{{ $provider_order->id }}">
             <input type="hidden" name="summ" value="{{ $provider_order->summ }}">
-            <input type="hidden" name="itogo" value="{{ $provider_order->summ }}">
-            <input type="hidden" name="ostatok" value="{{ $provider_order->summ - $provider_order->getWarrantPositive() }}">
+            <input type="hidden" name="itogo" value="{{ $provider_order->itogo }}">
+            <input type="hidden" name="ostatok" value="{{ $provider_order->itogo - $provider_order->getWarrantPositive() }}">
         @else
             <input type="hidden" name="id" value="">
         @endif
@@ -106,48 +116,49 @@
                 <div class="row row-sm">
                     <div class="col-sm-6">
                         <div class="row row-sm">
-                            <div class="col-sm-12 form-group">
-                                <label for="category_id">Поставщик</label>
-                                <div class="input-group">
-                                    <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
-                                        @if(isset($provider_order) && $provider_order->partner()->first() != null)
-                                            <option value="{{ $provider_order->partner()->first()->id }}">{{ $provider_order->partner()->first()->outputName() }}</option>
-                                        @else
-                                            <option>Не выбрано</option>
-                                        @endif
-                                    </select>
-                                    <div class="input-group-append">
-                                        <button onclick="{{ $class }}.openSelectPartnermodal()"
-                                                class="btn white" type="button"><i class="fa fa-bars"></i>
+                            <div class="col-sm-12">
+                                <div class="form-group row">
+                                    <label for="partner_id" class="col-sm-3 no-pr col-form-label">Поставщик</label>
+                                    <div class="col-sm-9">
+                                        <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                                            @if(isset($provider_order) && $provider_order->partner()->first() != null)
+                                                {{ $provider_order->partner()->first()->outputName() }}
+                                            @else
+                                                <option>Не выбрано</option>
+                                            @endif
                                         </button>
+
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-12 form-group">
-                                <label for="discount">Скидка</label>
-                                <div class="input-group">
-                                    <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($provider_order) value="{{ $provider_order->discount }}" @else value="0" @endif>
-                                    <span class="input-group-append">
+
+                                <div class="form-group row">
+                                    <label class="col-sm-3" for="discount">Скидка</label>
+                                    <div class="col-sm-9 input-group">
+                                        <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($provider_order) value="{{ $provider_order->discount }}" @else value="0" @endif>
+                                        <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>
                                             <input id="inpercents" name="inpercents" type="checkbox" @if($provider_order && $provider_order->inpercents) checked @endif>
                                         </div>
                                     </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-12 form-group">
-                                <label>Склад</label>
-                                <select name="store_id" class="form-control input-c">
-                                @foreach($stores as $store)
-                                    <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
-                                @endforeach
-                                </select>
+                                <div class="form-group row">
+                                    <label class="col-sm-3">Склад</label>
+                                    <div class="col-sm-9">
+                                        <select name="store_id" class="form-control input-c">
+                                            @foreach($stores as $store)
+                                                <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6 form-group">
-                        <label for="comment">Комментарий</label>
-                        <textarea style="resize: none;" class="form-control" name="comment" id="providerorder_dialog_focused" cols="30" rows="5">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
+                        <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="providerorder_dialog_focused" cols="30" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                     </div>
                 </div>
                 <div class="form-group">

@@ -31,6 +31,16 @@
                             <label>Фамилия Имя Отчество</label>
                         </div>
 
+                        <div class="md-form-group float-label">
+                            <select id="country" class="md-input" name="country" onchange="window.register.changeCountry(this)" required>
+                                <option value="7">Россия</option>
+                                <option value="375">Беларусь</option>
+                                <option value="380">Украина</option>
+                                <option value="7">Казахстан</option>
+                            </select>
+                            <label>Страна</label>
+                        </div>
+
                         <div class="md-form-group float-label @error('phone') is-invalid @enderror">
                             <input id="phone_input" class="md-input" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('phone')

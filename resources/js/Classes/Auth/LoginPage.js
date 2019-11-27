@@ -12,23 +12,24 @@ class registerPage{
         this.addPhoneMask()
     }
 
+    changeCountry(elem){
+        let object = this;
+
+        object.phoneMask.updateOptions({
+            mask: '+{' + elem.value + '}(000)000-00-00'
+        });
+        object.phoneMask.value = '';
+    }
+
     addPhoneMask(){
         var phone = document.querySelector('#phone_input');
         this.phoneMask = window.IMask(phone, {
-                mask: [
-                    {
-                        mask: '+{7} (000) 000-00-00',
-                        startsWith: '7',
-                        lazy: false,
-                        country: 'Россия'
-                    },
-                    {
-                        mask: '{8} (000) 000-00-00',
-                        startsWith: '8',
-                        lazy: false,
-                        country: 'Россия'
-                    }
-                ],
+
+                mask: '+{7}(000)000-00-00',
+                lazy: false,
+                placeholderChar: '_',
+
+
                 dispatch: function (appended, dynamicMasked) {
                     var number = (dynamicMasked.value + appended).replace(/\D/g,'');
 
@@ -36,6 +37,14 @@ class registerPage{
                         return number.indexOf(m.startsWith) === 0;
                     });
                 }
+
+                // dispatch: function (appended, dynamicMasked) {
+                //     var number = (dynamicMasked.value + appended).replace(/\D/g,'');
+                //
+                //     return dynamicMasked.compiledMasks.find(function (m) {
+                //         return number.indexOf(m.startsWith) === 0;
+                //     });
+                // }
             }
         )
     }

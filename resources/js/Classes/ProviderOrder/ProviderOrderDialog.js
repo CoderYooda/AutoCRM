@@ -266,9 +266,9 @@ class providerOrderDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=partner_id]');
+            let select = object.root_dialog.querySelector('button[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            let str =  resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
             window.notification.notify( 'success', 'Контрагент выбран');

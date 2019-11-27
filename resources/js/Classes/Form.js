@@ -59,8 +59,19 @@ class AxForm{
             //rebuildLinks();
             object.setActionButtons(true, elem);
         }).catch(function (error) {
+
+            var elements = document.getElementsByClassName('is-invalid');
+            Array.prototype.forEach.call(elements, function(el) {
+                if(el._tippy){
+                    el._tippy.destroy();
+                }
+            });
+
             helper.removeElementsByClass('nv-helper');
             helper.removeClassesByClass('is-invalid');
+
+
+
 
             if(error.response && error.response.data.system_message){
                 dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
@@ -95,8 +106,12 @@ class AxForm{
 
                     if(el !== null && el.getAttribute('type') != 'hidden'){
                         el.classList.add('is-invalid');
-                        var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
-                        el.parentNode.appendChild(node);
+                        tippy(el, {
+                            content: error.response.data.messages[error_stack],
+                            placement: 'bottom'
+                        });
+                        // var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
+                        // el.parentNode.appendChild(node);
                     }
 
                 }

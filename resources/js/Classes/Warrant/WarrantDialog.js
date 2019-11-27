@@ -16,6 +16,7 @@ class warrantDialog{
         if(focused){
             focused.focus();
         }
+        //tippy('[data-tippy-content]');
     }
 
     save(elem){
@@ -40,23 +41,32 @@ class warrantDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=partner_id]');
+            let selector = object.root_dialog.querySelector('button[name=partner_id]');
+            //let select = object.root_dialog.querySelector('select[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
             let balance = object.root_dialog.querySelector('.partner_balance');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
-            console.log(resp.data.balance);
+            let partner_name = resp.data.name;
+
+            selector.classList.remove('is-invalid');
+            if(selector._tippy){
+                selector._tippy.destroy();
+            }
+
             input.value = resp.data.id;
             balance.innerHTML = resp.data.balance;
-            select.innerHTML = str;
+            //select.innerHTML = str;
+            selector.innerHTML = partner_name;
             window.notification.notify( 'success', 'Контрагент выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
             //closeDialog(event);
 
+
         }).catch(function (error) {
             console.log(error);
-        }).finally(function () {
+        }).then(function () {
             window.isXHRloading = false;
+
         });
     };
 
@@ -68,11 +78,17 @@ class warrantDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=cashbox_id]');
+            let select = object.root_dialog.querySelector('button[name=cashbox_id]');
             let input = object.root_dialog.querySelector('input[name=cashbox_id]');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
+
+            select.classList.remove('is-invalid');
+            if(select._tippy){
+                select._tippy.destroy();
+            }
+
             window.notification.notify( 'success', 'Кассовый аппарат выбран');
             document.dispatchEvent(new Event('CashboxSelected', {bubbles: true}));
             console.log("Событие CashboxSelected вызвано");
@@ -93,11 +109,17 @@ class warrantDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=ddsarticle_id]');
+            let select = object.root_dialog.querySelector('button[name=ddsarticle_id]');
             let input = object.root_dialog.querySelector('input[name=ddsarticle_id]');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
+
+            select.classList.remove('is-invalid');
+            if(select._tippy){
+                select._tippy.destroy();
+            }
+
             window.notification.notify( 'success', 'Статья выбрана');
             document.dispatchEvent(new Event('DdsarticleSelected', {bubbles: true}));
             console.log("Событие DdsarticleSelected вызвано");
@@ -111,6 +133,8 @@ class warrantDialog{
     };
 
     openSelectPartnerModal(){
+        window.event.preventDefault();
+        window.event.stopPropagation();
         window.openDialog('selectPartner', '&refer=' + this.root_dialog.id);
     }
 

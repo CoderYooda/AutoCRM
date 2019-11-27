@@ -11,6 +11,9 @@ window.flatpickr = require('flatpickr');
 window.chartjs = require('chart.js');
 window.simplebar = require('simplebar/dist/simplebar.min');
 
+
+import tippy from 'tippy.js';
+
 window.debug = true;
 
 import Sortable from 'sortablejs';
@@ -31,8 +34,6 @@ import Auth from './Classes/Auth.js';
 
 
 
-
-
 import IMask from 'imask';
 
 window.helper = new Helper();
@@ -45,3 +46,5 @@ window.supplier = new Supplier();
 window.entity = new Entity();
 window.scanner = new Scanner();
 window.auth = new Auth();
+
+window.tippy = tippy;

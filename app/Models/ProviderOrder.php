@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 
 class ProviderOrder extends Model
 {
+    use SoftDeletes;
+
     public $fields = [
         'partner_id',
         'company_id',
@@ -36,7 +39,7 @@ class ProviderOrder extends Model
 
     public function entrances()
     {
-        return $this->belongsTo('App\Models\Entrance', 'providerorder_id');
+        return $this->hasMany('App\Models\Entrance', 'providerorder_id');
     }
 
     public function getArticleEntredCount($article_id, $not_self_id = null)
@@ -46,7 +49,7 @@ class ProviderOrder extends Model
         } else {
             $entrances = $this->entrances()->get();
         }
-
+        //dd($entrances);
         $summ = 0;
         foreach($entrances as $entrance){
             $summ += $entrance->articles()->where('article_id', $article_id)->sum('count');

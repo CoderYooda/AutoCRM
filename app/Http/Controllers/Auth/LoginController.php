@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -56,7 +56,6 @@ class LoginController extends Controller
     {
 
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
-        //
         $request->validate([
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11'],
             'password' => 'required|string',
@@ -70,6 +69,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+
         $this->validateLogin($request);
 
         if (method_exists($this, 'hasTooManyLoginAttempts') &&

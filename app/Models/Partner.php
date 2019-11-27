@@ -111,13 +111,13 @@ class Partner extends Model
     public function addition($summ){
         $this->balance = $this->balance + $summ;
         $this->save();
-        return $this;
+        return true;
     }
 
     public function subtraction($summ){
         $this->balance = $this->balance - $summ;
         $this->save();
-        return $this;
+        return true;
     }
 
 }
