@@ -12,6 +12,7 @@ class ClientOrder extends Model
         'partner_id',
         'company_id',
         'do_date',
+        'phone',
         'summ',
         'itogo',
         'discount',
@@ -43,6 +44,12 @@ class ClientOrder extends Model
     {
         return $this->belongsToMany('App\Models\Article', 'article_client_orders', 'client_order_id', 'article_id')
             ->withPivot('count', 'price', 'total');
+    }
+
+    public function smsMessages()
+    {
+        return $this->belongsToMany('App\Models\SMSMessages', 's_m_s_message_client_order', 'client_order_id', 's_m_s_message_id')
+            ->orderBy('created_at', 'DESC');
     }
 
     public function partner()

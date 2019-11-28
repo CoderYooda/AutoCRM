@@ -153,6 +153,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Диалоги
     Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');
 
+    #SMS сообщения
+    Route::post('/sms/send', 'SMSMessageController@sendsms')->name('SendSMS');
+
     #Штрихкоды
     Route::post('/barcode/search', 'BarcodeController@search')->name('BarcodeSearch');
 

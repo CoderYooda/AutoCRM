@@ -241,7 +241,8 @@ class PartnerController extends Controller
         return response()->json([
             'id' => $partner->id,
             'balance' => $partner->balance,
-            'name' => $partner->outputName()
+            'name' => $partner->outputName(),
+            'phones' => $partner->phones()->get(),
         ]);
     }
 

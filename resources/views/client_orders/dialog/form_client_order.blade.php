@@ -117,7 +117,7 @@
             </div>
         @endif
     </div>
-    <form class="EntranceStoredListner clientOrderStoredListner WarrantStoredListner" action="{{ route('StoreClientOrder') }}" method="POST">
+    <form class="EntranceStoredListner clientOrderStoredListner WarrantStoredListner clientOrderSMSListner" action="{{ route('StoreClientOrder') }}" method="POST">
         @csrf
         @if(isset($client_order) && $client_order->id != NULL)
             <input type="hidden" name="id" value="{{ $client_order->id }}">
@@ -163,8 +163,34 @@
 
                         <div class="form-group row">
                             <label class="col-sm-3" for="phone">Телефон</label>
+                            {{--<div class="col-sm-9 input-group">--}}
+                                {{--<input type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>--}}
+                            {{--</div>--}}
                             <div class="col-sm-9 input-group">
-                                <input type="text" name="phone" class="form-control" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>
+                                <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>
+
+                                <div class="input-group-append">
+                                    <button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контрагента</button>
+                                    <div id="phones-list" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(619px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                        @if(isset($client_order))
+                                            @forelse($client_order->partner()->first()->phones()->get() as $phone)
+                                                <a onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="dropdown-item pointer">{{ $phone->number }}</a>
+                                            @empty
+                                                <div class="no-result">
+                                                    <div class="text-center">
+                                                        Номеров нет
+                                                    </div>
+                                                </div>
+                                            @endforelse
+                                        @else
+                                            <div class="no-result">
+                                                <div class="text-center">
+                                                    Выберите контрагента
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -193,7 +219,7 @@
                         <div class="b-b nav-active-bg">
                             <ul class="nav nav-tabs">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="#" data-toggle="tab" data-target="#tab4">Оповещения</a>
+                                    <a class="nav-link active" href="#" data-toggle="tab" data-target="#tab4">SMS сообщения</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#" data-toggle="tab" data-target="#tab5">Платежи</a>
@@ -205,63 +231,28 @@
                         </div>
 
                         <div class="tab-content p-0" >
-                            <div class="tab-pane animate fadeIn text-muted active" id="tab4">
+                            <div class="tab-pane active" id="tab4">
                                 <div class="d-flex flex-column flex" id="chat-list">
                                     <div class="hover">
                                         <div class="pt-3 pb-3">
                                             <div class="chat-list" data-simplebar style="height: 215px">
-                                                <div class="chat-item mb-2" data-class="null">
-                                                    <span class="w-40 avatar circle">
-                                                        <span class="w-40 avatar primary">BB</span>
-                                                    </span>
-                                                    <div class="chat-body">
-                                                        <div class="chat-content success rounded msg">
-                                                            Hi John, What's up...
+                                                @if(isset($client_order))
+                                                    @forelse($client_order->smsMessages()->get() as $smsMessage)
+                                                        @include('client_orders.dialog.sms_message')
+                                                    @empty
+                                                        <div class="no-result">
+                                                            <div class="p-4 text-center">
+                                                                Сообщений не было отправлено
+                                                            </div>
                                                         </div>
-                                                        <div class="chat-date date">
-                                                            1 day ago
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="chat-item mb-2" data-class="null">
-                                                    <a href="#" class="avatar w-40" data-pjax-state="">
-                                                        <img src="../assets/images/a2.jpg" alt=".">
-                                                    </a>
-                                                    <div class="chat-body">
-                                                        <div class="chat-content success rounded msg">
-                                                            Hi John, What's up...
-                                                        </div>
-                                                        <div class="chat-date date">
-                                                            1 day ago
+                                                    @endforelse
+                                                @else
+                                                    <div class="no-result">
+                                                        <div class="p-4 text-center">
+                                                            Сообщений не было отправлено
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="chat-item mb-2" data-class="null">
-                                                    <a href="#" class="avatar w-40" data-pjax-state="">
-                                                        <img src="../assets/images/a2.jpg" alt=".">
-                                                    </a>
-                                                    <div class="chat-body">
-                                                        <div class="chat-content success rounded msg">
-                                                            Hi John, What's up...
-                                                        </div>
-                                                        <div class="chat-date date">
-                                                            1 day ago
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="chat-item mb-2" data-class="null">
-                                                    <a href="#" class="avatar w-40" data-pjax-state="">
-                                                        <img src="../assets/images/a2.jpg" alt=".">
-                                                    </a>
-                                                    <div class="chat-body">
-                                                        <div class="chat-content success rounded msg">
-                                                            Hi John, What's up...
-                                                        </div>
-                                                        <div class="chat-date date">
-                                                            1 day ago
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                @endif
                                             </div>
                                             <div class="hide">
                                                 <div class="chat-item" id="chat-item" data-class="">
@@ -278,9 +269,9 @@
                                     </div>
                                     <div class="white lt mt-auto">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Сообщение клиенту">
+                                            <input id="sms_field" type="text" class="form-control" placeholder="SMS сообщение клиенту">
                                             <span class="input-group-append">
-                                                <button class="btn white b-a no-shadow" type="button" id="newBtn">
+                                                <button onclick="{{ $class }}.sendSMS()" class="btn white b-a no-shadow" type="button" id="newBtn">
                                                     <i class="fa fa-send text-success"></i>
                                                 </button>
                                             </span>
@@ -288,78 +279,53 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane animate fadeIn text-muted" id="tab5" data-simplebar style="height: 281px">
+                            <div class="tab-pane" id="tab5" data-simplebar style="height: 281px">
                                 <div class="list-group box mb-0 no-border-radius">
-                                    @forelse($client_order->warrants()->get() as $warrant)
-                                        <a onclick="openDialog('warrantDialog', '&warrant_id={{ $warrant->id }}')" href="#" class="list-group-item no-border-radius">
-                                            <span class="float-right text-right @if($warrant->isIncoming) text-success @else text-primary @endif w-128 pr-2" >
-                                                {{ $warrant->summ }} р. <i class="fa @if($warrant->isIncoming) fa-level-up @else fa-level-down @endif "></i>
-                                            </span>
-                                            <span class="float-right ">{{ $warrant->normalizedData() }}</span>
-                                            {{ $warrant->getName() }}
-                                        </a>
-                                    @empty
+                                    @if(isset($client_order))
+                                        @forelse($client_order->warrants()->get() as $warrant)
+                                            <a onclick="openDialog('warrantDialog', '&warrant_id={{ $warrant->id }}')" href="#" class="list-group-item no-border-radius">
+                                                <span class="float-right text-right @if($warrant->isIncoming) text-success @else text-primary @endif w-128 pr-2" >
+                                                    {{ $warrant->summ }} р. <i class="fa @if($warrant->isIncoming) fa-level-up @else fa-level-down @endif "></i>
+                                                </span>
+                                                <span class="float-right ">{{ $warrant->normalizedData() }}</span>
+                                                {{ $warrant->getName() }}
+                                            </a>
+                                        @empty
+                                            <div class="no-result">
+                                                <div class="p-4 text-center">
+                                                    Платежей по данному заказу не совершалось.
+                                                </div>
+                                            </div>
+                                        @endforelse
+                                    @else
                                         <div class="no-result">
                                             <div class="p-4 text-center">
-                                                Платежей по данному заказу не совершалось.
+                                                Сохраните заказ для продолжения
                                             </div>
                                         </div>
-                                    @endforelse
+                                    @endif
                                 </div>
                             </div>
-                            <div class="tab-pane animate fadeIn text-muted" id="tab6">
+                            <div class="tab-pane" id="tab6">
                                 <div class="pt-3 pb-3">
                                     <div class="streamline streamline-xs streamline-dotted" data-simplebar style="height: 249px">
                                         <div class="sl-item b-info">
                                             <div class="sl-content">
                                                 <div class="sl-date text-muted">2 minutes ago</div>
-                                                <p>Check your Internet connection</p>
+                                                <p>Смена статуса заказа</p>
                                             </div>
                                         </div>
                                         <div class="sl-item b-success">
                                             <div class="sl-content">
                                                 <div class="sl-date text-muted">9:30</div>
-                                                <p>Meeting with tech leader</p>
+                                                <p>Товары добавлены к заказу</p>
                                             </div>
                                         </div>
                                         <div class="sl-item b-primary">
                                             <div class="sl-content">
                                                 <div class="sl-date text-muted">8:30</div>
-                                                <p>Call to customer
-                                                    <a href="#" class="text-info">Jacob</a> and discuss the detail.</p>
-                                            </div>
-                                        </div>
-                                        <div class="sl-item">
-                                            <div class="sl-content">
-                                                <div class="sl-date text-muted">Wed, 25 Mar</div>
-                                                <p>Finished task
-                                                    <a href="#" class="text-info">Testing</a>.</p>
-                                            </div>
-                                        </div>
-                                        <div class="sl-item">
-                                            <div class="sl-content">
-                                                <div class="sl-date text-muted">Thu, 10 Mar</div>
-                                                <p>Trip to the moon</p>
-                                            </div>
-                                        </div>
-                                        <div class="sl-item">
-                                            <div class="sl-content">
-                                                <div class="sl-date text-muted">Sat, 5 Mar</div>
-                                                <p>Prepare for presentation</p>
-                                            </div>
-                                        </div>
-                                        <div class="sl-item">
-                                            <div class="sl-content">
-                                                <div class="sl-date text-muted">Sun, 11 Feb</div>
-                                                <p>
-                                                    <a href="#" class="text-info">Jessi</a> assign you a task
-                                                    <a href="#" class="text-info">Mockup Design</a>.</p>
-                                            </div>
-                                        </div>
-                                        <div class="sl-item">
-                                            <div class="sl-content">
-                                                <div class="sl-date text-muted">Thu, 17 Jan</div>
-                                                <p>Follow up to close deal</p>
+                                                <p>Заказ создан</p>
+                                                    {{--<a href="#" class="text-info">Jacob</a> and discuss the detail.--}}
                                             </div>
                                         </div>
                                     </div>

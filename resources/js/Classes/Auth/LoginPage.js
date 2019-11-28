@@ -29,7 +29,6 @@ class registerPage{
                 lazy: false,
                 placeholderChar: '_',
 
-
                 dispatch: function (appended, dynamicMasked) {
                     var number = (dynamicMasked.value + appended).replace(/\D/g,'');
 
@@ -37,14 +36,6 @@ class registerPage{
                         return number.indexOf(m.startsWith) === 0;
                     });
                 }
-
-                // dispatch: function (appended, dynamicMasked) {
-                //     var number = (dynamicMasked.value + appended).replace(/\D/g,'');
-                //
-                //     return dynamicMasked.compiledMasks.find(function (m) {
-                //         return number.indexOf(m.startsWith) === 0;
-                //     });
-                // }
             }
         )
     }

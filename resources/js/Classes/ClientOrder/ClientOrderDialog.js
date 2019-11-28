@@ -7,6 +7,7 @@ class clientorderDialog{
         this.nds = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
+        this.phoneMask = null;
         this.init();
     }
 
@@ -15,6 +16,9 @@ class clientorderDialog{
         let object = this;
 
         var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
+
+
+
         ///Вешаем обрабочик на поле скидки/////////////
         let discount = object.root_dialog.querySelector('input[name=discount]');
         discount.addEventListener("keydown", fn);
@@ -44,6 +48,17 @@ class clientorderDialog{
             }
         });
 
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('clientOrderSMS',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('EntranceStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
@@ -63,7 +78,7 @@ class clientorderDialog{
         //         window.helper.initDialogMethods();
         //     });
         // });
-
+        this.addPhoneMask();
 
         this.loadItemsIfExists();
 
@@ -94,12 +109,39 @@ class clientorderDialog{
             data: data,
         }).then(function (resp) {
             document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            object.addPhoneMask();
             console.log('Вставили html');
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
             callback();
         });
+    }
+
+    sendSMS(){
+        let message_field = this.root_dialog.querySelector('#sms_field');
+        let phone_field = this.root_dialog.querySelector('#client-phone');
+        //console.log(field.value);
+
+        let data = {};
+        //data.store_id = store_id;
+        data.message = message_field.value;
+        data.phone = phone_field.value;
+        data.type = 'clientOrder';
+        data.id = this.root_dialog.querySelector('input[name=id]').value;
+
+        window.axios({
+            method: 'post',
+            url: 'sms/send',
+            data: data,
+        }).then(function (resp) {
+
+            console.log(resp);
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+        });
+
     }
 
     save(elem){
@@ -308,6 +350,44 @@ class clientorderDialog{
         });
     };
 
+    selectNumber(elem) {
+        this.phoneMask.value = elem.dataset.number;
+        // this.root_dialog.querySelector('#client-phone').value = elem.dataset.number;
+        // this.addPhoneMask();
+    }
+
+    addPhoneMask(){
+        let phone = this.root_dialog.querySelector('#client-phone');
+        this.phoneMask = window.IMask(phone, {
+            mask: [
+                {
+                    mask: '+{7}(000)000-00-00',
+                    startsWith: '7',
+                    lazy: true,
+                    country: 'Россия'
+                },
+                {
+                    mask: '{8}(000)000-00-00',
+                    startsWith: '8',
+                    lazy: true,
+                    country: 'Россия'
+                },
+                {
+                    mask: '+{380}(000)000-00-00',
+                    startsWith: '3',
+                    lazy: true,
+                    country: 'Украина'
+                },
+            ],
+            dispatch: function (appended, dynamicMasked) {
+                var number = (dynamicMasked.value + appended).replace(/\D/g,'');
+
+                return dynamicMasked.compiledMasks.find(function (m) {
+                    return number.indexOf(m.startsWith) === 0;
+                });
+            }
+        });
+    }
 
     selectPartner(id){
         var object = this;
@@ -319,7 +399,25 @@ class clientorderDialog{
 
             let select = object.root_dialog.querySelector('button[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+
+            let phones_list = object.root_dialog.querySelector('#phones-list');
+
+            let phones_html = '';
+            if(resp.data.phones.length > 0) {
+                [].forEach.call(resp.data.phones, function (elem) {
+                    phones_html += '<a onclick="window.' + object.root_dialog.id + '.selectNumber(this)" data-number="' + elem.number + '" class="dropdown-item pointer">' + elem.number + '</a>';
+                });
+            } else {
+                phones_html = '<div class="no-result"><div class="text-center">Номеров нет</div></div>';
+            }
+
+            phones_list.innerHTML = phones_html;
+
+
+            //let phone_str = '<a onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="dropdown-item pointer">{{ $phone->number }}</a>';
+
+            let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
             window.notification.notify( 'success', 'Контрагент выбран');

@@ -112,6 +112,8 @@ class ClientOrdersController extends Controller
     {
         $validation = Validator::make($request->all(), self::validateRules($request));
 
+        $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
+
         if($validation->fails()){
             $this->status = 422;
             if($request->expectsJson()){
@@ -373,6 +375,7 @@ class ClientOrdersController extends Controller
             'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required_without:quick_products'],
+            'phone' => ['required'],
             'products.*.*.count' => ['integer', 'min:1', 'max:9999'],
             'products.*.*.price' => ['integer', 'min:1', 'max:999999'],
 
