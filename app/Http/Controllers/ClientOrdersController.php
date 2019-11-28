@@ -27,7 +27,7 @@ class ClientOrdersController extends Controller
 
 
                 $article->instock = $article->getCountInStoreId($client_order->store_id);
-                if($article->instock >= $article->count){
+                if($article->instock >= $article->pivot->count){
                     $article->complited = true;
                 } else {
                     $article->complited = false;
@@ -57,6 +57,13 @@ class ClientOrdersController extends Controller
     public function delete($id)
     {
         $client_order = ClientOrder::where('id', $id)->first();
+
+        if($client_order == null){
+            return response()->json([
+                'message' => 'Ошибка системы'
+            ], 422);
+        }
+
         $client_order->delete();
         $this->status = 200;
         $type = 'success';
@@ -76,7 +83,7 @@ class ClientOrdersController extends Controller
 
         foreach($client_order->articles as $article){
             $article->instock = $article->getCountInStoreId($client_order->store_id);
-            if($article->instock >= $article->count){
+            if($article->instock >= $article->pivot->count){
                 $article->complited = true;
             } else {
                 $article->complited = false;
@@ -139,31 +146,26 @@ class ClientOrdersController extends Controller
                 ->addition($client_order->itogo);
 
             $this->message = 'Заказ обновлен';
+            $wasExisted = true;
 
-        ####Производим действия со складом в зависимости статуса заказа
+            #Производим действия со складом в зависимости статуса заказа
 
-                if($client_order->status !== 'complete' && isset($request['status']) && $request['status'] === 'complete'){
-                    foreach($client_order->articles()->get() as $article){
-                        $store = $client_order->store()->first();
-                        $store->decreaseArticleCount($article->id, $article->count);
-                    }
+
+            #Возвращаем на склад все товары из заказа
+            if($client_order->status === 'complete') {
+                foreach ($client_order->articles()->get() as $article) {
+                    $store = $client_order->store()->first();
+                    $store->increaseArticleCount($article->id, $article->pivot->count);
                 }
+            }
 
-                if($client_order->status === 'complete' && isset($request['status']) && $request['status'] !== 'complete'){
-                    foreach($client_order->getArticles() as $article){
-                        $store = Store::owned()->where('id', $article->store_id)->first();
-                        $store->increaseArticleCount($article->product->id, $article->count);
-                    }
-                }
-
-//            foreach($client_order->getArticles() as $article){
-//                $store = Store::owned()->where('id', $article->store_id)->first();
-//                $store->increaseArticleCount($article->product->id, $article->count);
-//            }
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Заказ сохранен';
+            $wasExisted = false;
         }
+
+
 
         $client_order->fill($request->only($client_order->fields));
         $client_order->store_id = Auth::user()->getStoreFirst()->id;
@@ -187,31 +189,32 @@ class ClientOrdersController extends Controller
 
         #### Проверка на дубли
         $messages = [];
-        foreach($request['products'] as $id => $product) {
+        if(isset($request['products']['new'])){
+            foreach($request['products']['new'] as $id => $product) {
 
-            if ($id === 'new') {
-                $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
-                if($stock_supplier){
-                    $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
-                    if($art !== null && $art) {
-                        $article_errors[0] = '';
-                        $supplier_errors[0] = '';
-                        $messages['products.' . $product['id'] . '.article'] = $article_errors;
-                        $messages['products.' . $product['id'] . '.new_supplier_name'] = $supplier_errors;
+                if ($id === 'new') {
+                    $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
+                    if($stock_supplier){
+                        $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
+                        if($art !== null && $art) {
+                            $article_errors[0] = '';
+                            $supplier_errors[0] = '';
+                            $messages['products.' . $product['id'] . '.article'] = $article_errors;
+                            $messages['products.' . $product['id'] . '.new_supplier_name'] = $supplier_errors;
+                        }
                     }
                 }
             }
         }
-
         if(count($messages) > 0){
             return response()->json([
                 'messages' => $messages
             ], 422);
         }
 
-        #### Сохраняем быстрые товары
-        foreach($request['products'] as $id => $product) {
-            if ($id === 'new') {
+        #Сохраняем быстрые товары
+        if(isset($request['products']['new'])){
+            foreach($request['products']['new'] as $id => $product) {
                 $vcount = (int)$product['count'];
                 $vprice = (double)$product['price'];
                 $vtotal = $vprice * $vcount;
@@ -279,9 +282,15 @@ class ClientOrdersController extends Controller
             $client_order->itogo = $client_order->summ - $request['discount'];
         }
 
-
-
         $client_order->save();
+
+        #Отнимаем со склада товары из заказа
+        if($client_order->status === 'complete'){
+            foreach($client_order->articles()->get() as $article){
+                $store = $client_order->store()->first();
+                $store->decreaseArticleCount($article->id, $article->pivot->count);
+            }
+        }
 
         $client_order->partner()->first()
             ->subtraction($client_order->itogo);

@@ -42,6 +42,7 @@ class CashController extends Controller
 
     public static function warrantTab($request)
     {
+
         $income =  WarrantController::getIncomeCount($request);
         $outcome = WarrantController::getOutcomeCount($request);
 

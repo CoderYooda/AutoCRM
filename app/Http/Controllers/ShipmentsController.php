@@ -38,6 +38,9 @@ class ShipmentsController extends Controller
             $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
         }
 
+        #Добавляем к балансу контрагента
+        $shipment->partner()->first()->subtraction($shipment->itogo);
+
         $shipment->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';

@@ -74,7 +74,7 @@ class Entity{
                 object.addItem({
                     id:resp.data.product.id,
                     html:resp.data.html
-                });
+                }, resp.data.product.id);
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }

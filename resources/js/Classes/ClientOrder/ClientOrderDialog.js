@@ -228,7 +228,7 @@ class clientorderDialog{
         container.innerHTML = count;
     }
 
-    addItem(elem){
+    addItem(elem, tag){
         let object = this;
         let product_list = this.root_dialog.querySelector('.product_list');
         this.items.push(elem);
@@ -242,7 +242,7 @@ class clientorderDialog{
         product_list.insertAdjacentHTML('afterbegin', elem.html);
 
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
+        let item = this.root_dialog.querySelector('#product_selected_' + tag);
         let inputs = item.getElementsByTagName('input');
 
         [].forEach.call(inputs, function(elem){
@@ -266,13 +266,13 @@ class clientorderDialog{
         let object = this;
         [].forEach.call(object.items, function(item){
 
-            if(item.id === id && item.store_id === store_id){
+            if(item.id === id){
                 object.items.splice(
                     object.items.indexOf(item), 1
                 );
             }
         });
-        this.root_dialog.querySelector('#product_selected_' + id + '_' + store_id).remove();
+        this.root_dialog.querySelector('#product_selected_' + id).remove();
         object.recalculate();
     }
 
@@ -294,12 +294,12 @@ class clientorderDialog{
         }).then(function (resp) {
             object.addItem({
                 id:resp.data.product.id,
-                store_id:'new',
+                // store_id:'new',
                 count:resp.data.product.count,
                 price:resp.data.product.price,
                 total:resp.data.product.total,
                 html:resp.data.html
-            });
+            }, resp.data.product.id + '_new');
 
         }).catch(function (error) {
             console.log(error);
@@ -317,7 +317,7 @@ class clientorderDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=partner_id]');
+            let select = object.root_dialog.querySelector('button[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
             let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
             input.value = resp.data.id;

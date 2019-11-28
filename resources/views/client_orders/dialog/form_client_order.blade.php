@@ -131,57 +131,241 @@
 
         <div class="no-gutters align-items-stretch">
             <div class="padding">
-                <div class="row row-sm">
+                <div class="row">
                     <div class="col-sm-6">
-                        <div class="row row-sm">
-                            <div class="col-sm-12 form-group">
-                                <label for="category_id">Покупатель</label>
-                                <div class="input-group">
-                                    <select name="partner_id" disabled class="partner_select form-control input-c noarrow fake-disabled" readonly>
-                                        @if(isset($client_order) && $client_order->partner()->first() != null)
-                                            <option value="{{ $client_order->partner()->first()->id }}">{{ $client_order->partner()->first()->outputName() }}</option>
-                                        @else
-                                            <option>Не выбрано</option>
-                                        @endif
-                                    </select>
-                                    <div class="input-group-append">
-                                        <button onclick="{{ $class }}.openSelectPartnermodal()"
-                                                class="btn white" type="button"><i class="fa fa-bars"></i>
-                                        </button>
-                                    </div>
-                                </div>
+
+                        <div class="form-group row">
+                            <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контрагент</label>
+                            <div class="col-sm-9">
+                                <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                                    @if(isset($client_order) && $client_order->partner()->first() != null)
+                                        {{ $client_order->partner()->first()->outputName() }}
+                                    @else
+                                        Не выбрано
+                                    @endif
+                                </button>
+
                             </div>
-                            <div class="@if(isset($client_order)) col-sm-6 @else col-sm-12 @endif form-group">
-                                <label for="discount">Скидка</label>
-                                <div class="input-group">
-                                    <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($client_order) value="{{ $client_order->discount }}" @else value="0" @endif>
-                                    <span class="input-group-append">
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3" for="discount">Скидка</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($client_order) value="{{ $client_order->discount }}" @else value="0" @endif>
+                                <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>
                                             <input id="inpercents" name="inpercents" type="checkbox" @if($client_order && $client_order->inpercents) checked @endif>
                                         </div>
                                     </span>
-                                </div>
                             </div>
-                            @if(isset($client_order))
-                                <div class="col-sm-6 form-group">
-                                    <label for="discount">Статус заказа</label>
-                                    <div class="input-group">
-                                        <select name="status" class="form-control">
-                                            <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
-                                            <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
-                                            <option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>
-                                            <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
-                                        </select>
-                                    </span>
-                                    </div>
-                                </div>
-                            @endif
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3" for="phone">Телефон</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="text" name="phone" class="form-control" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3" for="discount">Статус заказа</label>
+                            <div class="col-sm-9 input-group">
+                                <select name="status" class="form-control" @if(!isset($client_order)) disabled="" @endif>
+                                    @if(isset($client_order))
+                                    <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
+                                    <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
+                                    <option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>
+                                    <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
+                                    @else
+                                        <option selected value="">Не определено</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 form-group">
-                        <label for="comment">Комментарий</label>
-                        <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
+                    <div class="col-sm-6 form-group no-pl intabs">
+                        <div class="b-b nav-active-bg">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#" data-toggle="tab" data-target="#tab4">Оповещения</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-toggle="tab" data-target="#tab5">Платежи</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-toggle="tab" data-target="#tab6">История</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content p-0" >
+                            <div class="tab-pane animate fadeIn text-muted active" id="tab4">
+                                <div class="d-flex flex-column flex" id="chat-list">
+                                    <div class="hover">
+                                        <div class="pt-3 pb-3">
+                                            <div class="chat-list" data-simplebar style="height: 215px">
+                                                <div class="chat-item mb-2" data-class="null">
+                                                    <span class="w-40 avatar circle">
+                                                        <span class="w-40 avatar primary">BB</span>
+                                                    </span>
+                                                    <div class="chat-body">
+                                                        <div class="chat-content success rounded msg">
+                                                            Hi John, What's up...
+                                                        </div>
+                                                        <div class="chat-date date">
+                                                            1 day ago
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-item mb-2" data-class="null">
+                                                    <a href="#" class="avatar w-40" data-pjax-state="">
+                                                        <img src="../assets/images/a2.jpg" alt=".">
+                                                    </a>
+                                                    <div class="chat-body">
+                                                        <div class="chat-content success rounded msg">
+                                                            Hi John, What's up...
+                                                        </div>
+                                                        <div class="chat-date date">
+                                                            1 day ago
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-item mb-2" data-class="null">
+                                                    <a href="#" class="avatar w-40" data-pjax-state="">
+                                                        <img src="../assets/images/a2.jpg" alt=".">
+                                                    </a>
+                                                    <div class="chat-body">
+                                                        <div class="chat-content success rounded msg">
+                                                            Hi John, What's up...
+                                                        </div>
+                                                        <div class="chat-date date">
+                                                            1 day ago
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-item mb-2" data-class="null">
+                                                    <a href="#" class="avatar w-40" data-pjax-state="">
+                                                        <img src="../assets/images/a2.jpg" alt=".">
+                                                    </a>
+                                                    <div class="chat-body">
+                                                        <div class="chat-content success rounded msg">
+                                                            Hi John, What's up...
+                                                        </div>
+                                                        <div class="chat-date date">
+                                                            1 day ago
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="hide">
+                                                <div class="chat-item" id="chat-item" data-class="">
+                                                    <a href="#" class="avatar w-40" data-pjax-state="">
+                                                        <img class="image" src="" alt=".">
+                                                    </a>
+                                                    <div class="chat-body">
+                                                        <div class="chat-content rounded msg"></div>
+                                                        <div class="chat-date date"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="white lt mt-auto">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Сообщение клиенту">
+                                            <span class="input-group-append">
+                                                <button class="btn white b-a no-shadow" type="button" id="newBtn">
+                                                    <i class="fa fa-send text-success"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane animate fadeIn text-muted" id="tab5" data-simplebar style="height: 281px">
+                                <div class="list-group box mb-0 no-border-radius">
+                                    @forelse($client_order->warrants()->get() as $warrant)
+                                        <a onclick="openDialog('warrantDialog', '&warrant_id={{ $warrant->id }}')" href="#" class="list-group-item no-border-radius">
+                                            <span class="float-right text-right @if($warrant->isIncoming) text-success @else text-primary @endif w-128 pr-2" >
+                                                {{ $warrant->summ }} р. <i class="fa @if($warrant->isIncoming) fa-level-up @else fa-level-down @endif "></i>
+                                            </span>
+                                            <span class="float-right ">{{ $warrant->normalizedData() }}</span>
+                                            {{ $warrant->getName() }}
+                                        </a>
+                                    @empty
+                                        <div class="no-result">
+                                            <div class="p-4 text-center">
+                                                Платежей по данному заказу не совершалось.
+                                            </div>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                            <div class="tab-pane animate fadeIn text-muted" id="tab6">
+                                <div class="pt-3 pb-3">
+                                    <div class="streamline streamline-xs streamline-dotted" data-simplebar style="height: 249px">
+                                        <div class="sl-item b-info">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">2 minutes ago</div>
+                                                <p>Check your Internet connection</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item b-success">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">9:30</div>
+                                                <p>Meeting with tech leader</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item b-primary">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">8:30</div>
+                                                <p>Call to customer
+                                                    <a href="#" class="text-info">Jacob</a> and discuss the detail.</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">Wed, 25 Mar</div>
+                                                <p>Finished task
+                                                    <a href="#" class="text-info">Testing</a>.</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">Thu, 10 Mar</div>
+                                                <p>Trip to the moon</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">Sat, 5 Mar</div>
+                                                <p>Prepare for presentation</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">Sun, 11 Feb</div>
+                                                <p>
+                                                    <a href="#" class="text-info">Jessi</a> assign you a task
+                                                    <a href="#" class="text-info">Mockup Design</a>.</p>
+                                            </div>
+                                        </div>
+                                        <div class="sl-item">
+                                            <div class="sl-content">
+                                                <div class="sl-date text-muted">Thu, 17 Jan</div>
+                                                <p>Follow up to close deal</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group mb-0">

@@ -53,7 +53,6 @@ axios.interceptors.request.use(function (config) {
 // }, 50);
 
 window.axios.interceptors.response.use(function (response) {
-    console.log(response);
     document.body.classList.remove('loading');
     window.isXHRloading = false;
     return response;

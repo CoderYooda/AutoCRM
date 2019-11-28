@@ -54,6 +54,21 @@ class Warrant extends Model
         return $this->belongsToMany('App\Models\Entrance', 'entrance_warrant', 'warrant_id', 'entrance_id' );
     }
 
+    public function getName()
+    {
+        if($this->isIncoming){
+            $name = 'Приходный ордер №' . $this->id;
+        } else {
+            $name = 'Расходный ордер №' . $this->id;
+        }
+
+        return $name;
+    }
+
+    public function normalizedData(){
+        return $this->created_at->format('d.m.Y (H:i)');
+    }
+
     public function shipment()
     {
         return $this->belongsToMany('App\Models\Shipment', 'shipment_warrant', 'warrant_id', 'shipment_id' );

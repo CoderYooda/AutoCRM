@@ -12,9 +12,9 @@
     <td>
         <input class="w-100 form-control form-control-sm" type="text" name="products[new][{{ $product->id }}][new_supplier_name]">
     </td>
-    <td>
-        <input name="" class="form-control form-control-sm j_count" type="number" disabled >
-    </td>
+    {{--<td>--}}
+        {{--<input name="" class="form-control form-control-sm j_count" type="number" disabled >--}}
+    {{--</td>--}}
     <td>
         <input name="products[new][{{ $product->id }}][count]" class="form-control form-control-sm j_count"
                value="1"
@@ -23,7 +23,7 @@
     <td>
         <input name="products[new][{{ $product->id }}][price]" class="form-control form-control-sm j_price"
                value="0"
-               type="number" min="0" step="0.1" >
+               type="number" min="1" step="0.1" >
     </td>
     <td>
         <input name="products[new][{{ $product->id }}][total_price]" class="form-control form-control-sm j_total_price"

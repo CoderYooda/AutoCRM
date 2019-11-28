@@ -197,7 +197,7 @@ class WarrantController extends Controller
         $warrants = Warrant::owned()
             ->orderBy('created_at', 'DESC')
             ->where(function($q) use ($request){
-                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
+                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null' && $request['isIncoming'] != null){
                     $q->where('isIncoming',   boolval ($request['isIncoming']));
                 }
             })
@@ -235,7 +235,7 @@ class WarrantController extends Controller
     public static function getIncomeCount($request){
         $income =  Warrant::owned()
             ->where(function($q) use ($request){
-                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
+                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null' && $request['isIncoming'] != null){
                     $q->where('isIncoming',   boolval ($request['isIncoming']));
                 }
             })
@@ -253,7 +253,7 @@ class WarrantController extends Controller
     public static function getOutcomeCount($request){
         $outcome = Warrant::owned()
             ->where(function($q) use ($request){
-                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
+                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null' && $request['isIncoming'] != null){
                     $q->where('isIncoming',   boolval ($request['isIncoming']));
                 }
             })

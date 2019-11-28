@@ -31,3 +31,13 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
+
+.dialog .intabs .nav-link {
+  border: inherit;
+  position: relative;
+  padding: 7px 1rem;
+}
+
+.no-border-radius{
+  border-radius: 0!important;
+}

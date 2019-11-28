@@ -266,11 +266,11 @@ class cashPage{
             window.helper.insertParamUrl('isIncoming', object.isIncoming);
             window.rebuildLinks();
             object.load();
-            object.chartCircle.options.animation.duration = 1000;
-            object.chartCircle.data.datasets[0].data[1] = resp.data.income;
-            object.chartCircle.data.datasets[0].data[0] = resp.data.outcome;
-            object.chartCircle.update();
-            object.chartCircle.options.animation.duration = 0;
+            // object.chartCircle.options.animation.duration = 1000;
+            // object.chartCircle.data.datasets[0].data[1] = resp.data.income;
+            // object.chartCircle.data.datasets[0].data[0] = resp.data.outcome;
+            // object.chartCircle.update();
+            // object.chartCircle.options.animation.duration = 0;
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
