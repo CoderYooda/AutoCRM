@@ -14,7 +14,6 @@ class CreateClientOrdersWarrantTable extends Migration
     public function up()
     {
         Schema::create('client_orders_warrant', function (Blueprint $table) {
-            $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('warrant_id')->unsigned()->comment('Привязка к операции');
             $table->bigInteger('client_order_id')->unsigned()->comment('Привязка к заказу клиента');
         });

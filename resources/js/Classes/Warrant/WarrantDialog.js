@@ -15,6 +15,7 @@ class warrantDialog{
         let focused = document.getElementById('warrant_dialog_focused');
         if(focused){
             focused.focus();
+            focused.select();
         }
         //tippy('[data-tippy-content]');
     }

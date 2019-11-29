@@ -40,7 +40,7 @@
             <span class="item-title _500">Всего на сумму</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="total_price">
-                        @if(isset($client_order)){{ $client_order->summ }} @else 0.0 @endif
+                        @if(isset($client_order)){{ $client_order->summ }} @else 0.00 @endif
                     </span> р
             </div>
             <div class="item-tag tag hide">
@@ -52,7 +52,7 @@
                     <span id="percents_price">
                         @if(isset($client_order))
                         {{ $client_order->discount }}  @if($client_order->inpercents)% @else р @endif
-                        @else 0 р @endif
+                        @else 0.00 р @endif
                     </span>
             </div>
             <div class="item-tag tag hide">
@@ -61,10 +61,10 @@
         <div class="b-r pr-3 mr-3">
             <span class="item-title _500">Итого</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span id="itogo_price">
+                    <span class="itogo_price">
                         @if(isset($client_order))
                             {{ $client_order->itogo }}
-                        @else 0.0 @endif
+                        @else 0.00 @endif
                     </span> р
             </div>
             <div class="item-tag tag hide">
@@ -74,7 +74,7 @@
         <div class="b-r pr-3 mr-3">
             <span class="item-title _500">Дата оформления</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span id="itogo_price">
+                    <span>
                             {{ $client_order->data() }}
                     </span>
             </div>
@@ -88,7 +88,7 @@
             <span class="item-title _500">Оплачено</span>
             <div class="item-except @if($client_order->getWarrantPositive() >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
                     <span id="payed_price">
-        {{ sprintf("%.2f", $client_order->getWarrantPositive()) }} р / {{ $client_order->itogo }} р
+        {{ sprintf("%.2f", $client_order->getWarrantPositive()) }} р / <span class="itogo_price">{{ $client_order->itogo }}</span> р
                     </span>
             </div>
             <div class="item-tag tag hide">
@@ -151,7 +151,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3" for="discount">Скидка</label>
                             <div class="col-sm-9 input-group">
-                                <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($client_order) value="{{ $client_order->discount }}" @else value="0" @endif>
+                                <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($client_order) value="{{ $client_order->discount }}" @else value="0" @endif>
                                 <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>
@@ -232,11 +232,11 @@
 
                         <div class="tab-content p-0" >
                             <div class="tab-pane active" id="tab4">
-                                <div class="d-flex flex-column flex" id="chat-list">
-                                    <div class="hover">
-                                        <div class="pt-3 pb-3">
-                                            <div class="chat-list" data-simplebar style="height: 215px">
-                                                @if(isset($client_order))
+                                @if(isset($client_order))
+                                    <div class="d-flex flex-column flex" id="chat-list">
+                                        <div class="hover">
+                                            <div class="pt-3 pb-3">
+                                                <div class="chat-list" data-simplebar style="height: 215px">
                                                     @forelse($client_order->smsMessages()->get() as $smsMessage)
                                                         @include('client_orders.dialog.sms_message')
                                                     @empty
@@ -246,38 +246,38 @@
                                                             </div>
                                                         </div>
                                                     @endforelse
-                                                @else
-                                                    <div class="no-result">
-                                                        <div class="p-4 text-center">
-                                                            Сообщений не было отправлено
+                                                </div>
+                                                <div class="hide">
+                                                    <div class="chat-item" id="chat-item" data-class="">
+                                                        <a href="#" class="avatar w-40" data-pjax-state="">
+                                                            <img class="image" src="" alt=".">
+                                                        </a>
+                                                        <div class="chat-body">
+                                                            <div class="chat-content rounded msg"></div>
+                                                            <div class="chat-date date"></div>
                                                         </div>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="hide">
-                                                <div class="chat-item" id="chat-item" data-class="">
-                                                    <a href="#" class="avatar w-40" data-pjax-state="">
-                                                        <img class="image" src="" alt=".">
-                                                    </a>
-                                                    <div class="chat-body">
-                                                        <div class="chat-content rounded msg"></div>
-                                                        <div class="chat-date date"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="white lt mt-auto">
-                                        <div class="input-group">
-                                            <input id="sms_field" type="text" class="form-control" placeholder="SMS сообщение клиенту">
-                                            <span class="input-group-append">
-                                                <button onclick="{{ $class }}.sendSMS()" class="btn white b-a no-shadow" type="button" id="newBtn">
-                                                    <i class="fa fa-send text-success"></i>
-                                                </button>
-                                            </span>
+                                        <div class="white lt mt-auto">
+                                            <div class="input-group">
+                                                <input id="sms_field" type="text" class="form-control" placeholder="SMS сообщение клиенту">
+                                                <span class="input-group-append">
+                                                    <button onclick="{{ $class }}.sendSMS()" class="btn white b-a no-shadow" type="button" id="newBtn">
+                                                        <i class="fa fa-send text-success"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="no-result">
+                                        <div class="p-4 text-center">
+                                            Сообщений не было отправлено
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                             <div class="tab-pane" id="tab5" data-simplebar style="height: 281px">
                                 <div class="list-group box mb-0 no-border-radius">

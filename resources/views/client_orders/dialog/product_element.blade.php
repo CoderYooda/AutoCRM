@@ -11,16 +11,16 @@
 
     <td>{{ $product->supplier()->first()->name }}</td>
 
-    <td><input name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
+    <td><input onClick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
 
-    <td><input name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
-               @if(isset($product->pivot->price)) value="{{$product->pivot->price}}"@else value="0" @endif
+    <td><input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
+               @if(isset($product->pivot->price)) value="{{ sprintf("%.2f", $product->pivot->price) }}"@else value="0" @endif
                type="number" min="0" step="0.1" ></td>
 
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
-               @if(isset($product->pivot->total)) value="{{$product->pivot->total}}" @else value="0.00" @endif
+               @if(isset($product->pivot->total)) value="{{ sprintf("%.2f", $product->pivot->total) }}" @else value="0.00" @endif
                disabled type="number"></td>
 
     <td>

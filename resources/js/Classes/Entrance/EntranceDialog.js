@@ -100,7 +100,6 @@ class createEntrance{
             }).catch(function (error) {
                 console.log(error);
             }).finally(function () {
-                object.setNDS();
                 window.isXHRloading = false;
             });
 
@@ -342,11 +341,6 @@ class createEntrance{
         //object.setTotalPrice(total_price);
     }
 
-    setNDS() {
-        this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
-        this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
-        this.recalculate();
-    }
 
     getPayment(){
         let warrant_type = 'receipt_of_goods';

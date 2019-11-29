@@ -14,7 +14,6 @@ class CreateProviderOrderWarrant extends Migration
     public function up()
     {
         Schema::create('provider_order_warrant', function (Blueprint $table) {
-            $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('warrant_id')->unsigned()->comment('Привязка к операции');
             $table->bigInteger('providerorder_id')->unsigned()->comment('Привязка к заказу поставщика');
         });

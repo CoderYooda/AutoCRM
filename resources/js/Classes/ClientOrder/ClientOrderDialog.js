@@ -261,8 +261,10 @@ class clientorderDialog{
     }
 
     setItogo(count){
-        let container = this.root_dialog.querySelector('#itogo_price');
-        container.innerHTML = Number(count).toFixed(2);
+        let itogo_prices = this.root_dialog.querySelectorAll('.itogo_price');
+        [].forEach.call(itogo_prices, function(itogo_price){
+            itogo_price.innerHTML = Number(count).toFixed(2);
+        });
     }
 
     setDiscount(count){
@@ -303,7 +305,7 @@ class clientorderDialog{
         delete window[this.root_dialog.id];
     }
 
-    removeItem(id){
+    removeItem(id, tag = null){
 
         let object = this;
         [].forEach.call(object.items, function(item){
@@ -314,7 +316,10 @@ class clientorderDialog{
                 );
             }
         });
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
+        if(tag !== null){
+            id = id + '_' + tag;
+        }
+        let product = this.root_dialog.querySelector('#product_selected_' + id).remove();
         object.recalculate();
     }
 
@@ -465,9 +470,9 @@ class clientorderDialog{
         var discount_val;
 
         if(inpercents.checked){
-            discount_val = discount.value + ' %';
+            discount_val = Number(discount.value).toFixed(2) + ' %';
         } else {
-            discount_val = discount.value + ' р';
+            discount_val = Number(discount.value).toFixed(2) + ' р';
         }
 
 

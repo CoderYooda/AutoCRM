@@ -32,9 +32,9 @@
     </td>
     <td class="text-right">
         @if(isset($request) && $request['refer'] != null)
-            <button onclick="{{ $request['refer'] }}.removeItem('new','{{ $product->id }}')" type="button" class="btn btn-sm white"><i class="fa fa-trash"></i></button>
+            <button onclick="{{ $request['refer'] }}.removeItem('{{ $product->id }}', 'new')" type="button" class="btn btn-sm white"><i class="fa fa-trash"></i></button>
         @else
-            <button onclick="{{ $class }}.removeItem('new','{{ $product->id }}')" type="button" class="btn btn-sm white"><i class="fa fa-trash"></i></button>
+            <button onclick="{{ $class }}.removeItem('{{ $product->id }}', 'new')" type="button" class="btn btn-sm white"><i class="fa fa-trash"></i></button>
         @endif
     </td>
 </tr>
