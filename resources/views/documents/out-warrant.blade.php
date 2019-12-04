@@ -1,3 +1,5 @@
+
+@php  @endphp
 <div>
     <style type="text/css">
         @page {

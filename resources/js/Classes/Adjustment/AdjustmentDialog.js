@@ -1,0 +1,161 @@
+import Sortable from "sortablejs";
+
+class adjustmentDialog{
+
+    constructor(dialog){
+        console.log('Окно Корректировки инициализировано');
+        this.root_dialog = dialog;
+        this.items = [];
+        this.init();
+    }
+
+
+    init(){
+        let object = this;
+
+
+        let focused = document.getElementById('adjustment_dialog_focused');
+        if(focused){
+            focused.focus();
+        }
+    }
+
+    finitaLaComedia(){
+        closeDialog(null, this.root_dialog.id);
+        delete window[this.root_dialog.id];
+    }
+
+    save(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(resp){
+            let root_id = object.root_dialog.id;
+            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+            object.root_dialog.setAttribute('id', 'adjustmentDialog' + resp.data.id);
+            object.root_dialog.setAttribute('data-id', resp.data.id);
+            object.freshContent(resp.data.id, function(){
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['adjustmentDialog' + resp.data.id] = drag_dialog;
+                drag_dialog.tag = 'adjustmentDialog' + resp.data.id;
+                window.helper.initDialogMethods();
+            });
+
+
+
+            // let dialog = document.getElementById('clientorderDialog' + resp.data.id);
+            // console.log(dialog);
+            // window['clientorderDialog' + resp.data.id] = new clientorderDialog(dialog);
+
+        });
+    }
+
+    saveAndClose(elem){
+        if(window.isXHRloading) return;
+        let object = this;
+        window.axform.send(elem, function(resp){
+            object.finitaLaComedia();
+        });
+    }
+
+    recalculate(){
+
+    };
+
+    freshContent(id, callback = null){
+        let object = this;
+
+        //var store_id = this.store_obj.value;
+
+        let data = {};
+        //data.store_id = store_id;
+        if(object.refer){
+            data.refer = object.refer;
+        }
+
+        window.axios({
+            method: 'post',
+            url: 'adjustment/' + id + '/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            //object.addPhoneMask();
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            callback();
+        });
+    }
+
+    addProduct(elem){
+        window.entity.addProductToList(elem, this, 'adjustment');
+    };
+
+    openProductmodal(){
+        let store_id = this.root_dialog.querySelector('input[name=store_id]').value;
+        window.openDialog('selectProduct', '&refer=' + this.root_dialog.id + '&store_id=' + store_id);
+    }
+
+    addItem(elem, tag){
+        let object = this;
+        let product_list = this.root_dialog.querySelector('.product_list');
+        this.items.push(elem);
+
+        try{
+            window.selectProductDialog.markAsAdded();
+        }catch (e) {
+            console.log(e);
+        }
+
+        product_list.insertAdjacentHTML('afterbegin', elem.html);
+
+        window.notification.notify( 'success', 'Товар добавлен к списку');
+        let item = this.root_dialog.querySelector('#product_selected_' + tag);
+        let inputs = item.getElementsByTagName('input');
+
+        [].forEach.call(inputs, function(elem){
+            var fn = window.helper.debounce(function(e) {
+                object.recalculate(e);
+            }, 50);
+            elem.addEventListener("keydown", fn);
+            elem.addEventListener("paste", fn);
+            elem.addEventListener("delete", fn);
+        });
+        this.recalculate();
+    }
+
+    removeItem(id, tag = null){
+
+        let object = this;
+        [].forEach.call(object.items, function(item){
+
+            if(item.id === id){
+                object.items.splice(
+                    object.items.indexOf(item), 1
+                );
+            }
+        });
+        if(tag !== null){
+            id = id + '_' + tag;
+        }
+        let product = this.root_dialog.querySelector('#product_selected_' + id).remove();
+        object.recalculate();
+    }
+
+    initLists(){
+        let available_list = document.querySelector('#available_list');
+        new Sortable(available_list, {
+            group: {
+                name: 'shared',
+                put: 'false'
+            },
+            sort: false,
+            animation: 0,
+            ghostClass: 'blue-background-class'
+        });
+    }
+
+}
+export default adjustmentDialog;

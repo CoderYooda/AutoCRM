@@ -21,8 +21,8 @@
                 <button onclick="openDialog('adjustmentDialog')" class="btn btn-sm white mb-0">Создать корректировку</button>
             </span>
         </div>
-        <div id="ajax-table-adjustmets" class="content-main d-flex flex-column flex white">
-            @include('provider_orders.elements.list_container')
+        <div id="ajax-table-adjustment" class="content-main d-flex flex-column flex white">
+            @include('adjustments.elements.list_container')
         </div>
     </div>
 @endsection

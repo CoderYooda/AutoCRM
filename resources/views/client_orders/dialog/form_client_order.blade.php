@@ -96,7 +96,7 @@
         </div>
         @endif
 
-        @if(isset($client_order))
+        @if(isset($client_order) && !$client_order->isFinished())
             <div class="b-r pr-3 mr-3">
                 <span class="item-title _500">Состояние заказа</span>
                 <div class="item-except font-weight-bolder h-1x">
@@ -117,7 +117,7 @@
             </div>
         @endif
     </div>
-    <form class="EntranceStoredListner clientOrderStoredListner WarrantStoredListner clientOrderSMSListner" action="{{ route('StoreClientOrder') }}" method="POST">
+    <form class="EntranceStoredListner clientOrderStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
         @csrf
         @if(isset($client_order) && $client_order->id != NULL)
             <input type="hidden" name="id" value="{{ $client_order->id }}">
@@ -155,7 +155,7 @@
                                 <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>
-                                            <input id="inpercents" name="inpercents" type="checkbox" @if($client_order && $client_order->inpercents) checked @endif>
+                                            <input id="inpercents" name="inpercents" type="checkbox" @if($client_order && $client_order->inpercents) checked @else checked @endif>
                                         </div>
                                     </span>
                             </div>
@@ -369,7 +369,10 @@
                 <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Товар из базы</button>
                 <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="btn btn-fw white"><i class="fa fa-plus"></i> Быстрый товар</button>
             </div>
-            <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+            @if(isset($client_order))
+                <button type="button" class="btn white" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
+            @endif
+            <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
             <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
             <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
 

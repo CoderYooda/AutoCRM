@@ -44,6 +44,10 @@ class storePage{
             object.prepareParams();
             object.reload();
         });
+        document.addEventListener('AdjustmentStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
         document.addEventListener('ShipmentStored', function(e){
             object.prepareParams();
             object.reload();

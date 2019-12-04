@@ -82,6 +82,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/providerorder/{id}/loaditems', 'ProviderOrdersController@loadItems')->name('LoadItemsProviderOrder');
     Route::post('/providerorder/{id}/fresh', 'ProviderOrdersController@fresh')->name('FreshProviderOrder');
 
+    #Корректировки
+    Route::post('/adjustment/store', 'AdjustmentController@store')->name('StoreAdjustment');// Строгое название
+    Route::post('/adjustment/{id}/fresh', 'AdjustmentController@fresh')->name('FreshAdjustment');
+
+
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 

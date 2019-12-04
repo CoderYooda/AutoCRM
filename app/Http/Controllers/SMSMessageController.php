@@ -47,6 +47,9 @@ class SMSMessageController extends Controller
                 } else {
                     return redirect()->back();
                 }
+            } else {
+                return response()->json([
+                    'message' => 'SMS отправить не удалось'], 500);
             }
         }
     }

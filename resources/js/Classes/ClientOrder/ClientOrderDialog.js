@@ -17,8 +17,6 @@ class clientorderDialog{
 
         var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
 
-
-
         ///Вешаем обрабочик на поле скидки/////////////
         let discount = object.root_dialog.querySelector('input[name=discount]');
         discount.addEventListener("keydown", fn);
@@ -31,6 +29,13 @@ class clientorderDialog{
         inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
 
         document.addEventListener('ShipmentStored', function(e){
             object.finitaLaComedia();
@@ -138,7 +143,9 @@ class clientorderDialog{
 
             console.log(resp);
         }).catch(function (error) {
-            console.log(error);
+            if(error.response && error.response.data.message){
+                window.notification.notify( 'error', error.response.data.message);
+            }
         }).then(function () {
         });
 

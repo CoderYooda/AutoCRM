@@ -134,11 +134,11 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3" for="discount">Скидка</label>
                                     <div class="col-sm-9 input-group">
-                                        <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($provider_order) value="{{ $provider_order->discount }}" @else value="0" @endif>
+                                        <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($provider_order) value="{{ $provider_order->discount }}" @else value="0" @endif>
                                         <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>
-                                            <input id="inpercents" name="inpercents" type="checkbox" @if($provider_order && $provider_order->inpercents) checked @endif>
+                                            <input id="inpercents" name="inpercents" type="checkbox" @if($provider_order && $provider_order->inpercents) checked @else checked @endif>
                                         </div>
                                     </span>
                                     </div>
@@ -195,7 +195,6 @@
                                 <th width="10%" style="min-width: 100px;">Цена</th>
                                 <th width="10%" style="min-width: 70px;">НДС, %</th>
                                 <th width="10%" style="min-width: 100px;">НДС</th>
-                                <th width="10%" style="min-width: 100px;">Всего</th>
                                 <th width="10%"></th>
                             </tr>
                             </thead>

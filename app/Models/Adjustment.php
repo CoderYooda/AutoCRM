@@ -12,10 +12,6 @@ class Adjustment extends Model
         'company_id',
         'do_date',
         'store_id',
-        'summ',
-        'itogo',
-        'discount',
-        'inpercents',
         'comment',
     ];
 
@@ -24,12 +20,17 @@ class Adjustment extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_adjustment', 'adjustment_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count', 'price');
     }
 
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
     public function normalizedData(){

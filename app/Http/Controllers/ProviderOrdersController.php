@@ -348,8 +348,8 @@ class ProviderOrdersController extends Controller
             'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required'],
-            'products.*.count' => ['integer', 'max:9999', 'min:1'],
-            'products.*.price' => ['integer', 'max:999999', 'min:1'],
+            'products.*.count' => ['required', 'integer', 'min:0', 'max:9999'],
+            'products.*.price' => ['numeric', 'between:1,1000000.00'],
         ];
 
         return $rules;

@@ -14,6 +14,7 @@ import barcodeDialog from "./Barcode/BarcodeDialog";
 import shipmentDialog from "./Shipment/ShipmentDialog";
 import categoryDialog from "./Category/CategoryDialog";
 import clientorderDialog from "./ClientOrder/ClientOrderDialog";
+import adjustmentDialog from "./Adjustment/AdjustmentDialog";
 import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
 import selectProviderOrderDialog from "./ProviderOrder/SelectProviderOrderDialog";
 import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
@@ -47,6 +48,7 @@ const classes = {
     moneymoveDialog,
     shipmentDialog,
     clientorderDialog,
+    adjustmentDialog,
     providerorderDialog,
     selectProviderOrderDialog,
     barcodeDialog,
@@ -173,25 +175,30 @@ class Helper{
         }
     }
 
-    printDocument(data){
-        axios({
-            method: form.getAttribute("method"),
-            url: form.getAttribute("action"),
-            data: data
-        }).then(function (response) {
+    printDocument(doc, id){
 
-        }).catch(function (error) {
+        //let form =
+        //console.log(data);
+        axios({
+            method: 'GET',
+            url: '/document?doc=' + doc + '&id=' + id,
+        }).then(function (response) {
+            var printContents = response.data;
+
+            let unprinted = document.getElementById('unprinted');
+            let printed = document.getElementById('printed');
+            unprinted.classList.add('hide');
+
+            printed.innerHTML = printContents;
+            window.print();
+
+            unprinted.classList.remove('hide');
+            printed.innerHTML = '';
+        }).then(function (error) {
 
         });
 
-        var printContents = document.getElementById(divName).innerHTML;
-        var originalContents = document.body.innerHTML;
 
-        document.body.innerHTML = printContents;
-
-        window.print();
-
-        document.body.innerHTML = originalContents;
     }
 
     insertParam(elem, key, value)

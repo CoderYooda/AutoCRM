@@ -62,8 +62,24 @@ class ClientOrder extends Model
         return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
-    public function normalizedData(){
+    public function normalizedData()
+    {
         return $this->created_at->format('d.m.Y (H:i)');
+    }
+
+    public function onlyData()
+    {
+        return $this->created_at->format('d.m.Y H:i');
+    }
+
+    public function isFinished()
+    {
+        if($this->status == 'complete'){
+            $status = true;
+        } else {
+            $status = false;
+        }
+        return $status;
     }
 
     public function getArticlesCountById($id){

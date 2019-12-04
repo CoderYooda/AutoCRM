@@ -89,6 +89,7 @@ class ClientOrdersController extends Controller
                 $article->complited = false;
             }
         }
+
         $total_complited = true;
 
         foreach($client_order->articles as $article){
@@ -354,6 +355,17 @@ class ClientOrdersController extends Controller
         return $client_orders;
     }
 
+    public static function getSingleClientOrder($request)
+    {
+        $client_order = ClientOrder::owned()->where(function($q) use ($request) {
+            if(isset($request['id']) && $request['id'] !== 'null') {
+                $q->where('id', $request['id'] );
+            }
+        })->first();
+
+        return $client_order;
+    }
+
 //    public function delete($id)
 //    {
 //        $client_order = ClientOrder::where('id', $id)->first();
@@ -376,9 +388,11 @@ class ClientOrdersController extends Controller
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required_without:quick_products'],
             'phone' => ['required'],
-            'products.*.*.count' => ['integer', 'min:1', 'max:9999'],
-            'products.*.*.price' => ['integer', 'min:1', 'max:999999'],
+            'products.*.count' => ['integer', 'min:1', 'max:9999'],
+            'products.*.price' => ['numeric', 'between:1,1000000.00'],
 
+            'products.new.*.price' => ['numeric', 'between:1,1000000.00'],
+            'products.new.*.count' => ['integer', 'min:1', 'max:9999'],
             'products.new.*.name' => ['required', 'min:4', 'string', 'max:255'],
             'products.new.*.article' => ['required', 'string', 'max:64'],
             'products.new.*.new_supplier_name' => ['required', 'string', 'max:64'],

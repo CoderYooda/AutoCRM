@@ -89,7 +89,8 @@ class PartnerController extends Controller
             $request['number'] = str_replace(' ', '', $request['number']);
         }
 
-        $request['company_id'] = Auth::user()->company()->first()->id;
+
+
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
@@ -102,14 +103,17 @@ class PartnerController extends Controller
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         if($partner->exists){
             $message = "Контрагент обновлен";
+            $request['user_id'] = $partner->user_id;
+            $request['company_id'] = $partner->company_id;
         } else{
+            $request['user_id'] = Auth::user()->id;
+            $request['company_id'] = Auth::user()->company()->first()->id;
             $message = "Контрагент создан";
         }
         $partner->fill($request->only($partner->fields));
         if(!$request['isfl']){
             $partner->fio = $request['ur_fio'];
         }
-        $partner->user_id = null;
         $partner->save();
         $phones = PhoneController::upsertPhones($request);
         PassportController::upsertPassport($request, $partner);
@@ -207,12 +211,13 @@ class PartnerController extends Controller
         ]);
     }
 
-    public function dialogSearch(Request $request){
+    public function dialogSearch(Request $request)
+    {
         $partners = Partner::where('fio', 'LIKE', '%' . $request['string'] .'%')
             ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
             ->orWhereHas('phones', function ($query) use ($request) {
             $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-        })->orderBy('id', 'DESC')->paginate(20);
+        })->orderBy('created_at', 'ASC')->paginate(20);
 
         $content = view('partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
         return response()->json([
@@ -278,7 +283,7 @@ class PartnerController extends Controller
                 }
                 $q->orWhere('barcode', $request['search']);
             }
-        })->orderBy('created_at', 'DESC')->paginate(11);
+        })->orderBy('created_at', 'ASC')->paginate(11);
 
         return $partners;
     }

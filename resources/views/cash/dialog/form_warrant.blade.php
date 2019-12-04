@@ -177,7 +177,7 @@
         </div>
         <div class="modal-footer">
             @if(isset($warrant))
-            <button type="button" class="btn white" onclick="window.helper.printDocument('warrant', {{ $warrant->id }})" >Печать</button>
+            <button type="button" class="btn white" onclick="window.helper.printDocument('out-warrant', {{ $warrant->id }})" >Печать</button>
             @endif
             <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button type="submit" class="btn success" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
