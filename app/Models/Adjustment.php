@@ -20,7 +20,7 @@ class Adjustment extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_adjustment', 'adjustment_id', 'article_id')
-            ->withPivot('count', 'price');
+            ->withPivot('prev_count', 'prev_price', 'count', 'price');
     }
 
     public function partner()

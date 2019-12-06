@@ -50,6 +50,20 @@ class AdjustmentController extends Controller
         $adjustment = Adjustment::firstOrNew(['id' => $request['id']]);
 
         if($adjustment->exists){
+
+            $articles = $adjustment->articles()->get();
+            $prev_data = [];
+            $store = $adjustment->store()->first();
+            foreach($articles as $article){
+                $prev_data[$article->id]['id'] = $article->id;
+                $prev_data[$article->id]['prev_count'] = $article->prev_count;
+                $prev_data[$article->id]['prev_price'] = $article->prev_price;
+
+
+                //$store->setArticleCount($article->id, $article->pivot->);
+               // $store->setArticleMidPrice($article->id, $vprice);
+            }
+
             //$store = $client_order->store()->first();
             $this->message = 'Корректировка обновлена';
             $wasExisted = true;
@@ -73,22 +87,34 @@ class AdjustmentController extends Controller
 
         $adjustment->save();
         $adjustment_data = [];
+        $store = $adjustment->store()->first();
+
         foreach($request['products'] as $id => $product) {
-            if ($id !== 'new') {
+
 
                 //$store->decreaseArticleCount($id, $product['count']);
 
-                $fact = $product['fact'];
-                $vprice = $product['price'];
+            $fact = $product['fact'];
+            $vprice = $product['price'];
 
-                $pivot_data = [
-                    'article_id' => (int)$product['id'],
-                    'adjustment_id' => $adjustment->id,
-                    'count' => (int)$fact,
-                    'price' => (double)$vprice
-                ];
-                $adjustment_data[] = $pivot_data;
-            }
+
+            $deviation_count = $store->getArticlesCountById($id) - $fact;
+            $deviation_price = $store->getMidPriceById($id) - $vprice;
+
+            $store->setArticleCount($id, $fact);
+            $store->setArticleMidPrice($id, $vprice);
+
+            $pivot_data = [
+                'article_id' => (int)$product['id'],
+                'adjustment_id' => $adjustment->id,
+                'prev_count' => (int)$fact + $deviation_count,
+                'count' => (int)$fact,
+                'price' => (double)$vprice,
+                'prev_price' => (double)$vprice + $deviation_price,
+                'deviation_count' => (int)$deviation_count,
+                'deviation_price' => (double)$deviation_price
+            ];
+            $adjustment_data[] = $pivot_data;
         }
 
         #Удаление всех отношений и запись новых (кастомный sync)

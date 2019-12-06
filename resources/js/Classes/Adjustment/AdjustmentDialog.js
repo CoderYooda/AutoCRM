@@ -9,6 +9,32 @@ class adjustmentDialog{
         this.init();
     }
 
+    checkInStock(){
+        let object = this;
+
+        let items = [];
+
+        [].forEach.call(object.items, function(elem){
+            items.push({
+                id:elem.id,
+            })
+        });
+
+        console.log(items);
+        // window.axios({
+        //     method: 'post',
+        //     url: 'adjustment/' + id + '/fresh',
+        //     data: data,
+        // }).then(function (resp) {
+        //     document.getElementById(resp.data.target).innerHTML = resp.data.html;
+        //     //object.addPhoneMask();
+        //     console.log('Вставили html');
+        // }).catch(function (error) {
+        //     console.log(error);
+        // }).then(function () {
+        //     callback();
+        // });
+    }
 
     init(){
         let object = this;

@@ -21,6 +21,7 @@ class CreateArticleStoreTable extends Migration
             $table->integer('count')->nullable()->default(0)->comment('Колличество');
             $table->integer('reserved')->unsigned()->nullable()->default(0)->comment('Зарезервировано');
             $table->boolean('isset')->unsigned()->nullable()->default(0)->comment('Включен в склад?');
+            $table->decimal('midprice')->unsigned()->nullable()->comment('Усредненная цена по складу');
             $table->timestamps();
         });
     }

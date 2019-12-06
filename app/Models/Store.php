@@ -18,7 +18,7 @@ class Store extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_store', 'store_id', 'article_id')
-            ->withPivot('location', 'count', 'isset');
+            ->withPivot('location', 'count', 'isset', 'midprice');
     }
 
     public function getArticlesCountById($id){
@@ -29,6 +29,16 @@ class Store extends Model
             $count = 0;
         }
         return $count;
+    }
+
+    public function getMidPriceById($id){
+        $article = $this->articles()->where('article_id', $id)->first();
+        if($article){
+            $midprice = $article->pivot->midprice;
+        } else {
+            $midprice = 0;
+        }
+        return $midprice;
     }
 
     public static function owned()
@@ -58,6 +68,24 @@ class Store extends Model
         $this->articles()->updateExistingPivot($article_id, ['count' => $total]);
 
         return $total;
+    }
+
+    public function setArticleCount($article_id, $count)
+    {
+        $this->articles()->syncWithoutDetaching($article_id, false);
+
+        $this->articles()->updateExistingPivot($article_id, ['count' => (int)$count]);
+
+        return true;
+    }
+
+    public function setArticleMidPrice($article_id, $midprice)
+    {
+        $this->articles()->syncWithoutDetaching($article_id, false);
+
+        $this->articles()->updateExistingPivot($article_id, ['midprice' => (int)$midprice]);
+
+        return true;
     }
 
     public function getCountByArticle($article_id){ #TODO

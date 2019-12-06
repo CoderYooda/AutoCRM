@@ -117,7 +117,7 @@
             </div>
         @endif
     </div>
-    <form class="EntranceStoredListner clientOrderStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
+    <form class="EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
         @csrf
         @if(isset($client_order) && $client_order->id != NULL)
             <input type="hidden" name="id" value="{{ $client_order->id }}">

@@ -14,7 +14,7 @@ class CreateShipmentWarrantTable extends Migration
     public function up()
     {
         Schema::create('shipment_warrant', function (Blueprint $table) {
-            $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
+            //$table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('warrant_id')->unsigned()->comment('Привязка к операции');
             $table->bigInteger('shipment_id')->unsigned()->comment('Привязка к продаже');
         });

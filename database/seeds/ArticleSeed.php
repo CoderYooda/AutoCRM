@@ -37,15 +37,15 @@ class ArticleSeed extends Seeder
             $fake_request['new_supplier_name'] = $json_article->brand;
             $fake_request['article'] = $json_article->article;
             $fake_request['name'] = $json_article->name;
-            $fake_request['midprice'] = floatval($json_article->price);
+            //$fake_request['midprice'] = floatval($json_article->price);
             try{
                 $article->store($fake_request);
             } catch (Exception $e){
                 echo "ошибка записи";
             }
 
-            if($index > 500)
-                break;
+//            if($index > 500)
+//                break;
             $this->command->getOutput()->progressAdvance();
         }
         $this->command->getOutput()->progressFinish();

@@ -23,7 +23,6 @@ class Article extends Model
         'barcode_local',
         'barcode',
         'name',
-        'midprice',
         'blockedCount',
         'blockedCount',
     ];

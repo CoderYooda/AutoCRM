@@ -101,7 +101,7 @@ class StoreController extends Controller
 
     public static function adjustmentTab($request)
     {
-        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustments'){
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment'){
             return view('adjustments.elements.list_container', compact('request'));
         }
         return view('adjustments.index', compact('request'));
