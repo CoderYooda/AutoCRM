@@ -6,7 +6,7 @@
     @if(!isset($adjustment))
     <td>
         <input class="form-control form-control-sm"
-               @if(isset($product)) value="{{ $product->getCountInStoreId(2) }}"@else value="0" @endif
+               @if(isset($product)) value="{{ $product->getCountInStoreId($request['store_id']) }}"@else value="0" @endif
                type="number" disabled >
     </td>
     @else

@@ -320,7 +320,7 @@ class ProductController extends Controller
                     $query->where('name', 'LIKE', '%' . $request['search'] .'%');
                 });
             }
-        })->orderBy('created_at', 'DESC')->paginate(21);
+        })->orderBy('created_at', 'DESC')->paginate(14);
     }
 
     public static function searchArticles($request)

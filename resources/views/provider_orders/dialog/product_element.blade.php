@@ -2,10 +2,10 @@
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 200px">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
-    <td><input name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
+    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
                @if(isset($request['count']) && $request['count'] != null) value="{{ $request['count'] }}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="1" @endif
                type="number" ></td>
-    <td><input name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
+    <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
                @if(isset($product->pivot->count)) value="{{$product->pivot->price}}"@else value="0" @endif
                type="number" min="0" step="0.1" ></td>
     <td><input name="products[{{ $product->id }}][nds_percent]" class="form-control form-control-sm"

@@ -25,7 +25,7 @@
                         <button onclick="openDialog('productDialog')" class="btn btn-sm white mb-0">Новый товар</button>
                     </span>
                 </div>
-                <div id="ajax-table-store" class="content-main d-flex flex" style="max-height: calc(100% - 57px);">
+                <div id="ajax-table-store" class="content-main d-flex flex-column flex white">
                     @include('store.elements.table_container')
                 </div>
             </div>

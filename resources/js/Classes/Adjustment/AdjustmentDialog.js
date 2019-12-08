@@ -120,7 +120,7 @@ class adjustmentDialog{
     };
 
     openProductmodal(){
-        let store_id = this.root_dialog.querySelector('input[name=store_id]').value;
+        let store_id = this.root_dialog.querySelector('select[name=store_id]').value;
         window.openDialog('selectProduct', '&refer=' + this.root_dialog.id + '&store_id=' + store_id);
     }
 

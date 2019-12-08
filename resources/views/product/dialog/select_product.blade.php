@@ -7,6 +7,9 @@
             @if($request['refer'])
             <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
+            @if($request['store_id'])
+            <input id="store_id" type="hidden" name="store_id" value="{{ $request['store_id'] }}">
+            @endif
             <div class="input-group">
                 {{--<span class="input-group-prepend">--}}
                     {{--<select id="product_search_store" name="store_id" class="store_select form-control form-control-sm input-c">--}}

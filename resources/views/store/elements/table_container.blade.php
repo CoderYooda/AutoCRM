@@ -23,56 +23,58 @@
                 </div>
             </div>
         </div>
-        {{--<div class="d-flex flex white" id="content-body">--}}
-            <div class="w-100" id="chat-list" style="max-height: calc(100% - 260px);">
-                {!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
-                @if( $articles->count() > 0)
-                {{--<div class="" >--}}
-                    <div class="d-flex flex white" data-simplebar style="max-height: calc(100% - 117px);">
-                        <table class="table table-hover mb-3" style="white-space: nowrap;">
-                            <thead>
-                            <tr>
-                                <th class="w-xxl">Модель</th>
-                                <th class="w-sm">Артикул</th>
-                                <th>Бренд</th>
-                                <th>Наличие</th>
-                                <th>Заявки</th>
-                                <th>Цена</th>
-                                <th class="w-62">
-                                    @if(isset($categories['parent']))
-                                        <a onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>
-                                    @endif
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($articles as $article)
-                                @include('store.elements.table_element')
-                            @endforeach
-                            </tbody>
-                        </table>
 
+        <div class="content-main d-flex flex-column flex white">
+            {!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
+            <div class="d-flex flex white" style="    height: 1px;">
+
+                <div class="w-100 h-100" data-simplebar>
+                    @if( $articles->count() > 0)
+
+                            <table class="table table-hover" style="max-height: 400px">
+                                <thead>
+                                <tr>
+                                    <th class="w-xxl">Модель</th>
+                                    <th class="w-sm">Артикул</th>
+                                    <th>Бренд</th>
+                                    <th>Наличие</th>
+                                    <th>Заявки</th>
+                                    <th>Цена</th>
+                                    <th class="w-62">
+                                        @if(isset($categories['parent']))
+                                            <a onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>
+                                        @endif
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($articles as $article)
+                                    @include('store.elements.table_element')
+                                @endforeach
+                                </tbody>
+                            </table>
+
+                    @else
+                        <div class="no-result">
+                            <div class="p-4 text-center">
+                                По данным критериям ничего нет.
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+            </div>
+            <div class="p-3 b-t mt-auto">
+                <div class="d-flex align-items-center">
+                    <div class="flex">
+                        {{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}
                     </div>
-                {{--</div>--}}
-                @else
-                    <div class="no-result">
-                        <div class="p-4 text-center">
-                            По данным критериям ничего нет.
-                        </div>
-                    </div>
-                @endif
-                <div class="p-3 b-t mt-auto">
-                    <div class="d-flex align-items-center">
-                        <div class="flex">
-                            {{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}
-                        </div>
-                        <div>
-                            <span class="text-muted">Total:</span>
-                            <span id="count"></span>
-                        </div>
+                    <div>
+                        <span class="text-muted">Total:</span>
+                        <span id="count"></span>
                     </div>
                 </div>
             </div>
-        {{--</div>--}}
+        </div>
     </div>
 </div>
