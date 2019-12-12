@@ -47,56 +47,20 @@ class AdjustmentController extends Controller
             }
         }
 
-        $adjustment = Adjustment::firstOrNew(['id' => $request['id']]);
-
-        if($adjustment->exists){
-
-            $articles = $adjustment->articles()->get();
-            $prev_data = [];
-            $store = $adjustment->store()->first();
-            foreach($articles as $article){
-                $prev_data[$article->id]['id'] = $article->id;
-                $prev_data[$article->id]['prev_count'] = $article->prev_count;
-                $prev_data[$article->id]['prev_price'] = $article->prev_price;
-
-
-                //$store->setArticleCount($article->id, $article->pivot->);
-               // $store->setArticleMidPrice($article->id, $vprice);
-            }
-
-            //$store = $client_order->store()->first();
-            $this->message = 'Корректировка обновлена';
-            $wasExisted = true;
-
-//            #Возвращаем на склад все товары из заказа
-//            if($client_order->status === 'complete') {
-//                foreach ($client_order->articles()->get() as $article) {
-//                    $store = $client_order->store()->first();
-//                    $store->increaseArticleCount($article->id, $article->pivot->count);
-//                }
-//            }
-
-        } else {
-            $adjustment->company_id = Auth::user()->company()->first()->id;
-            $this->message = 'Корректировка сохранена';
-            $wasExisted = false;
-        }
-
-
+        $adjustment = new Adjustment();
+        $adjustment->company_id = Auth::user()->company()->first()->id;
+        $this->message = 'Корректировка сохранена';
         $adjustment->fill($request->only($adjustment->fields));
-
         $adjustment->save();
+
+
         $adjustment_data = [];
         $store = $adjustment->store()->first();
 
         foreach($request['products'] as $id => $product) {
 
-
-                //$store->decreaseArticleCount($id, $product['count']);
-
             $fact = $product['fact'];
             $vprice = $product['price'];
-
 
             $deviation_count = $store->getArticlesCountById($id) - $fact;
             $deviation_price = $store->getMidPriceById($id) - $vprice;
@@ -116,7 +80,6 @@ class AdjustmentController extends Controller
             ];
             $adjustment_data[] = $pivot_data;
         }
-
         #Удаление всех отношений и запись новых (кастомный sync)
         $adjustment->articles()->sync($adjustment_data, true);
 

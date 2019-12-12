@@ -29,6 +29,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Настройки
     Route::get('/settings', 'SettingsController@index')->name('SettingsIndex'); // Строгое название
 
+    Route::post('/settings/base/store', 'SettingsController@baseStore')->name('BaseSettingsStore');
+    Route::post('/settings/base/fresh', 'SettingsController@freshBaseStore')->name('FreshBaseStore');
+
     #Категории
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');

@@ -16,6 +16,8 @@ class CreateSettingsTable extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
+            $table->char('name')->comment('Описание настройки');
+            $table->char('type')->comment('Тип поля');
             $table->char('key')->comment('Ключ');
             $table->char('value')->comment('Значение');
             $table->timestamps();

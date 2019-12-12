@@ -33,10 +33,10 @@ class Store extends Model
 
     public function getMidPriceById($id){
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
+        $midprice = 0;
+
+        if($article && $article->pivot->midprice != null){
             $midprice = $article->pivot->midprice;
-        } else {
-            $midprice = 0;
         }
         return $midprice;
     }
@@ -45,6 +45,34 @@ class Store extends Model
     {
         $company_id = Auth::user()->company()->first()->id;
         return self::where('company_id', $company_id);
+    }
+
+    public function recalculateMidprice($article_id)
+    {
+//        $current_midprice = $this->articles()->where('id', $article_id)->first()->pivot->midprice;
+//        $current_count = $this->articles()->where('id', $article_id)->first()->pivot->midprice;
+
+        $entrance_count = Entrance::owned()->get();
+
+        dd($entrance_count);
+
+        //articles()->where('article_id', $article_id)->sum('count');
+        $entrance_summ = 2;//Entrance::owned()->where('article_id', $article_id)->sum('price');
+
+        $midprice = $entrance_summ / $entrance_count;
+
+        $this->articles()->updateExistingPivot($article_id, ['midprice' => $midprice], false);
+
+        return $midprice;
+    }
+
+    public function insertProducts($id, $count, $price)
+    {
+        $current_midprice = $this->articles()->where('id', $id)->first()->pivot->midprice;
+
+        dd($current_midprice);
+
+        //$this
     }
 
     public static function getBufferStore()

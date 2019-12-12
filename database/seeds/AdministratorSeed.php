@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Store;
 use App\Models\Partner;
+use App\Models\Setting;
 
 class AdministratorSeed extends Seeder
 {
@@ -70,6 +71,7 @@ class AdministratorSeed extends Seeder
         $user->save();
         $user->company()->associate($company);
 
+        Setting::create(['name' => 'Стандартная наценка', 'company_id' => $company->id,  'type' => 'number', 'key' => 'markup', 'value' => '0']);
 
     }
 }

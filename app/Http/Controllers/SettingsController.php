@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Models\Cashbox;
+use App\Models\Company;
 use App\Models\DdsArticle;
+use App\Models\Setting;
 use App\Models\Store;
+use Auth;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -39,10 +42,13 @@ class SettingsController extends Controller
     public static function indexTab($request)
     {
 
+        $company = Auth::user()->company()->first();
+        $settings = Setting::owned()->get();
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
             return view('settings.index', compact('request'));
         }
-        return view('settings.index', compact('request'));
+        return view('settings.index', compact('request', 'company', 'settings'));
     }
 
     public static function cashboxTab($request)
@@ -78,4 +84,48 @@ class SettingsController extends Controller
         }
         return view('settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
     }
+
+    //Saves
+
+    public function baseStore(Request $request)
+    {
+        $company = Company::firstOrNew(['id' => $request['id']]);
+        $company->name = $request['company_name'];
+        $company->save();
+
+        $settings = Setting::owned()->get();
+
+        foreach($settings as $setting){
+            if($request[$setting->key] != null){
+                $setting->value = $request[$setting->key];
+                $setting->save();
+            }
+        }
+
+        if($request->expectsJson()){
+            return response()->json([
+                'message' => 'Настройки обновлены',
+                'id' => $company->id,
+                'event' => 'SettingsStored',
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+
+    }
+
+    public function freshBaseStore(Request $request)
+    {
+        $company = Company::where('id', $request['id'])->first();
+        $settings = Setting::owned()->get();
+
+        $content = view('settings.elements.base_settings', compact( 'company','request', 'settings'))
+            ->render();
+
+        return response()->json([
+            'html' => $content,
+            'target' => 'baseSettingsForm',
+        ], 200);
+    }
+
 }

@@ -1,5 +1,8 @@
 <tr class="product_list_elem " id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
+
+    <input name="products[{{ $product->id }}][price]" value="{{ $providerorder->getArticlePrice($product->id) }}" type="hidden" >
+
     <td title="{{ $product->name }}"><span class="product_list_element_name">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>

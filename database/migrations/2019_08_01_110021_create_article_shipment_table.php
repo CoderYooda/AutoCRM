@@ -18,8 +18,10 @@ class CreateArticleShipmentTable extends Migration
             $table->bigInteger('article_id')->unsigned()->comment('Привязка к товару');
             $table->bigInteger('shipment_id')->unsigned()->comment('Привязка к поступлению');
             $table->integer('count')->unsigned()->comment('Кол - во');
+            $table->double('midprice')->unsigned()->nullable()->comment('Цена закупочная');
             $table->double('price')->unsigned()->comment('Цена');
             $table->double('total')->unsigned()->comment('Цена общая');
+            $table->char('status')->comment('Статус товара');
         });
     }
 

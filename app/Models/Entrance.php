@@ -20,8 +20,8 @@ class Entrance extends Model
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_entrance', 'entrance_id', 'article_id')
-            ->withPivot('count');
+        return $this->belongsToMany('App\Models\Article', 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
+            ->withPivot('count', 'price');
     }
 
     public function partner()

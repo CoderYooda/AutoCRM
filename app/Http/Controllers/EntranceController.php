@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Entrance;
 use Carbon\Carbon;
+use App\Models\ArticleStock;
 use Auth;
 
 class EntranceController extends Controller
@@ -64,8 +65,17 @@ class EntranceController extends Controller
         }
 
 
+        # Склад с которым оперируем
+        if(isset($entranceWasExisted) && $entranceWasExisted) {
+            $store = $entrance->providerorder()->first()->store()->first();
+        } else {
+            $store = Auth::user()->getStoreFirst();
+        }
+
+
         $messages = [];
         foreach($request['products'] as $id => $product) {
+
             $providerorder_id = $request['providerorder_id'];
             $providerorder = ProviderOrder::owned()->where('id', $providerorder_id)->first();
             $entrance_count = $providerorder->getArticleEntredCount($id, $entrance->id);
@@ -75,6 +85,12 @@ class EntranceController extends Controller
             if($entrance_count + $form_count > $providers_count){
                 $messages['products[' . $id . '][count]'][] = 'Кол-во не может быть больше чем в заявке';
             }
+
+            #Что то не понятно как дальше
+//            for ($i = 0; $i <= (int)$product['count']; $i++) {
+//                ArticleStock::loadProductToStore($product['id'], $store->id, $product['price']);
+//            }
+
         }
 
         if(count($messages) > 0){
@@ -103,12 +119,6 @@ class EntranceController extends Controller
 
 
 
-        # Склад с которым оперируем
-            if(isset($entranceWasExisted) && $entranceWasExisted) {
-                $store = $entrance->providerorder()->first()->store()->first();
-            } else {
-                $store = Auth::user()->getStoreFirst();
-            }
 
         # Исходные состояния товаров к поступлению до операции
             $previous_article_entrance = $entrance->articles()->get();
@@ -171,6 +181,7 @@ class EntranceController extends Controller
         #Добавляем на склад все товары из поступления
             foreach($entrance->articles()->get() as $article){
                 $store->increaseArticleCount($article->id, $article->pivot->count);
+                $store->recalculateMidprice($article->id);
             }
 
         #Добавляем к балансу контрагента
@@ -218,7 +229,8 @@ class EntranceController extends Controller
         $data = [
             'store_id' => $store->id,
             'count' => $product['count'],
-            //'price' => $product['price'],
+            'price' => $product['price'],
+            'company_id' => Auth::user()->company()->first()->id,
             //'total' => $vtotal,
         ];
         return $data;
@@ -308,6 +320,8 @@ class EntranceController extends Controller
         foreach($entrance->articles()->get() as $article){
             $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
         }
+
+        $entrance->articles()->sync(null);
 
         $entrance->delete();
         $this->status = 200;

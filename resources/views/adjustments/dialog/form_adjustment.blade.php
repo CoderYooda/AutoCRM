@@ -8,7 +8,7 @@
     @endif
     class="dialog adjustment_dialog" style="width:880px;">
     @if(isset($adjustment) && $adjustment->id != NULL)
-        <div class="titlebar">Корректировка №{{ $adjustment->id }}</div>
+        <div class="titlebar">Корректировка №{{ $adjustment->id }} от {{ $adjustment->normalizedData() }}</div>
     @else
         <div class="titlebar">Новая корректировка</div>
     @endif
@@ -34,7 +34,7 @@
                                 <div class="form-group row">
                                     <label for="partner_id" class="col-sm-3 col-form-label">Склад</label>
                                     <div class="col-sm-9">
-                                        <select onchange="{{ $class }}.checkInStock()" name="store_id" class="form-control input-c" style="min-width: 200px;">
+                                        <select onchange="{{ $class }}.checkInStock()" name="store_id" class="form-control input-c" @if(isset($adjustment)) disabled @endif>
                                             @foreach($stores as $store)
                                                 <option value="{{ $store->id }}" @if(isset($adjustment) && $adjustment->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
                                             @endforeach

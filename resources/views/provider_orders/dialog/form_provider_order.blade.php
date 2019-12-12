@@ -9,9 +9,9 @@
     @endif
     class="dialog provider_order_dialog" style="width:880px;">
         @if(isset($provider_order) && $provider_order->id != NULL)
-            <div class="titlebar">Заказ поставщику №{{ $provider_order->id }}</div>
+            <div class="titlebar">Заявка поставщику №{{ $provider_order->id }}</div>
         @else
-            <div class="titlebar">Новый заказ поставщику</div>
+            <div class="titlebar">Новая заявка поставщику</div>
         @endif
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
         <div class="modal-header dark" style="justify-content: normal;">

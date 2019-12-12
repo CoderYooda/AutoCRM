@@ -33,8 +33,14 @@ class Adjustment extends Model
         return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
-    public function normalizedData(){
+    public function normalizedData()
+    {
         return $this->created_at->format('d.m.Y (H:i)');
+    }
+
+    public function onlyData()
+    {
+        return $this->created_at->format('d.m.Y H:i');
     }
 
     public function getArticlesCountById($id){

@@ -36,9 +36,9 @@
                                 <tr>
                                     <th class="w-xxl">Модель</th>
                                     <th class="w-sm">Артикул</th>
-                                    <th>Бренд</th>
+                                    <th>Производитель</th>
                                     <th>Наличие</th>
-                                    <th>Заявки</th>
+                                    {{--<th>Заявки</th>--}}
                                     <th>Цена</th>
                                     <th class="w-62">
                                         @if(isset($categories['parent']))

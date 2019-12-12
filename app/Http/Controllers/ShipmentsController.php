@@ -41,6 +41,8 @@ class ShipmentsController extends Controller
         #Добавляем к балансу контрагента
         $shipment->partner()->first()->subtraction($shipment->itogo);
 
+        $shipment->articles()->sync(null);
+
         $shipment->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';
@@ -151,12 +153,18 @@ class ShipmentsController extends Controller
                 'article_id' => (int)$product['id'],
                 'shipment_id' => $shipment->id,
                 'count' => (int)$vcount,
+                'midprice' => $store->getMidPriceById((int)$product['id']),
                 'price' => (double)$vprice,
-                'total' => (double)$vtotal
+                'total' => (double)$vtotal,
+                'status' => 'given'
             ];
+
+            if(!$shipmentWasExisted){
+                $pivot_data['midprice'] = $store->getMidPriceById($product['id']);
+            }
+
             $shipment_data[] = $pivot_data;
         }
-
         #Удаление всех отношений и запись новых (кастомный sync)
         $shipment->syncArticles($shipment->id, $shipment_data);
 

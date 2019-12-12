@@ -55,7 +55,7 @@ class Article extends Model
     public function stores()
     {
         return $this->belongsToMany('App\Models\Store', 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'count', 'isset');
+            ->withPivot('location', 'count', 'isset', 'midprice');
     }
 
     public static function owned(){
@@ -90,7 +90,44 @@ class Article extends Model
         } else {
             $count = 0;
         }
+
         return $count;
+    }
+
+    public function getCountInOthersStores($store_id)
+    {
+        return $this->stores()->where('store_id', '!=', $store_id)->sum('count');
+    }
+
+    public function getMidPriceByStoreId($store_id)
+    {
+        $relation = $this->stores()->where('store_id',  $store_id)->first();
+        $midprice = 0;
+        if($relation){
+            $midprice = $relation->pivot->midprice;
+        }
+        return $midprice;
+    }
+
+    public function getReservedCount()
+    {
+        return 1;
+    }
+
+    public function getMidPriceInStoreId($store_id)
+    {
+        $article = $this->stores()->get()->where('id', $store_id)->first();
+
+        if($article){
+            $midprice = $article->pivot->midprice;
+            if($midprice === null){
+                $midprice = 0;
+            }
+        } else {
+            $midprice = 0;
+        }
+
+        return $midprice;
     }
 
     public function addToStore($store_id, $count)

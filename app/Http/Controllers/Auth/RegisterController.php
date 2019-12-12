@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\Partner;
+use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
 use App\Http\Controllers\Controller;
@@ -120,6 +121,7 @@ class RegisterController extends Controller
         $partner->save();
 
 
+        Setting::create(['name' => 'Стандартная наценка', 'company_id' => $company->id, 'type' => 'number', 'key' => 'markup', 'value' => '0']);
 
 
         return $user;

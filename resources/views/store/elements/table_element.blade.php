@@ -12,9 +12,10 @@
         </a>
     </td>
     <td>@if($article->supplier()->first()){{ $article->supplier()->first()->name}} @elseНе указано@endif</td>
-    <td>{{ $article->stores()->sum('count') }}</td></td>
-    <td>0</td>
-    <td>1</td>
+
+    <td>{{ $article->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) }} / {{ $article->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id) }}</td></td>
+    {{--<td>{{ $article->getReservedCount() }}</td>--}}
+    <td>{{ $article->getMidPriceByStoreId(Auth::user()->partner()->first()->store()->first()->id) }}</td>
     <td style="position: relative;">
         <div class="item-action-hovered">
             <a onclick="openDialog('productDialog', '&product_id={{ $article->id }}')" class="pr-2" >
