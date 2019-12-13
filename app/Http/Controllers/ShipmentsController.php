@@ -247,7 +247,7 @@ class ShipmentsController extends Controller
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required'],
             'products.*.count' => ['integer', 'max:9999'],
-            'products.*.price' => ['integer', 'max:999999'],
+            'products.*.price' => ['numeric', 'between:1,1000000.00'],
         ];
 
         return $rules;

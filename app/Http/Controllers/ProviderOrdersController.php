@@ -257,7 +257,13 @@ class ProviderOrdersController extends Controller
                 $provider_order->articles()->save($actor_product, $pivot_data);
             }
 
-            //$store->articles()->updateExistingPivot($actor_product->id, ['count' => $count]);
+            foreach($provider_order->entrances()->get() as $entrance){
+                $entrance->freshPriceByArticleId($product['id'], $vprice);
+            }
+
+            $store = Store::where('id', $request['store_id'])->first();
+            $store->recalculateMidprice($product['id']);
+
         }
 
 

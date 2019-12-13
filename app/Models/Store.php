@@ -52,12 +52,24 @@ class Store extends Model
 //        $current_midprice = $this->articles()->where('id', $article_id)->first()->pivot->midprice;
 //        $current_count = $this->articles()->where('id', $article_id)->first()->pivot->midprice;
 
-        $entrance_count = Entrance::owned()->get();
+        $entrances = Entrance::owned()->whereHas('articles', function($q) use ($article_id){
+            $q->where('article_id', $article_id);
+        })->get();
 
-        dd($entrance_count);
+        $entrance_count = 0;
+        $entrance_summ = 0;
 
-        //articles()->where('article_id', $article_id)->sum('count');
-        $entrance_summ = 2;//Entrance::owned()->where('article_id', $article_id)->sum('price');
+
+
+        foreach($entrances as $entrance){
+            $count = $entrance->articles()->where('article_id', $article_id)->first()->pivot->count;
+            $entrance_count += $count;
+
+
+
+            $entrance_summ += ($count * $entrance->articles()->where('article_id', $article_id)->first()->pivot->price);
+
+        }
 
         $midprice = $entrance_summ / $entrance_count;
 

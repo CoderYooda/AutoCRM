@@ -270,7 +270,7 @@ class createEntrance{
             }
         }).then(function (resp) {
 
-            console.log(resp);
+           // console.log(resp);
 
             // var isset = object.items.map(function(e){
             //     return e.id;

@@ -125,7 +125,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3" for="discount">Скидка</label>
                             <div class="col-sm-9 input-group">
-                                <input type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment) value="{{ $shipment->discount }}" @else value="0" @endif>
+                                <input onclick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment) value="{{ $shipment->discount }}" @else value="0" @endif>
                                 <span class="input-group-append">
                                         <div class="input-group-text">
                                           <label class="mb-0 pr-2" for="inpercents">В процентах</label>

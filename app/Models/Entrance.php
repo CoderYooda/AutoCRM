@@ -53,6 +53,12 @@ class Entrance extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function freshPriceByArticleId($article_id, $price)
+    {
+        $this->articles()->updateExistingPivot($article_id, ['price' => $price], false);
+        return true;
+    }
+
     public function migrateInStore($store, $newStore)
     {
         foreach($this->articles()->get() as $article){

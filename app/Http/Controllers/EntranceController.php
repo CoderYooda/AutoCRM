@@ -153,7 +153,7 @@ class EntranceController extends Controller
         }
 
         # Синхронизируем товары к поступлению
-            $entrance->articles()->sync($article_entrance_pivot_data, true);
+            $entrance->articles()->sync($article_entrance_pivot_data, false);
 
         #Обработка ответа
             if(isset($entranceWasExisted) && $entranceWasExisted) {

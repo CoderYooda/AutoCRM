@@ -6,7 +6,7 @@
     <td title="{{ $product->name }}"><span class="product_list_element_name">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>
-    <td><input name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
+    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
                @if($product->count != null) value="{{ $product->count }}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
     <td>

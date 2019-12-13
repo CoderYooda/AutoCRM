@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\SettingsController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -102,11 +103,15 @@ class Article extends Model
     public function getMidPriceByStoreId($store_id)
     {
         $relation = $this->stores()->where('store_id',  $store_id)->first();
+
+        $markup = (int)SettingsController::getSettingByKey('markup')->value;
+
         $midprice = 0;
         if($relation){
             $midprice = $relation->pivot->midprice;
+
         }
-        return $midprice;
+        return $midprice + ( $midprice / 100 * $markup );
     }
 
     public function getReservedCount()

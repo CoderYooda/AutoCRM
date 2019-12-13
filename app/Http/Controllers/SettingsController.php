@@ -128,4 +128,13 @@ class SettingsController extends Controller
         ], 200);
     }
 
+    public static function getSettingByKey($key)
+    {
+        $setting = Setting::owned()->where('key', $key)->first();
+        if($setting === null){
+            $setting = false;
+        }
+        return $setting;
+    }
+
 }
