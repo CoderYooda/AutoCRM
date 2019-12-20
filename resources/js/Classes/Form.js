@@ -23,8 +23,6 @@ class AxForm{
             data: data
         }).then(function (response) {
 
-
-
             if(response.data.redirect){
                 goto(response.data.redirect);
             } else {

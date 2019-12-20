@@ -10,7 +10,7 @@
             <button onclick="openDialog('moneymoveDialog')" class="btn btn-sm white mb-0">Переместить средства</button>
         </span>
         </div>
-        <div id="ajax-table-moneymove" class="content-main d-flex flex-column flex">
+        <div id="ajax-table-cashmove" class="content-main d-flex flex-column flex">
             @include('cash.elements.moneymove_list_container')
         </div>
     </div>

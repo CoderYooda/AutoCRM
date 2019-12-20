@@ -9,19 +9,15 @@
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
-            <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
+            <button onclick="{{ $class }}.openSelectCategoryDialog()" type="button" name="category_id" class="category_select form-control text-left button_select">
                 @if(isset($product))
-                    <option value="{{ $product->category()->first()->id }}">{{ $product->category()->first()->name }}</option>
+                    {{ $product->category()->first()->name }}
                 @elseif(isset($category))
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    {{ $category->name }}
                 @else
-                    <option>Корневая директория</option>
+                    Корневая директория
                 @endif
-            </select>
-            <div class="input-group-append">
-                <button onclick="{{ $class }}.openSelectCategoryDialog()"
-                        class="btn white" type="button"><i class="fa fa-bars"></i></button>
-            </div>
+            </button>
         </div>
     </div>
     <div class="form-group">
@@ -30,18 +26,15 @@
             @if(isset($request) && $request['brand'] != NULL)
             <input type="hidden" name="new_supplier_name" value="{{ $request['brand'] }}">
             @endif
-            <select name="supplier_id" disabled class="supplier_select form-control input-c noarrow fake-disabled" readonly>
+            <button onclick="{{ $class }}.openSelectSupplierDialog()" type="button" name="supplier_id" class="supplier_select form-control text-left button_select">
                 @if(isset($product))
-                    <option value="{{ $product->supplier()->first()->id }}" hidden>{{ $product->supplier()->first()->name }}</option>
+                    {{ $product->supplier()->first()->name }}
                 @elseif(isset($request) && $request['brand'] != NULL)
-                    <option hidden>{{ $request['brand'] }}</option>
+                    {{ $request['brand'] }}
                 @else
-                    <option value="0" hidden>Не выбран</option>
+                    Не выбран
                 @endif
-            </select>
-            <div class="input-group-append">
-                <button onclick="{{ $class }}.openSelectSupplierDialog()" class="btn white" type="button"><i class="fa fa-bars"></i></button>
-            </div>
+            </button>
         </div>
     </div>
     <div class="form-group">

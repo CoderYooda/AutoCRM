@@ -59,8 +59,8 @@ class CashController extends Controller
         $income =  WarrantController::getIncomeCount($request);
         $outcome = WarrantController::getOutcomeCount($request);
 
-        if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table'){
-            return view('cash.cashmove', compact('income','outcome','request'));
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){
+            return view('cash.elements.moneymove_list_container', compact('income','outcome','request'));
         }
         return view('cash.cashmove', compact('income','outcome', 'request'));
     }

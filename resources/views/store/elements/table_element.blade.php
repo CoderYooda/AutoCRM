@@ -1,17 +1,17 @@
-<tr class="list-item" id="product_{{ $article->id }}">
+<tr ondblclick="openDialog('productDialog', '&product_id={{ $article->id }}')" class="list-item" id="product_{{ $article->id }}">
     <td>
         <div class="compressed article" title="{{ $article->name }}">
-            <a onclick="openDialog('productDialog', '&product_id={{ $article->id }}')">
-                {{ $article->name }}
-            </a>
+            {{ $article->name }}
         </div>
     </td>
     <td>
-        <a onclick="openDialog('productDialog', '&product_id={{ $article->id }}')">
+        <a onclick="window.helper.copy('{{ $article->article }}');">
             {{ $article->article }}
         </a>
     </td>
-    <td>@if($article->supplier()->first()){{ $article->supplier()->first()->name}} @elseНе указано@endif</td>
+    <td>
+        @if($article->supplier()->first())<a onclick="window.helper.copy('{{ $article->supplier()->first()->name }}');">{{ $article->supplier()->first()->name }}</a>@elseНе указано@endif
+    </td>
 
     <td>{{ $article->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) }} / {{ $article->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id) }}</td></td>
     {{--<td>{{ $article->getReservedCount() }}</td>--}}

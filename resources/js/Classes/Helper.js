@@ -261,5 +261,19 @@ class Helper{
             '<div>Табуляция - ' + object.active_tab + '</div>'+
         document.body.appendChild(elem);
     }
+
+    copy(str){
+        let tmp   = document.createElement('INPUT'), // Создаём новый текстовой input
+            focus = document.activeElement; // Получаем ссылку на элемент в фокусе (чтобы не терять фокус)
+
+        tmp.value = str; // Временному input вставляем текст для копирования
+
+        document.body.appendChild(tmp); // Вставляем input в DOM
+        tmp.select(); // Выделяем весь текст в input
+        document.execCommand('copy'); // Магия! Копирует в буфер выделенный текст (см. команду выше)
+        document.body.removeChild(tmp); // Удаляем временный input
+        focus.focus(); // Возвращаем фокус туда, где был
+        window.notification.notify( 'success', 'Скопировано в буфер');
+    }
 }
 export default Helper;

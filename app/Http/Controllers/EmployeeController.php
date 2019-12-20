@@ -18,7 +18,7 @@ class EmployeeController extends Controller
             $content = view('employee.index', compact('request'))->render();
             return response()->json([
                 'target' => $target,
-                'page' => 'Контрагенты',
+                'page' => 'Сотрудники',
                 'html' => $content
             ]);
         } elseif($request->expectsJson() && $request['search'] != NULL)

@@ -100,7 +100,7 @@ class Article extends Model
         return $this->stores()->where('store_id', '!=', $store_id)->sum('count');
     }
 
-    public function getMidPriceByStoreId($store_id)
+    public function getMidPriceByStoreId($store_id, $isInteger = null)
     {
         $relation = $this->stores()->where('store_id',  $store_id)->first();
 
@@ -111,7 +111,19 @@ class Article extends Model
             $midprice = $relation->pivot->midprice;
 
         }
-        return $midprice + ( $midprice / 100 * $markup );
+
+        $retail = $midprice + ( $midprice / 100 * $markup );
+        
+        if( $retail === 0){
+            if($isInteger){
+                return 0;
+            } else {
+                return 'Не уст.';
+            }
+        } else {
+            return $retail;
+        }
+
     }
 
     public function getReservedCount()

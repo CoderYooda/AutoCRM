@@ -2,6 +2,11 @@
 <div id="selectCashboxDialog" class="dialog" style="width:450px;">
     <div class="titlebar">Выбор кассового аппарата</div>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
+    @if($request['type'] != null)
+        <input name="type" type="hidden" value="{{ $request['type'] }}">
+    @else
+        <input name="type" type="hidden" value="">
+    @endif
     <div class="navbar dark no-radius box-shadow pos-rlt">
         <form class="flex">
             @if($request['refer'])

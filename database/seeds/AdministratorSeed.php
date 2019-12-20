@@ -53,7 +53,7 @@ class AdministratorSeed extends Seeder
             'email' => 'CoderYooda2@gmail.com',
             'phone' => '79524365064',
             'company_id' => $company->id,
-            'password' => bcrypt('senatorov616322')
+            'password' => bcrypt('3154')
         ]);
 
         Partner::create([
@@ -71,7 +71,7 @@ class AdministratorSeed extends Seeder
         $user->save();
         $user->company()->associate($company);
 
-        Setting::create(['name' => 'Стандартная наценка', 'company_id' => $company->id,  'type' => 'number', 'key' => 'markup', 'value' => '0']);
+        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id,  'type' => 'number', 'key' => 'markup', 'value' => '0']);
 
     }
 }

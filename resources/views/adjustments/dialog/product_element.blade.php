@@ -5,8 +5,8 @@
     <td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>
     @if(!isset($adjustment))
         <td>
-            <input class="form-control form-control-sm"
-                   @if(isset($product)) value="{{ $product->getCountInStoreId($request['store_id']) }}"@else value="0" @endif
+            <input id="uc_{{ $product->id }}" class="form-control form-control-sm"
+                   value="0"
                    type="number" disabled >
         </td>
     @else
@@ -31,33 +31,33 @@
         </td>
     @endif
 
-    @if(!isset($adjustment))
-        <td>
-            <input onClick="this.select();"  class="form-control form-control-sm"
-                   value="{{ $product->getMidPriceInStoreId($request['store_id']) }}"
-                   type="number" disabled >
-        </td>
-    @else
-        <td>
-            <input onClick="this.select();"  class="form-control form-control-sm"
-                   @if(isset($product->pivot->prev_price)) value="{{ sprintf("%.2f", $product->pivot->prev_price) }}"@else value="0" @endif
-                   type="number" disabled >
-        </td>
-    @endif
+    {{--@if(!isset($adjustment))--}}
+        {{--<td>{{ $request['store_id'] }}--}}
+            {{--<input onClick="this.select();"  class="form-control form-control-sm"--}}
+                   {{--value="{{ $product->getMidPriceByStoreId($request['store_id'], true) }}"--}}
+                   {{--type="number" disabled >--}}
+        {{--</td>--}}
+    {{--@else--}}
+        {{--<td>--}}
+            {{--<input onClick="this.select();"  class="form-control form-control-sm"--}}
+                   {{--@if(isset($product->pivot->prev_price)) value="{{ sprintf("%.2f", $product->pivot->prev_price) }}"@else value="0" @endif--}}
+                   {{--type="number" disabled >--}}
+        {{--</td>--}}
+    {{--@endif--}}
 
-    @if(!isset($adjustment))
-        <td>
-            <input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
-                   @if(isset($product)) value="{{ $product->getMidPriceInStoreId($request['store_id']) }}"@else value="0" @endif
-                   type="number" min="0" step="0.1" >
-        </td>
-    @else
-        <td>
-            <input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
-                   @if(isset($product->pivot->count)) value="{{ sprintf("%.2f", $product->pivot->price) }}"@else value="0" @endif
-                   type="number" min="0" step="0.1" disabled >
-        </td>
-    @endif
+    {{--@if(!isset($adjustment))--}}
+        {{--<td>--}}
+            {{--<input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"--}}
+                   {{--@if(isset($product)) value="{{ $product->getMidPriceInStoreId($request['store_id']) }}"@else value="0" @endif--}}
+                   {{--type="number" min="0" step="0.1" >--}}
+        {{--</td>--}}
+    {{--@else--}}
+        {{--<td>--}}
+            {{--<input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"--}}
+                   {{--@if(isset($product->pivot->count)) value="{{ sprintf("%.2f", $product->pivot->price) }}"@else value="0" @endif--}}
+                   {{--type="number" min="0" step="0.1" disabled >--}}
+        {{--</td>--}}
+    {{--@endif--}}
 
     <td>
         @if(!isset($adjustment))

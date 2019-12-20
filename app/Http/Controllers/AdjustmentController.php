@@ -32,6 +32,7 @@ class AdjustmentController extends Controller
 
     public function store(Request $request)
     {
+
         $request['partner_id'] = Auth::user()->partner()->first()->id;
 
         if($request['do_date'] == null){
@@ -60,23 +61,24 @@ class AdjustmentController extends Controller
         foreach($request['products'] as $id => $product) {
 
             $fact = $product['fact'];
-            $vprice = $product['price'];
+            //$vprice = $product['price'];
 
             $deviation_count = $store->getArticlesCountById($id) - $fact;
-            $deviation_price = $store->getMidPriceById($id) - $vprice;
+            //$deviation_price = $store->getMidPriceById($id) - $vprice;
 
             $store->setArticleCount($id, $fact);
-            $store->setArticleMidPrice($id, $vprice);
+            //$store->setArticleMidPrice($id, $vprice);
 
             $pivot_data = [
                 'article_id' => (int)$product['id'],
+                'store_id' => (int)$request['store_id'],
                 'adjustment_id' => $adjustment->id,
                 'prev_count' => (int)$fact + $deviation_count,
                 'count' => (int)$fact,
-                'price' => (double)$vprice,
-                'prev_price' => (double)$vprice + $deviation_price,
+                'price' => null,
+                'prev_price' => null,
                 'deviation_count' => (int)$deviation_count,
-                'deviation_price' => (double)$deviation_price
+                'deviation_price' => null
             ];
             $adjustment_data[] = $pivot_data;
         }
@@ -134,6 +136,16 @@ class AdjustmentController extends Controller
         ], 200);
     }
 
+    public function delete(Request $request){
+
+        if($request->expectsJson()){
+            return response()->json([
+                'message' => 'Удаление невозможно',
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
 
     public static function getAdjustments($request)
     {

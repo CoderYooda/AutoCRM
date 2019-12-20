@@ -116,12 +116,20 @@ class ProviderOrdersController extends Controller
     {
         $provider_order = ProviderOrder::where('id', $id)->first();
 
+        if($provider_order->entrances()->count() > 0){
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Заявка не может быть удалена, имеются поступившие товары'
+            ], 200);
+        }
+
         #Отнимаем с баланса контрагента
         $provider_order->partner()->first()->subtraction($provider_order->itogo);
 
         $provider_order->delete();
         $this->status = 200;
         $this->message = 'Продажа удален';
+
 
         return response()->json([
             'id' => $provider_order->id,
@@ -230,17 +238,29 @@ class ProviderOrdersController extends Controller
 
         //$store = Store::where('id', $request['store_id'])->first();
 
+        $provider_order_pivot_data = [];
+
+        $errors = [];
+
         foreach($request['products'] as $id => $product) {
 
             $vcount = $product['count'];
+
+            $entred_count = $provider_order->getArticleEntredCount($id);
+
+
+            if($entred_count > $vcount){
+                $errors['products.' . $id . '.count'] = 'Кол-во в заявке не может быть меньше чем поступивших товаров.';
+            }
+
             $vprice = $product['price'];
 
             $vtotal = $vprice * $vcount;
 
             $provider_order->summ += $vtotal;
-            $actor_product = Article::where('id', $product['id'])->first();
+            //$actor_product = Article::where('id', $product['id'])->first();
 
-            $article_provider_order = $provider_order->articles()->where('article_id', $product['id'])->count();
+            //$article_provider_order = $provider_order->articles()->where('article_id', $product['id'])->count();
 
             ### Пересчёт кол-ва с учетом предидущего поступления #######################################
             #$store->articles()->syncWithoutDetaching($actor_product->id);
@@ -251,11 +271,13 @@ class ProviderOrdersController extends Controller
 
             $pivot_data = self::calculatePivotArticleProviderOrder($request, $product);
 
-            if($article_provider_order > 0){
-                $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);
-            } else {
-                $provider_order->articles()->save($actor_product, $pivot_data);
-            }
+            $provider_order_pivot_data[$id] = $pivot_data;
+
+//            if($article_provider_order > 0){
+//                $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);
+//            } else {
+//                $provider_order->articles()->save($actor_product, $pivot_data);
+//            }
 
             foreach($provider_order->entrances()->get() as $entrance){
                 $entrance->freshPriceByArticleId($product['id'], $vprice);
@@ -265,6 +287,17 @@ class ProviderOrdersController extends Controller
             $store->recalculateMidprice($product['id']);
 
         }
+
+        if(count($errors) > 0){
+            if($request->expectsJson()){
+                return response()->json(['messages' => $errors], 422);
+            }
+        }
+
+        //products.502.price
+
+        # Синхронизируем товары к заявке
+            $provider_order->articles()->sync($provider_order_pivot_data);
 
 
 //        $article_providerorder_pivot_data = [];

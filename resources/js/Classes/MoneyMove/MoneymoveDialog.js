@@ -41,9 +41,9 @@ class moneymoveDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=in_cashbox_id]');
+            let select = object.root_dialog.querySelector('button[name=in_cashbox_id]');
             let input = object.root_dialog.querySelector('input[name=in_cashbox_id]');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
             window.notification.notify( 'success', 'Кассовый аппарат-отправитель выбран');
@@ -66,9 +66,9 @@ class moneymoveDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=out_cashbox_id]');
+            let select = object.root_dialog.querySelector('button[name=out_cashbox_id]');
             let input = object.root_dialog.querySelector('input[name=out_cashbox_id]');
-            let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
+            let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
             window.notification.notify( 'success', 'Кассовый аппарат-отправитель выбран');

@@ -144,7 +144,6 @@
                                         Не выбрано
                                     @endif
                                 </button>
-
                             </div>
                         </div>
 

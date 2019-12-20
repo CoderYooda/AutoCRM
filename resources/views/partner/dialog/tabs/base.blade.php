@@ -3,19 +3,15 @@
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
-            <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
+            <button onclick="{{ $class }}.openSelectCategoryDialog(@if(isset($partner)) {{ $partner->category_id }} @else 3 @endif)" type="button" name="category_id" class="category_select form-control text-left button_select">
                 @if(isset($partner))
-                    <option value="{{ $partner->category()->first()->id }}">{{ $partner->category()->first()->name }}</option>
+                    {{ $partner->category()->first()->name }}
                 @elseif(isset($category))
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    {{ $category->name }}
                 @else
-                    <option>Корневая директория</option>
+                    Корневая директория
                 @endif
-            </select>
-            <div class="input-group-append">
-                <button onclick="{{ $class }}.openSelectCategoryDialog(@if(isset($partner)) {{ $partner->category_id }} @else 3 @endif)"
-                        class="btn white" type="button"><i class="fa fa-bars"></i></button>
-            </div>
+            </button>
         </div>
     </div>
 

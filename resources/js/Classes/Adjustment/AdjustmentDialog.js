@@ -5,35 +5,52 @@ class adjustmentDialog{
     constructor(dialog){
         console.log('Окно Корректировки инициализировано');
         this.root_dialog = dialog;
+        this.store_id = null;
         this.items = [];
         this.init();
     }
 
     checkInStock(){
+        console.log('Проверка наличия');
         let object = this;
 
-        let items = [];
+        object.store_id = parseInt(object.root_dialog.querySelector('select[name=store_id]').value);
 
+
+        let items = [];
         [].forEach.call(object.items, function(elem){
-            items.push({
-                id:elem.id,
-            })
+            items.push(elem.id)
         });
 
-        console.log(items);
-        // window.axios({
-        //     method: 'post',
-        //     url: 'adjustment/' + id + '/fresh',
-        //     data: data,
-        // }).then(function (resp) {
-        //     document.getElementById(resp.data.target).innerHTML = resp.data.html;
-        //     //object.addPhoneMask();
-        //     console.log('Вставили html');
-        // }).catch(function (error) {
-        //     console.log(error);
-        // }).then(function () {
-        //     callback();
-        // });
+        let data = {};
+        data.store_id = object.store_id;
+        data.ids = items;
+
+        window.axios({
+            method: 'post',
+            url: 'store/checkstock',
+            data: data,
+        }).then(response => {
+
+            for(var index in response.data.items) {
+               let item = response.data.items[index];
+                document.getElementById('uc_' + item.id).value = item.count;
+            }
+
+            // response.data.items.forEach.call(response.data.items, function(elem){
+            //     console.log(elem);
+            // });
+
+            // console.log(response);
+            // this.data = response.data;
+            // this.data.forEach((item) => {
+            //     document.getElementById('uc_' + item.id).value = item.count;
+            // });
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            //callback();
+        });
     }
 
     init(){
@@ -149,6 +166,7 @@ class adjustmentDialog{
             elem.addEventListener("paste", fn);
             elem.addEventListener("delete", fn);
         });
+        this.checkInStock();
         this.recalculate();
     }
 

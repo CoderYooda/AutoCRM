@@ -32,52 +32,55 @@
                     </div>
                 </div>
             </div>
-        <div class="padding">
-            <div class="form-group">
-                <label for="category_id">Касса отправитель</label>
-                <div class="input-group">
-                    <select name="in_cashbox_id" disabled class="in_cashbox_select form-control input-c noarrow fake-disabled" readonly>
-                        @if(isset($moneymove) && $moneymove->in_cashbox()->first() != null)
-                            <option value="{{ $moneymove->in_cashbox()->first()->id }}">{{ $moneymove->in_cashbox()->first()->name }}</option>
-                        @else
-                            <option>Не выбрано</option>
-                        @endif
-                    </select>
-                    <div class="input-group-append">
-                        <button onclick="{{ $class }}.openSelectCashboxModal('In')"
-                                class="btn white" type="button"><i class="fa fa-bars"></i>
+            <div class="padding">
+                <div class="form-group">
+                    <label for="category_id">Касса отправитель</label>
+                    <div class="input-group">
+                        <button onclick="{{ $class }}.openSelectCashboxModal('In')" type="button" name="in_cashbox_id" class="in_cashbox_select form-control text-left button_select">
+                            @if(isset($moneymove) && $moneymove->in_cashbox()->first() != null)
+                                {{ $moneymove->in_cashbox()->first()->name }}
+                            @else
+                                Не выбрано
+                            @endif
                         </button>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="category_id">Касса получатель</label>
-                <div class="input-group">
-                    <select name="out_cashbox_id" disabled class="out_cashbox_select form-control input-c noarrow fake-disabled" readonly>
-                        @if(isset($moneymove) && $moneymove->out_cashbox()->first() != null)
-                            <option value="{{ $moneymove->out_cashbox()->first()->id }}">{{ $moneymove->out_cashbox()->first()->name }}</option>
-                        @else
-                            <option>Не выбрано</option>
-                        @endif
-                    </select>
-                    <div class="input-group-append">
-                        <button onclick="{{ $class }}.openSelectCashboxModal('Out')"
-                                class="btn white" type="button"><i class="fa fa-bars"></i>
+                <div class="form-group">
+                    <label for="category_id">Касса получатель</label>
+                    <div class="input-group">
+                        <button onclick="{{ $class }}.openSelectCashboxModal('Out')" type="button" name="out_cashbox_id" class="out_cashbox_select form-control text-left button_select">
+                            @if(isset($moneymove) && $moneymove->out_cashbox()->first() != null)
+                                {{ $moneymove->out_cashbox()->first()->name }}
+                            @else
+                                Не выбрано
+                            @endif
                         </button>
+
+                        {{--<select name="out_cashbox_id" disabled class="out_cashbox_select form-control input-c noarrow fake-disabled" readonly>--}}
+                            {{--@if(isset($moneymove) && $moneymove->out_cashbox()->first() != null)--}}
+                                {{--<option value="{{ $moneymove->out_cashbox()->first()->id }}">{{ $moneymove->out_cashbox()->first()->name }}</option>--}}
+                            {{--@else--}}
+                                {{--<option>Не выбрано</option>--}}
+                            {{--@endif--}}
+                        {{--</select>--}}
+                        {{--<div class="input-group-append">--}}
+                            {{--<button onclick="{{ $class }}.openSelectCashboxModal('Out')"--}}
+                                    {{--class="btn white" type="button"><i class="fa fa-bars"></i>--}}
+                            {{--</button>--}}
+                        {{--</div>--}}
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>Сумма</label>
+                    <input type="number" step="0.1" name="summ"
+                           @if(isset($moneymove)) value="{{ $moneymove->summ }}" @endif
+                           class="form-control" placeholder="Сумма">
+                </div>
+                <div class="form-group">
+                    <label for="comment">Комментарий</label>
+                    <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Сумма</label>
-                <input type="number" step="0.1" name="summ"
-                       @if(isset($moneymove)) value="{{ $moneymove->summ }}" @endif
-                       class="form-control" placeholder="Сумма">
-            </div>
-            <div class="form-group">
-                <label for="comment">Комментарий</label>
-                <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
-            </div>
-        </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>

@@ -88,7 +88,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Корректировки
     Route::post('/adjustment/store', 'AdjustmentController@store')->name('StoreAdjustment');// Строгое название
     Route::post('/adjustment/{id}/fresh', 'AdjustmentController@fresh')->name('FreshAdjustment');
-
+    Route::post('/adjustment/{id}/delete', 'AdjustmentController@delete')->name('DeleteAdjustment');
 
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
@@ -121,6 +121,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
     Route::post('/store/new', 'StoreController@store')->name('StoreStore');
     Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
+    Route::post('/store/checkstock', 'StoreController@checkstock')->name('CheckStock');
 
     #Услуги
     Route::get('/services', 'ServicesController@index')->name('ServicesIndex');

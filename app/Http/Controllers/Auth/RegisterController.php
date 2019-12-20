@@ -121,7 +121,7 @@ class RegisterController extends Controller
         $partner->save();
 
 
-        Setting::create(['name' => 'Стандартная наценка', 'company_id' => $company->id, 'type' => 'number', 'key' => 'markup', 'value' => '0']);
+        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'type' => 'number', 'key' => 'markup', 'value' => '0']);
 
 
         return $user;

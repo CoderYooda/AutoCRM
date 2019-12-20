@@ -59,19 +59,20 @@ class Store extends Model
         $entrance_count = 0;
         $entrance_summ = 0;
 
-
-
         foreach($entrances as $entrance){
             $count = $entrance->articles()->where('article_id', $article_id)->first()->pivot->count;
+
             $entrance_count += $count;
-
-
-
             $entrance_summ += ($count * $entrance->articles()->where('article_id', $article_id)->first()->pivot->price);
-
         }
 
-        $midprice = $entrance_summ / $entrance_count;
+
+
+        if($entrance_count === 0 || $entrance_summ === 0){
+            $midprice = 0;
+        } else {
+            $midprice = $entrance_summ / $entrance_count;
+        }
 
         $this->articles()->updateExistingPivot($article_id, ['midprice' => $midprice], false);
 

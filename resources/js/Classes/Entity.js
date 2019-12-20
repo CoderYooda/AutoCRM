@@ -39,8 +39,8 @@ class Entity{
 
 
                 }).catch(function (error) {
-                    console.log(error);
-                    notification.notify( 'error', error.data.message);
+                    //console.log(error);
+                    notification.notify( 'error', error.message);
                 }).finally(function(){
 
                     isXHRloading = false;

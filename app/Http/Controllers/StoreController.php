@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Controllers\Providers\TrinityController;
+use App\Models\Article;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -164,6 +165,31 @@ class StoreController extends Controller
         $store = Store::where('id', $id)->first();
 
         return response()->json(['tag' => 'editStore'.$store->id, 'html' => view('settings.dialog.form_store', compact('store'))->render()]);
+    }
+
+    public function checkstock(Request $request){
+
+//        $store = Store::owned()->where('id', $request['store_id'])->first();
+//        $articles = $store->articles()->whereIn('article_id', $request['ids'])->get();
+
+        $items = [];
+        foreach ($request['ids'] as $id){
+            $article = Article::owned()->where('id', $id)->first();
+            if($article){
+                $items[$article->id]['id'] = $id;
+                $items[$article->id]['count'] = $article->getCountInStoreId($request['store_id']);
+            }
+        }
+
+        if($request->expectsJson()){
+            return response()->json([
+                'message' => 'Наличие обновлено',
+                'items' => $items
+            ]);
+        } else {
+            return redirect()->back();
+        }
+
     }
 
     public function delete($id)

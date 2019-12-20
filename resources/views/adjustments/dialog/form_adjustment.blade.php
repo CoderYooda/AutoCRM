@@ -34,7 +34,7 @@
                                 <div class="form-group row">
                                     <label for="partner_id" class="col-sm-3 col-form-label">Склад</label>
                                     <div class="col-sm-9">
-                                        <select onchange="{{ $class }}.checkInStock()" name="store_id" class="form-control input-c" @if(isset($adjustment)) disabled @endif>
+                                        <select onchange="{{ $class }}.store_id = parseInt(this.value);{{ $class }}.checkInStock()" name="store_id" class="form-control input-c" @if(isset($adjustment)) disabled @endif>
                                             @foreach($stores as $store)
                                                 <option value="{{ $store->id }}" @if(isset($adjustment) && $adjustment->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
                                             @endforeach
@@ -68,8 +68,8 @@
                             <th width="10%" style="min-width: 100px;">Производитель</th>
                             <th width="10%" style="min-width: 60px;">По&nbspучету</th>
                             <th width="10%" style="min-width: 60px;">Факт</th>
-                            <th width="10%" style="min-width: 100px;">Цена&nbspдо</th>
-                            <th width="10%" style="min-width: 100px;">Цена&nbspфакт</th>
+                            {{--<th width="10%" style="min-width: 100px;">Цена&nbspдо</th>--}}
+                            {{--<th width="10%" style="min-width: 100px;">Цена&nbspфакт</th>--}}
                             <th width="10%"></th>
                         </tr>
                         </thead>

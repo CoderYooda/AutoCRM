@@ -27,12 +27,12 @@ class cashPage{
         let object = this;
         object.initSearch();
         document.addEventListener('ajaxLoaded', function(e){
-            //object.checkActive();
+            object.checkActive();
             //object.chartInit();
-            //object.load();
+            object.load();
         });
         object.checkActive();
-        object.load();
+        // object.load();
         object.searchInit();
         object.initDates();
 

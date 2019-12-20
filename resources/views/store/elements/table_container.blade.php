@@ -39,7 +39,7 @@
                                     <th>Производитель</th>
                                     <th>Наличие</th>
                                     {{--<th>Заявки</th>--}}
-                                    <th>Цена</th>
+                                    <th>Цена ( Розница )</th>
                                     <th class="w-62">
                                         @if(isset($categories['parent']))
                                             <a onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>

@@ -52,7 +52,7 @@ class CategoryDialog{
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
 
-            let select = object.root_dialog.querySelector('select[name=category_id]');
+            let select = object.root_dialog.querySelector('button[name=category_id]');
             let input = object.root_dialog.querySelector('input[name=category_id]');
             let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
             input.value = resp.data.id;

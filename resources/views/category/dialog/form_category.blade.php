@@ -26,17 +26,13 @@
                 <div class="form-group">
                     <label for="category_id">В категории</label>
                     <div class="input-group mb-3">
-                        <select disabled name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
+                        <button onclick="{{ $class }}.openSelectCategoryDialog()" type="button" name="category_id" class="category_select form-control text-left button_select">
                             @if(isset($parent))
-                                <option>{{ $parent->name }}</option>
+                                {{ $parent->name }}
                             @elseif(isset($category))
-                                <option>{{ $category->parent()->first()->name }}</option>
+                                {{ $category->parent()->first()->name }}
                             @endif
-                        </select>
-                        <div class="input-group-append">
-
-                            <button onclick="{{ $class }}.openSelectCategoryDialog()" class="btn white" type="button"><i class="fa fa-bars"></i></button>
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div class="form-group mb-0">
