@@ -16,7 +16,7 @@
                type="number" ></td>
 
     <td><input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
-               @if(isset($client_order)) value="{{ $product->pivot->price }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id) }}" @endif
+               @if(isset($client_order)) value="{{ $product->pivot->price }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
                type="number" min="0" step="0.1" ></td>
 
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"

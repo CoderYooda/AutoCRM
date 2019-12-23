@@ -56,6 +56,12 @@ class adjustmentDialog{
     init(){
         let object = this;
 
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
 
         let focused = document.getElementById('adjustment_dialog_focused');
         if(focused){

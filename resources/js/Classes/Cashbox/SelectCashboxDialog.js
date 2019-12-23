@@ -65,6 +65,8 @@ class selectCashboxDialog{
 
         if (isXHRloading) { return; } window.isXHRloading = true;
 
+        object.type = object.root_dialog.querySelector("input[name=type]").value;
+
         let data = {};
         data.string = string;
         if(object.refer){

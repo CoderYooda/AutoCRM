@@ -27,6 +27,10 @@ class partnerPage{
         document.addEventListener('PartnerRemoved', function(e){
             object.reloadPage();
         });
+        document.addEventListener('CategoryStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
     }
 
     reloadPage(){

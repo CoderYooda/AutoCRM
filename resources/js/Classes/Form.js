@@ -60,7 +60,12 @@ class AxForm{
 
 
             if(error.response && error.response.data.system_message){
-                dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
+                try {
+                    dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
+                } catch (e) {
+                    console.log(e);
+                }
+
             }
 
             if(error.response && error.response.data.messages){
@@ -68,6 +73,9 @@ class AxForm{
                 Array.prototype.forEach.call(all_butt_butts, function(el) {
                     el.setAttribute("style", "");
                 });
+
+
+
                 for(var error_stack in error.response.data.messages){
                     var error_stack_arr = error_stack.split('.');
 
@@ -82,8 +90,16 @@ class AxForm{
                         }
                         iteration++;
                     });
+                    try{
+                        var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+                    } catch (e) {
+                        var el = null
+                    }
 
-                    var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+                    if(el === null){
+                        var el = elem.closest('form').querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+                    }
+
                     if(el !== null && el.closest(".tab-pane")){
                         var tab_container_id = el.closest(".tab-pane").getAttribute('id');
                         var tab_butt = document.querySelector("a[href='#" + tab_container_id + "']");

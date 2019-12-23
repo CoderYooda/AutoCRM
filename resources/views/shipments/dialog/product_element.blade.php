@@ -8,7 +8,7 @@
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}" @else value="0" @endif
                type="number"  min="0" step="1"></td>
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
-               @if(isset($shipment)) value="{{ sprintf("%.2f", $product->pivot->price) }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id) }}" @endif
+               @if(isset($shipment)) value="{{ sprintf("%.2f", $product->pivot->price) }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
                type="number" min="0" step="0.1" ></td>
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
                @if(isset($product->pivot->total)) value="{{ sprintf("%.2f", $product->pivot->total) }}"@else value="0.00" @endif

@@ -53,6 +53,7 @@
 	overflow: hidden;
 	z-index: 10000;
 	max-height: 90%;
+    border: 2px solid white;
 }
 
 .dialog > form {
