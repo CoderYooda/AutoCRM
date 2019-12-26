@@ -4,6 +4,7 @@ class settingsPage{
         console.log('страница настроек инициализировано');
         this.active = true;
         this.root = document.getElementById('baseSettings');
+        this.active_tab = window.helper.findGetParameter('active_tab');
         this.init();
     }
 
@@ -13,18 +14,54 @@ class settingsPage{
             object.checkActive();
         });
         object.checkActive();
+        let form = null;
 
-        object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',  function(){
-            let id = object.root.querySelector('input[name=id]').value;
-            if(id !== null){
-                //let root_id = object.root.id;
-                object.freshContent(id,function(){
-                    //delete window[root_id];
-                    //window.helper.initDialogMethods();
-                });
-            }
+        try {
+            let form = object.root.getElementsByTagName('form');
+        } catch (e) {
+
+        }
+
+        document.addEventListener('CashboxStored', function(e){
+            object.reload();
         });
 
+        if(form != null){
+            object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',  function(){
+                let id = object.root.querySelector('input[name=id]').value;
+                if(id !== null){
+                    //let root_id = object.root.id;
+                    object.freshContent(id,function(){
+                        //delete window[root_id];
+                        //window.helper.initDialogMethods();
+                    });
+                }
+            });
+        }
+
+
+        // object.root_dialog.getElementsById('CashboxSettings')[0].addEventListener('WarrantStored',  function(){
+        //     let id = object.root_dialog.querySelector('input[name=id]').value;
+        //     if(id !== null){
+        //         let root_id = object.root_dialog.id;
+        //         object.freshContent(id,function(){
+        //             delete window[root_id];
+        //             window.helper.initDialogMethods();
+        //         });
+        //     }
+        // });
+
+    }
+
+
+    getUrlString(){
+        let url = '?view_as=json';
+        url += '&target=ajax-table-' + this.active_tab;
+        if(this.active_tab !== null || this.active_tab !== 'null'){
+            url += '&active_tab=';
+            url += this.active_tab;
+        }
+        return url;
     }
 
     freshContent(id, callback = null){
@@ -89,6 +126,25 @@ class settingsPage{
         });
     }
 
+    reload(){
+        let object = this;
+        if (isXHRloading) { return; } window.isXHRloading = true;
+        window.axios({
+            method: 'get',
+            url: object.getUrlString(),
+        }).then(function (resp) {
+            var results_container = document.getElementById(resp.data.target);
+            results_container.innerHTML = resp.data.html;
+            window.helper.insertParamUrl('active_tab', object.active_tab);
+            window.rebuildLinks();
+            // object.load();
+            // window.rebuildLinks();
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    }
 
 }
 export default settingsPage;

@@ -41,6 +41,16 @@ class StoreController extends Controller
         }
     }
 
+    public function tableProductData(Request $request){
+
+        $products = ProductController::getArticles($request);
+        foreach($products as $product){
+            $product->supplier = $product->supplier()->first()->name;
+            $product->isset = $product->getCountSelfOthers();
+        }
+        return response()->json($products);
+    }
+
     public static function storeTab($request)
     {
         $page = 'Склад';

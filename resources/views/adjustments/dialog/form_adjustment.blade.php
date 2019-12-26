@@ -1,3 +1,4 @@
+@if(!isset($inner) || !$inner)
 <div
     @if(isset($adjustment) && $adjustment->id != NULL)
     @php $class = 'adjustmentDialog' . $adjustment->id @endphp
@@ -7,6 +8,7 @@
     id="adjustmentDialog"
     @endif
     class="dialog adjustment_dialog" style="width:880px;">
+@endif
     @if(isset($adjustment) && $adjustment->id != NULL)
         <div class="titlebar">Корректировка №{{ $adjustment->id }} от {{ $adjustment->normalizedData() }}</div>
     @else
@@ -101,4 +103,6 @@
 
         </div>
     </form>
+@if(!isset($inner) || !$inner)
 </div>
+@endif

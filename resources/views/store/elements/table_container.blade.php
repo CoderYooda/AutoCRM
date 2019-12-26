@@ -24,57 +24,61 @@
             </div>
         </div>
 
-        <div class="content-main d-flex flex-column flex white">
+        <div class="content-main d-flex flex-column flex white" style="max-height: calc(100vh - 112px)">
             {!! \App\Http\Controllers\CategoryController::drawCrumbs($category, 2) !!}
-            <div class="d-flex flex white" style="    height: 1px;">
+            <div id="example-table" ></div>
+            <div class="d-flex flex white w-100" >
 
-                <div class="w-100 h-100" data-simplebar>
-                    @if( $articles->count() > 0)
+            </div>
+            {{--<div class="d-flex flex white" style="    height: 1px;">--}}
 
-                            <table class="table table-hover" style="max-height: 400px">
-                                <thead>
-                                <tr>
-                                    <th class="w-xxl">Модель</th>
-                                    <th class="w-sm">Артикул</th>
-                                    <th>Производитель</th>
-                                    <th>Наличие</th>
+                {{--<div class="w-100 h-100" data-simplebar>--}}
+                    {{--@if( $articles->count() > 0)--}}
+
+                            {{--<table class="table table-hover" style="max-height: 400px">--}}
+                                {{--<thead>--}}
+                                {{--<tr>--}}
+                                    {{--<th class="w-xxl">Модель</th>--}}
+                                    {{--<th class="w-sm">Артикул</th>--}}
+                                    {{--<th>Производитель</th>--}}
+                                    {{--<th>Наличие</th>--}}
                                     {{--<th>Заявки</th>--}}
-                                    <th>Цена ( Розница )</th>
-                                    <th class="w-62">
-                                        @if(isset($categories['parent']))
-                                            <a onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>
-                                        @endif
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($articles as $article)
-                                    @include('store.elements.table_element')
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    {{--<th>Цена ( Розница )</th>--}}
+                                    {{--<th class="w-62">--}}
+                                        {{--@if(isset($categories['parent']))--}}
+                                            {{--<a onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="btn btn-sm badge success text-white w-100"><i class="fa fa-plus"></i></a>--}}
+                                        {{--@endif--}}
+                                    {{--</th>--}}
+                                {{--</tr>--}}
+                                {{--</thead>--}}
+                                {{--<tbody>--}}
+                                {{--@foreach($articles as $article)--}}
+                                    {{--@include('store.elements.table_element')--}}
+                                {{--@endforeach--}}
+                                {{--</tbody>--}}
+                            {{--</table>--}}
 
-                    @else
-                        <div class="no-result">
-                            <div class="p-4 text-center">
-                                По данным критериям ничего нет.
-                            </div>
-                        </div>
-                    @endif
-                </div>
+                    {{--@else--}}
+                        {{--<div class="no-result">--}}
+                            {{--<div class="p-4 text-center">--}}
+                                {{--По данным критериям ничего нет.--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--@endif--}}
+                {{--</div>--}}
 
-            </div>
-            <div class="p-3 b-t mt-auto">
-                <div class="d-flex align-items-center">
-                    <div class="flex">
-                        {{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}
-                    </div>
-                    <div>
-                        <span class="text-muted">Total:</span>
-                        <span id="count"></span>
-                    </div>
-                </div>
-            </div>
+            {{--</div>--}}
+            {{--<div class="p-3 b-t mt-auto">--}}
+                {{--<div class="d-flex align-items-center">--}}
+                    {{--<div class="flex">--}}
+                        {{--{{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}--}}
+                    {{--</div>--}}
+                    {{--<div>--}}
+                        {{--<span class="text-muted">Total:</span>--}}
+                        {{--<span id="count"></span>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
         </div>
     </div>
 </div>

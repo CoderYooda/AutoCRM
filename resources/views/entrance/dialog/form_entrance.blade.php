@@ -1,4 +1,4 @@
-
+@if(!isset($inner) || !$inner)
 <div
     @if(isset($entrance) && $entrance->id != NULL)
         @php $class = 'entranceDialog' . $entrance->id @endphp
@@ -8,6 +8,7 @@
         id="entranceDialog"
     @endif
     class="dialog entrance_dialog" style="width:1100px;">
+@endif
     @if(isset($entrance) && $entrance->id != NULL)
         <div class="titlebar">Поступление товара #{{ $entrance->id }} по заявке #{{ $entrance->providerorder()->first()->id }}</div>
     @else
@@ -179,4 +180,6 @@
 
         </div>
     </form>
+@if(!isset($inner) || !$inner)
 </div>
+@endif

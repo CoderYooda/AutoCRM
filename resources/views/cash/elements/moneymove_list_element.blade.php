@@ -1,4 +1,4 @@
-<tr class="list-item" id="moneymove_{{ $moneymove->id }}">
+<tr ondblclick="openDialog('moneymoveDialog', '&moneymove_id={{ $moneymove->id }}')" class="list-item" id="moneymove_{{ $moneymove->id }}">
     <td>{{ $moneymove->id }}</td>
     <td>{{ \Carbon\Carbon::parse($moneymove->do_date)->format('d.m.Y') }}</td>
 

@@ -36,6 +36,8 @@ class cashPage{
         object.searchInit();
         object.initDates();
 
+
+
         document.addEventListener('WarrantStored', function(e){
             object.reload();
         });
@@ -245,7 +247,6 @@ class cashPage{
 
         return url;
     }
-
 
     reload(){
         let object = this;

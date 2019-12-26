@@ -22,7 +22,11 @@ class PhoneController extends Controller
                     $phone->company_id = $request['company_id'];
                     $phone->number = str_replace(array('(', ')', ' ', '-'), '', $r_phone['number']);
                     if(isset($r_phone['main'])){$r_phone['main'] = true;} else {$r_phone['main'] = false;}
-                    $phone->main = $r_phone['main'];
+                    if(count($request['phones']) == 1){
+                        $phone->main = true;
+                    } else {
+                        $phone->main = $r_phone['main'];
+                    }
                     $phone->save();
                     $phones->add($phone);
                 }

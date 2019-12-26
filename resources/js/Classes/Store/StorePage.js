@@ -1,3 +1,5 @@
+import { Contextual , ContextualItem } from "../Contentual";
+
 class storePage{
 
     constructor(){
@@ -12,13 +14,106 @@ class storePage{
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
         this.date_end = 'null';
+
+        this.table = null;
+
         this.init();
         this.linked();
+
+        this.initTableData();
     }
+
+    initTableData(){
+        let object = this;
+        console.log(object.prepareUrlForTable());
+        object.table = new Tabulator("#example-table", {
+            height:'100%',
+            //maxHeight:'100%',
+            pagination:"remote",
+            layout:"fitColumns",
+            ajaxSorting:true,
+            ajaxURL:object.prepareUrlForTable(),
+            //ajaxParams:object.prepareUrlForTable(), //ajax parameters
+            // ajaxProgressiveLoad:"scroll",
+            paginationSize:20,
+            placeholder:"По данным критериям ничего нет",
+            columns:[ //Define Table Columns
+                {formatter:"rowSelection", width:40, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"ID", field:"id", width:80},
+                {title:"Модель", field:"name", width:250},
+                {title:"Артикул", field:"article", align:"left"},
+                {title:"Производитель", field:"supplier"},
+                {title:"Наличие", field:"isset", align:"center"},
+                {title:"Цена (Ррозница)", field:"price", align:"center"},
+            ],
+            tableBuilt:function(){
+                let table_holder = document.getElementsByClassName('tabulator-table');
+                table_holder[0].addEventListener('contextmenu', event => {
+                    event.preventDefault();
+                    //Add contextual menu here
+                    new Contextual({
+                        isSticky: false,
+                        items:[
+                            new ContextualItem({label:'Редактировать', onClick: () => {console.log('Item 1 clicked')}, shortcut:'Что то' }),
+                            new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
+                            new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
+                            new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
+                            new ContextualItem({type:'seperator'}),
+                            new ContextualItem({label:'Удалить', shortcut:'Ctrl+A' }),
+                        ]
+                    });
+                });
+            },
+            //
+            // ajaxResponse:function(url, params, response){
+            //     let rows = object.table.getRows();
+            //     console.log(rows);
+            //     [].forEach.call(rows, function(elem){
+            //         console.log(elem.getElement());
+            //         elem.getElement().addEventListener('contextmenu', event => {
+            //             event.preventDefault();
+            //             //Add contextual menu here
+            //             new Contextual({
+            //                 isSticky: false,
+            //                 items:[
+            //                     new ContextualItem({label:'Item 1', onClick: () => {console.log('Item 1 clicked')}, shortcut:'Ctrl+A' }),
+            //                     new ContextualItem({label:'Item 2', shortcut:'Ctrl+B' }),
+            //                     new ContextualItem({type:'seperator'}),
+            //                     new ContextualItem({label:'Item 3', shortcut:'Ctrl+A' }),
+            //                 ]
+            //             });
+            //         });
+            //     });
+            //
+            //     return response; //return the response data to tabulator
+            // },
+            rowClick:function(e, row){ //trigger an alert message when the row is clicked
+                row.toggleSelect();
+            },
+        });
+    }
+
+    prepareUrlForTable(){
+        let object = this;
+        let url = '/tableproductdata?viewas=json';
+
+        if(object.category_id !== null){
+            url += '&category_id=';
+            url += object.category_id;
+        }
+        if(object.search && object.search !== 'null' || object.search !== null){
+            url += '&search=';
+            url += object.search;
+        }
+        return url;
+    }
+
 
     init(){
         let object = this;
-
+        object.contextListItems();
         document.addEventListener('ajaxLoaded', function(e){
             object.checkActive();
             object.linked();
@@ -60,6 +155,9 @@ class storePage{
     }
 
     load(){
+
+        this.initTableData();
+
         this.active_tab = window.helper.findGetParameter('active_tab');
 
         if(window.helper.findGetParameter('page') !== null){
@@ -81,6 +179,7 @@ class storePage{
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
+        this.contextListItems();
         this.active_tab = window.helper.findGetParameter('active_tab');
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
@@ -90,6 +189,25 @@ class storePage{
         this.date_end = 'null';
         window.helper.debugBar(this);
         this.searchInit();
+    }
+
+    contextListItems(){
+        let list_elems = document.getElementsByClassName('product_list_context');
+        [].forEach.call(list_elems, function(elem){
+            elem.addEventListener('contextmenu', event => {
+                event.preventDefault();
+                //Add contextual menu here
+                new Contextual({
+                    isSticky: false,
+                    items:[
+                        new ContextualItem({label:'Item 1', onClick: () => {console.log('Item 1 clicked')}, shortcut:'Ctrl+A' }),
+                        new ContextualItem({label:'Item 2', shortcut:'Ctrl+B' }),
+                        new ContextualItem({type:'seperator'}),
+                        new ContextualItem({label:'Item 3', shortcut:'Ctrl+A' }),
+                    ]
+                });
+            });
+        });
     }
 
     prepareParams(){
@@ -132,8 +250,9 @@ class storePage{
             search = document.getElementById("search");
             searchFn = window.helper.debounce(function(e) {
                 object.search = search.value;
-                object.page = 1;
-                object.reload(e);
+                object.table.setData(object.prepareUrlForTable(), {});
+                //object.page = 1;
+                //object.reload(e);
             }, 400);
             search.addEventListener("keydown", searchFn);
             search.addEventListener("paste", searchFn);
@@ -191,9 +310,16 @@ class storePage{
         });
     }
 
-    getUrlString(){
+    getUrlString(type = null){
+
+
         let url = '?view_as=json';
+
         url += '&target=ajax-table-' + this.active_tab;
+
+        if(type != null){
+            url += '&type=' + type;
+        }
         if(this.category_id !== null){
             url += '&category_id=';
             url += this.category_id;

@@ -18,7 +18,7 @@
                 </div>
             </div>
             <span class="m-b btn-groups pl-1">
-                <button onclick="openDialog('providerorderDialog')" class="btn btn-sm white mb-0">Новый заказ поставщику</button>
+                <button onclick="openDialog('providerorderDialog')" class="btn btn-sm white mb-0">Новыая заявка поставщику</button>
             </span>
         </div>
         <div id="ajax-table-provider_orders" class="content-main d-flex flex-column flex white">

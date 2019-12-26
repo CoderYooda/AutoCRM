@@ -69,7 +69,7 @@
                             {{--</a>--}}
                         {{--</li>--}}
                         <li id="settings_link" class="nav-item">
-                            <a href="{{ route('SettingsIndex') }}" class="nav-link ajax-nav">
+                            <a href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}" class="nav-link ajax-nav">
                                 Настройки
                                 <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                             </a>

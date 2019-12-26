@@ -5,7 +5,7 @@ require('./navigation');                                            // Нави�
 
 
 
-
+window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
 window.chartjs = require('chart.js');
@@ -14,6 +14,8 @@ window.simplebar = require('simplebar/dist/simplebar.min');
 
 import tippy from 'tippy.js';
 
+
+
 window.debug = true;
 
 import Sortable from 'sortablejs';
@@ -21,7 +23,6 @@ import Sortable from 'sortablejs';
 
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);
-
 import Pagination from './Classes/Pagination.js';
 import AxForm from './Classes/Form.js';
 import Helper from './Classes/Helper.js';
@@ -34,8 +35,8 @@ import Auth from './Classes/Auth.js';
 
 
 
-import IMask from 'imask';
 
+import IMask from 'imask';
 window.helper = new Helper();
 window.socket = new Socket();
 window.pagination = new Pagination();

@@ -1,4 +1,5 @@
 @php $stores = App\models\Store::owned()->get(); @endphp
+@if(!isset($inner) || !$inner)
 <div
     @if(isset($provider_order) && $provider_order->id != NULL)
     @php $class = 'providerorderDialog' . $provider_order->id @endphp
@@ -8,6 +9,7 @@
     id="providerorderDialog"
     @endif
     class="dialog provider_order_dialog" style="width:880px;">
+@endif
         @if(isset($provider_order) && $provider_order->id != NULL)
             <div class="titlebar">Заявка поставщику №{{ $provider_order->id }}</div>
         @else
@@ -25,28 +27,28 @@
                 <div class="item-tag tag hide">
                 </div>
             </div>
-            <div class="b-r pr-3 mr-3">
-                <span class="item-title _500">Скидка</span>
-                <div class="item-except font-weight-bolder h-1x">
-                    <span id="percents_price">
-                        @if(isset($provider_order))
-                            {{ $provider_order->discount }}@if($provider_order->inpercents)% @else р @endif
-                        @else 0р @endif
-                    </span>
-                </div>
-                <div class="item-tag tag hide">
-                </div>
-            </div>
-            <div class="b-r pr-3 mr-3">
-                <span class="item-title _500">Итого</span>
-                <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
-                        @if(isset($provider_order)){{ $provider_order->itogo }} @else 0.0 @endif
-                    </span> р
-                </div>
-                <div class="item-tag tag hide">
-                </div>
-            </div>
+            {{--<div class="b-r pr-3 mr-3">--}}
+                {{--<span class="item-title _500">Скидка</span>--}}
+                {{--<div class="item-except font-weight-bolder h-1x">--}}
+                    {{--<span id="percents_price">--}}
+                        {{--@if(isset($provider_order))--}}
+                            {{--{{ $provider_order->discount }}@if($provider_order->inpercents)% @else р @endif--}}
+                        {{--@else 0р @endif--}}
+                    {{--</span>--}}
+                {{--</div>--}}
+                {{--<div class="item-tag tag hide">--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--<div class="b-r pr-3 mr-3">--}}
+                {{--<span class="item-title _500">Итого</span>--}}
+                {{--<div class="item-except font-weight-bolder h-1x">--}}
+                    {{--<span id="total_price">--}}
+                        {{--@if(isset($provider_order)){{ $provider_order->itogo }} @else 0.0 @endif--}}
+                    {{--</span> р--}}
+                {{--</div>--}}
+                {{--<div class="item-tag tag hide">--}}
+                {{--</div>--}}
+            {{--</div>--}}
             {{--<div class="b-r pr-3 mr-3">--}}
                 {{--<span class="item-title _500">Итого</span>--}}
                 {{--<div class="item-except font-weight-bolder h-1x">--}}
@@ -60,26 +62,26 @@
                 {{--</div>--}}
             {{--</div>--}}
             @if(isset($provider_order))
-            <div class="b-r pr-3 mr-3">
-                <span class="item-title _500">Оплачено</span>
-                <div class="item-except @if($provider_order->getWarrantPositive() === $provider_order->itogo) text-success
-                    @elseif($provider_order->getWarrantPositive() > $provider_order->itogo) text-danger @endif font-weight-bolder h-1x">
-                    <span id="payed_price">
-                        {{ sprintf("%.2f", $provider_order->getWarrantPositive()) }} р / <span id="itogo_price">{{ $provider_order->itogo }}</span> р
-                    </span>
-                </div>
-                <div class="item-tag tag hide">
-                </div>
-            </div>
-            @else
                 <div class="b-r pr-3 mr-3">
-                    <span class="item-title _500">Итого</span>
-                    <div class="item-except font-weight-bolder h-1x">
-                    <span id="payed_price">
-                        <span id="itogo_price">0</span>р
-                    </span>
+                    <span class="item-title _500">Оплачено</span>
+                    <div class="item-except @if($provider_order->getWarrantPositive() === $provider_order->itogo) text-success
+                        @elseif($provider_order->getWarrantPositive() > $provider_order->itogo) text-danger @endif font-weight-bolder h-1x">
+                        <span id="payed_price">
+                            {{ sprintf("%.2f", $provider_order->getWarrantPositive()) }} р / <span id="itogo_price">{{ $provider_order->itogo }}</span> р
+                        </span>
+                    </div>
+                    <div class="item-tag tag hide">
                     </div>
                 </div>
+            @else
+                {{--<div class="b-r pr-3 mr-3">--}}
+                    {{--<span class="item-title _500">Итого</span>--}}
+                    {{--<div class="item-except font-weight-bolder h-1x">--}}
+                    {{--<span id="payed_price">--}}
+                        {{--<span id="itogo_price">0</span>р--}}
+                    {{--</span>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
             @endif
 
             {{--@if(isset($provider_order))--}}
@@ -131,18 +133,18 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-sm-3" for="discount">Скидка</label>
-                                    <div class="col-sm-9 input-group">
-                                        <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($provider_order) value="{{ $provider_order->discount }}" @else value="0" @endif>
-                                        <span class="input-group-append">
-                                        <div class="input-group-text">
-                                          <label class="mb-0 pr-2" for="inpercents">В процентах</label>
-                                            <input id="inpercents" name="inpercents" type="checkbox" @if($provider_order && $provider_order->inpercents) checked @else checked @endif>
-                                        </div>
-                                    </span>
-                                    </div>
-                                </div>
+                                {{--<div class="form-group row">--}}
+                                    {{--<label class="col-sm-3" for="discount">Скидка</label>--}}
+                                    {{--<div class="col-sm-9 input-group">--}}
+                                        {{--<input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($provider_order) value="{{ $provider_order->discount }}" @else value="0" @endif>--}}
+                                        {{--<span class="input-group-append">--}}
+                                        {{--<div class="input-group-text">--}}
+                                          {{--<label class="mb-0 pr-2" for="inpercents">В процентах</label>--}}
+                                            {{--<input id="inpercents" name="inpercents" type="checkbox" @if($provider_order && $provider_order->inpercents) checked @else checked @endif>--}}
+                                        {{--</div>--}}
+                                    {{--</span>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
                                 <div class="form-group row">
                                     <label class="col-sm-3">Склад</label>
                                     <div class="col-sm-9">
@@ -158,7 +160,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6 form-group">
-                        <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="providerorder_dialog_focused" cols="30" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
+                        <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="providerorder_dialog_focused" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -222,4 +224,6 @@
 
         </div>
     </form>
+@if(!isset($inner) || !$inner)
 </div>
+@endif

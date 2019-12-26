@@ -1,4 +1,4 @@
-<tr class="list-item" id="warrant_{{ $warrant->id }}">
+<tr ondblclick="openDialog('warrantDialog', '&warrant_id={{ $warrant->id }}')" class="list-item" id="warrant_{{ $warrant->id }}">
     <td>{{ $warrant->id }}</td>
     <td>{{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}</td>
     @if($warrant->isIncoming)

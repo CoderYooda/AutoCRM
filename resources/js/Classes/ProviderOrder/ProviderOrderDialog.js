@@ -16,15 +16,15 @@ class providerOrderDialog{
 
         var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
         ///Вешаем обрабочик на поле скидки/////////////
-        let discount = object.root_dialog.querySelector('input[name=discount]');
-        discount.addEventListener("keydown", fn);
-        discount.addEventListener("paste", fn);
-        discount.addEventListener("delete", fn);
+        // let discount = object.root_dialog.querySelector('input[name=discount]');
+        // discount.addEventListener("keydown", fn);
+        // discount.addEventListener("paste", fn);
+        // discount.addEventListener("delete", fn);
         ////////////////////////////////////////////////
 
         ///Вешаем обработчик на чекбокс/////////////////
-        let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        inpercents.addEventListener("change", fn);
+        // let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
+        // inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
         let event = '';
@@ -299,31 +299,31 @@ class providerOrderDialog{
         });
         var total_price = object.totalPrice;
         var itogo = object.itogo;
-        var inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        var discount = object.root_dialog.querySelector('input[name=discount]');
+        // var inpercents = object.root_dialog.querySelector('input[name=inpercents]');
+        // var discount = object.root_dialog.querySelector('input[name=discount]');
 
         object.items.map(function(e){
             total_price = total_price + Number(e.total);
         });
 
-        if(inpercents.checked){
-            itogo = total_price - (total_price / 100 * Number(discount.value).toFixed(2));
-        } else {
-            itogo = total_price - Number(discount.value).toFixed(2);
-        }
+        // if(inpercents.checked){
+        //     itogo = total_price - (total_price / 100 * Number(discount.value).toFixed(2));
+        // } else {
+        //itogo = total_price - Number(discount.value).toFixed(2);
+        // }
 
-        var discount_val;
-
-        if(inpercents.checked){
-            discount_val = discount.value + '%';
-        } else {
-            discount_val = discount.value + 'р';
-        }
+        // var discount_val;
+        //
+        // if(inpercents.checked){
+        //     discount_val = discount.value + '%';
+        // } else {
+        //     discount_val = discount.value + 'р';
+        // }
 
 
         object.setTotalPrice(total_price);
         object.setItogo(itogo);
-        object.setDiscount(discount_val);
+        // object.setDiscount(discount_val);
     }
 
     recalculateItem(id){

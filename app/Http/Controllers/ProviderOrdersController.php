@@ -163,7 +163,8 @@ class ProviderOrdersController extends Controller
 
         $request['fresh'] = true;
         $class = 'providerorderDialog' . $id;
-        $content = view('provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores', 'class', 'request'))->render();
+        $inner = true;
+        $content = view('provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores', 'class', 'request', 'inner'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'providerorderDialog' . $id,
@@ -172,6 +173,9 @@ class ProviderOrdersController extends Controller
 
     public function store(Request $request)
     {
+        $request['discount'] = 0;
+        $request['inpercents'] = 0;
+
         $validation = Validator::make($request->all(), self::validateRules($request));
 
         #Подготовка Request`a

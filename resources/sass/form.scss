@@ -41,3 +41,108 @@ input[type=number]::-webkit-outer-spin-button {
 .no-border-radius{
   border-radius: 0!important;
 }
+
+.tabulator {
+    border: none;
+    background-color: #fff;
+}
+
+/* Main context menu outer */
+.contextualMenu{
+    list-style: none;
+    overflow: hidden;
+    z-index: 9999999;
+    font-size: 0.8rem;
+    color: rgba(70, 90, 110, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    position: absolute;
+    min-width: 10rem;
+    padding: .5rem 0;
+    margin: .125rem 0 0;
+    text-align: left;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: .25rem;
+}
+
+/* Menu seperator item */
+.contextualMenuSeperator{
+    height: 0;
+    margin: .5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #e9ecef;
+}
+
+
+/* Default menu item */
+.contextualMenuItemOuter {
+}
+.contextualMenuItem{
+    display: block;
+    padding: 5px 8px;
+    cursor: default;
+}
+.contextualMenuItem:hover{
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.contextualMenuItemIcon{
+    float: left;
+    width:16px;
+    height: 16px;
+    display: none;
+}
+.contextualMenuItemTitle{
+    text-align: left;
+    line-height: 16px;
+    display: inline-block;
+    padding: 0px 0px 0px 7px;
+}
+.contextualMenuItemTip{
+    float: right;
+    padding: 0px 0px 0px 50px;
+    text-align: right;
+    line-height: 16px;
+}
+.contextualMenuItemOverflow{
+    float: right;
+    width:16px;
+    height: 16px;
+    padding: 1px 0px 0px 7px;
+}
+.contextualMenuItemOverflow .contextualMenuItemOverflowLine{
+    display: block;
+    height: 1px;
+    margin: 3px 2px;
+    background: #e0e5ef;
+}
+.contextualMenuItemOverflow.hidden{
+    display: none;
+}
+
+.contextualMenuItem.disabled{
+    opacity: 0.4;
+}
+.contextualMenuItem.disabled:hover{
+    background: none;
+}
+
+/* Submenu item */
+.contextualSubMenu{
+    color: #e0e5ef;
+    overflow: hidden;
+    font-size: 13px;
+    position: absolute;
+    padding: 8px 0;
+    background: #ffffff;
+    box-shadow: 1px 1px 10px #999;
+    border-radius: 3px;
+    margin: 0;
+    list-style: none;
+    z-index: 9999;
+}
+.contextualSubMenu .contextualMenuItem:hover{
+    background: #e0e5ef;
+}
+.contextualMenuHidden{
+    max-height: 0;
+}

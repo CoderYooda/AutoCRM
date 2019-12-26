@@ -414,15 +414,20 @@ class clientorderDialog{
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
 
             let phones_list = object.root_dialog.querySelector('#phones-list');
-
+            object.root_dialog.querySelector('#client-phone').value = '';
             let phones_html = '';
             if(resp.data.phones.length > 0) {
                 [].forEach.call(resp.data.phones, function (elem) {
+                    if(elem.main){
+                        object.root_dialog.querySelector('#client-phone').value = elem.number;
+                    }
                     phones_html += '<a onclick="window.' + object.root_dialog.id + '.selectNumber(this)" data-number="' + elem.number + '" class="dropdown-item pointer">' + elem.number + '</a>';
                 });
             } else {
                 phones_html = '<div class="no-result"><div class="text-center">Номеров нет</div></div>';
             }
+
+
 
             phones_list.innerHTML = phones_html;
 

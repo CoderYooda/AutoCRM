@@ -1649,7 +1649,7 @@ body {
     -ms-flex-direction: column;
     flex-direction: column;
     box-shadow: none;
-    max-width: 100%; }
+    max-width: calc(100% - 80px); }
 
 .content-header {
     z-index: 1010; }

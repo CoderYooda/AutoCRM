@@ -19,7 +19,7 @@ class CreateArticleAdjustmentTable extends Migration
             $table->bigInteger('adjustment_id')->unsigned()->comment('Привязка к корректировке');
             $table->bigInteger('store_id')->nullable()->unsigned()->comment('Привязка к складу');
             $table->integer('count')->nullable()->unsigned()->comment('Кол - во');
-            $table->integer('prev_count')->nullable()->unsigned()->comment('Кол - во');
+            $table->integer('prev_count')->nullable()->comment('Кол - во');
             $table->integer('deviation_count')->nullable()->comment('Отклонение кол-ва');
             $table->double('price')->nullable()->unsigned()->comment('Цена');
             $table->double('prev_price')->nullable()->unsigned()->comment('Цена');

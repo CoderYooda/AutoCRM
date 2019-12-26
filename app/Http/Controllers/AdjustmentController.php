@@ -129,7 +129,8 @@ class AdjustmentController extends Controller
 
         $request['fresh'] = true;
         $class = 'AdjustmentDialog' . $id;
-        $content = view('adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'request'))->render();
+        $inner = true;
+        $content = view('adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'inner', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'adjustmentDialog' . $id,

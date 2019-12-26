@@ -58,9 +58,9 @@ class ShipmentsController extends Controller
         $shipment = Shipment::where('id', (int)$id)->first();
         $stores = Store::owned()->get();
         $request['fresh'] = true;
-        $class = 'entranceDialog' . $id;
-
-        $content = view('shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'request'))
+        $class = 'shipmentDialog' . $id;
+        $inner = true;
+        $content = view('shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([

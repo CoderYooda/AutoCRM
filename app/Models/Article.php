@@ -18,6 +18,7 @@ class Article extends Model
         'creator_id',
         'supplier_id',
         'measurement_id',
+        'foundstring',
         'article',
         'oem',
         'storeCode',
@@ -68,6 +69,11 @@ class Article extends Model
     {
         return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'article_id', 'shipment_id')
             ->withPivot('count', 'price', 'total', 'shipment_id');
+    }
+
+    public function getCountSelfOthers()
+    {
+        return$this->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) . ' / ' . $this->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id);
     }
 
 //    public function providerorder()

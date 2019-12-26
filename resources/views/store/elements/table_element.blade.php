@@ -1,4 +1,4 @@
-<tr ondblclick="openDialog('productDialog', '&product_id={{ $article->id }}')" class="list-item" id="product_{{ $article->id }}">
+<tr ondblclick="openDialog('productDialog', '&product_id={{ $article->id }}')" class="list-item product_list_context" id="product_{{ $article->id }}">
     <td>
         <div class="compressed article" title="{{ $article->name }}">
             {{ $article->name }}

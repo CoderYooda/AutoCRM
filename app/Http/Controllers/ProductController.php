@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\ProviderOrder;
 use App\Models\Shipment;
 use App\Models\Store;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
@@ -50,6 +51,8 @@ class ProductController extends Controller
             'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render(),
         ]);
     }
+
+
 
     public function addToList(Request $request)
     {
@@ -236,6 +239,8 @@ class ProductController extends Controller
             ], 422);
         }
 
+        $supplier = Supplier::owned()->where('id', $request['supplier_id'])->first();
+
         $article = Article::firstOrNew($compare);
             if($article->exists){
                 $this->message = 'Товар обновлен';
@@ -245,6 +250,13 @@ class ProductController extends Controller
                 $this->message = 'Товар сохранён';
             }
         $article->fill($request->only($article->fields));
+
+        $prepared_article = mb_strtolower (str_replace(' ', '', $request['article']));
+        $prepared_supplier = mb_strtolower (str_replace(' ', '', $supplier->name));
+        $prepared_name = mb_strtolower (str_replace(' ', '', $request['name']));
+        $prepared_barcode = mb_strtolower (str_replace(' ', '', $request['barcode']));
+
+        $article->foundstring = $prepared_article.$prepared_supplier.$prepared_barcode.$prepared_name;
 
         $article->save();
         $this->status = 200;
@@ -311,16 +323,9 @@ class ProductController extends Controller
             }
             if($request['search'] != null) {
                 $q->where('id', null);
-                $q->orWhere('name', 'LIKE', '%' . $request['search'] . '%');
-                $q->orWhere('article', 'LIKE', '%' . $request['search'] . '%');
-                $q->orWhere('barcode', 'LIKE', $request['search']);
-                $q->orWhere('barcode_local', 'LIKE', $request['search']);
-                $q->orWhere('storeCode', 'LIKE', $request['search']);
-                $q->orWhereHas('supplier', function ($query) use ($request) {
-                    $query->where('name', 'LIKE', '%' . $request['search'] .'%');
-                });
+                $q->orWhere('foundstring', 'LIKE', '%' . str_replace(' ', '', $request['search']) . '%');
             }
-        })->orderBy('created_at', 'DESC')->paginate(14);
+        })->orderBy('created_at', 'DESC')->paginate(20);
     }
 
     public static function searchArticles($request)

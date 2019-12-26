@@ -8,7 +8,7 @@
             <h3>{{ $cashbox->name }}</h3>
         </div>
         <div class="box-footer">
-            <button class="btn success" onclick="openDialog('editCashbox', '&id={{ $cashbox->id }}')">Редактировать</button>
+            <button class="btn success" onclick="openDialog('cashboxDialog', '&cashbox_id={{ $cashbox->id }}')">Редактировать</button>
             <button class="btn success" onclick="entity.remove('cashbox', {{ $cashbox->id }})">Удалить</button>
         </div>
     </div>

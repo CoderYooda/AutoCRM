@@ -53,9 +53,9 @@ class SettingsController extends Controller
 
     public static function cashboxTab($request)
     {
-        $cashboxes = Cashbox::owned()->get();
-        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view('settings.cashbox', compact('cashboxes', 'request'));
+        $cashboxes = Cashbox::owned()->orderBy('created_at', 'DESC')->get();
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashbox'){
+            return view('settings.elements.cashbox_container', compact('cashboxes', 'request'));
         }
         return view('settings.cashbox', compact('cashboxes','request'));
     }

@@ -1,3 +1,4 @@
+@if(!isset($inner) || !$inner)
 <div
     @if(isset($shipment) && $shipment->id != NULL)
     @php $class = 'shipmentDialog' . $shipment->id @endphp
@@ -7,12 +8,13 @@
     id="shipmentDialog"
     @endif
     class="dialog shipment_dialog" style="width:880px;">
+@endif
     @if(isset($shipment) && $shipment->id != NULL)
         <div class="titlebar">Продажа №{{ $shipment->id }}</div>
     @else
         <div class="titlebar">Новая продажа</div>
     @endif
-    <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
+    <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <div class="modal-header dark" style="justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
             {{--<span class="item-title _500">Поступление</span>--}}
@@ -178,4 +180,6 @@
 
         </div>
     </form>
+@if(!isset($inner) || !$inner)
 </div>
+@endif

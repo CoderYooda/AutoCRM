@@ -119,6 +119,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Склады
     Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
+    Route::get('/tableproductdata', 'StoreController@tableProductData')->name('StoreTableProductData');
     Route::post('/store/new', 'StoreController@store')->name('StoreStore');
     Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
     Route::post('/store/checkstock', 'StoreController@checkstock')->name('CheckStock');

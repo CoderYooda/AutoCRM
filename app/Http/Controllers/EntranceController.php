@@ -153,7 +153,7 @@ class EntranceController extends Controller
         }
 
         # Синхронизируем товары к поступлению
-            $entrance->articles()->sync($article_entrance_pivot_data, false);
+            $entrance->articles()->sync($article_entrance_pivot_data, true);
 
         #Обработка ответа
             if(isset($entranceWasExisted) && $entranceWasExisted) {
@@ -206,8 +206,8 @@ class EntranceController extends Controller
         $stores = Store::owned()->get();
         $request['fresh'] = true;
         $class = 'entranceDialog' . $id;
-
-        $content = view('entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'request'))
+        $inner = true;
+        $content = view('entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([

@@ -44,8 +44,8 @@ class ArticleSeed extends Seeder
                 echo "ошибка записи";
             }
 
-            if($index > 500)
-                break;
+//            if($index > 500)
+//                break;
             $this->command->getOutput()->progressAdvance();
         }
         $this->command->getOutput()->progressFinish();
