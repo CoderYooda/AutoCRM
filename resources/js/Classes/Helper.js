@@ -258,8 +258,8 @@ class Helper{
         elem.innerHTML = ''+
             '<div>ID - ' + object.root_id + '</div>'+
             '<div>Активно? - ' + object.active + '</div>'+
-            '<div>Табуляция - ' + object.active_tab + '</div>'+
-        document.body.appendChild(elem);
+            '<div>Табуляция - ' + object.active_tab + '</div>';
+        //document.body.appendChild(elem);
     }
 
     copy(str){

@@ -16,7 +16,7 @@ import tippy from 'tippy.js';
 
 
 
-window.debug = true;
+window.debug = false;
 
 import Sortable from 'sortablejs';
 

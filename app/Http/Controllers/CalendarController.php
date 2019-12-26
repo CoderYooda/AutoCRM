@@ -20,4 +20,5 @@ class CalendarController extends Controller
             return view('calendar.index', compact('request'));
         }
     }
+
 }

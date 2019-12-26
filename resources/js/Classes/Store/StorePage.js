@@ -32,8 +32,8 @@ class storePage{
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
-            ajaxURL:object.prepareUrlForTable(),
-            //ajaxParams:object.prepareUrlForTable(), //ajax parameters
+            ajaxURL:'/tableproductdata',
+            ajaxParams:object.prepareUrlForTable(),//object.prepareUrlForTable(), //ajax parameters
             // ajaxProgressiveLoad:"scroll",
             paginationSize:20,
             placeholder:"По данным критериям ничего нет",
@@ -97,17 +97,27 @@ class storePage{
 
     prepareUrlForTable(){
         let object = this;
-        let url = '/tableproductdata?viewas=json';
+        // let url = '/tableproductdata?viewas=json';
+        //
+        // if(object.category_id !== null){
+        //     url += '&category_id=';
+        //     url += object.category_id;
+        // }
+        // if(object.search && object.search !== 'null' || object.search !== null){
+        //     url += '&search=';
+        //     url += object.search;
+        // }
+        // return url;
+
+        let data = {};
 
         if(object.category_id !== null){
-            url += '&category_id=';
-            url += object.category_id;
+            data.category_id = object.category_id.toString();
         }
         if(object.search && object.search !== 'null' || object.search !== null){
-            url += '&search=';
-            url += object.search;
+            data.search = object.search.toString();
         }
-        return url;
+        return data;
     }
 
 
@@ -156,7 +166,7 @@ class storePage{
 
     load(){
 
-        this.initTableData();
+        //this.initTableData();
 
         this.active_tab = window.helper.findGetParameter('active_tab');
 
@@ -250,7 +260,7 @@ class storePage{
             search = document.getElementById("search");
             searchFn = window.helper.debounce(function(e) {
                 object.search = search.value;
-                object.table.setData(object.prepareUrlForTable(), {});
+                object.table.setData('/tableproductdata', object.prepareUrlForTable());
                 //object.page = 1;
                 //object.reload(e);
             }, 400);
