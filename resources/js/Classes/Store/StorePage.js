@@ -20,7 +20,7 @@ class storePage{
         this.init();
         this.linked();
 
-        this.initTableData();
+
     }
 
     initTableData(){
@@ -196,8 +196,9 @@ class storePage{
         this.search = window.helper.findGetParameter('search');
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
-        this.date_end = 'null';
-        window.helper.debugBar(this);
+        e_end = 'null';
+        window.helper.debugBar(this);this.dat
+        this.initTableData();
         this.searchInit();
     }
 
