@@ -325,7 +325,7 @@ class ProductController extends Controller
                 $q->where('id', null);
                 $q->orWhere('foundstring', 'LIKE', '%' . str_replace(' ', '', $request['search']) . '%');
             }
-        })->orderBy('created_at', 'DESC')->paginate(20);
+        })->orderBy('created_at', 'DESC')->paginate(40);
     }
 
     public static function searchArticles($request)

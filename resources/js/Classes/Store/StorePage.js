@@ -110,6 +110,8 @@ class storePage{
         // return url;
 
         let data = {};
+        data.view_as = "json";
+        data.target = "ajax-table-store";
 
         if(object.category_id !== null){
             data.category_id = object.category_id.toString();
@@ -196,8 +198,8 @@ class storePage{
         this.search = window.helper.findGetParameter('search');
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
-        e_end = 'null';
-        window.helper.debugBar(this);this.dat
+        this.date_end = 'null';
+        window.helper.debugBar(this);
         this.initTableData();
         this.searchInit();
     }
@@ -268,17 +270,18 @@ class storePage{
             search.addEventListener("keydown", searchFn);
             search.addEventListener("paste", searchFn);
             search.addEventListener("delete", searchFn);
-        } else
-        if(document.getElementById("search_partner")){
-            search = document.getElementById("search_partner");
-            searchFn = window.helper.debounce(function(e) {
-                object.search = search.value;
-                object.reload(e);
-            }, 400);
-            search.addEventListener("keydown", searchFn);
-            search.addEventListener("paste", searchFn);
-            search.addEventListener("delete", searchFn);
         }
+        // else
+        // if(document.getElementById("search_partner")){
+        //     search = document.getElementById("search_partner");
+        //     searchFn = window.helper.debounce(function(e) {
+        //         object.search = search.value;
+        //         object.reload(e);
+        //     }, 400);
+        //     search.addEventListener("keydown", searchFn);
+        //     search.addEventListener("paste", searchFn);
+        //     search.addEventListener("delete", searchFn);
+        // }
     }
 
     resetDate(){
