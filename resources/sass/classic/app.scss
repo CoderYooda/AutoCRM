@@ -1,3 +1,8 @@
+/*Font-Awesome*/
+@import '~font-awesome/scss/font-awesome';
+/*Tabulator*/
+@import '~tabulator-tables/dist/css/tabulator.css';
+
 /*Base*/
 body {
     margin: 0;
@@ -11,7 +16,7 @@ body {
     direction: ltr;
     font-size: 14px;
     min-width: 1000px;
-    overflow-x: hidden;
+    overflow: hidden;
     letter-spacing: 0.4px;
 }
 a {
@@ -190,6 +195,12 @@ input:-moz-placeholder { /* Firefox 18- */
 
 /*Main content*/
 
+#ajax-content{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
 .nav{
     padding-left: 0;
     padding-right: 0;
@@ -352,6 +363,12 @@ input:-moz-placeholder { /* Firefox 18- */
 .box-lister{
     margin: 15px;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.box-content{
+    flex: 1;
+    max-width: calc(100vw - 595px);
 }
 .box{
     position: relative;
@@ -372,6 +389,10 @@ input:-moz-placeholder { /* Firefox 18- */
     font-size: 16px;
     outline: none;
     color: #000;
+}
+
+.tabulator .tabulator-header .tabulator-col:first-child .tabulator-col-content .tabulator-col-title {
+    text-align: center;
 }
 
 /*BreadCrumbs*/

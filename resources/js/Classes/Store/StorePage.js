@@ -17,7 +17,7 @@ class storePage{
 
         this.table = null;
 
-        this.init();
+        //this.init();
         this.linked();
 
 
@@ -25,9 +25,10 @@ class storePage{
 
     initTableData(){
         let object = this;
-        console.log(object.prepareUrlForTable());
-        object.table = new Tabulator("#example-table", {
-            height:'100%',
+        let height = document.getElementById('store-table-container').offsetHeight;
+        object.table = new Tabulator("#store-table", {
+            resizableRows:false,
+            height:height-2,
             //maxHeight:'100%',
             pagination:"remote",
             layout:"fitColumns",

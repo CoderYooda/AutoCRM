@@ -61,11 +61,12 @@ class StoreController extends Controller
         $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
         $cat_info['root_id'] = 2;
 
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
             return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
         $trinity = null; #TODO
-        return view('store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
+        return view(env('DEFAULT_THEME', 'classic') . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 
     public static function entranceTab($request)
