@@ -39,6 +39,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/category/store', 'CategoryController@store')->name('StoreCategory');
     Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
+    Route::post('/category/loadview', 'CategoryController@loadAside')->name('LoadAsideCategory');
+
+    Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
 
     #Продукты
     Route::get('/store/test', 'ProductController@test')->name('test');

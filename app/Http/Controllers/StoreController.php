@@ -41,12 +41,12 @@ class StoreController extends Controller
         }
     }
 
-    public function tableProductData(Request $request){
-
+    public function tableProductData(Request $request)
+    {
         $products = ProductController::getArticles($request);
         foreach($products as $product){
-            $product->supplier = $product->supplier()->first()->name;
             $product->isset = $product->getCountSelfOthers();
+            $product->price = $product->getMidPriceByStoreId(session('store_id'));
         }
         return response()->json($products);
     }
@@ -58,7 +58,7 @@ class StoreController extends Controller
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
-        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
+        $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 2;
 
 

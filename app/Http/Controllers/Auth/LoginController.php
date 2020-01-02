@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -87,6 +88,7 @@ class LoginController extends Controller
                     'status' => 'success'
                 ]);
             }
+            session(['store_id' => Auth::user()->getStoreFirst()->id]);
             return $this->sendLoginResponse($request);
         }
 

@@ -307,6 +307,23 @@ class ProductController extends Controller
     public static function getArticles($request)
     {
 
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'id';
+            $dir = 'ASC';
+        }
+
         $category = 0;
 
         if($request['category_id'] === null || $request['serach'] != null){
@@ -316,16 +333,30 @@ class ProductController extends Controller
         } else {
             $category = (int)$request['category_id'];
         }
-
-        return Article::owned()->where(function($q) use ($request, $category){
-            if($category != 0) {
-                $q->where('category_id', $category);
+        return Article::
+        join('suppliers','suppliers.id','=','articles.supplier_id')
+        ->leftJoin('article_store', function($join)
+        {
+            $join->on('article_store.article_id', '=', 'articles.id')
+                ->where('article_store.store_id', Auth::user()->getStoreFirst()->id);
+        })
+        ->select('suppliers.name as supplier',
+            'article_store.count as isset',
+            'article_store.midprice as price',
+            'articles.*')
+        ->where('articles.company_id', Auth::user()->company()->first()->id)
+        ->where(function($q) use ($request){
+            if(isset($request['search']) && $request['search'] != ""){
+                $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', $request['search'])) . '%');
             }
-            if($request['search'] != null) {
-                $q->where('id', null);
-                $q->orWhere('foundstring', 'LIKE', '%' . str_replace(' ', '', $request['search']) . '%');
+        })
+        ->where(function($q) use ($request){
+            if(isset($request['category_id']) && $request['category_id'] != ""){
+                $q->where('articles.category_id', (int)$request['category_id']);
             }
-        })->orderBy('created_at', 'DESC')->paginate(40);
+        })
+        ->orderBy($field, $dir)
+        ->paginate($size);
     }
 
     public static function searchArticles($request)

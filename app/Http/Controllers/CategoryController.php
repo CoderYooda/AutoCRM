@@ -24,6 +24,53 @@ class CategoryController extends Controller
         dd($categories);
     }
 
+    public function loadAside(Request $request){
+        $categories = CategoryController::getCategories($request, 'store');
+        $cat_info = [];
+        $cat_info['route'] = 'StoreIndex';
+        $cat_info['params'] = ['active_tab' => 'store'];
+        $cat_info['root_id'] = 2;
+        if($request->expectsJson()){
+            return response()->json([
+                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request') )->render()
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function loadBreadcrumbs(Request $request){
+        self::$breadcrumbs = collect();
+        $html = '<ol class="breadcrumb nav m-0">';
+        $category = Category::owned()->where('id', $request['category_id'])->first();
+        self::rec($category, $request['root_category']);
+        foreach(self::$breadcrumbs as $index => $breadcrumb){
+            if($breadcrumb->id == 1 || $index == self::$breadcrumbs->count()){
+                $html .= '<li class="breadcrumb-item"><span class="ajax-nav">' . $breadcrumb->name . '</span></li>';
+            } else {
+                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" onclick="window.store.loadCategory(' . $breadcrumb->id . ')">' . $breadcrumb->name . '</a></li>';
+            }
+        }
+        $html .= '</ol>';
+        if($request->expectsJson()){
+            return response()->json([
+                'html' => $html
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public static function rec($category, $root){
+        self::$breadcrumbs->prepend($category);
+
+        $parent = $category->parent()->first();
+
+        if($parent != null && $parent->id != 1 && $category->id != $root){
+            self::rec($parent, $root);
+        }
+    }
+
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -279,31 +326,7 @@ class CategoryController extends Controller
         return $categories;
     }
 
-    public static function drawCrumbs($category, $root = 0){
-        self::$breadcrumbs = collect();
-        $html = '<ol class="breadcrumb mb-0">';
-        self::rec($category, $root);
-        foreach(self::$breadcrumbs as $index => $breadcrumb){
 
-            if($breadcrumb->id == 1 || $index == self::$breadcrumbs->count()){
-                $html .= '<li class="breadcrumb-item"><span>' . $breadcrumb->name . '</span></li>';
-            } else {
-                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" href = "' . url()->current() . '?category_id=' . $breadcrumb->id . '" >' . $breadcrumb->name . '</a></li>';
-            }
-        }
-        $html .= '</ol>';
-        return $html;
-    }
-
-    public static function rec($category, $root){
-        self::$breadcrumbs->prepend($category);
-
-        $parent = $category->parent()->first();
-
-        if($parent != null && $parent->id != 1 && $category->id != $root){
-            self::rec($parent, $root);
-        }
-    }
 
 //    public function drawCrumbs($request, $root){
 //        $html = '<ol class="breadcrumb mb-0">';

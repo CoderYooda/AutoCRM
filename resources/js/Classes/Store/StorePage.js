@@ -6,7 +6,7 @@ class storePage{
         console.log('страница склада инициализировано');
         this.active = true;
         this.active_tab = window.helper.findGetParameter('active_tab');
-        this.category_id = 2;
+        this.category_id = window.helper.findGetParameter('category_id');
         this.page = 1;
         this.search = 'null';
 
@@ -22,32 +22,114 @@ class storePage{
 
 
     }
+    loadBreadcrumbs(category_id, root_category){
+
+        let object = this;
+        window.isXHRloading = true;
+        // window.helper.insertParamUrl('category_id', category_id);
+        // window.helper.insertParamUrl('search', 'null');
+        object.category_id = category_id;
+        //document.getElementById("search").value = '';
+        object.search = null;
+        //object.table.setData('/tableproductdata', object.prepareDataForTable());
+        let data = {};
+        data.category_id = category_id;
+        data.root_category = root_category;
+        window.axios({
+            method: 'post',
+            url: '/category/breadcrumbs',
+            data: data
+        }).then(function (resp) {
+            document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    }
+
+    loadCategory(category_id){
+        let object = this;
+        object.loadBreadcrumbs(category_id, object.root_category);
+        window.isXHRloading = true;
+        window.helper.insertParamUrl('category_id', category_id);
+        window.helper.insertParamUrl('search', 'null');
+        object.category_id = category_id;
+        document.getElementById("search").value = '';
+        object.search = null;
+        object.table.setData('/tableproductdata', object.prepareDataForTable());
+        let data = {};
+        data.category_id = category_id;
+        window.axios({
+            method: 'post',
+            url: '/category/loadview',
+            data: data
+        }).then(function (resp) {
+
+            document.getElementById('category-nav').innerHTML = resp.data.html;
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    }
 
     initTableData(){
         let object = this;
         let height = document.getElementById('store-table-container').offsetHeight;
+
+        let cleanHeight = height - 110;
+        let elements = cleanHeight / 44;
         object.table = new Tabulator("#store-table", {
-            resizableRows:false,
-            height:height-2,
+            locale:true,
+            langs:{
+                "ru":{
+                    "ajax":{
+                        "loading":"Загрузка", //ajax loader text
+                        "error":"Ошибка", //ajax error text
+                    },
+                    "pagination":{
+                        "page_size":"Кол-во элементов", //label for the page size select element
+                        "first":"Первая", //text for the first page button
+                        "first_title":"Первая страница", //tooltip text for the first page button
+                        "last":"Последняя",
+                        "last_title":"Последняя страница",
+                        "prev":"Предыдущая",
+                        "prev_title":"Предыдущая страница",
+                        "next":"Следующая",
+                        "next_title":"Следующая страница",
+                        "show_page":"След.",
+                    },
+                    "headerFilters":{
+                        "default":"filter column...", //default header filter placeholder text
+                        "columns":{
+                            "name":"filter name...", //replace default header filter text for column name
+                        }
+                    }
+                }
+            },
+            //resizableRows:false,
+            resizableColumns:false,
+            height:height-15,
             //maxHeight:'100%',
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
             ajaxURL:'/tableproductdata',
-            ajaxParams:object.prepareUrlForTable(),//object.prepareUrlForTable(), //ajax parameters
+            ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parameters
             // ajaxProgressiveLoad:"scroll",
-            paginationSize:20,
+            paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns:[ //Define Table Columns
-                {formatter:"rowSelection", width:40, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
                     }},
                 {title:"ID", field:"id", width:80},
-                {title:"Модель", field:"name", width:250},
-                {title:"Артикул", field:"article", align:"left"},
-                {title:"Производитель", field:"supplier"},
-                {title:"Наличие", field:"isset", align:"center"},
-                {title:"Цена (Ррозница)", field:"price", align:"center"},
+                {title:"Модель", field:"name"},
+                {title:"Артикул", field:"article", width:150, align:"left"},
+                {title:"Брэнд", field:"supplier", width:150, align:"left"},
+                {title:"Наличие", field:"isset", width:130, align:"left"},
+                {title:"Цена (Ррозница)", field:"price", width:160, align:"left"},
             ],
             tableBuilt:function(){
                 let table_holder = document.getElementsByClassName('tabulator-table');
@@ -96,20 +178,8 @@ class storePage{
         });
     }
 
-    prepareUrlForTable(){
+    prepareDataForTable(){
         let object = this;
-        // let url = '/tableproductdata?viewas=json';
-        //
-        // if(object.category_id !== null){
-        //     url += '&category_id=';
-        //     url += object.category_id;
-        // }
-        // if(object.search && object.search !== 'null' || object.search !== null){
-        //     url += '&search=';
-        //     url += object.search;
-        // }
-        // return url;
-
         let data = {};
         data.view_as = "json";
         data.target = "ajax-table-store";
@@ -264,7 +334,9 @@ class storePage{
             search = document.getElementById("search");
             searchFn = window.helper.debounce(function(e) {
                 object.search = search.value;
-                object.table.setData('/tableproductdata', object.prepareUrlForTable());
+                window.helper.insertParamUrl('search', search.value);
+                window.helper.insertParamUrl('category_id', 'null');
+                object.table.setData('/tableproductdata', object.prepareDataForTable());
                 //object.page = 1;
                 //object.reload(e);
             }, 400);

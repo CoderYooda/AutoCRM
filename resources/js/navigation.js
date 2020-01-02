@@ -138,11 +138,11 @@ const ajaxRequest = new (function () {
     }
 
     function processLink() {
+
         if (this.className.search(sAjaxClass) > -1) {
             try{
              this.querySelector(":scope > .pr").style.opacity = 1;
             } catch (e) {
-
             }
             
             requestPage(this.href);
