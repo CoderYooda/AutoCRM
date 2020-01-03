@@ -16,7 +16,7 @@
 
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreCategory') }}" method="post">
-        <div class="box mb-0">
+        <div class="">
             <div class="box-body">
                 @csrf
                     <input class="category_select" type="hidden" name="category_id" value="@if(isset($parent)){{ $parent->id }}@elseif(isset($category)){{ $category->category_id }}@else 2 @endif">

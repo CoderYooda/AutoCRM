@@ -17,9 +17,7 @@ class storePage{
 
         this.table = null;
 
-        //this.init();
-        this.linked();
-
+        this.init();
 
     }
     loadBreadcrumbs(category_id, root_category){
@@ -29,13 +27,14 @@ class storePage{
         // window.helper.insertParamUrl('category_id', category_id);
         // window.helper.insertParamUrl('search', 'null');
         object.category_id = category_id;
-        //document.getElementById("search").value = '';
-        object.search = null;
+        //document.getElementById("search").value = '';;
         //object.table.setData('/tableproductdata', object.prepareDataForTable());
         let data = {};
         data.category_id = category_id;
         data.root_category = root_category;
+        data.search = object.search;
         window.axios({
+            async:true,
             method: 'post',
             url: '/category/breadcrumbs',
             data: data
@@ -48,24 +47,32 @@ class storePage{
         });
     }
 
-    loadCategory(category_id){
+    loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
-        object.loadBreadcrumbs(category_id, object.root_category);
+        if(clean_search != null && clean_search){
+            document.getElementById("search").value = '';
+            object.search = '';
+            window.helper.insertParamUrl('search', '');
+        }
+
         window.isXHRloading = true;
         window.helper.insertParamUrl('category_id', category_id);
-        window.helper.insertParamUrl('search', 'null');
+
         object.category_id = category_id;
-        document.getElementById("search").value = '';
-        object.search = null;
-        object.table.setData('/tableproductdata', object.prepareDataForTable());
+
+
         let data = {};
         data.category_id = category_id;
+        data.search = object.search;
         window.axios({
             method: 'post',
             url: '/category/loadview',
             data: data
         }).then(function (resp) {
-
+            object.loadBreadcrumbs(category_id, object.root_category);
+            if(update_data != null && update_data){
+                object.table.setData('/tableproductdata', object.prepareDataForTable());
+            }
             document.getElementById('category-nav').innerHTML = resp.data.html;
         }).catch(function (error) {
             console.log(error);
@@ -196,14 +203,16 @@ class storePage{
 
     init(){
         let object = this;
-        object.contextListItems();
-        document.addEventListener('ajaxLoaded', function(e){
-            object.checkActive();
-            object.linked();
-            object.load();
-        });
-        object.checkActive();
-        object.load();
+        this.linked();
+        object.loadBreadcrumbs(this.category_id, this.root_category);
+        //object.contextListItems();
+        // document.addEventListener('ajaxLoaded', function(e){
+        //     object.checkActive();
+        //     object.linked();
+        //     object.load();
+        // });
+        //object.checkActive();
+        //object.load();
         document.addEventListener('ProductStored', function(e){
             object.prepareParams();
             object.reload();
@@ -335,8 +344,11 @@ class storePage{
             searchFn = window.helper.debounce(function(e) {
                 object.search = search.value;
                 window.helper.insertParamUrl('search', search.value);
+                object.category_id = null;
                 window.helper.insertParamUrl('category_id', 'null');
                 object.table.setData('/tableproductdata', object.prepareDataForTable());
+                object.loadCategory(object.category_id);
+
                 //object.page = 1;
                 //object.reload(e);
             }, 400);

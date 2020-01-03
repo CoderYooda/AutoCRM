@@ -1,0 +1,68 @@
+.form-group {
+    margin-bottom: 1rem;
+}
+label {
+    font-weight: 500;
+    font-size: inherit;
+    display: inline-block;
+    margin-bottom: .5rem;
+}
+.input-group {
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    width: 100%;
+}
+.input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control, .input-group>.form-control-plaintext {
+    position: relative;
+    -webkit-box-flex: 1;
+    flex: 1 1 0%;
+    min-width: 0;
+    margin-bottom: 0;
+}
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+.form-control {
+    border-color: hsla(210,8%,51%,.2);
+    border-radius: .25rem;
+    color: inherit;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.6em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.button_select:after {
+    font-family: FontAwesome;
+    font-weight: 400;
+    content: "\F0C9";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: calc(1.6em + .75rem);
+    width: calc(1.6em + .75rem);
+    text-align: center;
+    line-height: calc(1.6em + .75rem);
+}
+.form-control.is-invalid, .was-validated .form-control:invalid {
+    border-color: #e3342f;
+    padding-right: calc(1.6em + .75rem);
+    background-repeat: no-repeat;
+    background-position: right calc(.4em + .1875rem) center;
+    background-size: calc(.8em + .375rem) calc(.8em + .375rem);
+}

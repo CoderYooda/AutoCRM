@@ -149,6 +149,7 @@
                 <div id="ajax-content">
                     @yield('content')
                 </div>
+                <div id="dialogs"></div>
             </div>
         </div>
     </body>

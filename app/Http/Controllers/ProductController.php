@@ -351,12 +351,13 @@ class ProductController extends Controller
             }
         })
         ->where(function($q) use ($request){
-            if(isset($request['category_id']) && $request['category_id'] != ""){
+            if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null"){
                 $q->where('articles.category_id', (int)$request['category_id']);
             }
         })
         ->orderBy($field, $dir)
         ->paginate($size);
+
     }
 
     public static function searchArticles($request)

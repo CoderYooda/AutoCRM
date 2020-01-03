@@ -41,6 +41,17 @@ class CategoryController extends Controller
 
     public function loadBreadcrumbs(Request $request){
         self::$breadcrumbs = collect();
+
+        if($request['search'] != '' ){
+            $html = '<ol class="breadcrumb nav m-0"><li>Поиск по складу</li></ol>';
+            return response()->json([
+                'html' => $html
+            ]);
+        }
+
+        if($request['category_id'] === 'null' || $request['category_id'] == null  && $request['root_category'] != null){
+            $request['category_id'] = $request['root_category'];
+        }
         $html = '<ol class="breadcrumb nav m-0">';
         $category = Category::owned()->where('id', $request['category_id'])->first();
         self::rec($category, $request['root_category']);
@@ -48,7 +59,7 @@ class CategoryController extends Controller
             if($breadcrumb->id == 1 || $index == self::$breadcrumbs->count()){
                 $html .= '<li class="breadcrumb-item"><span class="ajax-nav">' . $breadcrumb->name . '</span></li>';
             } else {
-                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" onclick="window.store.loadCategory(' . $breadcrumb->id . ')">' . $breadcrumb->name . '</a></li>';
+                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" onclick="window.store.loadCategory(' . $breadcrumb->id . ', true, true)">' . $breadcrumb->name . '</a></li>';
             }
         }
         $html .= '</ol>';
@@ -171,7 +182,7 @@ class CategoryController extends Controller
         $parent = Category::owned()->where('id', $start_category_id)->first();
         return response()->json([
             'tag' => $tag,
-            'html' => view('category.dialog.form_category', compact('category', 'parent', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.form_category', compact('category', 'parent', 'request'))->render()
         ]);
     }
 
