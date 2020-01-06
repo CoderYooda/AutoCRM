@@ -28,16 +28,25 @@ class ProductController extends Controller
         $message = 'Внутренняя ошибка сервера';
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $product = Article::where('id', $id)->first();
-
-        $product->delete();
+        $returnIds = null;
+        if($id == 'array'){
+            $products = Article::owned()->whereIn('id', $request['ids']);
+            $this->message = 'Товары удалены';
+            $returnIds = $products->get()->pluck('id');
+            $products->delete();
+        } else {
+            $product = Article::where('id', $id)->first();
+            $this->message = 'Товар удален';
+            $returnIds = $product->id;
+            $product->delete();
+        }
         $this->status = 200;
-        $this->message = 'Товар удален';
+
 
         return response()->json([
-            'id' => $product->id,
+            'id' => $returnIds,
             'message' => $this->message
         ], $this->status);
     }

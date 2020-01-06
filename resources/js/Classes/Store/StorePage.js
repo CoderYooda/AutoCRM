@@ -9,7 +9,8 @@ class storePage{
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = 1;
         this.search = 'null';
-
+        this.tableContextual = null;
+        this.selectedData = null;
         this.root_category = 2;
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
@@ -138,23 +139,48 @@ class storePage{
                 {title:"Наличие", field:"isset", width:130, align:"left"},
                 {title:"Цена (Ррозница)", field:"price", width:160, align:"left"},
             ],
-            tableBuilt:function(){
-                let table_holder = document.getElementsByClassName('tabulator-table');
-                table_holder[0].addEventListener('contextmenu', event => {
-                    event.preventDefault();
-                    //Add contextual menu here
-                    new Contextual({
-                        isSticky: false,
-                        items:[
-                            new ContextualItem({label:'Редактировать', onClick: () => {console.log('Item 1 clicked')}, shortcut:'Что то' }),
-                            new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
-                            new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
-                            new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
-                            new ContextualItem({type:'seperator'}),
-                            new ContextualItem({label:'Удалить', shortcut:'Ctrl+A' }),
-                        ]
-                    });
+
+            rowContext:function(e, row){
+                //e - the click event object
+                //row - row component
+                e.preventDefault();
+                object.selectedData = object.table.getSelectedData();
+
+                console.log(object.selectedData);
+                let items = [
+                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog('productDialog', '&product_id=' + row.getData().id)}, shortcut:'Что то' }),
+                    new ContextualItem({type:'seperator'}),
+                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove('product', row.getData().id, object)}, shortcut:'Ctrl+A' }),
+                ];
+                if(object.selectedData.length > 0){
+                    items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove('product', window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
+                }
+                object.tableContextual = null;
+                object.tableContextual = new Contextual({
+                    isSticky: false,
+                    items:items,
                 });
+            },
+            tableBuilt:function(){
+                console.log('Таблица готова');
+                // let table_holder = document.getElementsByClassName('tabulator-table');
+                // table_holder[0].addEventListener('contextmenu', event => {
+                //     event.preventDefault();
+                //     //Add contextual menu here
+                //     object.tableContextual = new Contextual({
+                //         isSticky: false,
+                //         items:[
+                //             new ContextualItem({label:'Редактировать', onClick: () => {
+                //                 openDialog('productDialog', '&product_id=30136')
+                //                 }, shortcut:'Что то' }),
+                //             new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
+                //             new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
+                //             new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
+                //             new ContextualItem({type:'seperator'}),
+                //             new ContextualItem({label:'Удалить', shortcut:'Ctrl+A' }),
+                //         ]
+                //     });
+                // });
             },
             //
             // ajaxResponse:function(url, params, response){
@@ -240,8 +266,9 @@ class storePage{
             object.reload();
         });
         document.addEventListener('CategoryStored', function(e){
-            object.prepareParams();
-            object.reload();
+            object.loadCategory(object.category_id);
+            // object.prepareParams();
+            // object.reload();
         });
         object.initShipmentDates();
     }
@@ -345,6 +372,9 @@ class storePage{
                 object.search = search.value;
                 window.helper.insertParamUrl('search', search.value);
                 object.category_id = null;
+                if(object.search == ''){
+                    object.category_id = object.root_category;
+                }
                 window.helper.insertParamUrl('category_id', 'null');
                 object.table.setData('/tableproductdata', object.prepareDataForTable());
                 object.loadCategory(object.category_id);

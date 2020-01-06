@@ -116,7 +116,7 @@ input[type=checkbox]:checked {
 .app-top-menu .header-tab {
     text-decoration: none;
     display: block;
-    padding: 18px 10px 15px;
+    padding: 18px 10px 30px;
     line-height: 17px;
     height: 16px;
     border-bottom: 3px solid transparent;
@@ -447,9 +447,9 @@ input:-moz-placeholder { /* Firefox 18- */
     font-size: 14px;
 }
 
-.app-content{
+.app-content {
     padding-top: 52px;
-    height: calc(100vh - 52px);
+    height: 100vh;
     width: 100vw;
     display: flex;
     flex: 1;

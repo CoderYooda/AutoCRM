@@ -74,6 +74,16 @@ const pages = {
 
 class Helper{
 
+    pluck(objs, name) {
+        var sol = [];
+        for(var i in objs){
+            if(objs[i].hasOwnProperty(name)){
+                sol.push(objs[i][name]);
+            }
+        }
+        return sol;
+    }
+
     initDialogMethods(){
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){

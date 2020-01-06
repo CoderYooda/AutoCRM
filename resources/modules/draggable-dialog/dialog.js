@@ -132,7 +132,6 @@ window.closeDialog = function(event, id = null){
 }
 
 function appendDialog(resp, tag){
-
 	window.dialogs[tag] = [];
 	window.dialogs[tag].tag = tag;
 	var node = helper.createElementFromHTML(resp.html);

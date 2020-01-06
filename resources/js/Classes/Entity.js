@@ -3,8 +3,14 @@
 
 class Entity{
 
-    remove(tag, id) { // Удаление элемента списка с подтверждением
+    remove(tag, id, object = null) { // Удаление элемента списка с подтверждением
         if (isXHRloading) { return; }
+        let data = {};
+        data.ids = null;
+        if(Array.isArray(id)){
+            data.ids = id;
+            id = 'array'
+        }
         Swal.fire({
             title: 'Вы уверены?',
             text: "действие необратимо",
@@ -21,15 +27,23 @@ class Entity{
                 axios({
                     method: 'POST',
                     url: tag + '/' + id + '/delete',
+                    data:data,
                 }).then(function (resp) {
-                    var element = document.getElementById(tag + '_' + resp.data.id);
                     let type = 'success';
                     if(resp.data.type != null){
                         type = resp.data.type;
                     }
-                    if(type === 'success'){
-                        element.remove();
-                    };
+                    if(object === null){
+                        var element = document.getElementById(tag + '_' + resp.data.id);
+
+                        if(type === 'success'){
+                            element.remove();
+                        };
+                    } else {
+                        object.table.deleteRow(resp.data.id);
+                        object.table.setData('/tableproductdata', object.prepareDataForTable());
+                    }
+
                     if(resp.data.event){
                         let event = new Event(resp.data.event, {bubbles: true});
                         document.dispatchEvent(event);
