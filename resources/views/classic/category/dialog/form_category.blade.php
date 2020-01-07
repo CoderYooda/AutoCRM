@@ -46,7 +46,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn success" onclick="{{$class}}.save(this)">Сохранить</button>
+            <hr>
+            <button class="button primary" onclick="{{$class}}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">
 

@@ -1,0 +1,71 @@
+.auth-main{
+    display: flex;
+    height: 100vh;
+}
+.auth-main .form-control{
+    background-color: #9CCCEE;
+    border: none;
+}
+.left-side{
+    flex: 1;
+    display: flex;
+}
+.right-side{
+    flex: 1;
+    display: flex;
+    background: linear-gradient(#1874B2, #185C8B);
+}
+.bb-text-auth{
+    padding: 3rem!important;
+    align-self: center!important;
+}
+.bb-text-auth h1{
+    color: #1A3A64;
+    font-size: 54px;
+    line-height: 50px;
+}
+
+.bb-text-auth h5{
+    font-size: 17px;
+    color: #404040;
+}
+.auth-block{
+    align-self: center !important;
+    padding: 3rem !important;
+    width: 100%;
+}
+.auth-form-block{
+    width: 400px;
+    margin: auto;
+}
+.auth-form-block label{
+    font-weight: 500;
+    font-size: inherit;
+    display: inline-block;
+    margin-bottom: 0;
+    color: #A4DAFF;
+    line-height: 34px;
+    white-space: nowrap;
+}
+.login-button{
+    width: 100%!important;
+    line-height: 34px!important;
+    background-color: #1F98E9!important;
+    font-size: 15px!important;
+    margin-top: 30px!important;
+}
+.login-text{
+    color: #fff;
+    font-size: 30px;
+    line-height: 30px;
+    margin: 35px 0px;
+}
+.create-acc-box{
+    color: #fff;
+    margin-top: 15px;
+
+}
+.create-acc-box a {
+    display: block;
+    color: #fff;
+}

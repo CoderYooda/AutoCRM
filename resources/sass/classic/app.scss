@@ -8,7 +8,9 @@
 //@import '~simplebar/dist/simplebar.min.css';
 /*Tippy*/
 @import '~tippy.js/dist/tippy.css';
-
+/*Auth*/
+@import "auth";
+/*Form*/
 @import 'form';
 
 /*Base*/
@@ -63,6 +65,7 @@ input[type=checkbox]:checked {
 .tippy-popper {
     z-index: 100000!important;
 }
+
 
 /*Header*/
 
@@ -280,7 +283,7 @@ input[type=checkbox]:checked {
 .tabulator .tabulator-footer .tabulator-page:not(.disabled):hover {
     cursor: pointer;
     border: 1px solid #93b1d3;
-    background: #93b1d3;
+    background: #67bbf3;
     color: #fff;
 }
 .tabulator .tabulator-loader {
@@ -355,7 +358,17 @@ input[type=checkbox]:checked {
     -webkit-box-pack: end;
     justify-content: flex-end;
     padding: 15px;
-    border-top: 1px solid #dee2e6;
+    padding-top: 0px;
+}
+.modal-footer hr{
+    width: 100%;
+    margin: 0;
+    margin-bottom: 15px;
+    background: #dee2e6;
+    color: #dee2e6;
+    outline: 0;
+    height: 1px;
+    border: none;
 }
 
 /*Buttons*/
@@ -640,11 +653,68 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 /*Helpers*/
+.row-sm .col, .row-sm [class*=col-] {
+    padding-left: .75rem;
+    padding-right: .75rem;
+}
+.col-sm-3 {
+    -webkit-box-flex: 0;
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+.col-sm-4 {
+    -webkit-box-flex: 0;
+    flex: 0 0 33.3333333%;
+    max-width: 33.3333333%;
+}
+.col-sm-5 {
+    -webkit-box-flex: 0;
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+}
+.col-sm-6 {
+    -webkit-box-flex: 0;
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.col-sm-7 {
+    -webkit-box-flex: 0;
+    flex: 0 0 58.33337%;
+    max-width: 58.33337%;
+}
+.col-sm-8 {
+    -webkit-box-flex: 0;
+    flex: 0 0 66.66666666%;
+    max-width: 66.66666666%;
+}
+.col-sm-9 {
+    -webkit-box-flex: 0;
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+
+.row {
+    display: -webkit-box;
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.row-sm {
+    margin-left: -.75rem;
+    margin-right: -.75rem;
+}
+.text-primary{
+    color: #1C7EC9;
+}
 .text-left {
     text-align: left!important;
 }
 .text-right {
     text-align: right!important;
+}
+.mb-0{
+    margin-bottom: 0px!important;
 }
 .m-0{
     margin: 0!important;

@@ -1,30 +1,36 @@
-<!DOCTYPE html>
-<html lang="ru">
-    <head>
-        <meta charset="utf-8" />
-        <title>{{ config('APP_NAME') }}</title>
-        <meta name="description" content="{{ config('APP_NAME') }}" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- for ios 7 style, multi-resolution icon of 152x152 -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-barstyle" content="black-translucent">
-        <link rel="apple-touch-icon" href="../assets/images/logo.svg">
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/template.css') }}" rel="stylesheet">
-    </head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+</head>
     <body>
-        <div class="row no-gutters">
-            <div class="col-md-6 h-v white d-flex">
-                <div class="p-5 flex align-self-center">
-                    <h1 class="display-4 _700 l-s-n-1x my-5">BB<span class="text-primary">crm</span> <br><span class="text-muted"> магазин автозапчастей</span></h1>
-                    <h5 class="text-muted mb-5 text-serif"></h5>
-                </div>
-            </div>
-            <div class="col-md-6 d-flex py-5 align-items-center justify-content-center dark">
-                @yield('content')
+
+    <div class="app auth-main">
+        <div class="left-side">
+            <div class="bb-text-auth">
+                <h1 class="">BB<span class="text-primary">CRM</span> <br><span class="text-muted"> магазин автозапчастей</span></h1>
+                <h5 class="">
+                    Коль не кончился бензин, заезжай к нам в магазин!
+                    Подберём тебе тюнячки. Чудо будет, а не тачка!
+                </h5>
             </div>
         </div>
+
+        <div class="right-side">
+            @yield('content')
+        </div>
+    </div>
+
 
 
     {{--<div class="d-flex flex-column flex">--}}

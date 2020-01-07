@@ -15,9 +15,8 @@ class storePage{
         this.dates_range = ['null', 'null'];
         this.date_start = 'null';
         this.date_end = 'null';
-
+        this.categoryContextual = null;
         this.table = null;
-
         this.init();
 
     }
@@ -61,7 +60,6 @@ class storePage{
 
         object.category_id = category_id;
 
-
         let data = {};
         data.category_id = category_id;
         data.search = object.search;
@@ -70,16 +68,37 @@ class storePage{
             url: '/category/loadview',
             data: data
         }).then(function (resp) {
+            document.getElementById('category-nav').innerHTML = resp.data.html;
             object.loadBreadcrumbs(category_id, object.root_category);
             if(update_data != null && update_data){
                 object.table.setData('/tableproductdata', object.prepareDataForTable());
             }
-            document.getElementById('category-nav').innerHTML = resp.data.html;
+            object.initCategoryContextual();
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
             window.isXHRloading = false;
         });
+    }
+
+    initCategoryContextual(){
+        let object = this;
+        let elems = document.getElementById('category-block').querySelectorAll('.category-item');
+        [].forEach.call(elems, function(elem){
+            let items = [
+                new ContextualItem({label:'Редактировать', onClick: () => {openDialog('categoryDialog', '&category_id=' + elem.dataset.id)}, shortcut:'Что то' }),
+                new ContextualItem({type:'seperator'}),
+                new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove('category', elem.dataset.id, null)}, shortcut:'Ctrl+A' }),
+            ];
+            elem.addEventListener('contextmenu',function(e){
+                e.preventDefault();
+                new Contextual({
+                    isSticky: false,
+                    items:items,
+                });
+            });
+        });
+
     }
 
     initTableData(){
@@ -141,11 +160,8 @@ class storePage{
             ],
 
             rowContext:function(e, row){
-                //e - the click event object
-                //row - row component
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
-
                 console.log(object.selectedData);
                 let items = [
                     new ContextualItem({label:'Редактировать', onClick: () => {openDialog('productDialog', '&product_id=' + row.getData().id)}, shortcut:'Что то' }),
@@ -161,6 +177,7 @@ class storePage{
                     items:items,
                 });
             },
+
             tableBuilt:function(){
                 console.log('Таблица готова');
                 // let table_holder = document.getElementsByClassName('tabulator-table');
@@ -230,7 +247,7 @@ class storePage{
     init(){
         let object = this;
         this.linked();
-        object.loadBreadcrumbs(this.category_id, this.root_category);
+        this.loadCategory(this.root_category, true, true);
         //object.contextListItems();
         // document.addEventListener('ajaxLoaded', function(e){
         //     object.checkActive();
