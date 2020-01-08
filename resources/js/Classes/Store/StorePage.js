@@ -143,6 +143,15 @@ class storePage{
             layout:"fitColumns",
             ajaxSorting:true,
             ajaxURL:'/tableproductdata',
+            ajaxRequesting:function(url, params){
+                window.isXHRloading = true;
+                document.body.classList.add('loading');
+            },
+            ajaxResponse:function(url, params, response){
+                window.isXHRloading = false;
+                document.body.classList.remove('loading');
+                return response;
+            },
             ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parameters
             // ajaxProgressiveLoad:"scroll",
             paginationSize:Math.floor(elements),
@@ -154,7 +163,7 @@ class storePage{
                 {title:"ID", field:"id", width:80},
                 {title:"Модель", field:"name"},
                 {title:"Артикул", field:"article", width:150, align:"left"},
-                {title:"Брэнд", field:"supplier", width:150, align:"left"},
+                {title:"Бренд", field:"supplier", width:150, align:"left"},
                 {title:"Наличие", field:"isset", width:130, align:"left"},
                 {title:"Цена (Ррозница)", field:"price", width:160, align:"left"},
             ],

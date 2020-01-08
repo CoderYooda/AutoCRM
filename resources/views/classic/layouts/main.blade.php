@@ -152,5 +152,12 @@
                 <div id="dialogs"></div>
             </div>
         </div>
+    <div class="preloader">
+        <div class="porsh">
+            <div class="i1-element"></div>
+            <div class="i2-element"></div>
+        </div>
+        <div class="i3-element"></div>
+    </div>
     </body>
 </html>
