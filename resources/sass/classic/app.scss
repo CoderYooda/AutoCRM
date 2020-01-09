@@ -119,7 +119,7 @@ input[type=checkbox]:checked {
 .app-top-menu .header-tab {
     text-decoration: none;
     display: block;
-    padding: 18px 10px 30px;
+    padding: 19px 10px 30px;
     line-height: 17px;
     height: 16px;
     border-bottom: 3px solid transparent;
@@ -128,6 +128,9 @@ input[type=checkbox]:checked {
 .header-tab:hover{
     transition: all ease-in-out .15s;
     border-bottom: 3px solid rgba(0, 235, 255, 0.5);
+}
+.header-tab.active{
+    border-bottom: 3px solid #275575;
 }
 .top-navs{
     display: flex;
@@ -861,63 +864,68 @@ input:-moz-placeholder { /* Firefox 18- */
     position: fixed;
     width: 100px;
     height: 100px;
-    left: calc(100vw / 2 - 50px);
+    left: -9000px;
     top: calc(100vh / 2 - 100px);
     transform: scale(1);
-    display: none;
+    opacity: 0.4;
+
 }
 .loading .preloader{
-    display: block;
+    left: calc(100vw / 2 - 50px);
 }
 .preloader .porsh{
-    animation:  0.82s linear 0s normal none infinite running i1-anim;
+    animation:  1s linear infinite i1-anim;
 }
 .preloader .i1-element{
     background: url(/images/preloader/1-1.svg) no-repeat center;
     height: 42px;
+    width: 40px;
+    position: absolute;
+    top: -50px;
+    left: 30px;
 }
 .preloader .i2-element{
     background: url(/images/preloader/2-1.svg) no-repeat center;
     height: 200px;
     position: absolute;
-    top: -80px;
+    top: -129px;
     left: 30px;
     width: 40px;
     transform: translateY(0px);
-    animation: 0.82s linear infinite i2r-anim;
+    animation: 1s linear infinite i2r-anim;
 }
 .preloader .i3-element{
     background: url(/images/preloader/3-1.svg) no-repeat center;
     height: 110px;
     margin-top: 39px;
-    animation: 0.82s linear 0s normal none infinite running i3-anim;
+    animation: 1s linear 0s normal none infinite running i3-anim;
 }
 
 @keyframes i2r-anim {
     0%{
         transform: rotateZ(0deg);
     }
-    12.5%{
-        transform: rotateZ(-18.5deg);
-    }
+    //12.5%{
+    //    transform: rotateZ(-18.5deg);
+    //}
     25%{
         transform: rotateZ(-26.2deg);
     }
-    27.5%{
-        transform: rotateZ(-18.5deg);
-    }
-    50%{
-        transform: rotateZ(0deg);
-    }
-    62.5%{
-        transform: rotateZ(18.5deg);
-    }
+    //27.5%{
+    //    transform: rotateZ(-18.5deg);
+    //}
+    //50%{
+    //    transform: rotateZ(0deg);
+    //}
+    //62.5%{
+    //    transform: rotateZ(18.5deg);
+    //}
     75%{
         transform: rotateZ(26.2deg);
     }
-    87.5%{
-        transform: rotateZ(18.5deg);
-    }
+    //87.5%{
+    //    transform: rotateZ(18.5deg);
+    //}
     100%{
         transform: rotateZ(0deg);
     }

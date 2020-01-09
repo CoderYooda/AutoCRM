@@ -7,22 +7,22 @@
 <div class="side-menu w-180">
     <ul class="nav">
         <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif">
-            <a href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}">База товаров</a>
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}">База товаров</a>
         </li>
         <li id="provider_orders-tab" data-tab="provider_orders" class="@if($request['active_tab'] == 'provider_orders') active @endif">
-            <a href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}">Заявки поставщикам</a>
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}">Заявки поставщикам</a>
         </li>
         <li id="income-tab" data-tab="entrance" class="@if($request['active_tab'] == 'entrance') active @endif">
-            <a href="{{ route('StoreIndex', ['active_tab' => 'shipments', 'target' => 'ajax-tab-content']) }}">Поступления</a>
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}">Поступления</a>
         </li>
         <li id="shipments-tab" data-tab="shipments" class="@if($request['active_tab'] == 'shipments') active @endif">
-            <a href="{{ route('StoreIndex', ['active_tab' => 'shipments', 'target' => 'ajax-tab-content']) }}">Продажи</a>
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'shipments', 'target' => 'ajax-tab-content']) }}">Продажи</a>
         </li>
         <li id="client_orders-tab" data-tab="client_orders" class="@if($request['active_tab'] == 'client_orders') active @endif">
-            <a href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-tab-content']) }}">Заказы клиентов</a>
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-tab-content']) }}">Заказы клиентов</a>
         </li>
         <li id="adjustment-tab" data-tab="adjustment" class="@if($request['active_tab'] == 'adjustment') active @endif">
-            <a href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}">Корректировки</a>
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}">Корректировки</a>
         </li>
     </ul>
 </div>

@@ -57,6 +57,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
     Route::post('/entrance/{id}/delete', 'EntranceController@delete')->name('DeleteEntrance');
     Route::post('/entrance/{id}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
+    Route::get('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
 
     #Поставщики (внешние)
     Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
@@ -69,6 +70,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
     Route::post('/shipment/{id}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');
+    Route::get('/shipments/tabledata', 'ShipmentsController@tableData')->name('StoreShipmentData');
 
     #Заказы клиентов
     Route::get('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
@@ -77,6 +79,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
     Route::post('/client_order/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
     Route::post('/clientorder/{id}/fresh', 'ClientOrdersController@fresh')->name('FreshClientOrder');
+    Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
 
     #Заказы Поставщикам
     Route::post('/providerorder/store', 'ProviderOrdersController@store')->name('StoreProviderOrder');// Строгое название
@@ -87,11 +90,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/providerorder/{id}/select', 'ProviderOrdersController@select')->name('SelectProviderOrder');
     Route::post('/providerorder/{id}/loaditems', 'ProviderOrdersController@loadItems')->name('LoadItemsProviderOrder');
     Route::post('/providerorder/{id}/fresh', 'ProviderOrdersController@fresh')->name('FreshProviderOrder');
+    Route::get('/provider_orders/tabledata', 'ProviderOrdersController@tableData')->name('StoreProviderOrderData');
 
     #Корректировки
     Route::post('/adjustment/store', 'AdjustmentController@store')->name('StoreAdjustment');// Строгое название
     Route::post('/adjustment/{id}/fresh', 'AdjustmentController@fresh')->name('FreshAdjustment');
     Route::post('/adjustment/{id}/delete', 'AdjustmentController@delete')->name('DeleteAdjustment');
+    Route::get('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
 
     #Касса##############################################################################################
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
@@ -101,6 +106,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
     Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
     Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
+    Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
 
     #Движение средств между кассами
     Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название
@@ -122,7 +128,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Склады
     Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
-    Route::get('/tableproductdata', 'StoreController@tableProductData')->name('StoreTableProductData');
+    Route::get('/store/tabledata', 'StoreController@tableData')->name('StoreTableProductData');
     Route::post('/store/new', 'StoreController@store')->name('StoreStore');
     Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
     Route::post('/store/checkstock', 'StoreController@checkstock')->name('CheckStock');

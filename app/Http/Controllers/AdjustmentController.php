@@ -30,6 +30,16 @@ class AdjustmentController extends Controller
         ]);
     }
 
+    public function tableData(Request $request)
+    {
+        $adjustments = AdjustmentController::getAdjustments($request);
+//        foreach($products as $product){
+//            $product->isset = $product->getCountSelfOthers();
+//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+//        }
+        return response()->json($adjustments);
+    }
+
     public function store(Request $request)
     {
 

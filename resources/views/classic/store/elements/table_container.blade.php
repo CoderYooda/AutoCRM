@@ -11,7 +11,7 @@
 <div class="box-lister box">
     <div class="box-header" id="breadcrumbs-nav">
     </div>
-    <div id="store-table-container" class="box-content">
+    <div id="table-container" class="box-content">
         <div id="store-table" ></div>
     </div>
 </div>

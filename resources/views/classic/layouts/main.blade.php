@@ -22,32 +22,32 @@
                 <div class="top-navs">
                     <ul class="top-nav-bar app-top-menu">
                         <li class="top-nav-item" >
-                            <a class="header-tab" href="{{ route('StoreIndex', ['active_tab' => 'store']) }}">
+                            <a id="store_link" class="header-tab ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store']) }}">
                                 Склад
                             </a>
                         </li>
                         <li class="top-nav-item" >
-                            <a class="header-tab" href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}">
+                            <a id="cash_link" class="header-tab ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}">
                                 Финансы
                             </a>
                         </li>
                         <li class="top-nav-item" >
-                            <a class="header-tab" href="{{ route('EmployeeIndex') }}">
+                            <a id="employee_link" class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">
                                 Сотрудники
                             </a>
                         </li>
-                        <li class="top-nav-item" >
-                            <a class="header-tab" href="{{ route('PartnerIndex') }}">
+                        <li id="partner_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('PartnerIndex') }}">
                                 Контрагенты
                             </a>
                         </li>
-                        <li class="top-nav-item" >
-                            <a class="header-tab" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
+                        <li id="settings_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
                                 Настройки
                             </a>
                         </li>
-                        <li class="top-nav-item" >
-                            <a class="header-tab" href="{{ route('ScheduleIndex') }}">
+                        <li id="shedule_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('ScheduleIndex') }}">
                                 Планировщик
                             </a>
                         </li>
@@ -154,8 +154,8 @@
         </div>
     <div class="preloader">
         <div class="porsh">
-            <div class="i1-element"></div>
             <div class="i2-element"></div>
+            <div class="i1-element"></div>
         </div>
         <div class="i3-element"></div>
     </div>

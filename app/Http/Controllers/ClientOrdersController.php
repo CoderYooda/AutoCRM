@@ -24,8 +24,6 @@ class ClientOrdersController extends Controller
             $client_order->articles = $client_order->articles()->get();
 
             foreach($client_order->articles as $article){
-
-
                 $article->instock = $article->getCountInStoreId($client_order->store_id);
                 if($article->instock >= $article->pivot->count){
                     $article->complited = true;
@@ -52,6 +50,16 @@ class ClientOrdersController extends Controller
             'tag' => $tag,
             'html' => view('client_orders.dialog.form_client_order', compact( 'client_order', 'stores',  'request'))->render()
         ]);
+    }
+
+    public function tableData(Request $request)
+    {
+        $client_orders = ClientOrdersController::getClientOrders($request);
+//        foreach($products as $product){
+//            $product->isset = $product->getCountSelfOthers();
+//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+//        }
+        return response()->json($client_orders);
     }
 
     public function delete($id)

@@ -32,6 +32,16 @@ class ProviderOrdersController extends Controller
         ]);
     }
 
+    public function tableData(Request $request)
+    {
+        $providerorders = ProviderOrdersController::getPoviderOrders($request);
+//        foreach($products as $product){
+//            $product->isset = $product->getCountSelfOthers();
+//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+//        }
+        return response()->json($providerorders);
+    }
+
     public static function selectProviderOrderDialog($request)
     {
         $providerorders = ProviderOrder::owned()->orderBy('id', 'DESC')->limit(10)->get();

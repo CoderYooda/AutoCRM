@@ -14,10 +14,10 @@ class DashboardController extends Controller
         $target = HC::selectTarget();
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
-            $content = view('dashboard.statistic', compact('products', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.dashboard.statistic', compact('products', 'request'))->render();
             return response()->json(['target' => $target ,'content' => $content]);
         } else {
-            return view('dashboard.statistic', compact('products', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.dashboard.statistic', compact('products', 'request'));
         }
     }
 }

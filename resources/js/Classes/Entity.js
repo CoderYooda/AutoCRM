@@ -41,7 +41,7 @@ class Entity{
                         };
                     } else {
                         object.table.deleteRow(resp.data.id);
-                        object.table.setData('/tableproductdata', object.prepareDataForTable());
+                        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
                     }
 
                     if(resp.data.event){

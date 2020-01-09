@@ -33,6 +33,16 @@ class EntranceController extends Controller
         ]);
     }
 
+    public function tableData(Request $request)
+    {
+        $entrances = EntranceController::getEntrances($request);
+//        foreach($products as $product){
+//            $product->isset = $product->getCountSelfOthers();
+//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+//        }
+        return response()->json($entrances);
+    }
+
     public function getEntranceProducts($id){
         $entrance = Entrance::where('id', $id)->first();
 

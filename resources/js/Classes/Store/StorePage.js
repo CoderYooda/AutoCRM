@@ -5,7 +5,7 @@ class storePage{
     constructor(){
         console.log('страница склада инициализировано');
         this.active = true;
-        this.active_tab = window.helper.findGetParameter('active_tab');
+        this.active_tab = this.getCurrentActiveTab();
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = 1;
         this.search = 'null';
@@ -71,7 +71,7 @@ class storePage{
             document.getElementById('category-nav').innerHTML = resp.data.html;
             object.loadBreadcrumbs(category_id, object.root_category);
             if(update_data != null && update_data){
-                object.table.setData('/tableproductdata', object.prepareDataForTable());
+                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }
             object.initCategoryContextual();
         }).catch(function (error) {
@@ -100,14 +100,107 @@ class storePage{
         });
 
     }
+    getCurrentActiveTab(){
+        var active_tab = window.helper.findGetParameter('active_tab');
+
+        if(active_tab == null || active_tab == 'null'){
+            active_tab = 'store';
+        }
+        return active_tab;
+    }
+
+    generateColumns(){
+        let object = this;
+        let columns = [];
+
+        if(object.active_tab === 'store') {
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"ID", field:"id", width:80},
+                {title:"Модель", field:"name"},
+                {title:"Артикул", field:"article", width:150, align:"left"},
+                {title:"Бренд", field:"supplier", width:150, align:"left"},
+                {title:"Наличие", field:"isset", width:130, align:"left"},
+                {title:"Цена (Ррозница)", field:"price", width:160, align:"left"},
+            ];
+        } else if(object.active_tab === 'provider_orders'){
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Дата", field:"created_at"},
+                {title:"Поставщик", field:"partner", width:150, align:"left"},
+                {title:"Сумма", field:"price", width:150, align:"left"},
+                {title:"Скидка", field:"discount", width:130, align:"left"},
+                {title:"Итого", field:"total", width:160, align:"left"},
+            ];
+        } else if(object.active_tab === 'entrance'){
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Заявка", field:"order_id"},
+                {title:"Дата", field:"created_at"},
+                {title:"Поставщик", field:"partner", width:150, align:"left"},
+                {title:"Принимающий", field:"partner_id", width:150, align:"left"},
+                {title:"Комментарий", field:"comment", width:150, align:"left"},
+            ];
+        } else if(object.active_tab === 'shipments'){
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Дата", field:"created_at"},
+                {title:"Покупатель", field:"partner", width:150, align:"left"},
+                {title:"Сумма", field:"price", width:150, align:"left"},
+                {title:"Скидка", field:"discount", width:130, align:"left"},
+                {title:"Итого", field:"total", width:160, align:"left"},
+            ];
+        } else if(object.active_tab === 'client_orders'){
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Дата", field:"created_at"},
+                {title:"Покупатель", field:"partner", width:150, align:"left"},
+                {title:"Сумма", field:"price", width:150, align:"left"},
+                {title:"Скидка", field:"discount", width:130, align:"left"},
+                {title:"Итого", field:"total", width:160, align:"left"},
+            ];
+        } else if(object.active_tab === 'adjustment'){
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Дата", field:"created_at"},
+                {title:"Ответственный", field:"partner", width:150},
+                {title:"Магазин ", field:"store", width:150, align:"left"},
+                {title:"Комментарий", field:"comment", width:130, align:"left"},
+            ];
+        }
+        return columns;
+    }
+    generateContexes(){
+
+    }
 
     initTableData(){
         let object = this;
-        let height = document.getElementById('store-table-container').offsetHeight;
-
+        let table_container = document.getElementById('table-container');
+        let height = 500;
+        if(table_container){
+            height = table_container.offsetHeight;
+        }
         let cleanHeight = height - 110;
         let elements = cleanHeight / 44;
-        object.table = new Tabulator("#store-table", {
+        object.table = new Tabulator("#" + this.getCurrentActiveTab() + "-table", {
             locale:true,
             langs:{
                 "ru":{
@@ -142,7 +235,7 @@ class storePage{
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
-            ajaxURL:'/tableproductdata',
+            ajaxURL:'/' + object.active_tab + '/tabledata',
             ajaxRequesting:function(url, params){
                 window.isXHRloading = true;
                 document.body.classList.add('loading');
@@ -156,22 +249,10 @@ class storePage{
             // ajaxProgressiveLoad:"scroll",
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
-            columns:[ //Define Table Columns
-                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
-                        cell.getRow().toggleSelect();
-                    }},
-                {title:"ID", field:"id", width:80},
-                {title:"Модель", field:"name"},
-                {title:"Артикул", field:"article", width:150, align:"left"},
-                {title:"Бренд", field:"supplier", width:150, align:"left"},
-                {title:"Наличие", field:"isset", width:130, align:"left"},
-                {title:"Цена (Ррозница)", field:"price", width:160, align:"left"},
-            ],
-
+            columns: object.generateColumns(),
             rowContext:function(e, row){
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
-                console.log(object.selectedData);
                 let items = [
                     new ContextualItem({label:'Редактировать', onClick: () => {openDialog('productDialog', '&product_id=' + row.getData().id)}, shortcut:'Что то' }),
                     new ContextualItem({type:'seperator'}),
@@ -252,11 +333,14 @@ class storePage{
         return data;
     }
 
-
     init(){
         let object = this;
-        this.linked();
-        this.loadCategory(this.root_category, true, true);
+        object.linked();
+
+        if(object.active_tab == 'store'){
+            object.loadCategory(this.root_category, true, true);
+        }
+
         //object.contextListItems();
         // document.addEventListener('ajaxLoaded', function(e){
         //     object.checkActive();
@@ -303,7 +387,7 @@ class storePage{
 
         //this.initTableData();
 
-        this.active_tab = window.helper.findGetParameter('active_tab');
+        this.active_tab = this.getCurrentActiveTab();
 
         if(window.helper.findGetParameter('page') !== null){
             this.page = window.helper.findGetParameter('page');
@@ -325,7 +409,7 @@ class storePage{
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.contextListItems();
-        this.active_tab = window.helper.findGetParameter('active_tab');
+        this.active_tab = this.getCurrentActiveTab();
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
@@ -333,6 +417,8 @@ class storePage{
         this.date_start = 'null';
         this.date_end = 'null';
         window.helper.debugBar(this);
+
+        console.warn(this.active_tab);
         this.initTableData();
         this.searchInit();
     }
@@ -402,7 +488,7 @@ class storePage{
                     object.category_id = object.root_category;
                 }
                 window.helper.insertParamUrl('category_id', 'null');
-                object.table.setData('/tableproductdata', object.prepareDataForTable());
+                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
                 object.loadCategory(object.category_id);
 
                 //object.page = 1;

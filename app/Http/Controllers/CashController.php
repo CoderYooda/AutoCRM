@@ -47,9 +47,9 @@ class CashController extends Controller
         $outcome = WarrantController::getOutcomeCount($request);
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-warrant'){
-            return view('cash.elements.warrant_list_container', compact('income','outcome', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.cash.elements.warrant_list_container', compact('income','outcome', 'request'));
         } else {
-            return view('cash.warrants', compact('income', 'outcome', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.cash.warrants', compact('income', 'outcome', 'request'));
         }
 
     }

@@ -41,7 +41,7 @@ class StoreController extends Controller
         }
     }
 
-    public function tableProductData(Request $request)
+    public function tableData(Request $request)
     {
         $products = ProductController::getArticles($request);
         foreach($products as $product){
@@ -63,7 +63,7 @@ class StoreController extends Controller
 
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
-            return view('store.elements.table_container', compact('categories', 'cat_info', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
         $trinity = null; #TODO
         return view(env('DEFAULT_THEME', 'classic') . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
@@ -72,9 +72,9 @@ class StoreController extends Controller
     public static function entranceTab($request)
     {
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance'){
-            return view('entrance.elements.list_container', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.entrance.elements.table_container', compact('request'));
         }
-        return view('entrance.index', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.entrance.index', compact('request'));
     }
 
     public static function providerTab($request)
@@ -82,41 +82,41 @@ class StoreController extends Controller
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-provider'){
-            return view('provider.elements.table_container', compact('brands','request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.provider.elements.table_container', compact('brands','request'));
         }
-        return view('provider.index', compact('brands', 'request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.provider.index', compact('brands', 'request'));
     }
 
     public static function shipmentsTab($request)
     {
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments'){
-            return view('shipments.elements.list_container', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.shipments.elements.table_container', compact('request'));
         }
-        return view('shipments.index', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.shipments.index', compact('request'));
     }
 
     public static function client_ordersTab($request)
     {
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders'){
-            return view('client_orders.elements.list_container', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.client_orders.elements.table_container', compact('request'));
         }
-        return view('client_orders.index', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.client_orders.index', compact('request'));
     }
 
     public static function provider_ordersTab($request)
     {
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider_orders'){
-            return view('provider_orders.elements.list_container', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.elements.table_container', compact('request'));
         }
-        return view('provider_orders.index', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.index', compact('request'));
     }
 
     public static function adjustmentTab($request)
     {
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment'){
-            return view('adjustments.elements.list_container', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.adjustments.elements.table_container', compact('request'));
         }
-        return view('adjustments.index', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.adjustments.index', compact('request'));
     }
 
     public static function updateArticlePivot($store_id, $article_id, $param, $value)
