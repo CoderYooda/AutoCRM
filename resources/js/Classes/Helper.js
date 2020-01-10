@@ -74,6 +74,15 @@ const pages = {
 
 class Helper{
 
+    openModal(elem){
+        let block = elem;
+        console.log(block.querySelector('.dropdown_container'));
+        let container = block.querySelector('.dropdown_container');
+        if(container){
+            block.classList.add('show');
+        }
+    }
+
     pluck(objs, name) {
         var sol = [];
         for(var i in objs){

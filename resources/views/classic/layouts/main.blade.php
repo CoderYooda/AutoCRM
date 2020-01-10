@@ -20,19 +20,19 @@
                     {{ config('app.name', 'Laravel') }}
                 </div>
                 <div class="top-navs">
-                    <ul class="top-nav-bar app-top-menu">
-                        <li class="top-nav-item" >
-                            <a id="store_link" class="header-tab ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store']) }}">
+                    <ul class="nav top-nav-bar app-top-menu">
+                        <li id="store_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store']) }}">
                                 Склад
                             </a>
                         </li>
-                        <li class="top-nav-item" >
-                            <a id="cash_link" class="header-tab ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}">
+                        <li id="cash_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}">
                                 Финансы
                             </a>
                         </li>
-                        <li class="top-nav-item" >
-                            <a id="employee_link" class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">
+                        <li id="employee_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">
                                 Сотрудники
                             </a>
                         </li>

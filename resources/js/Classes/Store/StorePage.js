@@ -380,7 +380,7 @@ class storePage{
             // object.prepareParams();
             // object.reload();
         });
-        object.initShipmentDates();
+        object.initDatesFilter();
     }
 
     load(){
@@ -589,14 +589,14 @@ class storePage{
         return url;
     }
 
-    initShipmentDates(){
+    initDatesFilter(){
         let object = this;
         let startDateArray = [];
 
         if(object.dates_range[0] !== 'null' && object.dates_range[1] !== 'null'){
             startDateArray = object.dates_range;
         }
-        this.dates = window.flatpickr(".shipment_date_start", {
+        this.dates = window.flatpickr(".date_filter", {
             mode: "range",
             defaultDate: startDateArray,
             dateFormat: "d.m.Y",
@@ -610,7 +610,7 @@ class storePage{
                     object.date_start = 'null';
                     object.date_end = 'null';
                 }
-                object.reload();
+                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }
         });
     }

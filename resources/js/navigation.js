@@ -50,6 +50,7 @@ const ajaxRequest = new (function () {
                     } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){
                         li.classList.add('active');
                     }
+                    console.log(123);
                 });
                 rebuildLinks();
                 document.dispatchEvent(new Event('ajaxLoaded', {bubbles: true}));

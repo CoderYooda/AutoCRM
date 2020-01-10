@@ -24,6 +24,19 @@ label {
     min-width: 0;
     margin-bottom: 0;
 }
+.right-remove{
+    background: none;
+    border: none;
+    color: #5b88bd;
+    padding: 0;
+    margin: 0;
+    float: right;
+    line-height: 22px;
+}
+.right-remove:active, .right-remove:focus{
+    box-shadow: none;
+    outline: none!important;
+}
 [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
     cursor: pointer;
 }
@@ -77,4 +90,10 @@ label {
 }
 .form-control:not(.is-valid):not(.is-invalid):focus {
     border-color: #5b73bd;
+}
+.filter-panel label{
+    margin-bottom: 0px!important;
+}
+.filter-panel input{
+     margin-bottom: 0px!important;
 }
