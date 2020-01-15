@@ -26,6 +26,8 @@ class ProviderOrder extends Model
 
     protected $guarded = [];
 
+    //protected $dateFormat = 'Y-m-d/H:i';
+
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_provider_orders', 'provider_order_id', 'article_id')

@@ -65,11 +65,8 @@ class ProductController extends Controller
 
     public function addToList(Request $request)
     {
-
         if($request['data'] != null && count($request['data']) > 0){
-
             if($request['type'] == 'providerorder'){
-
                 $providerorder = ProviderOrder::owned()->where('id', $request['providerorder_id'])->first();
                 $products = $providerorder->articles()->whereIn('article_id', array_column($request['data'], 'id'))->get();
                 foreach($products as $product) {
@@ -84,9 +81,8 @@ class ProductController extends Controller
                         $product->count = 0;
                     }
                 }
-                $content = view('entrance.dialog.product_element_array', compact('products', 'providerorder', 'request'))->render();
+                $content = view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element_array', compact('products', 'providerorder', 'request'))->render();
             }
-
             return response()->json([
                 'products' => $products,
                 'html' => $content
@@ -115,15 +111,15 @@ class ProductController extends Controller
 
         if($request['type'] && $request['type'] === 'shipment'){
             $product = $article;
-            $content = view('shipments.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] === 'clientOrder'){
             $product = $article;
-            $content = view('client_orders.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] === 'providerOrder'){
             $product = $article;
-            $content = view('provider_orders.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] === 'clientOrder_quick') {
             $product = new StdClass();
@@ -131,15 +127,15 @@ class ProductController extends Controller
             $product->count = $request['count'];
             $product->price = 0;
             $product->total = 0;
-            $content = view('client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
 
         } elseif($request['type'] && $request['type'] == 'adjustment'){
             $product = $article;
-            $content = view('adjustments.dialog.product_element', compact('product','request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.product_element', compact('product','request'))->render();
 
         } else {
             $product = $article;
-            $content = view('entrance.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element', compact('product', 'request'))->render();
 
         }
         return response()->json([

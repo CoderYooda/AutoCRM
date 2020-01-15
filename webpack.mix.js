@@ -4,7 +4,8 @@ const mix = require('laravel-mix');
 let template = 'classic';
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/' + template + '/app.scss', 'public/css');
+    .sass('resources/sass/' + template + '/app.scss', 'public/css')
+    .sass('resources/sass/' + template + '/base.scss', 'public/css');
     //.sass('resources/sass/template.scss', 'public/css');
 
 // mix.copyDirectory('resources/fonts', 'public/fonts')
@@ -20,5 +21,6 @@ if( !mix.inProduction() ) {
 if(mix.inProduction() ) {
     mix.minify('public/js/app.min.js');
     mix.minify('public/css/app.css');
+    mix.minify('public/css/base.css');
     mix.version();
 }

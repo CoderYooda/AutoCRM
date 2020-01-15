@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Article;
@@ -28,17 +29,32 @@ class ProviderOrdersController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'))->render()
         ]);
     }
 
     public function tableData(Request $request)
     {
         $providerorders = ProviderOrdersController::getPoviderOrders($request);
-//        foreach($products as $product){
-//            $product->isset = $product->getCountSelfOthers();
-//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
-//        }
+        //dd($providerorders->first()->created_at->format('Y-m-d/H:i'));
+        foreach($providerorders as $providerorder){
+            $pay_positive = $providerorder->getWarrantPositive();
+            if($pay_positive === 0){
+                $providerorder->pays = 0;
+            } else if($pay_positive < $providerorder->itogo){
+                $providerorder->pays = 1;
+            } else if($pay_positive === $providerorder->itogo){
+                $providerorder->pays = 2;
+            } else if($pay_positive > $providerorder->itogo){
+                $providerorder->pays = 3;
+            }
+
+            $articles = $providerorder->articles();
+
+            $providerorder->incomes = rand(0,3);
+            //$providerorder->partner = $providerorder->partner()->first()->outputName();
+            $providerorder->date = $providerorder->created_at->format('Y.m.d/H:i');
+        }
         return response()->json($providerorders);
     }
 
@@ -174,7 +190,7 @@ class ProviderOrdersController extends Controller
         $request['fresh'] = true;
         $class = 'providerorderDialog' . $id;
         $inner = true;
-        $content = view('provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores', 'class', 'request', 'inner'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores', 'class', 'request', 'inner'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'providerorderDialog' . $id,
@@ -362,36 +378,89 @@ class ProviderOrdersController extends Controller
 
     public static function getPoviderOrders($request)
     {
-        $provider_orders = providerorder::owned()
-            ->orderBy('created_at', 'DESC')
-            ->where(function($q) use ($request){
-                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
-                }
-                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
-                }
-            })
-            ->where(function($q) use ($request){
-                if(isset($request['search']) && $request['search'] !== 'null') {
-                    if (mb_strlen($request['search']) === 1) {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', $request['search'] . '%' )
-                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-                        });
-                    } else {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhereHas('phones', function ($query) use ($request) {
-                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                                });
-                        });
-                    }
-                }
-            })
-            ->paginate(16);
 
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'id';
+            $dir = 'ASC';
+        }
+
+        $provider_orders = ProviderOrder::
+
+        where('provider_orders.company_id', Auth::user()->company()->first()->id)
+            ->where('provider_orders.deleted_at', null)
+            ->join('partners','partners.id','=','provider_orders.partner_id')
+            ->select(DB::raw('provider_orders.*,  provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name'))
+
+            ->orderBy($field, $dir)
+            //->toSql();
+            ->paginate($size);
+
+
+//        select provider_orders.*, provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name, SUM(w.summ)
+//        from `provider_orders`
+//        inner join `partners` on `partners`.`id` = `provider_orders`.`partner_id`
+//
+//        left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
+//        left join warrants as w on pow.warrant_id = w.id
+//
+//        where `provider_orders`.`company_id` = 2
+//            and `provider_orders`.`deleted_at` is null
+//        GROUP BY provider_orders.id
+//        order by `id` asc
+
+
+
+
+        //dd($provider_orders);
+
+//        select * from `provider_orders`
+//where `company_id` = 2 and `provider_orders`.`deleted_at` is null
+//order by `itogo` asc
+
+
+//        $provider_orders = providerorder::owned()
+//        ->where(function($q) use ($request){
+//            if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
+//                $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
+//            }
+//            if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
+//                $q->where('do_date', '<=', Carbon::parse($request['date_end']));
+//            }
+//        })
+//        ->where(function($q) use ($request){
+//            if(isset($request['search']) && $request['search'] !== 'null') {
+//                if (mb_strlen($request['search']) === 1) {
+//                    $q->whereHas('partner', function ($q) use ($request) {
+//                        $q->where('fio', 'LIKE', $request['search'] . '%' )
+//                            ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+//                    });
+//                } else {
+//                    $q->whereHas('partner', function ($q) use ($request) {
+//                        $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+//                            ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+//                            ->orWhereHas('phones', function ($query) use ($request) {
+//                                $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+//                            });
+//                    });
+//                }
+//            }
+//        })
+//        ->orderBy($field, $dir)
+//         //   ->toSql();
+//        ->paginate($size);
+        //dd($provider_orders);
         return $provider_orders;
     }
 

@@ -74,11 +74,15 @@ const pages = {
 
 class Helper{
 
-    openModal(elem){
+    openModal(elem, event){
         let block = elem;
-        console.log(block.querySelector('.dropdown_container'));
+        //console.log(block.querySelector('.dropdown_container'));
         let container = block.querySelector('.dropdown_container');
-        if(container){
+        if(container
+            // && div !== (e.target)
+            // && !div.contains(e.target)
+             && !event.target.closest('.dropdown_container')
+        ){
             block.classList.add('show');
         }
     }

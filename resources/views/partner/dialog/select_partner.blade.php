@@ -7,6 +7,9 @@
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
+                @if($request['target'])
+                    <input id="target" type="hidden" name="target" value="{{ $request['target'] }}">
+                @endif
             <div class="input-group">
                 <input id="partner_search" type="text" class="form-control form-control-sm search" placeholder="Поиск контрагентов" required="">
                 <span class="input-group-append">

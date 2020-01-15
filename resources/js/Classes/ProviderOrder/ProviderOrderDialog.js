@@ -202,8 +202,8 @@ class providerOrderDialog{
     }
 
     setItogo(count){
-        let container = this.root_dialog.querySelector('#itogo_price');
-        container.innerHTML = Number(count).toFixed(2);
+        // let container = this.root_dialog.querySelector('#itogo_price');
+        // container.innerHTML = Number(count).toFixed(2);
     }
 
     setDiscount(count){

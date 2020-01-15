@@ -23,7 +23,7 @@
                 </div>
             </div>
             @if($request['refer'] != null)
-                <button onclick="try{window.{{$request['refer']}}.selectPartner({{ $partner->id }})}catch (e) {}" class="btn btn-icon white float-right">
+                <button onclick="try{window.{{$request['refer']}}.selectPartner({{ $partner->id }}@if(isset($request['target']) && $request['target'] != null), '{{$request['target']}}' @endif)}catch (e) {}" class="btn btn-icon white float-right">
                     <i class="fa fa-check"></i>
                 </button>
             @else
