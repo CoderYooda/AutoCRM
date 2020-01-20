@@ -20,6 +20,7 @@ class CreateEntrancesTable extends Migration
             $table->bigInteger('providerorder_id')->nullable()->unsigned()->comment('Привязка к Заявкам');
             $table->bigInteger('shipment_id')->nullable()->unsigned()->comment('Привязка к Продажам');
             $table->bigInteger('partner_id')->unsigned()->comment('Привязка к Сотруднику');
+            $table->bigInteger('manager_id')->unsigned()->comment('Принимающий');
             $table->boolean('locked')->default(0)->comment('Заблокировано');
             $table->text('comment')->nullable()->comment('Комментарий');
             $table->timestamps();

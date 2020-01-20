@@ -7,7 +7,7 @@
         @php $class = 'entranceDialog' @endphp
         id="entranceDialog"
     @endif
-    class="dialog entrance_dialog" style="width:1100px;">
+    class="dialog entrance_dialog" style="width:800px;">
 @endif
     @if(isset($entrance) && $entrance->id != NULL)
         <div class="titlebar">Поступление товара #{{ $entrance->id }} по заявке #{{ $entrance->providerorder()->first()->id }}</div>
@@ -69,33 +69,25 @@
         @endif
         <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($entrance)){{ $entrance->providerorder()->first()->partner()->first()->id }}@endif">
         <input class="providerorder_select" type="hidden" name="providerorder_id" value=" @if(isset($entrance)){{ $entrance->providerorder()->first()->id }}@endif">
-
-        <div class="no-gutters align-items-stretch">
-        <div class="padding">
-            <div class="row mb-3">
+        <div class="box-body">
+            <div class="row row-sm mb-15">
                 <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-12 form-group mb-0">
-                            <div class="form-group row">
-                                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заявка поставщику</label>
-                                <div class="col-sm-9">
-                                    <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select">
-                                        @if(isset($entrance) && $entrance->providerorder()->first() != null)
-                                            {{ $entrance->providerorder()->first()->outputName() }}
-                                        @else
-                                            Не выбрано
-                                        @endif
-                                    </button>
 
-                                </div>
-                            </div>
-                            <div class="form-group row mb-0">
-
-                                <label class="col-sm-3 no-pr col-form-label">Коментарий к поступлению</label>
-                                <div class="col-sm-9">
-                                    <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
-                                </div>
-                            </div>
+                    <div class="form-group row row-sm">
+                        <label for="category_id" class="col-sm-5 label-sm">Заявка поставщику</label>
+                        <div class="input-group mb-3 col-sm-7">
+                            <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select">
+                                @if(isset($provider_order) && $provider_order->partner()->first() != null)
+                                    {{ $provider_order->partner()->first()->outputName() }}
+                                @else
+                                    <option>Не выбрано</option>
+                                @endif
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group row row-sm mb-0">
+                        <div class="col-sm-12">
+                            <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
                         </div>
                     </div>
                 </div>
@@ -106,32 +98,32 @@
                             <span class="nav-link d-flex flex-row text-muted">
                                 <span class="flex">Дата поступления</span>
                                 <span class="text-sm">
-				                		{{ $entrance->normalizedData() }}
-				                	</span>
+                                        {{ $entrance->normalizedData() }}
+                                    </span>
                             </span>
                         </li>
                         <li class="nav-item">
                             <span class="nav-link d-flex flex-row text-muted">
                                 <span class="flex">Поставщик</span>
                                 <span class="text-sm">
-				                		{{ $entrance->providerorder()->first()->partner()->first()->outputName() }}
-				                	</span>
+                                        {{ $entrance->providerorder()->first()->partner()->first()->outputName() }}
+                                    </span>
                             </span>
                         </li>
                         <li class="nav-item">
                             <span class="nav-link d-flex flex-row text-muted">
                                 <span class="flex">Общая сумма</span>
                                 <span class="text-sm">
-				                		{{ $entrance->providerorder()->first()->getWarrantPositive() }} р.
-				                	</span>
+                                        {{ $entrance->providerorder()->first()->getWarrantPositive() }} р.
+                                    </span>
                             </span>
                         </li>
                         <li class="nav-item">
                             <span class="nav-link d-flex flex-row text-muted">
                                 <span class="flex">Принимающий</span>
                                 <span class="text-sm">
-				                		{{ $entrance->partner()->first()->outputName() }}
-				                	</span>
+                                        {{ $entrance->partner()->first()->outputName() }}
+                                    </span>
                             </span>
                         </li>
                     </ul>
@@ -142,17 +134,16 @@
                 <div for="category_id" class=" mb-3"><b>Список приходных номенклатур</b>
                 </div>
                 <div data-simplebar style="max-height: 300px;">
-                    <table class="table table-sm table-hover b-t mb-0 d-block" style="min-height: 300px">
+                    <table class="table-modal" style="max-height: 300px;">
                         <thead class="text-muted">
                         <tr>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
-                            <th width="10%">Пр-ль</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
-                            <th width="10%" style="min-width: 20px; white-space: nowrap">Поступило / Ожидается</th>
-                            <th width="10%" style="min-width: 100px;">Цена</th>
+                            <th width="17%" style="min-width: 20px; white-space: nowrap">Поступило / Ожидается</th>
+                            <th width="8%" style="min-width: 100px;">Цена</th>
                             {{--<th width="10%" style="min-width: 100px;">Всего</th>--}}
-                            <th width="10%"></th>
+                            <th width="5%"></th>
                         </tr>
                         </thead>
                         <tbody class="product_list">
@@ -170,11 +161,10 @@
                 {{--</div>--}}
             </div>
         </div>
-        </div>
         <div class="modal-footer">
-            <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
-            <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
-            <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
+            <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
         </div>
         <div class="system_message">
 

@@ -204,7 +204,7 @@ class PartnerController extends Controller
 
     public static function selectPartnerDialog($request)
     {
-        $partners = Partner::where('company_id', Auth::user()->id)->paginate(7);
+        $partners = Partner::where('company_id', Auth::user()->company()->first()->id)->paginate(7);
         return response()->json([
             'tag' => 'selectPartnerDialog',
             'html' => view('partner.dialog.select_partner', compact('partners', 'request'))->render()

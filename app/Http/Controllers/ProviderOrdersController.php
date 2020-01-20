@@ -36,23 +36,7 @@ class ProviderOrdersController extends Controller
     public function tableData(Request $request)
     {
         $providerorders = ProviderOrdersController::getPoviderOrders($request);
-        //dd($providerorders->first()->created_at->format('Y-m-d/H:i'));
         foreach($providerorders as $providerorder){
-            $pay_positive = $providerorder->getWarrantPositive();
-            if($pay_positive === 0){
-                $providerorder->pays = 0;
-            } else if($pay_positive < $providerorder->itogo){
-                $providerorder->pays = 1;
-            } else if($pay_positive === $providerorder->itogo){
-                $providerorder->pays = 2;
-            } else if($pay_positive > $providerorder->itogo){
-                $providerorder->pays = 3;
-            }
-
-            $articles = $providerorder->articles();
-
-            $providerorder->incomes = rand(0,3);
-            //$providerorder->partner = $providerorder->partner()->first()->outputName();
             $providerorder->date = $providerorder->created_at->format('Y.m.d/H:i');
         }
         return response()->json($providerorders);
@@ -63,7 +47,7 @@ class ProviderOrdersController extends Controller
         $providerorders = ProviderOrder::owned()->orderBy('id', 'DESC')->limit(10)->get();
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
-            'html' => view('provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
         ]);
     }
 
@@ -108,6 +92,7 @@ class ProviderOrdersController extends Controller
         }
         return response()->json([
             'id' => $providerorder->id,
+            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
             'name' => $providerorder->outputName()
         ]);
     }
@@ -138,27 +123,46 @@ class ProviderOrdersController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $provider_order = ProviderOrder::where('id', $id)->first();
 
-        if($provider_order->entrances()->count() > 0){
-            return response()->json([
-                'type' => 'error',
-                'message' => 'Заявка не может быть удалена, имеются поступившие товары'
-            ], 200);
+        $returnIds = null;
+        if($id == 'array'){
+            $provider_orders = ProviderOrder::whereIn('id', $request['ids']);
+            $this->message = 'Заказы поставщику удалены';
+            $returnIds = $provider_orders->get()->pluck('id');
+            foreach($provider_orders->get() as $provider_order){
+                if($provider_order->entrances()->count() > 0){
+                    return response()->json([
+                        'type' => 'error',
+                        'message' => 'Заявка не может быть удалена, имеются поступившие товары'
+                    ], 200);
+                } else {
+                    if($provider_order->delete()){
+                        #Отнимаем с баланса контрагента
+                        $provider_order->partner()->first()->subtraction($provider_order->itogo);
+                    }
+                }
+            }
+        } else {
+            $provider_order = ProviderOrder::where('id', $id)->first();
+            $this->message = 'Заказ поставщику удален';
+            $returnIds = $provider_order->id;
+            if($provider_order->entrances()->count() > 0){
+                return response()->json([
+                    'type' => 'error',
+                    'message' => 'Заявка не может быть удалена, имеются поступившие товары'
+                ], 200);
+            } else{
+                if($provider_order->delete()){
+                    #Отнимаем с баланса контрагента
+                    $provider_order->partner()->first()->subtraction($provider_order->itogo);
+                }
+            }
         }
 
-        #Отнимаем с баланса контрагента
-        $provider_order->partner()->first()->subtraction($provider_order->itogo);
-
-        $provider_order->delete();
-        $this->status = 200;
-        $this->message = 'Продажа удален';
-
-
         return response()->json([
-            'id' => $provider_order->id,
+            'id' => $returnIds,
             'message' => $this->message
         ], 200);
     }
@@ -251,8 +255,8 @@ class ProviderOrdersController extends Controller
 
             $wasExisted = true;
         } else {
-
             $provider_order->company_id = Auth::user()->company()->first()->id;
+            $provider_order->manager_id = Auth::user()->partner()->first()->id;
             $this->message = 'Заказ поставщику сохранен';
             $wasExisted = false;
         }
@@ -369,6 +373,21 @@ class ProviderOrdersController extends Controller
         }
     }
 
+    public function getPartnerSideInfo(Request $request){
+
+        $provider_order = ProviderOrder::owned()->where('id', $request['id'])->first();
+        $partner = $provider_order->partner()->first();
+        $comment = $provider_order->comment;
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.provider.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function getProviderOrderProducts($id){
         $provider_order = ProviderOrder::where('id', $id)->first();
 
@@ -396,29 +415,115 @@ class ProviderOrdersController extends Controller
             $dir = 'ASC';
         }
 
-        $provider_orders = ProviderOrder::
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
 
-        where('provider_orders.company_id', Auth::user()->company()->first()->id)
+        if($request['provider'] == null){
+            $request['provider'] = [];
+        }
+
+        $provider_orders =
+        ProviderOrder::select(DB::raw('
+            provider_orders.*, provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name,
+            (
+            CASE
+                WHEN wsumm = 0 THEN 0
+                WHEN wsumm > 0 && wsumm < provider_orders.itogo THEN 1
+                WHEN wsumm = provider_orders.itogo THEN 2
+                WHEN wsumm > provider_orders.itogo THEN 3
+                ELSE 0
+            END) AS pays,
+            (
+            CASE
+                WHEN SUM(article_entrance.count) = 0 THEN 0
+                WHEN SUM(article_entrance.count) > 0 && SUM(article_entrance.count) < SUM(article_provider_orders.count) THEN 1
+                WHEN SUM(article_entrance.count) = SUM(article_provider_orders.count) THEN 2
+                ELSE 0
+            END) AS incomes,
+            SUM(article_entrance.count) as entred_count,
+            SUM(article_provider_orders.count) as order_count
+        '))
+            ->from(DB::raw('(SELECT provider_orders.*, SUM(IF(w.isIncoming = 1, -w.summ, w.summ)) as wsumm, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
+                    FROM provider_orders
+                    left join partners on partners.id = provider_orders.manager_id
+                    left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
+                    left join warrants as w on pow.warrant_id = w.id
+                    GROUP BY provider_orders.id)
+                 provider_orders
+            '))
+            ->leftJoin('partners',  'partners.id', '=', 'provider_orders.partner_id')
+            ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
+            ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
+            ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
+            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.id')
+            ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
             ->where('provider_orders.deleted_at', null)
-            ->join('partners','partners.id','=','provider_orders.partner_id')
-            ->select(DB::raw('provider_orders.*,  provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name'))
+            ->when($request['provider'] != null, function($query) use ($request) {
+                $query->whereIn('provider_orders.partner_id', $request['provider']);
+            })
+            ->when($request['accountable'] != null, function($query) use ($request) {
+                $query->whereIn('provider_orders.manager_id', $request['accountable']);
+            })
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->when($request['pay_status'] != null, function($query) use ($request) {
+                switch ($request['pay_status']) {
+                    case 0:
+                        $query->where('wsumm', 0)->orWhere('wsumm', null);
+                        break;
+                    case 1:
+                        $query->whereRaw('`provider_orders`.`wsumm` > 0 and `provider_orders`.`wsumm` < `provider_orders`.`itogo`');
+                        break;
+                    case 2:
+                        $query->whereRaw('`provider_orders`.`wsumm` = `provider_orders`.`itogo`');
+                        break;
+                    case 3:
+                        $query->whereRaw('`provider_orders`.`wsumm` > `provider_orders`.`itogo`');
+                        break;
+                }
 
+            })
+            ->where('provider_orders.company_id', Auth::user()->company()->first()->id)
+            ->groupBy('provider_orders.id')
             ->orderBy($field, $dir)
+
             //->toSql();
+
+       //dd($provider_orders);
             ->paginate($size);
 
+//        where('provider_orders.company_id', Auth::user()->company()->first()->id)
+//            ->where('provider_orders.deleted_at', null)
+//            ->join('partners','partners.id','=','provider_orders.partner_id')
+//            ->select(DB::raw('provider_orders.*,  provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name'))
+//
+//            ->orderBy($field, $dir)
+//            //->toSql();
+//            ->paginate($size);
 
-//        select provider_orders.*, provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name, SUM(w.summ)
-//        from `provider_orders`
-//        inner join `partners` on `partners`.`id` = `provider_orders`.`partner_id`
+
+
 //
-//        left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
-//        left join warrants as w on pow.warrant_id = w.id
 //
-//        where `provider_orders`.`company_id` = 2
-//            and `provider_orders`.`deleted_at` is null
-//        GROUP BY provider_orders.id
-//        order by `id` asc
+//from `provider_orders`
+//inner join `partners` on `partners`.`id` = `provider_orders`.`partner_id`
+//
+//left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
+//left join warrants as w on pow.warrant_id = w.id
+//
+//left join article_provider_orders as apo on apo.provider_order_id = provider_orders.id
+//
+//left join entrances as e on provider_orders.id = e.providerorder_id
+//left join article_entrance as ae on ae.entrance_id = e.id
+//
+//where `provider_orders`.`company_id` = 2
+//    and `provider_orders`.`deleted_at` is null
+//GROUP BY provider_orders.id
+//order by `id` asc
 
 
 

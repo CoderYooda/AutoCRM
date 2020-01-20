@@ -174,7 +174,7 @@
         <div class="modal-footer">
             <button class="btn white" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
             <button type="button" class="btn success" onclick="{{ $class }}.save(this)">Сохранить</button>
-            <button type="button" class="btn success" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            <button type="button" class="btn success no-wrap" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
         </div>
         <div class="system_message">
 

@@ -235,6 +235,8 @@ class createEntrance{
             window.notification.notify( 'success', 'Заявка выбрана');
             document.dispatchEvent(new Event('ProviderOrderSelected', {bubbles: true}));
             console.log("Событие ProviderOrderSelected вызвано");
+            object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
+
             //closeDialog(event);
 
         }).catch(function (error) {

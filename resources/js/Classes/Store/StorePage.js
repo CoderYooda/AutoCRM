@@ -14,19 +14,27 @@ class storePage{
         this.root_category = 2;
         this.categoryContextual = null;
         this.table = null;
+        this.dates = null;
 
         //filter parametrs
         this.pay_status = null;
         this.entrance_status = null;
         this.provider = [];
         this.accountable = [];
-        this.dates = null;
+        this.dates_range = null;
+
+
+
+        //Context
+
+        this.tabledata = {};
 
         this.contextDop = null;
         this.parametr = null;
         this.init();
 
     }
+
     openSelectPartnerModal(target){
         window.openDialog('selectPartner', '&refer=' + 'store&target=' + target);
     }
@@ -38,34 +46,47 @@ class storePage{
         if(elem !== null){
             elem.closest('.dropdown').classList.remove('show');
         }
+
+        if(value == null){
+            window.notification.notify( 'success', 'Поле очищено');
+        }
+
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
     }
 
     clearList(type, container){
         this[type] = [];
         document.getElementById(container).innerHTML = '';
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
         window.notification.notify( 'success', 'Поле очищено');
     }
 
     selectPartner(id, target){
-        var object = this;
+        let object = this;
         window.axios({
             method: 'post',
             url: 'partner/'+ id +'/select',
             data: {refer:null}
         }).then(function (resp) {
-            object[target].push(resp.data.id);
-            //let input = document.getElementById(target);
-            //input.value = resp.data.name;
-            let stack = document.getElementById(target + '_stack');
-            var node = helper.createElementFromHTML('' +
-                '<div id="' + target + '_' + resp.data.id + '" class="' + target + '_selected filter_element" >' +
-                '<span>' + resp.data.name + '</span>' +
-                '<button type="button" onclick="store.removePartner(' + resp.data.id + ', \'' + target + '\')" class="right-remove"><i class="fa fa-remove"></i></button>' +
-                '</div>' +
-                '');
-            stack.appendChild(node);
 
-            window.notification.notify( 'success', 'Контрагент выбран');
+            if(object[target].includes(resp.data.id)){
+                window.notification.notify( 'error', 'Уже имеется в списке');
+            } else {
+                object[target].push(resp.data.id);
+                //let input = document.getElementById(target);
+                //input.value = resp.data.name;
+                let stack = document.getElementById(target + '_stack');
+                var node = helper.createElementFromHTML('' +
+                    '<div id="' + target + '_' + resp.data.id + '" class="' + target + '_selected filter_element" >' +
+                    '<span>' + resp.data.name + '</span>' +
+                    '<button type="button" onclick="store.removePartner(' + resp.data.id + ', \'' + target + '\')" class="right-remove"><i class="fa fa-remove"></i></button>' +
+                    '</div>' +
+                    '');
+                stack.appendChild(node);
+                //object.reload();
+                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                window.notification.notify( 'success', 'Контрагент выбран');
+            }
             //document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             //console.log("Событие PartnerSelected вызвано");
         }).catch(function (error) {
@@ -79,6 +100,7 @@ class storePage{
         let object = this;
         object[type].remove(id);
         document.getElementById(type + '_' + id).remove();
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
     }
 
     loadBreadcrumbs(category_id, root_category){
@@ -161,6 +183,7 @@ class storePage{
         });
 
     }
+
     getCurrentActiveTab(){
         var active_tab = window.helper.findGetParameter('active_tab');
 
@@ -202,22 +225,25 @@ class storePage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:50},
-                {title:"Оплата", field:"pays", width:60, formatter:iconFormatter},
-                {title:"Поступление", field:"incomes",align:"center", width:100, formatter:iconFormatter},
+                {title:"Оплата", field:"pays", width:80, formatter:iconFormatter},
+                {title:"Поступление", field:"incomes",align:"left", width:130, formatter:iconFormatter},
                 {title:"Дата", field:"date", width:150},
                 {title:"Поставщик", field:"name", align:"left"},
-                {title:"Сумма", field:"itogo", width:150, align:"left"},
+                {title:"Ответственный", field:"manager", align:"left"},
+                {title:"Сумма", field:"itogo", width:100, align:"left"},
             ];
         } else if(object.active_tab === 'entrance'){
+            object.contextDop = 'entrance';
+            object.parametr = 'entrance';
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
-                {title:"Заявка", field:"order_id"},
-                {title:"Дата", field:"created_at"},
-                {title:"Поставщик", field:"partner", width:150, align:"left"},
-                {title:"Принимающий", field:"partner_id", width:150, align:"left"},
+                {title:"Заявка", field:"ordid", width:100},
+                {title:"Дата", field:"date", width:150},
+                {title:"Поставщик", field:"partner", align:"left"},
+                {title:"Принимающий", field:"manager", align:"left"},
                 {title:"Комментарий", field:"comment", width:150, align:"left"},
             ];
         } else if(object.active_tab === 'shipments'){
@@ -258,6 +284,7 @@ class storePage{
         }
         return columns;
     }
+
     generateContexes(){
 
     }
@@ -300,6 +327,9 @@ class storePage{
                     }
                 }
             },
+            clipboard:true,
+            selectable:true,
+            selectableRangeMode:"click",
             //resizableRows:false,
             resizableColumns:false,
             height:height-15,
@@ -339,7 +369,6 @@ class storePage{
                     items:items,
                 });
             },
-
             tableBuilt:function(){
                 console.log('Таблица готова');
                 // let table_holder = document.getElementsByClassName('tabulator-table');
@@ -385,7 +414,23 @@ class storePage{
             //     return response; //return the response data to tabulator
             // },
             rowClick:function(e, row){ //trigger an alert message when the row is clicked
-                row.toggleSelect();
+                //row.toggleSelect();
+                console.log('Загружаем инфо');
+                let data = {};
+                data.id = row.getData().id;
+                window.axios({
+                    method: 'post',
+                    url: '/' + object.active_tab + '/side_info',
+                    data: data
+                }).then(function (resp) {
+                    document.getElementById('contact_block').innerHTML = resp.data.info;
+                    document.getElementById('comment_block').innerHTML = resp.data.comment;
+                    //console.log(resp);
+                }).catch(function (error) {
+                    console.log(error);
+                }).finally(function () {
+                    window.isXHRloading = false;
+                });
             },
         });
     }
@@ -395,13 +440,21 @@ class storePage{
         let data = {};
         data.view_as = "json";
         data.target = "ajax-table-store";
+        data.page = 1;
 
-        if(object.category_id !== null){
-            data.category_id = object.category_id.toString();
-        }
-        if(object.search && object.search !== 'null' || object.search !== null){
-            data.search = object.search.toString();
-        }
+
+        if(object.category_id !== null){data.category_id = object.category_id.toString();}
+
+        if(object.accountable !== null){data.accountable = object.accountable;}
+        if(object.pay_status !== null){data.pay_status = object.pay_status;}
+        if(object.entrance_status !== null){data.entrance_status = object.entrance_status;}
+        if(object.provider !== []){data.provider = object.provider;}
+        if(object.dates_range !== null){data.dates_range = object.dates_range;}
+
+        if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
+
+
+        //object.tabledata = data;
         return data;
     }
 
@@ -468,15 +521,9 @@ class storePage{
             this.search = window.helper.findGetParameter('search');
         } else { this.search = ''}
 
-        let date_start = window.helper.findGetParameter('date_start');
-        let date_end = window.helper.findGetParameter('date_end');
-        if(date_start !== null && date_end !== null){
-            this.date_start = date_start;
-            this.date_end = date_end;
-            this.dates_range = [this.date_start, this.date_end];
-        }
+
         this.searchInit();
-        this.initShipmentDates();
+        //this.initShipmentDates();
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
@@ -485,7 +532,6 @@ class storePage{
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
-        this.dates_range = ['null', 'null'];
         this.date_start = 'null';
         this.date_end = 'null';
         window.helper.debugBar(this);
@@ -585,8 +631,11 @@ class storePage{
     }
 
     resetDate(){
-        this.dates = null;
+        this.dates_range = null;
         this.page = 1;
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.dates.clear();
+        window.notification.notify( 'success', 'Дава очищена');
     }
 
     resetSearch(){
@@ -659,9 +708,6 @@ class storePage{
     initDatesFilter(){
         let object = this;
         let startDateArray = [];
-        if(object.dates_range[0] !== 'null' && object.dates_range[1] !== 'null'){
-            startDateArray = object.dates_range;
-        }
         this.dates = window.flatpickr(".date_filter", {
             mode: "range",
             defaultDate: startDateArray,
@@ -669,10 +715,11 @@ class storePage{
             onClose: function(selectedDates, dateStr, instance) {
                 object.page = 1;
                 if(selectedDates.length > 1){
-                    object.dates = window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y");
+                    object.dates_range = window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString();
                 } else {
-                    object.dates = null;
+                    object.dates_range = null;
                 }
+                //object.reload();
                 object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }
         });
@@ -680,7 +727,7 @@ class storePage{
 
     reload(){
         let object = this;
-        object.prepareParams();
+        //object.prepareParams();
         object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
         // if (isXHRloading) { return; } window.isXHRloading = true;
         // window.axios({

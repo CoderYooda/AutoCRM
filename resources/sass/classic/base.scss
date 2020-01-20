@@ -349,7 +349,7 @@ li.active .header-tab{
     box-shadow: 0 2px 10px rgba(0,0,0,.35);
     border-radius: 4px;
     overflow: hidden;
-    z-index: 10000;
+    z-index: 9990;
     max-height: 90%;
     border: 2px solid #fff;
     background: #fff;
@@ -748,7 +748,7 @@ input:-moz-placeholder { /* Firefox 18- */
     flex: 0 0 75%;
     max-width: 75%;
 }
-.col-sm-9 {
+.col-sm-12 {
     -webkit-box-flex: 0;
     flex: 0 0 100%;
     max-width: 100%;
@@ -786,28 +786,31 @@ input:-moz-placeholder { /* Firefox 18- */
     background: url(/images/icons/ic-0.svg) no-repeat center;
     width: 43px;
     height: 30px;
-    margin: auto;
+    //margin: auto;
 }
 .ic-1{
     background: url(/images/icons/ic-1.svg) no-repeat center;
     width: 43px;
     height: 30px;
-    margin: auto;
+    //margin: auto;
 }
 .ic-2{
     background: url(/images/icons/ic-2.svg) no-repeat center;
     width: 43px;
     height: 30px;
-    margin: auto;
+    //margin: auto;
 }
 .ic-3{
     background: url(/images/icons/ic-3.svg) no-repeat center;
     width: 43px;
     height: 30px;
-    margin: auto;
+    //margin: auto;
 }
 .mr-15{
     margin-right: 15px;
+}
+.pr-8{
+    padding-right: 8px!important;
 }
 .p-15{
     padding: 15px;

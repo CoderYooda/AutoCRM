@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Entrance;
 use Carbon\Carbon;
@@ -29,17 +30,16 @@ class EntranceController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
         ]);
     }
 
     public function tableData(Request $request)
     {
         $entrances = EntranceController::getEntrances($request);
-//        foreach($products as $product){
-//            $product->isset = $product->getCountSelfOthers();
-//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
-//        }
+        foreach($entrances as $entrance){
+            $entrance->date = $entrance->created_at->format('Y.m.d/H:i');
+        }
         return response()->json($entrances);
     }
 
@@ -217,7 +217,7 @@ class EntranceController extends Controller
         $request['fresh'] = true;
         $class = 'entranceDialog' . $id;
         $inner = true;
-        $content = view('entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
+        $content = view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([
@@ -247,39 +247,125 @@ class EntranceController extends Controller
     }
 
     public static function getEntrances($request){
-        return Entrance::where('company_id', Auth::user()->company()->first()->id)
-            ->orderBy('created_at', 'DESC')
-            ->where(function($q) use ($request){
-                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-                    $q->where('created_at',  '>=',  Carbon::parse($request['date_start']));
-                }
-                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-                    $q->where('created_at', '<=', Carbon::parse($request['date_end']));
-                }
-            })
-            ->where(function($q) use ($request){
-                if(isset($request['search']) && $request['search'] !== 'null') {
-                    if (mb_strlen($request['search']) === 1) {
-                        $q->whereHas('providerorder', function ($q) use ($request) {
-                            $q->whereHas('partner', function ($q) use ($request) {
-                                $q->where('fio', 'LIKE', $request['search'] . '%' )
-                                    ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-                            });
-                        });
-                    } else {
-                        $q->whereHas('providerorder', function ($q) use ($request) {
-                            $q->whereHas('partner', function ($q) use ($request) {
-                                $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                                    ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                                    ->orWhereHas('phones', function ($query) use ($request) {
-                                        $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                                    });
-                            });
-                        });
-                    }
-                }
-            })
-            ->paginate(16);
+
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'id';
+            $dir = 'ASC';
+        }
+
+        $entrances = Entrance::select(DB::raw('
+            entrances.*, entrances.created_at as date, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, provider_orders.id as ordid
+        '))
+
+            //SELECT entrances.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as manager
+            //FROM entrances
+            //left join partners on partners.id = entrances.partner_id
+            //GROUP BY entrances.id
+
+            ->from(DB::raw('(
+            SELECT entrances.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as manager
+            FROM entrances
+            left join partners on partners.id = entrances.partner_id
+            GROUP BY entrances.id)
+             entrances
+        '))
+
+
+            ->leftJoin('provider_orders',  'provider_orders.id', '=', 'entrances.providerorder_id')
+            ->leftJoin('partners',  'partners.id', '=', 'provider_orders.partner_id')
+
+
+
+//            ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
+//            ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
+//            ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
+//            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.id')
+//            ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
+
+//            ->when($request['provider'] != null, function($query) use ($request) {
+//                $query->whereIn('provider_orders.partner_id', $request['provider']);
+//            })
+//            ->when($request['accountable'] != null, function($query) use ($request) {
+//                $query->whereIn('provider_orders.manager_id', $request['accountable']);
+//            })
+//            ->when($request['dates_range'] != null, function($query) use ($request) {
+//                $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+//            })
+//
+//            ->when($request['pay_status'] != null, function($query) use ($request) {
+//                switch ($request['pay_status']) {
+//                    case 0:
+//                        $query->where('wsumm', 0)->orWhere('wsumm', null);
+//                        break;
+//                    case 1:
+//                        $query->whereRaw('`provider_orders`.`wsumm` > 0 and `provider_orders`.`wsumm` < `provider_orders`.`itogo`');
+//                        break;
+//                    case 2:
+//                        $query->whereRaw('`provider_orders`.`wsumm` = `provider_orders`.`itogo`');
+//                        break;
+//                    case 3:
+//                        $query->whereRaw('`provider_orders`.`wsumm` > `provider_orders`.`itogo`');
+//                        break;
+//                }
+//
+//            })
+
+            ->where('entrances.company_id', Auth::user()->company()->first()->id)
+            ->groupBy('entrances.id')
+            ->orderBy($field, $dir)
+            //->toSql();
+
+            //dd($entrances);
+            ->paginate($size);
+
+            return $entrances;
+
+
+//        return Entrance::where('company_id', Auth::user()->company()->first()->id)
+//            ->orderBy('created_at', 'DESC')
+//            ->where(function($q) use ($request){
+//                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
+//                    $q->where('created_at',  '>=',  Carbon::parse($request['date_start']));
+//                }
+//                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
+//                    $q->where('created_at', '<=', Carbon::parse($request['date_end']));
+//                }
+//            })
+//            ->where(function($q) use ($request){
+//                if(isset($request['search']) && $request['search'] !== 'null') {
+//                    if (mb_strlen($request['search']) === 1) {
+//                        $q->whereHas('providerorder', function ($q) use ($request) {
+//                            $q->whereHas('partner', function ($q) use ($request) {
+//                                $q->where('fio', 'LIKE', $request['search'] . '%' )
+//                                    ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+//                            });
+//                        });
+//                    } else {
+//                        $q->whereHas('providerorder', function ($q) use ($request) {
+//                            $q->whereHas('partner', function ($q) use ($request) {
+//                                $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+//                                    ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+//                                    ->orWhereHas('phones', function ($query) use ($request) {
+//                                        $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+//                                    });
+//                            });
+//                        });
+//                    }
+//                }
+//            })
+//            ->paginate(16);
     }
 
     private static function validateRules()

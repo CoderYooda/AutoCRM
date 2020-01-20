@@ -1,31 +1,23 @@
 @if($providerorders->count() > 0)
-    <div class="row">
-        <div class="col-4 no-pr" data-simplebar style="max-height: 400px;">
-            <div class="b-r" style="height: 400px;">
+    <div class="" data-simplebar style="max-height: 400px;">
+        <div class="box-body">
+            <ul  class="nav select-list-modal ">
             @foreach($providerorders as $providerorder)
-                <div id="providerorder_item_{{ $providerorder->id }}" class="providerorder_item list-item inblocked mini-list-element pointer" onclick="{{ $class }}.pickProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}">
-                    <div class="inblock">
-                        <i class="fa fa-cubes" style="font-size: 16px;"></i>
-                        <div class="w-200 list-body b-r pr-2" style="max-height: 38px;overflow: hidden;flex: 2;">
-                            <span class="item-title _500" > Заявка № {{ $providerorder->id }}</span>
-                        </div>
-                        <div class="list-body">
-                            <div class="item-except text-sm text-muted h-1x" style="width: 100px!important; text-align: center">
-                                {{ $providerorder->normalizedData() }}
-                            </div>
-                        </div>
-                        {{--@if($request['refer'] != null)--}}
-                            {{--<button data-article_id="{{ $providerorder->id }}"  onclick="{{$request['refer']}}.selectProviderOrder({{ $providerorder->id }});" class="btn btn-icon white float-right select_btn">--}}
-                                {{--<i class="not_selected fa fa-plus"></i>--}}
-                                {{--<i class="selected fa fa-check"></i>--}}
-                            {{--</button>--}}
-                        {{--@endif--}}
+                <li id="providerorder_item_{{ $providerorder->id }}" onclick="{{ $class }}.pickProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}" class="pointer d-flex " >
+                    <div class="ring-ico">
+                        <i class="fa fa-cubes"></i>
                     </div>
-                </div>
+                    <div class="list-title">
+                        Заявка № {{ $providerorder->id }}
+                        <div class="secondary">{{ $providerorder->partner()->first()->outputName() }}</div>
+                    </div>
+                    <div class="list-body">
+                        <div class="date">{{ $providerorder->normalizedData() }}</div>
+                        <div class="secondary">Сумма заявки: {{ $providerorder->summ }}</div>
+                    </div>
+                </li>
             @endforeach
-            </div>
-        </div>
-        <div class="col-8 no-pl" id="articles_container" >
+            </ul>
         </div>
     </div>
 @else

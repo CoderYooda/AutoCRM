@@ -12,6 +12,7 @@ class ProviderOrder extends Model
 
     public $fields = [
         'partner_id',
+        'manager_id',
         'company_id',
         'store_id',
         'do_date',
@@ -80,6 +81,11 @@ class ProviderOrder extends Model
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo('App\Models\Partner', 'manager_id');
     }
 
     public function store()

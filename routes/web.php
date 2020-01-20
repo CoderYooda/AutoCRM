@@ -91,6 +91,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/providerorder/{id}/loaditems', 'ProviderOrdersController@loadItems')->name('LoadItemsProviderOrder');
     Route::post('/providerorder/{id}/fresh', 'ProviderOrdersController@fresh')->name('FreshProviderOrder');
     Route::get('/provider_orders/tabledata', 'ProviderOrdersController@tableData')->name('StoreProviderOrderData');
+    Route::post('/provider_orders/side_info', 'ProviderOrdersController@getPartnerSideInfo')->name('GetPartnerSideInfo');
 
     #Корректировки
     Route::post('/adjustment/store', 'AdjustmentController@store')->name('StoreAdjustment');// Строгое название
