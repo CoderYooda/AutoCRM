@@ -37,7 +37,12 @@ class ProviderOrder extends Model
 
     public function getArticleCount($article_id)
     {
-        return $this->articles()->where('article_id', $article_id)->first()->pivot->count;
+        $article = $this->articles()->where('article_id', $article_id)->first();
+        if($article != null){
+            return $article->pivot->count;
+        } else {
+            return 0;
+        }
     }
 
     public function entrances()
@@ -75,7 +80,12 @@ class ProviderOrder extends Model
 
     public function getArticlePrice($article_id)
     {
-        return $this->articles()->where('article_id', $article_id)->first()->pivot->price;
+        $article = $this->articles()->where('article_id', $article_id)->first();
+        if($article != null){
+            return $article->pivot->price;
+        } else {
+            return 0;
+        }
     }
 
     public function partner()
@@ -111,6 +121,8 @@ class ProviderOrder extends Model
         }
         return $count;
     }
+
+
 
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;

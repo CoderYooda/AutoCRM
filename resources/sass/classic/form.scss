@@ -148,6 +148,7 @@ label.label-sm{
     text-overflow: ellipsis;
     overflow: hidden;
     display: block;
+    max-width: 250px;
 }
 .font-weight-bolder {
     font-weight: bolder!important;
@@ -251,7 +252,7 @@ label.label-sm{
     border-right: 1px solid #85CEFF;
     padding: 0px 15px;
     flex: 1;
-    max-width: calc((100% - 32px) /2);
+    max-width: calc((100% - 44px) /2);
 }
 .select-list-modal li .list-body{
     flex: 1;
@@ -286,14 +287,17 @@ label.label-sm{
 .ring-ico{
     background: #fff;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
 }
 .ring-ico i{
     text-align: center;
     display: block;
-    margin: 6px 0;
+    margin: 12px 0;
 }
 .dialog.selected{
     z-index: 9998;
+}
+.select-list-modal{
+    margin-top: 0;
 }

@@ -44,7 +44,7 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->orderBy('id', 'DESC')->limit(10)->get();
+        $providerorders = ProviderOrder::owned()->orderBy('created_at', 'DESC')->limit(10)->get();
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
             'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
@@ -438,27 +438,36 @@ class ProviderOrdersController extends Controller
             END) AS pays,
             (
             CASE
-                WHEN SUM(article_entrance.count) = 0 THEN 0
-                WHEN SUM(article_entrance.count) > 0 && SUM(article_entrance.count) < SUM(article_provider_orders.count) THEN 1
-                WHEN SUM(article_entrance.count) = SUM(article_provider_orders.count) THEN 2
+                WHEN ent_count = 0 THEN 0
+                WHEN ent_count > 0 && ent_count < apo_count THEN 1
+                WHEN ent_count = apo_count THEN 2
+                WHEN ent_count > apo_count THEN 3
                 ELSE 0
             END) AS incomes,
             SUM(article_entrance.count) as entred_count,
             SUM(article_provider_orders.count) as order_count
         '))
-            ->from(DB::raw('(SELECT provider_orders.*, SUM(IF(w.isIncoming = 1, -w.summ, w.summ)) as wsumm, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
-                    FROM provider_orders
-                    left join partners on partners.id = provider_orders.manager_id
+            ->from(DB::raw('(
+            SELECT provider_orders.*, SUM(article_provider_orders.count) as apo_count, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
+                FROM (SELECT provider_orders.*, SUM(article_entrance.count) as ent_count FROM (
+                    SELECT provider_orders.*, SUM(IF(w.isIncoming = 1, -w.summ, w.summ)) as wsumm FROM provider_orders 
                     left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
                     left join warrants as w on pow.warrant_id = w.id
-                    GROUP BY provider_orders.id)
-                 provider_orders
+                    GROUP BY provider_orders.id) provider_orders
+                left join entrances on entrances.providerorder_id = provider_orders.id
+                left join article_entrance on article_entrance.entrance_id = entrances.id
+                GROUP BY provider_orders.id)provider_orders
+
+                left join partners on partners.id = provider_orders.manager_id
+                left join article_provider_orders on article_provider_orders.provider_order_id = provider_orders.id
+                GROUP BY provider_orders.id
+            ) provider_orders
             '))
             ->leftJoin('partners',  'partners.id', '=', 'provider_orders.partner_id')
             ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
             ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
             ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
-            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.id')
+            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.providerorder_id')
             ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
             ->where('provider_orders.deleted_at', null)
             ->when($request['provider'] != null, function($query) use ($request) {

@@ -76,9 +76,9 @@
                     <div class="form-group row row-sm">
                         <label for="category_id" class="col-sm-5 label-sm">Заявка поставщику</label>
                         <div class="input-group mb-3 col-sm-7">
-                            <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select">
-                                @if(isset($provider_order) && $provider_order->partner()->first() != null)
-                                    {{ $provider_order->partner()->first()->outputName() }}
+                            <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select" @if(isset($entrance) && $entrance->providerorder()->first() != null) disabled @endif>
+                                @if(isset($entrance) && $entrance->providerorder()->first() != null)
+                                    {{ $entrance->providerorder()->first()->outputName() }}
                                 @else
                                     <option>Не выбрано</option>
                                 @endif
@@ -150,7 +150,7 @@
                         @if(isset($entrance))
                             @php $providerorder = $entrance->providerorder()->first(); @endphp
                             @foreach($entrance->articles()->get() as $product)
-                                @include('entrance.dialog.product_element')
+                                @include(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element')
                             @endforeach
                         @endif
                         </tbody>

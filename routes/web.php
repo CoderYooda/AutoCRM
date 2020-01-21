@@ -58,6 +58,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/entrance/{id}/delete', 'EntranceController@delete')->name('DeleteEntrance');
     Route::post('/entrance/{id}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
     Route::get('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
+    Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
 
     #Поставщики (внешние)
     Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');

@@ -16,35 +16,6 @@
                     <input id="date_filter" type="text" name="date_filter" value="{{ request('dates_range') }}" class="form-control date_filter input_as_link" placeholder="за всё время">
                     <button type="button" onclick="window.store.resetDate()" class="right-remove"><i class="fa fa-remove"></i></button>
                 </div>
-                <div class="form-group d-flex mb-10">
-                    <label class="no-wrap" for="pay_status">Статус оплаты</label>
-                    <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input id="pay_status" type="text" name="pay_status" value="{{ request('pay_status') }}" class="form-control pay_status input_as_link" placeholder="не выбрано" disabled>
-                        <div class="dropdown_container">
-                            <div class="arrow"></div>
-                            <span onclick="store.setField('pay_status', null, 'не выбрано', this)" class="element">Не выбрано</span>
-                            <span onclick="store.setField('pay_status', 2, 'оплачено', this)" class="element">Оплачено</span>
-                            <span onclick="store.setField('pay_status', 0, 'не оплачено', this)" class="element">Не оплачено</span>
-                            <span onclick="store.setField('pay_status', 1, 'оплачено частично', this)" class="element">Оплачено частично</span>
-                            <span onclick="store.setField('pay_status', 3, 'переплачено', this)" class="element">Переплачено</span>
-                        </div>
-                    </div>
-                    <button type="button" onclick="store.setField('pay_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>
-                </div>
-                <div class="form-group d-flex mb-10">
-                    <label class="no-wrap" for="entrance_status">Статус поступления</label>
-                    <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input readonly id="entrance_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано" disabled>
-                        <div class="dropdown_container">
-                            <div class="arrow"></div>
-                            <span onclick="store.setField('entrance_status', null, 'не выбрано', this)" class="element">не выбрано</span>
-                            <span onclick="store.setField('entrance_status', 1, 'полностью', this)" class="element">полностью</span>
-                            <span onclick="store.setField('entrance_status', 2, 'частично', this)" class="element">частично</span>
-                            <span onclick="store.setField('entrance_status', 3, 'без поступлений', this)" class="element">без поступлений</span>
-                        </div>
-                    </div>
-                    <button type="button" onclick="store.setField('entrance_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>
-                </div>
                 <div class="filter_field mb-10">
                     <div class="form-group d-flex mb-10">
                         <label class="no-wrap" for="provider">Поставщик</label>
@@ -55,7 +26,7 @@
                 </div>
                 <div class="filter_field mb-10">
                     <div class="form-group d-flex">
-                        <label class="no-wrap" for="accountable">Ответственный</label>
+                        <label class="no-wrap" for="accountable">Принимающий</label>
                         <input readonly onclick="store.openSelectPartnerModal('accountable')" id="accountable" type="text" name="accountable" value="{{ request('pay_status') }}" class="form-control accountable input_as_link" placeholder="не выбрано">
                         <button type="button" onclick="store.clearList('accountable', 'accountable_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
                     </div>

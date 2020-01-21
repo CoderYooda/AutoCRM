@@ -8,7 +8,7 @@
     {{--<td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>--}}
 
     <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
-               @if($product->count != null) value="{{ $product->count }}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
+               @if($product->count != null) value="{{ $product->count }}" @elseif(isset($product->pivot) && isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
     <td>
         {{ $providerorder->getArticleEntredCount($product->id) }} / {{ $providerorder->getArticleCount($product->id) }}
@@ -19,9 +19,9 @@
     </td>
     <td>
         @if(isset($request) && $request['refer'] != null)
-            <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="btn btn-sm white"><i class="fa fa-trash"></i></button>
+            <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
         @else
-            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="btn btn-sm white"><i class="fa fa-trash"></i></button>
+            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
         @endif
     </td>
 </tr>

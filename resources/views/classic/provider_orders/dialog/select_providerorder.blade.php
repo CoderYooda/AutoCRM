@@ -9,12 +9,12 @@
             @endif
         </form>
     </div>
-    <div id="search_providerorder_results">
+    <div id="search_providerorder_results" class="mb-15">
         @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder_inner')
     </div>
     <div class="modal-footer">
-        <button onclick="openDialog('providerorderDialog')" class="button primary pull-right mr-15 uppercase-btn" type="button">Новая заявка</button>
-        <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.addProductsToList(this)">Добавить</button>
-        <button class="button white pull-right mr-15 uppercase-btn" onclick="closeDialog(event)">Закрыть</button>
+        <button onclick="openDialog('providerorderDialog')" class="button primary pull-right uppercase-btn" type="button">Новая заявка</button>
+        {{--<button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.addProductsToList(this)">Добавить</button>--}}
+        <button class="button white mr-15 uppercase-btn" onclick="closeDialog(event)">Закрыть</button>
     </div>
 </div>

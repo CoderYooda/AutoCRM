@@ -260,20 +260,27 @@ class EntranceController extends Controller
             $field = $request['sorters'][0]['field'];
             $dir = $request['sorters'][0]['dir'];
         }
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
         if($field === null &&  $dir === null){
             $field = 'id';
             $dir = 'ASC';
         }
 
+        if($request['provider'] == null){
+            $request['provider'] = [];
+        }
+
+        if($request['accountable'] == null){
+            $request['accountable'] = [];
+        }
+
         $entrances = Entrance::select(DB::raw('
             entrances.*, entrances.created_at as date, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, provider_orders.id as ordid
         '))
-
-            //SELECT entrances.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as manager
-            //FROM entrances
-            //left join partners on partners.id = entrances.partner_id
-            //GROUP BY entrances.id
-
             ->from(DB::raw('(
             SELECT entrances.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as manager
             FROM entrances
@@ -282,46 +289,19 @@ class EntranceController extends Controller
              entrances
         '))
 
-
             ->leftJoin('provider_orders',  'provider_orders.id', '=', 'entrances.providerorder_id')
             ->leftJoin('partners',  'partners.id', '=', 'provider_orders.partner_id')
-
-
-
-//            ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
-//            ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
-//            ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
-//            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.id')
-//            ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
-
-//            ->when($request['provider'] != null, function($query) use ($request) {
-//                $query->whereIn('provider_orders.partner_id', $request['provider']);
-//            })
-//            ->when($request['accountable'] != null, function($query) use ($request) {
-//                $query->whereIn('provider_orders.manager_id', $request['accountable']);
-//            })
-//            ->when($request['dates_range'] != null, function($query) use ($request) {
-//                $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
-//            })
-//
-//            ->when($request['pay_status'] != null, function($query) use ($request) {
-//                switch ($request['pay_status']) {
-//                    case 0:
-//                        $query->where('wsumm', 0)->orWhere('wsumm', null);
-//                        break;
-//                    case 1:
-//                        $query->whereRaw('`provider_orders`.`wsumm` > 0 and `provider_orders`.`wsumm` < `provider_orders`.`itogo`');
-//                        break;
-//                    case 2:
-//                        $query->whereRaw('`provider_orders`.`wsumm` = `provider_orders`.`itogo`');
-//                        break;
-//                    case 3:
-//                        $query->whereRaw('`provider_orders`.`wsumm` > `provider_orders`.`itogo`');
-//                        break;
-//                }
-//
-//            })
-
+            ->when($request['provider'] != [], function($query) use ($request) {
+                $query->whereHas('providerorder', function($query) use ($request){
+                    $query->whereIn('partner_id', $request['provider']);
+                });
+            })
+            ->when($request['accountable'] != [], function($query) use ($request) {
+                $query->whereIn('entrances.partner_id', $request['accountable']);
+            })
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('entrances.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
             ->where('entrances.company_id', Auth::user()->company()->first()->id)
             ->groupBy('entrances.id')
             ->orderBy($field, $dir)
@@ -329,43 +309,24 @@ class EntranceController extends Controller
 
             //dd($entrances);
             ->paginate($size);
-
             return $entrances;
 
+    }
 
-//        return Entrance::where('company_id', Auth::user()->company()->first()->id)
-//            ->orderBy('created_at', 'DESC')
-//            ->where(function($q) use ($request){
-//                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-//                    $q->where('created_at',  '>=',  Carbon::parse($request['date_start']));
-//                }
-//                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-//                    $q->where('created_at', '<=', Carbon::parse($request['date_end']));
-//                }
-//            })
-//            ->where(function($q) use ($request){
-//                if(isset($request['search']) && $request['search'] !== 'null') {
-//                    if (mb_strlen($request['search']) === 1) {
-//                        $q->whereHas('providerorder', function ($q) use ($request) {
-//                            $q->whereHas('partner', function ($q) use ($request) {
-//                                $q->where('fio', 'LIKE', $request['search'] . '%' )
-//                                    ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-//                            });
-//                        });
-//                    } else {
-//                        $q->whereHas('providerorder', function ($q) use ($request) {
-//                            $q->whereHas('partner', function ($q) use ($request) {
-//                                $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-//                                    ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-//                                    ->orWhereHas('phones', function ($query) use ($request) {
-//                                        $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-//                                    });
-//                            });
-//                        });
-//                    }
-//                }
-//            })
-//            ->paginate(16);
+    public function getPartnerSideInfo(Request $request){
+
+        $entrance = Entrance::owned()->where('id', $request['id'])->first();
+        $provider_order = $entrance->providerorder()->first();
+        $partner = $provider_order->partner()->first();
+        $comment = $entrance->comment;
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.entrance.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
     }
 
     private static function validateRules()
@@ -406,26 +367,44 @@ class EntranceController extends Controller
         return response($events);
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $entrance = Entrance::where('id', $id)->first();
+        $returnIds = null;
 
-        # Склад с которым оперируем
+        if($id == 'array'){
+            $entrances = Entrance::whereIn('id', $request['ids']);
+            $this->message = 'Поступления удалены';
+            $returnIds = $entrances->get()->pluck('id');
+            foreach($entrances->get() as $entrance){
+                $store = $entrance->providerorder()->first()->store()->first();
+                foreach($entrance->articles()->get() as $article){
+                    $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
+                }
+
+                $entrance->articles()->sync(null);
+
+                $entrance->delete();
+            }
+        } else {
+            $entrance = Entrance::where('id', $id)->first();
+            # Склад с которым оперируем
             $store = $entrance->providerorder()->first()->store()->first();
+            foreach($entrance->articles()->get() as $article){
+                $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
+            }
+            $returnIds = $entrance->id;
+            $entrance->articles()->sync(null);
 
-        foreach($entrance->articles()->get() as $article){
-            $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
+            $entrance->delete();
+            $this->status = 200;
+            $this->message = 'Поступление удалено';
         }
 
-        $entrance->articles()->sync(null);
-
-        $entrance->delete();
-        $this->status = 200;
-        $this->message = 'Поступление удалено';
-
         return response()->json([
-            'id' => $entrance->id,
+            'id' => $returnIds,
             'message' => $this->message
         ], 200);
+
+
     }
 }
