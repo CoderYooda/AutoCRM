@@ -65,6 +65,7 @@ label.label-sm{
     background-clip: padding-box;
     border: 1px solid #ced4da;
     border-radius: .25rem;
+    position: relative;
     -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
@@ -260,7 +261,6 @@ label.label-sm{
     max-width: calc((100% - 32px) /2);
 }
 .select-list-modal li .date{
-    color: #404040;
     font-weight: 600;
 }
 .select-list-modal li .secondary{
@@ -273,6 +273,9 @@ label.label-sm{
     background: #1F98E9;
 }
 .select-list-modal li:hover .list-title{
+    color: #fff;
+}
+.select-list-modal li:hover .list-body{
     color: #fff;
 }
 .pointer{
@@ -300,4 +303,45 @@ label.label-sm{
 }
 .select-list-modal{
     margin-top: 0;
+}
+.dropdown{
+    height: 100%;
+}
+.drop-butt{
+    height: 100%;
+    line-height: 30px;
+    background: #1F98E9;
+    padding: 0 15px;
+    color: #fff;
+    border-radius: 0px 3px 3px 0px;
+    cursor: pointer;
+}
+.input-group>.form-control:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.drop-butt i{
+    font-size: 11px;
+}
+.drop-butt:hover {
+    background-color: #1e85ca;
+}
+.mb-3{
+    margin-bottom: 15px;
+}
+.first_letter{
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+    margin: auto;
+    text-align: center;
+    margin-top: 11px;
+    margin-bottom: 11px;
+    color: #1F98E9;
+}
+.pr-15{
+    padding-right: 15px!important;
+}
+.flex-1{
+    flex: 1!important;
 }

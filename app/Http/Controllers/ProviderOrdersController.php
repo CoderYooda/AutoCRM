@@ -411,8 +411,8 @@ class ProviderOrdersController extends Controller
             $dir = $request['sorters'][0]['dir'];
         }
         if($field === null &&  $dir === null){
-            $field = 'id';
-            $dir = 'ASC';
+            $field = 'created_at';
+            $dir = 'DESC';
         }
 
         if($request['dates_range'] !== null){
@@ -502,7 +502,7 @@ class ProviderOrdersController extends Controller
 
             //->toSql();
 
-       //dd($provider_orders);
+      // dd($provider_orders);
             ->paginate($size);
 
 //        where('provider_orders.company_id', Auth::user()->company()->first()->id)

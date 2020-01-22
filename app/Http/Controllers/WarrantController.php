@@ -70,7 +70,7 @@ class WarrantController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('cash.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.cash.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
         ]);
     }
 

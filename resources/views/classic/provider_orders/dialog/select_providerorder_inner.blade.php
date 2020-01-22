@@ -1,7 +1,7 @@
 @if($providerorders->count() > 0)
     <div class="" data-simplebar style="max-height: 400px;">
         <div class="box-body">
-            <ul  class="nav select-list-modal ">
+            <ul  class="nav select-list-modal">
             @foreach($providerorders as $providerorder)
                 <li id="providerorder_item_{{ $providerorder->id }}" onclick="{{ $class }}.pickProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}" class="pointer d-flex " >
                     <div class="ring-ico">

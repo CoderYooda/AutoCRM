@@ -21,6 +21,7 @@
         @endif
     @endif
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
+
     <form action="{{ route('StoreWarrant') }}" method="POST">
         @csrf
 
@@ -77,30 +78,49 @@
         @if(isset($data->summ))
             <input type="hidden" name="max_summ" value="{{ $data->summ }}">
         @endif
-        <div class="no-gutters align-items-stretch">
-            <div class="padding dark">
-                <div class="row row-sm">
-                    <div class="col-sm-6">
-                        <div class="text-md text-white">
-                            <span class="text-muted">Дата</span> <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
-                        </div>
-
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-md text-white">
-                            <span class="text-muted">Баланс</span> <span class="partner_balance text-warning">
-                                @if(isset($warrant))
-                                    {{ $warrant->partner()->first()->balance }}
-                                @elseif(isset($data->partner_selected) && $data->partner_selected !== null)
-                                    {{ $data->partner_selected->balance }}
-                                @else
-                                    0
-                                @endif
-                            </span>
-                        </div>
-                    </div>
-                </div>
+        <div class="modal-header d-flex">
+            <div class="flex-1">
+                <span class="text-muted pr-15">Дата</span>
+                <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
             </div>
+            <div class="pull-right flex-1">
+                <span class="text-muted">Баланс</span>
+                <span class="partner_balance text-warning">
+                                @if(isset($warrant))
+                        {{ $warrant->partner()->first()->balance }}
+                    @elseif(isset($data->partner_selected) && $data->partner_selected !== null)
+                        {{ $data->partner_selected->balance }}
+                    @else
+                        0
+                    @endif
+            </span>
+            </div>
+        </div>
+
+        <div class="no-gutters align-items-stretch">
+            {{--<div class="padding dark">--}}
+                {{--<div class="row row-sm">--}}
+                    {{--<div class="col-sm-6">--}}
+                        {{--<div class="text-md text-white">--}}
+                            {{--<span class="text-muted">Дата</span> <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>--}}
+                        {{--</div>--}}
+
+                    {{--</div>--}}
+                    {{--<div class="col-sm-6">--}}
+                        {{--<div class="text-md text-white">--}}
+                            {{--<span class="text-muted">Баланс</span> <span class="partner_balance text-warning">--}}
+                                {{--@if(isset($warrant))--}}
+                                    {{--{{ $warrant->partner()->first()->balance }}--}}
+                                {{--@elseif(isset($data->partner_selected) && $data->partner_selected !== null)--}}
+                                    {{--{{ $data->partner_selected->balance }}--}}
+                                {{--@else--}}
+                                    {{--0--}}
+                                {{--@endif--}}
+                            {{--</span>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
         <div class="padding">
             <div class="form-group row">
                 <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контрагент</label>
@@ -177,10 +197,10 @@
         </div>
         <div class="modal-footer">
             @if(isset($warrant))
-            <button type="button" class="btn white" onclick="window.helper.printDocument('out-warrant', {{ $warrant->id }})" >Печать</button>
+            <button type="button" class="button" onclick="window.helper.printDocument('out-warrant', {{ $warrant->id }})" >Печать</button>
             @endif
-            <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            <button type="submit" class="btn success" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
+            <button type="button" class="button white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
+            <button type="submit" class="button pull-right" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
         </div>
         <div class="system_message">
 

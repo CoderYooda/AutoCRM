@@ -2,7 +2,7 @@
 <div id="selectProviderOrderDialog" class="dialog white" style="width:600px;">
     <div class="titlebar">Поиск заявки поставщику</div>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-    <div class="navbar white no-radius box-shadow pos-rlt">
+    <div class="navbar">
         <form class="flex">
             @if($request['refer'])
             <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">

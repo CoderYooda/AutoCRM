@@ -6,6 +6,7 @@ use App\Models\Shipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Store;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Article;
 use Auth;
@@ -25,7 +26,7 @@ class ShipmentsController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('shipments.dialog.form_shipment', compact( 'shipment','request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment','request'))->render()
         ]);
     }
 
@@ -39,28 +40,47 @@ class ShipmentsController extends Controller
         return response()->json($shipments);
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $shipment = Shipment::where('id', $id)->first();
 
-        foreach($shipment->articles()->get() as $article){
-            $store = $shipment->store()->first();
-            $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
+        $returnIds = null;
+        if($id == 'array'){
+            $shipments = Shipment::whereIn('id', $request['ids']);
+            $this->message = 'Продажи удалены';
+            $returnIds = $shipments->get()->pluck('id');
+            foreach($shipments->get() as $shipment){
+                if($shipment->delete()){
+                    foreach($shipment->articles()->get() as $article){
+                        $store = $shipment->store()->first();
+                        $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
+                    }
+                    #Добавляем к балансу контрагента
+                    $shipment->partner()->first()->subtraction($shipment->itogo);
+                    $shipment->articles()->sync(null);
+                }
+            }
+        } else {
+
+            $shipment = Shipment::where('id', $id)->first();
+            $returnIds = $shipment->id;
+            foreach($shipment->articles()->get() as $article){
+                $store = $shipment->store()->first();
+                $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
+            }
+            #Добавляем к балансу контрагента
+            $shipment->partner()->first()->subtraction($shipment->itogo);
+            $shipment->articles()->sync(null);
+            $shipment->delete();
+            $this->status = 200;
+            $this->message = 'Продажа удалена';
         }
 
-        #Добавляем к балансу контрагента
-        $shipment->partner()->first()->subtraction($shipment->itogo);
-
-        $shipment->articles()->sync(null);
-
-        $shipment->delete();
-        $this->status = 200;
-        $this->message = 'Продажа удален';
-
         return response()->json([
-            'id' => $shipment->id,
+            'id' => $returnIds,
             'message' => $this->message
         ], 200);
+
+
     }
 
     public function fresh($id, Request $request)
@@ -70,7 +90,7 @@ class ShipmentsController extends Controller
         $request['fresh'] = true;
         $class = 'shipmentDialog' . $id;
         $inner = true;
-        $content = view('shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
+        $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([
@@ -85,7 +105,7 @@ class ShipmentsController extends Controller
 
         $validation = Validator::make($request->all(), self::validateRules());
 
-        if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0){$request['inpercents'] = false;} else {
+        if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
             $request['inpercents'] = true;
         }
 
@@ -217,35 +237,55 @@ class ShipmentsController extends Controller
 
     public static function getShipments($request)
     {
-        $shipments = Shipment::owned()
-            ->orderBy('created_at', 'DESC')
-            ->where(function($q) use ($request){
-                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
-                }
-                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
-                }
-            })
-            ->where(function($q) use ($request){
-                if(isset($request['search']) && $request['search'] !== 'null') {
-                    if (mb_strlen($request['search']) === 1) {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', $request['search'] . '%' )
-                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-                        });
-                    } else {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhereHas('phones', function ($query) use ($request) {
-                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                                });
-                        });
-                    }
-                }
-            })
-            ->paginate(16);
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'created_at';
+            $dir = 'DESC';
+        }
+
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
+
+        if($request['provider'] == null){
+            $request['provider'] = [];
+        }
+
+        $shipments =
+            Shipment::select(DB::raw('
+                shipments.id, shipments.created_at, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' р\')) as discount, shipments.summ as price, shipments.itogo as total
+            '))
+                ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
+                ->where('shipments.company_id', Auth::user()->company()->first()->id)
+                ->when($request['provider'] != null, function($query) use ($request) {
+                    $query->whereIn('shipments.partner_id', $request['provider']);
+                })
+                ->when($request['dates_range'] != null, function($query) use ($request) {
+                    $query->whereBetween('shipments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                })
+                ->groupBy('shipments.id')
+                ->orderBy($field, $dir)
+                ->paginate($size);
+
+//        select shipments.id, shipments.created_at, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
+//        from shipments
+//        left join `partners` on `partners`.`id` = `shipments`.`partner_id`
+//        and `shipments`.`company_id` = 2
+//        group by `shipments`.`id`
+//        order by `created_at` desc
 
         return $shipments;
     }

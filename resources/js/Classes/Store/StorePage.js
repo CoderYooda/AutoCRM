@@ -247,6 +247,8 @@ class storePage{
                 {title:"Комментарий", field:"comment", width:150, align:"left"},
             ];
         } else if(object.active_tab === 'shipments'){
+            object.contextDop = 'shipment';
+            object.parametr = 'shipment';
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();

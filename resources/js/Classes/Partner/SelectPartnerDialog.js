@@ -3,7 +3,11 @@ class selectPartnerDialog {
         console.log('Окно выбора контрагента инициализировано');
         this.root_dialog = dialog;
         this.refer = dialog.querySelector("#refer").value;
-        this.target = dialog.querySelector("#target").value;
+        if(dialog.querySelector("#target")){
+            this.target = dialog.querySelector("#target").value;
+        } else {
+            this.target = null;
+        }
         this.search_obj = dialog.querySelector("#partner_search");
         this.active = true;
         this.init();

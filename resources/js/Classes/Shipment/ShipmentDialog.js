@@ -236,7 +236,9 @@ class shipmentDialog{
 
     setItogo(count){
         let container = this.root_dialog.querySelector('#itogo_price');
+        let container2 = this.root_dialog.querySelector('#payed_price');
         container.innerHTML = Number(count).toFixed(2);
+        container2.innerHTML = Number(count).toFixed(2);
     }
 
     setDiscount(count){
@@ -285,6 +287,16 @@ class shipmentDialog{
         );
         this.root_dialog.querySelector('#product_selected_' + id).remove();
         this.recalculate();
+    }
+
+    setField(type, value, text, elem = null){
+        let object = this;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
+        object.root_dialog.querySelector('#' + type).value = value;
+        object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
+        object.recalculate();
     }
 
     addProduct(elem){
@@ -388,7 +400,7 @@ class shipmentDialog{
             total_price = total_price + Number(e.total);
         });
 
-        if(inpercents.checked){
+        if(inpercents.value == 1){
             itogo = total_price - (total_price / 100 * Number(discount.value).toFixed(2));
         } else {
             itogo = total_price - Number(discount.value).toFixed(2);
@@ -396,7 +408,7 @@ class shipmentDialog{
 
         var discount_val;
 
-        if(inpercents.checked){
+        if(inpercents.value == 1){
             discount_val = discount.value + ' %';
         } else {
             discount_val = discount.value + ' р';

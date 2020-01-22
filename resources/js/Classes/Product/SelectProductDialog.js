@@ -8,7 +8,9 @@ class SelectProductDialog{
         this.search_obj = dialog.querySelector("#product_search");
         //this.store_obj = dialog.querySelector("#product_search_store");
         this.results_obj = dialog.querySelector("#search_product_results");
+
         this.refer = dialog.querySelector("#refer").value;
+
         this.searchInit();
         this.markAsAdded();
         this.init();

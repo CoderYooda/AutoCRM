@@ -34,7 +34,7 @@ class PartnerController extends Controller
                 'target' => 'ajax-table-partner',
             ], 200);
         } else {
-            return view('partner.index', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request'));
         }
 
     }
@@ -71,7 +71,7 @@ class PartnerController extends Controller
         }
         $category = Category::where('id', $category_select)->first();
 
-        return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner', 'category', 'request'))->render()]);
+        return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request'))->render()]);
     }
 
 //    public static function partnerDialog($request)
@@ -207,7 +207,7 @@ class PartnerController extends Controller
         $partners = Partner::where('company_id', Auth::user()->company()->first()->id)->paginate(7);
         return response()->json([
             'tag' => 'selectPartnerDialog',
-            'html' => view('partner.dialog.select_partner', compact('partners', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.select_partner', compact('partners', 'request'))->render()
         ]);
     }
 
@@ -219,7 +219,7 @@ class PartnerController extends Controller
             $query->where('number', 'LIKE', '%' . $request['string'] .'%');
         })->orderBy('created_at', 'ASC')->paginate(20);
 
-        $content = view('partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);
@@ -228,7 +228,7 @@ class PartnerController extends Controller
     public function search(Request $request)
     {
         $partners = self::getPartners($request);
-        $content = view('partner.elements.list_container', compact('partners', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.partner.elements.list_container', compact('partners', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'ajax-table-partner',
