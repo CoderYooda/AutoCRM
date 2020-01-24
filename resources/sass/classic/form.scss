@@ -111,6 +111,7 @@ label.label-sm{
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
+    font-family: 'Segoe UI';
 }
 .table-modal tr:hover td{
     background: #F7F7F7;
@@ -292,6 +293,7 @@ label.label-sm{
     border-radius: 50%;
     width: 44px;
     height: 44px;
+    min-width: 44px;
 }
 .ring-ico i{
     text-align: center;
@@ -337,11 +339,145 @@ label.label-sm{
     text-align: center;
     margin-top: 11px;
     margin-bottom: 11px;
-    color: #1F98E9;
 }
 .pr-15{
     padding-right: 15px!important;
 }
 .flex-1{
     flex: 1!important;
+}
+.nav-active-bg .nav-link.active, .nav-active-bg .nav>li.active>a {
+    color: rgba(70,90,110,.85)!important;
+    background-color: #f3f6f9!important;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    border-color: hsla(210,8%,51%,.13) hsla(210,8%,51%,.13) transparent;
+}
+.tab-content>.tab-pane {
+    display: none;
+}
+.tab-content>.active {
+    display: block;
+}
+#printed{
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999999;
+    display: none;
+}
+#unprinted{
+    display: block;
+}
+@media print { /* Стиль для печати */
+    #printed{
+        display: block;
+    }
+    #unprinted{
+        display: none;
+    }
+}
+.nav-tabs{
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+    margin-top: 0;
+    height: 32px;
+}
+.nav-tabs .nav-item a{
+    padding: 0px 15px;
+    height: 32px;
+    line-height: 32px;
+    display: block;
+    border-radius: 3px;
+}
+.flex-column {
+    -webkit-box-orient: vertical!important;
+    flex-direction: column!important;
+}
+.flex-column, .flex-row {
+    -webkit-box-direction: normal!important;
+}
+.text-center {
+    text-align: center!important;
+}
+.p-4 {
+    padding: 1.5rem!important;
+}
+.hide {
+    display: none!important;
+}
+.input-group-append .button{
+    border-radius: 0px 3px 3px 0px;
+}
+.chat-date {
+    opacity: .5;
+    font-size: .8em;
+    display: block;
+}
+.chat-content{
+    display: inline-flex;
+    padding: .5rem .75rem;
+    border-radius: 3px;
+    background: #1d87cf;
+    color: #fff;
+    margin-bottom: 5px;
+}
+.chat-body {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -webkit-box-align: start;
+    align-items: flex-start;
+}
+.chat-item {
+    display: -webkit-box;
+    display: flex;
+    margin-bottom: 10px;
+}
+.success {
+    color: hsla(0,0%,100%,.85);
+    background-color: #22b66e;
+}
+.primary {
+    color: #fff;
+    background-color: #1f98e9;
+}
+.pb-3, .py-3 {
+    padding-bottom: 15px!important;
+}
+.pt-3, .py-3 {
+    padding-top: 15px!important;
+}
+.chat-item>* {
+    margin-left: .5rem;
+    margin-right: .5rem;
+}
+.badge-pill {
+    padding-right: .6em;
+    padding-left: .6em;
+    border-radius: 10rem;
+}
+.list-group-item{
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #f7f7f7;
+}
+.text-right {
+    text-align: right!important;
+}
+
+.pr-2, .px-2 {
+    padding-right: .5rem!important;
+}
+.float-right {
+    float: right!important;
+}
+.w-128 {
+    width: 128px;
 }

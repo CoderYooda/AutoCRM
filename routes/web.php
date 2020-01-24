@@ -72,15 +72,17 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
     Route::post('/shipment/{id}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');
     Route::get('/shipments/tabledata', 'ShipmentsController@tableData')->name('StoreShipmentData');
+    Route::post('/shipments/side_info', 'ShipmentsController@getSideInfo')->name('GetShipmentSideInfo');
 
     #Заказы клиентов
     Route::get('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
     Route::post('/clientorder/store', 'ClientOrdersController@store')->name('StoreClientOrder');// Строгое название
     Route::post('/clientorder/{id}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
     Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
-    Route::post('/client_order/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
+    Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
     Route::post('/clientorder/{id}/fresh', 'ClientOrdersController@fresh')->name('FreshClientOrder');
     Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
+    Route::post('/client_orders/side_info', 'ClientOrdersController@getSideInfo')->name('GetClientOrderSideInfo');
 
     #Заказы Поставщикам
     Route::post('/providerorder/store', 'ProviderOrdersController@store')->name('StoreProviderOrder');// Строгое название

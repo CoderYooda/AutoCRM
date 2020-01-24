@@ -973,13 +973,13 @@ input:-moz-placeholder { /* Firefox 18- */
     width: 100px;
     height: 100px;
     left: -9000px;
-    top: calc(100vh / 2 - 100px);
-    transform: scale(1);
+    top: calc(100vh - 260px);
+    transform: scale(0.6);
     opacity: 0.4;
 
 }
 .loading .preloader{
-    left: calc(100vw / 2 - 50px);
+    left: -12px;
 }
 .preloader .porsh{
     animation:  1s linear infinite i1-anim;

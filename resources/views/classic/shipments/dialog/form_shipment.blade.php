@@ -26,7 +26,7 @@
                 {{--@endif--}}
             {{--</div>--}}
         {{--</div>--}}
-        <div class="b-r pr-3 mr-3">
+        <div class="modal-alt-header">
             <span class="item-title _500">Магазин</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="store_selected">
@@ -36,7 +36,7 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-        <div class="b-r pr-3 mr-3">
+        <div class="modal-alt-header">
             <span class="item-title _500">Всего на сумму</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="total_price">
@@ -46,7 +46,7 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-        <div class="b-r pr-3 mr-3">
+        <div class="modal-alt-header">
             <span class="item-title _500">Скидка</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="percents_price">
@@ -58,7 +58,7 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-        <div class="b-r pr-3 mr-3">
+        <div class="modal-alt-header">
             <span class="item-title _500">Итого</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="itogo_price">
@@ -72,7 +72,7 @@
         </div>
 
         @if(isset($shipment))
-            <div class="b-r pr-3 mr-3">
+            <div class="modal-alt-header">
                 <span class="item-title _500">Оплачено</span>
                 <div class="item-except @if($shipment->getWarrantPositive() >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
                     <span>

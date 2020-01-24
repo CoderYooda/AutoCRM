@@ -30,13 +30,27 @@ class ShipmentsController extends Controller
         ]);
     }
 
+    public function getSideInfo(Request $request){
+
+        $shipment = Shipment::owned()->where('id', $request['id'])->first();
+        $partner = $shipment->partner()->first();
+        $comment = $shipment->comment;
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.shipments.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function tableData(Request $request)
     {
         $shipments = ShipmentsController::getShipments($request);
-//        foreach($products as $product){
-//            $product->isset = $product->getCountSelfOthers();
-//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
-//        }
+        foreach($shipments as $shipment){
+            $shipment->date = $shipment->created_at->format('Y.m.d/H:i');
+        }
         return response()->json($shipments);
     }
 
@@ -108,6 +122,7 @@ class ShipmentsController extends Controller
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
             $request['inpercents'] = true;
         }
+
 
         if($request['inpercents']){
             if((int)$request['discount'] >= 100){
@@ -266,7 +281,7 @@ class ShipmentsController extends Controller
 
         $shipments =
             Shipment::select(DB::raw('
-                shipments.id, shipments.created_at, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' р\')) as discount, shipments.summ as price, shipments.itogo as total
+                shipments.*, shipments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' р\')) as discount, shipments.summ as price, shipments.itogo as total
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
                 ->where('shipments.company_id', Auth::user()->company()->first()->id)

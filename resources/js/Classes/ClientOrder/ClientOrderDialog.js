@@ -364,6 +364,9 @@ class clientorderDialog{
 
     selectNumber(elem) {
         this.phoneMask.value = elem.dataset.number;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
         // this.root_dialog.querySelector('#client-phone').value = elem.dataset.number;
         // this.addPhoneMask();
     }
@@ -421,10 +424,11 @@ class clientorderDialog{
                     if(elem.main){
                         object.root_dialog.querySelector('#client-phone').value = elem.number;
                     }
-                    phones_html += '<a onclick="window.' + object.root_dialog.id + '.selectNumber(this)" data-number="' + elem.number + '" class="dropdown-item pointer">' + elem.number + '</a>';
+
+                    phones_html += '<span onclick="' + object.root_dialog.id + '.selectNumber(this)" data-number="' + elem.number + '" class="element">' + elem.number + '</span>';
                 });
             } else {
-                phones_html = '<div class="no-result"><div class="text-center">Номеров нет</div></div>';
+                phones_html = '<span class="element"><div class="text-center">Номеров нет</div></span>';
             }
 
 
@@ -473,7 +477,7 @@ class clientorderDialog{
             total_price = total_price + Number(e.total);
         });
 
-        if(inpercents.checked){
+        if(inpercents.value == 1){
             itogo = total_price - (total_price / 100 * Number(discount.value).toFixed(2));
         } else {
             itogo = total_price - Number(discount.value).toFixed(2);
@@ -481,10 +485,10 @@ class clientorderDialog{
 
         var discount_val;
 
-        if(inpercents.checked){
-            discount_val = Number(discount.value).toFixed(2) + ' %';
+        if(inpercents.value == 1){
+            discount_val = discount.value + ' %';
         } else {
-            discount_val = Number(discount.value).toFixed(2) + ' р';
+            discount_val = discount.value + ' р';
         }
 
 
@@ -522,6 +526,14 @@ class clientorderDialog{
         }
     }
 
-
+    setField(type, value, text, elem = null){
+        let object = this;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
+        object.root_dialog.querySelector('#' + type).value = value;
+        object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
+        object.recalculate();
+    }
 }
 export default clientorderDialog;

@@ -15,7 +15,8 @@
         <link href="{{ asset('css/base.css') }}" rel="stylesheet">
     </head>
     <body>
-        <div class="app">
+        <div id="printed"></div>
+        <div id="unprinted" class="app">
             <header class="app-header">
                 <div class="app-logo">
                     {{ config('app.name', 'Laravel') }}

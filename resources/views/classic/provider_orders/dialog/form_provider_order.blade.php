@@ -68,7 +68,7 @@
                     <div class="col-sm-6">
                         <div class="form-group row row-sm">
                             <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
-                            <div class="input-group mb-3 col-sm-8">
+                            <div class="input-group col-sm-8">
                                 <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
                                     @if(isset($provider_order) && $provider_order->partner()->first() != null)
                                         {{ $provider_order->partner()->first()->outputName() }}
@@ -80,7 +80,7 @@
                         </div>
                         <div class="form-group row row-sm">
                             <label for="category_id" class="col-sm-4 label-sm">Склад</label>
-                            <div class="input-group mb-3 col-sm-8">
+                            <div class="input-group col-sm-8">
                                 <select name="store_id" class="form-control input-c">
                                     @foreach($stores as $store)
                                         <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>

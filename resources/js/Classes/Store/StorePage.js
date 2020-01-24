@@ -19,6 +19,7 @@ class storePage{
         //filter parametrs
         this.pay_status = null;
         this.entrance_status = null;
+        this.clientorder_status = null;
         this.provider = [];
         this.accountable = [];
         this.dates_range = null;
@@ -230,7 +231,7 @@ class storePage{
                 {title:"Дата", field:"date", width:150},
                 {title:"Поставщик", field:"name", align:"left"},
                 {title:"Ответственный", field:"manager", align:"left"},
-                {title:"Сумма", field:"itogo", width:100, align:"left"},
+                {title:"Сумма", field:"itogo", width:90, align:"left"},
             ];
         } else if(object.active_tab === 'entrance'){
             object.contextDop = 'entrance';
@@ -254,23 +255,26 @@ class storePage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
-                {title:"Дата", field:"created_at"},
-                {title:"Покупатель", field:"partner", width:150, align:"left"},
-                {title:"Сумма", field:"price", width:150, align:"left"},
-                {title:"Скидка", field:"discount", width:130, align:"left"},
-                {title:"Итого", field:"total", width:160, align:"left"},
+                {title:"Дата", field:"date", width:150},
+                {title:"Покупатель", field:"partner", align:"left"},
+                {title:"Сумма", field:"price", width:90, align:"left"},
+                {title:"Скидка", field:"discount", width:90, align:"left"},
+                {title:"Итого", field:"total", width:90, align:"left"},
             ];
         } else if(object.active_tab === 'client_orders'){
+            object.contextDop = 'clientorder';
+            object.parametr = 'client_order';
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
                     }},
-                {title:"№", field:"id", width:80},
-                {title:"Дата", field:"created_at"},
-                {title:"Покупатель", field:"partner", width:150, align:"left"},
-                {title:"Сумма", field:"price", width:150, align:"left"},
-                {title:"Скидка", field:"discount", width:130, align:"left"},
-                {title:"Итого", field:"total", width:160, align:"left"},
+                {title:"№", field:"coid", width:80},
+                {title:"Статус", field:"status_formatted", width:150},
+                {title:"Дата", field:"date", width:150},
+                {title:"Покупатель", field:"partner", align:"left"},
+                {title:"Сумма", field:"summ", width:90, align:"left"},
+                {title:"Скидка", field:"discount_formatted", width:90, align:"left"},
+                {title:"Итого", field:"itogo", width:90, align:"left"},
             ];
         } else if(object.active_tab === 'adjustment'){
             columns = [
@@ -450,6 +454,7 @@ class storePage{
         if(object.accountable !== null){data.accountable = object.accountable;}
         if(object.pay_status !== null){data.pay_status = object.pay_status;}
         if(object.entrance_status !== null){data.entrance_status = object.entrance_status;}
+        if(object.clientorder_status !== null){data.clientorder_status = object.clientorder_status;}
         if(object.provider !== []){data.provider = object.provider;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
 

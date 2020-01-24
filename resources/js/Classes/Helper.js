@@ -210,7 +210,7 @@ class Helper{
 
             let unprinted = document.getElementById('unprinted');
             let printed = document.getElementById('printed');
-            unprinted.classList.add('hide');
+            //unprinted.classList.add('hide');
 
             printed.innerHTML = printContents;
             window.print();
