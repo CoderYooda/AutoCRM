@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Adjustment;
+use App\Models\ClientOrder;
 use Illuminate\Http\Request;
 use App\Models\Store;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Auth;
@@ -14,7 +16,6 @@ class AdjustmentController extends Controller
     public static function adjustmentDialog($request)
     {
         $tag = 'adjustmentDialog';
-
         if($request['adjustment_id']){
             $adjustment = Adjustment::where('id', (int)$request['adjustment_id'])->first();
             $tag .= $adjustment->id;
@@ -26,17 +27,16 @@ class AdjustmentController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores',  'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores',  'request'))->render()
         ]);
     }
 
     public function tableData(Request $request)
     {
         $adjustments = AdjustmentController::getAdjustments($request);
-//        foreach($products as $product){
-//            $product->isset = $product->getCountSelfOthers();
-//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
-//        }
+        foreach($adjustments as $adjustment){
+            $adjustment->date = $adjustment->created_at->format('Y.m.d/H:i');
+        }
         return response()->json($adjustments);
     }
 
@@ -138,9 +138,9 @@ class AdjustmentController extends Controller
         }
 
         $request['fresh'] = true;
-        $class = 'AdjustmentDialog' . $id;
+        $class = 'adjustmentDialog' . $id;
         $inner = true;
-        $content = view('adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'inner', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'inner', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'adjustmentDialog' . $id,
@@ -158,38 +158,111 @@ class AdjustmentController extends Controller
         }
     }
 
+    public function getSideInfo(Request $request){
+
+        $adjustment = Adjustment::owned()->where('id', $request['id'])->first();
+        $partner = $adjustment->partner()->first();
+        $comment = $adjustment->comment;
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.adjustments.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public static function getAdjustments($request)
     {
-        $client_orders = Adjustment::owned()
-            ->orderBy('created_at', 'DESC')
-            ->where(function($q) use ($request){
-                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
-                }
-                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
-                }
-            })
-            ->where(function($q) use ($request){
-                if(isset($request['search']) && $request['search'] !== 'null') {
-                    if (mb_strlen($request['search']) === 1) {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', $request['search'] . '%' )
-                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-                        });
-                    } else {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhereHas('phones', function ($query) use ($request) {
-                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                                });
-                        });
-                    }
-                }
-            })
-            ->paginate(16);
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
 
-        return $client_orders;
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'created_at';
+            $dir = 'DESC';
+        }
+
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
+
+        if($request['accountable'] == null){
+            $request['accountable'] = [];
+        }
+
+        $adjustments =
+            Adjustment::select(DB::raw('
+                adjustments.*, adjustments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, stores.name as store
+            '))
+                ->leftJoin('partners',  'partners.id', '=', 'adjustments.partner_id')
+                ->leftJoin('stores',  'stores.id', '=', 'adjustments.store_id')
+
+                ->where('adjustments.company_id', Auth::user()->company()->first()->id)
+
+                ->when($request['accountable'] != null, function($query) use ($request) {
+                    $query->whereIn('adjustments.partner_id', $request['accountable']);
+                })
+                ->when($request['dates_range'] != null, function($query) use ($request) {
+                    $query->whereBetween('adjustments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                })
+                ->groupBy('adjustments.id')
+                ->orderBy($field, $dir)
+                ->paginate($size);
+
+//        select shipments.id, shipments.created_at, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
+//        from shipments
+//        left join `partners` on `partners`.`id` = `shipments`.`partner_id`
+//        and `shipments`.`company_id` = 2
+//        group by `shipments`.`id`
+//        order by `created_at` desc
+
+        return $adjustments;
+
+
+
+
+//        $client_orders = Adjustment::owned()
+//            ->orderBy('created_at', 'DESC')
+//            ->where(function($q) use ($request){
+//                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
+//                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
+//                }
+//                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
+//                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
+//                }
+//            })
+//            ->where(function($q) use ($request){
+//                if(isset($request['search']) && $request['search'] !== 'null') {
+//                    if (mb_strlen($request['search']) === 1) {
+//                        $q->whereHas('partner', function ($q) use ($request) {
+//                            $q->where('fio', 'LIKE', $request['search'] . '%' )
+//                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+//                        });
+//                    } else {
+//                        $q->whereHas('partner', function ($q) use ($request) {
+//                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+//                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+//                                ->orWhereHas('phones', function ($query) use ($request) {
+//                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+//                                });
+//                        });
+//                    }
+//                }
+//            })
+//            ->paginate(16);
+
+//        return $client_orders;
     }
 }

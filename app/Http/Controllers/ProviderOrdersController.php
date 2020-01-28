@@ -496,6 +496,23 @@ class ProviderOrdersController extends Controller
                 }
 
             })
+            ->when($request['entrance_status'] != null, function($query) use ($request) {
+                switch ($request['entrance_status']) {
+                    case 3:
+                        $query->where('ent_count', 0)->orWhere('ent_count', null);
+                        break;
+                    case 2:
+                        $query->whereRaw('`provider_orders`.`ent_count` > 0 and `provider_orders`.`ent_count` < `provider_orders`.`apo_count`');
+                        break;
+                    case 1:
+                        $query->whereRaw('`provider_orders`.`ent_count` = `provider_orders`.`apo_count`');
+                        break;
+                    case 4:
+                        $query->whereRaw('`provider_orders`.`ent_count` > `provider_orders`.`apo_count`');
+                        break;
+                }
+
+            })
             ->where('provider_orders.company_id', Auth::user()->company()->first()->id)
             ->groupBy('provider_orders.id')
             ->orderBy($field, $dir)

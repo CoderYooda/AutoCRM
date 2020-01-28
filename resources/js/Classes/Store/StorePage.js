@@ -4,6 +4,12 @@ class storePage{
 
     constructor(){
         console.log('страница склада инициализировано');
+        this.baseParams();
+        this.init();
+
+    }
+
+    baseParams(){
         this.active = true;
         this.active_tab = this.getCurrentActiveTab();
         this.category_id = window.helper.findGetParameter('category_id');
@@ -15,7 +21,6 @@ class storePage{
         this.categoryContextual = null;
         this.table = null;
         this.dates = null;
-
         //filter parametrs
         this.pay_status = null;
         this.entrance_status = null;
@@ -23,17 +28,10 @@ class storePage{
         this.provider = [];
         this.accountable = [];
         this.dates_range = null;
-
-
-
         //Context
-
         this.tabledata = {};
-
         this.contextDop = null;
         this.parametr = null;
-        this.init();
-
     }
 
     openSelectPartnerModal(target){
@@ -277,15 +275,17 @@ class storePage{
                 {title:"Итого", field:"itogo", width:90, align:"left"},
             ];
         } else if(object.active_tab === 'adjustment'){
+            object.contextDop = 'adjustment';
+            object.parametr = 'adjustment';
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
-                {title:"Дата", field:"created_at"},
-                {title:"Ответственный", field:"partner", width:150},
-                {title:"Магазин ", field:"store", width:150, align:"left"},
-                {title:"Комментарий", field:"comment", width:130, align:"left"},
+                {title:"Дата", field:"date", width:150},
+                {title:"Ответственный", field:"partner"},
+                {title:"Магазин ", field:"store", align:"left"},
+                {title:"Комментарий", field:"comment", width:150, align:"left"},
             ];
         }
         return columns;
@@ -448,7 +448,6 @@ class storePage{
         data.target = "ajax-table-store";
         data.page = 1;
 
-
         if(object.category_id !== null){data.category_id = object.category_id.toString();}
 
         if(object.accountable !== null){data.accountable = object.accountable;}
@@ -460,8 +459,6 @@ class storePage{
 
         if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
 
-
-        //object.tabledata = data;
         return data;
     }
 
@@ -472,15 +469,6 @@ class storePage{
         if(object.active_tab == 'store'){
             object.loadCategory(this.root_category, true, true);
         }
-
-        //object.contextListItems();
-        // document.addEventListener('ajaxLoaded', function(e){
-        //     object.checkActive();
-        //     object.linked();
-        //     object.load();
-        // });
-        //object.checkActive();
-        //object.load();
         document.addEventListener('ProductStored', function(e){
             object.prepareParams();
             object.reload();
@@ -517,8 +505,6 @@ class storePage{
 
     load(){
 
-        //this.initTableData();
-
         this.active_tab = this.getCurrentActiveTab();
 
         if(window.helper.findGetParameter('page') !== null){
@@ -528,12 +514,11 @@ class storePage{
             this.search = window.helper.findGetParameter('search');
         } else { this.search = ''}
 
-
         this.searchInit();
-        //this.initShipmentDates();
     }
 
-    linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
+    linked(){
+        this.baseParams();
         this.contextListItems();
         this.active_tab = this.getCurrentActiveTab();
         this.category_id = window.helper.findGetParameter('category_id');
@@ -543,7 +528,7 @@ class storePage{
         this.date_end = 'null';
         window.helper.debugBar(this);
 
-        console.warn(this.active_tab);
+        //console.warn(this.active_tab);
         this.initTableData();
         this.searchInit();
         this.initDatesFilter();
@@ -554,7 +539,6 @@ class storePage{
         [].forEach.call(list_elems, function(elem){
             elem.addEventListener('contextmenu', event => {
                 event.preventDefault();
-                //Add contextual menu here
                 new Contextual({
                     isSticky: false,
                     items:[
@@ -624,17 +608,6 @@ class storePage{
             search.addEventListener("paste", searchFn);
             search.addEventListener("delete", searchFn);
         }
-        // else
-        // if(document.getElementById("search_partner")){
-        //     search = document.getElementById("search_partner");
-        //     searchFn = window.helper.debounce(function(e) {
-        //         object.search = search.value;
-        //         object.reload(e);
-        //     }, 400);
-        //     search.addEventListener("keydown", searchFn);
-        //     search.addEventListener("paste", searchFn);
-        //     search.addEventListener("delete", searchFn);
-        // }
     }
 
     resetDate(){
@@ -642,7 +615,7 @@ class storePage{
         this.page = 1;
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
         this.dates.clear();
-        window.notification.notify( 'success', 'Дава очищена');
+        window.notification.notify( 'success', 'Дата очищена');
     }
 
     resetSearch(){
@@ -675,7 +648,6 @@ class storePage{
     }
 
     getUrlString(type = null){
-
 
         let url = '?view_as=json';
 
@@ -734,37 +706,7 @@ class storePage{
 
     reload(){
         let object = this;
-        //object.prepareParams();
         object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
-        // if (isXHRloading) { return; } window.isXHRloading = true;
-        // window.axios({
-        //     method: 'get',
-        //     url: object.getUrlString(),
-        // }).then(function (resp) {
-        //     var results_container = document.getElementById(resp.data.target);
-        //     results_container.innerHTML = resp.data.html;
-        //
-        //     window.helper.insertParamUrl('search', object.search);
-        //     window.helper.insertParamUrl('active_tab', object.active_tab);
-        //     window.helper.insertParamUrl('date_start', object.date_start);
-        //     window.helper.insertParamUrl('date_end', object.date_end);
-        //     window.helper.insertParamUrl('page', object.page);
-        //     window.rebuildLinks();
-        //     object.load();
-        //     // if(object.search && object.search !== 'null') {
-        //     //     window.helper.insertParamUrl('search', object.search);
-        //     // }
-        //     // window.helper.insertParamUrl('category_id', object.category_id);
-        //     // window.helper.insertParamUrl('active_tab', object.active_tab);
-        //     // window.helper.insertParamUrl('page', object.page);
-        //
-        //
-        //     window.rebuildLinks();
-        // }).catch(function (error) {
-        //     console.log(error);
-        // }).finally(function () {
-        //     window.isXHRloading = false;
-        // });
     }
 
 }
