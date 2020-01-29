@@ -203,15 +203,20 @@ class CategoryController extends Controller
     public function dialogSearch(Request $request)
     {
         $root_category = Category::owned()->where('id', $request['root'])->first();
+        $type = $root_category->type;
         if($request['string'] != null && $request['string'] != '' && $request['string'] != 'undefined'){
             $categories = Category::owned()
                 ->where(function($q) use ($request){
                     $q->where('name', 'LIKE', '%' . $request['string'] .'%');
                 })
-                ->where('type',  $root_category->type )
+                ->where(function($q) use ($type){
+                    if($type != 'main'){
+                        $q->where('type', $type);
+                    }
+                })
                 ->orderBy('name', 'DESC')->limit(10)->get();
             $searching = true;
-            $content = view('category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
             return response()->json([
                 'html' => $content
             ], 200);
@@ -222,7 +227,7 @@ class CategoryController extends Controller
             $searching = false;
             return response()->json([
                 'tag' => 'selectCategoryDialog',
-                'html' => view('category.dialog.select_category_inner', compact('root', 'searching', 'category', 'request'))->render()
+                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'searching', 'category', 'request'))->render()
             ]);
         }
 
@@ -249,7 +254,7 @@ class CategoryController extends Controller
         $root = $data['root'];
         $searching = false;
         return response()->json([
-            'html' => view('category.dialog.select_category_inner', compact('root', 'class', 'searching', 'category', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'class', 'searching', 'category', 'request'))->render()
         ]);
     }
 
@@ -261,7 +266,7 @@ class CategoryController extends Controller
         $searching = false;
         return response()->json([
             'tag' => 'selectCategoryDialog',
-            'html' => view('category.dialog.select_category', compact('root', 'searching', 'category', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category', compact('root', 'searching', 'category', 'request'))->render()
         ]);
     }
 

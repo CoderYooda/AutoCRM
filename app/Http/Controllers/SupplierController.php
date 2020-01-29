@@ -19,7 +19,7 @@ class SupplierController extends Controller
         $suppliers = Supplier::owned()->orderBy('name', 'DESC')->get();
         return response()->json([
             'tag' => 'selectSupplierDialog',
-            'html' => view('supplier.dialog.list_suppliers', compact('suppliers', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.list_suppliers', compact('suppliers', 'request'))->render()
         ]);
     }
 
@@ -44,7 +44,7 @@ class SupplierController extends Controller
         $supplier = Supplier::owned()->where('id', $request['id'])->first();
         return response()->json([
             'tag' => $tag,
-            'html' => view('supplier.dialog.form_supplier', compact('supplier', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.form_supplier', compact('supplier', 'request'))->render()
         ]);
     }
 

@@ -1,3 +1,105 @@
+//.white{
+//    background-color: #fff!important;
+//    color: #404040!important;
+//}
+
+.flash{
+
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.flash .titlebar{
+   // background: #DD3939!important;
+}
+.d-none-f{
+    display: none!important;
+}
+.show{
+    display: block!important;
+}
+
+
+h5{
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+.modal-title{
+    flex: 1;
+}
+.no-pr{
+    padding-right: 0!important;
+}
+.no-pl{
+    padding-left: 0!important;
+}
+.tab-content{
+    padding: 15px;
+}
+.text-danger{
+    color: #FF4949;
+}
+.modal-body .table th{
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 2px solid #404040;
+    padding: 5px 0;
+}
+.modal-body .table td{
+    border-bottom: 1px solid #E3E4E8;
+    padding: 10px 0;
+}
+.table{
+    border-spacing: 0;
+}
+.modal-body .nav{
+    background-color: #F7F7F7;
+    margin: 15px;
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 10px 0;
+    flex: 1;
+}
+.modal-body .nav-link{
+    padding: 10px 15px;
+    display: block;
+    border-bottom: 1px solid #FFFFFF;
+}
+.modal-body .nav-link:hover, .modal-body .nav-link.active{
+    background-color: #1F98E9;
+    color: #fff;
+}
+
+.modal-header.with_border{
+    border-radius: 3px 3px 0 0;
+    margin-top: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #E3E4E8 !important;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.pick_button.light{
+    color: #404040;
+    background: #F7F7F7;
+    border: 1px solid #D7D8DB;
+}
+
+.pick_button.light{
+    color: #404040;
+    background: #F7F7F7;
+    border: 1px solid #D7D8DB;
+}
+
+.pick_button.light:hover{
+    background: #e7e7e7;
+    border: 1px solid #c5c5c6;
+}
+
+.select_link_back{
+
+}
+
 .form-group {
     margin-bottom: 1rem;
 }
@@ -177,55 +279,7 @@ label.label-sm{
     color:#CCCCCF;
 }
 
-/*Buttons*/
 
-.button{
-    padding: 8px 16px 7px;
-    margin: 0;
-    font-size: 12.5px;
-    display: inline-block;
-    zoom: 1;
-    cursor: pointer;
-    white-space: nowrap;
-    outline: none;
-    vertical-align: top;
-    line-height: 15px;
-    text-align: center;
-    text-decoration: none;
-    background: none;
-    background-color: #1F98E9;
-    border: 1px solid transparent;
-    color: #fff;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-.uppercase-btn{
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.0015em;
-    font-weight: bold;
-}
-.button.is-invalid{
-    border: 1px solid red!important;
-}
-.button.success{
-    background-color: #13CE66;
-}
-.button.white{
-    background-color: #fff;
-    border: 1px solid #1F98E9;
-    color: #1F98E9;
-}
-.button.primary:hover {
-    background-color: #1F98E9;
-    border: 1px solid #93D4FF;
-    text-decoration: none;
-}
-.button.primary:active {
-    background-color: #1B86CD;
-    padding-top: 9px;
-    padding-bottom: 6px;
-}
 .item-title{
     font-size: 12px;
     display: block;
@@ -256,11 +310,63 @@ label.label-sm{
     flex: 1;
     max-width: calc((100% - 44px) /2);
 }
+
+.categories_list li .list-title{
+    font-weight: 600;
+    font-size: 14px;
+    color: #404040;
+    border-right: none;
+    padding: 0px 15px;
+    flex: 1;
+    max-width: unset;
+    padding-left: 0;
+}
+
 .select-list-modal li .list-body{
     flex: 1;
     padding: 0px 15px;
     max-width: calc((100% - 32px) /2);
 }
+
+.categories_list li .list-body {
+    flex: 0.2;
+    padding: 0px 15px;
+    max-width: unset;
+    padding-right: 0;
+}
+
+.pick_button{
+    background-color: #1770AC;
+    outline: 0;
+    border: 0;
+    border-radius: 3px;
+    padding: 3px 10px;
+    color: #fff;
+    display: none;
+}
+
+.pick_button:hover{
+    background-color: #23628e;
+}
+
+.inscroll .select-list-modal{
+    padding-right: 15px!important;
+    padding-left: 15px!important;
+}
+
+.box-body.inscroll{
+    padding-right: 0px!important;
+    padding-left: 0px!important;
+}
+
+.categories_list{
+    margin: 0;
+}
+
+.categories_list li:hover .pick_button{
+    display: block;
+}
+
 .select-list-modal li .date{
     font-weight: 600;
 }

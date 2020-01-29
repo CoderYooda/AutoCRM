@@ -25,6 +25,11 @@
         @if(isset($product) && $product->id != NULL)
             <input type="hidden" name="id" value="{{ $product->id }}">
         @endif
+
+        <div class="modal-body">
+            awd
+        </div>
+
         <div class="nav-active-border b-info py-0 dark">
             <ul class="nav">
                 <li class="nav-item">

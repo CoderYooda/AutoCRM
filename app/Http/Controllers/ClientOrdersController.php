@@ -360,8 +360,8 @@ class ClientOrdersController extends Controller
             $request['dates'] = $dates;
         }
         if($field === null &&  $dir === null){
-            $field = 'id';
-            $dir = 'ASC';
+            $field = 'created_at';
+            $dir = 'DESC';
         }
 
         if($request['provider'] == null){

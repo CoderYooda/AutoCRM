@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label for="category_id">В категории</label>
                     <div class="input-group mb-3">
-                        <button onclick="{{ $class }}.openSelectCategoryDialog()" type="button" name="category_id" class="category_select form-control text-left button_select">
+                        <button onclick="{{ $class }}.openSelectCategoryDialog(@if(isset($parent)){{ $parent->id }}@elseif(isset($category)){{ $category->id }}@endif)" type="button" name="category_id" class="category_select form-control text-left button_select">
                             @if(isset($parent))
                                 {{ $parent->name }}
                             @elseif(isset($category))
@@ -47,7 +47,7 @@
         </div>
         <div class="modal-footer">
             <hr>
-            <button class="button primary" onclick="{{$class}}.save(this)">Сохранить</button>
+            <button class="button success" onclick="{{$class}}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">
 

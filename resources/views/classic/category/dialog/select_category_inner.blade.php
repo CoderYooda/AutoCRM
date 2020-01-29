@@ -1,60 +1,60 @@
-<div class="modal-header">
+<div class="modal-header white with_border">
     @if(!$searching)
         <h5 class="modal-title">
             @if($category->id != $root)
-                <a onclick="selectCategoryDialog.select({{ $category->category_id }})" class="ajax-nav"><i class="fa fa-chevron-left"></i></a>
-                {{--<button onclick="selectCategoryDialog.select({{ $category->category_id }})" class="btn btn-sm success"><i class="fa fa-arrow-left"></i></button>--}}
-            @endif{{ $category->name }}
+                <a onclick="selectCategoryDialog.select({{ $category->category_id }})" class="ajax-nav"><i class="fa fa-chevron-left"></i> {{ $category->name }}</a>
+            @else
+                {{ $category->name }}
+            @endif
         </h5>
-        <button onclick="try{window.{{$request['refer']}}.selectCategory({{ $category->id }})}catch (e) {}" class="btn btn-icon white float-right">
-            <i class="fa fa-check"></i>
+        <button onclick="try{window.{{$request['refer']}}.selectCategory({{ $category->id }})}catch (e) {}" class="pick_button light show">
+            выбрать
         </button>
-        {{--<button onclick="window.{{$request['refer']}}.selectCategory({{ $category->id }})" class="btn btn-sm success"><i class="fa fa-check"></i></button>--}}
     @else
         <h5 class="modal-title">Поиск</h5>
     @endif
 </div>
 
-<div data-simplebar style="max-height: 300px;">
-    <div class="nlborder list-group box mb-0">
-        @if(!$searching)
-            @foreach($category->childs as $child)
-                <span class="d-flex">
-                    <a class="folder-link list-group-item w-100" onclick="selectCategoryDialog.select({{ $child->id }})"><i class="fa fa-folder"></i> {{ $child->name }}</a>
-
-                    @if($request['refer'] != null && strpos($request['refer'], 'partner') !== false)
-                        <div class="sp-p">
-                            <button onclick="try{window.{{$request['refer']}}.selectCategory({{ $child->id }})}catch (e) {}" class="btn btn-icon white float-right">
-                                <i class="fa fa-check"></i>
-                            </button>
-                            {{--<button onclick="try{window.{{$request['refer']}}.selectCategory({{ $child->id }})}catch (e) {}" class="btn btn-sm success"><i class="fa fa-check"></i></button>--}}
+<div class="box-body inscroll">
+    <div class="" data-simplebar style="max-height: 400px;">
+        <ul class="nav select-list-modal categories_list">
+            @if(!$searching)
+                @foreach($category->childs as $child)
+                    <li onclick="selectCategoryDialog.select({{ $child->id }})" id="category_item_{{ $child->id }}" class="pointer d-flex " >
+                        <div class="list-title">
+                            {{ $child->name }}
                         </div>
-                    @else
-                        <div class="sp-p">
-                            <button onclick="try{window.{{$request['refer']}}.selectCategory({{ $child->id }})}catch (e) {}" class="btn btn-icon white float-right">
-                                <i class="fa fa-check"></i>
-                            </button>
-                            {{--<button onclick="try{window.{{$request['refer']}}.selectCategory({{ $child->id }})}catch (e) {}" class="btn btn-sm success"><i class="fa fa-check"></i></button>--}}
+                        <div class="list-body">
+                            @if($request['refer'] != null && strpos($request['refer'], 'partner') !== false)
+                                <button class="pick_button" onclick="try{window.{{$request['refer']}}.selectCategory({{ $child->id }})}catch (e) {}">выбрать</button>
+                            @else
+                                <button class="pick_button" onclick="try{window.{{$request['refer']}}.selectCategory({{ $child->id }})}catch (e) {}">выбрать</button>
+                            @endif
                         </div>
-                    @endif
-                </span>
-            @endforeach
-        @else
-            @foreach($categories as $category)
-                <span class="d-flex">
-                    <a class="folder-link list-group-item w-100" onclick="selectCategoryDialog.select({{ $category->id }})"><i class="fa fa-folder"></i> {{ $category->name }}</a>
-
-                    @if($request['refer'] != null && strpos($request['refer'], 'partner') !== false)
-                        <div class="sp-p">
-                            <button onclick="try{window.{{$request['refer']}}.selectCategory({{ $category->id }})}catch (e) {}" class="btn btn-sm success"><i class="fa fa-check"></i></button>
+                    </li>
+                @endforeach
+            @else
+                @foreach($categories as $category)
+                    <li onclick="selectCategoryDialog.select({{ $category->id }})" id="category_item_{{ $category->id }}" class="pointer d-flex " >
+                        <div class="list-title">
+                            {{ $category->name }}
                         </div>
-                    @else
-                        <div class="sp-p">
-                        <button onclick="try{window.{{$request['refer']}}.selectCategory({{ $category->id }})}catch (e) {}" class="btn btn-sm success"><i class="fa fa-check"></i></button>
+                        <div class="list-body">
+                            @if($request['refer'] != null && strpos($request['refer'], 'partner') !== false)
+                                <button class="pick_button" onclick="try{window.{{$request['refer']}}.selectCategory({{ $category->id }})}catch (e) {}">выбрать</button>
+                            @else
+                                <button class="pick_button" onclick="try{window.{{$request['refer']}}.selectCategory({{ $category->id }})}catch (e) {}">выбрать</button>
+                            @endif
                         </div>
-                    @endif
-                </span>
-            @endforeach
-        @endif
+                    </li>
+                @endforeach
+            @endif
+        </ul>
     </div>
+</div>
+<div class="modal-footer">
+    <button class="button white" onclick="window.selectCategoryDialog.finitaLaComedia(this)">Закрыть</button>
+</div>
+<div class="system_message">
+
 </div>

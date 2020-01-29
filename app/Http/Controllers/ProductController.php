@@ -165,7 +165,7 @@ class ProductController extends Controller
         $category = Category::where('id', $category_select)->first();
         return response()->json([
             'tag' => $tag,
-            'html' => view('product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
         ]);
     }
 
