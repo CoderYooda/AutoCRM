@@ -51,7 +51,7 @@
                     </ul>
                 </div>
                 <div class="col-sm-7 no-pl">
-                    <div class="tab-content mb-3">
+                    <div class="tab-content mb-3 pl-8">
                         @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.tabs.base')
                         @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.tabs.store')
                         @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.tabs.barcode')

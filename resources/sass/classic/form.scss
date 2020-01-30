@@ -17,8 +17,24 @@
 .show{
     display: block!important;
 }
-
-
+.m-15 {
+    margin: 15px !important;
+}
+.m-0{
+    margin: 0!important;
+}
+.pl-8{
+    padding-left: 8px!important;
+}
+.simplebar-track.simplebar-vertical {
+    width: 13px!important;
+}
+.simplebar-scrollbar:before {
+    background: #B2B5B7!important;
+}
+.simplebar-scrollbar {
+    right: 3px!important;
+}
 h5{
     font-weight: 600;
     font-size: 16px;
@@ -44,7 +60,7 @@ h5{
     font-size: 14px;
     font-weight: 500;
     border-bottom: 2px solid #404040;
-    padding: 5px 0;
+    padding: 0px 0 5px 0;
 }
 .modal-body .table td{
     border-bottom: 1px solid #E3E4E8;
@@ -312,8 +328,7 @@ label.label-sm{
 }
 
 .categories_list li .list-title{
-    font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     color: #404040;
     border-right: none;
     padding: 0px 15px;

@@ -19,6 +19,6 @@
         <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
     @endif
     <div id="search_supplier_results" class="mh50-dialog white" data-simplebar style="max-height: 400px">
-        @include('supplier.dialog.list_suppliers_inner')
+        @include(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.list_suppliers_inner')
     </div>
 </div>

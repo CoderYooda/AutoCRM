@@ -84,7 +84,7 @@ class SupplierController extends Controller
             })
             ->orderBy('name', 'DESC')->limit(10)->get();
 
-        $content = view('supplier.dialog.list_suppliers_inner', compact('suppliers', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.list_suppliers_inner', compact('suppliers', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);

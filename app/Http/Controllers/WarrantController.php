@@ -74,6 +74,16 @@ class WarrantController extends Controller
         ]);
     }
 
+    public function tableData(Request $request)
+    {
+        $warrants = self::getWarrants($request);
+//        foreach($products as $product){
+//            $product->isset = $product->getCountSelfOthers();
+//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+//        }
+        return response()->json($warrants);
+    }
+
     public function store(Request $request)
     {
         $request['company_id'] = Auth::user()->company()->first()->id;

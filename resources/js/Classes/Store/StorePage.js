@@ -314,9 +314,9 @@ class storePage{
                         "error":"Ошибка", //ajax error text
                     },
                     "pagination":{
-                        "page_size":"Кол-во элементов", //label for the page size select element
-                        "first":"Первая", //text for the first page button
-                        "first_title":"Первая страница", //tooltip text for the first page button
+                        "page_size":"Кол-во элементов",
+                        "first":"Первая",
+                        "first_title":"Первая страница",
                         "last":"Последняя",
                         "last_title":"Последняя страница",
                         "prev":"Предыдущая",
@@ -326,9 +326,9 @@ class storePage{
                         "show_page":"След.",
                     },
                     "headerFilters":{
-                        "default":"filter column...", //default header filter placeholder text
+                        "default":"filter column...",
                         "columns":{
-                            "name":"filter name...", //replace default header filter text for column name
+                            "name":"filter name...",
                         }
                     }
                 }
@@ -336,10 +336,8 @@ class storePage{
             clipboard:true,
             selectable:true,
             selectableRangeMode:"click",
-            //resizableRows:false,
             resizableColumns:false,
             height:height-15,
-            //maxHeight:'100%',
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
@@ -354,7 +352,6 @@ class storePage{
                 return response;
             },
             ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
-            // ajaxProgressiveLoad:"scroll",
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
@@ -377,66 +374,27 @@ class storePage{
             },
             tableBuilt:function(){
                 console.log('Таблица готова');
-                // let table_holder = document.getElementsByClassName('tabulator-table');
-                // table_holder[0].addEventListener('contextmenu', event => {
-                //     event.preventDefault();
-                //     //Add contextual menu here
-                //     object.tableContextual = new Contextual({
-                //         isSticky: false,
-                //         items:[
-                //             new ContextualItem({label:'Редактировать', onClick: () => {
-                //                 openDialog('productDialog', '&product_id=30136')
-                //                 }, shortcut:'Что то' }),
-                //             new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
-                //             new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
-                //             new ContextualItem({label:'Еще что то', shortcut:'Ctrl+B' }),
-                //             new ContextualItem({type:'seperator'}),
-                //             new ContextualItem({label:'Удалить', shortcut:'Ctrl+A' }),
-                //         ]
-                //     });
-                // });
             },
-            //
-            // ajaxResponse:function(url, params, response){
-            //     let rows = object.table.getRows();
-            //     console.log(rows);
-            //     [].forEach.call(rows, function(elem){
-            //         console.log(elem.getElement());
-            //         elem.getElement().addEventListener('contextmenu', event => {
-            //             event.preventDefault();
-            //             //Add contextual menu here
-            //             new Contextual({
-            //                 isSticky: false,
-            //                 items:[
-            //                     new ContextualItem({label:'Item 1', onClick: () => {console.log('Item 1 clicked')}, shortcut:'Ctrl+A' }),
-            //                     new ContextualItem({label:'Item 2', shortcut:'Ctrl+B' }),
-            //                     new ContextualItem({type:'seperator'}),
-            //                     new ContextualItem({label:'Item 3', shortcut:'Ctrl+A' }),
-            //                 ]
-            //             });
-            //         });
-            //     });
-            //
-            //     return response; //return the response data to tabulator
-            // },
-            rowClick:function(e, row){ //trigger an alert message when the row is clicked
-                //row.toggleSelect();
-                console.log('Загружаем инфо');
-                let data = {};
-                data.id = row.getData().id;
-                window.axios({
-                    method: 'post',
-                    url: '/' + object.active_tab + '/side_info',
-                    data: data
-                }).then(function (resp) {
-                    document.getElementById('contact_block').innerHTML = resp.data.info;
-                    document.getElementById('comment_block').innerHTML = resp.data.comment;
-                    //console.log(resp);
-                }).catch(function (error) {
-                    console.log(error);
-                }).finally(function () {
-                    window.isXHRloading = false;
-                });
+
+            rowClick:function(e, row){
+                if(object.active_tab != 'store'){
+                    console.log('Загружаем инфо');
+                    let data = {};
+                    data.id = row.getData().id;
+                    window.axios({
+                        method: 'post',
+                        url: '/' + object.active_tab + '/side_info',
+                        data: data
+                    }).then(function (resp) {
+                        document.getElementById('contact_block').innerHTML = resp.data.info;
+                        document.getElementById('comment_block').innerHTML = resp.data.comment;
+                        //console.log(resp);
+                    }).catch(function (error) {
+                        console.log(error);
+                    }).finally(function () {
+                        window.isXHRloading = false;
+                    });
+                }
             },
         });
     }

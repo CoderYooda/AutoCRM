@@ -1,3 +1,5 @@
+import {Contextual, ContextualItem} from "../Contentual";
+
 class cashPage{
 
     constructor(){
@@ -20,11 +22,14 @@ class cashPage{
         //this.chartCircle.update();
         this.active_tab = window.helper.findGetParameter('active_tab');
         window.helper.debugBar(this);
+        this.initTableData();
         console.log('linked');
     }
 
     init(){
         let object = this;
+        object.linked();
+
         object.initSearch();
         document.addEventListener('ajaxLoaded', function(e){
             object.checkActive();
@@ -47,6 +52,174 @@ class cashPage{
         });
 
         window.helper.debugBar(object);
+    }
+
+    generateColumns(){
+        let object = this;
+        let columns = [];
+
+        if(object.active_tab === 'warrant') {
+            object.contextDop = 'warrant';
+            object.parametr = 'warrant';
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"ID", field:"id", width:80},
+                {title:"Дата", field:"date"},
+                {title:"Тип", field:"type", width:150, align:"left"},
+                {title:"Контрагент", field:"partner", width:150, align:"left"},
+                {title:"Статья", field:"dds", width:130, align:"left"},
+                {title:"Касса", field:"cashbox", width:160, align:"left"},
+                {title:"Сумма", field:"summ", width:160, align:"left"},
+            ];
+        } else if(object.active_tab === 'provider_orders'){
+            object.contextDop = 'providerorder';
+            object.parametr = 'provider_order';
+            var iconFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
+                });
+            };
+
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:50},
+                {title:"Оплата", field:"pays", width:80, formatter:iconFormatter},
+                {title:"Поступление", field:"incomes",align:"left", width:130, formatter:iconFormatter},
+                {title:"Дата", field:"date", width:150},
+                {title:"Поставщик", field:"name", align:"left"},
+                {title:"Ответственный", field:"manager", align:"left"},
+                {title:"Сумма", field:"itogo", width:90, align:"left"},
+            ];
+        }
+        return columns;
+    }
+
+    initTableData(){
+        let object = this;
+        let table_container = document.getElementById('table-container');
+        let height = 500;
+
+        if(table_container){
+            height = table_container.offsetHeight;
+        }
+        let cleanHeight = height - 110;
+        let elements = cleanHeight / 44;
+
+        object.table = new Tabulator("#" + this.getCurrentActiveTab() + "-table", {
+            locale:true,
+            langs:{
+                "ru":{
+                    "ajax":{
+                        "loading":"Загрузка", //ajax loader text
+                        "error":"Ошибка", //ajax error text
+                    },
+                    "pagination":{
+                        "page_size":"Кол-во элементов",
+                        "first":"Первая",
+                        "first_title":"Первая страница",
+                        "last":"Последняя",
+                        "last_title":"Последняя страница",
+                        "prev":"Предыдущая",
+                        "prev_title":"Предыдущая страница",
+                        "next":"Следующая",
+                        "next_title":"Следующая страница",
+                        "show_page":"След.",
+                    },
+                    "headerFilters":{
+                        "default":"filter column...",
+                        "columns":{
+                            "name":"filter name...",
+                        }
+                    }
+                }
+            },
+            clipboard:true,
+            selectable:true,
+            selectableRangeMode:"click",
+            resizableColumns:false,
+            height:height-15,
+            pagination:"remote",
+            layout:"fitColumns",
+            ajaxSorting:true,
+            ajaxURL:'/' + object.active_tab + '/tabledata',
+            ajaxRequesting:function(url, params){
+                window.isXHRloading = true;
+                document.body.classList.add('loading');
+            },
+            // ajaxResponse:function(url, params, response){
+            //     window.isXHRloading = false;
+            //     document.body.classList.remove('loading');
+            //     return response;
+            // },
+            ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
+            paginationSize:Math.floor(elements),
+            placeholder:"По данным критериям ничего нет",
+            columns: object.generateColumns(),
+            rowContext:function(e, row){
+                e.preventDefault();
+                object.selectedData = object.table.getSelectedData();
+                let items = [
+                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
+                    new ContextualItem({type:'seperator'}),
+                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
+                ];
+                if(object.selectedData.length > 0){
+                    items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
+                }
+                object.tableContextual = null;
+                object.tableContextual = new Contextual({
+                    isSticky: false,
+                    items:items,
+                });
+            },
+            // tableBuilt:function(){
+            //     console.log('Таблица готова');
+            // },
+            //
+            // rowClick:function(e, row){
+            //     if(object.active_tab != 'store'){
+            //         console.log('Загружаем инфо');
+            //         let data = {};
+            //         data.id = row.getData().id;
+            //         window.axios({
+            //             method: 'post',
+            //             url: '/' + object.active_tab + '/side_info',
+            //             data: data
+            //         }).then(function (resp) {
+            //             document.getElementById('contact_block').innerHTML = resp.data.info;
+            //             document.getElementById('comment_block').innerHTML = resp.data.comment;
+            //             //console.log(resp);
+            //         }).catch(function (error) {
+            //             console.log(error);
+            //         }).finally(function () {
+            //             window.isXHRloading = false;
+            //         });
+            //     }
+            // },
+        });
+    }
+
+    prepareDataForTable(){
+        let object = this;
+        let data = {};
+        data.view_as = "json";
+        data.target = "ajax-table-warrant";
+        data.page = 1;
+        if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
+        return data;
+    }
+
+    getCurrentActiveTab(){
+        var active_tab = window.helper.findGetParameter('active_tab');
+
+        if(active_tab == null || active_tab == 'null'){
+            active_tab = 'warrant';
+        }
+        return active_tab;
     }
 
     chartInit(){ //Радиальная диаграмма
