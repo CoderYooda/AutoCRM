@@ -7,6 +7,7 @@ use App\Models\DdsArticle;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Partner;
 use stdClass;
@@ -77,10 +78,9 @@ class WarrantController extends Controller
     public function tableData(Request $request)
     {
         $warrants = self::getWarrants($request);
-//        foreach($products as $product){
-//            $product->isset = $product->getCountSelfOthers();
-//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
-//        }
+        foreach($warrants as $warrant){
+            $warrant->date = $warrant->created_at->format('Y.m.d/H:i');
+        }
         return response()->json($warrants);
     }
 
@@ -115,6 +115,7 @@ class WarrantController extends Controller
                 $warrant->cashbox()->first()->addition($warrant->summ);
             }
         } else{
+            $warrant->manager_id = Auth::user()->id;
             $message = "Ордер создан";
         }
 
@@ -204,40 +205,51 @@ class WarrantController extends Controller
 
     public static function getWarrants($request)
     {
-        $warrants = Warrant::owned()
-            ->orderBy('created_at', 'DESC')
-            ->where(function($q) use ($request){
-                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null' && $request['isIncoming'] != null){
-                    $q->where('isIncoming',   boolval ($request['isIncoming']));
-                }
-            })
-            ->where(function($q) use ($request){
-                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
-                }
-                if(isset($request['date_end']) && $request['date_end'] != 'null'  && $request['date_end'] != ''){
-                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
-                }
-            })
-            ->where(function($q) use ($request){
-                if(isset($request['search']) && $request['search'] !== 'null') {
-                    if (mb_strlen($request['search']) === 1) {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', $request['search'] . '%' )
-                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-                        });
-                    } else {
-                        $q->whereHas('partner', function ($q) use ($request) {
-                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                                ->orWhereHas('phones', function ($query) use ($request) {
-                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                                });
-                        });
-                    }
-                }
-            })
-            ->paginate(25);
+
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'created_at';
+            $dir = 'DESC';
+        }
+
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
+
+        if($request['provider'] == null){
+            $request['provider'] = [];
+        }
+
+        $warrants =
+            Warrant::select(DB::raw('
+                warrants.created_at, warrants.created_at as date, warrants.id as id, IF(warrants.isIncoming = 1, "Приходной ордер","Расходный ордер") as type, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, dds_articles.name as dds, cashboxes.name as cashbox, warrants.summ 
+            '))
+                ->leftJoin('partners',  'partners.id', '=', 'warrants.partner_id')
+                ->leftJoin('dds_articles',  'dds_articles.id', '=', 'warrants.ddsarticle_id')
+                ->leftJoin('cashboxes',  'cashboxes.id', '=', 'warrants.cashbox_id')
+                ->where('warrants.company_id', Auth::user()->company()->first()->id)
+                ->when($request['provider'] != null, function($query) use ($request) {
+                    $query->whereIn('warrants.partner_id', $request['provider']);
+                })
+                ->when($request['dates_range'] != null, function($query) use ($request) {
+                    $query->whereBetween('shipments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                })
+                ->groupBy('warrants.id')
+                ->orderBy($field, $dir)
+                ->paginate($size);
 
         return $warrants;
     }

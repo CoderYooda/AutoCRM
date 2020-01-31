@@ -66,10 +66,10 @@ class cashPage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"ID", field:"id", width:80},
-                {title:"Дата", field:"date"},
+                {title:"Дата", field:"date", width:150},
                 {title:"Тип", field:"type", width:150, align:"left"},
-                {title:"Контрагент", field:"partner", width:150, align:"left"},
-                {title:"Статья", field:"dds", width:130, align:"left"},
+                {title:"Контрагент", field:"partner", align:"left"},
+                {title:"Статья", field:"dds", width:160, align:"left"},
                 {title:"Касса", field:"cashbox", width:160, align:"left"},
                 {title:"Сумма", field:"summ", width:160, align:"left"},
             ];
@@ -150,11 +150,11 @@ class cashPage{
                 window.isXHRloading = true;
                 document.body.classList.add('loading');
             },
-            // ajaxResponse:function(url, params, response){
-            //     window.isXHRloading = false;
-            //     document.body.classList.remove('loading');
-            //     return response;
-            // },
+            ajaxResponse:function(url, params, response){
+                window.isXHRloading = false;
+                document.body.classList.remove('loading');
+                return response;
+            },
             ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
@@ -176,30 +176,29 @@ class cashPage{
                     items:items,
                 });
             },
-            // tableBuilt:function(){
-            //     console.log('Таблица готова');
-            // },
-            //
-            // rowClick:function(e, row){
-            //     if(object.active_tab != 'store'){
-            //         console.log('Загружаем инфо');
-            //         let data = {};
-            //         data.id = row.getData().id;
-            //         window.axios({
-            //             method: 'post',
-            //             url: '/' + object.active_tab + '/side_info',
-            //             data: data
-            //         }).then(function (resp) {
-            //             document.getElementById('contact_block').innerHTML = resp.data.info;
-            //             document.getElementById('comment_block').innerHTML = resp.data.comment;
-            //             //console.log(resp);
-            //         }).catch(function (error) {
-            //             console.log(error);
-            //         }).finally(function () {
-            //             window.isXHRloading = false;
-            //         });
-            //     }
-            // },
+            tableBuilt:function(){
+                console.log('Таблица готова');
+            },
+            rowClick:function(e, row){
+                if(object.active_tab != 'store'){
+                    console.log('Загружаем инфо');
+                    let data = {};
+                    data.id = row.getData().id;
+                    window.axios({
+                        method: 'post',
+                        url: '/' + object.active_tab + '/side_info',
+                        data: data
+                    }).then(function (resp) {
+                        document.getElementById('contact_block').innerHTML = resp.data.info;
+                        document.getElementById('comment_block').innerHTML = resp.data.comment;
+                        //console.log(resp);
+                    }).catch(function (error) {
+                        console.log(error);
+                    }).finally(function () {
+                        window.isXHRloading = false;
+                    });
+                }
+            },
         });
     }
 
