@@ -13,14 +13,14 @@ class SelectProductDialog{
 
         this.searchInit();
         this.markAsAdded();
-        this.init();
+        // this.init();
     }
 
     init(){
-        let focused = document.getElementById('select_product_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
+        // let focused = document.getElementById('select_product_dialog_focused');
+        // if(focused){
+        //     focused.focus();
+        // }
     }
 
     finitaLaComedia(){
@@ -49,14 +49,13 @@ class SelectProductDialog{
         });
 
         let items_in_selector = this.results_obj.querySelectorAll('.list-item');
-
         [].forEach.call(items_in_selector, function(elem){
 
-            let button = elem.querySelector('.select_btn');
-            if(items_in_refer.includes(parseInt(button.dataset.id))){
-                button.classList.add('already_selected');
+            if(items_in_refer.includes(parseInt(elem.dataset.article_id))){
+                elem.classList.add('already_selected');
             }
         });
+
         //console.log(items_in_refer);
     }
 

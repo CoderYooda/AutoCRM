@@ -3,24 +3,31 @@
     <div class="titlebar">Поиск товаров</div>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-    <div id="partner_list" class="mh50-dialog" data-simplebar style="max-height: 400px">
-        <div id="search_product_results" class="nlborder list-group box mb-0" >
-            {{--<table class="table table-hover mb-0">--}}
-                {{--<thead>--}}
-                {{--<tr>--}}
-                    {{--<th style="width:50%;" class="text-left">Наименование</th>--}}
-                    {{--<th style="width:30%;">Артикул</th>--}}
-                    {{--<th style="width:20%;"></th>--}}
-                {{--</tr>--}}
-                {{--</thead>--}}
-                {{--<tbody>--}}
-                    {{----}}
-                {{--</tbody>--}}
-            {{--</table>--}}
-            @include('product.dialog.select_product_inner')
+    <div class="modal-header">
+        <form class="flex d-flex w-100">
+            @if($request['refer'])
+                <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
+            @endif
+            @if($request['store_id'])
+                <input id="store_id" type="hidden" name="store_id" value="{{ $request['store_id'] }}">
+            @endif
+
+            <input id="product_search" type="text" class="form-control mr-15" placeholder="Поиск товара" required="">
+            <span class="input-group-append">
+                <button onclick="openDialog('productDialog')" class="button" type="button">Новый товар</button>
+            </span>
+        </form>
+    </div>
+
+    <div id="product_list">
+        <div id="search_product_results">
+            @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product_inner')
         </div>
     </div>
-    <div class="modal-footer white">
-        <button class="btn success" onclick="closeDialog(event)">Закрыть</button>
+
+    <div class="modal-footer">
+        <button class="button white" onclick="closeDialog(event)">Закрыть</button>
     </div>
+
+    <div class="system_message"></div>
 </div>

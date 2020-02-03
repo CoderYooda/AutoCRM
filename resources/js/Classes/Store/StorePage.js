@@ -431,6 +431,7 @@ class storePage{
         if(object.active_tab == 'store'){
             object.loadCategory(this.root_category, true, true);
         }
+
         document.addEventListener('ProductStored', function(e){
             object.prepareParams();
             object.reload();
@@ -462,7 +463,6 @@ class storePage{
             // object.prepareParams();
             // object.reload();
         });
-        object.initDatesFilter();
     }
 
     load(){
@@ -494,6 +494,7 @@ class storePage{
         this.initTableData();
         this.searchInit();
         this.initDatesFilter();
+        this.checkActive();
     }
 
     contextListItems(){

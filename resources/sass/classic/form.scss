@@ -317,6 +317,11 @@ label.label-sm{
     margin-bottom: 2px;
     border-radius: 4px;
 }
+
+.list-item.already_selected{
+    background-color: #59C747;
+}
+
 .select-list-modal li .list-title{
     font-weight: 600;
     font-size: 14px;
@@ -394,12 +399,20 @@ label.label-sm{
 .select-list-modal li:hover{
     background: #1F98E9;
 }
-.select-list-modal li:hover .list-title{
+.select-list-modal li:hover .list-title, .select-list-modal li.already_selected .list-title{
     color: #fff;
 }
-.select-list-modal li:hover .list-body{
+.select-list-modal li:hover .list-body, .select-list-modal li.already_selected .list-body{
     color: #fff;
 }
+
+
+.select-list-modal li:hover .list-title {
+    color: #fff;
+}
+
+
+
 .pointer{
     cursor: pointer!important;
 }

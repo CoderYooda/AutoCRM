@@ -8,6 +8,7 @@ class providerOrderDialog{
         this.nds_included = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
+        this.refer = null;
         this.init();
     }
 
@@ -237,6 +238,9 @@ class providerOrderDialog{
             elem.addEventListener("delete", fn);
         });
         this.recalculate();
+        if(this.refer != null){
+            window[this.refer].markAsAdded();
+        }
     }
 
     finitaLaComedia(){
@@ -254,8 +258,12 @@ class providerOrderDialog{
         this.recalculate();
     }
 
-    addProduct(elem){
+    addProduct(elem, refer = null){
+        let object = this;
         window.entity.addProductToList(elem, this, 'providerOrder');
+        if(refer != null){
+            object.refer = refer;
+        }
     };
 
     selectPartner(id){

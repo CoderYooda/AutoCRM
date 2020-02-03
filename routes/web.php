@@ -112,6 +112,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
     Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
     Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
+    Route::post('/warrant/side_info', 'WarrantController@getSideInfo')->name('GetWarrantSideInfo');
 
     #Движение средств между кассами
     Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название

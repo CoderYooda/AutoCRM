@@ -57,7 +57,7 @@ class ProductController extends Controller
         $products = Article::owned()->orderBy('id', 'DESC')->limit(10)->get();
         return response()->json([
             'tag' => 'selectProductDialog',
-            'html' => view('product.dialog.select_product', compact('products', 'stores', 'request'))->render(),
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product', compact('products', 'stores', 'request'))->render(),
         ]);
     }
 

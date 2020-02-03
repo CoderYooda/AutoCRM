@@ -96,32 +96,7 @@
             </span>
             </div>
         </div>
-
-        <div class="no-gutters align-items-stretch">
-            {{--<div class="padding dark">--}}
-                {{--<div class="row row-sm">--}}
-                    {{--<div class="col-sm-6">--}}
-                        {{--<div class="text-md text-white">--}}
-                            {{--<span class="text-muted">Дата</span> <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>--}}
-                        {{--</div>--}}
-
-                    {{--</div>--}}
-                    {{--<div class="col-sm-6">--}}
-                        {{--<div class="text-md text-white">--}}
-                            {{--<span class="text-muted">Баланс</span> <span class="partner_balance text-warning">--}}
-                                {{--@if(isset($warrant))--}}
-                                    {{--{{ $warrant->partner()->first()->balance }}--}}
-                                {{--@elseif(isset($data->partner_selected) && $data->partner_selected !== null)--}}
-                                    {{--{{ $data->partner_selected->balance }}--}}
-                                {{--@else--}}
-                                    {{--0--}}
-                                {{--@endif--}}
-                            {{--</span>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        <div class="padding">
+        <div class="box-body">
             <div class="form-group row">
                 <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контрагент</label>
                 <div class="col-sm-9">
@@ -193,7 +168,6 @@
             <div class="form-group">
                 <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
             </div>
-        </div>
         </div>
         <div class="modal-footer">
             @if(isset($warrant))

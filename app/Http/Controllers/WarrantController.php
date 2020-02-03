@@ -71,8 +71,23 @@ class WarrantController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.cash.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.warrant.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
         ]);
+    }
+
+    public function getSideInfo(Request $request){
+
+        $warrant = Warrant::owned()->where('id', $request['id'])->first();
+        $partner = $warrant->partner()->first();
+        $comment = $warrant->comment;
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.warrant.contact-card', compact( 'partner','request', 'warrant'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function tableData(Request $request)
@@ -241,11 +256,11 @@ class WarrantController extends Controller
                 ->leftJoin('dds_articles',  'dds_articles.id', '=', 'warrants.ddsarticle_id')
                 ->leftJoin('cashboxes',  'cashboxes.id', '=', 'warrants.cashbox_id')
                 ->where('warrants.company_id', Auth::user()->company()->first()->id)
-                ->when($request['provider'] != null, function($query) use ($request) {
-                    $query->whereIn('warrants.partner_id', $request['provider']);
+                ->when($request['partner'] != null, function($query) use ($request) {
+                    $query->whereIn('warrants.partner_id', $request['partner']);
                 })
-                ->when($request['dates_range'] != null, function($query) use ($request) {
-                    $query->whereBetween('shipments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                ->when($request['dates_range'] != null && $request['dates_range'] != 'null', function($query) use ($request) {
+                    $query->whereBetween('warrants.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
                 })
                 ->groupBy('warrants.id')
                 ->orderBy($field, $dir)

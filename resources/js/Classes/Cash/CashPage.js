@@ -9,22 +9,62 @@ class cashPage{
         this.root_id = 'cash_index_page';
         this.page = 1;
         this.search = 'null';
-        this.dates_range = ['null', 'null'];
+        this.dates_range = null;
         this.date_start = 'null';
         this.date_end = 'null';
         this.isIncoming = 'null';
         this.dates = null;
+        this.partner = [];
         this.chartCircle = null;
         this.init(); // Первый запуск
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
-        //this.chartCircle.update();
         this.active_tab = window.helper.findGetParameter('active_tab');
-        window.helper.debugBar(this);
         this.initTableData();
-        console.log('linked');
+        this.initDatesFilter();
     }
+
+    removePartner(id, type){
+        let object = this;
+        object[type].remove(id);
+        document.getElementById(type + '_' + id).remove();
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+    }
+
+    selectPartner(id, target){
+        let object = this;
+        window.axios({
+            method: 'post',
+            url: 'partner/'+ id +'/select',
+            data: {refer:null}
+        }).then(function (resp) {
+
+            if(object[target].includes(resp.data.id)){
+                window.notification.notify( 'error', 'Уже имеется в списке');
+            } else {
+                object[target].push(resp.data.id);
+                let stack = document.getElementById(target + '_stack');
+                var node = helper.createElementFromHTML('' +
+                    '<div id="' + target + '_' + resp.data.id + '" class="' + target + '_selected filter_element" >' +
+                    '<span>' + resp.data.name + '</span>' +
+                    '<button type="button" onclick="window.cash.removePartner(' + resp.data.id + ', \'' + target + '\')" class="right-remove"><i class="fa fa-remove"></i></button>' +
+                    '</div>' +
+                    '');
+                stack.appendChild(node);
+                //object.reload();
+                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                window.notification.notify( 'success', 'Контрагент выбран');
+            }
+            //document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
+            //console.log("Событие PartnerSelected вызвано");
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    };
+
 
     init(){
         let object = this;
@@ -37,21 +77,53 @@ class cashPage{
             object.load();
         });
         object.checkActive();
-        // object.load();
-        object.searchInit();
-        object.initDates();
-
-
+        //object.searchInit();
+        //object.initDates();
 
         document.addEventListener('WarrantStored', function(e){
+            object.prepareParams();
             object.reload();
         });
 
         document.addEventListener('MoneymoveStored', function(e){
+            object.prepareParams();
             object.reload();
         });
+    }
 
-        window.helper.debugBar(object);
+    clearList(type, container){
+        this[type] = [];
+        document.getElementById(container).innerHTML = '';
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        window.notification.notify( 'success', 'Поле очищено');
+    }
+
+    initDatesFilter(){
+        let object = this;
+        let startDateArray = [];
+        this.dates = window.flatpickr(".date_filter", {
+            mode: "range",
+            defaultDate: startDateArray,
+            dateFormat: "d.m.Y",
+            onClose: function(selectedDates, dateStr, instance) {
+                object.page = 1;
+                if(selectedDates.length > 1){
+                    object.dates_range = window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString();
+                } else {
+                    object.dates_range = null;
+                }
+                //object.reload();
+                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+            }
+        });
+    }
+
+    resetDate(){
+        this.dates_range = null;
+        this.page = 1;
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.dates.clear();
+        window.notification.notify( 'success', 'Дата очищена');
     }
 
     generateColumns(){
@@ -202,12 +274,21 @@ class cashPage{
         });
     }
 
+    openSelectPartnerModal(target){
+        window.openDialog('selectPartner', '&refer=' + 'cash&target=' + target);
+    }
+
     prepareDataForTable(){
         let object = this;
         let data = {};
         data.view_as = "json";
         data.target = "ajax-table-warrant";
         data.page = 1;
+
+        if(object.partner !== []){data.partner = object.partner;}
+        if(object.dates_range !== null){data.dates_range = object.dates_range;}
+
+
         if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
         return data;
     }
@@ -257,43 +338,6 @@ class cashPage{
             this.search = window.helper.findGetParameter('search');
         }
         console.log('initSearch');
-    }
-
-    initDates(){
-        let object = this;
-        let startDateArray = [];
-
-        if(object.dates_range[0] !== 'null' && object.dates_range[1] !== 'null'){
-            startDateArray = object.dates_range;
-        }
-        this.dates = window.flatpickr(".warrant_date_start", {
-            mode: "range",
-            defaultDate: startDateArray,
-            dateFormat: "d.m.Y",
-            onClose: function(selectedDates, dateStr, instance) {
-                object.dates_range = selectedDates;
-                object.page = 1;
-                if(selectedDates.length > 1){
-                    object.date_start = window.flatpickr.formatDate(selectedDates[0], "d.m.Y");
-                    object.date_end = window.flatpickr.formatDate(selectedDates[1], "d.m.Y");
-                } else {
-                    object.date_start = 'null';
-                    object.date_end = 'null';
-                }
-                object.reload();
-            }
-        });
-    }
-
-    resetDate(){
-        if(this.dates !== null){
-            this.dates.clear();
-        }
-        this.dates_range = ['null', 'null'];
-        this.date_start = 'null';
-        this.date_end = 'null';
-        this.page = 1;
-        this.reload();
     }
 
     resetSearch(){
@@ -422,34 +466,7 @@ class cashPage{
 
     reload(){
         let object = this;
-        object.prepareParams();
-        if (isXHRloading) { return; } window.isXHRloading = true;
-        window.axios({
-            method: 'get',
-            url: object.getUrlString(),
-        }).then(function (resp) {
-            var results_container = document.getElementById(resp.data.target);
-            results_container.innerHTML = resp.data.html;
-
-            window.helper.insertParamUrl('search', object.search);
-            window.helper.insertParamUrl('active_tab', object.active_tab);
-            window.helper.insertParamUrl('date_start', object.date_start);
-            window.helper.insertParamUrl('date_end', object.date_end);
-            window.helper.insertParamUrl('page', object.page);
-            window.helper.insertParamUrl('isIncoming', object.isIncoming);
-            window.rebuildLinks();
-            object.load();
-            // object.chartCircle.options.animation.duration = 1000;
-            // object.chartCircle.data.datasets[0].data[1] = resp.data.income;
-            // object.chartCircle.data.datasets[0].data[0] = resp.data.outcome;
-            // object.chartCircle.update();
-            // object.chartCircle.options.animation.duration = 0;
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-        console.log('reload');
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
     }
 }
 export default cashPage;

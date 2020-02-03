@@ -43,6 +43,7 @@
             @include('product.dialog.select_product_inner')
         </div>
     </div>
+    234
     <div class="modal-footer white">
         <button class="btn success" onclick="closeDialog(event)">Закрыть</button>
     </div>

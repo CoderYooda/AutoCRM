@@ -1,4 +1,3 @@
-
 @if($partners->count() > 0)
     <div class="" data-simplebar style="max-height: 400px;">
         <div class="box-body">
