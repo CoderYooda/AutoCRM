@@ -504,6 +504,11 @@ input:-moz-placeholder { /* Firefox 18- */
     width: 80px;
     background: #042E4C;
     min-width: 80px;
+    pointer-events: inherit;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 .aside ul {
     padding-left: 0;

@@ -16,6 +16,7 @@ class CreateCashboxesTable extends Migration
         Schema::create('cashboxes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
+            $table->bigInteger('manager_id')->unsigned()->comment('Менеджер');
             $table->char('name')->comment('Название кассового аппарата');
             $table->integer('balance')->comment('текущий баланс');
             $table->timestamps();

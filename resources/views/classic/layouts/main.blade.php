@@ -62,36 +62,23 @@
                                 <span class="badge-pill"></span>
                             </a>
                         </li>
-                        @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="top-nav-item">
-                                <a class="d-flex align-items-center p-10" href="">
+                        <li class="top-nav-item">
+                            <a class="d-flex align-items-center p-10" href="">
                                             <span class="avatar w-32 mr-3">
                                                 <img src="http://autocrm/images/noavatar.png" alt="...">
                                             </span>
-                                    {{ Auth::user()->name }}
+                                {{ Auth::user()->name }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#" onclick="console.log(123);event.preventDefault();document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                                 document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </header>
@@ -147,6 +134,18 @@
                             </a>
                         </li>
                     </ul>
+                    <div class="mt-auto">
+                        <ul class="nav">
+                            <li>
+                                <a onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                <span class="nav-icon">
+                                    <i class="fa fa-power-off"></i>
+                                </span>
+                                    <span class="nav-text">Выход</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div id="ajax-content">
                     @yield('content')
@@ -161,5 +160,9 @@
         </div>
         <div class="i3-element"></div>
     </div>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+    <div id="login-form" class="hide"></div>
     </body>
 </html>

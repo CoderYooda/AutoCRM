@@ -573,6 +573,9 @@ label.label-sm{
     display: flex;
     margin-bottom: 10px;
 }
+.list-icon{
+    width: 50%;
+}
 .success {
     color: hsla(0,0%,100%,.85);
     background-color: #22b66e;
@@ -614,4 +617,7 @@ label.label-sm{
 }
 .w-128 {
     width: 128px;
+}
+.mt-auto{
+    margin-top: auto!important;
 }

@@ -42,26 +42,18 @@ class CashController extends Controller
 
     public static function warrantTab($request)
     {
-
-        $income =  WarrantController::getIncomeCount($request);
-        $outcome = WarrantController::getOutcomeCount($request);
-
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-warrant'){
-            return view(env('DEFAULT_THEME', 'classic') . '.warrant.elements.table_container', compact('income','outcome', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.warrant.elements.table_container', compact('request'));
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.warrant.index', compact('income', 'outcome', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.warrant.index', compact('request'));
         }
-
     }
 
     public static function cashmoveTab($request)
     {
-        $income =  WarrantController::getIncomeCount($request);
-        $outcome = WarrantController::getOutcomeCount($request);
-
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){
-            return view(env('DEFAULT_THEME', 'classic') . '.cash.elements.moneymove_list_container', compact('income','outcome','request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.cashmove.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.cash.cashmove', compact('income','outcome', 'request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.cashmove.index', compact('request'));
     }
 }

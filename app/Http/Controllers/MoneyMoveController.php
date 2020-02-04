@@ -8,6 +8,7 @@ use App\Models\Partner;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 
@@ -27,7 +28,7 @@ class MoneyMoveController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view('cash.dialog.form_moneymove', compact('moneymove', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.cashmove.dialog.form_moneymove', compact('moneymove', 'request'))->render()
         ]);
     }
 
@@ -54,11 +55,11 @@ class MoneyMoveController extends Controller
             $moneymove->in_cashbox()->first()->addition($moneymove->summ);
         } else{
             $message = "Перемещение создано";
+            $moneymove->manager_id = Auth::user()->partner()->first()->id;
         }
 
         $in_cashbox = Cashbox::owned()->where('id', $request['in_cashbox_id'])->first();
         $out_cashbox = Cashbox::owned()->where('id', $request['out_cashbox_id'])->first();
-
 
         $out_cashbox = $out_cashbox->addition($request['summ']);
         $in_cashbox = $in_cashbox->subtraction($request['summ']);
@@ -80,8 +81,15 @@ class MoneyMoveController extends Controller
         }
     }
 
+    public function tableData(Request $request)
+    {
+        $moneymoves = self::getMoneymoves($request);
+        foreach($moneymoves as $moneymove){
+            $moneymove->date = $moneymove->created_at->format('Y.m.d/H:i');
+        }
 
-
+        return response()->json($moneymoves);
+    }
 
     public function search(Request $request){
         $content = view('cash.elements.moneymove_list_container', compact('request'))->render();
@@ -93,14 +101,64 @@ class MoneyMoveController extends Controller
 
     public static function getMoneymoves($request)
     {
-        $moneymoves = MoneyMoves::owned()
-            ->orderBy('created_at', 'DESC')
-//            ->where(function($q) use ($request){
-//                if(isset($request['isIncoming']) && $request['isIncoming'] != 'null'){
-//                    $q->where('isIncoming',   boolval ($request['isIncoming']));
-//                }
-//            })
-            ->paginate(50);
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
+        if($field === null &&  $dir === null){
+            $field = 'created_at';
+            $dir = 'DESC';
+        }
+
+        if($request['provider'] == null){
+            $request['provider'] = [];
+        }
+
+        if($request['accountable'] == null){
+            $request['accountable'] = [];
+        }
+
+        $moneymoves = MoneyMoves::select(DB::raw('money_move.*, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.isfl = 1, manager.fio, manager.companyName) as manager'))
+            ->from(DB::raw('money_move
+            left join cashboxes as cashbox_in on cashbox_in.id = money_move.in_cashbox_id
+            left join cashboxes as cashbox_out on cashbox_out.id = money_move.out_cashbox_id
+            left join partners as manager on manager.id = money_move.manager_id
+            '))
+
+
+
+            ->when($request['provider'] != [], function($query) use ($request) {
+                $query->whereIn('partner_id', $request['provider']);
+            })
+            ->when($request['clientorder_status'] != null, function($query) use ($request) {
+                $query->where('status', $request['clientorder_status']);
+            })
+            ->when($request['accountable'] != [], function($query) use ($request) {
+                $query->whereIn('client_orders.partner_id', $request['accountable']);
+            })
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->where('money_move.company_id', Auth::user()->company()->first()->id)
+            ->groupBy('money_move.id')
+            ->orderBy($field, $dir)
+            //->toSql();
+
+            //dd($moneymoves);
+            ->paginate($size);
 
         return $moneymoves;
     }

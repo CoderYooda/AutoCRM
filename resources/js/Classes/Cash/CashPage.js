@@ -23,6 +23,7 @@ class cashPage{
         this.active_tab = window.helper.findGetParameter('active_tab');
         this.initTableData();
         this.initDatesFilter();
+        this.checkActive();
     }
 
     removePartner(id, type){
@@ -71,12 +72,12 @@ class cashPage{
         object.linked();
 
         object.initSearch();
-        document.addEventListener('ajaxLoaded', function(e){
-            object.checkActive();
-            //object.chartInit();
-            object.load();
-        });
-        object.checkActive();
+        // document.addEventListener('ajaxLoaded', function(e){
+        //     object.checkActive();
+        //     //object.chartInit();
+        //     object.load();
+        // });
+
         //object.searchInit();
         //object.initDates();
 
@@ -145,9 +146,9 @@ class cashPage{
                 {title:"Касса", field:"cashbox", width:160, align:"left"},
                 {title:"Сумма", field:"summ", width:160, align:"left"},
             ];
-        } else if(object.active_tab === 'provider_orders'){
-            object.contextDop = 'providerorder';
-            object.parametr = 'provider_order';
+        } else if(object.active_tab === 'cashmove'){
+            object.contextDop = 'moneymove';
+            object.parametr = 'moneymove_id';
             var iconFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
@@ -159,12 +160,12 @@ class cashPage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:50},
-                {title:"Оплата", field:"pays", width:80, formatter:iconFormatter},
-                {title:"Поступление", field:"incomes",align:"left", width:130, formatter:iconFormatter},
                 {title:"Дата", field:"date", width:150},
-                {title:"Поставщик", field:"name", align:"left"},
+                {title:"Откуда", field:"cin", width:160, align:"left"},
+                {title:"Куда", field:"cout", width:160, align:"left"},
                 {title:"Ответственный", field:"manager", align:"left"},
-                {title:"Сумма", field:"itogo", width:90, align:"left"},
+                {title:"Комментарий", field:"comment", width:150, align:"left"},
+                {title:"Сумма", field:"summ", width:90, align:"left"},
             ];
         }
         return columns;

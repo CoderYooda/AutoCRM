@@ -117,6 +117,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Движение средств между кассами
     Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название
     Route::post('/cashmove/search', 'MoneyMoveController@search')->name('MoneyMovePageSearch');
+    Route::get('/cashmove/tabledata', 'MoneyMoveController@tableData')->name('MoneyMoveData');
     #/Касса##############################################################################################
 
 

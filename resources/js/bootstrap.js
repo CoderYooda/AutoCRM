@@ -85,8 +85,8 @@ window.addEventListener('resize', function(){
     window.ih =  window.innerHeight;
     window.iw =  window.innerWidth;
 });
-document.addEventListener('click', function (e){ // событие клика по веб-документу
-    var divs = document.getElementsByClassName('dropdown_container'); // тут указываем ID элемента
+document.addEventListener('click', function (e){
+    var divs = document.getElementsByClassName('dropdown_container');
     [].forEach.call(divs, function(div){
         if (div !== (e.target)
             && !div.contains(e.target)

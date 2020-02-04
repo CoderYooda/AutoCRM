@@ -56,7 +56,7 @@ class CashboxController extends Controller
             ->orderBy('id', 'DESC')
             ->paginate(12);
 
-        $content = view('settings.dialog.select_cashbox_inner', compact('cashboxes', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.cashbox.dialog.select_cashbox_inner', compact('cashboxes', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);
@@ -74,7 +74,7 @@ class CashboxController extends Controller
         }
         return response()->json([
             'tag' => $tag,
-            'html' => view('settings.dialog.form_cashbox', compact('cashbox', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.cashbox.dialog.form_cashbox', compact('cashbox', 'request'))->render()
         ]);
     }
 
@@ -83,7 +83,7 @@ class CashboxController extends Controller
         $cashboxes = Cashbox::owned()->orderBy('id', 'DESC')->paginate(12);
         return response()->json([
             'tag' => 'selectCashboxDialog',
-            'html' => view('settings.dialog.select_cashbox', compact('cashboxes', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.cashbox.dialog.select_cashbox', compact('cashboxes', 'request'))->render()
         ]);
     }
 
