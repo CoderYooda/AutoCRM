@@ -238,7 +238,9 @@ class shipmentDialog{
         let container = this.root_dialog.querySelector('#itogo_price');
         let container2 = this.root_dialog.querySelector('#payed_price');
         container.innerHTML = Number(count).toFixed(2);
-        container2.innerHTML = Number(count).toFixed(2);
+        if(container2){
+            container2.innerHTML = Number(count).toFixed(2);
+        }
     }
 
     setDiscount(count){
@@ -302,7 +304,7 @@ class shipmentDialog{
     addProduct(elem){
 
         let article_id = elem.dataset.article_id;
-        let count = elem.closest('div').querySelector('input[name="count"]').value;
+        let count = 1;
 
         var object = this;
         window.axios({

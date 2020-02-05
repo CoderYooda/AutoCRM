@@ -139,10 +139,10 @@ class WarrantController extends Controller
 
         if($request['isIncoming']){
             $cashbox = $cashbox->addition($request['summ']);
-            $partner = $partner->addition($request['summ']);
+            $partner = $partner->subtraction($request['summ']);
         } else{
             $cashbox = $cashbox->subtraction($request['summ']);
-            $partner = $partner->subtraction($request['summ']);
+            $partner = $partner->addition($request['summ']);
         }
 
         $warrant->fill($request->only($warrant->fields));
@@ -157,8 +157,6 @@ class WarrantController extends Controller
             $warrant->$method()->syncWithoutDetaching($warrant->refer_id);
         }
 
-
-
         if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
@@ -169,33 +167,54 @@ class WarrantController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $warrant = Warrant::owned()->where('id', $id)->first();
+        $returnIds = null;
+        if($id == 'array'){
+            $warrants = Warrant::owned()->whereIn('id', $request['ids']);
+            $this->message = 'Кассовые ордера удалены';
+            $returnIds = $warrants->get()->pluck('id');
+            foreach($warrants->get() as $warrant){
 
-        $cashbox = $warrant->cashbox()->first();
-        $partner = $warrant->partner()->first();
+                $cashbox = $warrant->cashbox()->first();
+                $partner = $warrant->partner()->first();
 
-        if($warrant->isIncoming){
-            $cashbox->subtraction($warrant->summ);
-            $partner->subtraction($warrant->summ);
-        } else{
-            $cashbox->addition($warrant->summ);
-            $partner->addition($warrant->summ);
+                $this->status = 200;
+                if($warrant->isIncoming){
+                    $cashbox->subtraction($warrant->summ);
+                    $partner->subtraction($warrant->summ);
+                } else{
+                    $cashbox->addition($warrant->summ);
+                    $partner->addition($warrant->summ);
+                }
+                $warrant->delete();
+                $this->status = 200;
+            }
+        } else {
+            $warrant = Warrant::owned()->where('id', $id)->first();
+            $cashbox = $warrant->cashbox()->first();
+            $partner = $warrant->partner()->first();
+
+            $returnIds = $warrant->id;
+            $this->status = 200;
+            if($warrant->isIncoming){
+                $cashbox->subtraction($warrant->summ);
+                $partner->subtraction($warrant->summ);
+            } else{
+                $cashbox->addition($warrant->summ);
+                $partner->addition($warrant->summ);
+            }
+
+            $warrant->delete();
+            $this->status = 200;
+            $this->message = 'Кассовый ордер удален';
         }
 
-
-        $warrant->delete();
-        $this->status = 200;
-        $type = 'success';
-        $this->message = 'Кассовый ордер удален';
         return response()->json([
-            'id' => $warrant->id,
-            'type' => $type,
+            'id' => $returnIds,
             'message' => $this->message
-        ], 200);
+        ], $this->status);
     }
-
 
     private static function validateRules($request)
     {

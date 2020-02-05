@@ -1,12 +1,11 @@
 <div
     @if(isset($category) && $category->id != NULL)
+        @php $class = 'categoryDialog' . $category->id @endphp
         id="categoryDialog{{$category->id}}"
-    @php $class = 'categoryDialog' . $category->id @endphp
     @else
+        @php $class = 'categoryDialog' @endphp
         id="categoryDialog"
-    @php $class = 'categoryDialog' @endphp
     @endif
-
     class="dialog" style="width:380px;">
     @if(isset($category))
         <div class="titlebar">Редактирование "{{ $category->name }}"</div>

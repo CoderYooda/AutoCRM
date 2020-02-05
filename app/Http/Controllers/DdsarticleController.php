@@ -46,10 +46,12 @@ class DdsarticleController extends Controller
 
         $category = Category::where('id', $category_select)->first();
 
+
+
         $ddstypes = DdsType::all();
         return response()->json([
             'tag' => $tag,
-            'html' => view('settings.dialog.form_ddsarticle', compact('ddsarticle','ddstypes', 'category', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.form_ddsarticle', compact('ddsarticle','ddstypes', 'category', 'request'))->render()
         ]);
     }
 
@@ -113,7 +115,6 @@ class DdsarticleController extends Controller
             }
         }
 
-
         return response()->json(['id' => $Ddsarticle->id, 'message' => $message], $status);
     }
 
@@ -122,7 +123,7 @@ class DdsarticleController extends Controller
         $ddsarticles = Ddsarticle::owned()->orderBy('id', 'DESC')->paginate(12);
         return response()->json([
             'tag' => 'selectDdsarticleDialog',
-            'html' => view('settings.dialog.select_ddsarticle', compact('ddsarticles', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle', compact('ddsarticles', 'request'))->render()
         ]);
     }
 
@@ -144,8 +145,8 @@ class DdsarticleController extends Controller
         $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
             ->orderBy('id', 'DESC')
             ->paginate(12);
-
-        $content = view('settings.dialog.select_ddsarticle_inner', compact('ddsarticles', 'request'))->render();
+        //dd($ddsarticles);
+        $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle_inner', compact('ddsarticles', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);

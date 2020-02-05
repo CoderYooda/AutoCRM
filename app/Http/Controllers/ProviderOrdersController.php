@@ -125,7 +125,6 @@ class ProviderOrdersController extends Controller
 
     public function delete($id, Request $request)
     {
-
         $returnIds = null;
         if($id == 'array'){
             $provider_orders = ProviderOrder::whereIn('id', $request['ids']);

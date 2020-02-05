@@ -87,23 +87,49 @@ class CashboxController extends Controller
         ]);
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $cashbox = Cashbox::where('id', $id)->first();
-        $message = 'Касса удалена';
-        $status = 200;
-        if($cashbox->company()->first()->id != Auth::user()->company()->first()->id){
-            $message = 'Вам не разрешено удалять эту кассу';
-            $status = 422;
-        }
-        if($status == 200){
-            if(!$cashbox->delete()){
-                $message = 'Ошибка зависимотей. Обратитесь к администратору';
-                $status = 500;
+        $returnIds = null;
+        if($id == 'array'){
+            $cashboxes = Cashbox::whereIn('id', $request['ids']);
+            $this->message = 'Кассы удалены';
+            $returnIds = $cashboxes->get()->pluck('id');
+            foreach($cashboxes->get() as $cashbox){
+                $this->status = 200;
+                if($cashbox->company()->first()->id != Auth::user()->company()->first()->id){
+                    $this->message = 'Вам не разрешено удалять эту кассу';
+                    $this->status = 422;
+                }
+                if($this->status == 200){
+                    if(!$cashbox->delete()){
+                        $this->message = 'Ошибка зависимотей. Обратитесь к администратору';
+                        $this->status = 500;
+                    }
+                }
+            }
+        } else {
+            $cashbox = Cashbox::where('id', $id)->first();
+            $this->message = 'Касса удалена';
+            $returnIds = $cashbox->id;
+            $this->status = 200;
+            if($cashbox->company()->first()->id != Auth::user()->company()->first()->id){
+                $this->message = 'Вам не разрешено удалять эту кассу';
+                $this->status = 422;
+            }
+            if($this->status == 200){
+                if(!$cashbox->delete()){
+                    $this->message = 'Ошибка зависимотей. Обратитесь к администратору';
+                    $this->status = 500;
+                }
             }
         }
-        return response()->json(['id' => $cashbox->id, 'message' => $message], $status);
+
+        return response()->json([
+            'id' => $returnIds,
+            'message' => $this->message
+        ], $this->status);
     }
+
 
     public function select($id){
         $cashbox = Cashbox::where('id', $id)->first();

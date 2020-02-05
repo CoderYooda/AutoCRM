@@ -142,13 +142,13 @@ class cashPage{
                 {title:"Дата", field:"date", width:150},
                 {title:"Тип", field:"type", width:150, align:"left"},
                 {title:"Контрагент", field:"partner", align:"left"},
-                {title:"Статья", field:"dds", width:160, align:"left"},
-                {title:"Касса", field:"cashbox", width:160, align:"left"},
-                {title:"Сумма", field:"summ", width:160, align:"left"},
+                {title:"Статья", field:"dds", width:130, align:"left"},
+                {title:"Касса", field:"cashbox", width:130, align:"left"},
+                {title:"Сумма", field:"summ", width:130, align:"left"},
             ];
         } else if(object.active_tab === 'cashmove'){
             object.contextDop = 'moneymove';
-            object.parametr = 'moneymove_id';
+            object.parametr = 'moneymove';
             var iconFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';

@@ -109,13 +109,14 @@ class Partner extends Model
     }
 
     public function addition($summ){
-        $this->balance = $this->balance + $summ;
+        $this->balance = round($this->balance + $summ, 2);
+
         $this->save();
         return true;
     }
 
     public function subtraction($summ){
-        $this->balance = $this->balance - $summ;
+        $this->balance = round($this->balance - $summ, 2);
         $this->save();
         return true;
     }

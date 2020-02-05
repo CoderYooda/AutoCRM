@@ -23,16 +23,12 @@
         @if(isset($moneymove))<input class="do_date" type="hidden" name="do_date" value="{{ $moneymove->do_date }}">@endif
 
         <div class="no-gutters align-items-stretch">
-            <div class="padding dark">
-                <div class="row row-sm">
-                    <div class="col-sm-12">
-                        <div class="text-md text-white">
-                            <span class="text-muted">Дата</span> <span>@if(isset($moneymove)){{ \Carbon\Carbon::parse($moneymove->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="modal-header">
+                <span class="text-muted pr-15">Дата</span> <span>@if(isset($moneymove)){{ \Carbon\Carbon::parse($moneymove->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
             </div>
-            <div class="padding">
+
+            <div class="box-body">
                 <div class="form-group">
                     <label for="category_id">Касса отправитель</label>
                     <div class="input-group">
@@ -55,19 +51,6 @@
                                 Не выбрано
                             @endif
                         </button>
-
-                        {{--<select name="out_cashbox_id" disabled class="out_cashbox_select form-control input-c noarrow fake-disabled" readonly>--}}
-                            {{--@if(isset($moneymove) && $moneymove->out_cashbox()->first() != null)--}}
-                                {{--<option value="{{ $moneymove->out_cashbox()->first()->id }}">{{ $moneymove->out_cashbox()->first()->name }}</option>--}}
-                            {{--@else--}}
-                                {{--<option>Не выбрано</option>--}}
-                            {{--@endif--}}
-                        {{--</select>--}}
-                        {{--<div class="input-group-append">--}}
-                            {{--<button onclick="{{ $class }}.openSelectCashboxModal('Out')"--}}
-                                    {{--class="btn white" type="button"><i class="fa fa-bars"></i>--}}
-                            {{--</button>--}}
-                        {{--</div>--}}
                     </div>
                 </div>
                 <div class="form-group">
@@ -83,8 +66,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            <button type="submit" class="btn success" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
+            <button type="button" class="button white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
+            <button type="submit" class="button pull-right" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
         </div>
         <div class="system_message">
 

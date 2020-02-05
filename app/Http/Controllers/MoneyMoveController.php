@@ -81,6 +81,38 @@ class MoneyMoveController extends Controller
         }
     }
 
+    public function delete($id, Request $request)
+    {
+        $returnIds = null;
+        if($id == 'array'){
+            $moneymoves = MoneyMoves::owned()->whereIn('id', $request['ids']);
+            $this->message = 'Перемещения удалены';
+            $returnIds = $moneymoves->get()->pluck('id');
+            foreach($moneymoves->get() as $moneymove){
+                $this->message = 'Перемещения удалены';
+                $this->status = 200;
+                if(!$moneymove->delete()){
+                    $this->message = 'Ошибка зависимотей. Обратитесь к администратору';
+                    $this->status = 500;
+                }
+            }
+        } else {
+            $moneymove = MoneyMoves::owned()->where('id', $id)->first();
+            $this->message = 'Перемещение удалено';
+            $returnIds = $moneymove->id;
+            $this->status = 200;
+            if(!$moneymove->delete()){
+                $this->message = 'Ошибка зависимотей. Обратитесь к администратору';
+                $this->status = 500;
+            }
+        }
+
+        return response()->json([
+            'id' => $returnIds,
+            'message' => $this->message
+        ], $this->status);
+    }
+
     public function tableData(Request $request)
     {
         $moneymoves = self::getMoneymoves($request);
@@ -115,7 +147,6 @@ class MoneyMoveController extends Controller
         }
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
-            //dd(Carbon::parse($dates[0]));
             $request['dates'] = $dates;
         }
         if($field === null &&  $dir === null){
@@ -123,12 +154,8 @@ class MoneyMoveController extends Controller
             $dir = 'DESC';
         }
 
-        if($request['provider'] == null){
-            $request['provider'] = [];
-        }
-
-        if($request['accountable'] == null){
-            $request['accountable'] = [];
+        if($request['partner'] == null){
+            $request['partner'] = [];
         }
 
         $moneymoves = MoneyMoves::select(DB::raw('money_move.*, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.isfl = 1, manager.fio, manager.companyName) as manager'))
@@ -138,19 +165,11 @@ class MoneyMoveController extends Controller
             left join partners as manager on manager.id = money_move.manager_id
             '))
 
-
-
-            ->when($request['provider'] != [], function($query) use ($request) {
-                $query->whereIn('partner_id', $request['provider']);
-            })
-            ->when($request['clientorder_status'] != null, function($query) use ($request) {
-                $query->where('status', $request['clientorder_status']);
-            })
-            ->when($request['accountable'] != [], function($query) use ($request) {
-                $query->whereIn('client_orders.partner_id', $request['accountable']);
+            ->when($request['partner'] != [], function($query) use ($request) {
+                $query->whereIn('money_move.manager_id', $request['partner']);
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('money_move.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
             ->where('money_move.company_id', Auth::user()->company()->first()->id)
             ->groupBy('money_move.id')

@@ -19,8 +19,16 @@ class DdsArticle extends Model
         return $this->belongsTo('App\Models\Company', 'company_id');
     }
 
+    public function ddstype()
+    {
+        return $this->belongsTo('App\Models\DdsType', 'dds_types_id');
+    }
+
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id)->orWhere('company_id', NUll);
+        return self::where(function($q) use ($company_id){
+            $q->where('company_id', $company_id);
+            $q->orWhere('company_id', NUll);
+        });
     }
 }

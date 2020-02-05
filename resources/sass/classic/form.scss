@@ -576,6 +576,10 @@ label.label-sm{
 .list-icon{
     width: 50%;
 }
+.list-title.alone{
+    max-width: calc((100% - 44px))!important;
+    border-right: none!important;
+}
 .success {
     color: hsla(0,0%,100%,.85);
     background-color: #22b66e;
@@ -620,4 +624,10 @@ label.label-sm{
 }
 .mt-auto{
     margin-top: auto!important;
+}
+button.form-control{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-right: 30px;
 }

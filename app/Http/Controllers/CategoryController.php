@@ -282,6 +282,8 @@ class CategoryController extends Controller
                 $root = 1;
             }else if(strpos($request['refer'], 'productDialog') !== false){
                 $root = 2;
+            }else if(strpos($request['refer'], 'ddsarticleDialog') !== false){
+                $root = 4;
             } else {
                 return response()->json([
                     'message' => 'Не указан рефер',
