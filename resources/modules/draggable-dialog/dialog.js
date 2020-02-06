@@ -32,15 +32,15 @@ document.addEventListener('mousemove', function(e){
 			var d = document.getElementById(elem.tag);
 			var folderLeft = e.pageX - elem.ol;
 			if(e.pageX < (window.iw / 2)){
-				if(folderLeft < 0){d.style.left = 0 + 'px';} else {d.style.left = folderLeft + 'px';}
+				if(folderLeft < 0){d.style.left = 0 + 'px'; dialogs[objectKey].position.x = 0} else {d.style.left = folderLeft + 'px'; dialogs[objectKey].position.x = folderLeft}
 			} else {
-				if((folderLeft + elem.width) > window.iw){d.style.left = (window.iw - elem.width)  + 'px';} else {d.style.left = folderLeft + 'px';}
+				if((folderLeft + elem.width) > window.iw){d.style.left = (window.iw - elem.width)  + 'px'; dialogs[objectKey].position.x = (window.iw - elem.width)} else {d.style.left = folderLeft + 'px'; dialogs[objectKey].position.x = folderLeft}
 			}
 			var folderTop = e.pageY - elem.ot;
 			if(e.pageY < (window.ih / 2)){
-				if(folderTop < 0){d.style.top = 0 + 'px';} else {d.style.top = folderTop + 'px';}
+				if(folderTop < 0){d.style.top = 0 + 'px'; dialogs[objectKey].position.y = 0} else {d.style.top = folderTop + 'px'; dialogs[objectKey].position.y = folderTop}
 			} else {
-				if((folderTop + elem.height) > window.ih){d.style.top = (window.ih - elem.height)  + 'px';} else {d.style.top = folderTop + 'px';}
+				if((folderTop + elem.height) > window.ih){d.style.top = (window.ih - elem.height)  + 'px'; dialogs[objectKey].position.y = (window.ih - elem.height)} else {d.style.top = folderTop + 'px'; dialogs[objectKey].position.y = folderTop}
 			}
 		}
 	});
