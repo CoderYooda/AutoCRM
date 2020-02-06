@@ -129,12 +129,15 @@ window.step = function(timestamp)
 
     window.an.div.style.left =  window.an.maxX + x + "px";
     window.an.div.style.top = window.an.maxY - y + "px";
-    window.an.div.style.opacity = 1.2 - Math.sin((90 * progress) * Math.PI / 180);
+
+    window.an.div.style.transform = "scale(" + (1 - progress / 1.5) + ") translate(0px, -" + (window.an.div.offsetHeight * 1.5 * progress) + "px)";
+    window.an.div.style.opacity = 1 - Math.sin((90 * progress) * Math.PI / 180);
     if(progress <= 1){
         requestAnimationFrame(window.step);
     } else {
         window.an.div.classList.add('hide');
         window.an.div.style.opacity = 1;
+        window.an.div.style.transform = "none";
 
         window.an.start = null; // reset to start position
     }
