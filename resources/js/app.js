@@ -1,3 +1,5 @@
+
+
 require('./variables');                                             // Стартовая инициализация
 require('./bootstrap');                                             // Стартовая инициализация
 require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
@@ -27,6 +29,7 @@ import Pagination from './Classes/Pagination.js';
 import AxForm from './Classes/Form.js';
 import Helper from './Classes/Helper.js';
 import Socket from './Classes/Socket.js';
+import Alerts from './Classes/Alerts.js';
 import Supplier from './Classes/Supplier.js';
 import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
@@ -39,6 +42,7 @@ import Auth from './Classes/Auth.js';
 import IMask from 'imask';
 window.helper = new Helper();
 window.socket = new Socket();
+window.alerts = new Alerts();
 window.pagination = new Pagination();
 window.axform = new AxForm();
 //window.product = new Product();

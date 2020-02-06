@@ -64,7 +64,7 @@ input[type=checkbox]:checked {
     border-color: transparent;
     border-style: solid;
     top: -8px;
-    left: 10px;
+    right: 10px;
 }
 .dropdown_container .arrow::before{
     border-width: 0 .5rem .5rem .5rem;
@@ -87,7 +87,7 @@ input[type=checkbox]:checked {
     background: #fff;
     box-shadow: 0px 4px 10px rgba(44, 64, 129, 0.12);
     top: calc(100% + 6px);
-    left: 0;
+    right: 0;
     z-index: 999999999;
 }
 .dropdown_container .element{
@@ -195,11 +195,11 @@ li.active .header-tab{
 .top-warnings .badge-pill{
     position: absolute;
     top: 10px;
-    right: 6px;
+    right: 4px;
     border: 3px solid #2d76a8;
     background: #ffa726;
-    width: 8px;
-    height: 8px;
+    width: 15px;
+    height: 15px;
     border-radius: 100px;
     display: none;
 }
@@ -385,6 +385,23 @@ li.active .header-tab{
     padding: 0;
     border: 0;
 }
+.dialog .btn_minus{
+    background: url(/images/icons/minus.png) no-repeat 13px 15px;
+    float: right;
+    opacity: .75;
+    color: transparent;
+    filter: alpha(opacity=75);
+    cursor: pointer;
+    outline: none;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 40px;
+    padding: 0;
+    border: 0;
+}
+
 .dialog .box-body, .dialog .box-footer{
     padding: 15px;
 }

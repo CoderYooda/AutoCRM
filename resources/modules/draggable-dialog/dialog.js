@@ -76,35 +76,6 @@ window.openDialog = function(tag, params = null, reload = false) {
         window.isXHRloading = false;
     });
 
-
-
-	// let dReq = new XMLHttpRequest();
-	// window.isXHRloading = true;
-    // dReq.onreadystatechange = function (e) {
-    //     if (dReq.readyState === 4) {
-    //         var resp = JSON.parse(this.responseText);
-    //         if(dReq.status === 200){
-    //             var resp = JSON.parse(this.responseText);
-    //             if(!alreadyOpened(resp.tag) || reload){
-    //                 closeDialog(null, resp.tag);
-    //                 appendDialog(resp, resp.tag);
-    //                 window.helper.initDialogMethods();
-    //             }
-    //             window.isXHRloading = false;
-    //         }else{
-    //             window.notification.notify( 'error', resp.message);
-    //             window.isXHRloading = false;
-    //         }
-    //     }
-    // };
-	// dReq.onload = function () {
-    //
-	// };
-
-
-    //
-	// dReq.open("get", 'dialog_' + tag + '_open' + params, true);
-	// dReq.send();
 }
 
 window.closeDialog = function(event, id = null){
@@ -140,6 +111,7 @@ function appendDialog(resp, tag){
 	var dialog = document.getElementById(tag);
 	dialog.style.left = position.x + 'px';
 	dialog.style.top = position.y + 'px';
+    dialog.hidden = false;
 	window.dialogs[tag].height = dialog.offsetHeight;
 	window.dialogs[tag].width = dialog.offsetWidth;
 
@@ -185,14 +157,14 @@ function downEventListners(){
 function alreadyOpened(tag){
 	console.info('Проверка на вхождение окна...');
 	if(document.getElementById(tag)){
-		flashDialog(tag);
+        window.flashDialog(tag);
 		return true;
 	}else{
 		return false;
 	}
 }
 
-function flashDialog(tag){
+window.flashDialog = function(tag, onlySelect = false){
 	Object.keys(dialogs).map(function(key, index) {
 		var elem = dialogs[key];
 		var dial = document.getElementById(elem.tag);
@@ -200,12 +172,15 @@ function flashDialog(tag){
 	});
 	var d = document.getElementById(tag);
 	d.classList.add('selected');
-	d.classList.add('flash');
-	setTimeout(function(){
-		d.classList.remove('flash');
-	}, 300);
+	if(!onlySelect){
+        d.classList.add('flash');
+        setTimeout(function(){
+            d.classList.remove('flash');
+        }, 300);
+    }
 	console.info('Окно ' + tag + ' подсвечено');
 }
+
 
 function dialogPosition(tag){
 	var position = [];

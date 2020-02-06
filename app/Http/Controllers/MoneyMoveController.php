@@ -81,6 +81,21 @@ class MoneyMoveController extends Controller
         }
     }
 
+    public function getSideInfo(Request $request){
+
+        $moneymove = MoneyMoves::owned()->where('id', $request['id'])->first();
+        $partner = $moneymove->manager()->first();
+        $comment = $moneymove->comment;
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.cashmove.contact-card', compact( 'partner','request', 'moneymove'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function delete($id, Request $request)
     {
         $returnIds = null;

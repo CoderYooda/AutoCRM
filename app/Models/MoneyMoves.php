@@ -20,6 +20,11 @@ class MoneyMoves extends Model
         'comment',
     ];
 
+    public function manager()
+    {
+        return $this->belongsTo('App\Models\Partner', 'manager_id');
+    }
+
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;
         return self::where('company_id', $company_id);

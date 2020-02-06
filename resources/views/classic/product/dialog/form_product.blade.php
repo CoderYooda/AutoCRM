@@ -13,7 +13,9 @@
         <div class="titlebar">Добавление продукта</div>
     @endif
 
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
+
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="

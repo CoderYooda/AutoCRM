@@ -12,7 +12,7 @@
     @else
         <div class="titlebar">Новая категория</div>
     @endif
-
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreCategory') }}" method="post">
         <div class="">

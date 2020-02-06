@@ -56,22 +56,42 @@
                     </ul>
                     <span class="md-auto"></span>
                     <ul class="top-nav-bar right-nav">
-                        <li class="top-nav-item top-warnings active">
-                            <a class="d-flex align-items-center p-10" href="">
-                                <i class="fa fa-bell" aria-hidden="true"></i>
+
+                        <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
+                            <a id="stack_badge" class="ico_link stack">
+                                <span class="badge-pill"></span>
+                            </a>
+                            <div class="dropdown_container">
+                                <div class="arrow"></div>
+                                <div class="mess_container" data-simplebar style="max-height: 400px; width: 200px">
+                                    <div id="stack_item_container">
+                                        awdawd
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="top-nav-item">
+                            <a id="bell_badge" class="ico_link bell">
                                 <span class="badge-pill"></span>
                             </a>
                         </li>
-                        <li class="top-nav-item">
-                            <a class="d-flex align-items-center p-10" href="">
+                        <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
+                            <span class="d-flex align-items-center p-10" href="">
                                             <span class="avatar w-32 mr-3">
                                                 <img src="http://autocrm/images/noavatar.png" alt="...">
                                             </span>
                                 {{ Auth::user()->name }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#" onclick="console.log(123);event.preventDefault();document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
+                            </span>
+
+                            <div class="dropdown_container">
+                                <div class="arrow"></div>
+                                <a class="element" href="#" onclick="">
+                                    Личный кабинет
+                                </a>
+                                <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                    Выход
                                 </a>
                             </div>
                         </li>

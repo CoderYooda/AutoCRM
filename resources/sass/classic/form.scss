@@ -599,8 +599,6 @@ label.label-sm{
     margin-right: .5rem;
 }
 .badge-pill {
-    padding-right: .6em;
-    padding-left: .6em;
     border-radius: 10rem;
 }
 .list-group-item{
@@ -630,4 +628,28 @@ button.form-control{
     overflow: hidden;
     white-space: nowrap;
     padding-right: 30px;
+}
+
+.mess_container{
+    color: #404040;
+}
+
+.top-nav-item .ico_link{
+    width: 42px;
+    height: 52px;
+    text-align: center;
+    padding: 14px 10px;
+    display: block;
+}
+.top-nav-item .ico_link.bell{
+    background: url(/images/icons/bell.svg) no-repeat center;
+}
+.top-nav-item .ico_link.stack{
+    background: url(/images/icons/stack.svg) no-repeat center;
+}
+.top-nav-item:hover, .top-nav-item.show{
+    background-color: #3d6898;
+}
+.top-nav-item .stack_item{
+    color: #404040!important;
 }
