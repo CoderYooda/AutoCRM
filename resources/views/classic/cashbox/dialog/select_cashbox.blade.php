@@ -1,6 +1,7 @@
 @php $class = 'selectCashboxDialog' @endphp
 <div id="selectCashboxDialog" class="dialog" style="width:450px;">
     <div class="titlebar">Выбор кассового аппарата</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
     @if($request['type'] != null)
         <input name="type" type="hidden" value="{{ $request['type'] }}">

@@ -12,7 +12,7 @@
     @else
         <div class="titlebar">Создание нового контрагента</div>
     @endif
-        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form id="act_form_partner" action="{{ route('StorePartner') }}" method="POST">
         @csrf
@@ -51,7 +51,7 @@
         </div>
         @include('partner.dialog.tabs')
         <div class="modal-footer">
-            <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right action_button">Сохранить</button>
+            <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right">Сохранить</button>
         </div>
 {{--        <div class="tab-content">--}}
 {{--            <div class="tab-pane @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif" id="physial_tab">--}}

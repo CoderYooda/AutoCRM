@@ -12,7 +12,7 @@
     @else
         <div class="titlebar">Добавление статьи</div>
     @endif
-
+        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="closeDialog(event)">×</button>
     <form action="{{ route('StoreDdsarticle') }}" method="POST">
         @csrf

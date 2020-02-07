@@ -4,6 +4,7 @@ class Alerts{
         this.bell_item = document.getElementById('bell_badge');
         this.stack_item = document.getElementById('stack_badge');
         this.stack_item_container = document.getElementById('stack_item_container');
+        this.stack_badge_count = document.getElementById('stack_badge_count');
         window.stack_dialogs = [];
         console.log('Оповещения подключены');
         this.freshDialogStack();
@@ -15,11 +16,24 @@ class Alerts{
             if(elem.tag == tag){
                 let dialog = document.getElementById(elem.tag);
                 dialogs[objectKey].hidden = false;
+
+                window.an = {};
+                window.an.start = null;
+                window.an.duration = 0.2;
+                window.an.gridSize = 10;
+                window.an.maxX = dialogs[objectKey].position.x;
+                window.an.maxY = dialogs[objectKey].position.y;
+                window.an.targetX =  document.getElementById('stack_badge').getBoundingClientRect().left;
+                window.an.targetY =  document.getElementById('stack_badge').getBoundingClientRect().top;
+                window.an.div = document.getElementById(elem.tag);
+                requestAnimationFrame(window.stepBack);
                 dialog.classList.remove('hide');
                 window.flashDialog(elem.tag, true);
             }
         });
         this.freshDialogStack();
+
+
     }
 
     animateToBase(objectKey){
@@ -38,45 +52,34 @@ class Alerts{
         //this.step(4, this, objectKey, home);
     }
 
-    // step(speed, object, objectKey, target){
-    //     var elem = dialogs[objectKey];
-    //     let current = [document.getElementById(elem.tag).getBoundingClientRect().top, document.getElementById(elem.tag).getBoundingClientRect().left];
-    //
-    //     let dialog_window = document.getElementById(elem.tag);
-    //
-    //     let Topdistance = current[0] - target[0];
-    //     let Ydistance = current[1] - target[1];
-    //     //console.log(Topdistance, Ydistance);
-    //
-    //     if(Topdistance > target[0]){
-    //         dialog_window.style.top = (Topdistance - 0.1 ) + 'px';
-    //     }
-    //     // if(Ydistance > 0){
-    //     //     dialog_window.style.top = Ydistance - 4 + 'px';
-    //     // }
-    //
-    //     if(Topdistance > target[0]){
-    //         object.step(speed, object, objectKey, target);
-    //     }
-    //
-    // }
-
-
 
     freshDialogStack(){
         let object = this;
         let html = '';
+        let count = 0;
         object.stack_item_container.innerHTML = html;
         Object.keys(dialogs).map(function(objectKey, index) {
             var elem = dialogs[objectKey];
-
             if(elem.hidden){
+                count++;
                 stack_dialogs.push(dialogs[objectKey]);
                 html += '<a class="stack_item" onclick="window.alerts.comeBackDialog(\'' + elem.tag + '\')">' + elem.title + '</a>'
-
             }
             object.stack_item_container.innerHTML = html;
         });
+
+        if(count > 0){
+            object.stack_item.classList.add('add');
+            setTimeout(function(){
+                object.stack_item.classList.remove('add');
+            }, 200);
+            object.stack_item.classList.add('active');
+        } else {
+            object.stack_item.classList.remove('active');
+        }
+
+
+        this.stack_badge_count.innerHTML = count;
         //this.stack_item
     }
 
@@ -117,6 +120,30 @@ class Alerts{
 }
 export default Alerts;
 
+window.stepBack = function(timestamp)
+{
+    var progress, x, y;
+    if(window.an.start === null) window.an.start = timestamp;
+
+    progress = (timestamp - window.an.start) / window.an.duration / 1000; // percent
+
+    x = Math.sin((90 * progress) * Math.PI / 180) * progress * (Math.max(window.an.maxX, window.an.targetX) - Math.min(window.an.maxX, window.an.targetX)); // x = ƒ(t)
+    y = Math.sin((90 * progress) * Math.PI / 180) * (progress * (Math.max(window.an.maxY, window.an.targetY) - Math.min(window.an.maxY, window.an.targetY))); // x = ƒ(t)
+
+    window.an.div.style.left =  window.an.targetX - x + "px";
+    window.an.div.style.top = window.an.targetY + y + "px";
+
+    window.an.div.style.transform = "scale(" + progress + ") translate(0px, -" + ((window.an.div.offsetHeight * progress) - window.an.div.offsetHeight ) + "px)";
+    window.an.div.style.opacity = Math.sin((90 * progress) * Math.PI / 180);
+    if(progress <= 1){
+        requestAnimationFrame(window.stepBack);
+    } else {
+        window.an.div.style.transform = "none";
+        window.an.div.style.opacity = 1;
+        window.an.start = null; // reset to start position
+    }
+}
+
 window.step = function(timestamp)
 {
     var progress, x, y;
@@ -141,5 +168,4 @@ window.step = function(timestamp)
 
         window.an.start = null; // reset to start position
     }
-
 }

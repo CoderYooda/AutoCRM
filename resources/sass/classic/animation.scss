@@ -15,3 +15,12 @@
         transform: translate3d(4px, 0, 0);
     }
 }
+
+@keyframes add {
+    10%, 90% {
+        transform: scale(1);
+    }
+    50%{
+        transform: scale(1.3);
+    }
+}

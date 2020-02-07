@@ -15,6 +15,7 @@
         @else
             <div class="titlebar">Новая заявка поставщику</div>
         @endif
+        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
         <div class="modal-header dark" style="justify-content: normal;">
             <div class="modal-alt-header">

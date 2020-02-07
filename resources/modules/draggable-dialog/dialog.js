@@ -38,7 +38,7 @@ document.addEventListener('mousemove', function(e){
 			}
 			var folderTop = e.pageY - elem.ot;
 			if(e.pageY < (window.ih / 2)){
-				if(folderTop < 0){d.style.top = 0 + 'px'; dialogs[objectKey].position.y = 0} else {d.style.top = folderTop + 'px'; dialogs[objectKey].position.y = folderTop}
+				if(folderTop < 52){d.style.top = 52 + 'px'; dialogs[objectKey].position.y = 52} else {d.style.top = folderTop + 'px'; dialogs[objectKey].position.y = folderTop}
 			} else {
 				if((folderTop + elem.height) > window.ih){d.style.top = (window.ih - elem.height)  + 'px'; dialogs[objectKey].position.y = (window.ih - elem.height)} else {d.style.top = folderTop + 'px'; dialogs[objectKey].position.y = folderTop}
 			}
@@ -157,6 +157,9 @@ function downEventListners(){
 function alreadyOpened(tag){
 	console.info('Проверка на вхождение окна...');
 	if(document.getElementById(tag)){
+	    if(window.dialogs[tag].hidden){
+            window.alerts.comeBackDialog(tag);
+        }
         window.flashDialog(tag);
 		return true;
 	}else{

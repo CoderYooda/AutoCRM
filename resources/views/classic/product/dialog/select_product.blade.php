@@ -1,6 +1,7 @@
 @php $class = 'selectProductDialog' @endphp
 <div id="selectProductDialog" class="dialog white" style="width:580px;">
     <div class="titlebar">Поиск товаров</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
     <div class="modal-header">

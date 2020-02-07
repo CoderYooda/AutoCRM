@@ -15,7 +15,7 @@ class EmployeeController extends Controller
         $target = HC::selectTarget();
 
         if($request->expectsJson() && $request['search'] == NULL){
-            $content = view('employee.index', compact('request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.employee.index', compact('request'))->render();
             return response()->json([
                 'target' => $target,
                 'page' => 'Сотрудники',
@@ -23,13 +23,13 @@ class EmployeeController extends Controller
             ]);
         } elseif($request->expectsJson() && $request['search'] != NULL)
         {
-            $content = view('employee.elements.list_container', compact('request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.employee.elements.list_container', compact('request'))->render();
             return response()->json([
                 'html' => $content,
                 'target' => 'ajax-table-employee',
             ], 200);
         } else {
-            return view('employee.index', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.employee.index', compact('request'));
         }
     }
 

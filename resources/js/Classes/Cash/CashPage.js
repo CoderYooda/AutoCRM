@@ -66,7 +66,6 @@ class cashPage{
         });
     };
 
-
     init(){
         let object = this;
         object.linked();

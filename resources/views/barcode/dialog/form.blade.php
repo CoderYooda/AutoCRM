@@ -1,5 +1,6 @@
 <div id="barcodeDialog" class="dialog warrant_dialog" style="width:500px;">
     <div class="titlebar">Операция сканирования</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('4')">_</button>
     <button class="btn_close" onclick="window.barcodeDialog.finitaLaComedia()">×</button>
 
 

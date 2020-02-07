@@ -1,5 +1,12 @@
 <div class="tab-pane p-3 active" id="{{$class}}_tab_base">
     <div class="form-group">
+        <label>Артикул</label>
+        <input type="text" name="article"
+               @if(isset($product))value="{{ $product->article }}"@endif
+               @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif
+               class="form-control" placeholder="Артикул детали (не более 64 символов)">
+    </div>
+    <div class="form-group">
         <label>Наименование</label>
         <input type="text" name="name" id="product_dialog_focused"
                @if(isset($product)) value="{{ $product->name }}" @endif
@@ -36,12 +43,5 @@
                 @endif
             </button>
         </div>
-    </div>
-    <div class="form-group">
-        <label>Артикул</label>
-        <input type="text" name="article"
-                @if(isset($product))value="{{ $product->article }}"@endif
-                @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif
-                class="form-control" placeholder="Артикул детали (не более 64 символов)">
     </div>
 </div>

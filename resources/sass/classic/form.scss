@@ -4,10 +4,17 @@
 //}
 
 .flash{
-
-    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+ }
+.add{
+    animation: add 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
-
+.no-windows{
+    width: 100%;
+    text-align: center;
+    display: block;
+    padding: 25px 0px;
+}
 .flash .titlebar{
    // background: #DD3939!important;
 }
@@ -647,9 +654,32 @@ button.form-control{
 .top-nav-item .ico_link.stack{
     background: url(/images/icons/stack.svg) no-repeat center;
 }
+.ico_link.stack.active {
+    background: url(/images/icons/stack_on.svg) no-repeat center!important;
+}
 .top-nav-item:hover, .top-nav-item.show{
     background-color: #3d6898;
 }
 .top-nav-item .stack_item{
-    color: #404040!important;
+    color: #404040 !important;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 5px 10px;
+}
+.badge-pill{
+    top: 10px;
+    right: 4px;
+    position: absolute;
+    background: #FDA61C;
+    border: 2px solid #2d76a8;
+    font-size: 9px;
+    line-height: 0px;
+    text-align: center;
+    padding: 6px 4px;
+    display: none;
+}
+.active .badge-pill{
+    display: block;
 }

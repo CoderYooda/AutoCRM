@@ -12,6 +12,7 @@
     @else
         <div class="titlebar">Новое перемещение средств</div>
     @endif
+        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreMoneyMove') }}" method="POST">
         @csrf

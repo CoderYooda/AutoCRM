@@ -1,3 +1,5 @@
+import {Contextual, ContextualItem} from "../Contentual";
+
 class employeePage{
 
     constructor(){
@@ -27,6 +29,143 @@ class employeePage{
             object.prepareParams();
             object.reload();
         });
+    }
+
+
+    initTableData(){
+        let object = this;
+        let table_container = document.getElementById('table-container');
+        let height = 500;
+
+        if(table_container){
+            height = table_container.offsetHeight;
+        }
+        let cleanHeight = height - 110;
+        let elements = cleanHeight / 44;
+
+        object.table = new Tabulator("#warrant-table", {
+            locale:true,
+            langs:{
+                "ru":{
+                    "ajax":{
+                        "loading":"Загрузка", //ajax loader text
+                        "error":"Ошибка", //ajax error text
+                    },
+                    "pagination":{
+                        "page_size":"Кол-во элементов",
+                        "first":"Первая",
+                        "first_title":"Первая страница",
+                        "last":"Последняя",
+                        "last_title":"Последняя страница",
+                        "prev":"Предыдущая",
+                        "prev_title":"Предыдущая страница",
+                        "next":"Следующая",
+                        "next_title":"Следующая страница",
+                        "show_page":"След.",
+                    },
+                    "headerFilters":{
+                        "default":"filter column...",
+                        "columns":{
+                            "name":"filter name...",
+                        }
+                    }
+                }
+            },
+            clipboard:true,
+            selectable:true,
+            selectableRangeMode:"click",
+            resizableColumns:false,
+            height:height-15,
+            pagination:"remote",
+            layout:"fitColumns",
+            ajaxSorting:true,
+            ajaxURL:'/' + object.active_tab + '/tabledata',
+            ajaxRequesting:function(url, params){
+                window.isXHRloading = true;
+                document.body.classList.add('loading');
+            },
+            ajaxResponse:function(url, params, response){
+                window.isXHRloading = false;
+                document.body.classList.remove('loading');
+                return response;
+            },
+            ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
+            paginationSize:Math.floor(elements),
+            placeholder:"По данным критериям ничего нет",
+            columns: object.generateColumns(),
+            rowContext:function(e, row){
+                e.preventDefault();
+                object.selectedData = object.table.getSelectedData();
+                let items = [
+                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
+                    new ContextualItem({type:'seperator'}),
+                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
+                ];
+                if(object.selectedData.length > 0){
+                    items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
+                }
+                object.tableContextual = null;
+                object.tableContextual = new Contextual({
+                    isSticky: false,
+                    items:items,
+                });
+            },
+            tableBuilt:function(){
+                console.log('Таблица готова');
+            },
+            rowClick:function(e, row){
+                if(object.active_tab != 'store'){
+                    console.log('Загружаем инфо');
+                    let data = {};
+                    data.id = row.getData().id;
+                    window.axios({
+                        method: 'post',
+                        url: '/' + object.active_tab + '/side_info',
+                        data: data
+                    }).then(function (resp) {
+                        document.getElementById('contact_block').innerHTML = resp.data.info;
+                        document.getElementById('comment_block').innerHTML = resp.data.comment;
+                        //console.log(resp);
+                    }).catch(function (error) {
+                        console.log(error);
+                    }).finally(function () {
+                        window.isXHRloading = false;
+                    });
+                }
+            },
+        });
+    }
+
+    generateColumns(){
+        let object = this;
+        object.contextDop = 'employee';
+        object.parametr = 'employee';
+        let columns = [
+            {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                    cell.getRow().toggleSelect();
+                }},
+            {title:"ID", field:"id", width:80},
+            {title:"Дата", field:"date", width:150},
+            {title:"Тип", field:"type", width:150, align:"left"},
+            {title:"Контрагент", field:"partner", align:"left"},
+            {title:"Статья", field:"dds", width:130, align:"left"},
+            {title:"Касса", field:"cashbox", width:130, align:"left"},
+            {title:"Сумма", field:"summ", width:130, align:"left"},
+        ];
+        return columns;
+    }
+
+    prepareDataForTable(){
+        let object = this;
+        let data = {};
+        data.view_as = "json";
+        data.target = "ajax-table-employee";
+        data.page = 1;
+
+        if(object.partner !== []){data.partner = object.partner;}
+        if(object.dates_range !== null){data.dates_range = object.dates_range;}
+        if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
+        return data;
     }
 
     reloadPage(){
@@ -63,6 +202,9 @@ class employeePage{
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
+
+        this.initTableData();
+
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');

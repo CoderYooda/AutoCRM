@@ -1,6 +1,7 @@
 @php $class = 'selectPartnerDialog' @endphp
 <div id="selectPartnerDialog" class="dialog PartnerStoredListner" style="width:640px;">
     <div class="titlebar">Выбор контрагента</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
     <div class="modal-header">
         <form class="flex d-flex w-100">

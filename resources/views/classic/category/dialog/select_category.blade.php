@@ -1,6 +1,7 @@
 @php $class = 'selectCategoryDialog' @endphp
 <div id="selectCategoryDialog" class="dialog" style="width:480px;">
     <div class="titlebar">Выбор категории</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
 
 

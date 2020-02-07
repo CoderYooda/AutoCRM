@@ -15,6 +15,7 @@
         @else
             <div class="titlebar">Новая корректировка</div>
         @endif
+        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
         <form class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
             <div class="box-body">

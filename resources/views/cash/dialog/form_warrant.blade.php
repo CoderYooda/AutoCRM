@@ -20,6 +20,7 @@
             <div class="titlebar">Новый расходный ордер</div>
         @endif
     @endif
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreWarrant') }}" method="POST">
         @csrf

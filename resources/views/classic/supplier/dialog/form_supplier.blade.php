@@ -13,7 +13,7 @@
     @else
         <div class="titlebar">Новый производитель</div>
     @endif
-
+        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreSupplier') }}" method="post">
 

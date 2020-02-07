@@ -59,15 +59,12 @@
 
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <a id="stack_badge" class="ico_link stack">
-                                <span class="badge-pill"></span>
+                                <span id="stack_badge_count" class="badge-pill"></span>
                             </a>
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
-                                <div class="mess_container" data-simplebar style="max-height: 400px; width: 200px">
-                                    <div id="stack_item_container">
-                                        awdawd
-                                    </div>
-
+                                <div class="mess_container" data-simplebar style="max-height: 220px; width: 200px">
+                                    <div id="stack_item_container"></div>
                                 </div>
                             </div>
                         </li>
@@ -110,7 +107,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="ajax-nav update_url">
+                            <a onclick="openDialog('warrantDialog', '&isIncoming=1')" class="ajax-nav update_url">
                                     <span class="nav-icon">
                                         <i class="fa fa-sign-in"></i>
                                     </span>
@@ -118,7 +115,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="ajax-nav update_url">
+                            <a onclick="openDialog('warrantDialog', '&isIncoming=0')" class="ajax-nav update_url">
                                     <span class="nav-icon">
                                         <i class="fa fa-sign-out"></i>
                                     </span>
@@ -126,7 +123,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="ajax-nav update_url">
+                            <a onclick="openDialog('shipmentDialog')" class="ajax-nav update_url">
                                     <span class="nav-icon">
                                         <i class="fa fa-money"></i>
                                     </span>
@@ -134,7 +131,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="ajax-nav update_url">
+                            <a onclick="openDialog('clientorderDialog')" class="ajax-nav update_url">
                                     <span class="nav-icon">
                                         <i class="fa fa-clipboard"></i>
                                     </span>
