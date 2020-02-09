@@ -26,6 +26,7 @@ class CashboxController extends Controller
         if($cashbox->exists){
             $message = 'Касса обновлена';
         } else {
+            $cashbox->manager_id = Auth::user()->partner()->first()->id;
             $cashbox->balance = 0;
             $message = 'Касса создана';
         }

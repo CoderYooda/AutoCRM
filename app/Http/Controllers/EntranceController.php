@@ -119,6 +119,7 @@ class EntranceController extends Controller
         } else {
             $entranceWasExisted = false;
             $request['partner_id'] = Auth::user()->partner()->first()->id;
+            $entrance->manager_id = Auth::user()->partner()->first()->id;
         }
         # Предварительно сохраняем поступление
             $entrance->fill($request->only($entrance->fields));
