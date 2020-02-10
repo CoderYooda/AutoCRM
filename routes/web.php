@@ -147,6 +147,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #Сотрудники
     Route::get('/employee/resources', 'EmployeeController@resources')->name('EmployeeResources');
+    Route::get('/employee/tabledata', 'EmployeeController@tabledata')->name('EmployeeTableData');
     Route::get('/employee', 'EmployeeController@index')->name('EmployeeIndex');
 
 
@@ -168,6 +169,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
     Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
     Route::post('/partner/{id}/select', 'PartnerController@select')->name('SelectPartner');
+    Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
 
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');

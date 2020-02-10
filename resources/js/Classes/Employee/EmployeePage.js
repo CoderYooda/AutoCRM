@@ -21,6 +21,7 @@ class employeePage{
         });
         object.checkActive();
         object.searchInit();
+        object.linked();
 
         document.addEventListener('EmployeeStored', function(e){
             object.reloadPage();
@@ -79,7 +80,7 @@ class employeePage{
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
-            ajaxURL:'/' + object.active_tab + '/tabledata',
+            ajaxURL:'/employee/tabledata',
             ajaxRequesting:function(url, params){
                 window.isXHRloading = true;
                 document.body.classList.add('loading');

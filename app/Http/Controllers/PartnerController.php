@@ -6,6 +6,7 @@ use App\Http\Controllers\HelpController as HC;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Partner;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
@@ -20,21 +21,26 @@ class PartnerController extends Controller
     public function index(Request $request)
     {
         $target = HC::selectTarget();
+        $categories = CategoryController::getCategories($request, 'partner');
+        $cat_info = [];
+        $cat_info['route'] = 'PartnerIndex';
+        $cat_info['params'] = ['active_tab' => 'store'];
+        $cat_info['root_id'] = 2;
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view('partner.index', compact('request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request', 'categories', 'cat_info'))->render();
             return response()->json([
                 'target' => 'ajax-content',
                 'page' => 'Контрагенты',
                 'html' => $content
             ]);
         } elseif($request->expectsJson() && $request['search'] != NULL){
-            $content = view('partner.elements.list_container', compact('request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.partner.elements.list_container', compact('request', 'categories', 'cat_info'))->render();
             return response()->json([
                 'html' => $content,
                 'target' => 'ajax-table-partner',
             ], 200);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request', 'categories', 'cat_info'));
         }
 
     }
@@ -249,6 +255,16 @@ class PartnerController extends Controller
             'name' => $partner->outputName(),
             'phones' => $partner->phones()->get(),
         ]);
+    }
+
+    public function tableData(Request $request)
+    {
+        $partners = PartnerController::getPartners($request);
+        foreach($partners as $partner){
+            $partner->date = $partner->created_at->format('Y.m.d/H:i');
+        }
+
+        return response()->json($partners);
     }
 
     public static function getPartners($request)

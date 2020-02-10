@@ -1,5 +1,4 @@
 <div class="tab-pane main_tab animate fadeIn text-muted active" id="tab_base{{ $class }}">
-
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">

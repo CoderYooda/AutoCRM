@@ -2,7 +2,7 @@
 
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.store.layout.tabs')
 
-@section('title', $page ?? 'crm')
+@section('title', $page ?? 'Склад')
 
 @section('tab')
 

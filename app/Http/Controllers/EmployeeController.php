@@ -33,6 +33,16 @@ class EmployeeController extends Controller
         }
     }
 
+    public function tableData(Request $request)
+    {
+        $employees = EmployeeController::getEmployees($request);
+        foreach($employees as $employee){
+            $employee->date = $employee->created_at->format('Y.m.d/H:i');
+        }
+
+        return response()->json($employees);
+    }
+
     public static function getEmployees($request)
     {
         #TODO слить методы выборки сущностей (6.10)

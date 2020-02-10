@@ -34,6 +34,7 @@ import Supplier from './Classes/Supplier.js';
 import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
 import Auth from './Classes/Auth.js';
+import Tabs from './Classes/Tabs.js';
 
 
 
@@ -51,6 +52,7 @@ window.supplier = new Supplier();
 window.entity = new Entity();
 window.scanner = new Scanner();
 window.auth = new Auth();
+window.tabs = new Tabs();
 
 window.tippy = tippy;
 

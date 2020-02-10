@@ -117,7 +117,6 @@ class partnerDialog{
         });
     }
     activateTab(tag){
-        console.log(123);
         let object = this;
         var container = this.root_dialog.querySelector('#act_form_partner');
 

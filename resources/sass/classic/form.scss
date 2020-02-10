@@ -595,6 +595,9 @@ label.label-sm{
     color: #fff;
     background-color: #1f98e9;
 }
+.ml-0{
+    margin-left: 0!important;
+}
 .pb-3, .py-3 {
     padding-bottom: 15px!important;
 }
@@ -682,4 +685,7 @@ button.form-control{
 }
 .active .badge-pill{
     display: block;
+}
+.box-content.partner_page_content{
+    max-width: calc(100vw - 785px)!important;
 }

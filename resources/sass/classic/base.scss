@@ -364,7 +364,7 @@ li.active .header-tab{
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: move;
-    padding: 0 40px 0 15px;
+    padding: 0 90px 0 15px;
     background: #1D87CF;
     color: #fff;
     border-radius: 4px 4px 0 0;
@@ -649,7 +649,7 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .box-content{
     flex: 1;
-    max-width: calc(100vw - 595px);
+    max-width: calc(100vw - 595px)!important;
 }
 .box{
     position: relative;
