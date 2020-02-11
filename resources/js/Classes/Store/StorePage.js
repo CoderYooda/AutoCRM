@@ -145,6 +145,7 @@ class storePage{
         let data = {};
         data.category_id = category_id;
         data.search = object.search;
+        data.class = 'store';
         window.axios({
             method: 'post',
             url: '/category/loadview',
@@ -379,7 +380,6 @@ class storePage{
             tableBuilt:function(){
                 console.log('Таблица готова');
             },
-
             rowClick:function(e, row){
                 if(object.active_tab != 'store'){
                     console.log('Загружаем инфо');

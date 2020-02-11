@@ -45,8 +45,12 @@
     </div>
     <div class="form-group">
         <label>Штрих код (EAN 13)</label>
-        <input type="text" name="barcode" class="form-control" value="@if(isset($partner)){{ $partner->barcode }}@endif" placeholder="Штрих код">
+        <input type="text" name="barcode" class="form-control mb-15" value="@if(isset($partner)){{ $partner->barcode }}@endif" placeholder="Штрих код">
+        @if(isset($partner) && $partner->barcode != null)
+            <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($partner->barcode) !!}" alt="barcode" />
+        @endif
     </div>
+
     <div class="form-group">
         <label>Доступ в систему</label>
         <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
@@ -67,10 +71,5 @@
         <label>Пароль</label>
         <input type="password" name="password" class="form-control" value="@if(isset($partner)){{ $partner->password }}@endif" placeholder="Пароль">
     </div>
-    @if(isset($partner) && $partner->barcode != null)
-    <div class="form-group">
-        <img style="max-width: 100%" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($partner->barcode) !!}" alt="barcode"   />
-    </div>
-    @endif
 
 </div>

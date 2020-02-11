@@ -22,15 +22,20 @@ class partnerPage{
         });
         object.checkActive();
         object.searchInit();
+
         document.addEventListener('PartnerStored', function(e){
-            object.reloadPage();
+            object.prepareParams();
+            object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
+
         document.addEventListener('PartnerRemoved', function(e){
-            object.reloadPage();
+            object.prepareParams();
+            object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
+
         document.addEventListener('CategoryStored', function(e){
             object.prepareParams();
-            object.reload();
+            object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
         object.linked();
     }
@@ -65,7 +70,7 @@ class partnerPage{
         if(window.helper.findGetParameter('search') !== null){
             this.search = window.helper.findGetParameter('search');
         } else { this.search = ''}
-        this.searchInit();this.searchInit();
+        this.searchInit();
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
@@ -74,6 +79,7 @@ class partnerPage{
         this.search = window.helper.findGetParameter('search');
         this.searchInit();
         this.initTableData();
+        this.loadCategory(this.root_category, true, true);
     }
 
     checkActive(){
@@ -90,14 +96,13 @@ class partnerPage{
 
     searchInit(){
         let object = this;
-        let el = document.getElementById(object.root_id);
-        if(el){
-            let search = el.querySelector("input[name=search]");
+        if(document.getElementById("search")){
+            let search = document.getElementById("search");
             if(search){
                 let searchFn = window.helper.debounce(function(e) {
                     object.search = search.value;
                     object.page = 1;
-                    object.reload();
+                    object.table.setData('/partner/tabledata', object.prepareDataForTable());
                 }, 400);
                 search.addEventListener("keydown", searchFn);
                 search.addEventListener("paste", searchFn);
@@ -143,38 +148,17 @@ class partnerPage{
         let object = this;
         object.prepareParams();
         if (isXHRloading) { return; } window.isXHRloading = true;
-        window.axios({
-            method: 'get',
-            url: object.getUrlString(),
-        }).then(function (resp) {
-            var results_container = document.getElementById(resp.data.target);
-            results_container.innerHTML = resp.data.html;
-
-            window.helper.insertParamUrl('search', object.search);
-
-            let root = document.getElementById(object.root_id)
-            let category_header = root.querySelector("#category_header");
-            let category_list = root.querySelector("#category_list_aside");
-            category_header.innerHTML = 'Поиск';
-
-            let list =
-            '<li class="d-flex flex category-aside">'+
-            '<a href="partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
-            '<span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>'+
-            '</a>'+
-            '</li>';
-            category_list.innerHTML = list;
-            window.rebuildLinks();
-            object.load();
-
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-        // console.log(111);
-        //goto('/partner/search?view_as=json&search=' + string);
+        object.table.setData('/partner/tabledata', object.prepareDataForTable());
     }
+
+    searcher(string){
+        document.getElementById("search").value = string;
+        let object = this;
+        object.search = string;
+        if (isXHRloading) { return; } window.isXHRloading = true;
+        object.table.setData('/partner/tabledata', object.prepareDataForTable());
+    }
+
 
     initTableData(){
         let object = this;
@@ -280,6 +264,40 @@ class partnerPage{
         });
     }
 
+    loadCategory(category_id, clean_search = null, update_data = null){
+        let object = this;
+        // if(clean_search != null && clean_search){
+        //     document.getElementById("search").value = '';
+        //     object.search = '';
+        //     window.helper.insertParamUrl('search', '');
+        // }
+
+        window.isXHRloading = true;
+        window.helper.insertParamUrl('category_id', category_id);
+
+        object.category_id = category_id;
+        if(update_data != null && update_data){
+            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+        }
+        let data = {};
+        data.category_id = category_id;
+        data.search = object.search;
+        data.class = 'partner';
+        window.axios({
+            method: 'post',
+            url: '/category/loadview',
+            data: data
+        }).then(function (resp) {
+            document.getElementById('category-nav').innerHTML = resp.data.html;
+            //object.loadBreadcrumbs(category_id, object.root_category);
+            //object.initCategoryContextual();
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    }
+
     generateColumns(){
         let object = this;
         object.contextDop = 'partner';
@@ -290,7 +308,8 @@ class partnerPage{
                 }},
             {title:"ID", field:"id", width:80},
             {title:"Фио", field:"name", align:"left"},
-            {title:"Контрагент", field:"partner", align:"left"},
+            {title:"Категория", field:"category", align:"left"},
+            {title:"Телефон", field:"phone", align:"left"},
             {title:"Баланс", field:"balance", width:130, align:"left"},
         ];
         return columns;
@@ -305,6 +324,7 @@ class partnerPage{
 
         if(object.partner !== []){data.partner = object.partner;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
+        if(object.category_id !== null){data.category_id = object.category_id.toString();}
         if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
         return data;
     }

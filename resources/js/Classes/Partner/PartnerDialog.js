@@ -172,7 +172,7 @@ class partnerDialog{
         var node = helper.createElementFromHTML('' +
             '<div class="input-group mb-2 phone">' +
             '<input type="text" name="phones[num'+ (count + 1) +'][number]" class="form-control phone_input" placeholder="Номер телефона">' +
-            '<span class="input-group-append" title="Основной номер">' +
+            '<span class="input-group-append checkbox_append" title="Основной номер">' +
             '<div class="input-group-text border-left-0">' +
             '<label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">' +
             '<input type="checkbox" name="phones[num'+ (count + 1) +'][main]" value="1">' +

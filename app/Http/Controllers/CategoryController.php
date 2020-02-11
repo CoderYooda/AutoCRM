@@ -29,10 +29,19 @@ class CategoryController extends Controller
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
-        $cat_info['root_id'] = 2;
+
+        switch ($request['class']) {
+            case 'store':
+                $cat_info['root_id'] = 2;
+                break;
+            case 'partner':
+                $cat_info['root_id'] = 3;
+                break;
+        }
+        $class = $request['class'];
         if($request->expectsJson()){
             return response()->json([
-                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request') )->render()
+                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render()
             ]);
         } else {
             return redirect()->back();
@@ -327,12 +336,13 @@ class CategoryController extends Controller
                 $category_id = Category::owned()->where('type', $type)->first()->id;
             }
 
+
+
             $parent = Category::owned()->where('id',$category_id)->first();
 
             if($parent == null){
                 abort(404);
             }
-
             $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
             $categories['parent'] = $parent;
         } else {

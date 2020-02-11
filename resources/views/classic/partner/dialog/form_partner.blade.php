@@ -8,9 +8,9 @@
     @endif
     class="dialog" style="width:600px;">
     @if(isset($partner) && $partner->id != NULL)
-        <div class="titlebar">{{ $partner->fio }}</div>
+        <div class="titlebar">{{ $partner->outputName() }}</div>
     @else
-        <div class="titlebar">Создание нового контрагентац</div>
+        <div class="titlebar">Создание нового контрагента</div>
     @endif
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
@@ -42,7 +42,9 @@
         </div>
         @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs')
         <div class="modal-footer">
-            <button type="submit" onclick="window.{{ $class }}.save(this)" class="btn success pull-right action_button">Сохранить</button>
+            <hr>
+            <button type="submit" onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
+            <button type="submit" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
         </div>
         <div class="system_message"></div>
     </form>

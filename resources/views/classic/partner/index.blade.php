@@ -3,56 +3,60 @@
 @section('title', $page ?? 'Контрагенты')
 
 @section('content')
-
-
+    @php $class = 'partner' @endphp
     <div id="ajax-table-warrant" class="bottom-container">
         <div class="content-menu box w-290" id="category-nav">
             @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')
         </div>
-        <div class="box-lister box">
-            <div id="table-container" class="box-content partner_page_content">
-                <div id="partner-table"></div>
+        <div class="box-lister">
+            <div class="w-100 box box-search mb-15">
+                <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+            </div>
+            <div class="box d-flex h-100">
+                <div id="table-container" class="box-content partner_page_content">
+                    <div id="partner-table"></div>
+                </div>
             </div>
         </div>
         <div class="d-flex flex-column box m-15 ml-0" style="width: 50px">
             <div class="scrollable hover">
                 <div class="text-center text-sm py-3 d-flex flex-column" id="filter">
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'a']) }}">А</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'б']) }}">Б</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'в']) }}">В</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'г']) }}">Г</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'д']) }}">Д</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'е']) }}">Е</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ё']) }}">Ё</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ж']) }}">Ж</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'з']) }}">З</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'и']) }}">И</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'й']) }}">Й</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'к']) }}">К</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'л']) }}">Л</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'м']) }}">М</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'н']) }}">Н</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'о']) }}">О</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'п']) }}">П</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'р']) }}">Р</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'с']) }}">С</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'т']) }}">Т</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'у']) }}">У</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ф']) }}">Ф</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'х']) }}">Х</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ц']) }}">Ц</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ш']) }}">Ш</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'щ']) }}">Щ</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'э']) }}">Э</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'ю']) }}">Ю</a>
-                    <a class="letter_search ajax-nav" href="{{ route('PartnerIndex', ['search' => 'я']) }}">Я</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('а')">А</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('б')">Б</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('в')">В</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('г')">Г</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('д')">Д</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('е')">Е</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('ё')">Ё</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('ж')">Ж</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('з')">З</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('и')">И</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('Й')">Й</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('к')">К</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('л')">Л</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('м')">М</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('н')">Н</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('о')">О</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('п')">П</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('р')">Р</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('с')">С</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('т')">Т</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('у')">У</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('ф')">Ф</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('х')">Х</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('ц')">Ц</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('ш')">Ш</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('щ')">Щ</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('э')">Э</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('ю')">Ю</a>
+                    <a class="letter_search ajax-nav" onclick="window.partner.searcher('я')">Я</a>
                 </div>
             </div>
         </div>
         <div class="content-rightside">
             <div class="w-290">
-                <button onclick="openDialog('warrantDialog', '&isIncoming=1')" class="w-100 button primary mb-15">Новый приходный ордер</button>
-                <button onclick="openDialog('warrantDialog', '&isIncoming=0')" class="w-100 button primary mb-15">Новый расходный ордер</button>
+                <button onclick="openDialog('categoryDialog', '&category_select=3')" class="w-100 button primary mb-15">Новая категория</button>
+                <button onclick="openDialog('partnerDialog')" class="w-100 button primary mb-15">Новый контрагент</button>
             </div>
 
             <div class="box w-290 p-15 filter-panel">

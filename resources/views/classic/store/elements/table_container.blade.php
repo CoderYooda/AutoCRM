@@ -3,7 +3,7 @@
 {{--{{ dd($category) }}--}}
 {{--style="height: 100%;"--}}
 
-
+@php $class = 'store' @endphp
 
 <div class="content-menu box w-290" id="category-nav">
     @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')

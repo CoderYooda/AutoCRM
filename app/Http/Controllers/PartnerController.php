@@ -7,7 +7,9 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Partner;
 use App\Http\Controllers\CategoryController;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
 use Milon\Barcode\DNS1D;
@@ -25,7 +27,7 @@ class PartnerController extends Controller
         $cat_info = [];
         $cat_info['route'] = 'PartnerIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
-        $cat_info['root_id'] = 2;
+        $cat_info['root_id'] = 3;
         if($request->expectsJson() && $request['search'] === NULL){
             $content = view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request', 'categories', 'cat_info'))->render();
             return response()->json([
@@ -90,13 +92,9 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request);
         if($request['number']){
             $request['number'] = str_replace(' ', '', $request['number']);
         }
-
-
-
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
@@ -194,6 +192,7 @@ class PartnerController extends Controller
         } elseif(!(bool)$request['isfl']){
             $rules = [
                 'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
+                'companyName' => ['required', 'min:4', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             ];
         }
@@ -269,39 +268,136 @@ class PartnerController extends Controller
 
     public static function getPartners($request)
     {
-        #TODO слить методы выборки сущностей (6.10)
-        $category = 3;
-        if($request['category_id']){
-            $category = (int)$request['category_id'];
-        }
-        if($request['page']){
-            Paginator::currentPageResolver(function () use ($request) {
-                return (int)$request['page'];
-            });
-        }
-        $partners = Partner::where('company_id', Auth::user()->company()->first()->id )->with('passport')->where(function($q) use ($request, $category){
-            if($category != 3) {
-                $q->where('category_id', $category);
-            } else {
 
-            }
+        if($request['category_id'] == 3){
+            $request['category_id'] = null;
+        }
 
-            if($request['search'] != null) {
-                if (mb_strlen($request['search']) === 1) {
-                    $q->where('fio', 'LIKE', $request['search'] . '%' )
-                        ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-                } else {
-                    $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-                        ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-                        ->orWhereHas('phones', function ($query) use ($request) {
-                            $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-                        });
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            //dd(Carbon::parse($dates[0]));
+            $request['dates'] = $dates;
+        }
+        if($field === null &&  $dir === null){
+            $field = 'created_at';
+            $dir = 'DESC';
+        }
+
+        if($request['provider'] == null){
+            $request['provider'] = [];
+        }
+
+        if($request['accountable'] == null){
+            $request['accountable'] = [];
+        }
+
+        $partners = Partner::select(DB::raw('
+            partners.*, partners.created_at as date, partners.id as coid
+        '))
+            ->from(DB::raw('
+                (SELECT partners.*, IF(ph.main = 1, ph.number, "Не указано") as phone, IF(partners.isfl = 1, partners.fio, partners.companyName) as name, cat.name as category FROM partners
+                left join partner_phone as pp on pp.partner_id = partners.id
+                left join phones as ph on pp.phone_id = ph.id
+                
+                left join categories as cat on cat.id = partners.category_id
+                ) partners
+            '))
+
+            ->where(function($q) use ($request){
+                if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null"){
+                    $q->where('partners.category_id', (int)$request['category_id']);
                 }
-                $q->orWhere('barcode', $request['search']);
-            }
-        })->orderBy('created_at', 'ASC')->paginate(11);
+            })
+
+
+
+//            ->where(function($q) use ($request){
+//                if(isset($request['search']) && $request['search'] != ""){
+//                    $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', $request['search'])) . '%');
+//                }
+//            })
+            ->when($request['search'] != null, function($query) use ($request) {
+                if(mb_strlen($request['search']) == 1){
+                    $query->where('name', 'like', $request['search'].'%');
+                } else {
+                    $query->where('name', 'like', '%'.$request['search'].'%')->orWhere('phone', 'like', '%'.$request['search'].'%');
+                }
+            })
+
+
+            ->when($request['provider'] != [], function($query) use ($request) {
+                $query->whereIn('partner_id', $request['provider']);
+            })
+            ->when($request['clientorder_status'] != null, function($query) use ($request) {
+                $query->where('status', $request['clientorder_status']);
+            })
+            ->when($request['accountable'] != [], function($query) use ($request) {
+                $query->whereIn('client_orders.partner_id', $request['accountable']);
+            })
+//            ->when($request['dates_range'] != null, function($query) use ($request) {
+//                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+//            })
+            ->where('partners.company_id', Auth::user()->company()->first()->id)
+            //->groupBy('partners.id')
+            ->orderBy($field, $dir)
+            //->toSql();
+
+            //dd($partners);
+            ->paginate($size);
 
         return $partners;
+
+
+
+
+
+
+
+//        #TODO слить методы выборки сущностей (6.10)
+//        $category = 3;
+//        if($request['category_id']){
+//            $category = (int)$request['category_id'];
+//        }
+//        if($request['page']){
+//            Paginator::currentPageResolver(function () use ($request) {
+//                return (int)$request['page'];
+//            });
+//        }
+//        $partners = Partner::where('company_id', Auth::user()->company()->first()->id )->with('passport')->where(function($q) use ($request, $category){
+//            if($category != 3) {
+//                $q->where('category_id', $category);
+//            } else {
+//
+//            }
+//
+//            if($request['search'] != null) {
+//                if (mb_strlen($request['search']) === 1) {
+//                    $q->where('fio', 'LIKE', $request['search'] . '%' )
+//                        ->orWhere('companyName', 'LIKE', $request['search'] . '%');
+//                } else {
+//                    $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
+//                        ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
+//                        ->orWhereHas('phones', function ($query) use ($request) {
+//                            $query->where('number', 'LIKE', '%' . $request['search'] . '%');
+//                        });
+//                }
+//                $q->orWhere('barcode', $request['search']);
+//            }
+//        })->orderBy('created_at', 'ASC')->paginate(11);
+//
+//        return $partners;
     }
 
 }

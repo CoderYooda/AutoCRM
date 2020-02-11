@@ -8,7 +8,7 @@
                         <div class="input-group mb-2 phone" data-id="{{$phone->id}}">
                             <input type="hidden" name="phones[{{$phone->id}}][id]" value="{{$phone->id}}">
                             <input type="text" name="phones[{{$phone->id}}][number]" value="{{$phone->number}}" class="form-control phone_input" placeholder="Номер телефона">
-                            <span class="input-group-append" title="Основной номер">
+                            <span class="input-group-append checkbox_append" title="Основной номер">
                                 <div class="input-group-text border-left-0">
                                     <label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">
                                         <input type="checkbox" name="phones[{{$phone->id}}][main]" value="1" @if($phone->main) checked @endif>
@@ -28,7 +28,7 @@
             @if(!isset($partner) || $partner->phones()->count() < 1)
                 <div class="input-group mb-2 phone">
                     <input type="text" name="phones[num1][number]" class="form-control phone_input" placeholder="Номер телефона">
-                    <span class="input-group-append" title="Основной номер">
+                    <span class="input-group-append checkbox_append" title="Основной номер">
                         <div class="input-group-text border-left-0">
                             <label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">
                                 <input type="checkbox" name="phones[num1][main]" value="1">
@@ -37,7 +37,7 @@
                         </div>
                     </span>
                     <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Удалить номер">
-                        <button onclick="window.{{ $class }}.deletePhone(this)" class="input-group-text btn btn-icon white" type="button" style="height: auto">
+                        <button onclick="window.{{ $class }}.deletePhone(this)" class="input-group-text button white" type="button" style="height: auto">
                             <i class="fa fa-trash"></i>
                         </button>
                     </span>
