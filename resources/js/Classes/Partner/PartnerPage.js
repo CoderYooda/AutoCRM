@@ -290,14 +290,13 @@ class partnerPage{
         data.category_id = category_id;
         data.search = object.search;
         data.class = 'partner';
+        console.log(1);
         window.axios({
             method: 'post',
             url: '/category/loadview',
             data: data
         }).then(function (resp) {
             document.getElementById('category-nav').innerHTML = resp.data.html;
-            //object.loadBreadcrumbs(category_id, object.root_category);
-            //object.initCategoryContextual();
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
