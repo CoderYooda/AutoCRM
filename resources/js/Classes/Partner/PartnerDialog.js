@@ -170,18 +170,18 @@ class partnerDialog{
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
         var node = helper.createElementFromHTML('' +
-            '<div class="input-group mb-2 phone">' +
+            '<div class="input-group mb-10 phone">' +
             '<input type="text" name="phones[num'+ (count + 1) +'][number]" class="form-control phone_input" placeholder="Номер телефона">' +
-            '<span class="input-group-append checkbox_append" title="Основной номер">' +
+            '<span class="input-group-append checkbox_append" title="Активный номер">' +
             '<div class="input-group-text border-left-0">' +
             '<label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">' +
-            '<input type="checkbox" name="phones[num'+ (count + 1) +'][main]" value="1">' +
+            '<input type="checkbox" checked name="phones[num'+ (count + 1) +'][main]" value="1">' +
             '<i class="dark-white"></i>' +
             '</label>' +
             '</div>' +
             '</span>' +
             '<span class="input-group-append" title="Удалить номер">' +
-            '<button onclick="window.' + this.root_dialog.id + '.deletePhone(this)" class="input-group-text btn btn-icon white" type="button" style="height: auto">' +
+            '<button onclick="window.' + this.root_dialog.id + '.deletePhone(this)" class="input-group-text butt_del_append" type="button" style="height: auto">' +
             '<i class="fa fa-trash"></i>' +
             '</button>' +
             '</span>' +
@@ -229,39 +229,41 @@ class partnerDialog{
     }
     deletePhone(elem){
 
-        var id = elem.closest('.phone').dataset.id;
-        if(id != undefined){
-            if (isXHRloading) { return; }
-            isXHRloading = true;
-            var dReq = new XMLHttpRequest();
-            dReq.onreadystatechange = function (e) {
-                if (dReq.readyState === 4) {
-                    var resp = JSON.parse(this.responseText);
-                    if(dReq.status === 200){
-                        //var element = document.getElementById('product_'+resp.product_id);
-                        notification.notify( 'success', resp.message);
-                    }else{
-                        notification.notify( 'error', resp.message);
-                    }
-                }
-            };
-            dReq.onerror = function () {
-                var resp = JSON.parse(this.responseText);
-                isXHRloading = false;
-            };
-            dReq.onload = function () {
-                var resp = JSON.parse(this.responseText);
-                //document.getElementById('category_list').innerHTML = resp.html;
-                isXHRloading = false;
-            };
-
-            dReq.open("post", 'phone/'+id+'/delete', true);
-            dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
-            dReq.send();
-        }
         var div = elem.closest('.addable').querySelector('.phones');
         if(this.canRemovePhone(div)){
+
+            var id = elem.closest('.phone').dataset.id;
+            if(id != undefined){
+                if (isXHRloading) { return; }
+                isXHRloading = true;
+                var dReq = new XMLHttpRequest();
+                dReq.onreadystatechange = function (e) {
+                    if (dReq.readyState === 4) {
+                        var resp = JSON.parse(this.responseText);
+                        if(dReq.status === 200){
+                            //var element = document.getElementById('product_'+resp.product_id);
+                            notification.notify( 'success', resp.message);
+                        }else{
+                            notification.notify( 'error', resp.message);
+                        }
+                    }
+                };
+                dReq.onerror = function () {
+                    var resp = JSON.parse(this.responseText);
+                    isXHRloading = false;
+                };
+                dReq.onload = function () {
+                    var resp = JSON.parse(this.responseText);
+                    //document.getElementById('category_list').innerHTML = resp.html;
+                    isXHRloading = false;
+                };
+
+                dReq.open("post", 'phone/'+id+'/delete', true);
+                dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
+                dReq.send();
+            }
             elem.closest('.phone').remove();
+
         }
     }
 }

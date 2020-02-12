@@ -14,9 +14,25 @@
     padding: 10px 15px;
 }
 .checkbox_append{
-    padding: 5px 9px;
-    border: 1px solid #0F8CDF;
+    padding: 6px 7px;
     height: 32px;
     display: block;
     border-right: none;
+    padding-left: 14px;
+}
+.table_input{
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+.butt_del_append{
+    height: auto;
+    border: 0;
+    background: none;
+    font-size: 16px;
+    color: #1F98E9;
+    padding: 7px;
+}
+.mb-10{
+    margin-bottom: 10px;
 }

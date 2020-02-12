@@ -307,11 +307,11 @@ class PartnerController extends Controller
             partners.*, partners.created_at as date, partners.id as coid
         '))
             ->from(DB::raw('
-                (SELECT partners.*, IF(ph.main = 1, ph.number, "Не указано") as phone, IF(partners.isfl = 1, partners.fio, partners.companyName) as name, cat.name as category FROM partners
-                left join partner_phone as pp on pp.partner_id = partners.id
-                left join phones as ph on pp.phone_id = ph.id
-                
-                left join categories as cat on cat.id = partners.category_id
+                (SELECT partners.*, ph.number as phone, IF(partners.isfl = 1, partners.fio, partners.companyName) as name, cat.name as category FROM partners
+                left join (SELECT partner_phone.phone_id, partner_phone.partner_id FROM partner_phone LEFT JOIN phones on phones.id = partner_phone.phone_id WHERE phones.main = 1) as pp on pp.partner_id = partners.id
+                left join phones as ph on pp.phone_id = ph.id 
+                left join categories as cat on cat.id = partners.category_id 
+                GROUP BY partners.id
                 ) partners
             '))
 
@@ -350,7 +350,7 @@ class PartnerController extends Controller
 //                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
 //            })
             ->where('partners.company_id', Auth::user()->company()->first()->id)
-            //->groupBy('partners.id')
+            ->groupBy('partners.id')
             ->orderBy($field, $dir)
             //->toSql();
 

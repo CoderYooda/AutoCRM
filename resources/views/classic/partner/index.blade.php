@@ -11,6 +11,9 @@
         <div class="box-lister">
             <div class="w-100 box box-search mb-15">
                 <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+                <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
+                    <button class="btn_clean" onclick="window.{{$class}}.cleanSearch()"></button>
+                </span>
             </div>
             <div class="box d-flex h-100">
                 <div id="table-container" class="box-content partner_page_content">

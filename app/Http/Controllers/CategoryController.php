@@ -25,27 +25,28 @@ class CategoryController extends Controller
     }
 
     public function loadAside(Request $request){
-        $categories = CategoryController::getCategories($request, 'store');
-        $cat_info = [];
-        $cat_info['route'] = 'StoreIndex';
-        $cat_info['params'] = ['active_tab' => 'store'];
 
-        switch ($request['class']) {
-            case 'store':
-                $cat_info['root_id'] = 2;
-                break;
-            case 'partner':
-                $cat_info['root_id'] = 3;
-                break;
-        }
-        $class = $request['class'];
-        if($request->expectsJson()){
-            return response()->json([
-                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render()
-            ]);
-        } else {
-            return redirect()->back();
-        }
+//        $categories = CategoryController::getCategories($request, 'store');
+//        $cat_info = [];
+//        $cat_info['route'] = 'StoreIndex';
+//        $cat_info['params'] = ['active_tab' => 'store'];
+//
+//        switch ($request['class']) {
+//            case 'store':
+//                $cat_info['root_id'] = 2;
+//                break;
+//            case 'partner':
+//                $cat_info['root_id'] = 3;
+//                break;
+//        }
+//        $class = $request['class'];
+//        if($request->expectsJson()){
+//            return response()->json([
+//                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render()
+//            ]);
+//        } else {
+//            return redirect()->back();
+//        }
     }
 
     public function loadBreadcrumbs(Request $request){

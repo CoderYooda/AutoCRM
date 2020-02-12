@@ -90,6 +90,23 @@
 .button.is-invalid{
     border: 1px solid red!important;
 }
+.btn_clean {
+    float: right;
+    background: url(/images/icons/cross_gray.png) no-repeat 10px 12px;
+    opacity: 0.75;
+    color: transparent;
+    filter: alpha(opacity=75);
+    cursor: pointer;
+    outline: none;
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    border: 0;
+}
 
-
-
+.btn_clean:hover{
+    opacity: 1;
+}

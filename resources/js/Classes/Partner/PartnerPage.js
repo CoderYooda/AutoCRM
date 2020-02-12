@@ -36,6 +36,7 @@ class partnerPage{
         document.addEventListener('CategoryStored', function(e){
             object.prepareParams();
             object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            object.loadCategory(object.category_id, true, false)
         });
         object.linked();
     }
@@ -79,7 +80,13 @@ class partnerPage{
         this.search = window.helper.findGetParameter('search');
         this.searchInit();
         this.initTableData();
-        this.loadCategory(this.root_category, true, true);
+        //this.loadCategory(this.root_category, true, true);
+    }
+
+    cleanSearch(){
+        this.search = null;
+        document.getElementById("search").value = null;
+        this.table.setData('/partner/tabledata', this.prepareDataForTable());
     }
 
     checkActive(){
@@ -206,6 +213,7 @@ class partnerPage{
             height:height-15,
             pagination:"remote",
             layout:"fitColumns",
+            ajaxConfig:"object",
             ajaxSorting:true,
             ajaxURL:'/partner/tabledata',
             ajaxRequesting:function(url, params){
@@ -302,6 +310,56 @@ class partnerPage{
         let object = this;
         object.contextDop = 'partner';
         object.parametr = 'partner';
+
+        var phoneFormatter = function(cell, formatterParams, onRendered){
+            onRendered(function(){
+
+                if(cell.getValue() != null){
+                    cell.getElement().innerHTML = '<input disabled class="table_input" id="phone_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
+                    window.IMask(document.getElementById('phone_' + cell.getData().id), {
+                            mask: [
+                                {
+                                    mask: '+{7}(000)000-00-00',
+                                    startsWith: '7',
+                                    lazy: true,
+                                    country: 'Россия'
+                                },
+                                {
+                                    mask: '{8}(000)000-00-00',
+                                    startsWith: '8',
+                                    lazy: true,
+                                    country: 'Россия'
+                                },
+                                {
+                                    mask: '+{380}(000)000-00-00',
+                                    startsWith: '3',
+                                    lazy: true,
+                                    country: 'Украина'
+                                },
+                            ]
+                        }
+                    );
+                } else {
+                    cell.getElement().innerHTML = 'Не указано';
+                }
+            });
+        };
+        var priceFormatter = function(cell, formatterParams, onRendered){
+            onRendered(function(){
+                cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
+                window.IMask(document.getElementById('price_' + cell.getData().id),   {
+                        mask: 'N 2',
+                        blocks: {
+                            N: {
+                                mask: Number,
+                                signed: true,
+                                thousandsSeparator: ' '
+                            }
+                        }
+                    }
+                );
+            });
+        };
         let columns = [
             {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                     cell.getRow().toggleSelect();
@@ -309,8 +367,8 @@ class partnerPage{
             {title:"ID", field:"id", width:80},
             {title:"Фио", field:"name", align:"left"},
             {title:"Категория", field:"category", align:"left"},
-            {title:"Телефон", field:"phone", align:"left"},
-            {title:"Баланс", field:"balance", width:130, align:"left"},
+            {title:"Телефон", field:"phone", align:"left", formatter:phoneFormatter},
+            {title:"Баланс", field:"balance", width:130, align:"left", formatter:priceFormatter},
         ];
         return columns;
     }
