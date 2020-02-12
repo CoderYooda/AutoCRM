@@ -213,7 +213,6 @@ class partnerPage{
             height:height-15,
             pagination:"remote",
             layout:"fitColumns",
-            ajaxConfig:"object",
             ajaxSorting:true,
             ajaxURL:'/partner/tabledata',
             ajaxRequesting:function(url, params){
