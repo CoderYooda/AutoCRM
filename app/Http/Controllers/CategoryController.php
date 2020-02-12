@@ -6,6 +6,7 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PartnerController;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,9 +42,17 @@ class CategoryController extends Controller
         }
         $class = $request['class'];
         if($request->expectsJson()){
-            return response()->json([
-                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render()
-            ]);
+
+           $response =  [
+               'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render()
+           ];
+
+           if($request['class'] == 'partner'){
+               $partners = PartnerController::getPartners($request);
+               $response['tableData'] = $partners;
+           }
+
+            return response()->json($response);
         } else {
             return redirect()->back();
         }

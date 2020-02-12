@@ -274,17 +274,20 @@ class partnerPage{
     loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
         // if(clean_search != null && clean_search){
-        //     document.getElementById("search").value = '';
-        //     object.search = '';
-        //     window.helper.insertParamUrl('search', '');
+        //
         // }
+        this.search = null;
+        document.getElementById("search").value = null;
+        // document.getElementById("search").value = '';
+        // object.search = '';
+        // window.helper.insertParamUrl('search', '');
 
         window.isXHRloading = true;
         window.helper.insertParamUrl('category_id', category_id);
 
         object.category_id = category_id;
         if(update_data != null && update_data){
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            //object.table.setData('/partner/tabledata', object.prepareDataForTable());
         }
         let data = {};
         data.category_id = category_id;
@@ -297,6 +300,8 @@ class partnerPage{
             data: data
         }).then(function (resp) {
             document.getElementById('category-nav').innerHTML = resp.data.html;
+
+            object.table.setData(resp.data.tableData.data);
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
