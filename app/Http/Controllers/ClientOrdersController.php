@@ -63,26 +63,29 @@ class ClientOrdersController extends Controller
         return response()->json($client_orders);
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $client_order = ClientOrder::where('id', $id)->first();
-
-        if($client_order == null){
-            return response()->json([
-                'message' => 'Ошибка системы'
-            ], 422);
+        $returnIds = null;
+        if($id == 'array'){
+            $client_orders = ClientOrder::whereIn('id', $request['ids']);
+            $this->message = 'Продажи удалены';
+            $returnIds = $client_orders->get()->pluck('id');
+            foreach($client_orders->get() as $client_order){
+                $client_order->delete();
+            }
+        } else {
+            $client_order = ClientOrder::where('id', $id)->first();
+            $this->message = 'Продажа удалена';
+            $returnIds = $client_order->id;
+            $client_order->delete();
         }
 
-        $client_order->delete();
-        $this->status = 200;
-        $type = 'success';
-        $this->message = 'Продажа удалена';
         return response()->json([
-            'id' => $client_order->id,
-            'type' => $type,
+            'id' => $returnIds,
             'message' => $this->message
         ], 200);
     }
+
 
     public function fresh($id, Request $request)
     {

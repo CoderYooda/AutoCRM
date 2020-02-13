@@ -11,6 +11,8 @@ class partnerPage{
         this.page = window.helper.findGetParameter('page');
         this.search = null;
         this.search_obj = document.querySelector("#partner_search");
+        this.contextDop = 'partner';
+        this.parametr = 'partner';
         this.init();
     }
 
@@ -29,6 +31,11 @@ class partnerPage{
         });
 
         document.addEventListener('PartnerRemoved', function(e){
+            object.prepareParams();
+            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+        });
+
+        document.addEventListener('WarrantStored', function(e){
             object.prepareParams();
             object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
@@ -255,7 +262,7 @@ class partnerPage{
                     data.id = row.getData().id;
                     window.axios({
                         method: 'post',
-                        url: '/' + object.active_tab + '/side_info',
+                        url: '/partner/side_info',
                         data: data
                     }).then(function (resp) {
                         document.getElementById('contact_block').innerHTML = resp.data.info;
@@ -278,16 +285,16 @@ class partnerPage{
         // }
         this.search = null;
         document.getElementById("search").value = null;
-        // document.getElementById("search").value = '';
-        // object.search = '';
-        // window.helper.insertParamUrl('search', '');
+        document.getElementById("search").value = '';
+        object.search = '';
+        window.helper.insertParamUrl('search', '');
 
         window.isXHRloading = true;
         window.helper.insertParamUrl('category_id', category_id);
 
         object.category_id = category_id;
         if(update_data != null && update_data){
-            //object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            object.table.setData('/partner/tabledata', object.prepareDataForTable());
         }
         let data = {};
         data.category_id = category_id;
@@ -300,8 +307,8 @@ class partnerPage{
             data: data
         }).then(function (resp) {
             document.getElementById('category-nav').innerHTML = resp.data.html;
-
-            object.table.setData(resp.data.tableData.data);
+            // object.table.setData(resp.data.tableData.data);
+            // object.prepareParams();
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
@@ -390,43 +397,43 @@ class partnerPage{
         return data;
     }
 
-    reload(){
-        let object = this;
-        object.prepareParams();
-        if (isXHRloading) { return; } window.isXHRloading = true;
-        window.axios({
-            method: 'get',
-            url: object.getUrlString(),
-        }).then(function (resp) {
-            var results_container = document.getElementById(resp.data.target);
-            results_container.innerHTML = resp.data.html;
-            window.helper.insertParamUrl('search', object.search);
-            window.helper.insertParamUrl('category_id', object.category_id);
-            window.helper.insertParamUrl('page', object.page);
-
-            if(object.search.length > 0){
-                let root = document.getElementById(object.root_id)
-                let category_header = root.querySelector("#category_header");
-                let category_list = root.querySelector("#category_list_aside");
-                category_header.innerHTML = 'Поиск';
-
-                let list =
-                    '<li class="d-flex flex category-aside">'+
-                    '<a href="partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
-                    '<span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>'+
-                    '</a>'+
-                    '</li>';
-                category_list.innerHTML = list;
-            }
-
-
-            window.rebuildLinks();
-            object.load();
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-    }
+    // reload(){
+    //     let object = this;
+    //     object.prepareParams();
+    //     if (isXHRloading) { return; } window.isXHRloading = true;
+    //     window.axios({
+    //         method: 'get',
+    //         url: object.getUrlString(),
+    //     }).then(function (resp) {
+    //         var results_container = document.getElementById(resp.data.target);
+    //         results_container.innerHTML = resp.data.html;
+    //         window.helper.insertParamUrl('search', object.search);
+    //         window.helper.insertParamUrl('category_id', object.category_id);
+    //         window.helper.insertParamUrl('page', object.page);
+    //
+    //         if(object.search.length > 0){
+    //             let root = document.getElementById(object.root_id)
+    //             let category_header = root.querySelector("#category_header");
+    //             let category_list = root.querySelector("#category_list_aside");
+    //             category_header.innerHTML = 'Поиск';
+    //
+    //             let list =
+    //                 '<li class="d-flex flex category-aside">'+
+    //                 '<a href="partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
+    //                 '<span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>'+
+    //                 '</a>'+
+    //                 '</li>';
+    //             category_list.innerHTML = list;
+    //         }
+    //
+    //
+    //         window.rebuildLinks();
+    //         object.load();
+    //     }).catch(function (error) {
+    //         console.log(error);
+    //     }).finally(function () {
+    //         window.isXHRloading = false;
+    //     });
+    // }
 }
 export default partnerPage;

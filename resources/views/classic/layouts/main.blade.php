@@ -33,11 +33,11 @@
                                 Финансы
                             </a>
                         </li>
-                        <li id="employee_link" class="top-nav-item" >
-                            <a class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">
-                                Сотрудники
-                            </a>
-                        </li>
+                        {{--<li id="employee_link" class="top-nav-item" >--}}
+                            {{--<a class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">--}}
+                                {{--Сотрудники--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
                         <li id="partner_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('PartnerIndex') }}">
                                 Контрагенты

@@ -33,13 +33,14 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/settings/base/fresh', 'SettingsController@freshBaseStore')->name('FreshBaseStore');
 
     #Категории
+    Route::post('/category/loadview', 'CategoryController@loadAside')->name('LoadAsideCategory');
     Route::get('/categories', 'CategoryController@index')->name('Categories');
     Route::get('/categories/dialog/enter', 'CategoryController@enterDialog')->name('EnterDialog');
     Route::post('/category/dialog/search', 'CategoryController@dialogSearch')->name('CategoryDialogSearch');
     Route::post('/category/store', 'CategoryController@store')->name('StoreCategory');
     Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
-    Route::post('/category/loadview', 'CategoryController@loadAside')->name('LoadAsideCategory');
+
 
     Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
 
@@ -170,6 +171,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
     Route::post('/partner/{id}/select', 'PartnerController@select')->name('SelectPartner');
     Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
+    Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
 
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');

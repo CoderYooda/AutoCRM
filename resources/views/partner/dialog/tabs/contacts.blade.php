@@ -44,7 +44,7 @@
                 </div>
              @endif
         </div>
-        <button onclick="window.{{ $class }}.addPhone(this)" type="button" class="btn btn-sm white">Добавить номер телефона</button>
+        <button onclick="window.{{ $class }}.addPhone(this)" type="button" class="button white">Добавить номер телефона1</button>
     </div>
     <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>Адрес проживания</label>

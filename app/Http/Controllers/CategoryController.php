@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PartnerController;
 use Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -27,7 +28,11 @@ class CategoryController extends Controller
 
     public function loadAside(Request $request){
 
-        $categories = CategoryController::getCategories($request, 'store');
+        $categories = Cache::rememberForever('categories' . $request['category_id'], function () use ($request) {
+            return CategoryController::getCategories($request, 'store');
+        });
+
+        //$categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
@@ -43,9 +48,8 @@ class CategoryController extends Controller
         $class = $request['class'];
         if($request->expectsJson()){
 
-           $response =  [
-               'html' => view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render()
-           ];
+           $response =  [];
+           $response['html'] = view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
 
            if($request['class'] == 'partner'){
                $partners = PartnerController::getPartners($request);

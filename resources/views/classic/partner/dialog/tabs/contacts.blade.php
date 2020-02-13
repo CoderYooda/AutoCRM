@@ -1,6 +1,6 @@
 <div class="tab-pane animate fadeIn text-muted" id="tab_contacts{{ $class }}">
     <div class="form-group addable" id="phones_addable">
-        <label>Номер телефона</label>
+        <label>Номер телефона <span onclick="window.{{ $class }}.addPhone(this)" class="input_as_link pointer">добавить</span></label>
         <div class="phones">
             @if(isset($partner))
                 @if($partner->phones()->get() != NULL)
@@ -44,7 +44,6 @@
                 </div>
              @endif
         </div>
-        <button onclick="window.{{ $class }}.addPhone(this)" type="button" class="btn btn-sm white">Добавить номер телефона</button>
     </div>
     <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>Адрес проживания</label>

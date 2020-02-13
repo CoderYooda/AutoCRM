@@ -230,6 +230,19 @@ class PartnerController extends Controller
         ], 200);
     }
 
+    public function getSideInfo(Request $request){
+
+        $partner = Partner::owned()->where('id', $request['id'])->first();
+
+        if($request->expectsJson()){
+            return response()->json([
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.partner.contact-card', compact( 'partner','request'))->render(),
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function search(Request $request)
     {
         $partners = self::getPartners($request);

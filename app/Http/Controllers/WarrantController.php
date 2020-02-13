@@ -123,10 +123,10 @@ class WarrantController extends Controller
             //$correct_summ = doubleval($warrant->summ) - doubleval($request['summ']);
 
             if($warrant->isIncoming){
-                $warrant->partner()->first()->addition($warrant->summ);
+                $warrant->partner()->first()->subtraction($warrant->summ);
                 $warrant->cashbox()->first()->subtraction($warrant->summ);
             } else{
-                $warrant->partner()->first()->subtraction($warrant->summ);
+                $warrant->partner()->first()->addition($warrant->summ);
                 $warrant->cashbox()->first()->addition($warrant->summ);
             }
         } else{
@@ -139,10 +139,10 @@ class WarrantController extends Controller
 
         if($request['isIncoming']){
             $cashbox = $cashbox->addition($request['summ']);
-            $partner = $partner->subtraction($request['summ']);
+            $partner = $partner->addition($request['summ']);
         } else{
             $cashbox = $cashbox->subtraction($request['summ']);
-            $partner = $partner->addition($request['summ']);
+            $partner = $partner->subtraction($request['summ']);
         }
 
         $warrant->fill($request->only($warrant->fields));
