@@ -30,7 +30,7 @@ class CreateBasePartners extends Seeder
                     'category_id' => 5,
                     'fio' => $user['lname'] . ' ' . $user['fname'] . ' ' . $user['patronymic'],
                     'companyName' => '',
-                    'company_id' => 1,
+                    'company_id' => 2,
                     'created_at' => \Carbon\Carbon::now(),
                     'updated_at' => \Carbon\Carbon::now(),
                 ]);
@@ -48,7 +48,7 @@ class CreateBasePartners extends Seeder
                 'category_id' => rand(6, 7),
                 'fio' => $user['lname'] . ' ' . $user['fname'] . ' ' . $user['patronymic'],
                 'companyName' => $companyName,
-                'company_id' => 1,
+                'company_id' => 2,
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
                 ]);

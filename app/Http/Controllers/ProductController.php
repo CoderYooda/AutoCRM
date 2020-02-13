@@ -172,6 +172,7 @@ class ProductController extends Controller
     public function dialogSearch(Request $request)
     {
         $stores = Store::owned()->get();
+
         $products = Article::owned()->where(function($q) use ($request){
             if($request['store_id'] != NULL) {
                 $q->whereHas('stores', function ($query) use ($request) {
@@ -180,15 +181,15 @@ class ProductController extends Controller
             }
         })
         ->where(function($q) use ($request){
-            $q->where('name', 'LIKE', '%' . $request['string'] .'%');
-            $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
-            $q->orWhereHas('supplier', function ($query) use ($request) {
-                $query->where('name', 'LIKE', '%' . $request['string'] .'%');
-            });
+            $q->where('foundstring', 'LIKE', '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) .'%');
+//            $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
+//            $q->orWhereHas('supplier', function ($query) use ($request) {
+//                $query->where('name', 'LIKE', '%' . $request['string'] .'%');
+//            });
         })
         ->orderBy('id', 'DESC')->limit(10)->get();
 
-        $content = view('product.dialog.select_product_inner', compact('products', 'stores', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product_inner', compact('products', 'stores', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);
@@ -352,7 +353,7 @@ class ProductController extends Controller
         ->where('articles.company_id', Auth::user()->company()->first()->id)
         ->where(function($q) use ($request){
             if(isset($request['search']) && $request['search'] != ""){
-                $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', $request['search'])) . '%');
+                $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) . '%');
             }
         })
         ->where(function($q) use ($request){
