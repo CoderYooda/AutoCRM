@@ -17,7 +17,7 @@ class ScheduleController extends Controller
                 'html' => $content
             ]);
         } else {
-            return view('schedule.index', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.schedule.index', compact('request'));
         }
     }
 }

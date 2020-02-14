@@ -146,29 +146,38 @@ class PartnerController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
-        $partner = Partner::where('id', $id)->first();
-        $message = 'Контрагент удален';
-        $status = 200;
-
-        if($partner->company()->first()->id != Auth::user()->company()->first()->id){
-            $message = 'Вам не разрешено удалять этого контрагента';
-            $status = 422;
-        }
-
-        if($status == 200){
-            if(!$partner->delete()){
-                $message = 'Ошибка зависимотей. Обратитесь к администратору';
-                $status = 500;
+        $returnIds = null;
+        if($id == 'array'){
+            $partners = Partner::owned()->whereIn('id', $request['ids']);
+            $this->message = 'Контрагенты удалены';
+            foreach($partners as $partner){
+                if($partner->company()->first()->id != Auth::user()->company()->first()->id){
+                    $this->message = 'Вам не разрешено удалять этого контрагента';
+                    $this->status = 422;
+                } else {
+                    $partners->delete();
+                }
             }
+            $returnIds = $partners->get()->pluck('id');
+        } else {
+            $partner = Partner::where('id', $id)->first();
+            $this->message = 'Контрагент удален';
+            $returnIds = $partner->id;
+            if($partner->company()->first()->id != Auth::user()->company()->first()->id){
+                $this->message = 'Вам не разрешено удалять этого контрагента';
+                $this->status = 422;
+            }
+            $partner->delete();
         }
+        $this->status = 200;
 
 
         return response()->json([
-            'id' => $partner->id,
-            'event' => 'PartnerRemoved',
-            'message' => $message], $status);
+            'id' => $returnIds,
+            'message' => $this->message
+        ], $this->status);
     }
 
     private static function validateRules($request)

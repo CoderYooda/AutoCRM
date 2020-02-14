@@ -200,6 +200,23 @@ class storePage{
         if(object.active_tab === 'store') {
             object.contextDop = 'product';
             object.parametr = 'product';
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    console.log(cell.getValue());
+                    cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
+                    window.IMask(document.getElementById('price_' + cell.getData().id),   {
+                            mask: 'N 2',
+                            blocks: {
+                                N: {
+                                    mask: Number,
+                                    signed: true,
+                                    thousandsSeparator: ' '
+                                }
+                            }
+                        }
+                    );
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -209,7 +226,7 @@ class storePage{
                 {title:"Артикул", field:"article", width:150, align:"left"},
                 {title:"Бренд", field:"supplier", width:150, align:"left"},
                 {title:"Наличие", field:"isset", width:130, align:"left"},
-                {title:"Цена (Ррозница)", field:"price", width:160, align:"left"},
+                {title:"Цена (Ррозница)", field:"price", width:160, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'provider_orders'){
             object.contextDop = 'providerorder';
@@ -420,7 +437,6 @@ class storePage{
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
 
         if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
-
         return data;
     }
 

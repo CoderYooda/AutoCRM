@@ -298,5 +298,6 @@ class Helper{
         focus.focus(); // Возвращаем фокус туда, где был
         window.notification.notify( 'success', 'Скопировано в буфер');
     }
+
 }
 export default Helper;

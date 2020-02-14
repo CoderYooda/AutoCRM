@@ -46,9 +46,9 @@ class SettingsController extends Controller
         $settings = Setting::owned()->get();
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view('settings.index', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request'));
         }
-        return view('settings.index', compact('request', 'company', 'settings'));
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings'));
     }
 
     public static function cashboxTab($request)

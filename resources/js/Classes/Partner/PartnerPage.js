@@ -13,6 +13,7 @@ class partnerPage{
         this.search_obj = document.querySelector("#partner_search");
         this.contextDop = 'partner';
         this.parametr = 'partner';
+        this.active_tab = 'partner';
         this.init();
     }
 
@@ -266,7 +267,7 @@ class partnerPage{
                         data: data
                     }).then(function (resp) {
                         document.getElementById('contact_block').innerHTML = resp.data.info;
-                        document.getElementById('comment_block').innerHTML = resp.data.comment;
+                        //document.getElementById('comment_block').innerHTML = resp.data.comment;
                         //console.log(resp);
                     }).catch(function (error) {
                         console.log(error);
@@ -358,7 +359,7 @@ class partnerPage{
             onRendered(function(){
                 cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
                 window.IMask(document.getElementById('price_' + cell.getData().id),   {
-                        mask: 'N 2',
+                        mask: 'N Р',
                         blocks: {
                             N: {
                                 mask: Number,

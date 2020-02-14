@@ -353,7 +353,7 @@ class ProductController extends Controller
         ->where('articles.company_id', Auth::user()->company()->first()->id)
         ->where(function($q) use ($request){
             if(isset($request['search']) && $request['search'] != ""){
-                $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) . '%');
+                $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['search']))) . '%');
             }
         })
         ->where(function($q) use ($request){

@@ -1,6 +1,6 @@
-@extends($request['view_as'] == 'json' ? 'classic.layouts.XHR' : 'classic.layouts.main')
+@extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') . '.layouts.XHR' : 'classic.layouts.main')
 
-@section('title', $page ?? 'crm')
+@section('title', $page ?? 'Склад')
 
 @section('content')
 

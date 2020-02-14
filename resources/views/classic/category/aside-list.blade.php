@@ -30,4 +30,15 @@
             </li>
         @endif
     </ul>
+    {{--<form action="http://autocrm/category/store" method="POST">--}}
+        {{--<input type="hidden" name="_token" value="AAEKvZad10vwqcFuiJghlk84UKUTbW80AyoKPGX3">                            <input class="category_select" type="hidden" name="category_id" value=" 3 ">--}}
+        {{--<div class="input-group">--}}
+            {{--<input type="text" name="name" class="form-control form-control-sm" placeholder="Новая категория" required="">--}}
+            {{--<span class="input-group-append">--}}
+                {{--<button class="btn btn-default btn-sm no-shadow" type="button" onclick="axform.send(this)">--}}
+                    {{--<i class="fa fa-plus text-muted"></i>--}}
+                {{--</button>--}}
+            {{--</span>--}}
+        {{--</div>--}}
+    {{--</form>--}}
 </div>
