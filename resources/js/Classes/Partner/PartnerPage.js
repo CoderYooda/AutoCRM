@@ -21,10 +21,10 @@ class partnerPage{
         let object = this;
         document.addEventListener('ajaxLoaded', function(e){
             object.checkActive();
-            object.load();
+            //object.load();
         });
         object.checkActive();
-        object.searchInit();
+        //object.searchInit();
 
         document.addEventListener('PartnerStored', function(e){
             object.prepareParams();
@@ -49,38 +49,38 @@ class partnerPage{
         object.linked();
     }
 
-    reloadPage(){
-        let cat_string;
-        if(this.category_id === null){
-            cat_string = 'category_id=';
-        } else {
-            cat_string = 'category_id=' + this.category_id;
-        }
-        let search_string;
-        if(this.search === null){
-            search_string = '&search=';
-        } else {
-            search_string = '&search=' + this.search;
-        }
-        let page_string;
-        if(this.page === null){
-            page_string = '&page=';
-        } else {
-            page_string = '&page=' + this.page;
-        }
-        window.goto(window.helper.getBaseUrl() + '?' + cat_string + search_string + page_string);
-    }
+    // reloadPage(){
+    //     let cat_string;
+    //     if(this.category_id === null){
+    //         cat_string = 'category_id=';
+    //     } else {
+    //         cat_string = 'category_id=' + this.category_id;
+    //     }
+    //     let search_string;
+    //     if(this.search === null){
+    //         search_string = '&search=';
+    //     } else {
+    //         search_string = '&search=' + this.search;
+    //     }
+    //     let page_string;
+    //     if(this.page === null){
+    //         page_string = '&page=';
+    //     } else {
+    //         page_string = '&page=' + this.page;
+    //     }
+    //     window.goto(window.helper.getBaseUrl() + '?' + cat_string + search_string + page_string);
+    // }
 
-    load(){
-        this.category_id = window.helper.findGetParameter('category_id');
-        if(window.helper.findGetParameter('page') !== null){
-            this.page = window.helper.findGetParameter('page');
-        } else { this.page = 1}
-        if(window.helper.findGetParameter('search') !== null){
-            this.search = window.helper.findGetParameter('search');
-        } else { this.search = ''}
-        this.searchInit();
-    }
+    // load(){
+    //     this.category_id = window.helper.findGetParameter('category_id');
+    //     if(window.helper.findGetParameter('page') !== null){
+    //         this.page = window.helper.findGetParameter('page');
+    //     } else { this.page = 1}
+    //     if(window.helper.findGetParameter('search') !== null){
+    //         this.search = window.helper.findGetParameter('search');
+    //     } else { this.search = ''}
+    //    //this.searchInit();
+    // }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.category_id = window.helper.findGetParameter('category_id');
@@ -118,6 +118,7 @@ class partnerPage{
                     object.search = search.value;
                     object.page = 1;
                     object.table.setData('/partner/tabledata', object.prepareDataForTable());
+                    console.log(1);
                 }, 400);
                 search.addEventListener("keydown", searchFn);
                 search.addEventListener("paste", searchFn);

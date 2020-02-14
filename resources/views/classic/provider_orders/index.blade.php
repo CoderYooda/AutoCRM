@@ -2,8 +2,14 @@
 
 @section('tab')
     <div id="ajax-table-provider_orders" class="bottom-container">
-        <div class="box-lister box">
-            <div id="table-container" class="box-content">
+        <div class="box-lister">
+            <div class="w-100 box box-search mb-15">
+                <input id="search" name="search" placeholder="Поиск по контрагентам" class="input w-100" value="{{ request('search') }}" type="text">
+                <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
+                    <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
+                </span>
+            </div>
+            <div id="table-container" class="box box-content">
                 <div id="provider_orders-table" ></div>
             </div>
         </div>

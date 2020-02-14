@@ -447,7 +447,7 @@ class ProviderOrdersController extends Controller
             SUM(article_provider_orders.count) as order_count
         '))
             ->from(DB::raw('(
-            SELECT provider_orders.*, SUM(article_provider_orders.count) as apo_count, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
+            SELECT provider_orders.*, SUM(article_provider_orders.count) as apo_count, phones.number as phone, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
                 FROM (SELECT provider_orders.*, SUM(article_entrance.count) as ent_count FROM (
                     SELECT provider_orders.*, SUM(IF(w.isIncoming = 1, -w.summ, w.summ)) as wsumm FROM provider_orders 
                     left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
@@ -458,6 +458,8 @@ class ProviderOrdersController extends Controller
                 GROUP BY provider_orders.id)provider_orders
 
                 left join partners on partners.id = provider_orders.manager_id
+                left join (SELECT partner_phone.phone_id, partner_phone.partner_id FROM partner_phone LEFT JOIN phones on phones.id = partner_phone.phone_id WHERE phones.main = 1) as pp on pp.partner_id = provider_orders.partner_id
+                left join phones on pp.phone_id = phones.id 
                 left join article_provider_orders on article_provider_orders.provider_order_id = provider_orders.id
                 GROUP BY provider_orders.id
             ) provider_orders
@@ -474,6 +476,12 @@ class ProviderOrdersController extends Controller
             })
             ->when($request['accountable'] != null, function($query) use ($request) {
                 $query->whereIn('provider_orders.manager_id', $request['accountable']);
+            })
+            ->when($request['search'] != null, function($query) use ($request) {
+                $query->where('provider_orders.id', 'like', '%'.$request['search'].'%')
+                    ->orWhere('partners.fio', 'like', '%'.$request['search'].'%')
+                    ->orWhere('partners.companyName', 'like', '%'.$request['search'].'%')
+                    ->orWhere('provider_orders.phone', 'like', '%'.$request['search'].'%');
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
@@ -518,7 +526,7 @@ class ProviderOrdersController extends Controller
 
             //->toSql();
 
-      // dd($provider_orders);
+       //dd($provider_orders);
             ->paginate($size);
 
 //        where('provider_orders.company_id', Auth::user()->company()->first()->id)

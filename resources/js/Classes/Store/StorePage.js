@@ -4,7 +4,6 @@ class storePage{
 
     constructor(){
         console.log('страница склада инициализировано');
-        this.baseParams();
         this.init();
 
     }
@@ -307,6 +306,12 @@ class storePage{
             ];
         }
         return columns;
+    }
+
+    cleanSearch(){
+        this.search = null;
+        document.getElementById("search").value = null;
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
     generateContexes(){
