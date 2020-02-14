@@ -59,7 +59,7 @@ class CreateBasePartners extends Seeder
     }
 
     private static function fileLoad($command){
-        $count = 4000;
+        $count = 20000;
         $command->command->getOutput()->progressStart($count);
         for($i = 1; $i < $count; $i++){
             try{
