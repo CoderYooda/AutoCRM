@@ -13,7 +13,7 @@ class CreateBasePartners extends Seeder
      */
     public function run()
     {
-        //self::fileLoad($this);
+        self::fileLoad($this);
         $user = file_get_contents('public/demo/partners.json');
         $jsons = explode("end_json", $user);
         $this->command->getOutput()->progressStart(count($jsons));
