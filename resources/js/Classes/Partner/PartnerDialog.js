@@ -175,7 +175,7 @@ class partnerDialog{
             '<span class="input-group-append checkbox_append" title="Активный номер">' +
             '<div class="input-group-text border-left-0">' +
             '<label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">' +
-            '<input type="checkbox" checked name="phones[num'+ (count + 1) +'][main]" value="1">' +
+            '<input type="radio" name="phones_main" value="num'+ (count + 1) +'">' +
             '<i class="dark-white"></i>' +
             '</label>' +
             '</div>' +

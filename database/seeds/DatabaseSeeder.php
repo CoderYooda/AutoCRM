@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeed::class);
         $this->call(DDSSeeder::class);
         $this->call(ContractTypesSeeder::class);
-        $this->call(CreateBasePartners::class);
+        //$this->call(CreateBasePartners::class);
         $this->call(SettingsSeed::class);
         //$this->call(WarrantSeed::class);
         //$this->call(MoneymoveSeed::class);
-        $this->call(ArticleSeed::class);
+        //$this->call(ArticleSeed::class);
 //        $this->call(EntranceSeed::class);
 //        $this->call(ShipmentSeed::class);
 //        $this->call(ClientOrderSeed::class);

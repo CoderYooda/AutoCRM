@@ -92,9 +92,9 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
-        if($request['number']){
-            $request['number'] = str_replace(' ', '', $request['number']);
-        }
+//        if($request['number']){
+//            $request['number'] = str_replace(' ', '', $request['number']);
+//        }
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
@@ -118,8 +118,10 @@ class PartnerController extends Controller
         if(!$request['isfl']){
             $partner->fio = $request['ur_fio'];
         }
-        $partner->save();
         $phones = PhoneController::upsertPhones($request);
+
+        $partner->basePhone = $phones->where('main', true)->first()->number;
+        $partner->save();
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
         $partner->phones()->sync($phones->pluck('id'));
@@ -326,15 +328,11 @@ class PartnerController extends Controller
         }
 
         $partners = Partner::select(DB::raw('
-            partners.*, partners.created_at as date, partners.id as coid
+            partners.id, partners.created_at, partners.balance, partners.created_at as date, basePhone as phone, IF(partners.isfl = 1, partners.fio, partners.companyName) as name, cat.name as category
         '))
             ->from(DB::raw('
-                (SELECT partners.*, ph.number as phone, IF(partners.isfl = 1, partners.fio, partners.companyName) as name, cat.name as category FROM partners
-                left join (SELECT partner_phone.phone_id, partner_phone.partner_id FROM partner_phone LEFT JOIN phones on phones.id = partner_phone.phone_id WHERE phones.main = 1) as pp on pp.partner_id = partners.id
-                left join phones as ph on pp.phone_id = ph.id 
-                left join categories as cat on cat.id = partners.category_id 
-                GROUP BY partners.id
-                ) partners
+                partners
+                left join categories as cat on cat.id = partners.category_id
             '))
 
             ->where(function($q) use ($request){
@@ -354,7 +352,7 @@ class PartnerController extends Controller
                 if(mb_strlen($request['search']) == 1){
                     $query->where('name', 'like', $request['search'].'%');
                 } else {
-                    $query->where('name', 'like', '%'.$request['search'].'%')->orWhere('phone', 'like', '%'.$request['search'].'%');
+                    $query->where('name', 'like', '%'.$request['search'].'%')->orWhere('basePhone', 'like', '%'.$request['search'].'%');
                 }
             })
 

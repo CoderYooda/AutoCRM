@@ -11,8 +11,9 @@ class PhoneController extends Controller
     public static function upsertPhones($request)
     {
         $phones = collect();
+        $main_phone_id = $request['phones_main'];
         if($request['phones'] && count($request['phones']) > 0){
-            foreach($request['phones'] as $r_phone){
+            foreach($request['phones'] as $key => $r_phone){
                 if($r_phone['number'] != NULL){
                     if(isset($r_phone['id'])){
                         $phone = Phone::where('id', $r_phone['id'])->first();
@@ -22,10 +23,10 @@ class PhoneController extends Controller
                     $phone->company_id = $request['company_id'];
                     $phone->number = str_replace(array('(', ')', ' ', '-'), '', $r_phone['number']);
                     if(isset($r_phone['main'])){$r_phone['main'] = true;} else {$r_phone['main'] = false;}
-                    if(count($request['phones']) == 1){
+                    if($main_phone_id == $key){
                         $phone->main = true;
                     } else {
-                        $phone->main = $r_phone['main'];
+                        $phone->main = false;
                     }
                     $phone->save();
                     $phones->add($phone);
