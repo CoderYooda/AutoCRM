@@ -92,9 +92,9 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
-//        if($request['number']){
-//            $request['number'] = str_replace(' ', '', $request['number']);
-//        }
+        if($request['number']){
+            $request['number'] = (int)str_replace(' ', '', $request['number']);
+        }
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
@@ -194,7 +194,9 @@ class PartnerController extends Controller
             $active = false;
             foreach($request['phones'] as $phone){if($phone['number'] != NULL){$active = true;}}
             if($active){$rules['phones.*.number'] = ['min:0', 'required', 'regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];}
-            if($request['number']){$rules['number'] = ['min:0', 'digits:10', 'integer'];}
+            if($request['number']){
+                $rules['number'] = ['min:0', 'digits:10', 'integer'];
+            }
             if($request['issued_by']){$rules['issued_by'] = ['min:0', 'max:250'];}
             if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:Y-m-d'];}
             if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:Y-m-d'];}
@@ -328,7 +330,7 @@ class PartnerController extends Controller
         }
 
         $partners = Partner::select(DB::raw('
-            partners.id, partners.created_at, partners.balance, partners.created_at as date, basePhone as phone, IF(partners.isfl = 1, partners.fio, partners.companyName) as name, cat.name as category
+            partners.id, partners.created_at, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.isfl = 1, partners.fio, partners.companyName) as name
         '))
             ->from(DB::raw('
                 partners
@@ -350,9 +352,10 @@ class PartnerController extends Controller
 //            })
             ->when($request['search'] != null, function($query) use ($request) {
                 if(mb_strlen($request['search']) == 1){
-                    $query->where('name', 'like', $request['search'].'%');
+                    $query->where('fio', 'like', $request['search'].'%')
+                    ->orWhere('companyName', 'like', $request['search'].'%');
                 } else {
-                    $query->where('name', 'like', '%'.$request['search'].'%')->orWhere('basePhone', 'like', '%'.$request['search'].'%');
+                    $query->where('fio', 'like', '%'.$request['search'].'%')->orWhere('companyName', 'like', '%'.$request['search'].'%')->orWhere('basePhone', 'like', '%'.$request['search'].'%');
                 }
             })
 
