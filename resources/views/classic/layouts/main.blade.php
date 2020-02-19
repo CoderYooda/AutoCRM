@@ -53,6 +53,11 @@
                                 Планировщик
                             </a>
                         </li>
+                        <li id="actions_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('ActionsIndex') }}">
+                                История
+                            </a>
+                        </li>
                     </ul>
                     <span class="md-auto"></span>
                     <ul class="top-nav-bar right-nav">
@@ -80,6 +85,21 @@
                                                 <img src="http://autocrm/images/noavatar.png" alt="...">
                                             </span>
                                 {{ Auth::user()->name }}
+                            </span>
+
+                            <div class="dropdown_container">
+                                <div class="arrow"></div>
+                                <a class="element" href="#" onclick="">
+                                    Личный кабинет
+                                </a>
+                                <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                    Выход
+                                </a>
+                            </div>
+                        </li>
+                        <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
+                            <span class="d-flex align-items-center p-10" href="">
+                                {{ Auth::user()->company()->first()->name }}
                             </span>
 
                             <div class="dropdown_container">

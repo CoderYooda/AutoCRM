@@ -7,14 +7,17 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Partner;
 use App\Http\Controllers\CategoryController;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
 use Milon\Barcode\DNS1D;
+use App\Models\Store;
 use Auth;
 use SystemMessage;
+use App\Http\Controllers\UserActionsController as UA;
 use App\Http\Controllers\SmsController;
 
 
@@ -69,7 +72,7 @@ class PartnerController extends Controller
 //        }
 
 
-
+        $stores = Store::owned()->get();
 
 
         if($request['category_select']){
@@ -79,7 +82,7 @@ class PartnerController extends Controller
         }
         $category = Category::where('id', $category_select)->first();
 
-        return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request'))->render()]);
+        return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))->render()]);
     }
 
 //    public static function partnerDialog($request)
@@ -105,12 +108,13 @@ class PartnerController extends Controller
             }
         }
         $partner = Partner::firstOrNew(['id' => $request['id']]);
+        $wasExisted = false;
         if($partner->exists){
+            $wasExisted = true;
             $message = "Контрагент обновлен";
             $request['user_id'] = $partner->user_id;
             $request['company_id'] = $partner->company_id;
         } else{
-            $request['user_id'] = Auth::user()->id;
             $request['company_id'] = Auth::user()->company()->first()->id;
             $message = "Контрагент создан";
         }
@@ -119,8 +123,10 @@ class PartnerController extends Controller
             $partner->fio = $request['ur_fio'];
         }
         $phones = PhoneController::upsertPhones($request);
+        if($phones->count()){
+            $partner->basePhone = $phones->where('main', true)->first()->number;
+        }
 
-        $partner->basePhone = $phones->where('main', true)->first()->number;
         $partner->save();
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
@@ -130,12 +136,40 @@ class PartnerController extends Controller
 
         //$content = view('partner.elements.list_container', compact('partners', 'categories', 'request'))->render();
 
-        SystemMessage::sendToAllButOne();
+        //SystemMessage::sendToAllButOne();
+        UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
+        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'awd');
 
-
-
+        if($request['access']){
+            $user = $partner->user()->first();
+            if($user != null){
+                $user->banned_at = null;
+                $user->save();
+            } else {
+                $password = rand(10000, 99999);
+                $user = User::create([
+                    'name' => $partner->outputName(),
+                    'phone' => str_replace(array('(', ')', '+', ' ', '-'), '', $request['login']),
+                    'company_id' => Auth::user()->company()->first()->id,
+                    'password' => bcrypt($password)
+                ]);
+                $partner->user_id = $user->id;
+                $partner->store_id = $request['store_id'];
+                $partner->save();
+                if($user){
+                    SmsController::sendSMS($user->phone, 'Вам предоставлен доступ к ' . env('APP_NAME') .'! Логин: ' . $user->phone . ' Пароль: ' . $password);
+                }
+            }
+        } else {
+            if($partner->user()->first() != null){
+                $user = $partner->user()->first();
+                $user->banned_at = Carbon::now();
+                $user->save();
+            }
+        }
 
         if($request->expectsJson()){
+
             return response()->json([
                 'message' => $message,
                 //'container' => 'ajax-table-partner',
@@ -154,12 +188,14 @@ class PartnerController extends Controller
         if($id == 'array'){
             $partners = Partner::owned()->whereIn('id', $request['ids']);
             $this->message = 'Контрагенты удалены';
-            foreach($partners as $partner){
+            foreach($partners->get() as $partner){
                 if($partner->company()->first()->id != Auth::user()->company()->first()->id){
                     $this->message = 'Вам не разрешено удалять этого контрагента';
                     $this->status = 422;
                 } else {
-                    $partners->delete();
+
+                    $partner->delete();
+                    UA::makeUserAction($partner, 'delete');
                 }
             }
             $returnIds = $partners->get()->pluck('id');
@@ -172,6 +208,7 @@ class PartnerController extends Controller
                 $this->status = 422;
             }
             $partner->delete();
+            UA::makeUserAction($partner, 'delete');
         }
         $this->status = 200;
 
@@ -181,6 +218,8 @@ class PartnerController extends Controller
             'message' => $this->message
         ], $this->status);
     }
+
+
 
     private static function validateRules($request)
     {

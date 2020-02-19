@@ -9,7 +9,7 @@ class Company extends Model
     protected $guarded = [];
 
     public function members(){
-        return $this->belongsToMany('App\Models\User', 'user_company');
+        return $this->hasMany('App\Models\User', 'company_id');
     }
 
     public function stores(){

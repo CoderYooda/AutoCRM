@@ -302,7 +302,6 @@ class partnerPage{
         data.category_id = category_id;
         data.search = object.search;
         data.class = 'partner';
-        console.log(1);
         window.axios({
             method: 'post',
             url: '/category/loadview',

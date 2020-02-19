@@ -34,6 +34,14 @@
                         </span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link block" href="#tab_access{{ $class }}" data-toggle="tab" data-target="#tab_access{{ $class }}">
+                        Доступ в систему
+                        <span class="float-right helper_danger d-none-f">
+                            <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="col-sm-7 no-pl">
@@ -43,6 +51,7 @@
                 @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.company')
                 @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.passport')
                 @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.cars')
+                @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')
             </div>
         </div>
     </div>

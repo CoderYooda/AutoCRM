@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
@@ -72,6 +73,12 @@ class LoginController extends Controller
     {
 
         $this->validateLogin($request);
+        $user = User::where('phone', $request['phone'])->first();
+
+        if($user->banned_at != null){
+            return redirect()->back()->with('banned', ['Выша учетная запись была заблокирована']);
+
+        }
 
         if (method_exists($this, 'hasTooManyLoginAttempts') &&
             $this->hasTooManyLoginAttempts($request)) {

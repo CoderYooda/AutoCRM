@@ -7,7 +7,7 @@ class Socket{
         this.socket = null;
         this.channel = 'system:message';
         this.systemChannel = 'app_base_channel:systemMessage';
-        //this.init();
+        this.init();
         this.ownChannel = null;
         this.allowedOrigins = "192.168.1.64:* autocrm:*";
         console.log('Сокеты подключены');
@@ -20,9 +20,9 @@ class Socket{
             method: 'post',
             url: '/user/get_channel',
         }).then(function (resp) {
-            object.ownChannel = resp.data.channel;
+            object.ownChannel = resp.data.channels;
         }).catch(function (error) {
-            //console.log(error);
+            console.log(error);
         }).finally(function () {
             object.connect();
         });
@@ -32,8 +32,11 @@ class Socket{
         let object = this;
         object.socket = io('autocrm:6001',{origins:object.allowedOrigins});
         object.socket.on('connect', function(){
-            object.socket.emit('subscribe', object.channel);
-            object.socket.emit('subscribe',  object.ownChannel);
+            object.socket.emit('subscribe', object.systemChannel);
+            [].forEach.call(object.ownChannel, function(chanel){
+                object.socket.emit('subscribe',  chanel);
+            });
+
         });
 
         object.socket.on('error', function(error){
@@ -44,18 +47,13 @@ class Socket{
             console.info(message);
         });
 
-        object.socket.on(object.channel, function(data){
+        [].forEach.call(object.ownChannel, function(chanel){
 
-            $('#chat').prepend(
-                $('<h4>').text(data.name),
-                $('<p>').text(data.content)
-            );
-            console.log(data)
+            object.socket.on(chanel, function(data){
+                console.log(data);
+            });
         });
 
-        object.socket.on(object.ownChannel, function(data){
-            console.log(data)
-        });
     }
 
     sendMessage(){

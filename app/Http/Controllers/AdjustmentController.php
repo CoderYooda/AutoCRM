@@ -9,6 +9,7 @@ use App\Models\Store;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Http\Controllers\UserActionsController as UA;
 use Auth;
 
 class AdjustmentController extends Controller
@@ -94,6 +95,8 @@ class AdjustmentController extends Controller
         }
         #Удаление всех отношений и запись новых (кастомный sync)
         $adjustment->articles()->sync($adjustment_data, true);
+
+        UA::makeUserAction($adjustment, 'create');
 
         if($request->expectsJson()){
             return response()->json([

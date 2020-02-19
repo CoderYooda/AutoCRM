@@ -3,31 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SMSMessages;
 use App\Models\SMS;
 use stdClass;
 use App\Models\SmsConfirmation;
+use Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SmsController extends Controller
 {
-    public static function sendSMS(){
+
+    public static function sendSMS($phone, $text)
+    {
         $smsru = new SMS(env('SMS_RU_CODE'));
         $data = new stdClass();
-        $data->to = '79300841648';
-        $data->text = 'Код подтверждения: 150752'; // Текст сообщения
-        $data->from = 'BB-CRM'; // Если у вас уже одобрен буквенный отправитель, его можно указать здесь, в противном случае будет использоваться ваш отправитель по умолчанию
-        // $data->time = time() + 7*60*60; // Отложить отправку на 7 часов
-        // $data->translit = 1; // Перевести все русские символы в латиницу (позволяет сэкономить на длине СМС)
-        // $data->test = 1; // Позволяет выполнить запрос в тестовом режиме без реальной отправки сообщения
-        // $data->partner_id = '1'; // Можно указать ваш ID партнера, если вы интегрируете код в чужую систему
-        $sms = $smsru->send_one($data); // Отправка сообщения и возврат данных в переменную
+        $data->to = $phone;
+        $data->text = $text;
+        $data->from = 'BB-CRM';
+        $data->test = 0;
+        $sms = $smsru->send_one($data);
+        if ($sms->status == "OK") {
+            $smsMessage = new SMSMessages();
+            $smsMessage->partner_id = Auth::user()->partner()->first()->id;
+            $smsMessage->company_id = Auth::user()->company()->first()->id;
+            $smsMessage->phone = $phone;
+            $smsMessage->status_code = $sms->status_code;
+            $smsMessage->sms_id = $sms->sms_id;
+            $smsMessage->cost = $sms->cost;
+            $smsMessage->ip = request()->ip();
+            $smsMessage->message = $text;
+            $smsMessage->save();
 
-        if ($sms->status == "OK") { // Запрос выполнен успешно
-            dd($sms);
+            return true;
         } else {
-            dd($sms);
+            return false;
         }
     }
+
 
     public function confirm(Request $request)
     {

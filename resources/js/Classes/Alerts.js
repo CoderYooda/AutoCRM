@@ -57,29 +57,31 @@ class Alerts{
         let object = this;
         let html = '';
         let count = 0;
-        object.stack_item_container.innerHTML = html;
-        Object.keys(dialogs).map(function(objectKey, index) {
-            var elem = dialogs[objectKey];
-            if(elem.hidden){
-                count++;
-                stack_dialogs.push(dialogs[objectKey]);
-                html += '<a class="stack_item" onclick="window.alerts.comeBackDialog(\'' + elem.tag + '\')">' + elem.title + '</a>'
-            }
+        if(object.stack_item_container) {
             object.stack_item_container.innerHTML = html;
-        });
+            Object.keys(dialogs).map(function (objectKey, index) {
+                var elem = dialogs[objectKey];
+                if (elem.hidden) {
+                    count++;
+                    stack_dialogs.push(dialogs[objectKey]);
+                    html += '<a class="stack_item" onclick="window.alerts.comeBackDialog(\'' + elem.tag + '\')">' + elem.title + '</a>'
+                }
+                object.stack_item_container.innerHTML = html;
+            });
 
-        if(count > 0){
-            object.stack_item.classList.add('add');
-            setTimeout(function(){
-                object.stack_item.classList.remove('add');
-            }, 200);
-            object.stack_item.classList.add('active');
-        } else {
-            object.stack_item.classList.remove('active');
+            if (count > 0) {
+                object.stack_item.classList.add('add');
+                setTimeout(function () {
+                    object.stack_item.classList.remove('add');
+                }, 200);
+                object.stack_item.classList.add('active');
+            } else {
+                object.stack_item.classList.remove('active');
+            }
+
+
+            this.stack_badge_count.innerHTML = count;
         }
-
-
-        this.stack_badge_count.innerHTML = count;
         //this.stack_item
     }
 

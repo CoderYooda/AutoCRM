@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cashbox;
 use Illuminate\Http\Request;
 use Auth;
+use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Validator;
 
 class CashboxController extends Controller
@@ -25,10 +26,12 @@ class CashboxController extends Controller
         $cashbox = Cashbox::firstOrNew(['id' => (int)$request['id']]);
         if($cashbox->exists){
             $message = 'Касса обновлена';
+            $wasExisted = true;
         } else {
             $cashbox->manager_id = Auth::user()->partner()->first()->id;
             $cashbox->balance = 0;
             $message = 'Касса создана';
+            $wasExisted = false;
         }
         $cashbox->fill($request->all());
         $cashbox->company_id = Auth::user()->company()->first()->id;
@@ -37,6 +40,8 @@ class CashboxController extends Controller
 
 
         $cashboxes = self::getCashboxes($request);
+
+        UA::makeUserAction($cashbox, $wasExisted ? 'fresh' : 'create');
 
         $content = view('settings.cashbox', compact('cashboxes', 'request'))->render();
 
@@ -107,6 +112,7 @@ class CashboxController extends Controller
                         $this->status = 500;
                     }
                 }
+                UA::makeUserAction($cashbox, 'delete');
             }
         } else {
             $cashbox = Cashbox::where('id', $id)->first();
@@ -123,6 +129,7 @@ class CashboxController extends Controller
                     $this->status = 500;
                 }
             }
+            UA::makeUserAction($cashbox, 'delete');
         }
 
         return response()->json([

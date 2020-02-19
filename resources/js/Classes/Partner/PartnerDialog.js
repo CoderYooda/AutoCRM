@@ -4,6 +4,7 @@ class partnerDialog{
         console.log('Окно партнера инициализировано');
         this.root_dialog = dialog;
         this.active = true;
+        this.phoneLoginMask = null;
         this.init();
     }
 
@@ -18,6 +19,7 @@ class partnerDialog{
         if(focused){
             focused.focus();
         }
+        this.addLoginPhoneMask()
         //elem.addEventListener("click", this.activateTab('fl'));
     }
     save(elem){
@@ -66,6 +68,34 @@ class partnerDialog{
             window.isXHRloading = false;
         });
     };
+
+    changeCountry(elem){
+        let object = this;
+
+        object.phoneLoginMask.updateOptions({
+            mask: '+{' + elem.value + '}(000)000-00-00'
+        });
+        object.phoneLoginMask.value = '';
+    }
+
+    addLoginPhoneMask(){
+        var phone = document.querySelector('#phone_login_input');
+        this.phoneLoginMask = window.IMask(phone, {
+
+                mask: '+{7}(000)000-00-00',
+                lazy: false,
+                placeholderChar: '_',
+
+                dispatch: function (appended, dynamicMasked) {
+                    var number = (dynamicMasked.value + appended).replace(/\D/g,'');
+
+                    return dynamicMasked.compiledMasks.find(function (m) {
+                        return number.indexOf(m.startsWith) === 0;
+                    });
+                }
+            }
+        )
+    }
 
     addPhoneMask(){
         var elements = this.root_dialog.querySelectorAll('.phone_input');
@@ -195,18 +225,19 @@ class partnerDialog{
 
     toggleAccess(elem){
         let object = this;
-        var account_datas = object.root_dialog.querySelectorAll('.account_data');
-        console.log(account_datas);
-
-        if(elem.value == 1){
-            [].forEach.call(account_datas, function(elem){
-                elem.classList.remove('hide');
-            });
-        } else {
-            [].forEach.call(account_datas, function(elem){
-                elem.classList.add('hide');
-            });
+        var account_datas = object.root_dialog.querySelectorAll('.account_data');;
+        if(account_datas){
+            if(elem.value == 1){
+                [].forEach.call(account_datas, function(elem){
+                    elem.classList.remove('hide');
+                });
+            } else {
+                [].forEach.call(account_datas, function(elem){
+                    elem.classList.add('hide');
+                });
+            }
         }
+
     }
 
     canAddMorePhone(div){

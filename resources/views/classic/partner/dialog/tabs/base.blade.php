@@ -50,26 +50,4 @@
             <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($partner->barcode) !!}" alt="barcode" />
         @endif
     </div>
-
-    <div class="form-group">
-        <label>Доступ в систему</label>
-        <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
-            @if(isset($partner))
-                <option value="1" @if(isset($partner) && $partner->access) selected @endif>Разрешен</option>
-                <option value="0" @if(isset($partner) && !$partner->access) selected @endif>Запрещен</option>
-            @else
-                <option value="1">Разрешен</option>
-                <option value="0" selected>Запрещен</option>
-            @endif
-        </select>
-    </div>
-    <div class="form-group account_data hide">
-        <label>Логин</label>
-        <input type="text" name="login" class="form-control" value="@if(isset($partner)){{ $partner->login }}@endif" placeholder="Логин">
-    </div>
-    <div class="form-group account_data hide">
-        <label>Пароль</label>
-        <input type="password" name="password" class="form-control" value="@if(isset($partner)){{ $partner->password }}@endif" placeholder="Пароль">
-    </div>
-
 </div>

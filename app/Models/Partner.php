@@ -108,6 +108,10 @@ class Partner extends Model
         return self::where('company_id', $company_id);
     }
 
+    public function user(){
+        return $this->BelongsTo('App\Models\User', 'user_id');
+    }
+
     public function addition($summ){
         $this->balance = round($this->balance + $summ, 2);
 

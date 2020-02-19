@@ -25,7 +25,7 @@ class ProviderOrdersController extends Controller
             $provider_order = null;
         }
 
-        $stores = Store::where('company_id', Auth::user()->id)->get();
+        $stores = Store::owned()->get();
 
         return response()->json([
             'tag' => $tag,

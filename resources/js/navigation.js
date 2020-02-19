@@ -50,7 +50,6 @@ const ajaxRequest = new (function () {
                     } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){
                         li.classList.add('active');
                     }
-                    console.log(123);
                 });
                 rebuildLinks();
                 document.dispatchEvent(new Event('ajaxLoaded', {bubbles: true}));
@@ -59,11 +58,11 @@ const ajaxRequest = new (function () {
             default:
                 removePreloaders();
                 vMsg = nStatus + ": " + (oHTTPStatus[nStatus] || "Unknown");
-                switch (Math.floor(nStatus / 100)) {
-                    case 4:
-                        window.auth.getLoginScreen();
+                switch (nStatus) {
+                    case 401:
+                        //window.auth.getLoginScreen();
                         break;
-                    case 5:
+                    case 500:
                         /* Server Error 5xx */
                         alert("Server Error #" + vMsg);
                         break;

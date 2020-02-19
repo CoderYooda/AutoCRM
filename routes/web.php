@@ -146,6 +146,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Услуги
     Route::get('/services', 'ServicesController@index')->name('ServicesIndex');
 
+    #История
+    Route::get('/actions', 'UserActionsController@index')->name('ActionsIndex');
+
     #Сотрудники
     Route::get('/employee/resources', 'EmployeeController@resources')->name('EmployeeResources');
     Route::get('/employee/tabledata', 'EmployeeController@tabledata')->name('EmployeeTableData');
@@ -155,7 +158,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
-    Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
+
 
     #Календарь
     Route::get('/calendar', 'CalendarController@index')->name('CalendarIndex');
@@ -206,3 +209,4 @@ Route::group(['middleware' => ['web', 'auth']], function () {
         });
     });
 });
+Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');

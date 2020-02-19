@@ -27,15 +27,16 @@ io.on('connection', function(socket){
             headers: {cookie : socket.request.headers.cookie},
             json: true,
         } , function(error, response, json){
-            console.log(json);
+
             if(json.can){
+                console.log(channel + 'Может');
                 socket.join(channel, function(error){
                     socket.send('Присоединился к ' + channel);
-                    //io  .to(channel + ':message')
-                    // socket.broadcast.emit(
-                    //     'message',
-                    //     chatMessage('Chatbot', 'New User joined')
-                    // );
+                    io  .to(channel + ':systemMessage');
+                    socket.broadcast.emit(
+                        'message',
+                        chatMessage('Chatbot', 'New User joined')
+                    );
                 })
             }
             return;
@@ -52,14 +53,11 @@ const chatMessage = (from, text) => {
 };
 
 redis.psubscribe('*', function(error, count){
-    //console.log(error, count);
+    console.log(error, count);
 });
 
 redis.on('pmessage', function(pattern, channel, message){
-
     message = JSON.parse(message);
-
-    //console.log(channel + ':' + message.event);
     io  .to(channel + ':' + message.event)
         .emit(channel + ':' + message.event, message.data.message)
     console.log(message);

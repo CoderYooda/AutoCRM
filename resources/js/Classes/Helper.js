@@ -21,6 +21,7 @@ import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
 import supplierDialog from "./Supplier/SupplierDialog";
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
+import actionsPage from "./Actions/ActionsPage";
 import settingsPage from "./Settings/SettingsPage";
 import servicesPage from "./Services/ServicesPage";
 import reportPage from "./Report/ReportPage";
@@ -68,6 +69,7 @@ const pages = {
     userPage,
     calendarPage,
     schedulePage,
+    actionsPage,
     registerPage,
     loginPage,
 };
@@ -78,12 +80,17 @@ class Helper{
         let block = elem;
         //console.log(block.querySelector('.dropdown_container'));
         let container = block.querySelector('.dropdown_container');
+        // var className = " " + selector + " ";
+        // if ( (" " + container.className + " ").replace(/[\n\t]/g, " ").indexOf(" show ") > -1 ){
+        //
+        // }
+
         if(container
             // && div !== (e.target)
             // && !div.contains(e.target)
              && !event.target.closest('.dropdown_container')
         ){
-            block.classList.add('show');
+            block.classList.toggle('show');
         }
     }
 
@@ -117,6 +124,7 @@ class Helper{
 
     initPageMethods(){
         let className = window.location.pathname.substring(1);
+        console.log(window[className]);
         if(className !== 'undefined') {
             if(!window[className]) {
                 try {

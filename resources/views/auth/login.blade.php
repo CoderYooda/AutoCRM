@@ -6,6 +6,9 @@
             <div class="px-3">
                 <div class="mb-5 text-center">
                     <h5 class="login-text">Авторизация</h5>
+                    @if (\Session::has('banned'))
+                        <h4>{!! \Session::get('banned')[0] !!}</h4>
+                    @endif
                 </div>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
@@ -21,7 +24,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-group row row-sm  @error('phone') is-invalid @enderror">
                         <label class="col-sm-5">Номер телефона</label>
                         <div class="col-sm-7">
