@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Partner;
+use App\Http\Controllers\UserActionsController as UA;
 use stdClass;
 use Auth;
 
@@ -120,11 +121,13 @@ class WarrantController extends Controller
 
         if($warrant->exists){
             $message = "Ордер обновлен";
+            $wasExisted = true;
             //$correct_summ = doubleval($warrant->summ) - doubleval($request['summ']);
 
             if($warrant->isIncoming){
                 $warrant->partner()->first()->subtraction($warrant->summ);
                 $warrant->cashbox()->first()->subtraction($warrant->summ);
+
             } else{
                 $warrant->partner()->first()->addition($warrant->summ);
                 $warrant->cashbox()->first()->addition($warrant->summ);
@@ -132,6 +135,7 @@ class WarrantController extends Controller
         } else{
             $warrant->manager_id = Auth::user()->id;
             $message = "Ордер создан";
+            $wasExisted = false;
         }
 
         $cashbox = Cashbox::owned()->where('id', $request['cashbox_id'])->first();
@@ -150,7 +154,7 @@ class WarrantController extends Controller
         $warrant->save();
         $warrant->created_at = $request['do_date'];
         $warrant->save();
-
+        UA::makeUserAction($warrant, $wasExisted ? 'fresh' : 'create');
 
         $method = $warrant->refer;
         if($method !== null){
@@ -188,6 +192,7 @@ class WarrantController extends Controller
                     $partner->addition($warrant->summ);
                 }
                 $warrant->delete();
+                UA::makeUserAction($warrant, 'delete');
                 $this->status = 200;
             }
         } else {
@@ -206,6 +211,7 @@ class WarrantController extends Controller
             }
 
             $warrant->delete();
+            UA::makeUserAction($warrant, 'delete');
             $this->status = 200;
             $this->message = 'Кассовый ордер удален';
         }

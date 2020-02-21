@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Article;
+use App\Http\Controllers\UserActionsController as UA;
 use App\Models\Store;
 use Auth;
 
@@ -140,6 +141,7 @@ class ProviderOrdersController extends Controller
                     if($provider_order->delete()){
                         #Отнимаем с баланса контрагента
                         $provider_order->partner()->first()->subtraction($provider_order->itogo);
+                        UA::makeUserAction($provider_order, 'delete');
                     }
                 }
             }
@@ -156,6 +158,7 @@ class ProviderOrdersController extends Controller
                 if($provider_order->delete()){
                     #Отнимаем с баланса контрагента
                     $provider_order->partner()->first()->subtraction($provider_order->itogo);
+                    UA::makeUserAction($provider_order, 'delete');
                 }
             }
         }
@@ -264,7 +267,7 @@ class ProviderOrdersController extends Controller
         $provider_order->balance = 0;
         $provider_order->itogo = 0;
         $provider_order->save();
-
+        UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
 //        foreach($provider_order->entrances()->get() as $entrance){
 //            $entrance->increaseInStore($provider_order->store()->first());
 //        }

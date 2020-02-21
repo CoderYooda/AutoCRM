@@ -9,6 +9,7 @@ use App\Models\Store;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Article;
+use App\Http\Controllers\UserActionsController as UA;
 use Auth;
 
 class ShipmentsController extends Controller
@@ -71,6 +72,7 @@ class ShipmentsController extends Controller
                     #Добавляем к балансу контрагента
                     $shipment->partner()->first()->subtraction($shipment->itogo);
                     $shipment->articles()->sync(null);
+                    UA::makeUserAction($shipment, 'delete');
                 }
             }
         } else {
@@ -149,10 +151,12 @@ class ShipmentsController extends Controller
             $this->message = 'Продажа обновлена';
             #Отнимаем с баланса контрагента
             $shipment->partner()->first()->addition($shipment->itogo);
+            $wasExisted = true;
         } else {
             $shipmentWasExisted = false;
             $shipment->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Продажа сохранена';
+            $wasExisted = false;
         }
 
         $shipment->fill($request->only($shipment->fields));
@@ -160,7 +164,7 @@ class ShipmentsController extends Controller
         $shipment->balance = 0;
         $shipment->itogo = 0;
         $shipment->save();
-
+        UA::makeUserAction($shipment, $wasExisted ? 'fresh' : 'create');
         ##########################################################################
 
 

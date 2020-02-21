@@ -124,7 +124,7 @@ class Helper{
 
     initPageMethods(){
         let className = window.location.pathname.substring(1);
-        console.log(window[className]);
+        //console.log(window[className]);
         if(className !== 'undefined') {
             if(!window[className]) {
                 try {

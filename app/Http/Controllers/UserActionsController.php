@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UserAction;
 use App\Http\Controllers\HelpController as HC;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Auth;
 
@@ -14,8 +15,9 @@ class UserActionsController extends Controller
     {
         $target = HC::selectTarget();
         $actions = self::getActions($request);
+        $members = Auth::user()->company()->first()->members()->get();
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'members'))->render();
 
             return response()->json([
                 'target' => $target,
@@ -23,7 +25,7 @@ class UserActionsController extends Controller
                 'html' => $content
             ]);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions'));
+            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'members'));
         }
     }
 
@@ -65,11 +67,6 @@ class UserActionsController extends Controller
         }
 
         $actions = UserAction::where('company_id', Auth::user()->company()->first()->id)
-//            ->where(function($q) use ($request){
-//                if(isset($request['search']) && $request['search'] != ""){
-//                    $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', $request['search'])) . '%');
-//                }
-//            })
             ->when($request['search'] != null, function ($query) use ($request) {
                 if (mb_strlen($request['search']) == 1) {
                     $query->where('fio', 'like', $request['search'] . '%')
@@ -78,18 +75,15 @@ class UserActionsController extends Controller
                     $query->where('fio', 'like', '%' . $request['search'] . '%')->orWhere('companyName', 'like', '%' . $request['search'] . '%')->orWhere('basePhone', 'like', '%' . $request['search'] . '%');
                 }
             })
-            ->when($request['provider'] != [], function ($query) use ($request) {
-                $query->whereIn('partner_id', $request['provider']);
+            ->when($request['user_id'] != null, function($query) use ($request){
+                $query->where('user_id', $request['user_id']);
             })
-            ->when($request['clientorder_status'] != null, function ($query) use ($request) {
-                $query->where('status', $request['clientorder_status']);
+            ->when($request['type'] != null, function ($query) use ($request) {
+                $query->where('model', $request['type']);
             })
-            ->when($request['accountable'] != [], function ($query) use ($request) {
-                $query->whereIn('client_orders.partner_id', $request['accountable']);
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-//            ->when($request['dates_range'] != null, function($query) use ($request) {
-//                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
-//            })
             ->groupBy('user_actions.id')
             ->orderBy($field, $dir)
             //->toSql();
@@ -99,6 +93,46 @@ class UserActionsController extends Controller
             ->get();
 
         return $actions;
+    }
+
+    public function freshPage(Request $request)
+    {
+        $target = HC::selectTarget();
+        $actions = self::getActions($request);
+        $members = Auth::user()->company()->first()->members()->get();
+        $messages = null;
+        $actionsView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
+        $membersView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
+        //$messagesView =
+        if($request->expectsJson() && $request['search'] === NULL){
+            return response()->json([
+                'target' => $target,
+                'page' => 'История',
+                'actions' => $actionsView,
+                'messages' => null
+            ]);
+        } else {
+            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions'));
+        }
+    }
+
+    public function searchPartner(Request $request)
+    {
+        $target = HC::selectTarget();
+        $members = Auth::user()->company()->first()->members()
+            ->when($request['search'] != null, function($q) use ($request){
+                $q->whereHas('partner', function($q) use ($request){
+                    $q->where('fio', 'like', '%' . $request['search'] . '%');
+                });
+
+            })
+            ->get();
+        $membersView = view(env('DEFAULT_THEME', 'classic') . '.history.users', compact('members'))->render();
+        //$messagesView =
+        return response()->json([
+            'target' => $target,
+            'members' => $membersView
+        ]);
     }
 
     public static function makeUserAction($model, $action)
@@ -131,9 +165,26 @@ class UserActionsController extends Controller
 
         $model_text = null;
         switch ($className){
-            case 'Partner':
-                $model_text = 'контрагента';
-                break;
+            case 'Partner': $model_text = 'контрагента'; break;
+            case 'ProviderOrder': $model_text = 'заявку поставщику'; break;
+            case 'Warrant': $model_text = 'финансовую операций'; break;
+            case 'Cashbox': $model_text = 'кассовый аппарат'; break;
+            case 'Entrance': $model_text = 'поступление'; break;
+            case 'Adjustment': $model_text = 'корректировку'; break;
+            case 'Article': $model_text = 'товар'; break;
+            case 'Category': $model_text = 'категорию'; break;
+            case 'ClientOrder': $model_text = 'заказ клиента'; break;
+            case 'Company': $model_text = 'компанию'; break;
+            case 'DdsArticle': $model_text = 'статью ддс'; break;
+            case 'Order': $model_text = 'заказ'; break;
+            case 'MoneyMoves': $model_text = 'движение средств'; break;
+            case 'Salary': $model_text = 'оплату труда'; break;
+            case 'Setting': $model_text = 'настройку'; break;
+            case 'Shipment': $model_text = 'продажу'; break;
+            case 'Sms': $model_text = 'смс'; break;
+            case 'Store': $model_text = 'магазин'; break;
+            case 'Supplier': $model_text = 'производитель'; break;
+            case 'User': $model_text = 'пользователя'; break;
         }
 
         $action = new UserAction();

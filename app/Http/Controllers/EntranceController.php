@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Entrance;
 use Carbon\Carbon;
+use App\Http\Controllers\UserActionsController as UA;
 use App\Models\ArticleStock;
 use Auth;
 
@@ -108,7 +109,7 @@ class EntranceController extends Controller
         }
 
         if($entrance->exists) {
-
+            $wasExisted = true;
             #Прибавляем к балансу предидущего партнера
             $entrance->providerorder()->first()->partner()->first()
                 ->subtraction($entrance->totalPrice);
@@ -117,6 +118,7 @@ class EntranceController extends Controller
             $entranceWasExisted = true;
             $request['partner_id'] = $entrance->partner()->first()->id;
         } else {
+            $wasExisted = false;
             $entranceWasExisted = false;
             $request['partner_id'] = Auth::user()->partner()->first()->id;
             $entrance->manager_id = Auth::user()->partner()->first()->id;
@@ -198,6 +200,8 @@ class EntranceController extends Controller
         #Добавляем к балансу контрагента
         $entrance->providerorder()->first()->partner()->first()
             ->addition($entrance->totalPrice);
+
+        UA::makeUserAction($entrance, $wasExisted ? 'fresh' : 'create');
 
         #Ответ сервера
             if($request->expectsJson()){
@@ -385,6 +389,7 @@ class EntranceController extends Controller
                 $entrance->articles()->sync(null);
 
                 $entrance->delete();
+                UA::makeUserAction($entrance, 'delete');
             }
         } else {
             $entrance = Entrance::where('id', $id)->first();
@@ -397,6 +402,7 @@ class EntranceController extends Controller
             $entrance->articles()->sync(null);
 
             $entrance->delete();
+            UA::makeUserAction($entrance, 'delete');
             $this->status = 200;
             $this->message = 'Поступление удалено';
         }

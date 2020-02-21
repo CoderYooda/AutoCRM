@@ -17,7 +17,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 
 
-Route::group(['middleware' => ['web', 'auth']], function () {
+Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Статистика и панель управления
     Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
 
@@ -148,6 +148,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     #История
     Route::get('/actions', 'UserActionsController@index')->name('ActionsIndex');
+    Route::post('/actions/freshPage', 'UserActionsController@freshPage')->name('ActionsFreshPage');
+    Route::post('/actions/searchPartner', 'UserActionsController@searchPartner')->name('ActionsSearchPartner');
 
     #Сотрудники
     Route::get('/employee/resources', 'EmployeeController@resources')->name('EmployeeResources');
@@ -209,4 +211,5 @@ Route::group(['middleware' => ['web', 'auth']], function () {
         });
     });
 });
+
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');

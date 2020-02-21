@@ -79,8 +79,6 @@ class UserController extends Controller
         }
     }
 
-
-
     public static function getUser($request)
     {
         $user = Partner::owned()->with('passport')->where(function($q) use ($request){
@@ -90,7 +88,12 @@ class UserController extends Controller
     }
 
     public function getChannel(){ //Выделение канала для сокет вещания
+
+        //dd(Auth::check());
+
+        if(Auth::check()){
             $user = Auth::user();
+
             $channels = [
                 'app_base_channel:company_' . $user->company()->first()->id . '_channel',
                 'app_base_channel:user_' . $user->id . '_channel'
@@ -98,6 +101,11 @@ class UserController extends Controller
             return response()->json([
                 'channels' => $channels
             ]);
+        } else {
+            return response()->json([
+                'channels' => []
+            ]);
+        }
 
     }
 

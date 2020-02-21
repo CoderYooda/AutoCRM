@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Article;
+use App\Http\Controllers\UserActionsController as UA;
 use Auth;
 
 class ClientOrdersController extends Controller
@@ -72,12 +73,14 @@ class ClientOrdersController extends Controller
             $returnIds = $client_orders->get()->pluck('id');
             foreach($client_orders->get() as $client_order){
                 $client_order->delete();
+                UA::makeUserAction($client_order, 'delete');
             }
         } else {
             $client_order = ClientOrder::where('id', $id)->first();
             $this->message = 'Продажа удалена';
             $returnIds = $client_order->id;
             $client_order->delete();
+            UA::makeUserAction($client_order, 'delete');
         }
 
         return response()->json([
@@ -188,7 +191,7 @@ class ClientOrdersController extends Controller
         $client_order->balance = 0;
         $client_order->itogo = 0;
         $client_order->save();
-
+        UA::makeUserAction($client_order, $wasExisted ? 'fresh' : 'create');
         $store = $client_order->store()->first();
 
         # Собираем товары в массив id шников из Request`a

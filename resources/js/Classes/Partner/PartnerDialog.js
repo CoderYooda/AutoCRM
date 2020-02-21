@@ -148,6 +148,7 @@ class partnerDialog{
     }
     activateTab(tag){
         let object = this;
+        console.log(1);
         var container = this.root_dialog.querySelector('#act_form_partner');
 
         var links = container.getElementsByClassName('nav-link');

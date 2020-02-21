@@ -14,6 +14,9 @@ class actionsPage{
         this.contextDop = 'actions';
         this.parametr = 'actions';
         this.active_tab = 'actions';
+        this.dates_range = null;
+        this.partner_id = null;
+        this.type = null;
         this.init();
     }
 
@@ -27,24 +30,24 @@ class actionsPage{
         //object.searchInit();
 
         document.addEventListener('PartnerStored', function(e){
-            object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            // object.prepareParams();
+            // object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
 
         document.addEventListener('PartnerRemoved', function(e){
-            object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            // object.prepareParams();
+            // object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
 
         document.addEventListener('WarrantStored', function(e){
-            object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            // object.prepareParams();
+            // object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
 
         document.addEventListener('CategoryStored', function(e){
-            object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
-            object.loadCategory(object.category_id, true, false)
+            // object.prepareParams();
+            // object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            // object.loadCategory(object.category_id, true, false)
         });
         object.linked();
     }
@@ -53,27 +56,36 @@ class actionsPage{
         // this.category_id = window.helper.findGetParameter('category_id');
         // this.page = window.helper.findGetParameter('page');
         // this.search = window.helper.findGetParameter('search');
-        // this.searchInit();
+
         // this.initTableData();
         //this.loadCategory(this.root_category, true, true);
+        this.searchInit();
+        this.initDatesFilter();
     }
 
-    cleanSearch(){
-        this.search = null;
-        this.search_obj.value = null;
-    }
+    setField(option, value = null, text, elem = null){
+        let object = this;
+        object[option] = value;
+        document.getElementById(option).value = text;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
 
+        if(value == null){
+            window.notification.notify( 'success', 'Поле очищено');
+        }
+        this.reloadPage();
+    }
 
     searchInit(){
         let object = this;
-        if(object.search_obj){
-            let search = object.search_obj;
+        if(document.getElementById("actions_search")){
+            let search = document.getElementById("actions_search");
             if(search){
                 let searchFn = window.helper.debounce(function(e) {
                     object.search = search.value;
                     object.page = 1;
-                    //object.table.setData('/partner/tabledata', object.prepareDataForTable());
-                    //console.log(1);
+                    object.loadUsers(search.value);
                 }, 400);
                 search.addEventListener("keydown", searchFn);
                 search.addEventListener("paste", searchFn);
@@ -81,6 +93,37 @@ class actionsPage{
                 //document.addEventListener("PartnerStored", searchFn);
             }
         }
+    }
+
+    pickPartner(id){
+        this.partner_id = id;
+        this.reloadPage();
+    }
+
+    cleanSearch(){
+        this.search = null;
+        this.search_obj.value = null;
+        this.loadUsers(null);
+    }
+
+    initDatesFilter(){
+        let object = this;
+        let startDateArray = [];
+        this.dates = window.flatpickr(".date_filter", {
+            mode: "range",
+            defaultDate: startDateArray,
+            dateFormat: "d.m.Y",
+            onClose: function(selectedDates, dateStr, instance) {
+                object.page = 1;
+                if(selectedDates.length > 1){
+                    object.dates_range = window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString();
+                } else {
+                    object.dates_range = null;
+                }
+                object.reloadPage();
+                //object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+            }
+        });
     }
 
     prepareParams(){
@@ -134,27 +177,42 @@ class actionsPage{
         object.table.setData('/partner/tabledata', object.prepareDataForTable());
     }
 
-    searcher(string){
-        document.getElementById("search").value = string;
+    loadUsers(string){
         let object = this;
-        object.search = string;
-        if (isXHRloading) { return; } window.isXHRloading = true;
-        object.table.setData('/partner/tabledata', object.prepareDataForTable());
+        let data = {};
+        data.view_as = "json";
+        data.search = string;
+
+        window.axios({
+            method: 'post',
+            url: '/actions/searchPartner',
+            data: data
+        }).then(function (resp) {
+            document.getElementById('members-container').innerHTML = resp.data.members;
+        });
     }
 
-
-
-    prepareDataForTable(){
+    reloadPage(){
         let object = this;
         let data = {};
         data.view_as = "json";
         data.target = "ajax-table-partner";
         data.page = 1;
 
-        if(object.partner !== []){data.partner = object.partner;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
-        if(object.category_id !== null){data.category_id = object.category_id.toString();}
-        if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
+        if(object.type !== null){data.type = object.type.toString();}
+        if(object.partner_id !== null){data.user_id = object.partner_id;}
+
+        window.axios({
+            method: 'post',
+            url: 'actions/freshPage',
+            data: data
+        }).then(function (resp) {
+            document.getElementById('actions-container').innerHTML = resp.data.actions;
+        });
+
+
+
         return data;
     }
 

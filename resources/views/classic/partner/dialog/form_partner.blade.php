@@ -32,11 +32,11 @@
 
         <div class="modal-header tab-container">
             <ul class="nav header_selects_navs">
-                <li class="nav-item">
-                    <a href="#physial_tab" class="button primary mr-15 tab-btn @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif" onclick="window.{{ $class }}.activateTab('fl', this);" data-toggle="tab" data-target="#physial_tab">Физическое лицо</a>
+                <li class="nav-item" onclick="window.{{ $class }}.activateTab('fl', this);">
+                    <a href="#physial_tab" class="button primary mr-15 tab-btn @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif"  data-toggle="tab" data-target="#physial_tab">Физическое лицо</a>
                 </li>
-                <li class="nav-item">
-                    <a href="#uridical_tab" class="button primary tab-btn @if(isset($partner) && !$partner['isfl']) active @endif" onclick="window.{{ $class }}.activateTab('ul', this);" data-toggle="tab" data-target="#uridical_tab">Юридическое лицо</a>
+                <li class="nav-item" onclick="window.{{ $class }}.activateTab('ul', this);">
+                    <a href="#uridical_tab" class="button primary tab-btn @if(isset($partner) && !$partner['isfl']) active @endif"  data-toggle="tab" data-target="#uridical_tab">Юридическое лицо</a>
                 </li>
             </ul>
         </div>

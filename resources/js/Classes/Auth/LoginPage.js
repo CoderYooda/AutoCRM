@@ -39,6 +39,10 @@ class registerPage{
             }
         )
     }
+
+    linked(){
+        return false;
+    }
 }
 export default registerPage;
 

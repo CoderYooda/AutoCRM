@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PartnerController;
 use Auth;
+use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
@@ -140,6 +141,8 @@ class CategoryController extends Controller
         $category->locked = false;
         $category->type = $type;
         $category->save();
+
+        UA::makeUserAction($category, 'create');
 
         //$categories = self::getCategories($request);
         //$articles = ProductController::getArticles($request);
