@@ -170,13 +170,6 @@ class actionsPage{
         }
     }
 
-    searchFn(){
-        let object = this;
-        object.prepareParams();
-        if (isXHRloading) { return; } window.isXHRloading = true;
-        object.table.setData('/partner/tabledata', object.prepareDataForTable());
-    }
-
     loadUsers(string){
         let object = this;
         let data = {};
@@ -190,6 +183,14 @@ class actionsPage{
         }).then(function (resp) {
             document.getElementById('members-container').innerHTML = resp.data.members;
         });
+    }
+
+    resetDate(){
+        this.dates_range = null;
+        this.page = 1;
+        this.dates.clear();
+        this.reloadPage();
+        window.notification.notify( 'success', 'Дата очищена');
     }
 
     reloadPage(){

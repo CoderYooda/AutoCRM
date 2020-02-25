@@ -201,7 +201,7 @@ class storePage{
             object.parametr = 'product';
             var priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    console.log(cell.getValue());
+                    //console.log(cell.getValue());
                     cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
                     window.IMask(document.getElementById('price_' + cell.getData().id),   {
                             mask: 'N 2',

@@ -75,7 +75,8 @@
                         </li>
 
                         <li class="top-nav-item">
-                            <a id="bell_badge" class="ico_link bell">
+                            <a id="bell_badge" class="ico_link bell" data-toggle="modal" data-target="#user" data-toggle-class="modal-open-aside">
+
                                 <span class="badge-pill"></span>
                             </a>
                         </li>
@@ -184,7 +185,9 @@
                     @yield('content')
                 </div>
                 <div id="dialogs"></div>
+                @include(env('DEFAULT_THEME', 'classic') . '.system.aside_messages')
             </div>
+
         </div>
     <div class="preloader">
         <div class="porsh">

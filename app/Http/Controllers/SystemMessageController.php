@@ -17,6 +17,12 @@ class SystemMessageController extends Controller
         self::sendTo($users);
     }
 
+    public static function getMessagesAside()
+    {
+        $messages = SM::owned()->get();
+        return $messages;
+    }
+
     public static function sendToAllButOne()
     {
         $initiator = Auth::user();

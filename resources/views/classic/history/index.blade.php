@@ -47,13 +47,13 @@
             </div>
         </div>
         <div class="content-rightside">
-            <button onclick="openDialog('entranceDialog')" class="button primary mb-15 w-100">Оформить поступление</button>
+            {{--<button onclick="openDialog('entranceDialog')" class="button primary mb-15 w-100">Оформить поступление</button>--}}
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="date_filter">Период</label>
                     <input id="date_filter" type="text" name="date_filter" value="{{ request('dates_range') }}" class="form-control date_filter input_as_link" placeholder="за всё время">
-                    <button type="button" onclick="window.store.resetDate()" class="right-remove"><i class="fa fa-remove"></i></button>
+                    <button type="button" onclick="window.actions.resetDate()" class="right-remove"><i class="fa fa-remove"></i></button>
                 </div>
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="pay_status">Тип записи</label>
@@ -73,7 +73,7 @@
                             <span onclick="actions.setField('type', 'Partner', 'Контрагенты', this)" class="element">Контрагенты</span>
                         </div>
                     </div>
-                    <button type="button" onclick="store.setField('pay_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>
+                    <button type="button" onclick="actions.setField('type', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>
                 </div>
                 {{--<hr>--}}
                 {{--<div class="box-title">Контактная информация</div>--}}
