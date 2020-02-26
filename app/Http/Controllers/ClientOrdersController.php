@@ -332,11 +332,15 @@ class ClientOrdersController extends Controller
             return response()->json([
                 'message' => $this->message,
                 'id' => $client_order->id,
-                'event' => 'clientOrderStored',
+                'event' => 'ClientOrderStored',
             ], 200);
         } else {
             return redirect()->back();
         }
+    }
+
+    public function load(Request $request){
+
     }
 
     public function getClientOrdersProducts($id){

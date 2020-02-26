@@ -19,6 +19,8 @@ class SystemMessage extends Model
         'user_id',
         'reciever_id',
         'type',
+        'kind_id',
+        'kind',
         'link',
         'viewed',
         'message',

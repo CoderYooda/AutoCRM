@@ -18,6 +18,8 @@ class CreateSystemMessageTable extends Migration
             $table->bigInteger('user_id')->default(1)->unsigned()->comment('Отправитель');
             $table->bigInteger('reciever_id')->unsigned()->comment('Получатель');
             $table->char('type')->comment('Тип оповещения');
+            $table->char('kind')->nullable()->comment('Сущность');
+            $table->bigInteger('kind_id')->nullable()->comment('ID Сущность');
             $table->char('link')->nullable()->comment('ссылка');
             $table->boolean('viewed')->default(0)->comment('Прочитано?');
             $table->char('message')->comment('Системное сообщение');

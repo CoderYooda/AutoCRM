@@ -368,7 +368,7 @@ class ProviderOrdersController extends Controller
             return response()->json([
                 'message' => $this->message,
                 'id' => $provider_order->id,
-                'event' => 'providerOrderStored',
+                'event' => 'ProviderOrderStored',
             ], 200);
         } else {
             return redirect()->back();

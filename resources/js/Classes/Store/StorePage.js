@@ -457,13 +457,13 @@ class storePage{
             object.prepareParams();
             object.reload();
         });
-        document.addEventListener('clientOrderStored', function(e){
+        document.addEventListener('ClientOrderStored', function(e){
             if(object.active){
                 object.prepareParams();
                 object.reload();
             }
         });
-        document.addEventListener('providerOrderStored', function(e){
+        document.addEventListener('ProviderOrderStored', function(e){
             object.prepareParams();
             object.reload();
         });
@@ -476,6 +476,10 @@ class storePage{
             object.reload();
         });
         document.addEventListener('ShipmentStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
+        document.addEventListener('WarratnStored', function(e){
             object.prepareParams();
             object.reload();
         });

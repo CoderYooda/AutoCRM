@@ -52,6 +52,13 @@ class Socket{
         [].forEach.call(object.ownChannel, function(chanel){
 
             object.socket.on(chanel, function(data){
+                console.log(chanel);
+                if(data.kind != null){
+                    document.dispatchEvent(new Event(data.kind + 'Stored', {bubbles: true}));
+                }
+                if(data.type == 'success'){
+
+                }
                 console.log(data);
             });
         });

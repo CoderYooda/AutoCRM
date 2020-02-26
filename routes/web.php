@@ -190,6 +190,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Диалоги
     Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');
 
+    #Системные сообщения
+    Route::get('/systemMessages/load', 'SystemMessagesController@load')->name('loadSystemMessages');
+
     #SMS сообщения
     Route::post('/sms/send', 'SMSMessageController@sendsms')->name('SendSMS');
 

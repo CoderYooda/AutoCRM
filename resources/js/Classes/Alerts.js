@@ -32,8 +32,6 @@ class Alerts{
             }
         });
         this.freshDialogStack();
-
-
     }
 
     animateToBase(objectKey){
@@ -51,7 +49,6 @@ class Alerts{
         requestAnimationFrame(window.step);
         //this.step(4, this, objectKey, home);
     }
-
 
     freshDialogStack(){
         let object = this;
@@ -101,8 +98,6 @@ class Alerts{
         });
         this.freshDialogStack();
     }
-
-
 
     init(){
         let object = this;

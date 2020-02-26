@@ -45,13 +45,15 @@ class SystemMessageController extends Controller
         }
     }
 
-    public static function sendToCompany($company_id, $type, $message)
+    public static function sendToCompany($company_id, $type, $message, $model)
     {
         $company = Company::where('id', $company_id)->first();
         foreach($company->members()->get() as $user){
             $system_message = new SM();
             $system_message->user_id = 1;
             $system_message->reciever_id = $user->id;
+            $system_message->kind_id = $model->id;
+            $system_message->kind = class_basename($model);
             $system_message->type = $type;
             $system_message->message = $message;
             $system_message->save();
