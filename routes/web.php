@@ -191,7 +191,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/dialog_{tag}_open', 'DialogController@openDialogByTag')->name('openDialog');
 
     #Системные сообщения
-    Route::get('/systemMessages/load', 'SystemMessagesController@load')->name('loadSystemMessages');
+    Route::get('/systemMessages/load', 'SystemMessageController@load')->name('loadSystemMessages');
+    Route::post('/systemMessages/read', 'SystemMessageController@read')->name('readSystemMessages');
 
     #SMS сообщения
     Route::post('/sms/send', 'SMSMessageController@sendsms')->name('SendSMS');
@@ -200,19 +201,23 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/barcode/search', 'BarcodeController@search')->name('BarcodeSearch');
 
     Route::group(['prefix' => 'ws'], function(){
-
         Route::get('/check-auth', function(){
             return response()->json([
                 'auth' => Auth::check()
             ]);
         });
-
         Route::get('/check-sub/{channel}', function($channel){
             return response()->json([
                 'can' => Auth::check()
             ]);
         });
     });
+});
+
+Route::get('/islogged', function(){
+    return response()->json([
+        'auth' => Auth::check()
+    ]);
 });
 
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');

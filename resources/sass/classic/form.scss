@@ -672,11 +672,17 @@ button.form-control{
 .top-nav-item .ico_link.bell{
     background: url(/images/icons/bell.svg) no-repeat center;
 }
+.top-nav-item .ico_link{
+    position: relative;
+}
 .top-nav-item .ico_link.stack{
     background: url(/images/icons/stack.svg) no-repeat center;
 }
 .ico_link.stack.active {
     background: url(/images/icons/stack_on.svg) no-repeat center!important;
+}
+.ico_link.bell.active {
+    background: url(/images/icons/bell_on.svg) no-repeat center!important;
 }
 .top-nav-item:hover, .top-nav-item.show{
     background-color: #3d6898;

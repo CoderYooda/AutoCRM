@@ -57,7 +57,7 @@ class Socket{
                     document.dispatchEvent(new Event(data.kind + 'Stored', {bubbles: true}));
                 }
                 if(data.type == 'success'){
-
+                    window.systemMessages.loadMessages();
                 }
                 console.log(data);
             });

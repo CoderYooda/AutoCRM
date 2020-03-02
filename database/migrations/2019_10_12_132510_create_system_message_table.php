@@ -11,6 +11,7 @@ class CreateSystemMessageTable extends Migration
      *
      * @return void
      */
+
     public function up()
     {
         Schema::create('system_message', function (Blueprint $table) {
@@ -21,6 +22,7 @@ class CreateSystemMessageTable extends Migration
             $table->char('kind')->nullable()->comment('Сущность');
             $table->bigInteger('kind_id')->nullable()->comment('ID Сущность');
             $table->char('link')->nullable()->comment('ссылка');
+            $table->char('hash')->comment('Уникальный хэш');
             $table->boolean('viewed')->default(0)->comment('Прочитано?');
             $table->char('message')->comment('Системное сообщение');
             $table->char('channel')->nullable()->comment('Канал вещания');

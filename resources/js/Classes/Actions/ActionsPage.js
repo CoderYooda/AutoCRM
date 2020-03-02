@@ -210,9 +210,8 @@ class actionsPage{
             data: data
         }).then(function (resp) {
             document.getElementById('actions-container').innerHTML = resp.data.actions;
+            document.getElementById('system_messages-container').innerHTML = resp.data.system_messages;
         });
-
-
 
         return data;
     }

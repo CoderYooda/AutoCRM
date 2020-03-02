@@ -76,8 +76,7 @@
 
                         <li class="top-nav-item">
                             <a id="bell_badge" class="ico_link bell" data-toggle="modal" data-target="#user" data-toggle-class="modal-open-aside">
-
-                                <span class="badge-pill"></span>
+                                <span id="stack_bell_count" class="badge-pill"></span>
                             </a>
                         </li>
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">

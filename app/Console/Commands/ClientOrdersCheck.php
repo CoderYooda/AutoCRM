@@ -38,6 +38,7 @@ class ClientOrdersCheck extends Command
      *
      * @return mixed
      */
+
     public function handle()
     {
         $clientOrders = ClientOrder::where('status', '!=', 'complete')->where('status', '!=', 'canceled')->where('status', '!=', 'full')->get();
@@ -52,9 +53,9 @@ class ClientOrdersCheck extends Command
                 }
             }
             if($complited){
-                $clientOrder->status = 'full';
-                $clientOrder->save();
-                SystemMessage::sendToCompany(2, 'success', 'Заказ № ' . $clientOrder->id . ' сменил статус на "Укомплектован"', $clientOrder);
+//                $clientOrder->status = 'full';
+//                $clientOrder->save();
+                SystemMessage::sendToCompany(2, 'success', 'Заказ № ' . $clientOrder->id . ' укомплектован и готов к выдаче', $clientOrder);
             }
 
         }

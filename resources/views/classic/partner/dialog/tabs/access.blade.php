@@ -36,7 +36,7 @@
                 <option value="380">Украина</option>
                 <option value="7">Казахстан</option>
             </select>
-            <input id="phone_login_input" type="text" name="login" class="form-control mt-15" value="@if(isset($partner)){{ $partner->login }}@endif" placeholder="Телефон">
+            <input id="phone_login_input" type="text" name="phone" class="form-control mt-15" value="@if(isset($partner)){{ $partner->phone }}@endif" placeholder="Телефон">
             <div class="primary mt-15 p-15">
                 <b>Внимание!</b> Данному пользователю предоставится доступ к системе. Пароль сгенерируется автоматически и отправится по указаному номеру.
             </div>

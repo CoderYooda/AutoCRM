@@ -7,6 +7,7 @@ use App\Models\UserAction;
 use App\Http\Controllers\HelpController as HC;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\SystemMessage as SM;
 use Auth;
 
 class UserActionsController extends Controller
@@ -15,9 +16,11 @@ class UserActionsController extends Controller
     {
         $target = HC::selectTarget();
         $actions = self::getActions($request);
+        //$system_messages = SM::owned()->get();
+        $system_messages = SM::getMessages($request);
         $members = Auth::user()->company()->first()->members()->get();
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'members'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'system_messages', 'members'))->render();
 
             return response()->json([
                 'target' => $target,
@@ -25,7 +28,7 @@ class UserActionsController extends Controller
                 'html' => $content
             ]);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'members'));
+            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'system_messages', 'members'));
         }
     }
 
@@ -99,16 +102,19 @@ class UserActionsController extends Controller
     {
         $target = HC::selectTarget();
         $actions = self::getActions($request);
+        $system_messages = SM::getMessages($request);
         $members = Auth::user()->company()->first()->members()->get();
         $messages = null;
         $actionsView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
         $membersView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
+        $system_messagesView = view(env('DEFAULT_THEME', 'classic') . '.history.system_messages', compact('system_messages'))->render();
         //$messagesView =
         if($request->expectsJson() && $request['search'] === NULL){
             return response()->json([
                 'target' => $target,
                 'page' => 'История',
                 'actions' => $actionsView,
+                'system_messages' => $system_messagesView,
                 'messages' => null
             ]);
         } else {

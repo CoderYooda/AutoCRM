@@ -81,6 +81,23 @@ window.axios.interceptors.response.use(function (response) {
 window.ih =  window.innerHeight;
 window.iw =  window.innerWidth;
 
+
+
+axios({
+    method: 'GET',
+    url: 'islogged'
+}).then(function (resp) {
+    if(resp.data.auth == 'false'){
+        window.isLogged = false;
+        return false;
+    } else {
+        window.isLogged = true;
+        let event = new Event('AuthorizedEvent', {bubbles: true});
+        document.dispatchEvent(event);
+        return true;
+    }
+});
+
 window.addEventListener('resize', function(){
     console.warn('Окно изменило размер');
     window.ih =  window.innerHeight;

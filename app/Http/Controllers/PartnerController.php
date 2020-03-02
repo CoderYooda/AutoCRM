@@ -98,6 +98,10 @@ class PartnerController extends Controller
         if($request['number']){
             $request['number'] = (int)str_replace(' ', '', $request['number']);
         }
+        if($request['phone'] != null){
+            $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
+        }
+
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
@@ -138,7 +142,7 @@ class PartnerController extends Controller
 
         //SystemMessage::sendToAllButOne();
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
-        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'awd');
+        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), Auth::user());
 
         if($request['access']){
             $user = $partner->user()->first();
@@ -149,7 +153,7 @@ class PartnerController extends Controller
                 $password = rand(10000, 99999);
                 $user = User::create([
                     'name' => $partner->outputName(),
-                    'phone' => str_replace(array('(', ')', '+', ' ', '-'), '', $request['login']),
+                    'phone' => $request['phone'],
                     'company_id' => Auth::user()->company()->first()->id,
                     'password' => bcrypt($password)
                 ]);
@@ -241,12 +245,16 @@ class PartnerController extends Controller
             if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:Y-m-d'];}
             if($request['issued_place']){$rules['issued_place'] = ['min:0', 'max:250'];}
 
-        } elseif(!(bool)$request['isfl']){
+        } elseif(!(bool)$request['isfl']) {
             $rules = [
                 'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
                 'companyName' => ['required', 'min:4', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             ];
+        }
+
+        if($request['phone'] != null){
+            $rules['phone'] = ['unique:users'];
         }
 
 //        foreach($request['store'] as $id => $store){

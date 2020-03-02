@@ -20,8 +20,6 @@ import tippy from 'tippy.js';
 window.debug = false;
 
 import Sortable from 'sortablejs';
-
-
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);
 import Pagination from './Classes/Pagination.js';

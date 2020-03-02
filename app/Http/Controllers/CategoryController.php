@@ -29,11 +29,11 @@ class CategoryController extends Controller
 
     public function loadAside(Request $request){
 
-        $categories = Cache::rememberForever('categories' . $request['category_id'], function () use ($request) {
-            return CategoryController::getCategories($request, 'store');
-        });
+//        $categories = Cache::rememberForever('categories' . $request['category_id'], function () use ($request) {
+//            return CategoryController::getCategories($request, 'store');
+//        });
 
-        //$categories = CategoryController::getCategories($request, 'store');
+        $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];

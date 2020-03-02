@@ -307,5 +307,23 @@ class Helper{
         window.notification.notify( 'success', 'Скопировано в буфер');
     }
 
+    // checkAuth(){
+    //     axios({
+    //         method: 'GET',
+    //         url: 'check-auth'
+    //     }).then(function (resp) {
+    //
+    //         console.log(resp);
+    //         if(resp.data.auth == 'false'){
+    //             window.isLogged = false;
+    //             return false;
+    //         } else {
+    //             window.isLogged = true;
+    //             return true;
+    //         }
+    //     });
+    //
+    // }
+
 }
 export default Helper;
