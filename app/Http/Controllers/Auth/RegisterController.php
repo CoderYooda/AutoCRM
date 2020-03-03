@@ -45,6 +45,11 @@ class RegisterController extends Controller
         return '/';
     }
 
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
+    }
+
     public function register(Request $request)
     {
         $validation = $this->validator($request);
@@ -58,7 +63,10 @@ class RegisterController extends Controller
 
             if(!SmsController::smsConfirmed($request)){
                 $sms = SmsController::sendTo($request['phone']);
-                return response()->json(['sms' => $sms],200);
+                return response()->json([
+                    'sms' => $sms,
+                    'phone' => $request['phone']
+                ],200);
             } else {
                 event(new Registered($user = $this->create($request->all())));
                 $this->guard()->login($user);

@@ -81,17 +81,21 @@ window.axios.interceptors.response.use(function (response) {
 window.ih =  window.innerHeight;
 window.iw =  window.innerWidth;
 
-
+window.fakeCounter = 0;
 
 axios({
     method: 'GET',
     url: 'islogged'
 }).then(function (resp) {
-    if(resp.data.auth == 'false'){
+
+    //console.log(resp.data.auth);
+
+    if(!resp.data.auth){
         window.isLogged = false;
         return false;
     } else {
         window.isLogged = true;
+        window.fakeCounter ++;
         let event = new Event('AuthorizedEvent', {bubbles: true});
         document.dispatchEvent(event);
         return true;

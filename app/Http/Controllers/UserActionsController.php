@@ -108,7 +108,6 @@ class UserActionsController extends Controller
         $actionsView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
         $membersView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
         $system_messagesView = view(env('DEFAULT_THEME', 'classic') . '.history.system_messages', compact('system_messages'))->render();
-        //$messagesView =
         if($request->expectsJson() && $request['search'] === NULL){
             return response()->json([
                 'target' => $target,

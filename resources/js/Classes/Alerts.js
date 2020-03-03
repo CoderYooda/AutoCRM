@@ -4,6 +4,7 @@ class Alerts{
         this.bell_item = document.getElementById('bell_badge');
         this.stack_item = document.getElementById('stack_badge');
         this.stack_item_container = document.getElementById('stack_item_container');
+        this.stack_dropdown = document.getElementById('stack_dropdown');
         this.stack_badge_count = document.getElementById('stack_badge_count');
         window.stack_dialogs = [];
         console.log('Оповещения подключены');
@@ -79,6 +80,14 @@ class Alerts{
 
             this.stack_badge_count.innerHTML = count;
         }
+        if(this.stack_dropdown){
+            if(count > 0){
+                this.stack_dropdown.classList.remove('hide');
+            } else {
+                this.stack_dropdown.classList.add('hide');
+            }
+        }
+
         //this.stack_item
     }
 

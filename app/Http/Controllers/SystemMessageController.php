@@ -77,9 +77,7 @@ class SystemMessageController extends Controller
         $company = Company::where('id', $company_id)->first();
         foreach($company->members()->get() as $user){
 
-            $sm = SM::where('kind', class_basename($model))->where('kind_id', $model->id)->first();
-
-
+            $sm = SM::where('reciever_id', $user->id)->where('kind', class_basename($model))->where('kind_id', $model->id)->orderBy('id', 'DESC')->first();
 
             if($sm == null || !Hash::check( class_basename($model) . $model->id . $model->updated_at, $sm->hash)){
                 echo 'Создаём сообщение';

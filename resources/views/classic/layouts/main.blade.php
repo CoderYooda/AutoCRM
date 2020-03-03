@@ -66,7 +66,7 @@
                             <a id="stack_badge" class="ico_link stack">
                                 <span id="stack_badge_count" class="badge-pill"></span>
                             </a>
-                            <div class="dropdown_container">
+                            <div id="stack_dropdown" class="dropdown_container">
                                 <div class="arrow"></div>
                                 <div class="mess_container" data-simplebar style="max-height: 220px; width: 200px">
                                     <div id="stack_item_container"></div>

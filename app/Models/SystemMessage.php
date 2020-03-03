@@ -38,6 +38,10 @@ class SystemMessage extends Model
             $size = (int)$request['size'];
         }
 
+        if($request['user_id'] == null){
+            $request['user_id'] = Auth::user()->id;
+        }
+
         $field = null;
         $dir = null;
 
@@ -63,17 +67,17 @@ class SystemMessage extends Model
             $request['accountable'] = [];
         }
 
-        $messages = self::owned()
-            ->when($request['dates_range'] != null, function($query) use ($request) {
+        $messages = self::when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
             ->when($request['user_id'] != null, function($query) use ($request) {
                 $query->where('reciever_id', $request['user_id']);
             })
+            ->when($request['type'] != null, function($query) use ($request) {
+                $query->where('kind', $request['type']);
+            })
             ->orderBy($field, $dir)
             //->toSql();
-
-            //dd($partners);
             ->limit($size)
             ->get();
 

@@ -84,3 +84,24 @@
 .br-3{
     border-radius: 3px!important;
 }
+.black-back{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 1000;
+}
+.sms-confirm{
+    width: 600px;
+    margin-left: calc(75vw - 300px);
+    margin-top: calc(50vh - 200px);
+}
+.number-confirm{
+    width: 150px;
+    margin: 0 auto;
+    line-height: 44px;
+    font-size: 26px;
+    height: 50px;
+}

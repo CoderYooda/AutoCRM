@@ -7,6 +7,7 @@ class registerPage{
         this.smsBox = document.getElementById('sms-box');
         this.phoneMask = null;
         this.info = document.getElementById('info');
+        this.sms_phone = document.getElementById('sms_phone');
         this.init();
     }
 
@@ -33,7 +34,7 @@ class registerPage{
                     },
                 }).then(function (resp) {
                     if(resp.data.status === 'success'){
-                        object.smsBox.classList.remove('d-block');
+                        object.smsBox.classList.add('hide');
                         object.form.submit();
                     }
                 }).catch(function (error) {
@@ -42,6 +43,10 @@ class registerPage{
                 });
             }
         }, 100);
+
+    }
+
+    linked(){
 
     }
 
@@ -60,7 +65,8 @@ class registerPage{
             console.log(resp.data.sms);
             if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK') {
 
-                object.smsBox.classList.add('d-block');
+                object.sms_phone.innerHTML = resp.data.phone;
+                object.smsBox.classList.remove('hide');
 
             } else  if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'ERROR'){
 
@@ -73,9 +79,6 @@ class registerPage{
                 console.log(11);
             }
         }).catch(function (error) {
-
-
-
             window.helper.removeElementsByClass('nv-helper');
             window.helper.removeClassesByClass('is-invalid');
 
@@ -102,16 +105,11 @@ class registerPage{
                         var node = window.helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
                         el.parentNode.appendChild(node);
                     }
-
                 }
             }
-
-
-
         }).finally(function () {
         });
     }
-
 
     changeCountry(elem){
         let object = this;
