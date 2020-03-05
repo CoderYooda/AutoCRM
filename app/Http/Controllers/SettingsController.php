@@ -53,20 +53,20 @@ class SettingsController extends Controller
 
     public static function cashboxTab($request)
     {
-        $cashboxes = Cashbox::owned()->orderBy('created_at', 'DESC')->get();
+        $cashboxes = Cashbox::owned()->orderBy('created_at', 'ASC')->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashbox'){
-            return view('settings.elements.cashbox_container', compact('cashboxes', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.cashbox_container', compact('cashboxes', 'request'));
         }
-        return view('settings.cashbox', compact('cashboxes','request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes','request'));
     }
 
     public static function storeTab($request)
     {
         $stores = Store::all();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view('settings.store', compact('stores', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores', 'request'));
         }
-        return view('settings.store', compact('stores','request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request'));
     }
 
     public static function DdsarticleTab($request)
@@ -80,9 +80,9 @@ class SettingsController extends Controller
 
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view('settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
         }
-        return view('settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
     }
 
     //Saves
@@ -119,7 +119,7 @@ class SettingsController extends Controller
         $company = Company::where('id', $request['id'])->first();
         $settings = Setting::owned()->get();
 
-        $content = view('settings.elements.base_settings', compact( 'company','request', 'settings'))
+        $content = view(env('DEFAULT_THEME', 'classic') . '.settings.elements.base_settings', compact( 'company','request', 'settings'))
             ->render();
 
         return response()->json([

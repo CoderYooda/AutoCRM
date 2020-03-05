@@ -22,6 +22,7 @@ class partnerDialog{
         this.addLoginPhoneMask()
         //elem.addEventListener("click", this.activateTab('fl'));
     }
+
     save(elem){
         let object = this;
         if(!window.isXHRloading){
@@ -132,6 +133,7 @@ class partnerDialog{
             )
         });
     }
+
     addPassportMask(){
 
         var elements = document.getElementsByClassName('pass_num_input');
@@ -146,6 +148,7 @@ class partnerDialog{
             IMask(element, maskOptions);
         });
     }
+
     activateTab(tag){
         let object = this;
         console.log(1);
@@ -197,6 +200,7 @@ class partnerDialog{
             });
         });
     }
+
     addPhone(element){
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
@@ -250,6 +254,7 @@ class partnerDialog{
             return true;
         }
     }
+
     canRemovePhone(div){
         var elems = div.getElementsByClassName('phone');
         if(elems.length < 2){
@@ -259,6 +264,7 @@ class partnerDialog{
             return true;
         }
     }
+
     deletePhone(elem){
 
         var div = elem.closest('.addable').querySelector('.phones');

@@ -1,6 +1,6 @@
 {{--@extends('product.layout.tabs')--}}
 
-@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'layouts.TabXHR' : 'settings.layout.tabs')
+@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.settings.layout.tabs')
 
 @section('tab')
 <div class="d-flex flex-column flex">
@@ -14,7 +14,7 @@
     <div class="d-flex flex scroll-y">
         <div class="d-flex flex-column flex lt">
             <div id="ajax-table" class="p-3 b-r d-table">
-                @include('settings.elements.store_container')
+                @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container')
             </div>
         </div>
 {{--        <div class="d-flex flex-column w-xxl">--}}

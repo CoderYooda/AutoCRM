@@ -79,7 +79,7 @@
                         <tbody class="product_list">
                         @if(isset($adjustment))
                             @foreach($adjustment->articles()->get() as $product)
-                                @include('adjustments.dialog.product_element')
+                                @include('old.adjustments.dialog.product_element')
                             @endforeach
                         @endif
                         </tbody>

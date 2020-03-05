@@ -53,29 +53,35 @@ class schedulePage{
             plugins: [ interactionPlugin, resourceTimelinePlugin ],
             locale: ruLocale,
             resourceLabelText: 'Сотрудники',
-            views: {
-                resourceTimelineMonth: {
-                    type: 'resourceTimeline',
-                    buttonText: 'Месяц',
-                    duration: { month: 1 },
-                    slotLabelFormat: [
-                        { weekday: 'short', day:'numeric' } // lower level of text
-                    ],
-                },
-                resourceTimelineSday: {
-                    type: 'resourceTimeline',
-                    buttonText: 'Неделя',
-                    duration: { weeks: 1 },
-                    slotDuration: {days: 1},
-                    slotLabelFormat: [
-                        { weekday: 'short', day:'numeric' } // lower level of text
-                    ],
-                }
-            },
+            // views: {
+            //     resourceTimelineMonth: {
+            //         type: 'resourceTimeline',
+            //         buttonText: 'Месяц',
+            //         duration: { month: 1 },
+            //         slotLabelFormat: [
+            //             { weekday: 'short', day:'numeric' } // lower level of text
+            //         ],
+            //     },
+            //     resourceTimelineSday: {
+            //         type: 'resourceTimeline',
+            //         buttonText: 'Неделя',
+            //         duration: { weeks: 1 },
+            //         slotDuration: {days: 1},
+            //         slotLabelFormat: [
+            //             { weekday: 'short', day:'numeric' } // lower level of text
+            //         ],
+            //     }
+            // },
             schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-            defaultView: 'resourceTimelineMonth',
-            slotWidth: 42,
+            defaultView: 'resourceTimeline',
+            slotWidth: 60,
+            slotDuration: {days: 1},
+            duration: { days: 14 },
             selectable: true,
+            defaultDate:'2010-03-03',
+            slotLabelFormat: [
+                { weekday: 'short', day:'numeric', month:'long' } // lower level of text
+            ],
             resources: {
                 url: '/employee/resources',
                 method: 'get',
@@ -85,11 +91,7 @@ class schedulePage{
                 // change the day's background color just for fun
                 //info.dayEl.style.backgroundColor = 'red';
             },
-            header: {
-                left:   'prev, today, next',
-                center: 'title',
-                right:  'resourceTimelineSday, resourceTimelineMonth'
-            },
+            header: false,
             height: "parent",
             eventClick: function(info) {
                 try {

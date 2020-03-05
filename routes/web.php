@@ -16,6 +16,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 #СМС
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 
+//Route::multilingual('/', 'DashboardController@index');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Статистика и панель управления

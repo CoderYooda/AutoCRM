@@ -3,9 +3,9 @@ const mix = require('laravel-mix');
 
 let template = 'classic';
 
-mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/' + template + '/app.scss', 'public/css')
-    .sass('resources/sass/' + template + '/base.scss', 'public/css');
+mix.js('resources/js/app.js', 'public/js');
+mix.sass('resources/sass/' + template + '/app.scss', 'public/css').options({ processCssUrls: false });
+mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ processCssUrls: false });
     //.sass('resources/sass/template.scss', 'public/css');
 
 // mix.copyDirectory('resources/fonts', 'public/fonts')

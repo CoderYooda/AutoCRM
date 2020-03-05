@@ -385,7 +385,7 @@ label.label-sm{
     outline: 0;
     border: 0;
     border-radius: 3px;
-    padding: 3px 10px;
+    padding: 2px 10px;
     color: #fff;
     display: none;
 }
@@ -565,6 +565,10 @@ label.label-sm{
 .p-4 {
     padding: 1.5rem!important;
 }
+
+.m-14{
+    margin: 24px!important;
+}
 .hide {
     display: none!important;
 }
@@ -712,4 +716,18 @@ button.form-control{
 }
 .box-content.partner_page_content{
     max-width: calc(100vw - 785px)!important;
+}
+.gray-box{
+    background: #F7F7F7!important;
+}
+.box-header-h{
+    font-size: 16px;
+    margin: 0;
+}
+.add-icon{
+    width: 100%;
+    text-align: center;
+    font-size: 55px;
+    padding: 17px 0;
+    color: #E3E3E3;
 }

@@ -52,16 +52,16 @@
     </div>
 @elseif($request && $request['string'] != null)
     <div class="padding text-center">
-        <div>
+        <div class="p-15">
             Товары по запросу "{{ $request['string'] }}" не найдено
         </div>
-        <button onclick="openDialog('productDialog')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
+        <button onclick="openDialog('productDialog')" class="button">Новый товар</button>
     </div>
 @else
     <div class="padding text-center">
-        <div>
+        <div class="p-15">
             Товары не найдены
         </div>
-        <button onclick="openDialog('productDialog')" class="btn m-3 btn-sm success mb-0">Новый товар</button>
+        <button onclick="openDialog('productDialog')" class="button">Новый товар</button>
     </div>
 @endif

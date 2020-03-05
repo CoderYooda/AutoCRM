@@ -43,7 +43,7 @@ class CashboxController extends Controller
 
         UA::makeUserAction($cashbox, $wasExisted ? 'fresh' : 'create');
 
-        $content = view('settings.cashbox', compact('cashboxes', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes', 'request'))->render();
 
         if($request->expectsJson()){
             return response()->json([

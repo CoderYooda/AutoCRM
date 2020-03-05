@@ -20,7 +20,7 @@ class SystemMessageController extends Controller
 
     public static function getMessagesAside()
     {
-        $messages = SM::owned()->where('viewed', 0)->get();
+        $messages = SM::owned()->where('viewed', 0)->orderBy('created_at', 'DESC')->get();
         return $messages;
     }
 

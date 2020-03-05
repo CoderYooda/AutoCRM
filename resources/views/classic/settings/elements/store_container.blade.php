@@ -1,7 +1,7 @@
 
 <div class="row">
     @foreach($stores as $store)
-        @include('settings.elements.store_elem')
+        @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_elem')
     @endforeach
 </div>
 
