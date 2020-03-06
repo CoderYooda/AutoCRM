@@ -64,9 +64,10 @@ class registerPage{
         }).then(function (resp) {
             console.log(resp.data.sms);
             if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK') {
-
-                object.sms_phone.innerHTML = resp.data.phone;
+                console.log(2);
+                //object.sms_phone.innerHTML = resp.data.phone;
                 object.smsBox.classList.remove('hide');
+                console.log(object.smsBox);
 
             } else  if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'ERROR'){
 
