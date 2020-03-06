@@ -40,7 +40,7 @@
                         {{--</li>--}}
                         <li id="partner_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('PartnerIndex') }}">
-                                Контрагенты
+                                Контакты
                             </a>
                         </li>
                         <li id="settings_link" class="top-nav-item" >
@@ -158,14 +158,14 @@
                                 <span class="nav-text">Заказ</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#" class="ajax-nav update_url">
-                                    <span class="nav-icon">
-                                        <i class="fa fa-phone"></i>
-                                    </span>
-                                <span class="nav-text">Звонки</span>
-                            </a>
-                        </li>
+                        {{--<li>--}}
+                            {{--<a href="#" class="ajax-nav update_url">--}}
+                                    {{--<span class="nav-icon">--}}
+                                        {{--<i class="fa fa-phone"></i>--}}
+                                    {{--</span>--}}
+                                {{--<span class="nav-text">Звонки</span>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
                     </ul>
                     <div class="mt-auto">
                         <ul class="nav">

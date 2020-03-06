@@ -128,7 +128,7 @@ input[type=checkbox]:checked {
     color: #fff;
 }
 .app-logo {
-    background: url(../img/logo.svg) no-repeat center;
+    background: url(../images/logo.svg) no-repeat center;
     width: 80px;
     height: 52px;
     font-size: 0px;
@@ -830,6 +830,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .mr-15{
     margin-right: 15px;
 }
+.mt-30{
+    margin-top: 30px;
+}
 .pr-8{
     padding-right: 8px!important;
 }
@@ -894,6 +897,28 @@ input:-moz-placeholder { /* Firefox 18- */
     height: 32px;
     font-size: 0.85em;
     line-height: 0.85;
+}
+.d-block-f-left{
+    display: block!important;
+    float: left!important;
+}
+.brr-0{
+    border-top-right-radius: 0!important;
+    border-bottom-right-radius: 0!important;
+}
+.brl-0{
+    border-top-left-radius: 0!important;
+    border-bottom-left-radius: 0!important;
+}
+.br-trans{
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
+}
+.h-32-text{
+    height: 32px;
+    line-height: 32px;
+}
+.p-0{
+    padding: 0px!important;
 }
 
 /*Contextual*/

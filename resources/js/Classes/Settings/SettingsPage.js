@@ -4,7 +4,7 @@ class settingsPage{
         console.log('страница настроек инициализировано');
         this.active = true;
         this.root = document.getElementById('baseSettings');
-        this.active_tab = window.helper.findGetParameter('active_tab');
+        this.active_tab = this.getCurrentActiveTab();
         this.init();
     }
 
@@ -90,7 +90,17 @@ class settingsPage{
     }
 
     linked(){
-        let object = this;
+        this.active_tab = this.getCurrentActiveTab();
+    }
+
+
+    getCurrentActiveTab(){
+        var active_tab = window.helper.findGetParameter('active_tab');
+
+        if(active_tab == null || active_tab == 'null'){
+            active_tab = 'index';
+        }
+        return active_tab;
     }
 
     checkActive(){

@@ -28,6 +28,32 @@ class schedulePage{
             failure: this.sourceAddFailure(),
             textColor: 'white'
         };
+
+        var start_date = document.querySelector('.date_picker_start');
+        var end_date = document.querySelector('.date_picker_end');
+
+        window.flatpickr(".date_picker_start", {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+        window.flatpickr(".date_picker_end", {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+        window.IMask(start_date, {
+                mask: Date,
+                min: new Date(1990, 0, 1),
+                max: new Date(2030, 0, 1),
+                lazy: false
+            }
+        )
+        window.IMask(end_date, {
+                mask: Date,
+                min: new Date(1990, 0, 1),
+                max: new Date(2030, 0, 1),
+                lazy: false
+            }
+        )
     }
 
     sourceAddFailure(){
@@ -53,6 +79,18 @@ class schedulePage{
             plugins: [ interactionPlugin, resourceTimelinePlugin ],
             locale: ruLocale,
             resourceLabelText: 'Сотрудники',
+            resourceAreaWidth: '230px',
+            // resourceColumns: [
+            //     {
+            //         labelText: 'ID',
+            //         width: "20%",
+            //         field: 'id'
+            //     },
+            //     {
+            //         labelText: 'ФИО',
+            //         field: 'title'
+            //     }
+            // ],
             // views: {
             //     resourceTimelineMonth: {
             //         type: 'resourceTimeline',
@@ -76,7 +114,7 @@ class schedulePage{
             defaultView: 'resourceTimeline',
             slotWidth: 60,
             slotDuration: {days: 1},
-            duration: { days: 14 },
+            duration: { days: 44 },
             selectable: true,
             defaultDate:'2010-03-03',
             slotLabelFormat: [
@@ -85,6 +123,7 @@ class schedulePage{
             resources: {
                 url: '/employee/resources',
                 method: 'get',
+                width:140,
             },
             dateClick: function(info) {
                 console.log(info.resource.id);

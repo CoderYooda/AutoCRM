@@ -17,6 +17,7 @@ import clientorderDialog from "./ClientOrder/ClientOrderDialog";
 import adjustmentDialog from "./Adjustment/AdjustmentDialog";
 import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
 import selectProviderOrderDialog from "./ProviderOrder/SelectProviderOrderDialog";
+import scheduleTemplateDialog from "./Schedule/ScheduleTemplateDialog";
 import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
 import supplierDialog from "./Supplier/SupplierDialog";
 import partnerPage from "./Partner/PartnerPage";
@@ -52,6 +53,7 @@ const classes = {
     adjustmentDialog,
     providerorderDialog,
     selectProviderOrderDialog,
+    scheduleTemplateDialog,
     barcodeDialog,
     categoryDialog,
     selectSupplierDialog,

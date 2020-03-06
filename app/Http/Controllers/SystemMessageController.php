@@ -94,8 +94,6 @@ class SystemMessageController extends Controller
                 event(
                     new SystemMessage($system_message)
                 );
-            } else {
-                echo 'Cообщение повторяется';
             }
         }
     }

@@ -59,7 +59,7 @@
         <div class="content-rightside">
             <div class="w-290">
                 <button onclick="openDialog('categoryDialog', '&category_select=3')" class="w-100 button primary mb-15">Новая категория</button>
-                <button onclick="openDialog('partnerDialog')" class="w-100 button primary mb-15">Новый контрагент</button>
+                <button onclick="openDialog('partnerDialog')" class="w-100 button primary mb-15">Новый контакт</button>
             </div>
             {{--<div class="box w-290 p-15 filter-panel">--}}
                 {{--<div class="box-title">Фильтр</div>--}}

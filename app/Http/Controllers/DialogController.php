@@ -79,6 +79,9 @@ class DialogController extends Controller
             case 'adjustmentDialog':
                 $dialog = AdjustmentController::adjustmentDialog($request); #
                 break;
+            case 'scheduletemplateDialog':
+                $dialog = ScheduleController::scheduleTemplateDialog($request); #
+                break;
         }
 
         if(!isset($dialog)){
