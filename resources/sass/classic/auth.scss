@@ -69,3 +69,8 @@
     display: block;
     color: #fff;
 }
+#sms-box.unvalid input{
+    border: 2px solid #c73535;
+    background: #ff5656;
+    color: #fff;
+}

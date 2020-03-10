@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientOrdersRequest;
 use App\Models\ClientOrder;
 use App\Models\Partner;
 use App\Models\Store;
@@ -20,14 +21,14 @@ class ClientOrdersController extends Controller
     {
         $tag = 'clientorderDialog';
 
-        if($request['client_order_id']){
+        if ($request['client_order_id']) {
             $client_order = ClientOrder::where('id', (int)$request['client_order_id'])->first();
 
             $client_order->articles = $client_order->articles()->get();
 
-            foreach($client_order->articles as $article){
+            foreach ($client_order->articles as $article) {
                 $article->instock = $article->getCountInStoreId($client_order->store_id);
-                if($article->instock >= $article->pivot->count){
+                if ($article->instock >= $article->pivot->count) {
                     $article->complited = true;
                 } else {
                     $article->complited = false;
@@ -35,8 +36,8 @@ class ClientOrdersController extends Controller
             }
             $total_complited = true;
 
-            foreach($client_order->articles as $article){
-                if(!$article->complited){
+            foreach ($client_order->articles as $article) {
+                if (!$article->complited) {
                     $total_complited = false;
                 }
             }
@@ -50,14 +51,15 @@ class ClientOrdersController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact( 'client_order', 'stores',  'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'stores', 'request'))->render()
         ]);
     }
 
     public function tableData(Request $request)
     {
         $client_orders = ClientOrdersController::getClientOrders($request);
-        foreach($client_orders as $client_order){
+
+        foreach ($client_orders as $client_order) {
             $client_order->date = $client_order->created_at->format('Y.m.d/H:i');
         }
 
@@ -67,11 +69,11 @@ class ClientOrdersController extends Controller
     public function delete($id, Request $request)
     {
         $returnIds = null;
-        if($id == 'array'){
+        if ($id == 'array') {
             $client_orders = ClientOrder::whereIn('id', $request['ids']);
             $this->message = 'Продажи удалены';
             $returnIds = $client_orders->get()->pluck('id');
-            foreach($client_orders->get() as $client_order){
+            foreach ($client_orders->get() as $client_order) {
                 $client_order->delete();
                 UA::makeUserAction($client_order, 'delete');
             }
@@ -96,9 +98,9 @@ class ClientOrdersController extends Controller
 
         $client_order->articles = $client_order->articles()->get();
 
-        foreach($client_order->articles as $article){
+        foreach ($client_order->articles as $article) {
             $article->instock = $article->getCountInStoreId($client_order->store_id);
-            if($article->instock >= $article->pivot->count){
+            if ($article->instock >= $article->pivot->count) {
                 $article->complited = true;
             } else {
                 $article->complited = false;
@@ -107,8 +109,8 @@ class ClientOrdersController extends Controller
 
         $total_complited = true;
 
-        foreach($client_order->articles as $article){
-            if(!$article->complited){
+        foreach ($client_order->articles as $article) {
+            if (!$article->complited) {
                 $total_complited = false;
             }
         }
@@ -117,47 +119,46 @@ class ClientOrdersController extends Controller
 
         $request['fresh'] = true;
         $class = 'clientorderDialog' . $id;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact( 'client_order', 'stores', 'class', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'stores', 'class', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'clientorderDialog' . $id,
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(ClientOrdersRequest $request)
     {
-        $validation = Validator::make($request->all(), self::validateRules($request));
-
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
 
-        if($validation->fails()){
+        if ($request->fails()) {
             $this->status = 422;
-            if($request->expectsJson()){
+            if ($request->expectsJson()) {
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
-        if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
+        if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
+            $request['inpercents'] = false;
+        } else {
             $request['inpercents'] = true;
         }
 
-        if($request['inpercents']){
-            if((int)$request['discount'] >= 100){
+        if ($request['inpercents']) {
+            if ((int)$request['discount'] >= 100) {
                 $request['discount'] = 100;
             }
-            if((int)$request['discount'] <= 0){
+            if ((int)$request['discount'] <= 0) {
                 $request['discount'] = 0;
             }
         }
 
-        if($request['do_date'] == null){
+        if ($request['do_date'] == null) {
             $request['do_date'] = Carbon::now();
         }
 
 
-
-        if($client_order->exists){
+        if ($client_order->exists) {
             $store = $client_order->store()->first();
             #Прибавляем к балансу предидущего партнера
             $client_order->partner()->first()
@@ -170,7 +171,7 @@ class ClientOrdersController extends Controller
 
 
             #Возвращаем на склад все товары из заказа
-            if($client_order->status === 'complete') {
+            if ($client_order->status === 'complete') {
                 foreach ($client_order->articles()->get() as $article) {
                     $store = $client_order->store()->first();
                     $store->increaseArticleCount($article->id, $article->pivot->count);
@@ -184,7 +185,6 @@ class ClientOrdersController extends Controller
         }
 
 
-
         $client_order->fill($request->only($client_order->fields));
         $client_order->store_id = Auth::user()->getStoreFirst()->id;
         $client_order->summ = 0;
@@ -196,8 +196,8 @@ class ClientOrdersController extends Controller
 
         # Собираем товары в массив id шников из Request`a
         $plucked_articles = [];
-        foreach($request['products'] as $id => $products) {
-            if($id !== 'new'){
+        foreach ($request['products'] as $id => $products) {
+            if ($id !== 'new') {
                 $plucked_articles[] = $id;
             }
         }
@@ -207,14 +207,14 @@ class ClientOrdersController extends Controller
 
         #### Проверка на дубли
         $messages = [];
-        if(isset($request['products']['new'])){
-            foreach($request['products']['new'] as $id => $product) {
+        if (isset($request['products']['new'])) {
+            foreach ($request['products']['new'] as $id => $product) {
 
                 if ($id === 'new') {
                     $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
-                    if($stock_supplier){
+                    if ($stock_supplier) {
                         $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
-                        if($art !== null && $art) {
+                        if ($art !== null && $art) {
                             $article_errors[0] = '';
                             $supplier_errors[0] = '';
                             $messages['products.' . $product['id'] . '.article'] = $article_errors;
@@ -224,15 +224,15 @@ class ClientOrdersController extends Controller
                 }
             }
         }
-        if(count($messages) > 0){
+        if (count($messages) > 0) {
             return response()->json([
                 'messages' => $messages
             ], 422);
         }
 
         #Сохраняем быстрые товары
-        if(isset($request['products']['new'])){
-            foreach($request['products']['new'] as $id => $product) {
+        if (isset($request['products']['new'])) {
+            foreach ($request['products']['new'] as $id => $product) {
                 $vcount = (int)$product['count'];
                 $vprice = (double)$product['price'];
                 $vtotal = $vprice * $vcount;
@@ -250,12 +250,12 @@ class ClientOrdersController extends Controller
                     $actor_product->name = $product['name'];
                     $actor_product->save();
 
-                    $prepared_article = mb_strtolower (str_replace(' ', '', $actor_product->article));
-                    $prepared_supplier = mb_strtolower (str_replace(' ', '', $actor_product->supplier()->first()->name));
-                    $prepared_name = mb_strtolower (str_replace(' ', '', $actor_product->name));
-                    $prepared_barcode = mb_strtolower (str_replace(' ', '', $actor_product->barcode));
+                    $prepared_article = mb_strtolower(str_replace(' ', '', $actor_product->article));
+                    $prepared_supplier = mb_strtolower(str_replace(' ', '', $actor_product->supplier()->first()->name));
+                    $prepared_name = mb_strtolower(str_replace(' ', '', $actor_product->name));
+                    $prepared_barcode = mb_strtolower(str_replace(' ', '', $actor_product->barcode));
 
-                    $actor_product->foundstring = $prepared_article.$prepared_supplier.$prepared_barcode.$prepared_name;
+                    $actor_product->foundstring = $prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name;
                     //
                     $actor_product->save();
 
@@ -273,7 +273,7 @@ class ClientOrdersController extends Controller
         }
 
 
-        foreach($request['products'] as $id => $product) {
+        foreach ($request['products'] as $id => $product) {
             if ($id !== 'new') {
 
                 //$store->decreaseArticleCount($id, $product['count']);
@@ -297,13 +297,13 @@ class ClientOrdersController extends Controller
         #Удаление всех отношений и запись новых (кастомный sync)
         $client_order->syncArticles($client_order->id, $client_order_data);
 
-        if($request['inpercents']){
+        if ($request['inpercents']) {
             $client_order->itogo = $client_order->summ - ($client_order->summ / 100 * $request['discount']);
         } else {
-            if($request['discount'] >= $client_order->summ){
+            if ($request['discount'] >= $client_order->summ) {
                 $request['discount'] = $client_order->summ;
             }
-            if($request['discount'] <= 0){
+            if ($request['discount'] <= 0) {
                 $request['discount'] = 0;
             }
             $client_order->discount = $request['discount'];
@@ -313,8 +313,8 @@ class ClientOrdersController extends Controller
         $client_order->save();
 
         #Отнимаем со склада товары из заказа
-        if($client_order->status === 'complete'){
-            foreach($client_order->articles()->get() as $article){
+        if ($client_order->status === 'complete') {
+            foreach ($client_order->articles()->get() as $article) {
                 $store = $client_order->store()->first();
                 $store->decreaseArticleCount($article->id, $article->pivot->count);
             }
@@ -324,11 +324,7 @@ class ClientOrdersController extends Controller
             ->subtraction($client_order->itogo);
 
 
-
-
-
-
-        if($request->expectsJson()){
+        if ($request->expectsJson()) {
             return response()->json([
                 'message' => $this->message,
                 'id' => $client_order->id,
@@ -339,46 +335,46 @@ class ClientOrdersController extends Controller
         }
     }
 
-    public function load(Request $request){
+    public function load(Request $request)
+    {
 
     }
 
-    public function getClientOrdersProducts($id){
-        $client_order = ClientOrder::where('id', $id)->first();
-        return response()->json([
-            'products' => $client_order->articles()->get()]);
+    public function getClientOrdersProducts(ClientOrder $clientOrder)
+    {
+        return response()->json(['products' => $clientOrder->articles]);
     }
 
     public static function getClientOrders($request)
     {
 
         $size = 30;
-        if(isset($request['size'])){
+        if (isset($request['size'])) {
             $size = (int)$request['size'];
         }
 
         $field = null;
         $dir = null;
 
-        if(isset($request['sorters'])){
+        if (isset($request['sorters'])) {
             $field = $request['sorters'][0]['field'];
             $dir = $request['sorters'][0]['dir'];
         }
-        if($request['dates_range'] !== null){
+        if ($request['dates_range'] !== null) {
             $dates = explode('|', $request['dates_range']);
             //dd(Carbon::parse($dates[0]));
             $request['dates'] = $dates;
         }
-        if($field === null &&  $dir === null){
+        if ($field === null && $dir === null) {
             $field = 'created_at';
             $dir = 'DESC';
         }
 
-        if($request['provider'] == null){
+        if ($request['provider'] == null) {
             $request['provider'] = [];
         }
 
-        if($request['accountable'] == null){
+        if ($request['accountable'] == null) {
             $request['accountable'] = [];
         }
 
@@ -399,17 +395,16 @@ class ClientOrdersController extends Controller
             GROUP BY client_orders.id)
              client_orders
         '))
-
-            ->when($request['provider'] != [], function($query) use ($request) {
+            ->when($request['provider'] != [], function ($query) use ($request) {
                 $query->whereIn('partner_id', $request['provider']);
             })
-            ->when($request['clientorder_status'] != null, function($query) use ($request) {
+            ->when($request['clientorder_status'] != null, function ($query) use ($request) {
                 $query->where('status', $request['clientorder_status']);
             })
-            ->when($request['accountable'] != [], function($query) use ($request) {
+            ->when($request['accountable'] != [], function ($query) use ($request) {
                 $query->whereIn('client_orders.partner_id', $request['accountable']);
             })
-            ->when($request['dates_range'] != null, function($query) use ($request) {
+            ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
             ->where('client_orders.company_id', Auth::user()->company()->first()->id)
@@ -423,15 +418,16 @@ class ClientOrdersController extends Controller
         return $client_orders;
     }
 
-    public function getSideInfo(Request $request){
+    public function getSideInfo(Request $request)
+    {
 
         $client_order = ClientOrder::owned()->where('id', $request['id'])->first();
         $partner = $client_order->partner()->first();
         $comment = $client_order->comment;
-        if($request->expectsJson()){
+        if ($request->expectsJson()) {
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.contact-card', compact('partner', 'request'))->render(),
+                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact('comment', 'request'))->render(),
             ], 200);
         } else {
             return redirect()->back();
@@ -440,9 +436,9 @@ class ClientOrdersController extends Controller
 
     public static function getSingleClientOrder($request)
     {
-        $client_order = ClientOrder::owned()->where(function($q) use ($request) {
-            if(isset($request['id']) && $request['id'] !== 'null') {
-                $q->where('id', $request['id'] );
+        $client_order = ClientOrder::owned()->where(function ($q) use ($request) {
+            if (isset($request['id']) && $request['id'] !== 'null') {
+                $q->where('id', $request['id']);
             }
         })->first();
 
@@ -463,40 +459,19 @@ class ClientOrdersController extends Controller
 //        ], $this->status);
 //    }
 
-
-    private static function validateRules($request)
+    public function events(Request $request)
     {
-        $rules = [
-            'partner_id' => ['required', 'exists:partners,id'],
-            'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
-            'products' => ['required_without:quick_products'],
-            'phone' => ['required'],
-            'products.*.count' => ['integer', 'min:1', 'max:9999'],
-            'products.*.price' => ['numeric', 'between:1,1000000.00'],
-
-            'products.new.*.price' => ['numeric', 'between:1,1000000.00'],
-            'products.new.*.count' => ['integer', 'min:1', 'max:9999'],
-            'products.new.*.name' => ['required', 'min:4', 'string', 'max:255'],
-            'products.new.*.article' => ['required', 'string', 'max:64'],
-            'products.new.*.new_supplier_name' => ['required', 'string', 'max:64'],
-
-        ];
-
-        return $rules;
-    }
-
-    public function events(Request $request){
         $client_orders = ClientOrder::owned()
-            ->where(function($q) use ($request){
-                if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
-                    $q->where('do_date',  '>=',  Carbon::parse($request['start']));
+            ->where(function ($q) use ($request) {
+                if (isset($request['start']) && $request['start'] != 'null' && $request['start'] != '') {
+                    $q->where('do_date', '>=', Carbon::parse($request['start']));
                 }
-                if(isset($request['end']) && $request['end'] != 'null' && $request['end'] != ''){
+                if (isset($request['end']) && $request['end'] != 'null' && $request['end'] != '') {
                     $q->where('do_date', '<=', Carbon::parse($request['end']));
                 }
             })->get();
         $events = [];
-        foreach($client_orders as $order){
+        foreach ($client_orders as $order) {
             $events[] = [
                 'title' => 'Заказ клиента #' . $order->id,
                 'start' => $order->do_date,

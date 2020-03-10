@@ -769,6 +769,11 @@ input:-moz-placeholder { /* Firefox 18- */
     flex: 0 0 75%;
     max-width: 75%;
 }
+.col-sm-10 {
+    -webkit-box-flex: 0;
+    flex: 0 0 83.33333332%;
+    max-width: 83.33333332%;
+}
 .col-sm-12 {
     -webkit-box-flex: 0;
     flex: 0 0 100%;

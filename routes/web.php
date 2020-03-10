@@ -79,7 +79,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Заказы клиентов
     Route::get('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название
     Route::post('/clientorder/store', 'ClientOrdersController@store')->name('StoreClientOrder');// Строгое название
-    Route::post('/clientorder/{id}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
+    Route::post('/clientorder/{clientOrder}/get_clientorders', 'ClientOrdersController@getClientOrdersProducts')->name('GetClientOrderProducts');
     Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
     Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
     Route::post('/clientorder/{id}/fresh', 'ClientOrdersController@fresh')->name('FreshClientOrder');

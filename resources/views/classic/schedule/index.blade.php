@@ -21,8 +21,8 @@
             <div class="form-group mr-15">
                 <label>Режим</label>
                 <div class="btn-group">
-                    <button type="button" class="button primary d-block-f-left brr-0 br-trans">Изменить день</button>
-                    <button type="button" class="button primary brl-0">Установить по шаблону</button>
+                    <button id="action_edit" type="button" onclick="window.schedule.setAction('edit')" class="button primary d-block-f-left brr-0 br-trans action_button">Изменить день</button>
+                    <button id="action_template" type="button" onclick="window.schedule.setAction('template')" class="button primary brl-0 action_button">Установить по шаблону</button>
                 </div>
             </div>
             <div class="form-group w-128 mr-15">

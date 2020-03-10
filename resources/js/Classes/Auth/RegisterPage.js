@@ -36,9 +36,11 @@ class registerPage{
                     if(resp.data.status === 'success'){
                         object.smsBox.classList.add('hide');
                         object.form.submit();
+                    } else {
+                        object.smsBox.classList.add('unvalid');
                     }
                 }).catch(function (error) {
-                    console.log(error);
+                    //console.log(error);
                 }).finally(function () {
                 });
             }

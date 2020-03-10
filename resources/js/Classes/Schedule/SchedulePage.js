@@ -19,8 +19,10 @@ class schedulePage{
         this.search = null;
         this.calendar = null;
         this.lastView = null;
-        this.init();
         this.sources = [];
+        this.action = "edit"; // [ edit , template]
+
+        this.init();
 
         this.incomingWarrantSource = {
             url: '/employee/schedule',
@@ -46,7 +48,7 @@ class schedulePage{
                 max: new Date(2030, 0, 1),
                 lazy: false
             }
-        )
+        );
         window.IMask(end_date, {
                 mask: Date,
                 min: new Date(1990, 0, 1),
@@ -63,12 +65,25 @@ class schedulePage{
     init(){
         let object = this;
         object.initCalendar();
+        object.setAction(object.action);
+    }
+
+    setAction(type){
+        this.action = type;
+        let button = document.getElementById('action_'+type);
+        var buttons = document.getElementsByClassName('action_button');
+        [].forEach.call(buttons, function(elem){
+            elem.classList.remove('active');
+        });
+        button.classList.add('active');
     }
 
     linked(){
         let object = this;
         object.sources = [];
         object.initCalendar();
+        object.setAction(object.action);
+
     }
 
     initCalendar(){

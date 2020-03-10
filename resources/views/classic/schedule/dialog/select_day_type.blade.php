@@ -14,18 +14,52 @@
         </ul>
         <div class="tab-content p-0">
             <div class="tab-pane active" id="work">
+                <div class="row row-sm">
 
-                <div class="form-group">
-                    <label for="">От</label>
-                    <input type="text" class="form-control" name="period[0]['start']" id="period_0_start">
+
+                    <div class="col-sm-3">
+                        <label class="label-sm">График</label>
+                    </div>
+                    <div class="col-sm-9" id="periods">
+                        <div class="row row-sm period">
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" value="8:00" name="period[0]['start']" id="period_0_start">
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" value="17:00" name="period[0]['end']" id="period_0_end">
+                            </div>
+                            <div class="col-sm-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9 mt-15">
+                        <div class="row row-sm">
+                            <div class="col-sm-10">
+                                <button onclick="window.scheduleTemplateDialog.addPeriod()" class="button w-100">Добавить интервал</button>
+                            </div>
+                            <div class="col-sm-2"></div>
+                        </div>
+                    </div>
+
+                    {{--<div class="col-sm-6">--}}
+                        {{--<div class="form-group row row-sm">--}}
+                            {{--<label class="col-sm-3 label-sm">от</label>--}}
+                            {{--<div class="input-group col-sm-9">--}}
+                                {{--<input type="text" class="form-control" name="period[0]['start']" id="period_0_start">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    {{--<div class="col-sm-6">--}}
+                        {{--<div class="form-group row row-sm">--}}
+                            {{--<label class="col-sm-3 label-sm">до</label>--}}
+                            {{--<div class="input-group col-sm-9">--}}
+                                {{--<input type="text" class="form-control" name="period[0]['end']" id="period_0_end">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+
                 </div>
-                <div class="form-group">
-                    <label for="">до</label>
-                    <input type="text" class="form-control" name="period[0]['end']" id="period_0_end">
-                </div>
-
-
-
             </div>
             <div class="tab-pane" id="day_off">
                 <div class="form-group mr-15">
@@ -41,7 +75,7 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="button primary pull-right uppercase-btn" onclick="window.scheduleTemplateDialog.applyTemplate(this)">Сохранить и закрыть</button>
+        <button type="button" class="button primary pull-right uppercase-btn" onclick="window.scheduleTemplateDialog.applyTemplate(this)">Сохранить шаблон</button>
         <button class="button white mr-15 uppercase-btn" onclick="window.scheduleTemplateDialog .finitaLaComedia(this)">Закрыть</button>
     </div>
     <div class="system_message">

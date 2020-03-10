@@ -33,7 +33,7 @@ class RegisterController extends Controller
         //dd($request);
         //SmsController::sendTo($data['phone']);
         return Validator::make($request->all(), [
-            'fio' => ['required', 'string', 'max:255'],
+            'fio' => ['required', 'string', 'min:5', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
 //            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -122,7 +122,7 @@ class RegisterController extends Controller
         $partner = new Partner();
         $partner->isfl = true;
         $partner->user_id = $user->id;
-        $partner->category_id = 3;
+        $partner->category_id = 5; //Сотрудник
         $partner->fio = $data['fio'];
         $partner->company_id = $company->id;
         $partner->store_id = $store->id;

@@ -77,7 +77,6 @@ class LoginController extends Controller
 
         if($user->banned_at != null){
             return redirect()->back()->with('banned', ['Выша учетная запись была заблокирована']);
-
         }
 
         if (method_exists($this, 'hasTooManyLoginAttempts') &&

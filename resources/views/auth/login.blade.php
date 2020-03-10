@@ -30,9 +30,11 @@
                                 <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             </div>
                             @error('phone')
-                            <span class="invalid-feedback" role="alert">
+                                <div class="col-sm-7">
+                                    <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
+                                </div>
                             @enderror
                         </div>
                         <div class="form-group row row-sm  @error('password') is-invalid @enderror">

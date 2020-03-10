@@ -74,12 +74,7 @@ class ClientOrder extends Model
 
     public function isFinished()
     {
-        if($this->status == 'complete'){
-            $status = true;
-        } else {
-            $status = false;
-        }
-        return $status;
+        return $this->status == 'complete' ? true : false ;
     }
 
     public function getArticlesCountById($id){
