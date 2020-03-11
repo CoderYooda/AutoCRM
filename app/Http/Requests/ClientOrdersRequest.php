@@ -38,4 +38,7 @@ class ClientOrdersRequest extends FormRequest
             'products.new.*.new_supplier_name' => ['required', 'string', 'max:64']
         ];
     }
+    public function fails(){
+
+    }
 }

@@ -143,7 +143,6 @@ class PartnerController extends Controller
         //SystemMessage::sendToAllButOne();
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
 
-
         if($request['access']){
             SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), Auth::user());
             $user = $partner->user()->first();

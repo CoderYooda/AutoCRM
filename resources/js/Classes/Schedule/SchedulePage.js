@@ -21,8 +21,18 @@ class schedulePage{
         this.lastView = null;
         this.sources = [];
         this.action = "edit"; // [ edit , template]
+        this.template = {
+            type: 'work', // [ work , free ]
+            periods: [{
+                start: '08:00',
+                end: '17:00',
+            }],
+            freeDayType: null
+        };
+
 
         this.init();
+        this.initRangeSelector();
 
         this.incomingWarrantSource = {
             url: '/employee/schedule',
@@ -31,6 +41,9 @@ class schedulePage{
             textColor: 'white'
         };
 
+    }
+
+    initRangeSelector(){
         var start_date = document.querySelector('.date_picker_start');
         var end_date = document.querySelector('.date_picker_end');
 
@@ -79,11 +92,10 @@ class schedulePage{
     }
 
     linked(){
-        let object = this;
-        object.sources = [];
-        object.initCalendar();
-        object.setAction(object.action);
-
+        this.sources = [];
+        this.initCalendar();
+        this.setAction(this.action);
+        this.initRangeSelector();
     }
 
     initCalendar(){

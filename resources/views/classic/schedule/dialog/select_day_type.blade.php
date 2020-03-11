@@ -6,10 +6,10 @@
     <div class="box-body">
         <ul class="nav nav-tabs mb-15">
             <li>
-                <a type="button" class="button primary d-block-f-left brr-0 nav-link active" data-toggle="tab" href="#work" onclick="window.scheduleTemplateDialog.setDaytype(true)">Рабочий день</a>
+                <a type="button" class="button primary d-block-f-left brr-0 nav-link active" data-toggle="tab" href="#work" onclick="window.scheduleTemplateDialog.setDaytype('work')">Рабочий день</a>
             </li>
             <li>
-                <a type="button" class="button primary brl-0 nav-link" data-toggle="tab" href="#day_off" onclick="window.scheduleTemplateDialog.setDaytype(false)">Нерабочий день</a>
+                <a type="button" class="button primary brl-0 nav-link" data-toggle="tab" href="#day_off" onclick="window.scheduleTemplateDialog.setDaytype('free')">Нерабочий день</a>
             </li>
         </ul>
         <div class="tab-content p-0">
@@ -20,18 +20,18 @@
                     <div class="col-sm-3">
                         <label class="label-sm">График</label>
                     </div>
-                    <div class="col-sm-9" id="periods">
-                        <div class="row row-sm period">
-                            <div class="col-sm-5">
-                                <input type="text" class="form-control" value="8:00" name="period[0]['start']" id="period_0_start">
-                            </div>
-                            <div class="col-sm-5">
-                                <input type="text" class="form-control" value="17:00" name="period[0]['end']" id="period_0_end">
-                            </div>
-                            <div class="col-sm-2">
-                            </div>
-                        </div>
-                    </div>
+                    <form class="col-sm-9" id="periods">
+                        {{--<div class="row row-sm period">--}}
+                            {{--<div class="col-sm-5">--}}
+                                {{--<input type="text" class="form-control start_period" value="8:00" name="period[0]['start']" id="period_0_start">--}}
+                            {{--</div>--}}
+                            {{--<div class="col-sm-5">--}}
+                                {{--<input type="text" class="form-control end_period" value="17:00" name="period[0]['end']" id="period_0_end">--}}
+                            {{--</div>--}}
+                            {{--<div class="col-sm-2">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    </form>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 mt-15">
                         <div class="row row-sm">
@@ -63,7 +63,7 @@
             </div>
             <div class="tab-pane" id="day_off">
                 <div class="form-group mr-15">
-                    <select name="day_off_type" id="" class="form-control input-c">
+                    <select onchange="window.scheduleTemplateDialog.changeDayType(this)" name="day_off_type" id="day_off_type" class="form-control input-c">
                         <option value="0">Не выбран</option>
                         @foreach($day_off_types as $day_off_type)
                             <option value="{{ $day_off_type->id }}">{{ $day_off_type->type }}</option>

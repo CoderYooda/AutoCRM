@@ -79,7 +79,6 @@ class SmsController extends Controller
 
     public static function sendTo($phone)
     {
-
         $confirm_code = rand(10000, 99999);
         $smsru = new SMS(env('SMS_RU_CODE'));
         $data = new stdClass();
