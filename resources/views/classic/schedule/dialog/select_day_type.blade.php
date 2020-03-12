@@ -6,14 +6,14 @@
     <div class="box-body">
         <ul class="nav nav-tabs mb-15">
             <li>
-                <a type="button" class="button primary d-block-f-left brr-0 nav-link active" data-toggle="tab" href="#work" onclick="window.scheduleTemplateDialog.setDaytype('work')">Рабочий день</a>
+                <a id="work_button" type="button" class="button primary d-block-f-left brr-0 nav-link" data-toggle="tab" href="#work" onclick="window.scheduleTemplateDialog.setDaytype('work')">Рабочий день</a>
             </li>
             <li>
-                <a type="button" class="button primary brl-0 nav-link" data-toggle="tab" href="#day_off" onclick="window.scheduleTemplateDialog.setDaytype('free')">Нерабочий день</a>
+                <a id="free_button" type="button" class="button primary brl-0 nav-link" data-toggle="tab" href="#free" onclick="window.scheduleTemplateDialog.setDaytype('free')">Нерабочий день</a>
             </li>
         </ul>
         <div class="tab-content p-0">
-            <div class="tab-pane active" id="work">
+            <div class="tab-pane" id="work">
                 <div class="row row-sm">
 
 
@@ -61,9 +61,9 @@
 
                 </div>
             </div>
-            <div class="tab-pane" id="day_off">
+            <div class="tab-pane" id="free">
                 <div class="form-group mr-15">
-                    <select onchange="window.scheduleTemplateDialog.changeDayType(this)" name="day_off_type" id="day_off_type" class="form-control input-c">
+                    <select onchange="window.scheduleTemplateDialog.changeDayType(this)" name="freeDayType" id="freeDayType" class="form-control input-c">
                         <option value="0">Не выбран</option>
                         @foreach($day_off_types as $day_off_type)
                             <option value="{{ $day_off_type->id }}">{{ $day_off_type->type }}</option>

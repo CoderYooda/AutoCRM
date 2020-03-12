@@ -5,17 +5,15 @@ class scheduleTemplateDialog{
         this.active = true;
         this.root_dialog = dialog;
         this.container = this.root_dialog.querySelector('#periods');
-
         this.day_type = true; // Рабочий
         this.periods = {};
         //this.day_off_type = this.root_dialog.getElementById('day_off_type');
-
         this.init();
         //this.activateTime(0);
-
         this.template = window.schedule.template;
-        //this.initPeriods();
-
+        this.initPeriods();
+        this.activateDayType(this.template.type);
+        this.activateFreeDayType(this.template.freeDayType);
     }
 
     applyTemplate()
@@ -34,6 +32,7 @@ class scheduleTemplateDialog{
         });
         console.log(this.template);
         this.finitaLaComedia();
+        window.schedule.generateTemplateText();
     }
 
     initPeriods(){
@@ -44,20 +43,22 @@ class scheduleTemplateDialog{
                 object.addPeriod(item.start, item.end);
             });
         }
-
     }
 
     linked(){
         this.initPeriods();
+        this.activateDayType(this.template.type);
+        this.activateFreeDayType(this.template.freeDayType);
     }
 
     addPeriod(start = null, end = null)
     {
         var count = this.container.getElementsByClassName('period').length;
-
         if(count > 2){
             notification.notify( 'error', 'Максимальное кол-во интервалов - 3');
         } else {
+            if(!start){start = '8:00'}
+            if(!end){end = '17:00'}
             var node = helper.createElementFromHTML('' +
                 '<div class="row row-sm mt-15 period">' +
                 '<div class="col-sm-5">' +
@@ -98,6 +99,7 @@ class scheduleTemplateDialog{
 
     changeDayType(elem){
         this.template.freeDayType = elem.value;
+        this.template.freeDayTypeText = elem.options[elem.selectedIndex].text;
     }
 
     sourceAddFailure(){
@@ -106,6 +108,32 @@ class scheduleTemplateDialog{
 
     init(){
 
+    }
+
+    activateFreeDayType(type){
+        let selector = this.root_dialog.querySelector('#freeDayType');
+        selector.value = type;
+    }
+
+    activateDayType(type)
+    {
+        let button_work = this.root_dialog.querySelector('#work_button');
+        let button_free = this.root_dialog.querySelector('#free_button');
+        let work = this.root_dialog.querySelector('#work');
+        let free = this.root_dialog.querySelector('#free');
+
+        button_work.classList.remove('active');
+        button_free.classList.remove('active');
+        work.classList.remove('active');
+        free.classList.remove('active');
+
+        if(type === 'work'){
+            button_work.classList.add('active');
+            work.classList.add('active');
+        } else {
+            button_free.classList.add('active');
+            free.classList.add('active');
+        }
     }
 
     activateTime(id){

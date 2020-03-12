@@ -111,6 +111,10 @@
     line-height: 20px;
     font-weight: 400;
 }
-.fc-timeline th, .fc-timeline td {
-   white-space: unset;
+//.fc-timeline th, .fc-timeline td {
+//   white-space: unset;
+//}
+#schedule_index_page .fc-timeline-event .fc-time {
+    font-weight: bold;
+    display: none;
 }

@@ -1,0 +1,52 @@
+.sc table {
+    width: 100%;
+    box-sizing: border-box;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.resize{
+    cursor: col-resize;
+    width: 3px;
+    background: #eeeeee;
+    border-width: 1px;
+    border-color: #dddddd;
+}
+.sc .res_list{
+    width: 200px;
+}
+.sc .res_header{
+    width: 200px;
+}
+.sc .scroller-clip {
+    overflow: hidden;
+    position: relative;
+}
+.sc .scroller {
+    overflow: scroll hidden;
+    margin: 0px 0px -17px;
+}
+.sc .cell-width{
+    width:140px;
+}
+.sc .cell-height{
+    height:38px;
+}
+
+.sc .ow-auto{
+    overflow: auto!important;
+}
+
+.sc th, .sc td {
+    border-style: solid;
+    border-width: 1px;
+    padding: 0;
+    vertical-align: top;
+    border-color: #ddd;
+}
+.sc .b-none{
+    border-width: 0!important;
+}
+.sc #cell_grid tbody tr:first-child td{
+    border-top: 0px!important;
+}
