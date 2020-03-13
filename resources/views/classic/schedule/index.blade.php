@@ -3,7 +3,7 @@
 @section('title', $page ?? 'Планировщик')
 
 @section('content')
-    <div id="schedule_index_page" class="w-100 box m-15 p-15">
+    <div id="schedule_index_page" class="w-100 box m-15 p-15"  onmouseup="window.schedule.mouseUp()">
 
         {{--<h2 class="mt-0 mb-0 style_header">Расписание сотрудников</h2>--}}
         <div class="d-flex">
@@ -32,12 +32,14 @@
                 </div>
             </div>
         </div>
-            <div class="sc" style="height: calc(100vh - 592px);">
-                <table>
+            <div class="sc" style="height: calc(100vh - 190px);">
+                <table class="b-1">
                     <thead>
                         <tr>
-                            <td class="res_header">Сотрудники</td>
-                            <td class="resize"></td>
+                            <td class="res_header bb-0">
+                                <div class="resource_header header_item">Сотрудники</div>
+                            </td>
+                            <td class="resize bb-0"></td>
                             <td id="entry_dates" class="dates b-none">
                                 <div class="scroller-clip">
                                     <div id="dates_list_scroller" class="scroller">
@@ -53,450 +55,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="res_list">
-                                <div class="scroller-clip">
+                            <td class="res_list b-none">
+                                <div class="scroller-clip ">
                                     <div id="resources_list" class="scroller">
                                         <table id="resources_grid">
-                                            <tbody>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                                <tr><td><div class="cell-height">Сенаторов</div></td></tr>
-                                            </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </td>
-                            <td class="resize"></td>
+                            <td id="entry_resize" class="resize bt-0"></td>
                             <td id="entry_cells" class="dates b-none">
                                 <div class="scroller-clip">
-                                    <div id="cell_grid" class="ow-auto">
-                                        <table>
-                                            <tbody>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                                <tr data-resource-id="1">
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                    <td class="cell-width"><div class="cell-height">1</div></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div id="cell_grid" onmousedown="window.schedule.mouseDown()"  class="ow-auto">
                                     </div>
                                 </div>
                             </td>
@@ -504,10 +74,10 @@
                     </tbody>
                 </table>
             </div>
-        <div style="height: calc(100vh - 392px);">
+        {{--<div style="height: calc(100vh - 392px);">--}}
 
-            <div id="dates"></div>
-        </div>
+            {{--<div id="dates"></div>--}}
+        {{--</div>--}}
 
 
     </div>

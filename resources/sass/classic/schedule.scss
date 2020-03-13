@@ -27,10 +27,10 @@
     margin: 0px 0px -17px;
 }
 .sc .cell-width{
-    width:140px;
+    width:100px;
 }
 .sc .cell-height{
-    height:38px;
+    height:100px;
 }
 
 .sc .ow-auto{
@@ -49,4 +49,53 @@
 }
 .sc #cell_grid tbody tr:first-child td{
     border-top: 0px!important;
+}
+.sc .bb-1{
+    border-bottom-width: 1px!important;
+}
+.sc .b-1{
+    border: 1px solid #ddd;
+}
+.sc .bb-0{
+    border-bottom-width: 0px!important;
+}
+.sc .bt-0{
+    border-top-width: 0px!important;
+}
+#cell_grid tbody tr td:first-child{
+    border-left: 0px!important;
+}
+#dates_list tbody tr th:first-child{
+    border-left: 0px!important;
+}
+#dates_list tbody tr th{
+    border-top-width: 0px!important;
+}
+#resources_grid tr:first-child td{
+    border-top-width: 0px!important;
+}
+#resources_grid td{
+    border-right-width: 0px!important;
+    border-left-width: 0px!important;
+}
+.sc .resource_header{
+    border-bottom: 1px solid #ddd;
+    height: 28px;
+}
+
+.sc .header_item{
+    padding: 2px 8px;
+}
+#entry_dates .scroller-clip{
+    box-shadow: 0px 2px 3px 0px #eee;
+}
+#entry_resize{
+    box-shadow: 3px 0px 3px 0px #eee;
+}
+.sc .cell:hover{
+    background: #eee;
+    cursor: pointer;
+}
+.sc .cell.selected{
+    background: #ffcdb2;
 }

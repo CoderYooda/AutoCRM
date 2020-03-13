@@ -31,8 +31,32 @@ class schedulePage{
             freeDayTypeText: 'Не указано'
         };
         this.templateText = 'Шаблон не выбран';
+        this.cells_pressed = false;
+        this.resource_data_temp = [];
+        this.resource_data = [];
+        // this.resource = {
+        //     resourceId:1,
+        //     dates: [
+        //         {
+        //             date: '2020-03-11',
+        //             dayType: 'work', // free
+        //             periods: [
+        //                 '08:00 - 14:00',
+        //                 '14:00 - 17:00',
+        //             ]
+        //         },
+        //         {
+        //             date: '2020-03-12',
+        //             dayType: 'free',
+        //             dayTypeId: 1,
+        //             dayTypeText: 'Оплачиваемый выходной',
+        //             periods: null
+        //         },
+        //     ]
+        // }
 
 
+        this.loadSchedules();
         this.init();
         this.initRangeSelector();
         this.generateTemplateText();
@@ -43,24 +67,41 @@ class schedulePage{
             failure: this.sourceAddFailure(),
             textColor: 'white'
         };
+        this.initScheduler();
+    }
 
-        let table_height = 300;
+    loadSchedules(){
+        let object = this;
+        window.axios({
+            method: 'get',
+            url: '/schedules/get',
+        }).then(function (resp) {
+            object.resource_data = resp.data;
+            console.log(object.resource_data);
+        });
+    }
+
+    initScheduler(){
+        let table_height = document.querySelector('.sc').clientHeight;
         let dates_list_height = 28;
+        let resources = null;
+        let dates = [];
+        let resources_count = 0;
+        let days = 66;
+        let dates_html = '';
+        let m = 10;
+        let d = new Date(2020, m, 1);
 
         const monthNames = ["янв", "фев", "март", "апр", "май", "июн",
             "июл", "авг", "сен", "окт", "ноя", "дек"
         ];
 
         const weekNames = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
-        let m = 10;
 
-        let d = new Date(2020, m, 1);
-
-        let days = 66;
-        let dates_html = '';
         for (let i = 0; i < days; i++) {
 
             let day = new Date(2020, m, (d.getDate() + i));
+
             let month = null;
             let date = null;
 
@@ -74,33 +115,94 @@ class schedulePage{
             } else {
                 month = day.getMonth() + 1
             }
+            dates.push(day.getFullYear() + '-' + month + '-' + date);
 
-            dates_html += '<th class="date_num cell-width">' + weekNames[day.getDay()] + ", " + date + "." + month + '</th>';
+            dates_html += '<th class="date_num header_item cell-width">' + weekNames[day.getDay()] + ", " + date + "." + month + '</th>';
         }
-
+        dates_html += '<th class="date_num header_item cell-width"></th>';
         document.querySelector('#dates_list').style.height = dates_list_height + 'px';
         document.querySelector('#cell_grid').style.height = (table_height - dates_list_height) + 'px';
         document.querySelector('#resources_list').style.height = (table_height - dates_list_height) + 'px';
-
         document.querySelector('#entry_dates').querySelector('tbody').innerHTML = dates_html;
-
-
         document.querySelector('#cell_grid').onscroll = function() {
-            console.log(1);
-            // if (!isSyncingLeftScroll) {
-            //     isSyncingRightScroll = true;
             document.querySelector('#dates_list_scroller').scrollLeft = this.scrollLeft;
             document.querySelector('#resources_list').scrollTop = this.scrollTop;
-            // }
-            // isSyncingLeftScroll = false;
-        }
+        };
 
-
-        console.log(dates_html);
+        window.axios({
+            method: 'get',
+            url: '/employee/resources',
+        }).then(function (resp) {
+            resources = resp.data;
+            resources_count = resources.length;
+            let resources_html = '<tbody>';
+            resources.forEach(function(item, i, arr) {
+                resources_html += '<tr><td><div data-resource_id="' + item.id + '" class="cell-height">' + item.title + '</div></td></tr>';
+            });
+            resources_html += '</tbody>';
+            document.querySelector('#resources_grid').innerHTML = resources_html;
+            let cell_grid_html = '<table><tbody>';
+            for (let i = 0; i < resources_count; i++) {
+                cell_grid_html += '<tr data-resource-id="' + resources[i].id + '">';
+                    for (let d = 0; d < days; d++) {
+                        cell_grid_html += '<td data-date="' + dates[d] + '" class="cell-width">' +
+                            '<div onmouseenter="window.schedule.cellMouseEnter(this)" onmouseleave="window.schedule.cellMouseEnter(this)" class="cell-height cell">' +
+                            '<div class="cell_buttons_container"><button>1</button></div>' +
+                            '<div class="schedules">' +
+                            '<span>8:00 - 17:00</span>' +
+                            '</div>' +
+                            '</div></td>';
+                    }
+                cell_grid_html += '</tr>';
+            }
+            cell_grid_html += '</tbody></table>';
+            document.querySelector('#cell_grid').innerHTML = cell_grid_html;
+            window.isXHRloading = false;
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 
+    addSchedule(resourceId, date){
 
+        let date_new = {
+            dayType: this.template.type,
+            periods: this.template.periods
+        };
 
+        if(this.resource_data_temp[resourceId] == null){
+            this.resource_data_temp[resourceId] = {}
+            if(this.resource_data_temp[resourceId].dates == null){
+                this.resource_data_temp[resourceId].dates = {}
+            }
+            //     resourceId:resourceId,
+            //     dates[date.split('-').join("")]:1
+            // };
+        }
+
+        this.resource_data_temp[resourceId].resourceId = resourceId;
+        this.resource_data_temp[resourceId].dates[date.split('-').join("")].push(date_new);
+
+        console.log(this.resource_data_temp);
+    }
+
+    mouseDown(){
+        this.cells_pressed = true;
+    }
+    mouseUp(){
+        this.cells_pressed = false;
+        var selected_cells = document.querySelectorAll('.cell.selected');
+        [].forEach.call(selected_cells, function(elem){
+            elem.classList.remove('selected');
+        });
+    }
+    cellMouseEnter(elem){
+        if(this.cells_pressed){
+            elem.classList.add('selected');
+        }
+    }
     generateTemplateText(){
         let object = this;
         if(this.template.type === 'work'){
@@ -152,7 +254,7 @@ class schedulePage{
 
     init(){
         let object = this;
-        object.initCalendar();
+        //object.initCalendar();
         object.setAction(object.action);
         // this.calendar.addResource({
         //     id: '6',
@@ -172,10 +274,11 @@ class schedulePage{
 
     linked(){
         this.sources = [];
-        this.initCalendar();
+        //this.initCalendar();
         this.setAction(this.action);
         this.initRangeSelector();
         this.generateTemplateText();
+        this.initScheduler();
     }
 
     initCalendar(){
