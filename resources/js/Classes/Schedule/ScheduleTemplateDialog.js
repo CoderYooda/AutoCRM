@@ -5,7 +5,7 @@ class scheduleTemplateDialog{
         this.active = true;
         this.root_dialog = dialog;
         this.container = this.root_dialog.querySelector('#periods');
-        this.day_type = true; // Рабочий
+        this.dayType = 'work'; // Рабочий
         this.periods = {};
         //this.day_off_type = this.root_dialog.getElementById('day_off_type');
         this.init();
@@ -14,32 +14,38 @@ class scheduleTemplateDialog{
         this.initPeriods();
         this.activateDayType(this.template.type);
         this.activateFreeDayType(this.template.freeDayType);
+        console.log(1);
     }
 
     applyTemplate()
     {
-        window.schedule.template = this.template;
         let object = this;
         var periods = this.container.getElementsByClassName('period');
-        object.template.periods = [];
+        object.template = [];
         [].forEach.call(periods, function(elem){
             let start = elem.getElementsByClassName('start_period')[0];
             let end = elem.getElementsByClassName('end_period')[0];
-            object.template.periods.push({
+
+            object.template.push({
+                partner_id: null,
+                dayType: object.dayType,
+                dayTypeId: 0,
+                dayTypeText: "Не указано",
+                date: null,
                 start: start.value,
-                end: end.value,
+                end: end.value
             });
         });
-        console.log(this.template);
+        window.schedule.template = this.template;
         this.finitaLaComedia();
         window.schedule.generateTemplateText();
     }
 
     initPeriods(){
         let object = this;
-        if(this.template.periods != null){
-            this.template.periods.forEach(function(item, i, arr) {
-                console.log( i + ": " + item + " (массив:" + arr + ")" );
+        if(this.template != null){
+            object.container.innerHTML = '';
+            this.template.forEach(function(item, i, arr) {
                 object.addPeriod(item.start, item.end);
             });
         }
@@ -92,8 +98,20 @@ class scheduleTemplateDialog{
 
     setDaytype(value){
         this.day_type = value;
-        if(value === 'free' || value === 'work'){
-            this.template.type = value;
+        if(value === 'free'){
+            this.dayType = 'free';
+            this.template = [{
+                partner_id: null,
+                dayType: "free",
+                dayTypeId: 0,
+                dayTypeText: "Не указано",
+                date: null,
+                start: null,
+                end: null
+            }];
+        } else {
+            this.dayType = 'work';
+            this.initPeriods();
         }
     }
 

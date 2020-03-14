@@ -1,61 +1,28 @@
-
-import { Calendar } from '@fullcalendar/core';
-// import dayGridPlugin from '@fullcalendar/daygrid';
-// import timegridPlugin from '@fullcalendar/timegrid';
-// import timelinePlugin from '@fullcalendar/timeline';
-import interactionPlugin from '@fullcalendar/interaction';
-// import listPlugin from '@fullcalendar/list';
-import ruLocale from '@fullcalendar/core/locales/ru';
-
-// import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-
 class schedulePage{
 
     constructor(){
         console.log('страница Планировщика инициализировано');
         this.active = true;
         this.root_id = 'calendar_index_page';
+        this.save_butt = document.querySelector('#save_but');
         this.search = null;
         this.calendar = null;
         this.lastView = null;
         this.sources = [];
         this.action = "edit"; // [ edit , template]
-        this.template = {
-            type: 'work', // [ work , free ]
-            periods: [{
-                start: '08:00',
-                end: '17:00',
-            }],
-            freeDayType: 0,
-            freeDayTypeText: 'Не указано'
-        };
+        this.template = [{
+            partner_id: null,
+            dayType: "work",
+            dayTypeId: 1,
+            dayTypeText: "Больничный",
+            date: null,
+            start: "08:00",
+            end: "17:00"
+        }];
         this.templateText = 'Шаблон не выбран';
         this.cells_pressed = false;
         this.resource_data_temp = [];
         this.resource_data = [];
-        // this.resource = {
-        //     resourceId:1,
-        //     dates: [
-        //         {
-        //             date: '2020-03-11',
-        //             dayType: 'work', // free
-        //             periods: [
-        //                 '08:00 - 14:00',
-        //                 '14:00 - 17:00',
-        //             ]
-        //         },
-        //         {
-        //             date: '2020-03-12',
-        //             dayType: 'free',
-        //             dayTypeId: 1,
-        //             dayTypeText: 'Оплачиваемый выходной',
-        //             periods: null
-        //         },
-        //     ]
-        // }
-
-
         this.loadSchedules();
         this.init();
         this.initRangeSelector();
@@ -76,9 +43,54 @@ class schedulePage{
             method: 'get',
             url: '/schedules/get',
         }).then(function (resp) {
-            object.resource_data = resp.data;
-            console.log(object.resource_data);
+            object.resource_data = resp.data.schedules_date;
+            object.resource_data_temp = JSON.parse(JSON.stringify(object.resource_data));
+            for (var date in object.resource_data) {
+                for (var resource_id in object.resource_data[date]) {
+                    let schedules = object.resource_data[date][resource_id];
+                    schedules.forEach(function(schedule, i, arr) {
+                        object.addSchedule(schedule);
+                    });
+                }
+            }
+            object.canSave();
         });
+    }
+
+    insertDay(elem)
+    {
+        let object = this;
+        elem.innerHTML = '';
+        let id = elem.closest('td').id;
+        let date = id.split('_')[1];
+        let partner_id = id.split('_')[2];
+        for (var period in object.template) {
+            object.template[period].date = date;
+            object.template[period].partner_id = parseInt(partner_id);
+        }
+        this.resource_data_temp[date][partner_id] = object.template;
+        object.template.forEach(function(schedule) {
+            let node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+            elem.appendChild(node);
+        });
+        object.canSave();
+
+        // for (var schedule_index in object.template) {
+        //     console.log(schedule_index);
+        //     let schedule = object.template[schedule_index];
+        //     var node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+        //     elem.appendChild(node);
+        // }
+
+
+        // if(object.template.dayType === 'work'){
+        //     object.template.periods.forEach(function(period, i, arr) {
+        //         var node = window.helper.createElementFromHTML('<span class="perod_date">' + period.start + ' - ' + period.end + '</span>');
+        //         elem.appendChild(node);
+        //     });
+        //
+        // }
+
     }
 
     initScheduler(){
@@ -145,11 +157,10 @@ class schedulePage{
             for (let i = 0; i < resources_count; i++) {
                 cell_grid_html += '<tr data-resource-id="' + resources[i].id + '">';
                     for (let d = 0; d < days; d++) {
-                        cell_grid_html += '<td data-date="' + dates[d] + '" class="cell-width">' +
+                        cell_grid_html += '<td id="cell_' +  dates[d] + '_' + resources[i].id + '" data-date="' + dates[d] + '" class="cell-width">' +
                             '<div onmouseenter="window.schedule.cellMouseEnter(this)" onmouseleave="window.schedule.cellMouseEnter(this)" class="cell-height cell">' +
                             '<div class="cell_buttons_container"><button>1</button></div>' +
-                            '<div class="schedules">' +
-                            '<span>8:00 - 17:00</span>' +
+                            '<div class="schedules" onclick="window.schedule.insertDay(this)">' +
                             '</div>' +
                             '</div></td>';
                     }
@@ -165,27 +176,25 @@ class schedulePage{
         });
     }
 
-    addSchedule(resourceId, date){
-
-        let date_new = {
-            dayType: this.template.type,
-            periods: this.template.periods
-        };
-
-        if(this.resource_data_temp[resourceId] == null){
-            this.resource_data_temp[resourceId] = {}
-            if(this.resource_data_temp[resourceId].dates == null){
-                this.resource_data_temp[resourceId].dates = {}
-            }
-            //     resourceId:resourceId,
-            //     dates[date.split('-').join("")]:1
-            // };
+    addSchedule(data){
+        let cell = document.querySelector('#cell_' + data.date + '_' + data.partner_id);
+        if(cell){
+            //console.log(cell);
+            var node = window.helper.createElementFromHTML('<span class="perod_date">' + data.start + ' - ' + data.end + '</span>');
+            cell.querySelector('.schedules').appendChild(node);
         }
-
-        this.resource_data_temp[resourceId].resourceId = resourceId;
-        this.resource_data_temp[resourceId].dates[date.split('-').join("")].push(date_new);
-
-        console.log(this.resource_data_temp);
+        // let date_new = {
+        //     dayType: this.template.type,
+        //     periods: this.template.periods
+        // };
+        // if(this.resource_data_temp[resourceId] == null){
+        //     this.resource_data_temp[resourceId] = {}
+        //     if(this.resource_data_temp[resourceId].dates == null){
+        //         this.resource_data_temp[resourceId].dates = {}
+        //     }
+        // }
+        // this.resource_data_temp[resourceId].resourceId = resourceId;
+        // this.resource_data_temp[resourceId].dates[date.split('-').join("")].push(date_new);
     }
 
     mouseDown(){
@@ -193,11 +202,24 @@ class schedulePage{
     }
     mouseUp(){
         this.cells_pressed = false;
+        let object = this;
         var selected_cells = document.querySelectorAll('.cell.selected');
         [].forEach.call(selected_cells, function(elem){
+            object.insertDay(elem.querySelector('.schedules'));
             elem.classList.remove('selected');
         });
     }
+
+    canSave(){
+        // if(this.resource_data_temp !== this.resource_data){
+        //     this.save_butt.classList.remove('hide');
+        //     return true;
+        // } else {
+        //     this.save_butt.classList.add('hide');
+        //     return false;
+        // }
+    }
+
     cellMouseEnter(elem){
         if(this.cells_pressed){
             elem.classList.add('selected');
@@ -279,133 +301,6 @@ class schedulePage{
         this.initRangeSelector();
         this.generateTemplateText();
         this.initScheduler();
-    }
-
-    initCalendar(){
-        let object = this;
-        var calendarEl = document.getElementById('dates');
-
-        this.calendar = new Calendar(calendarEl, {
-            plugins: [ interactionPlugin, resourceTimelinePlugin ],
-            locale: ruLocale,
-            resourceLabelText: 'Сотрудники',
-            resourceAreaWidth: '260px',
-            // resourceColumns: [
-            //     {
-            //         labelText: 'ID',
-            //         width: "20%",
-            //         field: 'id'
-            //     },
-            //     {
-            //         labelText: 'ФИО',
-            //         field: 'title'
-            //     }
-            // ],
-            // views: {
-            //     resourceTimelineMonth: {
-            //         type: 'resourceTimeline',
-            //         buttonText: 'Месяц',
-            //         duration: { month: 1 },
-            //         slotLabelFormat: [
-            //             { weekday: 'short', day:'numeric' } // lower level of text
-            //         ],
-            //     },
-            //     resourceTimelineSday: {
-            //         type: 'resourceTimeline',
-            //         buttonText: 'Неделя',
-            //         duration: { weeks: 1 },
-            //         slotDuration: {days: 1},
-            //         slotLabelFormat: [
-            //             { weekday: 'short', day:'numeric' } // lower level of text
-            //         ],
-            //     }
-            // },
-            schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-            defaultView: 'resourceTimeline',
-            slotWidth: 110,
-            slotDuration: {days: 1},
-            duration: { days: 44 },
-            selectable: true,
-            defaultDate:'2020-03-03',
-            slotLabelFormat: [
-                { weekday: 'short', day:'numeric', month:'numeric' } // lower level of text
-            ],
-            resources: {
-                url: '/employee/resources',
-                method: 'get',
-                width:140,
-            },
-            events: [
-                {
-                    resourceId: 6, title: "event 1", start: "2020-03-11", end: "2020-03-13", allDay: true
-                }
-                // more events ...
-            ],
-            dayRender: function(cell) {
-                cell.innerHtml = '<div><button>2</button></div>'
-            },
-            dateClick: function(info) {
-                console.log(info);
-                // change the day's background color just for fun
-                //info.dayEl.style.backgroundColor = 'red';
-
-                let events = object.calendar.getEvents();
-                console.log(events);
-                let to_delete = [];
-                events.forEach(function(item, i, arr) {
-                    console.log(item.source);
-                    if(item.source){
-                        to_delete.push(item);
-                    }
-                });
-
-                if(object.template.type === 'work'){
-                    object.template.periods.forEach(function(item, i, arr) {
-                        object.calendar.addEvent({
-                            resourceId: info.resource.id,
-                            title: item.start + '-' + item.end,
-                            start: info.dateStr + 'T' + item.start + ':00',
-                            end: info.dateStr + 'T' + item.end + ':00',
-                            allDay: false
-                        });
-                        // console.log( i + ": " + item + " (массив:" + arr + ")" );
-                        // object.addPeriod(item.start, item.end);
-                    });
-                } else {
-                    object.calendar.addEvent({
-                        resourceId: info.resource.id,
-                        title: object.templateText,
-                        start: info.dateStr + 'T00:00:00',
-                        end: info.dateStr + 'T00:00:00',
-                        allDay: true
-                    });
-                }
-
-
-
-
-
-            },
-            select: function(info) {
-                console.warn(info);
-                console.log('selected ' + info.startStr + ' to ' + info.endStr);
-            },
-            header: false,
-            height: "parent",
-            eventClick: function(info) {
-
-                info.event.remove();
-                // try {
-                //     openDialog(info.event.extendedProps.modal, '&' + info.event.extendedProps.alias + '=' + info.event.extendedProps.id);
-                // } catch (e) {
-                //     console.warn('Ошибка открытия окна');
-                // }
-                // info.el.style.borderColor = 'red';
-            },
-
-        });
-
-        this.calendar.render();
     }
 
     toggleSource(elem){

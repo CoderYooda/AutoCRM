@@ -31,6 +31,12 @@
                     <a id="template_text" onclick="openDialog('scheduletemplateDialog')" class="pointer h-32-text">Шаблон</a>
                 </div>
             </div>
+            <div id="save_butt" class="form-group hide" style="margin-left: auto;">
+                <label></label>
+                <div>
+                    <button class="button success">Сохранить</button>
+                </div>
+            </div>
         </div>
             <div class="sc" style="height: calc(100vh - 190px);">
                 <table class="b-1">

@@ -39,7 +39,7 @@ class ScheduleController extends Controller
         $schedules_data = [];
 
         foreach($schedules as $schedule){
-            $schedules_data[$schedule->partner_id][] = $schedule;
+            $schedules_data[$schedule->date][$schedule->partner_id][] = $schedule;
         }
 
 
@@ -51,7 +51,8 @@ class ScheduleController extends Controller
 
 
         return response()->json([
-            'schedules' => $schedules
+            'schedules' => $schedules,
+            'schedules_date' => $schedules_data
         ]);
     }
 }
