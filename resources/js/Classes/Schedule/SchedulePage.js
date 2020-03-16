@@ -119,28 +119,42 @@ class schedulePage{
             }
             this.resource_data_temp[date][partner_id] = object.template;
 
-            if(object.template[0].dayType === 'work'){
-                elem.closest('td').classList.remove('free_day');
-                elem.closest('td').classList.add('work_day');
-            } else {
-                elem.closest('td').classList.remove('work_day');
-                elem.closest('td').classList.add('free_day');
-            }
-
             if(day === null){
-
-                if(object.template[0].dayType === 'free') {
-                    console.log(123);
+                if(object.template[0].dayType === 'work'){
+                    elem.closest('td').classList.remove('free_day');
+                    elem.closest('td').classList.add('work_day');
                 } else {
-                    object.template.forEach(function (schedule) {
-                        let node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
-                        elem.appendChild(node);
-                    });
+                    elem.closest('td').classList.remove('work_day');
+                    elem.closest('td').classList.add('free_day');
                 }
 
+                object.template.forEach(function (schedule) {
+                    let node = null;
+                    if(object.template[0].dayType === 'free') {
+                        node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.dayTypeText + '</span>');
+                    } else {
+                        node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+                    }
+                    elem.appendChild(node);
+                });
+
+
             } else {
+                if(day[0].dayType === 'work'){
+                    elem.closest('td').classList.remove('free_day');
+                    elem.closest('td').classList.add('work_day');
+                } else {
+                    elem.closest('td').classList.remove('work_day');
+                    elem.closest('td').classList.add('free_day');
+                }
+
                 day.forEach(function(schedule) {
-                    let node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+                    let node = null;
+                    if(day[0].dayType === 'work') {
+                        node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+                    } else {
+                        node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.dayTypeText + '</span>');
+                    }
                     elem.appendChild(node);
                 });
             }
@@ -233,7 +247,7 @@ class schedulePage{
         let date = id.split('_')[1];
         let partner_id = id.split('_')[2];
         let day = null;
-        if(this.resource_data[date] !== null){
+        if(this.resource_data[date] && this.resource_data[date][partner_id]){
             day = this.resource_data[date][partner_id];
         }
 

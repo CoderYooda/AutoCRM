@@ -5,12 +5,12 @@ class scheduleTemplateDialog{
         this.active = true;
         this.root_dialog = dialog;
         this.container = this.root_dialog.querySelector('#periods');
-        this.dayType = 'work'; // Рабочий
         this.periods = {};
         //this.day_off_type = this.root_dialog.getElementById('day_off_type');
         this.init();
         //this.activateTime(0);
         this.template = window.schedule.template;
+        this.dayType = this.template[0].dayType; // Рабочий
         this.initPeriods();
         this.activateDayType(this.template[0].dayType);
         this.activateFreeDayType(this.template[0].dayTypeId);
