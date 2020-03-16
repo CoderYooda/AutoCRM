@@ -5,10 +5,11 @@ let template = 'classic';
 
 mix.js('resources/js/app.js', 'public/js');
 mix.sass('resources/sass/' + template + '/app.scss', 'public/css').options({ processCssUrls: false });
+mix.sass('resources/sass/' + template + '/fonts.scss', 'public/css');
 mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ processCssUrls: false });
     //.sass('resources/sass/template.scss', 'public/css');
 
-// mix.copyDirectory('resources/fonts', 'public/fonts')
+mix.copyDirectory('resources/fonts', 'public/fonts');
 //mix.copyDirectory('resources/images', 'public/images');
 
 if( !mix.inProduction() ) {

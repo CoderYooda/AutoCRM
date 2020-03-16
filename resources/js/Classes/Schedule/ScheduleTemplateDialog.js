@@ -12,30 +12,48 @@ class scheduleTemplateDialog{
         //this.activateTime(0);
         this.template = window.schedule.template;
         this.initPeriods();
-        this.activateDayType(this.template.type);
-        this.activateFreeDayType(this.template.freeDayType);
-        console.log(1);
+        this.activateDayType(this.template[0].dayType);
+        this.activateFreeDayType(this.template[0].dayTypeId);
+    }
+
+    init(){
+
     }
 
     applyTemplate()
     {
         let object = this;
-        var periods = this.container.getElementsByClassName('period');
-        object.template = [];
-        [].forEach.call(periods, function(elem){
-            let start = elem.getElementsByClassName('start_period')[0];
-            let end = elem.getElementsByClassName('end_period')[0];
 
-            object.template.push({
+        if(this.dayType === 'work'){
+
+            let periods = this.container.getElementsByClassName('period');
+            object.template = [];
+            [].forEach.call(periods, function(elem){
+                let start = elem.getElementsByClassName('start_period')[0];
+                let end = elem.getElementsByClassName('end_period')[0];
+
+                object.template.push({
+                    partner_id: null,
+                    dayType: object.dayType,
+                    dayTypeId: 0,
+                    dayTypeText: "Не указано",
+                    date: null,
+                    start: start.value,
+                    end: end.value
+                });
+            });
+        } else {
+            let selector = object.root_dialog.querySelector('#freeDayType');
+            object.template = [{
                 partner_id: null,
                 dayType: object.dayType,
-                dayTypeId: 0,
-                dayTypeText: "Не указано",
+                dayTypeId: selector.value,
+                dayTypeText: selector.options[selector.selectedIndex].text,
                 date: null,
-                start: start.value,
-                end: end.value
-            });
-        });
+                start: null,
+                end: null
+            }];
+        }
         window.schedule.template = this.template;
         this.finitaLaComedia();
         window.schedule.generateTemplateText();
@@ -100,15 +118,6 @@ class scheduleTemplateDialog{
         this.day_type = value;
         if(value === 'free'){
             this.dayType = 'free';
-            this.template = [{
-                partner_id: null,
-                dayType: "free",
-                dayTypeId: 0,
-                dayTypeText: "Не указано",
-                date: null,
-                start: null,
-                end: null
-            }];
         } else {
             this.dayType = 'work';
             this.initPeriods();
@@ -116,16 +125,13 @@ class scheduleTemplateDialog{
     }
 
     changeDayType(elem){
-        this.template.freeDayType = elem.value;
-        this.template.freeDayTypeText = elem.options[elem.selectedIndex].text;
+
+        this.template[0].dayTypeId = elem.value;
+        this.template[0].dayTypeText = elem.options[elem.selectedIndex].text;
     }
 
     sourceAddFailure(){
         //console.log('there was an error while fetching events!');
-    }
-
-    init(){
-
     }
 
     activateFreeDayType(type){

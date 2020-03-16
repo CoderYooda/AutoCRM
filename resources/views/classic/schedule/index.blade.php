@@ -3,8 +3,7 @@
 @section('title', $page ?? 'Планировщик')
 
 @section('content')
-    <div id="schedule_index_page" class="w-100 box m-15 p-15"  onmouseup="window.schedule.mouseUp()">
-
+    <div id="schedule_index_page" class="w-100 box m-15 p-15">
         {{--<h2 class="mt-0 mb-0 style_header">Расписание сотрудников</h2>--}}
         <div class="d-flex">
             <div class="form-group w-128 mr-15">
@@ -25,7 +24,7 @@
                     <button id="action_template" type="button" onclick="window.schedule.setAction('template')" class="button primary brl-0 action_button">Установить по шаблону</button>
                 </div>
             </div>
-            <div class="form-group mr-15">
+            <div id="template_container" class="form-group mr-15">
                 <label>Шаблон</label>
                 <div>
                     <a id="template_text" onclick="openDialog('scheduletemplateDialog')" class="pointer h-32-text">Шаблон</a>
@@ -39,7 +38,7 @@
             </div>
         </div>
             <div class="sc" style="height: calc(100vh - 190px);">
-                <table class="b-1">
+                <table class="b-1 schedules_selector">
                     <thead>
                         <tr>
                             <td class="res_header bb-0">
@@ -71,8 +70,8 @@
                             </td>
                             <td id="entry_resize" class="resize bt-0"></td>
                             <td id="entry_cells" class="dates b-none">
-                                <div class="scroller-clip">
-                                    <div id="cell_grid" onmousedown="window.schedule.mouseDown()"  class="ow-auto">
+                                <div id="scroll_cell_grid" class="scroller-clip">
+                                    <div id="cell_grid" class="ow-auto">
                                     </div>
                                 </div>
                             </td>

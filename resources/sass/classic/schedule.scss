@@ -85,6 +85,7 @@
 
 .sc .header_item{
     padding: 2px 8px;
+    text-align: center;
 }
 #entry_dates .scroller-clip{
     box-shadow: 0px 2px 3px 0px #eee;
@@ -92,12 +93,56 @@
 #entry_resize{
     box-shadow: 3px 0px 3px 0px #eee;
 }
-.sc .cell:hover{
-    background: #eee;
-    cursor: pointer;
+
+.sc .cell{
+    transition: all 0.3s;
+    margin: 2px;
+    height: 96px;
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid transparent;
 }
-.sc .cell.selected{
-    background: #ffcdb2;
+
+.sc .cell.selected:after {
+    content: "";
+    top: 0;
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 1999;
+    background: rgba(238, 238, 238, 0.5);
+    border-radius: 3px;
+    box-shadow: 0px 0px 4px 0px #eee;
+}
+
+.sc .cell:not(.selected):hover{
+    border: 1px solid #2d76a8;
+}
+
+.sc .btn-icon{
+    font-size: 14px;
+    line-height: 20px;
+    border: 1px solid #2d76a8;
+    color: #2d76a8;
+    background: #fff;
+    border-left: 0px;
+    border-top: 0px;
+    padding: 2px;
+    width: 24px;
+    height: 24px;
+}
+.sc .btn-icon:hover{
+    color: #fff;
+    background: #2d76a8;
+}
+
+.sc .cell_buttons_container{
+    transition: all 0.3s;
+    opacity: 0;
+    position: absolute;
+    z-index: 2000;
+    width: 100%;
 }
 .sc .perod_date{
     display: block;
@@ -108,5 +153,25 @@
 }
 .sc .schedules{
     display: block;
-    height: calc(100% - 23px);
+    height: 100%;
+    padding-top: 28px;
+}
+.cell:not(.selected):hover .cell_buttons_container{
+    transition-delay: 0.3s;
+    opacity: 1;
+}
+#square_select {
+    border: 1px dotted #000;
+    position: absolute;
+}
+.selection {
+    background: rgba(46, 115, 252, 0.11);
+    border-radius: 0.1em;
+    border: 2px solid rgba(98, 155, 255, 0.81);
+}
+.work_day .cell{
+    background: rgba(0, 128, 0, 0.2);
+}
+.free_day .cell{
+    background: rgba(255, 0, 0, 0.2);
 }

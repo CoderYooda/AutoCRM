@@ -1,10 +1,16 @@
+
+
+import Selection from '@simonwep/selection-js';
+
+
 class schedulePage{
 
     constructor(){
         console.log('страница Планировщика инициализировано');
         this.active = true;
         this.root_id = 'calendar_index_page';
-        this.save_butt = document.querySelector('#save_but');
+        this.save_butt = document.getElementById('save_butt');
+        this.template_container = document.getElementById('template_container');
         this.search = null;
         this.calendar = null;
         this.lastView = null;
@@ -19,6 +25,8 @@ class schedulePage{
             start: "08:00",
             end: "17:00"
         }];
+        this.selection = null;
+        this.square_select = document.getElementById('square_select'), this.x1 = 0, this.y1 = 0, this.x2 = 0, this.y2 = 0;
         this.templateText = 'Шаблон не выбран';
         this.cells_pressed = false;
         this.resource_data_temp = [];
@@ -27,14 +35,47 @@ class schedulePage{
         this.init();
         this.initRangeSelector();
         this.generateTemplateText();
-
-        this.incomingWarrantSource = {
-            url: '/employee/schedule',
-            method: 'get',
-            failure: this.sourceAddFailure(),
-            textColor: 'white'
-        };
         this.initScheduler();
+    }
+
+    init(){
+        let object = this;
+        this.selection = Selection.create({
+            class: 'selection',
+            selectables: ['#scroll_cell_grid .cell'],
+            boundaries: ['#scroll_cell_grid'],
+            singleClick: false,
+            scrollSpeedDivider: 10,
+            manualScrollSpeed: 750
+        }).on('start', ({inst, selected, oe}) => {
+            if (!oe.ctrlKey && !oe.metaKey) {
+                for (const el of selected) {
+                    el.classList.remove('selected');
+                    inst.removeFromSelection(el);
+                }
+                inst.clearSelection();
+            }
+        }).on('move', ({changed: {removed, added}}) => {
+            for (const el of added) {
+                el.classList.add('selected');
+            }
+            for (const el of removed) {
+                el.classList.remove('selected');
+            }
+        }).on('stop', ({inst}) => {
+            inst.keepSelection();
+            this.markSelected();
+        });
+        object.setAction(object.action);
+    }
+
+    markSelected(){
+        let object = this;
+        var selected_cells = document.querySelectorAll('.cell.selected');
+        [].forEach.call(selected_cells, function(elem){
+            object.insertDay(elem.querySelector('.schedules'));
+            elem.classList.remove('selected');
+        });
     }
 
     loadSchedules(){
@@ -44,7 +85,9 @@ class schedulePage{
             url: '/schedules/get',
         }).then(function (resp) {
             object.resource_data = resp.data.schedules_date;
+
             object.resource_data_temp = JSON.parse(JSON.stringify(object.resource_data));
+
             for (var date in object.resource_data) {
                 for (var resource_id in object.resource_data[date]) {
                     let schedules = object.resource_data[date][resource_id];
@@ -57,40 +100,52 @@ class schedulePage{
         });
     }
 
-    insertDay(elem)
-    {
+    wasEdited(){
+        return JSON.stringify(this.resource_data) !== JSON.stringify(this.resource_data_temp)
+    }
+
+    insertDay(elem, day = null) {
         let object = this;
-        elem.innerHTML = '';
-        let id = elem.closest('td').id;
-        let date = id.split('_')[1];
-        let partner_id = id.split('_')[2];
-        for (var period in object.template) {
-            object.template[period].date = date;
-            object.template[period].partner_id = parseInt(partner_id);
+
+        if(this.action === 'edit'){
+            console.log('EditDay');
+        } else {
+            elem.innerHTML = '';
+            let id = elem.closest('td').id;
+            let date = id.split('_')[1];
+            let partner_id = id.split('_')[2];
+            if(this.resource_data_temp[date] == null){
+                this.resource_data_temp[date] = [];
+            }
+            this.resource_data_temp[date][partner_id] = object.template;
+
+            if(object.template[0].dayType === 'work'){
+                elem.closest('td').classList.remove('free_day');
+                elem.closest('td').classList.add('work_day');
+            } else {
+                elem.closest('td').classList.remove('work_day');
+                elem.closest('td').classList.add('free_day');
+            }
+
+            if(day === null){
+
+                if(object.template[0].dayType === 'free') {
+                    console.log(123);
+                } else {
+                    object.template.forEach(function (schedule) {
+                        let node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+                        elem.appendChild(node);
+                    });
+                }
+
+            } else {
+                day.forEach(function(schedule) {
+                    let node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
+                    elem.appendChild(node);
+                });
+            }
+            object.canSave();
         }
-        this.resource_data_temp[date][partner_id] = object.template;
-        object.template.forEach(function(schedule) {
-            let node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
-            elem.appendChild(node);
-        });
-        object.canSave();
-
-        // for (var schedule_index in object.template) {
-        //     console.log(schedule_index);
-        //     let schedule = object.template[schedule_index];
-        //     var node = window.helper.createElementFromHTML('<span class="perod_date">' + schedule.start + ' - ' + schedule.end + '</span>');
-        //     elem.appendChild(node);
-        // }
-
-
-        // if(object.template.dayType === 'work'){
-        //     object.template.periods.forEach(function(period, i, arr) {
-        //         var node = window.helper.createElementFromHTML('<span class="perod_date">' + period.start + ' - ' + period.end + '</span>');
-        //         elem.appendChild(node);
-        //     });
-        //
-        // }
-
     }
 
     initScheduler(){
@@ -99,24 +154,18 @@ class schedulePage{
         let resources = null;
         let dates = [];
         let resources_count = 0;
-        let days = 66;
+        let days = 28;
         let dates_html = '';
         let m = 10;
         let d = new Date(2020, m, 1);
-
         const monthNames = ["янв", "фев", "март", "апр", "май", "июн",
             "июл", "авг", "сен", "окт", "ноя", "дек"
         ];
-
         const weekNames = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
-
         for (let i = 0; i < days; i++) {
-
             let day = new Date(2020, m, (d.getDate() + i));
-
             let month = null;
             let date = null;
-
             if(day.getDate().toString().length === 1){
                 date = '0' + (day.getDate());
             } else {
@@ -153,13 +202,16 @@ class schedulePage{
             });
             resources_html += '</tbody>';
             document.querySelector('#resources_grid').innerHTML = resources_html;
-            let cell_grid_html = '<table><tbody>';
+            let cell_grid_html = '<table><tbody class="sel_cont">';
             for (let i = 0; i < resources_count; i++) {
                 cell_grid_html += '<tr data-resource-id="' + resources[i].id + '">';
                     for (let d = 0; d < days; d++) {
-                        cell_grid_html += '<td id="cell_' +  dates[d] + '_' + resources[i].id + '" data-date="' + dates[d] + '" class="cell-width">' +
-                            '<div onmouseenter="window.schedule.cellMouseEnter(this)" onmouseleave="window.schedule.cellMouseEnter(this)" class="cell-height cell">' +
-                            '<div class="cell_buttons_container"><button>1</button></div>' +
+                        cell_grid_html += '<td id="cell_' +  dates[d] + '_' + resources[i].id + '" data-date="' + dates[d] + '" class="cell-width cell_selector">' +
+                            '<div class="cell-height cell">' +
+                            '<div class="cell_buttons_container">' +
+                            '<button class="btn-icon" onclick="window.schedule.restoreDay(this)"><i class="fa fa-undo"></i></button>' +
+                            '<button class="btn-icon" onclick="window.schedule.clearDay(this)"><i class="fa fa-trash"></i></button>' +
+                            '</div>' +
                             '<div class="schedules" onclick="window.schedule.insertDay(this)">' +
                             '</div>' +
                             '</div></td>';
@@ -176,10 +228,46 @@ class schedulePage{
         });
     }
 
+    restoreDay(elem){
+        let id = elem.closest('td').id;
+        let date = id.split('_')[1];
+        let partner_id = id.split('_')[2];
+        let day = null;
+        if(this.resource_data[date] !== null){
+            day = this.resource_data[date][partner_id];
+        }
+
+        if(day){
+            this.insertDay(elem.closest('.cell').querySelector('.schedules'), day);
+        } else {
+            this.clearDay(elem);
+        }
+
+    }
+
+    clearDay(elem){
+        let td = elem.closest('td');
+        let id = td.id;
+        let date = id.split('_')[1];
+        let partner_id = id.split('_')[2];
+
+        if(this.resource_data_temp[date] !== null){
+            this.resource_data_temp[date][partner_id] = null;
+            td.classList.remove('free_day');
+            td.classList.remove('work_day');
+            td.querySelector('.schedules').innerHTML = '';
+        }
+    }
+
     addSchedule(data){
         let cell = document.querySelector('#cell_' + data.date + '_' + data.partner_id);
         if(cell){
-            //console.log(cell);
+            if(data.dayType === 'work'){
+                cell.classList.add('work_day');
+            }
+            if(data.dayType === 'free'){
+                cell.classList.add('free_day');
+            }
             var node = window.helper.createElementFromHTML('<span class="perod_date">' + data.start + ' - ' + data.end + '</span>');
             cell.querySelector('.schedules').appendChild(node);
         }
@@ -197,46 +285,28 @@ class schedulePage{
         // this.resource_data_temp[resourceId].dates[date.split('-').join("")].push(date_new);
     }
 
-    mouseDown(){
-        this.cells_pressed = true;
-    }
-    mouseUp(){
-        this.cells_pressed = false;
-        let object = this;
-        var selected_cells = document.querySelectorAll('.cell.selected');
-        [].forEach.call(selected_cells, function(elem){
-            object.insertDay(elem.querySelector('.schedules'));
-            elem.classList.remove('selected');
-        });
-    }
-
     canSave(){
-        // if(this.resource_data_temp !== this.resource_data){
-        //     this.save_butt.classList.remove('hide');
-        //     return true;
-        // } else {
-        //     this.save_butt.classList.add('hide');
-        //     return false;
-        // }
-    }
-
-    cellMouseEnter(elem){
-        if(this.cells_pressed){
-            elem.classList.add('selected');
+        if(this.wasEdited()){
+            this.save_butt.classList.remove('hide');
+            return true;
+        } else {
+            this.save_butt.classList.add('hide');
+            return false;
         }
     }
+
     generateTemplateText(){
         let object = this;
-        if(this.template.type === 'work'){
+        if(this.template[0].dayType === 'work'){
             this.templateText = 'Рабочий день ';
-            this.template.periods.forEach(function(item, i, arr) {
+            this.template.forEach(function(item, i, arr) {
                 object.templateText += 'c ';
                 object.templateText += item.start + ' до ' + item.end;
             });
 
         } else {
             this.templateText = 'Не рабочий день ';
-            this.templateText += '(' + this.template.freeDayTypeText + ')';
+            this.templateText += '(' + this.template[0].dayTypeText + ')';
         }
         let template_text = document.querySelector('#template_text');
         template_text.innerText = this.templateText;
@@ -274,15 +344,7 @@ class schedulePage{
         //console.log('there was an error while fetching events!');
     }
 
-    init(){
-        let object = this;
-        //object.initCalendar();
-        object.setAction(object.action);
-        // this.calendar.addResource({
-        //     id: '6',
-        //     title: 'Room E'
-        // });
-    }
+
 
     setAction(type){
         this.action = type;
@@ -292,6 +354,14 @@ class schedulePage{
             elem.classList.remove('active');
         });
         button.classList.add('active');
+
+        if(this.action === 'edit'){
+            this.selection.disable();
+            this.template_container.classList.add('hide');
+        } else {
+            this.selection.enable();
+            this.template_container.classList.remove('hide');
+        }
     }
 
     linked(){
@@ -301,6 +371,7 @@ class schedulePage{
         this.initRangeSelector();
         this.generateTemplateText();
         this.initScheduler();
+        this.loadSchedules();
     }
 
     toggleSource(elem){

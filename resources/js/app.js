@@ -11,6 +11,7 @@ window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
 window.chartjs = require('chart.js');
 window.simplebar = require('simplebar/dist/simplebar.min');
+//window.selection = require('@simonwep/selection-js');
 
 
 import tippy from 'tippy.js';
