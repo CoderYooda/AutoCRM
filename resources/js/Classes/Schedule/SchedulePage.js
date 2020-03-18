@@ -59,8 +59,8 @@ class schedulePage{
         let object = this;
         this.selection = Selection.create({
             class: 'selection',
-            selectables: ['#scroll_cell_grid .cell'],
-            boundaries: ['#scroll_cell_grid'],
+            selectables: ['#cell_grid .cell'],
+            boundaries: ['#cell_grid'],
             singleClick: false,
             scrollSpeedDivider: 10,
             manualScrollSpeed: 750
@@ -84,6 +84,7 @@ class schedulePage{
             this.markSelected();
         });
         object.setAction(object.action);
+        this.initRangeSelector();
     }
 
     addMonths(date, months) {
@@ -469,10 +470,8 @@ class schedulePage{
     {
         this.sources = [];
         this.setAction(this.action);
-        this.initRangeSelector();
         this.generateTemplateText();
         this.initScheduler();
-        this.loadSchedules();
     }
 
     toggleSource(elem)
