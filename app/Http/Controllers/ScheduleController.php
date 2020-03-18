@@ -8,6 +8,7 @@ use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class ScheduleController extends Controller
@@ -43,46 +44,45 @@ class ScheduleController extends Controller
         foreach($schedules as $schedule){
             $schedules_data[$schedule->date][$schedule->partner_id][] = $schedule;
         }
-        $resources = Partner::owned()->where('category_id', 5)->get();
-        $data = [];
-        foreach($resources as $resource){
-            //$data[$resource->id] =
-        }
+//        $resources = Partner::owned()->where('category_id', 5)->get();
+//        $data = [];
+//        foreach($resources as $resource){
+//            //$data[$resource->id] =
+//        }
 
 
         return response()->json([
-            'schedules' => $schedules,
             'schedules_date' => $schedules_data
         ]);
     }
 
     public function store(Request $request){
 
-        $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
-        $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
 
-        $dates = $request->data;
-
-        $sch = Schedule::whereBetween('date', [$start_date, $end_date])->whereIn('partner_id', $request->resources)->delete();
-
-        foreach($dates as $date_str => $date){
-            foreach($date as $resuorce_str => $resource){
-                if($resource != null){
-                    foreach($resource as $schedule){
-                        Schedule::create([
-                            'company_id' => Auth::user()->company->id,
-                            'partner_id' => $schedule['partner_id'],
-                            'dayType' => $schedule['dayType'],
-                            'dayTypeId' => $schedule['dayTypeId'],
-                            'dayTypeText' => $schedule['dayTypeText'],
-                            'date' => $date_str,
-                            'start' => $schedule['start'],
-                            'end' => $schedule['end']
-                        ]);
+        DB::transaction(function() use ($request) {
+            $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+            $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
+            $dates = $request->data;
+            Schedule::whereBetween('date', [$start_date, $end_date])->whereIn('partner_id', $request->resources)->delete();
+            foreach ($dates as $date_str => $date) {
+                foreach ($date as $resuorce_str => $resource) {
+                    if ($resource != null) {
+                        foreach ($resource as $schedule) {
+                            Schedule::create([
+                                'company_id' => Auth::user()->company->id,
+                                'partner_id' => $schedule['partner_id'],
+                                'dayType' => $schedule['dayType'],
+                                'dayTypeId' => $schedule['dayTypeId'],
+                                'dayTypeText' => $schedule['dayTypeText'],
+                                'date' => $date_str,
+                                'start' => $schedule['start'],
+                                'end' => $schedule['end']
+                            ]);
+                        }
                     }
                 }
             }
-        }
+        });
         return response()->json([
             'status' => 'success',
             'message' => 'Планировщик обновлён'

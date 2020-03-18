@@ -16,6 +16,7 @@ class schedulePage{
         this.start_date = new Date();
         this.end_date =  this.addMonths(new Date(), 2);
         this.resources_id = [];
+        this.resources = null;
         this.search = null;
         this.calendar = null;
         this.lastView = null;
@@ -30,28 +31,30 @@ class schedulePage{
             start: "08:00",
             end: "17:00"
         }];
+        this.bisy = false;
         this.selection = null;
         this.square_select = document.getElementById('square_select'), this.x1 = 0, this.y1 = 0, this.x2 = 0, this.y2 = 0;
         this.templateText = 'Шаблон не выбран';
         this.cells_pressed = false;
         this.resource_data_temp = {};
         this.resource_data = {};
+
+        this.start_date_flatpkr = null;
+        this.end_date_flatpkr = null;
+        this.start_date_mask = null;
+        this.end_date_mask = null;
+
+
         this.init();
-        this.initRangeSelector();
         this.generateTemplateText();
         this.initScheduler();
     }
 
     resetDate(){
-
-        let sd = this.start_date_input.value.split(".");
+        let sd = document.querySelector('.date_picker_start').value.split(".");
         this.start_date = new Date(sd[2],(sd[1]-1),sd[0]);
-
-        let ed = this.end_date_input.value.split(".");
+        let ed = document.querySelector('.date_picker_end').value.split(".");
         this.end_date = new Date(ed[2],(ed[1]-1),ed[0]);
-
-
-
         this.initScheduler();
     }
 
@@ -126,32 +129,47 @@ class schedulePage{
 
     storeSchedules(){
         let object = this;
-        window.axios({
-            method: 'post',
-            url: '/schedules/store',
-            data: {
-                resources: object.resources_id,
-                start_date: object.start_date,
-                end_date: object.end_date,
-                data:object.resource_data_temp
-            }
-        }).then(function (resp) {
-            if(resp.data.status === 'success'){
-                object.initScheduler();
-            }
-        });
+        dd(object.resource_data_temp);
+        if(!object.bisy){
+            object.bisy = true;
+            window.axios({
+                method: 'post',
+                url: '/schedules/store',
+                data: {
+                    resources: object.resources_id,
+                    start_date: object.start_date,
+                    end_date: object.end_date,
+                    data:object.resource_data_temp
+                }
+            }).then(function (resp) {
+                if(resp.data.status === 'success'){
+                    object.initScheduler();
+                    let start_date = document.querySelector('.date_picker_start');
+                    let end_date = document.querySelector('.date_picker_end');
+                    object.start_date_mask.updateValue();
+                    object.end_date_mask.updateValue();
+                }
+            }).then(function(){
+                object.bisy = false;
+            });
+        } else {
+            dd('Подождите...');
+        }
     }
 
     loadSchedules(){
         let object = this;
+        object.resource_data = {};
+        object.resource_data_temp = {};
         window.axios({
             method: 'get',
             url: '/schedules/get',
         }).then(function (resp) {
+
+            dd(object.resource_data);
+
             object.resource_data = Object.assign({}, resp.data.schedules_date);
-
             object.resource_data_temp = JSON.parse(JSON.stringify(object.resource_data));
-
             for (var date in object.resource_data) {
                 for (var resource_id in object.resource_data[date]) {
                     let schedules = object.resource_data[date][resource_id];
@@ -253,7 +271,11 @@ class schedulePage{
         let days = (object.end_date.getTime() - object.start_date.getTime()) / (1000 * 3600 * 24);
         let table_height = document.querySelector('.sc').clientHeight;
         let dates_list_height = 28;
-        let resources = null;
+        this.resources = null;
+        this.resource_data = {};
+        this.resource_data_temp = {};
+
+        dd(this.resource_data_temp);
         let dates = [];
         let resources_count = 0;
         let dates_html = '';
@@ -295,12 +317,11 @@ class schedulePage{
             method: 'get',
             url: '/employee/resources',
         }).then(function (resp) {
-            resources = resp.data;
-            resources_count = resources.length;
+            object.resources = resp.data;
+            resources_count = object.resources.length;
             let resources_html = '<tbody>';
-
-
-            resources.forEach(function(item, i, arr) {
+            object.resources_id = [];
+            object.resources.forEach(function(item, i, arr) {
                 object.resources_id.push(item.id);
                 resources_html += '<tr><td><div data-resource_id="' + item.id + '" class="cell-height resource_left">' + item.title + '</div></td></tr>';
             });
@@ -308,9 +329,9 @@ class schedulePage{
             document.querySelector('#resources_grid').innerHTML = resources_html;
             let cell_grid_html = '<table><tbody class="sel_cont">';
             for (let i = 0; i < resources_count; i++) {
-                cell_grid_html += '<tr data-resource-id="' + resources[i].id + '">';
+                cell_grid_html += '<tr>';
                     for (let d = 0; d < days; d++) {
-                        cell_grid_html += '<td id="cell_' +  dates[d] + '_' + resources[i].id + '" data-date="' + dates[d] + '" class="cell-width cell_selector">' +
+                        cell_grid_html += '<td id="cell_' +  dates[d] + '_' + object.resources[i].id + '" class="cell-width cell_selector">' +
                             '<div class="cell-height cell">' +
                             '<div class="cell_buttons_container">' +
                             '<button class="btn-icon" onclick="window.schedule.restoreDay(this)"><i class="fa fa-undo"></i></button>' +
@@ -416,27 +437,29 @@ class schedulePage{
     }
 
     initRangeSelector(){
+        let object = this;
         let start_date = document.querySelector('.date_picker_start');
         let end_date = document.querySelector('.date_picker_end');
-        start_date.value = this.start_date.getDate() + '-' + (this.start_date.getMonth() + 1) + '-' + this.start_date.getFullYear();
-        end_date.value = this.end_date.getDate() + '-' + ( this.end_date.getMonth() + 1 ) + '-' + this.end_date.getFullYear();
+        start_date.value = this.start_date.getDate() + '.' + (this.start_date.getMonth() + 1) + '.' + this.start_date.getFullYear();
+        end_date.value = this.end_date.getDate() + '.' + ( this.end_date.getMonth() + 1 ) + '.' + this.end_date.getFullYear();
 
-        window.flatpickr(".date_picker_start", {
+        object.start_date_flatpkr = window.flatpickr(".date_picker_start", {
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        window.flatpickr(".date_picker_end", {
+        object.end_date_flatpkr = window.flatpickr(".date_picker_end", {
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        window.IMask(start_date, {
+
+        object.start_date_mask = window.IMask(start_date, {
                 mask: Date,
                 min: new Date(1990, 0, 1),
                 max: new Date(2030, 0, 1),
                 lazy: false
             }
         );
-        window.IMask(end_date, {
+        object.end_date_mask = window.IMask(end_date, {
                 mask: Date,
                 min: new Date(1990, 0, 1),
                 max: new Date(2030, 0, 1),
@@ -472,6 +495,7 @@ class schedulePage{
         this.setAction(this.action);
         this.generateTemplateText();
         this.initScheduler();
+        this.initRangeSelector();
     }
 
     toggleSource(elem)
