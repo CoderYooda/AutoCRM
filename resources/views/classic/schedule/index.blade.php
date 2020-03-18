@@ -8,32 +8,34 @@
         <div class="d-flex">
             <div class="form-group w-128 mr-15">
                 <label>Дата начала</label>
-                <input type="text" name="date_start" class="form-control date_picker_start" placeholder="Выберите дату">
+                <input id="start_date" type="text" name="date_start" class="form-control date_picker_start" placeholder="Выберите дату">
             </div>
             <div class="form-group w-128 mr-15">
                 <label>Дата окончания</label>
-                <input type="text" name="date_end" class="form-control date_picker_end" placeholder="Выберите дату">
+                <input id="end_date" type="text" name="date_end" class="form-control date_picker_end" placeholder="Выберите дату">
             </div>
             <div class="form-group w-128 mr-15">
-                <button class="button primary mt-30">Показать</button>
+                <button class="button primary mt-30" onclick="schedule.resetDate()">Показать</button>
             </div>
             <div class="form-group mr-15">
                 <label>Режим</label>
                 <div class="btn-group">
-                    <button id="action_edit" type="button" onclick="window.schedule.setAction('edit')" class="button primary d-block-f-left brr-0 br-trans action_button">Изменить день</button>
-                    <button id="action_template" type="button" onclick="window.schedule.setAction('template')" class="button primary brl-0 action_button">Установить по шаблону</button>
+                    <button id="action_template" type="button" onclick="window.schedule.setAction('template')" class="button primary d-block-f-left brr-0 br-trans action_button">Установить по шаблону</button>
+                    <button id="action_undo" type="button" onclick="window.schedule.setAction('undo')" class="button primary d-block-f-left brl-0 brr-0 br-trans action_button">Вернуть</button>
+                    <button id="action_clear" type="button" onclick="window.schedule.setAction('clear')" class="button primary d-block-f-left brl-0 br-trans action_button">Очистить</button>
+                    {{--<button id="action_template" type="button" onclick="window.schedule.setAction('template')" class="button primary brl-0 action_button">Установить по шаблону</button>--}}
                 </div>
             </div>
             <div id="template_container" class="form-group mr-15">
-                <label>Шаблон</label>
+                <label>Шаблон <a style="font-weight: 300;" onclick="openDialog('scheduletemplateDialog')"> изменить</a></label>
                 <div>
                     <a id="template_text" onclick="openDialog('scheduletemplateDialog')" class="pointer h-32-text">Шаблон</a>
                 </div>
             </div>
-            <div id="save_butt" class="form-group hide" style="margin-left: auto;">
+            <div id="save_butt" class="form-group" style="margin-left: auto;">
                 <label></label>
                 <div>
-                    <button class="button success">Сохранить</button>
+                    <button class="button success" onclick="window.schedule.storeSchedules()">Сохранить</button>
                 </div>
             </div>
         </div>

@@ -4,19 +4,13 @@ require('./bootstrap');                                             // Стар�
 require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
 require('./navigation');                                            // Навигация XHR
 
-
-
 window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
 window.chartjs = require('chart.js');
 window.simplebar = require('simplebar/dist/simplebar.min');
 //window.selection = require('@simonwep/selection-js');
-
-
 import tippy from 'tippy.js';
-
-
 
 window.debug = false;
 
@@ -53,8 +47,8 @@ window.entity = new Entity();
 window.scanner = new Scanner();
 window.auth = new Auth();
 window.tabs = new Tabs();
-
 window.tippy = tippy;
+
 
 Array.prototype.remove = function() {
     var what, a = arguments, L = a.length, ax;
@@ -66,3 +60,5 @@ Array.prototype.remove = function() {
     }
     return this;
 };
+
+window.dd = console.log.bind(document);
