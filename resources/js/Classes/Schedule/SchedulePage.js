@@ -48,6 +48,19 @@ class schedulePage{
         this.init();
         this.generateTemplateText();
         this.initScheduler();
+        this.checkActive();
+    }
+
+    checkActive(){
+        let className = window.location.pathname.substring(1);
+        let link = document.getElementById('sсhedule_link');
+        if(className === 'schedule'){
+            link.classList.add('active');
+            this.active = true;
+        } else {
+            link.classList.remove('active');
+            this.active = false;
+        }
     }
 
     resetDate(){
@@ -60,6 +73,10 @@ class schedulePage{
 
     init(){
         let object = this;
+        document.addEventListener('ajaxLoaded', function(e){
+            object.checkActive();
+            //object.load();
+        });
         this.selection = Selection.create({
             class: 'selection',
             selectables: ['#cell_grid .cell'],
@@ -129,29 +146,34 @@ class schedulePage{
 
     storeSchedules(){
         let object = this;
-        dd(object.resource_data_temp);
         if(!object.bisy){
-            object.bisy = true;
-            window.axios({
-                method: 'post',
-                url: '/schedules/store',
-                data: {
-                    resources: object.resources_id,
-                    start_date: object.start_date,
-                    end_date: object.end_date,
-                    data:object.resource_data_temp
-                }
-            }).then(function (resp) {
-                if(resp.data.status === 'success'){
-                    object.initScheduler();
-                    let start_date = document.querySelector('.date_picker_start');
-                    let end_date = document.querySelector('.date_picker_end');
-                    object.start_date_mask.updateValue();
-                    object.end_date_mask.updateValue();
-                }
-            }).then(function(){
-                object.bisy = false;
-            });
+            try {
+                object.bisy = true;
+                window.axios({
+                    method: 'post',
+                    url: '/schedules/store',
+                    data: {
+                        resources: object.resources_id,
+                        start_date: object.start_date,
+                        end_date: object.end_date,
+                        data:object.resource_data_temp
+                    }
+                }).then(function (resp) {
+                    if(resp.data.status === 'success'){
+                        object.initScheduler();
+                        let start_date = document.querySelector('.date_picker_start');
+                        let end_date = document.querySelector('.date_picker_end');
+                        object.start_date_mask.updateValue();
+                        object.end_date_mask.updateValue();
+                    }
+                }).then(function(){
+                    object.bisy = false;
+                });
+            } catch (e) {
+                dd(e);
+            }
+
+
         } else {
             dd('Подождите...');
         }
@@ -159,15 +181,15 @@ class schedulePage{
 
     loadSchedules(){
         let object = this;
-        object.resource_data = {};
-        object.resource_data_temp = {};
         window.axios({
-            method: 'get',
+            method: 'post',
             url: '/schedules/get',
+            data: {
+                start_date: object.start_date,
+                end_date: object.end_date,
+                resources: object.resources_id,
+            }
         }).then(function (resp) {
-
-            dd(object.resource_data);
-
             object.resource_data = Object.assign({}, resp.data.schedules_date);
             object.resource_data_temp = JSON.parse(JSON.stringify(object.resource_data));
             for (var date in object.resource_data) {
@@ -272,10 +294,6 @@ class schedulePage{
         let table_height = document.querySelector('.sc').clientHeight;
         let dates_list_height = 28;
         this.resources = null;
-        this.resource_data = {};
-        this.resource_data_temp = {};
-
-        dd(this.resource_data_temp);
         let dates = [];
         let resources_count = 0;
         let dates_html = '';

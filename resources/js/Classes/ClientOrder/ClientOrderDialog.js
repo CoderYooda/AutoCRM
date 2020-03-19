@@ -11,7 +11,6 @@ class clientorderDialog{
         this.init();
     }
 
-
     init(){
         let object = this;
 
@@ -167,13 +166,6 @@ class clientorderDialog{
                 drag_dialog.tag = 'clientorderDialog' + resp.data.id;
                 window.helper.initDialogMethods();
             });
-
-
-
-            // let dialog = document.getElementById('clientorderDialog' + resp.data.id);
-            // console.log(dialog);
-            // window['clientorderDialog' + resp.data.id] = new clientorderDialog(dialog);
-
         });
     }
 

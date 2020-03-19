@@ -37,19 +37,17 @@ class ScheduleController extends Controller
         ]);
     }
 
-    public function getSchedules(Request $request){
-        $schedules = Schedule::all();
+    public function getSchedules(Request $request)
+    {
+        $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+        $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
+
+        $schedules = Schedule::owned()->whereBetween('date', [$start_date, $end_date])->whereIn('partner_id', $request->resources)->get();
         $schedules_data = [];
 
         foreach($schedules as $schedule){
             $schedules_data[$schedule->date][$schedule->partner_id][] = $schedule;
         }
-//        $resources = Partner::owned()->where('category_id', 5)->get();
-//        $data = [];
-//        foreach($resources as $resource){
-//            //$data[$resource->id] =
-//        }
-
 
         return response()->json([
             'schedules_date' => $schedules_data
@@ -57,7 +55,6 @@ class ScheduleController extends Controller
     }
 
     public function store(Request $request){
-
 
         DB::transaction(function() use ($request) {
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d');

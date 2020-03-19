@@ -168,7 +168,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Планировщик
     Route::get('/schedule', 'ScheduleController@index')->name('ScheduleIndex');
-    Route::get('/schedules/get', 'ScheduleController@getSchedules')->name('GetSchedules');
+    Route::post('/schedules/get', 'ScheduleController@getSchedules')->name('GetSchedules');
     Route::post('/schedules/store', 'ScheduleController@store')->name('StoreSchedules');
 
     #Контрагенты

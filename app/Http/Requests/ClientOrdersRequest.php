@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
 
 class ClientOrdersRequest extends FormRequest
 {
@@ -38,6 +39,22 @@ class ClientOrdersRequest extends FormRequest
             'products.new.*.new_supplier_name' => ['required', 'string', 'max:64']
         ];
     }
+
+//    public function withValidator($validator)
+//    {
+//        if ($validator->fails()) {
+//            $status = 422;
+//            if ($this->expectsJson()) {
+//                echo 1;
+//            }
+//        }
+//    }
+
+//    public function failedValidation(Validator $validator)
+//    {
+//        return 1;
+//    }
+
     public function fails(){
 
     }

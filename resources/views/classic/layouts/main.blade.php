@@ -49,7 +49,7 @@
                                 Настройки
                             </a>
                         </li>
-                        <li id="shedule_link" class="top-nav-item" >
+                        <li id="sсhedule_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('ScheduleIndex') }}">
                                 Планировщик
                             </a>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Auth;
 
 class Schedule extends Model
 {
@@ -22,5 +23,9 @@ class Schedule extends Model
     public function getEndAttribute($value)
     {
         return Carbon::parse($value)->format('H:i');
+    }
+    public static function owned(){
+        $company_id = Auth::user()->company()->first()->id;
+        return self::where('company_id', $company_id);
     }
 }

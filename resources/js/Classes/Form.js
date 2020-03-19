@@ -56,9 +56,6 @@ class AxForm{
             helper.removeElementsByClass('nv-helper');
             helper.removeClassesByClass('is-invalid');
 
-
-
-
             if(error.response && error.response.data.system_message){
                 try {
                     dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
@@ -68,7 +65,14 @@ class AxForm{
 
             }
 
-            if(error.response && error.response.data.messages){
+            let messages = {};
+            if(error.response.data.messages){
+                messages = error.response.data.messages;
+            } else if(error.response.data.errors){
+                messages = error.response.data.errors;
+            }
+
+            if(error.response && (error.response.data.messages || error.response.data.errors)){
                 var all_butt_butts = document.querySelectorAll(".helper_danger");
                 Array.prototype.forEach.call(all_butt_butts, function(el) {
                     el.setAttribute("style", "");
@@ -76,7 +80,7 @@ class AxForm{
 
 
 
-                for(var error_stack in error.response.data.messages){
+                for(var error_stack in messages){
                     var error_stack_arr = error_stack.split('.');
 
                     var iteration = 0;
@@ -109,7 +113,7 @@ class AxForm{
                     if(el !== null && el.getAttribute('type') != 'hidden'){
                         el.classList.add('is-invalid');
                         tippy(el, {
-                            content: error.response.data.messages[error_stack],
+                            content: messages[error_stack],
                             placement: 'bottom'
                         });
                         // var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
@@ -118,7 +122,7 @@ class AxForm{
 
                 }
             }
-            if(error.response && error.response.data.message){
+            if(error.response && messages){
                 notification.notify( 'error', error.response.data.message);
             }
             object.setActionButtons(true, elem);

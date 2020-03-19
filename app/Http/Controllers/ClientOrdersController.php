@@ -129,13 +129,13 @@ class ClientOrdersController extends Controller
     public function store(ClientOrdersRequest $request)
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
+//        if ($request->fails()) {
+//            $this->status = 422;
+//            if ($request->expectsJson()) {
+//                return response()->json(['messages' => $validation->errors()], $this->status);
+//            }
+//        }
 
-        if ($request->fails()) {
-            $this->status = 422;
-            if ($request->expectsJson()) {
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
         if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
@@ -156,7 +156,6 @@ class ClientOrdersController extends Controller
         if ($request['do_date'] == null) {
             $request['do_date'] = Carbon::now();
         }
-
 
         if ($client_order->exists) {
             $store = $client_order->store()->first();
