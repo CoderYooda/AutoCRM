@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\DB;
 use Auth;
+use SystemMessage;
 
 class ScheduleController extends Controller
 {
@@ -55,7 +56,7 @@ class ScheduleController extends Controller
     }
 
     public function store(Request $request){
-
+        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', Auth::user());
         DB::transaction(function() use ($request) {
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
             $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');

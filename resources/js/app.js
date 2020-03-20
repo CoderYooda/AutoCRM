@@ -4,6 +4,7 @@ require('./bootstrap');                                             // Стар�
 require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
 require('./navigation');                                            // Навигация XHR
 
+
 window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
