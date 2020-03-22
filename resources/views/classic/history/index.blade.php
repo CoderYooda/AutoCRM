@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <ul id="members-container" class="nav select-list-modal">
-                    @include(env('DEFAULT_THEME') . '.history.users')
+                    @include(env('DEFAULT_THEME', 'classic') . '.history.users')
                 </ul>
             </div>
         </div>
