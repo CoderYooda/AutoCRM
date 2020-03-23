@@ -1,8 +1,10 @@
 <div
     @if(isset($store) && $store->id != NULL)
-        id="editStore{{$store->id}}"
+        id="storeDialog{{$store->id}}"
+        @php $class = 'storeDialog' . $store->id @endphp
     @else
-        id="createStore"
+        id="storeDialog"
+        @php $class = 'storeDialog' @endphp
     @endif
     class="dialog" style="width:300px;">
     @if(isset($store) && $store->id != NULL)
@@ -14,8 +16,13 @@
     <button class="btn_close" onclick="closeDialog(event)">×</button>
     <form action="{{ route('StoreStore') }}" method="POST">
         @csrf
-        <div class="box mb-0">
-            <div class="box-body">
+
+        @if(isset($store) && $store->id != NULL)
+            <input type="hidden" name="id" value="{{ $store->id }}">
+        @endif
+
+        <div class="modal-body">
+            <div class="box-body pb-0">
                 @if(isset($store) && $store->id != NULL)
                     <input type="hidden" name="id" value="{{ $store->id }}">
                 @endif
@@ -31,8 +38,11 @@
                 </div>
             </div>
         </div>
+
         <div class="modal-footer">
-            <button class="btn success" onclick="axform.send(this)">Сохранить</button>
+            <hr>
+            <button type="submit" onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
+            <button type="submit" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
         </div>
         <div class="system_message"></div>
     </form>

@@ -1,8 +1,11 @@
-
-<div class="row">
-    @foreach($stores as $store)
-        @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_elem')
-    @endforeach
+@foreach($stores as $store)
+    @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_elem')
+@endforeach
+<div class="col-sm-3 mt-30">
+    <div class="box gray-box p-15">
+        <i class="fa fa-plus-square add-icon"></i>
+        <div class="box-footer">
+            <button onclick="openDialog('storeDialog')" class="button mb-0 w-100">Новый магазин</button>
+        </div>
+    </div>
 </div>
-
-{{--{{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}--}}

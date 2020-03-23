@@ -127,9 +127,16 @@ class StoreController extends Controller
         //$store = Store::where('company_id', Auth::user()->company()->first()->id)->first();->updateExistingPivot($user, array('status' => 1), false);
     }
 
-    public static function addStoreDialog($request)
+    public static function storeDialog($request)
     {
-        return response()->json(['tag' => 'createStore', 'html' => view('settings.dialog.form_store', compact('request'))->render()]);
+        $tag = 'storeDialog';
+        if($request['store_id']){
+            $tag .= $request['store_id'];
+            $store = Store::where('id', (int)$request['store_id'])->first();
+        } else {
+            $store = null;
+        }
+        return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.store.dialog.form_store', compact('store', 'request'))->render()]);
     }
 
     public function store(Request $request)
@@ -157,26 +164,15 @@ class StoreController extends Controller
 
         if($request->expectsJson()){
             return response()->json([
-                'message' => 'Склад создан',
-                'container' => 'ajax-table-store',
-                'event' => 'ProductStored',
+                'message' => $message,
+                //'container' => 'ajax-table-store',
+                'event' => 'StoreStored',
             ]);
         } else {
             return redirect()->back();
         }
     }
 
-    public static function editStoreDialog($request)
-    {
-        if($request['params']){
-            $id = (int)$request['id'];
-        } else {
-            abort(404);
-        }
-        $store = Store::where('id', $id)->first();
-
-        return response()->json(['tag' => 'editStore'.$store->id, 'html' => view('settings.dialog.form_store', compact('store'))->render()]);
-    }
 
     public function checkstock(Request $request){
 

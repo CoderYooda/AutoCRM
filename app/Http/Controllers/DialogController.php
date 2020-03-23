@@ -46,8 +46,8 @@ class DialogController extends Controller
             case 'moneymoveDialog':
                 $dialog = MoneyMoveController::moneymoveDialog($request);#
                 break;
-            case 'createStore':
-                $dialog = StoreController::addStoreDialog($request);  //////
+            case 'storeDialog':
+                $dialog = StoreController::storeDialog($request);  //////
                 break;
             case 'editStore':
                 $dialog = StoreController::editStoreDialog($request); /////

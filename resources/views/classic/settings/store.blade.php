@@ -1,26 +1,11 @@
-{{--@extends('product.layout.tabs')--}}
-
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.settings.layout.tabs')
-
 @section('tab')
-<div class="d-flex flex-column flex">
-    <div class="navbar white no-radius box-shadow pos-rlt">
-        <div class="flex">
+<div class="m-15 box">
+    <div class="m-15">
+        <h2 class="mt-0 mb-0 style_header">Магазины</h2>
+        <div id="ajax-table-store" class="d-flex flex p-3 row row-sm">
+            @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container')
         </div>
-        <span class="m-b btn-groups pl-1">
-            <button onclick="openDialog('createStore')" class="btn btn-sm success mb-0">Новый склад</button>
-        </span>
-    </div>
-    <div class="d-flex flex scroll-y">
-        <div class="d-flex flex-column flex lt">
-            <div id="ajax-table" class="p-3 b-r d-table">
-                @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container')
-            </div>
-        </div>
-{{--        <div class="d-flex flex-column w-xxl">--}}
-{{--            <div class="scrollable hover">--}}
-{{--            </div>--}}
-{{--        </div>--}}
     </div>
 </div>
 @endsection

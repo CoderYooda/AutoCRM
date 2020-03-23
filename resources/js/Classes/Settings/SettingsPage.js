@@ -25,6 +25,9 @@ class settingsPage{
         document.addEventListener('CashboxStored', function(e){
             object.reload();
         });
+        document.addEventListener('StoreStored', function(e){
+            object.reload();
+        });
 
         if(form != null){
             object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',  function(){
@@ -143,6 +146,7 @@ class settingsPage{
             method: 'get',
             url: object.getUrlString(),
         }).then(function (resp) {
+            dd(resp.data.target);
             var results_container = document.getElementById(resp.data.target);
             results_container.innerHTML = resp.data.html;
             window.helper.insertParamUrl('active_tab', object.active_tab);

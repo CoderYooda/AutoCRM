@@ -19,5 +19,3 @@
         </div>
     </div>
 </div>
-
-{{--{{ $articles->setPath(route('StoreIndex'))->appends(request()->only(['active_tab', 'page', 'search', 'category_id']))->links() }}--}}

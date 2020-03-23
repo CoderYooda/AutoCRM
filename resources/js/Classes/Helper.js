@@ -14,6 +14,7 @@ import barcodeDialog from "./Barcode/BarcodeDialog";
 import shipmentDialog from "./Shipment/ShipmentDialog";
 import categoryDialog from "./Category/CategoryDialog";
 import clientorderDialog from "./ClientOrder/ClientOrderDialog";
+import storeDialog from "./Store/StoreDialog";
 import adjustmentDialog from "./Adjustment/AdjustmentDialog";
 import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
 import selectProviderOrderDialog from "./ProviderOrder/SelectProviderOrderDialog";
@@ -47,6 +48,7 @@ const classes = {
     cashboxDialog,
     ddsarticleDialog,
     warrantDialog,
+    storeDialog,
     moneymoveDialog,
     shipmentDialog,
     clientorderDialog,
