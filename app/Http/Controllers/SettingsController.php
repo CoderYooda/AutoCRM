@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Http\Controllers;
@@ -68,6 +69,16 @@ class SettingsController extends Controller
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request'));
     }
+
+    public static function roleTab($request)
+    {
+        $stores = Store::owned()->orderBy('created_at', 'DESC')->get();
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container', compact('stores', 'request'));
+        }
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request'));
+    }
+
 
     public static function DdsarticleTab($request)
     {

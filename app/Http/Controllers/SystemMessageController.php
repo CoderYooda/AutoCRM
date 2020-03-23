@@ -99,6 +99,7 @@ class SystemMessageController extends Controller
                 }
 
             } else {
+
                 $system_message = new SM();
                 $system_message->user_id = 1;
                 $system_message->reciever_id = $user->id;

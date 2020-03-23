@@ -56,7 +56,7 @@ class ScheduleController extends Controller
     }
 
     public function store(Request $request){
-        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', Schedule::first());
+        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', new Schedule());
         DB::transaction(function() use ($request) {
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
             $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
