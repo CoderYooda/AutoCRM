@@ -15,7 +15,8 @@
         "laravel/tinker": "^1.0",
         "milon/barcode": "^6.0",
         "predis/predis": "^1.1",
-        "sngrl/sphinxsearch": "dev-master"
+        "sngrl/sphinxsearch": "dev-master",
+        "spatie/laravel-permission": "^3.10"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

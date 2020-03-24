@@ -171,6 +171,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/schedules/get', 'ScheduleController@getSchedules')->name('GetSchedules');
     Route::post('/schedules/store', 'ScheduleController@store')->name('StoreSchedules');
 
+    #Роли и разрешения
+    Route::get('/roles/get', 'RoleController@getRoles')->name('GetRolesList');
+    Route::post('/roles/store', 'RoleController@store')->name('StoreRole');
+
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
     Route::post('/partner/search', 'PartnerController@search')->name('PartnerPageSearch');

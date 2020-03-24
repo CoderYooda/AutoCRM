@@ -167,6 +167,7 @@ return [
          */
         Milon\Barcode\BarcodeServiceProvider::class,
         sngrl\SphinxSearch\SphinxSearchServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
         /*
          * Application Service Providers...
          */

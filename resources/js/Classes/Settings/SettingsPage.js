@@ -15,13 +15,11 @@ class settingsPage{
         });
         object.checkActive();
         let form = null;
-
         try {
             let form = object.root.getElementsByTagName('form');
         } catch (e) {
 
         }
-
         document.addEventListener('CashboxStored', function(e){
             object.reload();
         });
@@ -41,21 +39,7 @@ class settingsPage{
                 }
             });
         }
-
-
-        // object.root_dialog.getElementsById('CashboxSettings')[0].addEventListener('WarrantStored',  function(){
-        //     let id = object.root_dialog.querySelector('input[name=id]').value;
-        //     if(id !== null){
-        //         let root_id = object.root_dialog.id;
-        //         object.freshContent(id,function(){
-        //             delete window[root_id];
-        //             window.helper.initDialogMethods();
-        //         });
-        //     }
-        // });
-
     }
-
 
     getUrlString(){
         let url = '?view_as=json';
@@ -69,15 +53,8 @@ class settingsPage{
 
     freshContent(id, callback = null){
         let object = this;
-
-        //var store_id = this.store_obj.value;
-
         let data = {};
         data.id = id;
-        // if(object.refer){
-        //     data.refer = object.refer;
-        // }
-
         window.axios({
             method: 'post',
             url: 'settings/base/fresh',
@@ -95,7 +72,6 @@ class settingsPage{
     linked(){
         this.active_tab = this.getCurrentActiveTab();
     }
-
 
     getCurrentActiveTab(){
         var active_tab = window.helper.findGetParameter('active_tab');
@@ -116,7 +92,6 @@ class settingsPage{
             link.classList.remove('active');
             this.active = false;
         }
-
     }
 
     saveBaseSettingsForm(elem, event){
@@ -151,8 +126,6 @@ class settingsPage{
             results_container.innerHTML = resp.data.html;
             window.helper.insertParamUrl('active_tab', object.active_tab);
             window.rebuildLinks();
-            // object.load();
-            // window.rebuildLinks();
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
