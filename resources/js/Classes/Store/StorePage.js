@@ -613,27 +613,7 @@ class storePage{
         this.reload();
     }
 
-    checkTrinity(search_str){
-        window.isXHRloading = true;
 
-        let data = {};
-        data.search = search_str;
-        window.axios({
-            method: 'post',
-            url: '/providers/trinity/search_brands',
-            data: data
-        }).then(function (resp) {
-            var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
-            let providertab = document.querySelector('#provider-tab .nav-badge');
-            if(providertab){
-                providertab.innerHTML = badge;
-            }
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-    }
 
     getUrlString(type = null){
 

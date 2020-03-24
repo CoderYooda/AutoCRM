@@ -27,7 +27,7 @@ class TrinityApiController extends Controller
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
 
-        //dd($brands);
+        dd($brands);
         $content = view('provider.elements.table_container', compact('brands','request'))->render();
         return response()->json([
             'html' => $content,

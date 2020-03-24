@@ -9,7 +9,9 @@ class ProductDialog{
         // this.store_obj = dialog.querySelector("#product_search_store");
         // this.results_obj = dialog.querySelector("#search_product_results");
         // this.refer = dialog.querySelector("#refer").value;
-        //this.searchInit();
+        this.provider_search_container = this.root_dialog.querySelector('#provider_search_container');
+        this.provider_search_cont = this.root_dialog.querySelector('#provider_search_container .cont');
+        this.article_input = this.root_dialog.querySelector('input[name=article]');
         this.init();
     }
 
@@ -22,6 +24,13 @@ class ProductDialog{
         if(focused){
             focused.focus();
         }
+
+        var fn = window.helper.debounce(function(e) {object.trinitySearch();}, 800);
+
+        ///Вешаем обрабочик на поле скидки/////////////
+        this.article_input.addEventListener("keydown", fn);
+        this.article_input.addEventListener("paste", fn);
+        this.article_input.addEventListener("delete", fn);
     }
 
     finitaLaComedia(){
@@ -34,6 +43,47 @@ class ProductDialog{
         let object = this;
         window.axform.send(elem, function(e){
             object.finitaLaComedia();
+        });
+    }
+
+    trinitySearch(){
+        let object = this;
+
+
+        window.isXHRloading = true;
+
+        let data = {};
+        data.search = this.article_input.value;
+        window.axios({
+            method: 'post',
+            url: '/providers/trinity/search_brands',
+            data: data
+        }).then(function (resp) {
+            if(data.search.length > 0){
+                object.provider_search_container.classList.add('show');
+            } else {
+                object.provider_search_container.classList.remove('show');
+            }
+
+            let html = '';
+            for (let [key, value] of Object.entries(resp.data.brands.data)) {
+                html += '<div class="tr_result">' +
+                    '<span class="article">' + value.ident + '</span>' +
+                    '<span class="article">Артикул: ' + value.article + '</span>' +
+                    '<span class="article">Производитель: ' + value.producer + '</span>' +
+                    '</div>'
+            }
+            object.provider_search_cont.innerHTML = html;
+
+            // var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
+            // let providertab = document.querySelector('#provider-tab .nav-badge');
+            // if(providertab){
+            //     providertab.innerHTML = badge;
+            // }
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
         });
     }
 

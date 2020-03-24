@@ -1,7 +1,17 @@
 <div class="tab-pane p-3 active" id="{{$class}}_tab_base">
+    <div id="provider_search_container" class="provider_search_container fade" data-simplebar style="max-height: 400px;">
+        <div class="cont"></div>
+    </div>
+    <div class="form-group">
+        <label>Артикул</label>
+        <input  type="text" name="article" id="product_dialog_focused"
+               @if(isset($product))value="{{ $product->article }}"@endif
+               @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif
+               class="form-control" placeholder="Артикул детали (не более 64 символов)">
+    </div>
     <div class="form-group">
         <label>Наименование</label>
-        <input type="text" name="name" id="product_dialog_focused"
+        <input type="text" name="name"
                @if(isset($product)) value="{{ $product->name }}" @endif
                @if(isset($request['provided_name'])) value="{{ $request['provided_name'] }}" @endif
                class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
@@ -36,12 +46,5 @@
                 @endif
             </button>
         </div>
-    </div>
-    <div class="form-group">
-        <label>Артикул</label>
-        <input type="text" name="article"
-                @if(isset($product))value="{{ $product->article }}"@endif
-                @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif
-                class="form-control" placeholder="Артикул детали (не более 64 символов)">
     </div>
 </div>

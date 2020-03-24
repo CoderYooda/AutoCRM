@@ -734,3 +734,9 @@ button.form-control{
 .flatpickr-calendar.noCalendar {
     width: 156px;
 }
+.modal-right::before{
+    content: '';
+    background: red;
+    width: 40px;
+    height: 40px;
+}
