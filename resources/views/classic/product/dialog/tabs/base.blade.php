@@ -1,9 +1,10 @@
 <div class="tab-pane p-3 active" id="{{$class}}_tab_base">
+
     <div id="provider_search_container" class="provider_search_container fade" data-simplebar style="max-height: 400px;">
         <div class="cont"></div>
     </div>
     <div class="form-group">
-        <label>Артикул</label>
+        <label>Артикул <i id="trin_preload" class="fa fa-spinner fa-spin hide"></i></label>
         <input  type="text" name="article" id="product_dialog_focused"
                @if(isset($product))value="{{ $product->article }}"@endif
                @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif
@@ -34,7 +35,9 @@
         <label for="supplier_id">Производитель</label>
         <div class="input-group mb-3">
             @if(isset($request) && $request['brand'] != NULL)
-            <input type="hidden" name="new_supplier_name" value="{{ $request['brand'] }}">
+                <input type="hidden" name="new_supplier_name" value="{{ $request['brand'] }}">
+            @else
+                <input type="hidden" name="new_supplier_name" value="">
             @endif
             <button onclick="{{ $class }}.openSelectSupplierDialog()" type="button" name="supplier_id" class="supplier_select form-control text-left button_select">
                 @if(isset($product))

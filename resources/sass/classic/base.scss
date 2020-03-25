@@ -385,10 +385,14 @@ li.active .header-tab{
 .tr_result{
     margin: 10px;
     margin-bottom: 10px;
-    padding-bottom: 5px;
     color: #fff;
     font-size: 13px;
     border-bottom: 1px solid #fff;
+    cursor: pointer;
+    padding: 5px;
+}
+.tr_result:hover{
+    background: #0e7fca;
 }
 .tr_result > span{
     display: block;

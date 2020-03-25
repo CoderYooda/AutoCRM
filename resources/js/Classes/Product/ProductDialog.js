@@ -51,7 +51,7 @@ class ProductDialog{
 
 
         window.isXHRloading = true;
-
+        document.getElementById('trin_preload').classList.remove('hide');
         let data = {};
         data.search = this.article_input.value;
         window.axios({
@@ -67,14 +67,14 @@ class ProductDialog{
 
             let html = '';
             for (let [key, value] of Object.entries(resp.data.brands.data)) {
-                html += '<div class="tr_result">' +
+                html += '<div class="tr_result" data-ident="' + value.ident + '" data-article="' + value.article + '" data-producer="' + value.producer + '" onclick="window.productDialog.appendArticle(this)">' +
                     '<span class="article">' + value.ident + '</span>' +
                     '<span class="article">Артикул: ' + value.article + '</span>' +
                     '<span class="article">Производитель: ' + value.producer + '</span>' +
                     '</div>'
             }
             object.provider_search_cont.innerHTML = html;
-
+            document.getElementById('trin_preload').classList.add('hide');
             // var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
             // let providertab = document.querySelector('#provider-tab .nav-badge');
             // if(providertab){
@@ -83,8 +83,17 @@ class ProductDialog{
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
+            document.getElementById('trin_preload').classList.add('hide');
             window.isXHRloading = false;
         });
+    }
+
+    appendArticle(elem){
+        this.root_dialog.querySelector('input[name=article]').value = elem.dataset.article;
+        this.root_dialog.querySelector('input[name=name]').value = elem.dataset.ident;
+        this.root_dialog.querySelector('input[name=new_supplier_name]').value = elem.dataset.producer;
+        this.root_dialog.querySelector('button[name=supplier_id]').innerHTML = elem.dataset.producer;
+
     }
 
     openSelectCategoryDialog(category_selected = null){
