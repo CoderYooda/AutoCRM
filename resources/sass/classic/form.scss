@@ -179,6 +179,11 @@ label.label-sm{
 [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
     cursor: pointer;
 }
+.no-items-text{
+    text-align: center;
+    font-weight: 600;
+    color: #c7aeae;
+}
 .form-control {
     border-color: hsla(210,8%,51%,.2);
     border-radius: .25rem;

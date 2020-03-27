@@ -41,4 +41,20 @@ class RoleController extends Controller
 
         return $rules;
     }
+
+    public static function roleDialog($request)
+    {
+        $tag = 'roleDialog';
+        if($request['role_id']){
+            $tag .= $request['role_id'];
+            $role = Role::where('id', (int)$request['role_id'])->first();
+        } else {
+            $role = null;
+        }
+
+        return response()->json([
+            'tag' => $tag,
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.role.dialog.form_role', compact('request', 'role'))->render()
+        ]);
+    }
 }

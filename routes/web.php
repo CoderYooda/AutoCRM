@@ -228,3 +228,4 @@ Route::get('/islogged', function(){
 });
 
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
+

@@ -1,9 +1,7 @@
-require('dotenv').config();
-console.log(process.env.SOCKET_ORIGINS);
-console.log(process.env.SOCKET_PORT);
+//require('dotenv').config();
 
-var io = require('socket.io')(process.env.SOCKET_PORT,{
-        origins : process.env.SOCKET_ORIGINS
+var io = require('socket.io')(6001,{
+        origins : '192.168.1.104:* autocrm:*'
     }),
     request = require('request'),
     Redis = require('ioredis'),
@@ -13,7 +11,7 @@ var io = require('socket.io')(process.env.SOCKET_PORT,{
 //Посредник авторизации
 io.use(function (socket,next) {
     request.get({
-        url:'http://' + process.env.SOCKET_DOMAIN + '/ws/check-auth',
+        url:'http://autocrm/ws/check-auth',
         headers: {cookie : socket.request.headers.cookie},
         json: true,
     } , function(error, response, json){
@@ -27,7 +25,7 @@ io.on('connection', function(socket){
     socket.on('subscribe', function(channel){
         console.log('Кто кто хочет войти в: ' + channel);
         request.get({
-            url:'http://' + process.env.SOCKET_DOMAIN + '/ws/check-sub/' + channel,
+            url:'http://autocrm/ws/check-sub/' + channel,
             headers: {cookie : socket.request.headers.cookie},
             json: true,
         } , function(error, response, json){

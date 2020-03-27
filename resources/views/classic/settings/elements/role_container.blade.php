@@ -11,11 +11,11 @@
             @foreach($roles as $role)
                 <div class="form-group d-flex mb-10">
                     <div class="flex-1">{{ $role->name }}</div>
-                    <button type="button" onclick="window.actions.resetDate()" class="right-remove"><i class="fa fa-pencil"></i></button>
-                    <button type="button" onclick="window.actions.resetDate()" class="right-remove"><i class="fa fa-remove"></i></button>
+                    <button type="button" onclick="openDialog('roleDialog', '&role_id={{ $role->id }}')" class="right-remove"><i class="fa fa-pencil"></i></button>
+                    <button type="button" onclick="entity.remove('role', {{ $role->id }})" class="right-remove"><i class="fa fa-remove"></i></button>
                 </div>
             @endforeach
         </div>
-        <button type="button" onclick="window.actions.resetDate()" class="button primary w-100">Создать роль</button>
+        <button type="button" onclick="openDialog('roleDialog')" class="button primary w-100">Создать роль</button>
     </div>
 </div>

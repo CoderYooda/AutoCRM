@@ -49,9 +49,6 @@ class DialogController extends Controller
             case 'storeDialog':
                 $dialog = StoreController::storeDialog($request);  //////
                 break;
-            case 'editStore':
-                $dialog = StoreController::editStoreDialog($request); /////
-                break;
             case 'ddsarticleDialog':
                 $dialog = DdsarticleController::ddsarticleDialog($request); #
                 break;
@@ -81,6 +78,9 @@ class DialogController extends Controller
                 break;
             case 'scheduletemplateDialog':
                 $dialog = ScheduleController::scheduleTemplateDialog($request); #
+                break;
+            case 'roleDialog':
+                $dialog = RoleController::roleDialog($request); #
                 break;
         }
 
