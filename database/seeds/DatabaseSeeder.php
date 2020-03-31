@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CreateBasePartners::class);
         $this->call(SettingsSeed::class);
         $this->call(DayOffTypeSeed::class);
+        $this->call(PermissionSeed::class);
 
         //$this->call(WarrantSeed::class);
         //$this->call(MoneymoveSeed::class);

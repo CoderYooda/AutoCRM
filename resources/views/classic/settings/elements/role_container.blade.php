@@ -1,6 +1,11 @@
 <div class="box-lister box">
     <div id="actions-container" class="box-content">
-        123
+        {{ Auth::user()->getAllPermissions() }}
+        @can('создавать категории')
+            123
+            @else
+            false
+        @endcan
     </div>
 </div>
 <div class="content-rightside">

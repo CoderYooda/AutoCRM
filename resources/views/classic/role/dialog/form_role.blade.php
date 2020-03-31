@@ -6,7 +6,7 @@
         id="roleDialog"
         @php $class = 'roleDialog' @endphp
     @endif
-    class="dialog" style="width:600px;">
+    class="dialog" style="width:400px;">
     @if(isset($role) && $role->id != NULL)
         <div class="titlebar">Редактирование роли "{{ $role->name }}"</div>
     @else
@@ -33,21 +33,23 @@
                                    name="name" class="form-control" placeholder="Название роли, например (Администраор)" autofocus>
                         </div>
                     </div>
-                    <div class="col-sm-6 no-pr">
-                        <div class="form-group d-flex mb-10">
-                            <label class="no-wrap" for="users">Пользователи</label>
-                            <input readonly="" onclick="{{ $class }}.openSelectUsersModal('users')" id="users" type="text" name="provider" value="" class="form-control users input_as_link" placeholder="выбрать">
-                            <button type="button" onclick="{{ $class }}.clearList('users', 'users_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
+                    {{--<div class="col-sm-6 no-pr">--}}
+                        {{--<div class="form-group d-flex mb-10">--}}
+                            {{--<label class="no-wrap" for="users">Пользователи</label>--}}
+                            {{--<input readonly="" onclick="{{ $class }}.openSelectUsersModal('users')" id="users" type="text" name="provider" value="" class="form-control users input_as_link" placeholder="выбрать">--}}
+                            {{--<button type="button" onclick="{{ $class }}.clearList('users', 'users_stack')" class="right-remove"><i class="fa fa-remove"></i></button>--}}
+                        {{--</div>--}}
+                        {{--<div id="users_stack" class="box w-100 p-10">--}}
+                            {{--<div class="no-items-text">Для этой роли пользователи не назначены</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    <div class="col-sm-12">
+                        <label>Разрешения</label>
+                        <div class="box w-100 p-10 checkbox-list">
+                        @foreach($permissions as $permission)
+                            <div class="item">{{ $permission->name }} <input class="pull-right" type="checkbox" name="{{ $permission->id }}"></div>
+                        @endforeach
                         </div>
-                        <div id="users_stack" class="box w-100 p-10">
-                            <div class="no-items-text">Для этой роли пользователи не назначены</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="mb-10">
-                            <b>Разрешения</b>
-                        </div>
-                        <div class="box w-100">123</div>
                     </div>
                 </div>
             </div>

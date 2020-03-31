@@ -204,7 +204,7 @@ class storePage{
                     //console.log(cell.getValue());
                     cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
                     window.IMask(document.getElementById('price_' + cell.getData().id),   {
-                            mask: 'N 2',
+                            mask: 'N',
                             blocks: {
                                 N: {
                                     mask: Number,
