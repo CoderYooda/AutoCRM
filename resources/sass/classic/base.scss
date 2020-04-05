@@ -39,7 +39,17 @@ input[type=checkbox]{
 input[type=checkbox]:active, input[type=checkbox]:checked:active {
     box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
 }
-
+input[type=checkbox]:disabled, input[type=checkbox]:checked:disabled{
+    -webkit-appearance: none;
+    background-color: #fafafa;
+    border: 1px solid #eaeaea;
+    box-shadow: none;
+    padding: 7px;
+    margin-bottom: -2px;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+}
 input[type=checkbox]:checked {
     background-color: #5181b8;
     padding: 4px;
@@ -96,6 +106,7 @@ input[type=checkbox]:checked {
     padding: 4px 15px;
     cursor: pointer;
     color: #2d76a8;
+    line-height: 24px;
 }
 .dropdown_container .element:hover{
     background: #edeef0;
@@ -210,7 +221,6 @@ li.active .header-tab{
 }
 .search-field-container{
     flex: 1;
-    padding-right: 15px;
 }
 
 /*Table*/
@@ -448,7 +458,7 @@ li.active .header-tab{
 }
 
 .modal-header {
-    background-color: #F7F7F7;
+    //background-color: #F7F7F7;
     padding: 10px 15px;
     display: flex;
     -webkit-box-align: start;
@@ -474,6 +484,24 @@ input {
     border: 1px solid #d3d9de;
     outline: none;
     box-shadow: none;
+}
+
+input[type='text']{
+    height: 32px;
+    line-height: 32px;
+}
+.swal2-icon {
+    display: none!important;
+}
+
+.swal2-popup {
+    width: auto!important;
+    max-width: 100%!important;
+    padding: 15px!important;
+    border: none!important;
+    border-radius: 4px!important;
+    font-family: inherit!important;
+    font-size: inherit!important;
 }
 
 input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -707,6 +735,11 @@ input:-moz-placeholder { /* Firefox 18- */
     margin-bottom: 7px;
 }
 
+.checkbox-list .title-head{
+    padding: 5px 10px 0px 10px;
+    font-weight: 500;
+}
+
 
 /*BreadCrumbs*/
 
@@ -737,7 +770,6 @@ input:-moz-placeholder { /* Firefox 18- */
     border: none;
     padding: 0;
     margin-bottom: 0.5rem;
-    height: auto;
     font-weight: 500;
     font-size: inherit!important;
     color: #1F98E9 !important;
@@ -747,6 +779,8 @@ input:-moz-placeholder { /* Firefox 18- */
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 5px;
+    height: 23px!important;
+    line-height: 23px!important;
 }
 .filter_element{
     color: #9E9D9D;
@@ -907,6 +941,9 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .mr-12{
     margin-right: 12px!important;
+}
+.ml-12{
+    margin-left: 12px!important;
 }
 .w-100{
     width: 100%!important;

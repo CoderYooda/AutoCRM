@@ -24,7 +24,7 @@ class CreateBasePartners extends Seeder
 
 
 
-            if($i < 40){
+            if($i < 12){
                 Partner::create([
                     'isfl' => 1,
                     'category_id' => 5,

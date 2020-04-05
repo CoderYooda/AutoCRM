@@ -174,6 +174,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Роли и разрешения
     Route::get('/roles/get', 'RoleController@getRoles')->name('GetRolesList');
     Route::post('/roles/store', 'RoleController@store')->name('StoreRole');
+    Route::post('/roles/assign', 'RoleController@assignRoleToUser')->name('RoleToUser');
 
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название

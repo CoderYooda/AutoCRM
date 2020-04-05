@@ -26,6 +26,20 @@ class roleDialog{
         }
     }
 
+    selectAll(){
+        var perms = document.getElementsByClassName('perm');
+        [].forEach.call(perms, function(elem){
+            elem.checked = true;
+        });
+    }
+
+    unselectAll(){
+        var perms = document.getElementsByClassName('perm');
+        [].forEach.call(perms, function(elem){
+            elem.checked = false;
+        });
+    }
+
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];

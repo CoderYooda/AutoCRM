@@ -140,7 +140,7 @@ class Helper{
                     window.helper.log(className + " - Такого конструктора не существует");
                 }
             } else {
-                console.log('Класс ' + className + ' Linked()')
+                // console.log('Класс ' + className + ' Linked()')
                 // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
                 try {window[className].linked();} catch (err) {
                     console.warn(err);

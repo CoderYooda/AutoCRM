@@ -24,41 +24,54 @@
                 </div>
                 <div class="top-navs">
                     <ul class="nav top-nav-bar app-top-menu">
+
+                        @canany(['Смотреть товары','Смотреть заявки поставщикам','Смотреть поступления','Смотреть продажи','Смотреть заказ клиента','Смотреть корректировки'])
                         <li id="store_link" class="top-nav-item" >
-                            <a class="header-tab ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store']) }}">
+                            <a class="header-tab ajax-nav" href="{{ route('StoreIndex', \App\Http\Controllers\StoreController::getAllowedPage()) }}">
                                 Склад
                             </a>
                         </li>
+                        @endcanany
+                        @canany(['Смотреть денежные операции','Смотреть денежные перемещения'])
                         <li id="cash_link" class="top-nav-item" >
-                            <a class="header-tab ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'warrant']) }}">
+                            <a class="header-tab ajax-nav" href="{{ route('CashIndex', \App\Http\Controllers\CashController::getAllowedPage()) }}">
                                 Финансы
                             </a>
                         </li>
+                        @endcanany
                         {{--<li id="employee_link" class="top-nav-item" >--}}
                             {{--<a class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">--}}
                                 {{--Сотрудники--}}
                             {{--</a>--}}
                         {{--</li>--}}
+                        @canany(['Смотреть контакты'])
                         <li id="partner_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('PartnerIndex') }}">
                                 Контакты
                             </a>
                         </li>
+                        @endcanany
+                        @canany(['Смотреть настройки'])
                         <li id="settings_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
                                 Настройки
                             </a>
                         </li>
+                        @endcanany
+                        @canany(['Смотреть планировщик'])
                         <li id="sсhedule_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('ScheduleIndex') }}">
                                 Планировщик
                             </a>
                         </li>
+                        @endcanany
+                        @canany(['Смотреть историю'])
                         <li id="actions_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('ActionsIndex') }}">
                                 История
                             </a>
                         </li>
+                        @endcanany
                     </ul>
                     <span class="md-auto"></span>
                     <ul class="top-nav-bar right-nav">
@@ -186,6 +199,7 @@
                 </div>
                 <div id="dialogs"></div>
                 @include(env('DEFAULT_THEME', 'classic') . '.system.aside_messages')
+                @include(env('DEFAULT_THEME', 'classic') . '.system.system_dialog')
             </div>
 
         </div>

@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\DdsArticle;
 use App\Models\Setting;
 use App\Models\Store;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -72,11 +73,11 @@ class SettingsController extends Controller
     public static function roleTab($request)
     {
         $roles = RoleController::getRoles($request);
-
+		$users = User::owned()->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-role'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.role_container', compact( 'roles', 'request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.role_container', compact( 'roles','users', 'request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','users', 'request'));
     }
 
 

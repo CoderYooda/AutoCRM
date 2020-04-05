@@ -249,7 +249,7 @@ class cashPage{
                 });
             },
             tableBuilt:function(){
-                console.log('Таблица готова');
+                // console.log('Таблица готова');
             },
             rowClick:function(e, row){
                 if(object.active_tab != 'store'){
@@ -337,7 +337,6 @@ class cashPage{
         if(window.helper.findGetParameter('search') !== null){
             this.search = window.helper.findGetParameter('search');
         }
-        console.log('initSearch');
     }
 
     resetSearch(){

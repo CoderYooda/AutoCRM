@@ -510,6 +510,29 @@ label.label-sm{
 .flex-1{
     flex: 1!important;
 }
+.flex-1-5{
+    flex: 1.5!important;
+}
+.user-list > .item_elem{
+    border-bottom: 1px solid #eee;
+    height: 40px;
+    line-height: 40px;
+    padding: 0px 10px;
+    display: flex;
+}
+.user-list .role_select_cont{
+    margin: 3px 0;
+}
+.user-list .role_selector{
+    width: auto;
+    text-align: right;
+    border: none;
+    cursor: pointer;
+}
+.user-list .role_selector:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
 .nav-active-bg .nav-link.active, .nav-active-bg .nav>li.active>a {
     color: rgba(70,90,110,.85)!important;
     background-color: #f3f6f9!important;

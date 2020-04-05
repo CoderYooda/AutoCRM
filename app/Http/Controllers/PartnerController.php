@@ -18,6 +18,7 @@ use App\Models\Store;
 use Auth;
 use SystemMessage;
 use App\Http\Controllers\UserActionsController as UA;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\SmsController;
 
 
@@ -26,6 +27,9 @@ class PartnerController extends Controller
     public function index(Request $request)
     {
         $target = HC::selectTarget();
+	    if(!Gate::allows('Смотреть контакты')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         $categories = CategoryController::getCategories($request, 'partner');
         $cat_info = [];
         $cat_info['route'] = 'PartnerIndex';

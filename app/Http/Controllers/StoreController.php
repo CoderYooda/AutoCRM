@@ -8,27 +8,37 @@ use App\Models\Article;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class StoreController extends Controller
 {
     public function index(Request $request)
-    { // точка входа в страницу
+    {
+    	// точка входа в страницу
         $page_title = 'Склад';
 
+        // На всякий случай
         if($request['search'] == 'undefined'){
             $request['search'] = null;
         }
-
-        $target = HC::selectTarget(); // цель ajax подгрузки
-
-        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
+        
+        // цель динамической подгрузки
+        $target = HC::selectTarget();
+        
+	    // Определяем табуляцию
+        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){
             $request['active_tab'] = 'store';
         }
 
         $classname = $request['active_tab'] . 'Tab';
 
         $content = self::$classname($request);
+        
+        
+        if(class_basename($content) == "JsonResponse"){
+        	return $content;
+        }
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
             return response()->json([
@@ -39,6 +49,22 @@ class StoreController extends Controller
         } else {
             return $content;
         }
+    }
+    
+    public static function getAllowedPage(){
+	    $tabs = [
+		    'store' => 'Смотреть товары',
+		    'provider_orders' => 'Смотреть заявки поставщикам',
+		    'entrance' => 'Смотреть поступления',
+		    'shipments' => 'Смотреть продажи',
+		    'client_orders' => 'Смотреть заказ клиента',
+		    'adjustment' => 'Смотреть корректировки'
+	    ];
+	    foreach ($tabs as $tab => $permission) {
+		    if(Gate::allows($permission)){
+			    return ['active_tab' => $tab];
+		    }
+	    }
     }
 
     public function tableData(Request $request)
@@ -54,7 +80,9 @@ class StoreController extends Controller
     public static function storeTab($request)
     {
         $page = 'Склад';
-
+	    if(!Gate::allows('Смотреть товары')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
@@ -71,6 +99,9 @@ class StoreController extends Controller
 
     public static function entranceTab($request)
     {
+        if(!Gate::allows('Смотреть поступления')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance'){
             return view(env('DEFAULT_THEME', 'classic') . '.entrance.elements.table_container', compact('request'));
         }
@@ -79,6 +110,9 @@ class StoreController extends Controller
 
     public static function providerTab($request)
     {
+        if(!Gate::allows('Смотреть заявки поставщикам')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-provider'){
@@ -89,6 +123,9 @@ class StoreController extends Controller
 
     public static function shipmentsTab($request)
     {
+	    if(!Gate::allows('Смотреть продажи')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments'){
             return view(env('DEFAULT_THEME', 'classic') . '.shipments.elements.table_container', compact('request'));
         }
@@ -97,6 +134,9 @@ class StoreController extends Controller
 
     public static function client_ordersTab($request)
     {
+	    if(!Gate::allows('Смотреть заказ клиента')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders'){
             return view(env('DEFAULT_THEME', 'classic') . '.client_orders.elements.table_container', compact('request'));
         }
@@ -113,6 +153,9 @@ class StoreController extends Controller
 
     public static function adjustmentTab($request)
     {
+        if(!Gate::allows('Смотреть корректировки')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment'){
             return view(env('DEFAULT_THEME', 'classic') . '.adjustments.elements.table_container', compact('request'));
         }

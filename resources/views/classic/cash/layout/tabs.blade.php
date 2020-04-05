@@ -6,12 +6,16 @@
 
 <div class="side-menu w-180">
     <ul class="nav">
-        <li id="warrant-tab" data-tab="warrant" data-default="true" class="@if($request['active_tab'] == 'warrant' || $request['active_tab'] == null) active @endif">
-            <a class="ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'warrant', 'target' => 'ajax-tab-content']) }}">Деньги</a>
-        </li>
-        <li id="cashmove-tab" data-tab="cashmove" class="@if($request['active_tab'] == 'cashmove') active @endif">
-            <a class="ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'cashmove', 'target' => 'ajax-tab-content']) }}">Перемещения</a>
-        </li>
+        @can('Смотреть денежные операции')
+            <li id="warrant-tab" data-tab="warrant" data-default="true" class="@if($request['active_tab'] == 'warrant' || $request['active_tab'] == null) active @endif">
+                <a class="ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'warrant', 'target' => 'ajax-tab-content']) }}">Деньги</a>
+            </li>
+        @endcan
+        @can('Смотреть денежные перемещения')
+            <li id="cashmove-tab" data-tab="cashmove" class="@if($request['active_tab'] == 'cashmove') active @endif">
+                <a class="ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'cashmove', 'target' => 'ajax-tab-content']) }}">Перемещения</a>
+            </li>
+        @endcan
     </ul>
 </div>
 <div id="ajax-tab-content" class="main-content">

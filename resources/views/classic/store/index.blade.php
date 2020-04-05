@@ -12,8 +12,12 @@
             <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
         </div>
         <div class="actions">
-            <button onclick="openDialog('categoryDialog')" class="button primary mr-12">Новая категория</button>
-            <button onclick="openDialog('productDialog')" class="button primary">Новый товар</button>
+            @can('Создавать категории')
+                <button onclick="openDialog('categoryDialog')" class="button primary ml-12">Новая категория</button>
+            @endcan
+            @can('Создавать товары')
+                    <button onclick="openDialog('productDialog')" class="button primary ml-12">Новый товар</button>
+            @endcan
         </div>
     </div>
 </div>

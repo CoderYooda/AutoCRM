@@ -53,6 +53,8 @@ axios.interceptors.request.use(function (config) {
 //     document.getElementById('xhr').value = window.isXHRloading;
 // }, 50);
 
+window.system_dialog = new window.bootstrap.Modal(document.getElementById('system_dialog'));
+
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');
     window.isXHRloading = false;
@@ -69,6 +71,12 @@ window.axios.interceptors.response.use(function (response) {
 }, function (error) {
     if (error.response.status === 401) {
         window.location.href = "/login";
+    }
+    if (error.response.status === 403) {
+        if(error.response.data.type == "gateClosed"){
+            document.getElementById('sys_mess_text').innerHTML = error.response.data.message;
+            window.system_dialog.show();
+        }
     }
     document.body.classList.remove('loading');
     window.isXHRloading = false;

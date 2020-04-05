@@ -18,6 +18,42 @@
 .fade {
     transition: opacity .15s linear;
 }
+.modal-dialog {
+    position: relative;
+    width: auto;
+    pointer-events: none;
+    max-width: 300px;
+    margin: 20% auto;
+}
+.modal-content {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    outline: 0;
+}
+.modal-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: .3rem;
+    border-top-right-radius: .3rem;
+}
+.black-overlay {
+    background-color: rgba(0, 0, 0, 0.85);
+}
 /*
 Modal
 */

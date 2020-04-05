@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use Auth;
 
 class User extends Authenticatable
 {
@@ -50,6 +51,12 @@ class User extends Authenticatable
     public function getStoreFirst(){
         return $this->partner()->first()->store()->first();
     }
+	
+	public static function owned()
+	{
+		$company_id = Auth::user()->company()->first()->id;
+		return self::where('company_id', $company_id);
+	}
 
     public function attachToCompany($company)
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\HelpController as HC;
 use App\Models\Warrant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CashController extends Controller
 {
@@ -27,6 +28,10 @@ class CashController extends Controller
         if($request['active_tab'] === 'null'){$classname = 'moneyTab';}
 
         $content = self::$classname($request);
+	
+	    if(class_basename($content) == "JsonResponse"){
+		    return $content;
+	    }
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
             return response()->json([
@@ -39,9 +44,24 @@ class CashController extends Controller
             return $content;
         }
     }
-
+	
+	public static function getAllowedPage(){
+		$tabs = [
+			'warrant' => 'Смотреть денежные операции',
+			'cashmove' => 'Смотреть денежные перемещения',
+		];
+		foreach ($tabs as $tab => $permission) {
+			if(Gate::allows($permission)){
+				return ['active_tab' => $tab];
+			}
+		}
+	}
+    
     public static function warrantTab($request)
     {
+	    if(!Gate::allows('Смотреть денежные операции')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-warrant'){
             return view(env('DEFAULT_THEME', 'classic') . '.warrant.elements.table_container', compact('request'));
         } else {
@@ -51,6 +71,9 @@ class CashController extends Controller
 
     public static function cashmoveTab($request)
     {
+	    if(!Gate::allows('Смотреть денежные перемещения')){
+		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){
             return view(env('DEFAULT_THEME', 'classic') . '.cashmove.elements.table_container', compact('request'));
         }

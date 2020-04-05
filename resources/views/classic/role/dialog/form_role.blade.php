@@ -6,7 +6,7 @@
         id="roleDialog"
         @php $class = 'roleDialog' @endphp
     @endif
-    class="dialog" style="width:400px;">
+    class="dialog" style="width:780px;">
     @if(isset($role) && $role->id != NULL)
         <div class="titlebar">Редактирование роли "{{ $role->name }}"</div>
     @else
@@ -18,8 +18,9 @@
 
     <form action="{{ route('StoreRole') }}" method="POST">
         @csrf
-
-
+        @if(isset($role) && $role->id != NULL)
+            <input type="hidden" name="id" value="{{ $role->id }}">
+        @endif
         <div class="modal-body">
             <div class="box-body">
                 <div class="row">
@@ -33,22 +34,43 @@
                                    name="name" class="form-control" placeholder="Название роли, например (Администраор)" autofocus>
                         </div>
                     </div>
-                    {{--<div class="col-sm-6 no-pr">--}}
-                        {{--<div class="form-group d-flex mb-10">--}}
-                            {{--<label class="no-wrap" for="users">Пользователи</label>--}}
-                            {{--<input readonly="" onclick="{{ $class }}.openSelectUsersModal('users')" id="users" type="text" name="provider" value="" class="form-control users input_as_link" placeholder="выбрать">--}}
-                            {{--<button type="button" onclick="{{ $class }}.clearList('users', 'users_stack')" class="right-remove"><i class="fa fa-remove"></i></button>--}}
-                        {{--</div>--}}
-                        {{--<div id="users_stack" class="box w-100 p-10">--}}
-                            {{--<div class="no-items-text">Для этой роли пользователи не назначены</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
                     <div class="col-sm-12">
                         <label>Разрешения</label>
-                        <div class="box w-100 p-10 checkbox-list">
-                        @foreach($permissions as $permission)
-                            <div class="item">{{ $permission->name }} <input class="pull-right" type="checkbox" name="{{ $permission->id }}"></div>
-                        @endforeach
+                        <span class="pull-right"><a class="pl-8" onclick="window.{{ $class }}.selectAll()">выделить всё</a><a class="pl-8" onclick="window.{{ $class }}.unselectAll()" >cнять выделение</a></span>
+                        <div class="box w-100 checkbox-list">
+                            <div class="d-flex title-head">
+                                <div class="flex-1-5">Сущность</div>
+                                <div class="flex-1 text-center">Чтение</div>
+                                <div class="flex-1 text-center">Создание</div>
+                                <div class="flex-1 text-center">Удаление</div>
+                                <div class="flex-1 text-center">Редактирование</div>
+                            </div>
+                            <div class="p-10 ">
+                                @foreach($permissions as $permission)
+                                    <div class="d-flex item">
+                                        <div class="flex-1-5">{{ $permission['name'] }}</div>
+                                        <div class="flex-1 text-center">
+                                            @if(isset($permission['types']['read']))
+                                                <input type="checkbox" class="perm" name="perms[{{ $permission['types']['read']['id']}}]" @if($permission['types']['read']['checked'] == true) checked @endif>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            @if(isset($permission['types']['create']))
+                                                <input type="checkbox" class="perm" name="perms[{{ $permission['types']['create']['id'] }}]" @if($permission['types']['create']['checked'] == true) checked @endif>
+                                            @endif</div>
+                                        <div class="flex-1 text-center">
+                                            @if(isset($permission['types']['delete']))
+                                                <input type="checkbox" class="perm" name="perms[{{ $permission['types']['delete']['id'] }}]" @if($permission['types']['delete']['checked'] == true) checked @endif>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            @if(isset($permission['types']['edit']))
+                                                <input type="checkbox" class="perm" name="perms[{{ $permission['types']['edit']['id'] }}]" @if($permission['types']['edit']['checked'] == true) checked @endif>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

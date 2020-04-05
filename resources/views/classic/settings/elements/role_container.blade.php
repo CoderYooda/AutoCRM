@@ -1,11 +1,28 @@
 <div class="box-lister box">
     <div id="actions-container" class="box-content">
-        {{ Auth::user()->getAllPermissions() }}
-        @can('создавать категории')
-            123
-            @else
-            false
-        @endcan
+        {{--{{ Auth::user()->getAllPermissions() }}--}}
+        <div class="user-list">
+            @foreach($users as $user)
+                <div class="item_elem">
+                    <div class="flex-1">
+                        {{ $user->partner()->first()->outputName() }}
+                    </div>
+                    <div class="flex-1">
+                        <div class="pull-right">
+                            <div class="dropdown role_select_cont" onclick="window.helper.openModal(this, event)">
+                                <input readonly="" name="role" id="role" type="text" value="@if($user->roles()->first()){{ $user->roles()->first()->name }}@else Не выбрано @endif" class="form-control role_selector" >
+                                <div class="dropdown_container">
+                                    <div class="arrow"></div>
+                                    @foreach($roles as $role)
+                                        <span onclick="window.settings.setRoleToUser({{ $user->id }},{{ $role->id }})" class="element">{{ $role->name }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </div>
 </div>
 <div class="content-rightside">

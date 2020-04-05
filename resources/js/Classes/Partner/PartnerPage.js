@@ -255,7 +255,6 @@ class partnerPage{
                 });
             },
             tableBuilt:function(){
-                console.log('Таблица готова');
             },
             rowClick:function(e, row){
                 if(object.active_tab != 'store'){

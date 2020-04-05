@@ -20,6 +20,12 @@ class settingsPage{
         } catch (e) {
 
         }
+        document.addEventListener('RoleAssigned', function(e){
+            object.reload();
+        });
+        document.addEventListener('RoleStored', function(e){
+            object.reload();
+        });
         document.addEventListener('CashboxStored', function(e){
             object.reload();
         });
@@ -111,6 +117,20 @@ class settingsPage{
             //     drag_dialog.tag = 'entranceDialog' + resp.data.id;
             //     window.helper.initDialogMethods();
             // });
+        });
+    }
+
+    setRoleToUser(user_id, role_id){
+        window.axios({
+            method: 'post',
+            url: '/roles/assign',
+            data: {user_id:user_id, role_id:role_id}
+        }).then(function (resp) {
+            dd(resp.data);
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
         });
     }
 

@@ -1,8 +1,9 @@
-
+window.bootstrap = require("bootstrap.native");                     // Обращение к методам Bootstrap без jQuery
 require('./variables');                                             // Стартовая инициализация
 require('./bootstrap');                                             // Стартовая инициализация
 require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
 require('./navigation');                                            // Навигация XHR
+
 
 
 window.Tabulator = require('tabulator-tables');
@@ -49,6 +50,8 @@ window.scanner = new Scanner();
 window.auth = new Auth();
 window.tabs = new Tabs();
 window.tippy = tippy;
+
+
 
 
 Array.prototype.remove = function() {

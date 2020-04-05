@@ -25,18 +25,13 @@ class CategoryDialog{
             focused.focus();
         }
     }
-
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
     }
-
     openSelectCategoryDialog(category_selected = null){
         window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
-
-
-
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
