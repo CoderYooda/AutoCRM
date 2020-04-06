@@ -68,6 +68,9 @@ class ClientOrdersController extends Controller
 
     public function delete($id, Request $request)
     {
+        if(!Gate::allows('Удалять продажи')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
         if ($id == 'array') {
             $client_orders = ClientOrder::whereIn('id', $request['ids']);

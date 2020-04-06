@@ -8,7 +8,9 @@
             </div>
         </div>
         <div class="content-rightside">
-            <button onclick="openDialog('clientorderDialog')" class="button primary mb-15 w-100">Новый заказ клиента</button>
+            @can('Создавать заказ клиента')
+                <button onclick="openDialog('clientorderDialog')" class="button primary mb-15 w-100">Новый заказ клиента</button>
+            @endcan
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
                 <div class="form-group d-flex mb-10">

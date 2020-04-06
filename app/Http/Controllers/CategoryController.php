@@ -11,6 +11,7 @@ use Auth;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -165,6 +166,9 @@ class CategoryController extends Controller
 
     public function delete($id)
     {
+        if(!Gate::allows('Удалять категории')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $category = Category::where('id', $id)->first();
         $type = 'success';
         if($category->childs()->count() > 0 ||
@@ -371,23 +375,4 @@ class CategoryController extends Controller
         return $categories;
     }
 
-
-
-//    public function drawCrumbs($request, $root){
-//        $html = '<ol class="breadcrumb mb-0">';
-//
-//
-//        $breadcrumbs = [];
-//
-//        $breadcrumbs[] = $this->rec($breadcrumbs, $root, 0);
-//
-//        dd($breadcrumbs);
-//        foreach($breadcrumbs as $breadcrumb){
-//            $html .= '<li class="breadcrumb-item"><a href="#">' . $breadcrumb->name . '</a></li>';
-//        }
-//
-//
-//        $html .= '</ol>';
-//        return $html;
-//    }
 }

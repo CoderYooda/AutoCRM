@@ -132,14 +132,17 @@
             <div id="app" class="app-content">
                 <div class="aside">
                     <ul class="nav">
+                        @can('Смотреть планировщик')
                         <li>
-                            <a href="#" class="ajax-nav update_url">
+                            <a href="{{ route('ScheduleIndex') }}" class="ajax-nav update_url">
                                     <span class="nav-icon">
                                         <i class="fa fa-calendar"></i>
                                     </span>
                                 <span class="nav-text">Календарь</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('Создавать денежные операции')
                         <li>
                             <a onclick="openDialog('warrantDialog', '&isIncoming=1')" class="ajax-nav update_url">
                                     <span class="nav-icon">
@@ -156,6 +159,8 @@
                                 <span class="nav-text">Расход</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('Создавать продажи')
                         <li>
                             <a onclick="openDialog('shipmentDialog')" class="ajax-nav update_url">
                                     <span class="nav-icon">
@@ -164,6 +169,8 @@
                                 <span class="nav-text">Продажа</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('Создавать заказ клиента')
                         <li>
                             <a onclick="openDialog('clientorderDialog')" class="ajax-nav update_url">
                                     <span class="nav-icon">
@@ -172,6 +179,7 @@
                                 <span class="nav-text">Заказ</span>
                             </a>
                         </li>
+                        @endcan
                         {{--<li>--}}
                             {{--<a href="#" class="ajax-nav update_url">--}}
                                     {{--<span class="nav-icon">--}}

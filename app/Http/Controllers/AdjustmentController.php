@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class AdjustmentController extends Controller
@@ -151,7 +152,9 @@ class AdjustmentController extends Controller
     }
 
     public function delete(Request $request){
-
+        if(!Gate::allows('Удалять денежные операции')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         if($request->expectsJson()){
             return response()->json([
                 'message' => 'Удаление невозможно',

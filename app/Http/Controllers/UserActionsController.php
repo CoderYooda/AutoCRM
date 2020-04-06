@@ -8,6 +8,7 @@ use App\Http\Controllers\HelpController as HC;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\SystemMessage as SM;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class UserActionsController extends Controller
@@ -15,6 +16,9 @@ class UserActionsController extends Controller
     public function index(Request $request)
     {
         $target = HC::selectTarget();
+        if(!Gate::allows('Смотреть историю')){
+            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+        }
         $actions = self::getActions($request);
         //$system_messages = SM::owned()->get();
         $system_messages = SM::getMessages($request);

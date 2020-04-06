@@ -14,6 +14,8 @@
                 <input name="{{ $setting->key }}" type="{{ $setting->type }}" class="form-control" value="{{ $setting->value }}" >
             </div>
         @endforeach
-        <button type="submit" class="button m-t">Сохранить</button>
+        @can('Редактировать настройки')
+            <button type="submit" class="button m-t">Сохранить</button>
+        @endcan
     </form>
 </div>

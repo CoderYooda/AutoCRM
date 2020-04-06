@@ -8,10 +8,9 @@
             </div>
         </div>
         <div class="content-rightside">
-            <div class="w-290">
-                <button onclick="openDialog('moneymoveDialog')" class="w-100 button primary mb-15">Переместить средства</button>
-            </div>
-
+            @can('Создавать денежные перемещения')
+                <button onclick="openDialog('moneymoveDialog')" class="w-290 button primary mb-15">Переместить средства</button>
+            @endcan
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
                 <div class="form-group d-flex mb-10">

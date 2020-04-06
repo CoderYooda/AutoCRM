@@ -9,10 +9,11 @@
         </div>
         <div class="content-rightside">
             <div class="w-290">
-                <button onclick="openDialog('warrantDialog', '&isIncoming=1')" class="w-100 button primary mb-15">Новый приходный ордер</button>
-                <button onclick="openDialog('warrantDialog', '&isIncoming=0')" class="w-100 button primary mb-15">Новый расходный ордер</button>
+                @can('Создавать денежные операции')
+                    <button onclick="openDialog('warrantDialog', '&isIncoming=1')" class="w-100 button primary mb-15">Новый приходный ордер</button>
+                    <button onclick="openDialog('warrantDialog', '&isIncoming=0')" class="w-100 button primary mb-15">Новый расходный ордер</button>
+                @endcan
             </div>
-
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
                 <div class="form-group d-flex mb-10">

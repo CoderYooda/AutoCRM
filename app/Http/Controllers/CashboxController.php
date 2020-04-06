@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 
 class CashboxController extends Controller
 {
@@ -95,6 +96,9 @@ class CashboxController extends Controller
 
     public function delete($id, Request $request)
     {
+        if(!Gate::allows('Редактировать настройки')){
+            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+        }
         $returnIds = null;
         if($id == 'array'){
             $cashboxes = Cashbox::whereIn('id', $request['ids']);
@@ -138,7 +142,6 @@ class CashboxController extends Controller
         ], $this->status);
     }
 
-
     public function select($id){
         $cashbox = Cashbox::where('id', $id)->first();
         if(!$cashbox){
@@ -151,7 +154,6 @@ class CashboxController extends Controller
             'name' => $cashbox->name
         ]);
     }
-
 
     public static function getCashboxes($request)
     {

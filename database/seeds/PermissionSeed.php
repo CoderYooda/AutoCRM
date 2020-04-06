@@ -76,7 +76,7 @@ class PermissionSeed extends Seeder
 	    Permission::create(['name' => 'Смотреть историю',                           'model' => 'History',       'type' => 'read']);
 	
 	    $role1 = Role::create(['name' => 'Руководитель', 'company_id' => 2]);
-//        $role1->givePermissionTo('Создавать категории');
+        $role1->givePermissionTo('Смотреть настройки');
 //        $role1->givePermissionTo('Удалять категории');
 
         $role2 = Role::create(['name' => 'Менеджер', 'company_id' => 2]);

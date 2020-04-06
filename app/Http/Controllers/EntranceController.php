@@ -11,6 +11,7 @@ use App\Models\Entrance;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Models\ArticleStock;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class EntranceController extends Controller
@@ -374,6 +375,9 @@ class EntranceController extends Controller
 
     public function delete($id, Request $request)
     {
+        if(!Gate::allows('Удалять поступления')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
 
         if($id == 'array'){

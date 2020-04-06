@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Auth;
 use sngrl\SphinxSearch\SphinxSearch;
 use App\Http\Controllers\Providers\TrinityController;
+use Illuminate\Support\Facades\Gate;
 use stdClass;
 
 class ProductController extends Controller
@@ -30,6 +31,10 @@ class ProductController extends Controller
 
     public function delete($id, Request $request)
     {
+
+        if(!Gate::allows('Удалять товары')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
         if($id == 'array'){
             $products = Article::owned()->whereIn('id', $request['ids']);
@@ -60,8 +65,6 @@ class ProductController extends Controller
             'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product', compact('products', 'stores', 'request'))->render(),
         ]);
     }
-
-
 
     public function addToList(Request $request)
     {

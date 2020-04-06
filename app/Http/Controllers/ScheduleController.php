@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 use SystemMessage;
 
@@ -16,6 +17,11 @@ class ScheduleController extends Controller
 {
     public function index(Request $request){
         $target = HC::selectTarget();
+
+        if(!Gate::allows('Смотреть планировщик')){
+            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+        }
+
         if($request->expectsJson() && $request['search'] === NULL){
             $content = view(env('DEFAULT_THEME', 'classic') . '.schedule.index', compact('request'))->render();
             return response()->json([

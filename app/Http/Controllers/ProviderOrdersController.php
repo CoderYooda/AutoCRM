@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Models\Store;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class ProviderOrdersController extends Controller
@@ -126,6 +127,9 @@ class ProviderOrdersController extends Controller
 
     public function delete($id, Request $request)
     {
+        if(!Gate::allows('Удалять заявки поставщикам')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
         if($id == 'array'){
             $provider_orders = ProviderOrder::whereIn('id', $request['ids']);

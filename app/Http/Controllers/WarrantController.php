@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Partner;
 use App\Http\Controllers\UserActionsController as UA;
+use Illuminate\Support\Facades\Gate;
 use stdClass;
 use Auth;
 
@@ -173,6 +174,9 @@ class WarrantController extends Controller
 
     public function delete($id, Request $request)
     {
+        if(!Gate::allows('Удалять продажи')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
         if($id == 'array'){
             $warrants = Warrant::owned()->whereIn('id', $request['ids']);

@@ -9,6 +9,7 @@ use App\Models\DdsArticle;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,9 @@ class SettingsController extends Controller
         $this->page_title = 'Настройки';
         $target = HC::selectTarget(); // цель ajax подгрузки
 
+        if(!Gate::allows('Смотреть настройки')){
+            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+        }
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'index';
@@ -29,6 +33,10 @@ class SettingsController extends Controller
 
         $classname = $request['active_tab'] . 'Tab';
         $content = self::$classname($request);
+
+        if(class_basename($content) == "JsonResponse"){
+            return $content;
+        }
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
             return response()->json([

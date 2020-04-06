@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class MoneyMoveController extends Controller
@@ -98,6 +99,9 @@ class MoneyMoveController extends Controller
 
     public function delete($id, Request $request)
     {
+        if(!Gate::allows('Удалять денежные перемещения')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
         if($id == 'array'){
             $moneymoves = MoneyMoves::owned()->whereIn('id', $request['ids']);

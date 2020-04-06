@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
+use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class ShipmentsController extends Controller
@@ -57,7 +58,9 @@ class ShipmentsController extends Controller
 
     public function delete($id, Request $request)
     {
-
+        if(!Gate::allows('Удалять заказ клиента')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        }
         $returnIds = null;
         if($id == 'array'){
             $shipments = Shipment::whereIn('id', $request['ids']);
