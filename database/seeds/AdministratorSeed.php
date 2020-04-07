@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Store;
 use App\Models\Partner;
 use App\Models\Setting;
+use App\Http\Controllers\SettingsController;
 
 class AdministratorSeed extends Seeder
 {
@@ -20,10 +21,6 @@ class AdministratorSeed extends Seeder
         $company->name = 'Управляющая компания';
         $company->save();
 
-        $store = new Store();
-        $store->name = 'Первый тестовый';
-        $store->company_id = $company->id;
-
         $user = User::create([
             'name' => 'Администратор',
             'email' => 'CoderYooda@gmail.com',
@@ -32,20 +29,25 @@ class AdministratorSeed extends Seeder
             'password' => bcrypt('senatorov616322')
         ]);
 
+        Partner::create([
+            'isfl' => true,
+            'user_id' => $user->id,
+            'category_id' => 5,
+            'store_id' => $company->stores()->first()->id,
+            'fio' => 'Админ',
+            'companyName' => $company->name,
+            'company_id' => $company->id,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now()
+        ]);
+
         $user->save();
         $user->company()->associate($company);
-        $company->stores()->save($store);
-
 
         #######################################
         $company = new Company();
         $company->name = 'Тестовый магазин';
         $company->save();
-
-        $store = new Store();
-        $store->name = 'Основной склад';
-        $store->company_id = $company->id;
-        $company->stores()->save($store);
 
 
         $user = User::create([
@@ -60,7 +62,7 @@ class AdministratorSeed extends Seeder
             'isfl' => true,
             'user_id' => $user->id,
             'category_id' => 5,
-            'store_id' => $store->id,
+            'store_id' => $company->stores()->first()->id,
             'fio' => 'Сенаторов Сергей Андреевич',
             'companyName' => $company->name,
             'company_id' => $company->id,
@@ -70,8 +72,6 @@ class AdministratorSeed extends Seeder
 
         $user->save();
         $user->company()->associate($company);
-
-        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id,  'type' => 'number', 'key' => 'markup', 'value' => '0']);
 
     }
 }

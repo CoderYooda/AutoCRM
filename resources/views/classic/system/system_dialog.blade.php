@@ -8,7 +8,7 @@
                 <p class="p-10" id="sys_mess_text"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="button" data-dismiss="modal">Это понятно</button>
+                <button href="#" type="button" class="button" data-dismiss="modal">Это понятно</button>
             </div>
         </div>
         <!-- /.modal-content -->

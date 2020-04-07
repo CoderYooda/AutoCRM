@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\SettingsController;
 use App\Models\Partner;
 use App\Models\Setting;
 use App\Models\Store;
@@ -128,8 +129,7 @@ class RegisterController extends Controller
         $partner->store_id = $store->id;
         $partner->save();
 
-
-        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'type' => 'number', 'key' => 'markup', 'value' => '0']);
+        Company::flushEventListeners();
 
 
         return $user;

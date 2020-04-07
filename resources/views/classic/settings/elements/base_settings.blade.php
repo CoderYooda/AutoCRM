@@ -11,7 +11,17 @@
         @foreach($settings as $setting)
             <div class="form-group w-350">
                 <label>{{ $setting->name }}</label>
-                <input name="{{ $setting->key }}" type="{{ $setting->type }}" class="form-control" value="{{ $setting->value }}" >
+                @if($setting->type == 'select')
+                    <select class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
+                        @if($setting->model == 'Role')
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}" @if($setting->value == $role->id) selected @endif>{{ $role->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                @else
+                    <input name="{{ $setting->key }}" type="{{ $setting->type }}" class="form-control" value="{{ $setting->value }}" >
+                @endif
             </div>
         @endforeach
         @can('Редактировать настройки')

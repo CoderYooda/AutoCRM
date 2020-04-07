@@ -17,6 +17,7 @@ class CreateSettingsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->char('name')->comment('Описание настройки');
+            $table->char('model')->nullable()->comment('Коллекция если select');
             $table->char('type')->comment('Тип поля');
             $table->char('key')->comment('Ключ');
             $table->char('value')->comment('Значение');

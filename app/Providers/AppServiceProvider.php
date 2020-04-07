@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('Суперадмин') ? true : null;
+        });
         \App\Models\Shipment::observe(\App\Observers\ShipmentObserver::class);
+        \App\Models\Company::observe(\App\Observers\CompanyObserver::class);
     }
 }

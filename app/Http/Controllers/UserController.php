@@ -8,6 +8,8 @@ use App\Models\SalarySchema;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Contracts\Auth\Authenticatable as SystemAuth;
 use Auth;
 
 class UserController extends Controller
@@ -111,5 +113,21 @@ class UserController extends Controller
 
     public static function headerUser(){
         return view('template.interface.user.head')->render();
+    }
+
+    public static function getAllUsersList()
+    {
+        if(!Gate::allows('Суперадмин')){
+            return PermissionController::closedResponse('Вам запрещено это действие.');
+        } else {
+            $users = User::all();
+            $list = view(env('DEFAULT_THEME', 'classic') . '.system.admin_userlist', compact('users'))->render();
+            return $list;
+        }
+    }
+
+    public function authByUser(Request $request){
+        $user = User::where('id', $request->id)->first();
+        Auth::loginUsingId($user->id, TRUE);
     }
 }

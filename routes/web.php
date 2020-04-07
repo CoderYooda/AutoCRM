@@ -230,3 +230,5 @@ Route::get('/islogged', function(){
 
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
 
+Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUser');
+

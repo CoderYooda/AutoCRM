@@ -15,7 +15,6 @@ class SettingsSeed extends Seeder
         $fake_user = \App\Models\User::where('id', 2)->first();
         Auth::login($fake_user);
 
-
         $cashbox = new \App\Http\Controllers\CashboxController();
         $fake_request = new \Illuminate\Http\Request();
 

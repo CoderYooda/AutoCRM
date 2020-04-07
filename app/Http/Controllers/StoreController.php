@@ -216,7 +216,6 @@ class StoreController extends Controller
         }
     }
 
-
     public function checkstock(Request $request){
 
 //        $store = Store::owned()->where('id', $request['store_id'])->first();
@@ -283,5 +282,13 @@ class StoreController extends Controller
         } else {
             return 'Не найден';
         }
+    }
+
+    public static function createStartStore($company)
+    {
+        $store = new Store();
+        $store->name = 'Основной склад';
+        $store->company_id = $company->id;
+        $company->stores()->save($store);
     }
 }

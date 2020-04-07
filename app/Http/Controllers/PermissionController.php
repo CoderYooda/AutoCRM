@@ -7,10 +7,11 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-	public static function getPermissionArray($role){
-		$permissions = Permission::all();
-		
+	public static function getPermissionArray($role)
+    {
+		$permissions = Permission::where('type', '!=', 'hidden')->get();
 		$names = [
+			'App' => 'Приложение',
 			'Category' => 'Категории',
 			'Article' => 'Товары',
 			'ProviderOrder' => 'Заявки поставщику',

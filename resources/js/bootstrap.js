@@ -1,4 +1,4 @@
-// window._ = require('lodash');
+//new Modal// window._ = require('lodash');
 
 try {
     window.Popper = require('popper.js').default;
@@ -53,7 +53,10 @@ axios.interceptors.request.use(function (config) {
 //     document.getElementById('xhr').value = window.isXHRloading;
 // }, 50);
 
-window.system_dialog = new window.bootstrap.Modal(document.getElementById('system_dialog'));
+// var dialog_html = document.getElementById('system_dialog');
+// if(dialog_html){
+//     window.system_dialog = new window.bootstrap.Modal();
+// }
 
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');

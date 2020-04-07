@@ -113,7 +113,10 @@
                         </li>
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <span class="d-flex align-items-center p-10" href="">
-                                {{ Auth::user()->company()->first()->name }}
+                                 <span class="avatar w-32 mr-3">
+                                    <img src="http://autocrm/images/noavatar.png" alt="...">
+                                 </span>
+                                 {{ Auth::user()->company()->first()->name }}
                             </span>
 
                             <div class="dropdown_container">
@@ -126,6 +129,21 @@
                                 </a>
                             </div>
                         </li>
+                        @can('СуперАдмин')
+                        <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
+                            <span class="d-flex align-items-center p-10" href="">
+                                <span class="avatar w-32 mr-3">
+                                    <img src="http://autocrm/images/noavatar.png" alt="...">
+                                </span>
+                                Админ
+                            </span>
+
+                            <div class="dropdown_container">
+                                <div class="arrow"></div>
+                                {!! \App\Http\Controllers\UserController::getAllUsersList() !!}
+                            </div>
+                        </li>
+                        @endcan
                     </ul>
                 </div>
             </header>

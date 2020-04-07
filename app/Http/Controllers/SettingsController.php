@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class SettingsController extends Controller
 {
@@ -53,11 +54,11 @@ class SettingsController extends Controller
 
         $company = Auth::user()->company()->first();
         $settings = Setting::owned()->get();
-
+        $roles = Role::where('company_id', Auth::user()->company->id)->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request'));
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings', 'roles'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings'));
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings', 'roles'));
     }
 
     public static function cashboxTab($request)
@@ -106,6 +107,12 @@ class SettingsController extends Controller
     }
 
     //Saves
+
+    public static function createCompanySettingsPack($company)
+    {
+        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'model' => NULL,  'type' => 'number', 'key' => 'markup', 'value' => '0']);
+        Setting::create(['name' => 'Роль для новых пользователей', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'select', 'key' => 'role_id', 'value' => 2]);
+    }
 
     public function baseStore(Request $request)
     {
