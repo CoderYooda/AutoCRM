@@ -20,18 +20,28 @@ class CategoryDialog{
         document.addEventListener("CategorySelected", function(){
            // object.finitaLaComedia();
         });
-        let focused = document.getElementById('category_dialog_focused');
+        let focused = object.root_dialog.querySelector('#category_dialog_focused');
         if(focused){
             focused.focus();
+            focused.select();
         }
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
     }
+
     finitaLaComedia(){
         closeDialog(null, this.root_dialog.id);
         delete window[this.root_dialog.id];
     }
+
     openSelectCategoryDialog(category_selected = null){
         window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
     }
+
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
@@ -39,6 +49,7 @@ class CategoryDialog{
             object.finitaLaComedia();
         });
     }
+
     selectCategory(id){
         var object = this;
         window.axios({
@@ -63,6 +74,5 @@ class CategoryDialog{
             window.isXHRloading = false;
         });
     };
-
 }
 export default CategoryDialog;

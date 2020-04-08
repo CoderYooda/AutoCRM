@@ -23,6 +23,7 @@ class ProductDialog{
         let focused = document.getElementById('product_dialog_focused');
         if(focused){
             focused.focus();
+            focused.select();
         }
 
         var fn = window.helper.debounce(function(e) {object.trinitySearch();}, 800);

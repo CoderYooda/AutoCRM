@@ -137,8 +137,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'phone' => [
+            'regex' => 'Ошибочный формат телефона',
         ],
     ],
 

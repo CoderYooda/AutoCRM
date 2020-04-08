@@ -4,23 +4,62 @@ class partnerDialog{
         console.log('Окно партнера инициализировано');
         this.root_dialog = dialog;
         this.active = true;
+        this.bithdayFlatpkr = null;
+        this.issuedDateFlatpkr = null;
+        this.bithdayMask = null;
         this.phoneLoginMask = null;
+        this.issuedDateMask = null;
         this.init();
     }
 
     init(){
         let object = this;
-        window.flatpickr(".date_picker", {
-            dateFormat: "Y-m-d",
-        });
+        this.initDatePicker();
+
         this.addPhoneMask();
         this.addPassportMask();
         let focused = document.getElementById('partner_dialog_focused');
         if(focused){
             focused.focus();
         }
-        this.addLoginPhoneMask()
+        this.addLoginPhoneMask();
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                object.bithdayFlatpkr.close();
+                object.issuedDateFlatpkr.close();
+                e.preventDefault();
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
         //elem.addEventListener("click", this.activateTab('fl'));
+    }
+
+    initDatePicker(){
+        let date = this.root_dialog.querySelector('input[name=birthday]');
+        this.bithdayFlatpkr = window.flatpickr(date, {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+        this.bithdayMask = window.IMask(date, {
+                mask: Date,
+                min: new Date(1910, 0, 1),
+                max: new Date(2090, 0, 1),
+                lazy: false
+            }
+        );
+        let date2 = this.root_dialog.querySelector('input[name=issued_date]');
+        this.issuedDateFlatpkr = window.flatpickr(date2, {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+        this.issuedDateMask = window.IMask(date2, {
+                mask: Date,
+                //pattern: 'd-m-Y',
+                min: new Date(1910, 0, 1),
+                max: new Date(2090, 0, 1),
+                lazy: false
+            }
+        );
     }
 
     save(elem){

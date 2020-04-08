@@ -1,6 +1,6 @@
 @php $class = 'selectPartnerDialog' @endphp
 <div id="selectPartnerDialog" class="dialog PartnerStoredListner" style="width:640px;">
-    <div class="titlebar">Выбор контрагента</div>
+    <div class="titlebar">Выбор контакта</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
     <div class="modal-header">
@@ -11,12 +11,8 @@
             @if($request['target'])
                 <input id="target" type="hidden" name="target" value="{{ $request['target'] }}">
             @endif
-
-            <input id="partner_search" type="text" class="form-control mr-15" placeholder="Поиск контрагентов" required="">
-            <span class="input-group-append">
-                <button onclick="openDialog('partnerDialog')" class="button" type="button">Новый контрагент</button>
-            </span>
-
+            <input id="partner_search" type="text" class="form-control mr-15" placeholder="Поиск контактов" required="">
+            <button onclick="openDialog('partnerDialog')" class="button" type="button">Новый контакт</button>
         </form>
     </div>
     <div id="partner_list">

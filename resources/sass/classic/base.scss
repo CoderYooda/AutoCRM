@@ -61,7 +61,11 @@ input[type=checkbox]:checked {
 .tippy-popper {
     z-index: 100000!important;
 }
-
+.invalid-feedback{
+    width: 100%;
+    display: block;
+    text-align: center;
+}
 /* Dropdown */
 
 .dropdown{

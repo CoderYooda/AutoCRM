@@ -165,22 +165,24 @@ class storePage{
 
     initCategoryContextual(){
         let object = this;
-        let elems = document.getElementById('category-block').querySelectorAll('.category-item');
-        [].forEach.call(elems, function(elem){
-            let items = [
-                new ContextualItem({label:'Редактировать', onClick: () => {openDialog('categoryDialog', '&category_id=' + elem.dataset.id)}, shortcut:'Что то' }),
-                new ContextualItem({type:'seperator'}),
-                new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove('category', elem.dataset.id, null)}, shortcut:'Ctrl+A' }),
-            ];
-            elem.addEventListener('contextmenu',function(e){
-                e.preventDefault();
-                new Contextual({
-                    isSticky: false,
-                    items:items,
+        let category_block = document.getElementById('category-block');
+        if(category_block){
+            let elems = category_block.querySelectorAll('.category-item');
+            [].forEach.call(elems, function(elem){
+                let items = [
+                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog('categoryDialog', '&category_id=' + elem.dataset.id)}, shortcut:'Что то' }),
+                    new ContextualItem({type:'seperator'}),
+                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove('category', elem.dataset.id, null)}, shortcut:'Ctrl+A' }),
+                ];
+                elem.addEventListener('contextmenu',function(e){
+                    e.preventDefault();
+                    new Contextual({
+                        isSticky: false,
+                        items:items,
+                    });
                 });
             });
-        });
-
+        }
     }
 
     getCurrentActiveTab(){
@@ -378,6 +380,9 @@ class storePage{
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
+            rowDblClick:function(e, row){
+                openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
+            },
             rowContext:function(e, row){
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
@@ -386,6 +391,7 @@ class storePage{
                 //     items.push(new ContextualItem({label:'Оплатить', onClick: () => {window.providerorderDialog8.getPayment()} }));
                 // }
 
+                items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
                 items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
                 items.push(new ContextualItem({type:'seperator'}));
                 items.push(new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }));
@@ -504,9 +510,9 @@ class storePage{
         this.searchInit();
     }
 
-    linked(){
+    linked()
+    {
         this.baseParams();
-        this.contextListItems();
         this.active_tab = this.getCurrentActiveTab();
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
@@ -514,30 +520,11 @@ class storePage{
         this.date_start = 'null';
         this.date_end = 'null';
         window.helper.debugBar(this);
-
-        //console.warn(this.active_tab);
+        this.initCategoryContextual();
         this.initTableData();
         this.searchInit();
         this.initDatesFilter();
         this.checkActive();
-    }
-
-    contextListItems(){
-        let list_elems = document.getElementsByClassName('product_list_context');
-        [].forEach.call(list_elems, function(elem){
-            elem.addEventListener('contextmenu', event => {
-                event.preventDefault();
-                new Contextual({
-                    isSticky: false,
-                    items:[
-                        new ContextualItem({label:'Item 1', onClick: () => {console.log('Item 1 clicked')}, shortcut:'Ctrl+A' }),
-                        new ContextualItem({label:'Item 2', shortcut:'Ctrl+B' }),
-                        new ContextualItem({type:'seperator'}),
-                        new ContextualItem({label:'Item 3', shortcut:'Ctrl+A' }),
-                    ]
-                });
-            });
-        });
     }
 
     prepareParams(){

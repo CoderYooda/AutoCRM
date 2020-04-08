@@ -8,11 +8,11 @@
         <div class="d-flex">
             <div class="form-group w-128 mr-15">
                 <label>Дата начала</label>
-                <input id="start_date" type="text" name="date_start" class="form-control date_picker_start" placeholder="Выберите дату">
+                <input onclick="this.select();" id="start_date" type="text" name="date_start" class="form-control date_picker_start" placeholder="Выберите дату">
             </div>
             <div class="form-group w-128 mr-15">
                 <label>Дата окончания</label>
-                <input id="end_date" type="text" name="date_end" class="form-control date_picker_end" placeholder="Выберите дату">
+                <input onclick="this.select();" id="end_date" type="text" name="date_end" class="form-control date_picker_end" placeholder="Выберите дату">
             </div>
             <div class="form-group w-128 mr-15">
                 <button class="button primary mt-30" onclick="schedule.resetDate()">Показать</button>

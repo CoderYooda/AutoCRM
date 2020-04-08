@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Passport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PassportController extends Controller
@@ -17,7 +18,7 @@ class PassportController extends Controller
         $passport->partner_id = $partner->id;
         $passport->number = $request['number'];
         $passport->issued_by = $request['issued_by'];
-        $passport->issued_date = $request['issued_date'];
+        $passport->issued_date = Carbon::parse($request['issued_date']);
         $passport->issued_place = $request['issued_place'];
         $passport->save();
 

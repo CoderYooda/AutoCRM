@@ -106,6 +106,10 @@ class PartnerController extends Controller
             $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
         }
 
+        if($request['issued_date'] == '__.__.____'){
+            $request['issued_date'] = null;
+        }
+
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
@@ -245,8 +249,7 @@ class PartnerController extends Controller
                 $rules['number'] = ['min:0', 'digits:10', 'integer'];
             }
             if($request['issued_by']){$rules['issued_by'] = ['min:0', 'max:250'];}
-            if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:Y-m-d'];}
-            if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:Y-m-d'];}
+            if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:d.m.Y'];}
             if($request['issued_place']){$rules['issued_place'] = ['min:0', 'max:250'];}
 
         } elseif(!(bool)$request['isfl']) {
@@ -256,7 +259,7 @@ class PartnerController extends Controller
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             ];
         }
-
+        if($request['email']){$rules['email'] = ['min:3', 'email'];}
         if($request['phone'] != null){
             $rules['phone'] = ['unique:users'];
         }
@@ -368,7 +371,7 @@ class PartnerController extends Controller
             $request['dates'] = $dates;
         }
         if($field === null &&  $dir === null){
-            $field = 'created_at';
+            $field = 'id';
             $dir = 'DESC';
         }
 

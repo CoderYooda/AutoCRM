@@ -16,8 +16,10 @@ document.addEventListener('keydown', function(e){
         Object.keys(dialogs).map(function(objectKey, index) {
             var elem = dialogs[objectKey];
             var d = document.getElementById(elem.tag);
+
             if(d.classList.contains('selected')){
-                window[elem.tag].finitaLaComedia();
+                console.log(d.id);
+                window[d.id].finitaLaComedia();
             }
         });
     }

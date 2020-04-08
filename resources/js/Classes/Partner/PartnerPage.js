@@ -88,6 +88,7 @@ class partnerPage{
         this.search = window.helper.findGetParameter('search');
         this.searchInit();
         this.initTableData();
+        this.initCategoryContextual();
         //this.loadCategory(this.root_category, true, true);
     }
 
@@ -175,7 +176,6 @@ class partnerPage{
         object.table.setData('/partner/tabledata', object.prepareDataForTable());
     }
 
-
     initTableData(){
         let object = this;
         let table_container = document.getElementById('table-container');
@@ -241,6 +241,7 @@ class partnerPage{
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
                 let items = [
+                    new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
                     new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
                     new ContextualItem({type:'seperator'}),
                     new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
@@ -307,8 +308,7 @@ class partnerPage{
             data: data
         }).then(function (resp) {
             document.getElementById('category-nav').innerHTML = resp.data.html;
-            // object.table.setData(resp.data.tableData.data);
-            // object.prepareParams();
+            object.initCategoryContextual();
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
@@ -388,13 +388,35 @@ class partnerPage{
         let data = {};
         data.view_as = "json";
         data.target = "ajax-table-partner";
-        data.page = 1;
+        //data.page = 1;
 
         if(object.partner !== []){data.partner = object.partner;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
         if(object.category_id !== null){data.category_id = object.category_id.toString();}
         if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
         return data;
+    }
+
+    initCategoryContextual(){
+        let object = this;
+        let category_block = document.getElementById('category-block');
+        if(category_block){
+            let elems = category_block.querySelectorAll('.category-item');
+            [].forEach.call(elems, function(elem){
+                let items = [
+                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog('categoryDialog', '&category_id=' + elem.dataset.id)}, shortcut:'Что то' }),
+                    new ContextualItem({type:'seperator'}),
+                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove('category', elem.dataset.id, null)}, shortcut:'Ctrl+A' }),
+                ];
+                elem.addEventListener('contextmenu',function(e){
+                    e.preventDefault();
+                    new Contextual({
+                        isSticky: false,
+                        items:items,
+                    });
+                });
+            });
+        }
     }
 
     // reload(){

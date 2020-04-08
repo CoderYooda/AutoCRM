@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
@@ -69,15 +70,18 @@ class LoginController extends Controller
         return 'phone';
     }
 
+    public function password()
+    {
+        return 'password';
+    }
+
     public function login(Request $request)
     {
-
         $this->validateLogin($request);
         $user = User::where('phone', $request['phone'])->first();
 
-        if(!$user){
-            return $this->sendFailedLoginResponse($request);
-        }
+
+
         if($user->banned_at != null){
             return redirect()->back()->with('banned', ['Выша учетная запись была заблокирована']);
         }
@@ -99,12 +103,16 @@ class LoginController extends Controller
             }
             session(['store_id' => Auth::user()->getStoreFirst()->id]);
             return $this->sendLoginResponse($request);
+        } else {
+            $this->incrementLoginAttempts($request);
+            if($user){
+                throw ValidationException::withMessages([
+                    $this->password() => [trans('auth.wrong_pass')],
+                ]);
+            } else {
+                return $this->sendFailedLoginResponse($request);
+            }
         }
-
-        $this->incrementLoginAttempts($request);
-
-
-        return $this->sendFailedLoginResponse($request);
     }
 
     public function showLoginForm(Request $request){
@@ -116,7 +124,6 @@ class LoginController extends Controller
         } else {
             return view('auth.login');
         }
-
     }
 
 }

@@ -40,7 +40,6 @@ class clientorderDialog{
             object.finitaLaComedia();
         });
 
-
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){

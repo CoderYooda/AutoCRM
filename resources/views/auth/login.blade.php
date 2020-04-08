@@ -30,11 +30,9 @@
                                 <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             </div>
                             @error('phone')
-                                <div class="col-sm-7">
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                </div>
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
                             @enderror
                         </div>
                         <div class="form-group row row-sm  @error('password') is-invalid @enderror">
@@ -48,7 +46,7 @@
                             </span>
                             @enderror
                         </div>
-                        <button type="submit" class="button login-button">Войти</button>
+                        <button type="submit" class="button primary login-button">Войти</button>
                     </div>
                 </form>
                 <div class="create-acc-box">

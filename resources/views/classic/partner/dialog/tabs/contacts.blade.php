@@ -53,7 +53,7 @@
     </div>
     <div class="form-group">
         <label>Email</label>
-        <input type="text" name="email"
+        <input type="email" name="email"
                @if(isset($partner)) value="{{ $partner->email }}" @endif
                class="form-control" placeholder="Электронная почта">
     </div>
