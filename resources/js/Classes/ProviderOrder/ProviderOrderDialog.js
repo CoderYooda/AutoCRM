@@ -295,8 +295,8 @@ class providerOrderDialog{
         window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
     }
 
-    openSelectPartnermodal(){
-        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id);
+    openSelectPartnerModal(){
+        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id + '&category_id=6');
     }
 
     recalculate(){

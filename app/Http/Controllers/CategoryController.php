@@ -350,17 +350,12 @@ class CategoryController extends Controller
     public static function getCategories($request, $type = null)
     {
         if($request['search'] == null){
-
             if($request['category_id'] != null){
                 $category_id = (int)$request['category_id'];
             }else if($type != null) {
                 $category_id = Category::owned()->where('type', $type)->first()->id;
             }
-
-
-
             $parent = Category::owned()->where('id',$category_id)->first();
-
             if($parent == null){
                 abort(404);
             }
@@ -372,6 +367,24 @@ class CategoryController extends Controller
             })->get();
             $categories['parent'] = null;
         }
+        return $categories;
+    }
+
+    public static function getModalCategories($root_category, $request)
+    {
+        if($request['category_id'] != null){
+            $category_id = (int)$request['category_id'];
+        }else {
+            $category_id = $root_category;
+        }
+        $parent = Category::owned()->where('id',$category_id)->first();
+
+        if($parent == null){
+            abort(404);
+        }
+        $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
+        $categories['parent'] = $parent;
+        $categories['parent_root'] = $parent->id == $root_category ? true : false;
         return $categories;
     }
 

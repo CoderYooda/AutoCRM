@@ -1,5 +1,4 @@
-@php $class = 'selectPartnerDialog' @endphp
-<div id="selectPartnerDialog" class="dialog PartnerStoredListner" style="width:640px;">
+<div id="selectPartnerDialog" class="dialog PartnerStoredListner" style="width:800px;">
     <div class="titlebar">Выбор контакта</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
@@ -16,7 +15,7 @@
         </form>
     </div>
     <div id="partner_list">
-        <div id="search_partner_results">
+        <div id="search_partner_results" class="row row-sm">
             @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.select_partner_inner')
         </div>
     </div>

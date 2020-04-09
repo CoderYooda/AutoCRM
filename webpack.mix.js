@@ -10,7 +10,7 @@ mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ pr
     //.sass('resources/sass/template.scss', 'public/css');
 
 mix.copyDirectory('resources/fonts', 'public/fonts');
-//mix.copyDirectory('resources/images', 'public/images');
+mix.copyDirectory('resources/images', 'public/images');
 
 if( !mix.inProduction() ) {
     mix.webpackConfig({

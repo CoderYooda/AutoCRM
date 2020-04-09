@@ -70,7 +70,7 @@
                         <div class="form-group row row-sm">
                             <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
                             <div class="input-group col-sm-8">
-                                <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                                <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
                                     @if(isset($provider_order) && $provider_order->partner()->first() != null)
                                         {{ $provider_order->partner()->first()->outputName() }}
                                     @else

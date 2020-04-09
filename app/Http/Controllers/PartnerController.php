@@ -24,6 +24,13 @@ use App\Http\Controllers\SmsController;
 
 class PartnerController extends Controller
 {
+    private static $root_category = 3;
+
+    public function _construct()
+    {
+
+    }
+
     public function index(Request $request)
     {
         $target = HC::selectTarget();
@@ -276,31 +283,46 @@ class PartnerController extends Controller
 
     public static function selectPartnerDialog($request)
     {
-        $partners = Partner::where('company_id', Auth::user()->company()->first()->id)->paginate(7);
-        return response()->json([
-            'tag' => 'selectPartnerDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.select_partner', compact('partners', 'request'))->render()
-        ]);
+        return self::selectPartnerInner($request);
     }
 
     public function dialogSearch(Request $request)
     {
-        $partners = Partner::where('fio', 'LIKE', '%' . $request['string'] .'%')
-            ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
-            ->orWhereHas('phones', function ($query) use ($request) {
-            $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-        })->orderBy('created_at', 'ASC')->paginate(20);
-
-        $content = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.select_partner_inner', compact('partners', 'request'))->render();
-        return response()->json([
-            'html' => $content
-        ], 200);
+        return self::selectPartnerInner($request);
     }
 
-    public function getSideInfo(Request $request){
+    private static function selectPartnerInner($request){
+        $class = 'selectPartnerDialog';
+        $partners = Partner::where(function($q) use ($request){
+            $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
+                ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
+                ->orWhereHas('phones', function ($query) use ($request) {
+                    $query->where('number', 'LIKE', '%' . $request['string'] .'%');
+                });
+        })
+            ->when($request['category_id'], function($q) use ($request){
+                $q->where('category_id', $request['category_id']);
+            })
+            ->where('company_id', Auth::user()->company()->first()->id)
+            ->orderBy('created_at', 'ASC')
+            ->limit(30)
+            ->get();
+        $categories = CategoryController::getModalCategories(self::$root_category, $request);
 
+        $view = $request['inner'] ? 'select_partner_inner' : 'select_partner';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.' . $view, compact('partners', 'categories', 'class', 'request'))->render();
+        return response()->json([
+            'tag' => 'selectPartnerDialog',
+            'html' => $content
+        ]);
+    }
+
+
+
+    public function getSideInfo(Request $request)
+    {
         $partner = Partner::owned()->where('id', $request['id'])->first();
-
         if($request->expectsJson()){
             return response()->json([
                 'info' => view(env('DEFAULT_THEME', 'classic') . '.partner.contact-card', compact( 'partner','request'))->render(),
