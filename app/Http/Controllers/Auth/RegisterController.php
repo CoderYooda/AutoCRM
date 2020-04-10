@@ -15,6 +15,7 @@ use App\Models\Company;
 use App\Http\Controllers\SmsController;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use App\Http\Controllers\RoleController;
 
 class RegisterController extends Controller
 {
@@ -112,7 +113,10 @@ class RegisterController extends Controller
 
         $user->company()->associate($company);
         $user->save();
-
+        $role = RoleController::createStartRoles($company);
+	    $user->assignRole($role);
+	    SettingsController::createCompanySettingsPack($company, $role);
+	    
         $store = new Store();
         $store->company_id = $company->id;
         $store->type = 'casual';

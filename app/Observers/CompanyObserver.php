@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreController;
 use App\Models\Company;
 use App\Http\Controllers\SettingsController;
@@ -16,9 +17,7 @@ class CompanyObserver
      */
     public function created(Company $company)
     {
-        SettingsController::createCompanySettingsPack($company);
-        StoreController::createStartStore($company);
-
+        
     }
 
     /**

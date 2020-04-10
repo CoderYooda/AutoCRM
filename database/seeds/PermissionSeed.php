@@ -83,15 +83,13 @@ class PermissionSeed extends Seeder
         $superAdmin->givePermissionTo('Смотреть настройки');
         $user = User::whereId(1)->first();
         $user->assignRole($superAdmin);
-
-
-
+	
+	
+	    $permissions = Permission::all()->pluck('id');
 	    $role1 = Role::create(['name' => 'Руководитель', 'company_id' => 2]);
-        $role1->givePermissionTo('Смотреть настройки');
-//        $role1->givePermissionTo('Удалять категории');
+        $role1->givePermissionTo($permissions);
 
         $role2 = Role::create(['name' => 'Менеджер', 'company_id' => 2]);
-//        $role2->givePermissionTo('Создавать категории');
 
         $user = User::whereId(2)->first();
         $user->assignRole($role1);

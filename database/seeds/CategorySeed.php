@@ -58,14 +58,14 @@ class CategorySeed extends Seeder
             'id' => 4,
             'name' => 'Статьи ДДС',
             'category_id' => 1,
-            'company_id' => $company_id,
-            'creator_id' => $creator_id,
+            'company_id' => null,
+            'creator_id' => 1,
             'locked' => true,
             'type' => 'dds',
         ]);
 
-        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => true, 'type' => 'dds',]);
-        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => $company_id, 'creator_id' => $creator_id, 'locked' => true, 'type' => 'dds',]);
+        Category::create(['id' => 8, 'name' => 'Расход', 'category_id' => 4, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'dds',]);
+        Category::create(['id' => 9, 'name' => 'Доход', 'category_id' => 4, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'dds',]);
 
         $json = json_decode(file_get_contents('public/demo/numenclatures.json'));
 

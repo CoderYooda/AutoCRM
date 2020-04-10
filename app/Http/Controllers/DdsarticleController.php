@@ -8,6 +8,7 @@ use App\Models\DdsType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DdsArticle;
+use App\Http\Controllers\CategoryController;
 use Auth;
 
 class DdsarticleController extends Controller
@@ -159,7 +160,6 @@ class DdsarticleController extends Controller
             ->limit(30)
             ->get();
         $categories = CategoryController::getModalCategories(self::$root_category, $request);
-
         $view = $request['inner'] ? 'select_ddsarticle_inner' : 'select_ddsarticle';
 
         $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.' . $view, compact('ddsarticles', 'categories', 'class', 'request'))->render();

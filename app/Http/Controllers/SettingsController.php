@@ -108,10 +108,10 @@ class SettingsController extends Controller
 
     //Saves
 
-    public static function createCompanySettingsPack($company)
+    public static function createCompanySettingsPack($company, $defaultrole)
     {
-        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'model' => NULL,  'type' => 'number', 'key' => 'markup', 'value' => '0']);
-        Setting::create(['name' => 'Роль для новых пользователей', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'select', 'key' => 'role_id', 'value' => 2]);
+        Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'model' => NULL,  'type' => 'number', 'key' => 'markup', 'value' => '10']);
+        Setting::create(['name' => 'Роль для новых пользователей', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'select', 'key' => 'role_id', 'value' => $defaultrole->id]);
     }
 
     public function baseStore(Request $request)
