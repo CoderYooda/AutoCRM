@@ -6,7 +6,7 @@ class selectCategoryDialog{
         console.log('Окно выбора категории инициализировано');
         this.root_dialog = dialog;
         this.refer = dialog.querySelector("#refer").value;
-        this.root = dialog.querySelector("#root").value;
+        //this.root = dialog.querySelector("#root").value;
         this.search_obj = dialog.querySelector("#category_search");
         this.results_obj = dialog.querySelector("#search_category_results");
         this.active = true;
@@ -54,6 +54,43 @@ class selectCategoryDialog{
         window.openDialog('categoryDialog', '&refer=' + this.root_dialog.id);
     }
 
+    loadCategory(category_id, clean_search = null, update_data = null){
+        let object = this;
+        if(clean_search != null && clean_search){
+            object.root_dialog.querySelector('#category_search').value = '';
+            object.search_str = '';
+            //window.helper.insertParamUrl('search', '');
+        }
+
+        window.isXHRloading = true;
+        object.category_id = category_id;
+
+        let data = {};
+
+        data.string = object.search_str;
+        data.inner = true;
+        if(object.refer){
+            data.refer = object.root_dialog.querySelector("#refer").value;
+        }
+        if(object.target){
+            data.target = object.root_dialog.querySelector("#target").value;
+        }
+        data.category_id = category_id;
+
+        window.axios({
+            method: 'post',
+            url: 'category/dialog/search',
+            data: data
+        }).then(function (resp) {
+            var results_container = document.querySelector('#search_category_results');
+            results_container.innerHTML = resp.data.html;
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    }
+
     select(id) {
         if (isXHRloading) { return; }
         let object = this;
@@ -75,7 +112,8 @@ class selectCategoryDialog{
 
         let data = {};
         data.string = string;
-
+        data.inner = true;
+        data.category_id = object.category_id;
         if(object.root){
             data.root = object.root;
         }

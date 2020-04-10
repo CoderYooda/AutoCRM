@@ -18,6 +18,12 @@
                class="form-control entrance" placeholder="ИНН" @if(isset($partner) && $partner['isfl']) disabled @endif>
     </div>
     <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif">
+        <label>КПП</label>
+        <input type="text" name="kpp"
+               @if(isset($partner)) value="{{ $partner->kpp }}" @endif
+               class="form-control entrance" placeholder="КПП" @if(isset($partner) && $partner['isfl']) disabled @endif>
+    </div>
+    <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif">
         <label>ОГРН</label>
         <input type="text" name="ogrn"
                @if(isset($partner)) value="{{ $partner->ogrn }}" @endif
@@ -35,10 +41,5 @@
                @if(isset($partner)) value="{{ $partner->bik }}" @endif
                class="form-control entrance" placeholder="БИК" @if(isset($partner) && $partner['isfl']) disabled @endif>
     </div>
-    <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif">
-        <label>КПП</label>
-        <input type="text" name="kpp"
-               @if(isset($partner)) value="{{ $partner->kpp }}" @endif
-               class="form-control entrance" placeholder="КПП" @if(isset($partner) && $partner['isfl']) disabled @endif>
-    </div>
+
 </div>

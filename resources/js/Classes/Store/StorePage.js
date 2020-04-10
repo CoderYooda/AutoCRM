@@ -26,6 +26,7 @@ class storePage{
         this.clientorder_status = null;
         this.provider = [];
         this.accountable = [];
+        this.client = [];
         this.dates_range = null;
         //Context
         this.tabledata = {};
@@ -34,7 +35,16 @@ class storePage{
     }
 
     openSelectPartnerModal(target){
-        window.openDialog('selectPartner', '&refer=' + 'store&target=' + target);
+        let cat_id = 1;
+        if(target === 'provider'){
+            cat_id = 6;
+        }else if(target === 'accountable'){
+            cat_id = 5;
+        }else if(target === 'client'){
+            cat_id = 7;
+        }
+
+        window.openDialog('selectPartner', '&refer=' + 'store&category_id=' + cat_id + '&target=' + target);
     }
 
     setField(option, value = null, text, elem = null){
@@ -83,7 +93,7 @@ class storePage{
                 stack.appendChild(node);
                 //object.reload();
                 object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
-                window.notification.notify( 'success', 'Контрагент выбран');
+                window.notification.notify( 'success', 'Контакт выбран');
             }
             //document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             //console.log("Событие PartnerSelected вызвано");
@@ -418,6 +428,10 @@ class storePage{
                         url: '/' + object.active_tab + '/side_info',
                         data: data
                     }).then(function (resp) {
+                        let addsCard = document.getElementById('adds-card');
+                        if(addsCard){
+                            addsCard.classList.remove('hide');
+                        }
                         document.getElementById('contact_block').innerHTML = resp.data.info;
                         document.getElementById('comment_block').innerHTML = resp.data.comment;
                         //console.log(resp);
@@ -441,6 +455,7 @@ class storePage{
         if(object.category_id !== null){data.category_id = object.category_id.toString();}
 
         if(object.accountable !== null){data.accountable = object.accountable;}
+        if(object.client !== null){data.client = object.client;}
         if(object.pay_status !== null){data.pay_status = object.pay_status;}
         if(object.entrance_status !== null){data.entrance_status = object.entrance_status;}
         if(object.clientorder_status !== null){data.clientorder_status = object.clientorder_status;}
@@ -520,6 +535,13 @@ class storePage{
         this.date_start = 'null';
         this.date_end = 'null';
         window.helper.debugBar(this);
+
+
+        let addsCard = document.getElementById('adds-card');
+        if(addsCard){
+            addsCard.classList.add('hide');
+        }
+
         this.initCategoryContextual();
         this.initTableData();
         this.searchInit();
@@ -599,8 +621,6 @@ class storePage{
         this.page = 1;
         this.reload();
     }
-
-
 
     getUrlString(type = null){
 

@@ -46,7 +46,7 @@ class PartnerController extends Controller
             $content = view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request', 'categories', 'cat_info'))->render();
             return response()->json([
                 'target' => 'ajax-content',
-                'page' => 'Контрагенты',
+                'page' => 'Контакты',
                 'html' => $content
             ]);
         } elseif($request->expectsJson() && $request['search'] != NULL){
@@ -130,12 +130,12 @@ class PartnerController extends Controller
         $wasExisted = false;
         if($partner->exists){
             $wasExisted = true;
-            $message = "Контрагент обновлен";
+            $message = "Контакт обновлен";
             $request['user_id'] = $partner->user_id;
             $request['company_id'] = $partner->company_id;
         } else{
             $request['company_id'] = Auth::user()->company()->first()->id;
-            $message = "Контрагент создан";
+            $message = "Контакт создан";
         }
         $partner->fill($request->only($partner->fields));
         if(!$request['isfl']){
@@ -206,10 +206,10 @@ class PartnerController extends Controller
         $returnIds = null;
         if($id == 'array'){
             $partners = Partner::owned()->whereIn('id', $request['ids']);
-            $this->message = 'Контрагенты удалены';
+            $this->message = 'Контакты удалены';
             foreach($partners->get() as $partner){
                 if($partner->company()->first()->id != Auth::user()->company()->first()->id){
-                    $this->message = 'Вам не разрешено удалять этого контрагента';
+                    $this->message = 'Вам не разрешено удалять контакт';
                     $this->status = 422;
                 } else {
 
@@ -220,10 +220,10 @@ class PartnerController extends Controller
             $returnIds = $partners->get()->pluck('id');
         } else {
             $partner = Partner::where('id', $id)->first();
-            $this->message = 'Контрагент удален';
+            $this->message = 'Контакт удален';
             $returnIds = $partner->id;
             if($partner->company()->first()->id != Auth::user()->company()->first()->id){
-                $this->message = 'Вам не разрешено удалять этого контрагента';
+                $this->message = 'Вам не разрешено удалять контакт';
                 $this->status = 422;
             }
             $partner->delete();
@@ -293,6 +293,7 @@ class PartnerController extends Controller
 
     private static function selectPartnerInner($request){
         $class = 'selectPartnerDialog';
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
         $partners = Partner::where(function($q) use ($request){
             $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
                 ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
@@ -347,7 +348,7 @@ class PartnerController extends Controller
         $partner = Partner::where('id', $id)->first();
         if(!$partner){
             return response()->json([
-                'message' => 'Контрагент не найден, возможно он был удалён',
+                'message' => 'Контакт не найден, возможно он был удалён',
             ], 422);
         }
         return response()->json([

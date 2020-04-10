@@ -1,5 +1,5 @@
 @php $class = 'selectCategoryDialog' @endphp
-<div id="selectCategoryDialog" class="dialog" style="width:480px;">
+<div id="selectCategoryDialog" class="dialog" style="width:650px;">
     <div class="titlebar">Выбор категории</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
@@ -20,8 +20,15 @@
     @endif
 
 
-    <div id="search_category_results">
+
+    <div id="search_category_results" class="row row-sm">
         @include(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner')
+    </div>
+    <div class="modal-footer">
+        <button class="button white" onclick="window.selectCategoryDialog.finitaLaComedia(this)">Закрыть</button>
+    </div>
+    <div class="system_message">
+
     </div>
 
     {{--<div id="search_category_results" class="mh50-dialog white" data-simplebar style="max-height: 400px;">--}}

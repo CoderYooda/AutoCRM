@@ -54,6 +54,42 @@ class selectDdsarticleDialog{
         // });
     }
 
+    loadCategory(category_id, clean_search = null, update_data = null){
+        let object = this;
+        if(clean_search != null && clean_search){
+            object.root_dialog.querySelector('#ddsarticle_search').value = '';  //document.getElementById("search").value = '';
+            object.search_str = '';
+        }
+
+        window.isXHRloading = true;
+        object.category_id = category_id;
+
+        let data = {};
+
+        data.string = object.search_str;
+        data.inner = true;
+        if(object.refer){
+            data.refer = object.root_dialog.querySelector("#refer").value;
+        }
+        if(object.target){
+            data.target = object.root_dialog.querySelector("#target").value;
+        }
+        data.category_id = category_id;
+        window.axios({
+            method: 'post',
+            url: 'ddsarticle/dialog/search',
+            data: data
+        }).then(function (resp) {
+            var results_container = document.querySelector('#search_ddsarticle_results');
+            results_container.innerHTML = resp.data.html;
+        }).catch(function (error) {
+            console.log(error);
+        }).then(function () {
+            window.isXHRloading = false;
+        });
+    }
+
+
     search(el){
         let object = this;
         var string = el.value;
@@ -62,6 +98,7 @@ class selectDdsarticleDialog{
 
         let data = {};
         data.string = string;
+        data.inner = true;
         if(object.refer){
             data.refer = object.refer;
         }

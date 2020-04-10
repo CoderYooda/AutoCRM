@@ -22,7 +22,7 @@
         @endif
 
         <div class="modal-body">
-            <div class="box-body pb-0">
+            <div class="box-body pb-0 mb-15">
                 @if(isset($store) && $store->id != NULL)
                     <input type="hidden" name="id" value="{{ $store->id }}">
                 @endif
@@ -40,7 +40,6 @@
         </div>
 
         <div class="modal-footer">
-            <hr>
             <button type="submit" onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
             <button type="submit" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
         </div>

@@ -449,7 +449,7 @@ class clientorderDialog{
     }
 
     openSelectPartnermodal(){
-        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id);
+        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id + '&category_id=7');
     }
 
     recalculate(){

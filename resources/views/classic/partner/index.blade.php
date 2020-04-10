@@ -87,9 +87,11 @@
                 {{--<div class="box-title">Комментарий</div>--}}
                 {{--<div id="comment_block"></div>--}}
             {{--</div>--}}
-            <div class="box w-290 p-15 filter-panel">
-                <div class="box-title">Карточка профиля</div>
-                <div id="contact_block"></div>
+            <div id="adds-card" class="hide">
+                <div class="box w-290 p-15 filter-panel">
+                    <div class="box-title">Карточка профиля</div>
+                    <div id="contact_block"></div>
+                </div>
             </div>
         </div>
     </div>

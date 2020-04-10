@@ -176,6 +176,9 @@ class MoneyMoveController extends Controller
         if($request['partner'] == null){
             $request['partner'] = [];
         }
+        if($request['any'] == null){
+            $request['any'] = [];
+        }
 
         $moneymoves = MoneyMoves::select(DB::raw('money_move.*, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.isfl = 1, manager.fio, manager.companyName) as manager'))
             ->from(DB::raw('money_move
@@ -186,6 +189,9 @@ class MoneyMoveController extends Controller
 
             ->when($request['partner'] != [], function($query) use ($request) {
                 $query->whereIn('money_move.manager_id', $request['partner']);
+            })
+            ->when($request['any'] != [], function($query) use ($request) {
+                $query->whereIn('money_move.manager_id', $request['any']);
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('money_move.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);

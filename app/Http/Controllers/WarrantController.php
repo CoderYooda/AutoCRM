@@ -288,6 +288,9 @@ class WarrantController extends Controller
                 ->when($request['partner'] != null, function($query) use ($request) {
                     $query->whereIn('warrants.partner_id', $request['partner']);
                 })
+                ->when($request['any'] != null, function($query) use ($request) {
+                    $query->whereIn('warrants.partner_id', $request['any']);
+                })
                 ->when($request['dates_range'] != null && $request['dates_range'] != 'null', function($query) use ($request) {
                     $query->whereBetween('warrants.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
                 })

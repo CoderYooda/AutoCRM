@@ -12,7 +12,7 @@ use Auth;
 
 class DdsarticleController extends Controller
 {
-
+    private static $root_category = 4;
 //    public static function ddsarticleDialog($request)
 //    {
 //        if($request['category_select']){
@@ -118,14 +118,65 @@ class DdsarticleController extends Controller
         return response()->json(['id' => $Ddsarticle->id, 'message' => $message], $status);
     }
 
+//    public static function selectDdsarticleDialog($request)
+//    {
+//        $ddsarticles = Ddsarticle::owned()->orderBy('id', 'DESC')->paginate(12);
+//        return response()->json([
+//            'tag' => 'selectDdsarticleDialog',
+//            'html' => view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle', compact('ddsarticles', 'request'))->render()
+//        ]);
+//    }
+//    public function dialogSearch(Request $request){
+//        $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
+//            ->orderBy('id', 'DESC')
+//            ->paginate(12);
+//        //dd($ddsarticles);
+//        $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle_inner', compact('ddsarticles', 'request'))->render();
+//        return response()->json([
+//            'html' => $content
+//        ], 200);
+//    }
+
+
     public static function selectDdsarticleDialog($request)
     {
-        $ddsarticles = Ddsarticle::owned()->orderBy('id', 'DESC')->paginate(12);
+        return self::selectDdsarticleInner($request);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        return self::selectDdsarticleInner($request);
+    }
+
+    private static function selectDdsarticleInner($request){
+        $class = 'selectDdsarticleDialog';
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
+        $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
+            ->when($request['category_id'], function($q) use ($request){
+                $q->where('category_id', $request['category_id']);
+            })
+            ->orderBy('created_at', 'ASC')
+            ->limit(30)
+            ->get();
+        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+
+        $view = $request['inner'] ? 'select_ddsarticle_inner' : 'select_ddsarticle';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.' . $view, compact('ddsarticles', 'categories', 'class', 'request'))->render();
         return response()->json([
             'tag' => 'selectDdsarticleDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle', compact('ddsarticles', 'request'))->render()
+            'html' => $content
         ]);
     }
+
+
+
+
+
+
+
+
+
 
     public function select($id){
         $ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
@@ -141,16 +192,7 @@ class DdsarticleController extends Controller
     }
 
 
-    public function dialogSearch(Request $request){
-        $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
-            ->orderBy('id', 'DESC')
-            ->paginate(12);
-        //dd($ddsarticles);
-        $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle_inner', compact('ddsarticles', 'request'))->render();
-        return response()->json([
-            'html' => $content
-        ], 200);
-    }
+
 
     public static function getDdsarticles($request)
     {

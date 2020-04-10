@@ -62,19 +62,21 @@
                     <div id="provider_stack"></div>
                 </div>
                 <div class="filter_field mb-10">
-                    <div class="form-group d-flex">
+                    <div class="form-group d-flex mb-10">
                         <label class="no-wrap" for="accountable">Ответственный</label>
-                        <input readonly onclick="store.openSelectPartnerModal('accountable')" id="accountable" type="text" name="accountable" value="{{ request('pay_status') }}" class="form-control accountable input_as_link" placeholder="не выбрано">
+                        <input readonly onclick="store.openSelectPartnerModal('accountable')" id="accountable" type="text" name="accountable" value="{{ request('pay_status') }}" class="form-control accountable input_as_link" placeholder="выбрать">
                         <button type="button" onclick="store.clearList('accountable', 'accountable_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
                     </div>
                     <div id="accountable_stack"></div>
                 </div>
-                <hr>
-                <div class="box-title">Контактная информация</div>
-                <div id="contact_block"></div>
-                <hr>
-                <div class="box-title">Комментарий</div>
-                <div id="comment_block"></div>
+                <div id="adds-card" class="hide">
+                    <hr>
+                    <div class="box-title">Контактная информация</div>
+                    <div id="contact_block"></div>
+                    <hr>
+                    <div class="box-title">Комментарий</div>
+                    <div id="comment_block"></div>
+                </div>
             </div>
         </div>
     </div>

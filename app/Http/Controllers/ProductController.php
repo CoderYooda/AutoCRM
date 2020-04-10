@@ -23,6 +23,8 @@ use stdClass;
 
 class ProductController extends Controller
 {
+    private static $root_category = 2;
+
     public function _construct()
     {
         $status = 500;
@@ -56,15 +58,7 @@ class ProductController extends Controller
         ], $this->status);
     }
 
-    public static function selectProductDialog($request)
-    {
-        $stores = Store::owned()->get();
-        $products = Article::owned()->orderBy('id', 'DESC')->limit(10)->get();
-        return response()->json([
-            'tag' => 'selectProductDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product', compact('products', 'stores', 'request'))->render(),
-        ]);
-    }
+
 
     public function addToList(Request $request)
     {
@@ -172,9 +166,30 @@ class ProductController extends Controller
         ]);
     }
 
+
+
+
+
+
+
+
+
+
+    public static function selectProductDialog($request)
+    {
+        return self::selectProductInner($request);
+    }
+
     public function dialogSearch(Request $request)
     {
+        return self::selectProductInner($request);
+    }
+
+    private static function selectProductInner($request){
+        $class = 'selectProductDialog';
         $stores = Store::owned()->get();
+
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
         $products = Article::owned()->where(function($q) use ($request){
             if($request['store_id'] != NULL) {
@@ -183,20 +198,65 @@ class ProductController extends Controller
                 });
             }
         })
-        ->where(function($q) use ($request){
-            $q->where('foundstring', 'LIKE', '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) .'%');
-//            $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
-//            $q->orWhereHas('supplier', function ($query) use ($request) {
-//                $query->where('name', 'LIKE', '%' . $request['string'] .'%');
-//            });
-        })
-        ->orderBy('id', 'DESC')->limit(10)->get();
+            ->when($request['category_id'], function($q) use ($request){
+                $q->where('category_id', $request['category_id']);
+            })
+            ->where(function($q) use ($request){
+                $q->where('foundstring', 'LIKE', '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) .'%');
+            })
+            ->orderBy('created_at', 'ASC')
+            ->limit(30)
+            ->get();
+        $categories = CategoryController::getModalCategories(self::$root_category, $request);
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product_inner', compact('products', 'stores', 'request'))->render();
+        $view = $request['inner'] ? 'select_product_inner' : 'select_product';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'))->render();
         return response()->json([
+            'tag' => 'selectProductDialog',
             'html' => $content
-        ], 200);
+        ]);
     }
+//
+//    public static function selectProductDialog($request)
+//    {
+//        $stores = Store::owned()->get();
+//        $products = Article::owned()->orderBy('id', 'DESC')->limit(10)->get();
+//        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+//        return response()->json([
+//            'tag' => 'selectProductDialog',
+//            'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product', compact('products', 'stores', 'categories', 'request'))->render(),
+//        ]);
+//    }
+//
+//    public function dialogSearch(Request $request)
+//    {
+//        $stores = Store::owned()->get();
+//
+//        $products = Article::owned()->where(function($q) use ($request){
+//            if($request['store_id'] != NULL) {
+//                $q->whereHas('stores', function ($query) use ($request) {
+//                    return $query->where('store_id', $request['store_id']);
+//                });
+//            }
+//        })
+//        ->where(function($q) use ($request){
+//            $q->where('foundstring', 'LIKE', '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) .'%');
+////            $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
+////            $q->orWhereHas('supplier', function ($query) use ($request) {
+////                $query->where('name', 'LIKE', '%' . $request['string'] .'%');
+////            });
+//        })
+//        ->orderBy('id', 'DESC')->limit(10)->get();
+//
+//        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product_inner', compact('products', 'stores', 'request'))->render();
+//        return response()->json([
+//            'html' => $content
+//        ], 200);
+//    }
+
+
+
 
 //    public static function editProductDialog($request)
 //    {

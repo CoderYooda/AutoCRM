@@ -784,8 +784,8 @@ input:-moz-placeholder { /* Firefox 18- */
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 5px;
-    height: 23px!important;
-    line-height: 23px!important;
+    height: 22px !important;
+    line-height: 22px !important;
 }
 .filter_element{
     color: #9E9D9D;
@@ -1073,14 +1073,11 @@ input:-moz-placeholder { /* Firefox 18- */
     text-overflow: ellipsis;
     padding-right: 5px;
 }
-
 .dialog_category_container .category-linked-item{
     display: block;
     position: relative;
 }
-
 /*Contextual*/
-
 .contextualMenu{
     list-style: none;
     overflow: hidden;
@@ -1149,7 +1146,6 @@ input:-moz-placeholder { /* Firefox 18- */
 .contextualMenuItemOverflow.hidden{
     display: none;
 }
-
 .contextualMenuItem.disabled{
     opacity: 0.4;
 }

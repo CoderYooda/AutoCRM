@@ -99,7 +99,7 @@
         </div>
         <div class="box-body">
             <div class="form-group row">
-                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контакт</label>
+                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Плательщик</label>
                 <div class="col-sm-9">
                     <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="form-control text-left button_select">
                         @if(isset($warrant) && $warrant->partner()->first() != null)

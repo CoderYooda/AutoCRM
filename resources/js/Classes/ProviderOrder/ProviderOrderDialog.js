@@ -292,7 +292,7 @@ class providerOrderDialog{
     };
 
     openProductmodal(){
-        window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
+        window.openDialog('selectProduct', '&refer=' + this.root_dialog.id + '&category_id=2');
     }
 
     openSelectPartnerModal(){

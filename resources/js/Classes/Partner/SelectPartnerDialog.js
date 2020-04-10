@@ -10,7 +10,13 @@ class selectPartnerDialog {
         }
         this.search_obj = dialog.querySelector("#partner_search");
         this.search_str = null;
-        this.category_id = null;
+        let cat_input = dialog.querySelector("#category_id");
+        if(cat_input){
+            this.category_id = cat_input.value;
+        } else {
+            this.category_id = null;
+        }
+
         this.active = true;
         this.init();
         //PartnerStored

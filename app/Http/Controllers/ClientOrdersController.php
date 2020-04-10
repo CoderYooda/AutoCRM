@@ -406,6 +406,9 @@ class ClientOrdersController extends Controller
             ->when($request['accountable'] != [], function ($query) use ($request) {
                 $query->whereIn('client_orders.partner_id', $request['accountable']);
             })
+            ->when($request['client'] != [], function ($query) use ($request) {
+                $query->whereIn('client_orders.partner_id', $request['client']);
+            })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })

@@ -16,7 +16,7 @@
     <button class="btn_close" onclick="closeDialog(event)">×</button>
     <form action="{{ route('StoreCashbox') }}" method="POST">
         @csrf
-        <div class="box-body pb-0">
+        <div class="box-body pb-0 mb-15">
             @if(isset($cashbox) && $cashbox->id != NULL)
                 <input type="hidden" name="id" value="{{ $cashbox->id }}">
             @endif
@@ -32,7 +32,6 @@
             </div>
         </div>
         <div class="modal-footer">
-            <hr>
             <button type="submit" onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
             <button class="button pull-right" onclick="window.{{ $class }}.save(this)">Сохранить</button>
         </div>

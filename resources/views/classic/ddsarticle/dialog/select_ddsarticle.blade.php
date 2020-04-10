@@ -1,5 +1,5 @@
 @php $class = 'selectDdsarticleDialog' @endphp
-<div id="selectDdsarticleDialog" class="dialog" style="width:450px;">
+<div id="selectDdsarticleDialog" class="dialog" style="width:600px;">
     <div class="titlebar">Выбор статьи</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>

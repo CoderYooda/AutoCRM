@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
+    private static $root_category = 1;
+
     public static $breadcrumbs;
 
     public function _construct(){
@@ -230,39 +232,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function dialogSearch(Request $request)
-    {
-        $root_category = Category::owned()->where('id', $request['root'])->first();
-        $type = $root_category->type;
-        if($request['string'] != null && $request['string'] != '' && $request['string'] != 'undefined'){
-            $categories = Category::owned()
-                ->where(function($q) use ($request){
-                    $q->where('name', 'LIKE', '%' . $request['string'] .'%');
-                })
-                ->where(function($q) use ($type){
-                    if($type != 'main'){
-                        $q->where('type', $type);
-                    }
-                })
-                ->orderBy('name', 'DESC')->limit(10)->get();
-            $searching = true;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
-            return response()->json([
-                'html' => $content
-            ], 200);
-        } else {
-            $data = self::findSelectedId($request);
-            $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
-            $root = $data['root'];
-            $searching = false;
-            return response()->json([
-                'tag' => 'selectCategoryDialog',
-                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'searching', 'category', 'request'))->render()
-            ]);
-        }
-
-    }
-
     public static function editCategoryDialog($request)
     {
         if($request['params']){
@@ -288,17 +257,105 @@ class CategoryController extends Controller
         ]);
     }
 
+
+
+
+
+
+
+
+
+
+//    public function dialogSearch(Request $request)
+//    {
+//        $root_category = Category::owned()->where('id', $request['root'])->first();
+//        $type = $root_category->type;
+//        if($request['string'] != null && $request['string'] != '' && $request['string'] != 'undefined'){
+//            $categories = Category::owned()
+//                ->where(function($q) use ($request){
+//                    $q->where('name', 'LIKE', '%' . $request['string'] .'%');
+//                })
+//                ->where(function($q) use ($type){
+//                    if($type != 'main'){
+//                        $q->where('type', $type);
+//                    }
+//                })
+//                ->orderBy('name', 'DESC')->limit(10)->get();
+//            $searching = true;
+//            $content = view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
+//            return response()->json([
+//                'html' => $content
+//            ], 200);
+//        } else {
+//            $data = self::findSelectedId($request);
+//            $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
+//            $root = $data['root'];
+//            $searching = false;
+//            return response()->json([
+//                'tag' => 'selectCategoryDialog',
+//                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'searching', 'category', 'request'))->render()
+//            ]);
+//        }
+//
+//    }
+//
+//    public static function selectCategoryDialog($request)
+//    {
+//        $data = self::findSelectedId($request);
+//        $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
+//        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+//        $root = $data['root'];
+//        $searching = false;
+//        return response()->json([
+//            'tag' => 'selectCategoryDialog',
+//            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category', compact('root', 'searching', 'category', 'categories', 'request'))->render()
+//        ]);
+//    }
+
     public static function selectCategoryDialog($request)
     {
-        $data = self::findSelectedId($request);
-        $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
-        $root = $data['root'];
-        $searching = false;
+        return self::selectCategoryInner($request);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        return self::selectCategoryInner($request);
+    }
+
+    private static function selectCategoryInner($request){
+
+        $class = 'selectCategoryDialog';
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
+        $cats = Category::owned()
+            ->where(function($q) use ($request){
+                $q->where('name', 'LIKE', '%' . $request['string'] .'%');
+            })
+            ->when($request['category_id'], function($q) use ($request){
+                $q->where('category_id', $request['category_id']);
+            })
+            ->orderBy('created_at', 'ASC')
+            ->limit(30)
+            ->get();
+
+        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+
+        $view = $request['inner'] ? 'select_category_inner' : 'select_category';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.category.dialog.' . $view, compact('cats', 'categories', 'class', 'request'))->render();
         return response()->json([
             'tag' => 'selectCategoryDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category', compact('root', 'searching', 'category', 'request'))->render()
+            'html' => $content
         ]);
     }
+
+
+
+
+
+
+
+
+
 
     private static function findSelectedId($request){
         $selected_id = null;

@@ -26,12 +26,14 @@
                     </div>
                     <div id="provider_stack"></div>
                 </div>
-                <hr>
-                <div class="box-title">Контактная информация</div>
-                <div id="contact_block"></div>
-                <hr>
-                <div class="box-title">Комментарий</div>
-                <div id="comment_block"></div>
+                <div id="adds-card" class="hide">
+                    <hr>
+                    <div class="box-title">Контактная информация</div>
+                    <div id="contact_block"></div>
+                    <hr>
+                    <div class="box-title">Комментарий</div>
+                    <div id="comment_block"></div>
+                </div>
             </div>
         </div>
     </div>

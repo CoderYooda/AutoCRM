@@ -16,7 +16,7 @@
     @endif
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
-    <div class="modal-header">
+    <div class="modal-header" style="justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
             {{--<span class="item-title _500">Поступление</span>--}}
             {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}

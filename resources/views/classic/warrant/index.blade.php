@@ -23,18 +23,20 @@
                 </div>
                 <div class="filter_field mb-10">
                     <div class="form-group d-flex mb-10">
-                        <label class="no-wrap" for="provider">Контрагент</label>
-                        <input readonly onclick="window.cash.openSelectPartnerModal('partner')" id="partner" type="text" name="partner" value="{{ request('partner') }}" class="form-control partner input_as_link" placeholder="выбрать">
-                        <button type="button" onclick="window.cash.clearList('partner', 'partner_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
+                        <label class="no-wrap" for="provider">Плательщик</label>
+                        <input readonly onclick="window.cash.openSelectPartnerModal('any')" id="any" type="text" name="any" value="{{ request('any') }}" class="form-control partner input_as_link" placeholder="выбрать">
+                        <button type="button" onclick="window.cash.clearList('any', 'any_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
                     </div>
-                    <div id="partner_stack"></div>
+                    <div id="any_stack"></div>
                 </div>
-                <hr>
-                <div class="box-title">Контактная информация</div>
-                <div id="contact_block"></div>
-                <hr>
-                <div class="box-title">Комментарий</div>
-                <div id="comment_block"></div>
+                <div id="adds-card" class="hide">
+                    <hr>
+                    <div class="box-title">Контактная информация</div>
+                    <div id="contact_block"></div>
+                    <hr>
+                    <div class="box-title">Комментарий</div>
+                    <div id="comment_block"></div>
+                </div>
             </div>
         </div>
     </div>

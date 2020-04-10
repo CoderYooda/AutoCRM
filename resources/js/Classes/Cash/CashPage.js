@@ -15,6 +15,7 @@ class cashPage{
         this.isIncoming = 'null';
         this.dates = null;
         this.partner = [];
+        this.any = [];
         this.chartCircle = null;
         this.init(); // Первый запуск
     }
@@ -252,6 +253,7 @@ class cashPage{
                 // console.log('Таблица готова');
             },
             rowClick:function(e, row){
+                let addsCard = document.getElementById('adds-card');
                 if(object.active_tab != 'store'){
                     console.log('Загружаем инфо');
                     let data = {};
@@ -263,6 +265,9 @@ class cashPage{
                     }).then(function (resp) {
                         document.getElementById('contact_block').innerHTML = resp.data.info;
                         document.getElementById('comment_block').innerHTML = resp.data.comment;
+                        if(addsCard){
+                            addsCard.classList.remove('hide');
+                        }
                         //console.log(resp);
                     }).catch(function (error) {
                         console.log(error);
@@ -275,7 +280,18 @@ class cashPage{
     }
 
     openSelectPartnerModal(target){
-        window.openDialog('selectPartner', '&refer=' + 'cash&target=' + target);
+        let cat_id = 3;
+        if(target === 'provider'){
+            cat_id = 6;
+        }else if(target === 'partner'){
+            cat_id = 5;
+        }else if(target === 'client'){
+            cat_id = 7;
+        } else {
+            cat_id = 3;
+        }
+
+        window.openDialog('selectPartner', '&refer=' + 'cash&category_id=' + cat_id + '&target=' + target);
     }
 
     prepareDataForTable(){
@@ -286,6 +302,7 @@ class cashPage{
         data.page = 1;
 
         if(object.partner !== []){data.partner = object.partner;}
+        if(object.any !== []){data.any = object.any;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
 
 

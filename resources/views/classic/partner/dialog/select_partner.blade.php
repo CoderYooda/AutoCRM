@@ -10,6 +10,9 @@
             @if($request['target'])
                 <input id="target" type="hidden" name="target" value="{{ $request['target'] }}">
             @endif
+            @if($request['category_id'])
+                <input id="category_id" type="hidden" name="category_id" value="{{ $request['category_id'] }}">
+            @endif
             <input id="partner_search" type="text" class="form-control mr-15" placeholder="Поиск контактов" required="">
             <button onclick="openDialog('partnerDialog')" class="button" type="button">Новый контакт</button>
         </form>

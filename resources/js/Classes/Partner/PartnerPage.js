@@ -258,6 +258,7 @@ class partnerPage{
             tableBuilt:function(){
             },
             rowClick:function(e, row){
+                let addsCard = document.getElementById('adds-card');
                 if(object.active_tab != 'store'){
                     console.log('Загружаем инфо');
                     let data = {};
@@ -268,6 +269,9 @@ class partnerPage{
                         data: data
                     }).then(function (resp) {
                         document.getElementById('contact_block').innerHTML = resp.data.info;
+                        if(addsCard){
+                            addsCard.classList.remove('hide');
+                        }
                         //document.getElementById('comment_block').innerHTML = resp.data.comment;
                         //console.log(resp);
                     }).catch(function (error) {
