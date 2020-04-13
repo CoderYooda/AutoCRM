@@ -5,7 +5,6 @@ require('../modules/draggable-dialog/dialog');                      // Диал�
 require('./navigation');                                            // Навигация XHR
 
 
-
 window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
@@ -36,6 +35,7 @@ import Tabs from './Classes/Tabs.js';
 
 
 
+
 import IMask from 'imask';
 window.helper = new Helper();
 window.socket = new Socket();
@@ -52,6 +52,8 @@ window.scanner = new Scanner();
 window.auth = new Auth();
 window.tabs = new Tabs();
 window.tippy = tippy;
+
+//window.modal = new Modal();
 
 
 

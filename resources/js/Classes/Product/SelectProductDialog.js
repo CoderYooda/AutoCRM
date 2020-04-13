@@ -1,10 +1,10 @@
+import Modal from "../Modal/Modal";
 
-class SelectProductDialog{
+class SelectProductDialog extends Modal{
 
     constructor(dialog){
-
-        console.log('Окно поиска товара инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.search_obj = dialog.querySelector("#product_search");
         //this.store_obj = dialog.querySelector("#product_search_store");
         this.results_obj = dialog.querySelector("#search_product_results");
@@ -61,11 +61,6 @@ class SelectProductDialog{
         // if(focused){
         //     focused.focus();
         // }
-    }
-
-    finitaLaComedia(){
-        closeDialog(event);
-        delete window[this.root_dialog.id];
     }
 
     searchInit(){

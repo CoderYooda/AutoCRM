@@ -1,8 +1,10 @@
-class cashboxDialog{
+import Modal from "../Modal/Modal";
+
+class cashboxDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно кассового аппарата инициализировано1');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.active = true;
         this.init();
 
@@ -25,11 +27,6 @@ class cashboxDialog{
         window.axform.send(elem, function(e){
             object.finitaLaComedia();
         });
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
 }

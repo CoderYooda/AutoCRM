@@ -1,10 +1,10 @@
+import Modal from "../Modal/Modal";
 
-class selectCategoryDialog{
+class selectCategoryDialog extends Modal{
 
     constructor(dialog){
-
-        console.log('Окно выбора категории инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.refer = dialog.querySelector("#refer").value;
         //this.root = dialog.querySelector("#root").value;
         this.search_obj = dialog.querySelector("#category_search");
@@ -35,11 +35,6 @@ class selectCategoryDialog{
         this.search_obj.addEventListener("paste", searchFn);
         this.search_obj.addEventListener("delete", searchFn);
         document.addEventListener("CategoryStored", searchFn);
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     save(elem){

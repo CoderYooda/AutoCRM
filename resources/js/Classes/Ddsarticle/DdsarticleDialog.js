@@ -1,8 +1,10 @@
-class ddsarticleDialog{
+import Modal from "../Modal/Modal";
+
+class ddsarticleDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно статьи дохода инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.active = true;
         this.init();
     }
@@ -28,11 +30,6 @@ class ddsarticleDialog{
 
     openSelectCategoryDialog(category_selected = null){
         window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     selectCategory(id){

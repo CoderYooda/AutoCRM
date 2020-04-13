@@ -1,8 +1,10 @@
-class shipmentDialog{
+import Modal from "../Modal/Modal";
+
+class shipmentDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно Продажи инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.items = [];
         this.nds = true;
         this.totalPrice = 0.0;
@@ -121,6 +123,11 @@ class shipmentDialog{
                     delete window[root_id];
                     window.helper.initDialogMethods();
                 });
+            }
+        });
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('PartnerSelected',  function(){
+            if(focused){
+                focused.focus();
             }
         });
     }
@@ -274,11 +281,6 @@ class shipmentDialog{
             elem.addEventListener("delete", fn);
         });
         this.recalculate();
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     removeItem(id){

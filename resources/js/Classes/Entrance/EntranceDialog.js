@@ -1,8 +1,10 @@
-class createEntrance{
+import Modal from "../Modal/Modal";
+
+class createEntrance extends Modal{
 
     constructor(dialog){
-        console.log('Окно поступления инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.items = [];
         this.nds = true;
         this.nds_included = true;
@@ -23,10 +25,17 @@ class createEntrance{
         //     object.finitaLaComedia();
         // });
         this.loadItemsIfExists();
-        let focused = document.getElementById('employee_dialog_focused');
+        let focused = document.getElementById('entrance_dialog_focused');
         if(focused){
             focused.focus();
         }
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
@@ -146,13 +155,6 @@ class createEntrance{
             elem.addEventListener("delete", fn);
         });
         this.recalculate();
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
-        //document.removeEventListener("PartnerSelected");
-        //document.removeEventListener("PartnerStored");
     }
 
     freshContent(id, callback = null){
@@ -342,7 +344,6 @@ class createEntrance{
         // });
         //object.setTotalPrice(total_price);
     }
-
 
     getPayment(){
         let warrant_type = 'receipt_of_goods';

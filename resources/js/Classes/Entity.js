@@ -66,7 +66,7 @@ class Entity{
 
     addProductToList(elem, object, type){ // Добавление элемента в список
         let article_id = elem.closest('.list-item').dataset.article_id;
-
+        object.touch();
         let store_id = false;
         if(elem.closest('.dialog').querySelector('input[name=store_id]') != null){
             let store_id = elem.closest('.dialog').querySelector('input[name=store_id]').value;
@@ -97,6 +97,7 @@ class Entity{
                     id:resp.data.product.id,
                     html:resp.data.html
                 }, resp.data.product.id);
+                object.root_dialog.querySelector('.price_elem:last-child').focus();
             } else {
                 window.notification.notify('error', 'Товар уже в списке');
             }

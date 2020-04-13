@@ -1,10 +1,11 @@
 import Sortable from "sortablejs";
+import Modal from "../Modal/Modal";
 
-class adjustmentDialog{
+class adjustmentDialog extends Modal{
 
     constructor(dialog){
+        super(dialog);
         console.log('Окно Корректировки инициализировано');
-        this.root_dialog = dialog;
         this.store_id = null;
         this.items = [];
         this.init();
@@ -67,11 +68,6 @@ class adjustmentDialog{
         if(focused){
             focused.focus();
         }
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     save(elem){

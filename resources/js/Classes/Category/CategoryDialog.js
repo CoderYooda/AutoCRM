@@ -1,10 +1,10 @@
+import Modal from "../Modal/Modal";
 
-class CategoryDialog{
+class CategoryDialog extends Modal{
 
     constructor(dialog){
-
-        console.log('Окно создания категории инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.init();
         //console.log(dialog.querySelector("#refer").value);
         //this.refer = dialog.querySelector("#refer").value;
@@ -31,11 +31,6 @@ class CategoryDialog{
                 object.save(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     openSelectCategoryDialog(category_selected = null){

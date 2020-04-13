@@ -1,8 +1,10 @@
-class roleDialog{
+import Modal from "../Modal/Modal";
+
+class roleDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно роли инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.active = true;
         this.users = [];
         this.init();
@@ -40,11 +42,6 @@ class roleDialog{
         });
     }
 
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
-    }
-
     openSelectUsersModal(target){
         window.openDialog('selectPartner', '&refer=' + this.root_dialog.id + '&target=' + target);
     }
@@ -78,12 +75,14 @@ class roleDialog{
             window.isXHRloading = false;
         });
     };
+
     removeUser(id, type){
         let object = this;
         object[type].remove(id);
         object.setEmpty(type, 'users_stack');
         document.getElementById(type + '_' + id).remove();
     }
+
     clearList(type, container){
         this[type] = [];
         this.setEmpty(type, container);

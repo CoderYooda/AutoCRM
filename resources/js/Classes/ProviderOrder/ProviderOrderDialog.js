@@ -1,14 +1,17 @@
-class providerOrderDialog{
+import Modal from "../Modal/Modal";
+
+class providerOrderDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно заказа поставщику инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.items = [];
         this.nds = true;
         this.nds_included = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.refer = null;
+        this.focused = document.getElementById('providerorder_dialog_focused');
         this.init();
     }
 
@@ -62,9 +65,8 @@ class providerOrderDialog{
         });
 
         this.loadItemsIfExists();
-        let focused = document.getElementById('providerorder_dialog_focused');
-        if(focused){
-            focused.focus();
+        if(object.focused){
+            object.focused.focus();
         }
     }
 
@@ -192,7 +194,6 @@ class providerOrderDialog{
         });
     }
 
-
     loadItemsIfExists(){
         window.entity.loadItemsToList(this, 'providerorder');
     }
@@ -243,11 +244,6 @@ class providerOrderDialog{
         }
     }
 
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
-    }
-
     removeItem(id){
         this.items.splice(
             this.items.map(function(e){
@@ -283,7 +279,9 @@ class providerOrderDialog{
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
             //closeDialog(event);
-
+            if(object.focused){
+                object.focused.focus();
+            }
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

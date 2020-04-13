@@ -1,8 +1,10 @@
-class clientorderDialog{
+import Modal from "../Modal/Modal";
+
+class clientorderDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно заказа Клиента инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.items = [];
         this.nds = true;
         this.totalPrice = 0.0;
@@ -296,11 +298,6 @@ class clientorderDialog{
             elem.addEventListener("delete", fn);
         });
         this.recalculate();
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     removeItem(id, tag = null){

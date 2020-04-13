@@ -1,7 +1,10 @@
-class selectCashboxDialog{
+import Modal from "../Modal/Modal";
+
+class selectCashboxDialog extends Modal{
+
     constructor(dialog){
-        console.log('Окно выбора кассового аппарата инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.refer = null;
         this.type = null;
         this.active = true;
@@ -28,12 +31,6 @@ class selectCashboxDialog{
         window.axform.send(elem, function(e){
             object.finitaLaComedia();
         });
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        window[this.root_dialog.id] = null;
-        delete window[this.root_dialog.id];
     }
 
     searchInit(){

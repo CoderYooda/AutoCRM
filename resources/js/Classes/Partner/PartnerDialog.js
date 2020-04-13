@@ -1,8 +1,10 @@
-class partnerDialog{
+import Modal from "../Modal/Modal";
+
+class partnerDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно партнера инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.active = true;
         this.bithdayFlatpkr = null;
         this.issuedDateFlatpkr = null;
@@ -69,11 +71,6 @@ class partnerDialog{
                 object.finitaLaComedia();
             });
         }
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     openCategoryModal(category_selected = null){

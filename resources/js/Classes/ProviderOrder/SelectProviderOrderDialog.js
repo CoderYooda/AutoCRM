@@ -1,10 +1,10 @@
+import Modal from "../Modal/Modal";
 
-class selectProviderOrderDialog{
+class selectProviderOrderDialog extends Modal{
 
     constructor(dialog){
-
-        console.log('Окно поиска заявки инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.search_obj = null;//dialog.querySelector("#providerorder_search");
         this.order_id = null;
         //this.results_obj = dialog.querySelector("#search_providerorder_results");
@@ -28,11 +28,6 @@ class selectProviderOrderDialog{
         if(focused){
             focused.focus();
         }
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     searchInit(){
@@ -93,36 +88,7 @@ class selectProviderOrderDialog{
 
     pickProviderOrder(id){
         let object = this;
-        //var string = this.search_obj.value;
-        //var store_id = this.store_obj.value;
-        // object.order_id = id;
-        //
-        // let items = object.root_dialog.querySelectorAll('.providerorder_item');
-        //
-        // [].forEach.call(items, function(elem){
-        //     elem.classList.remove('active');
-        // });
-
-        // object.root_dialog.querySelector('#providerorder_item_' + id).classList.add('active');
-        // let data = {};
-        //data.string = string;
-        //data.store_id = store_id;
-        // if(object.refer){
-        //     data.refer = object.refer;
-        // }
         window[object.refer].selectProviderOrder(id);
-
-        // window.axios({
-        //     method: 'post',
-        //     url: 'providerorder/' + id + '/loaditems',
-        //     data: data,
-        // }).then(function (resp) {
-        //     object.articles_container.innerHTML = resp.data.html;
-        //     //object.markAsAdded();
-        // }).catch(function (error) {
-        //     console.log(error);
-        // }).finally(function () {
-        // });
     }
 
 }

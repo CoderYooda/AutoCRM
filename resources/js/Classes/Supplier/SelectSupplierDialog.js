@@ -1,10 +1,10 @@
+import Modal from "../Modal/Modal";
 
-class SelectSupplierDialog{
+class SelectSupplierDialog extends Modal{
 
     constructor(dialog){
-
-        console.log('Окно производителя инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.search_obj = dialog.querySelector("#supplier_search");
         // this.store_obj = dialog.querySelector("#product_search_store");
         this.results_obj = dialog.querySelector("#search_supplier_results");
@@ -33,11 +33,6 @@ class SelectSupplierDialog{
         this.search_obj.addEventListener("paste", searchFn);
         this.search_obj.addEventListener("delete", searchFn);
         document.addEventListener("SupplierStored", searchFn);
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     openSupplierDialog(){

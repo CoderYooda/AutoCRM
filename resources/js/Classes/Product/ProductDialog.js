@@ -1,19 +1,17 @@
+import Modal from '../Modal/Modal.js';
 
-class ProductDialog{
+class ProductDialog extends Modal{
 
     constructor(dialog){
-
+        super(dialog);
         console.log('Окно создания товара инициализировано');
-        this.root_dialog = dialog;
-        // this.search_obj = dialog.querySelector("#product_search");
-        // this.store_obj = dialog.querySelector("#product_search_store");
-        // this.results_obj = dialog.querySelector("#search_product_results");
-        // this.refer = dialog.querySelector("#refer").value;
         this.provider_search_container = this.root_dialog.querySelector('#provider_search_container');
         this.provider_search_cont = this.root_dialog.querySelector('#provider_search_container .cont');
         this.article_input = this.root_dialog.querySelector('input[name=article]');
         this.init();
     }
+
+
 
     init(){
         let object = this;
@@ -34,16 +32,13 @@ class ProductDialog{
         this.article_input.addEventListener("delete", fn);
     }
 
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
-    }
+
 
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(e){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 
@@ -94,7 +89,6 @@ class ProductDialog{
         this.root_dialog.querySelector('input[name=name]').value = elem.dataset.ident;
         this.root_dialog.querySelector('input[name=new_supplier_name]').value = elem.dataset.producer;
         this.root_dialog.querySelector('button[name=supplier_id]').innerHTML = elem.dataset.producer;
-
     }
 
     openSelectCategoryDialog(category_selected = null){

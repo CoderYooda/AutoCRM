@@ -1,8 +1,10 @@
-class warrantDialog{
+import Modal from "../Modal/Modal";
+
+class warrantDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно кассовых операций инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.active = true;
         this.init();
     }
@@ -27,11 +29,6 @@ class warrantDialog{
         window.axform.send(form, function(e){
             object.finitaLaComedia();
         });
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     selectPartner(id){

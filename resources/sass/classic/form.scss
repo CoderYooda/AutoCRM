@@ -49,6 +49,10 @@
     right: 3px!important;
     width: 5px!important;
 }
+
+.swal2-container {
+    z-index: 20000!important;
+}
 h5{
     font-weight: 600;
     font-size: 16px;

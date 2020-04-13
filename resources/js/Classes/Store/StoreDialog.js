@@ -1,8 +1,10 @@
-class storeDialog{
+import Modal from "../Modal/Modal";
+
+class storeDialog extends Modal{
 
     constructor(dialog){
-        console.log('Окно склада инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.active = true;
         this.init();
     }
@@ -26,10 +28,6 @@ class storeDialog{
         });
     }
 
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
-    }
 
 }
 export default storeDialog;

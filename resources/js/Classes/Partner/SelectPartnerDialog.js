@@ -1,7 +1,10 @@
-class selectPartnerDialog {
+import Modal from "../Modal/Modal";
+
+class selectPartnerDialog  extends Modal{
+
     constructor(dialog){
-        console.log('Окно выбора контрагента инициализировано');
-        this.root_dialog = dialog;
+        super(dialog);
+        console.log('Окно штрихкода инициализировано');
         this.refer = dialog.querySelector("#refer").value;
         if(dialog.querySelector("#target")){
             this.target = dialog.querySelector("#target").value;
@@ -33,11 +36,6 @@ class selectPartnerDialog {
         if(focused){
             focused.focus();
         }
-    }
-
-    finitaLaComedia(){
-        closeDialog(null, this.root_dialog.id);
-        delete window[this.root_dialog.id];
     }
 
     searchInit(){

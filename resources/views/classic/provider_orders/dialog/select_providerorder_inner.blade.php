@@ -3,7 +3,7 @@
         <div class="box-body">
             <ul  class="nav select-list-modal">
             @foreach($providerorders as $providerorder)
-                <li id="providerorder_item_{{ $providerorder->id }}" onclick="{{ $class }}.pickProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}" class="pointer d-flex " >
+                <li id="providerorder_item_{{ $providerorder->id }}" onclick="{{ $request['refer'] }}.selectProviderOrder({{ $providerorder->id }})" data-id="{{ $providerorder->id }}" class="pointer d-flex " >
                     <div class="ring-ico">
                         <i class="fa fa-cubes"></i>
                     </div>

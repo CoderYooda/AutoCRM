@@ -88,7 +88,7 @@
                     </div>
                     <div class="form-group row row-sm mb-0">
                         <div class="col-sm-12">
-                            <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
+                            <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
                         </div>
                     </div>
                 </div>
