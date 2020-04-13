@@ -407,7 +407,7 @@ class PartnerController extends Controller
         }
 
         $partners = Partner::select(DB::raw('
-            partners.id, partners.created_at, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.isfl = 1, partners.fio, partners.companyName) as name
+            partners.id, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.isfl = 1, partners.fio, partners.companyName) as name
         '))
             ->from(DB::raw('
                 partners
@@ -449,12 +449,13 @@ class PartnerController extends Controller
 //            ->when($request['dates_range'] != null, function($query) use ($request) {
 //                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
 //            })
-            ->where('partners.company_id', Auth::user()->company()->first()->id)
+            
             ->groupBy('partners.id')
+	        ->where('partners.company_id', Auth::user()->company()->first()->id)
             ->orderBy($field, $dir)
-            //->toSql();
-
-            //dd($partners);
+//            ->toSql();
+//
+//            dd($partners);
             ->paginate($size);
 
         return $partners;

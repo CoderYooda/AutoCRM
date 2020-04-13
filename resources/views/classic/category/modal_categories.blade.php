@@ -10,8 +10,8 @@
                 <span class="elem_text" title="{{ $categories['parent']->name }}">{{ $categories['parent']->name }}</span>
             </a>
         @endif
-        <div class="" data-simplebar style="max-height: 368px;">
-            <ul class="nav mt-5">
+        <div class="w-100" data-simplebar style="max-height: 400px;">
+            <ul class="nav mt-5" >
                 @foreach($categories['stack'] as $category)
                     <li id="category_{{ $category->id }}" class="category-item @if($request['category_id'] == $category->id) selected @endif" data-id="{{ $category->id }}">
                         <a onclick="window.{{ $class }}.loadCategory({{ $category->id }}, true, true)" class="ajax-nav category-linked-item">

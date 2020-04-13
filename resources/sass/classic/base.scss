@@ -1045,6 +1045,7 @@ input:-moz-placeholder { /* Firefox 18- */
     line-height: 26px;
     position: relative;
     padding-left: 15px;
+    width: calc(100% - 15px);
 }
 .dialog_category_container .category-back-button{
     position: relative;
