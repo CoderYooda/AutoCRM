@@ -24,7 +24,7 @@ class storeDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(e){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 

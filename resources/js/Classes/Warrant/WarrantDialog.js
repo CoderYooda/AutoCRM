@@ -12,7 +12,7 @@ class warrantDialog extends Modal{
     init(){
         let object = this;
         document.addEventListener('WarrantStored', function(e){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
         let focused = document.getElementById('warrant_dialog_focused');
         if(focused){
@@ -27,7 +27,7 @@ class warrantDialog extends Modal{
         let object = this;
         let form = this.root_dialog.getElementsByTagName('form')[0];
         window.axform.send(form, function(e){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 

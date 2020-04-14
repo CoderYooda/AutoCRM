@@ -190,7 +190,7 @@ class providerOrderDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 

@@ -10,6 +10,7 @@ class clientorderDialog extends Modal{
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.phoneMask = null;
+        this.phone_field = this.root_dialog.querySelector('#client-phone');
         this.init();
     }
 
@@ -125,13 +126,13 @@ class clientorderDialog extends Modal{
 
     sendSMS(){
         let message_field = this.root_dialog.querySelector('#sms_field');
-        let phone_field = this.root_dialog.querySelector('#client-phone');
+
         //console.log(field.value);
 
         let data = {};
         //data.store_id = store_id;
         data.message = message_field.value;
-        data.phone = phone_field.value;
+        data.phone = this.phone_field.value;
         data.type = 'clientOrder';
         data.id = this.root_dialog.querySelector('input[name=id]').value;
 
@@ -174,7 +175,7 @@ class clientorderDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 
@@ -360,8 +361,8 @@ class clientorderDialog extends Modal{
     }
 
     addPhoneMask(){
-        let phone = this.root_dialog.querySelector('#client-phone');
-        this.phoneMask = window.IMask(phone, {
+        let object = this;
+        this.phoneMask = window.IMask(object.phone_field, {
             mask: [
                 {
                     mask: '+{7}(000)000-00-00',
@@ -412,7 +413,6 @@ class clientorderDialog extends Modal{
                     if(elem.main){
                         object.root_dialog.querySelector('#client-phone').value = elem.number;
                     }
-
                     phones_html += '<span onclick="' + object.root_dialog.id + '.selectNumber(this)" data-number="' + elem.number + '" class="element">' + elem.number + '</span>';
                 });
             } else {
@@ -429,11 +429,12 @@ class clientorderDialog extends Modal{
             let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
-            window.notification.notify( 'success', 'Контрагент выбран');
+            window.notification.notify( 'success', 'Контакт выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
             //closeDialog(event);
-
+            object.phoneMask.value = resp.data.phone;
+            object.phoneMask.updateControl();
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -450,7 +451,6 @@ class clientorderDialog extends Modal{
     }
 
     recalculate(){
-        console.log("Пересчет...");
         var object = this;
         this.items.forEach(function(elem){
             object.recalculateItem(elem.id);

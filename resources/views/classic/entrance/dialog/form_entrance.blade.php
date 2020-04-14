@@ -76,7 +76,7 @@
 
                     <div class="form-group row row-sm">
                         <label for="category_id" class="col-sm-5 label-sm">Заявка поставщику</label>
-                        <div class="input-group mb-3 col-sm-7">
+                        <div class="input-group mb-3 col-sm-7 mb-0">
                             <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select" @if(isset($entrance) && $entrance->providerorder()->first() != null) disabled @endif>
                                 @if(isset($entrance) && $entrance->providerorder()->first() != null)
                                     {{ $entrance->providerorder()->first()->outputName() }}
@@ -92,42 +92,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 form-group mb-0">
+                <div class="col-sm-6 form-group mb-0" id="entrance_info_block">
                     @if(isset($entrance))
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <span class="nav-link d-flex flex-row text-muted">
-                                <span class="flex">Дата поступления</span>
-                                <span class="text-sm">
-                                        {{ $entrance->normalizedData() }}
-                                    </span>
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link d-flex flex-row text-muted">
-                                <span class="flex">Поставщик</span>
-                                <span class="text-sm">
-                                        {{ $entrance->providerorder()->first()->partner()->first()->outputName() }}
-                                    </span>
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link d-flex flex-row text-muted">
-                                <span class="flex">Общая сумма</span>
-                                <span class="text-sm">
-                                        {{ $entrance->providerorder()->first()->getWarrantPositive() }} р.
-                                    </span>
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link d-flex flex-row text-muted">
-                                <span class="flex">Принимающий</span>
-                                <span class="text-sm">
-                                        {{ $entrance->partner()->first()->outputName() }}
-                                    </span>
-                            </span>
-                        </li>
-                    </ul>
+                        @php $providerorder = $entrance->providerorder()->first(); @endphp
+                        @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.contact-card')
                     @endif
                 </div>
             </div>
@@ -149,7 +117,6 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($entrance))
-                            @php $providerorder = $entrance->providerorder()->first(); @endphp
                             @foreach($entrance->articles()->get() as $product)
                                 @include(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element')
                             @endforeach

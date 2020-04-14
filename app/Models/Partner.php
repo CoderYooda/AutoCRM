@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\HelpController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -66,7 +67,8 @@ class Partner extends Model
         if($phones){
             $number = $phones->where('main', true)->first();
             if($number){
-                $num_out = $number->number;
+
+                $num_out = HelpController::phoneFormat( $number->number);
             }
         }
         return $num_out;

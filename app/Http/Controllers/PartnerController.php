@@ -356,6 +356,7 @@ class PartnerController extends Controller
             'balance' => $partner->balance,
             'name' => $partner->outputName(),
             'phones' => $partner->phones()->get(),
+            'phone' => $partner->firstActivePhoneNumber()
         ]);
     }
 

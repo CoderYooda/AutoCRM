@@ -95,6 +95,7 @@ class ProviderOrdersController extends Controller
         return response()->json([
             'id' => $providerorder->id,
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
+            'info' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
             'name' => $providerorder->outputName()
         ]);
     }

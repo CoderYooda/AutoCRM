@@ -6,7 +6,6 @@ class Modal{
         let object = this;
         this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             object.touch();
-            console.log(object.touched);
         });
     }
 

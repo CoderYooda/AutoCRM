@@ -21,6 +21,22 @@ class HelpController extends Controller
         return FR::is($path . '*') ? 'active' :  '';
     }
 
+    public static function phoneFormat($sPhone){
+        $sPhone = preg_replace("![^0-9]+!",'', $sPhone);
+        if(strlen($sPhone) != 11) return(false);
+        $sCountry = substr($sPhone, 0,1);
+        $sArea = substr($sPhone, 1,3);
+        $sPrefix = substr($sPhone,4,3);
+        $sNumber = substr($sPhone,7,2);
+        $sNumber2 = substr($sPhone,9,2);
+
+        if($sCountry != 8){
+            $sCountry = '+' . $sCountry;
+        }
+        $sPhone = $sCountry."(".$sArea.")".$sPrefix."-".$sNumber."-".$sNumber2;
+        return($sPhone);
+    }
+
     public static function num2str($num) {
         $nul='ноль';
         $ten=array(

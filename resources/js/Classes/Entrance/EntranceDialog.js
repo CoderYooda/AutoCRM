@@ -73,7 +73,7 @@ class createEntrance extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 
@@ -228,6 +228,11 @@ class createEntrance extends Modal{
             url: 'providerorder/'+ id +'/select',
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
+
+            let info_container = object.root_dialog.querySelector('#entrance_info_block');
+            if(info_container){
+                info_container.innerHTML = resp.data.info;
+            }
 
             let select = object.root_dialog.querySelector('button[name=providerorder_id]');
             let input = object.root_dialog.querySelector('input[name=providerorder_id]');

@@ -68,7 +68,7 @@ class partnerDialog extends Modal{
         let object = this;
         if(!window.isXHRloading){
             window.axform.send(elem, function(e){
-                object.finitaLaComedia();
+                object.finitaLaComedia(true);
             });
         }
     }

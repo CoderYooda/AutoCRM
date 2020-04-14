@@ -25,7 +25,7 @@ class moneymoveDialog extends Modal{
         let object = this;
         let form = this.root_dialog.getElementsByTagName('form')[0];
         window.axform.send(form, function(e){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 

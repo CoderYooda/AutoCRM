@@ -155,7 +155,7 @@ class shipmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            object.finitaLaComedia();
+            object.finitaLaComedia(true);
         });
     }
 
@@ -372,6 +372,7 @@ class shipmentDialog extends Modal{
             window.notification.notify( 'success', 'Контрагент выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
+
             //closeDialog(event);
 
         }).catch(function (error) {
