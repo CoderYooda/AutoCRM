@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeed::class);
         $this->call(DDSSeeder::class);
         $this->call(ContractTypesSeeder::class);
-        $this->call(CreateBasePartners::class);
+        //$this->call(CreateBasePartners::class);
         $this->call(SettingsSeed::class);
         $this->call(DayOffTypeSeed::class);
         $this->call(PermissionSeed::class);

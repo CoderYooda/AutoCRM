@@ -414,7 +414,7 @@ class PartnerController extends Controller
                 partners
                 left join categories as cat on cat.id = partners.category_id
             '))
-
+            ->where('partners.company_id', Auth::user()->company()->first()->id)
             ->where(function($q) use ($request){
                 if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null"){
                     $q->where('partners.category_id', (int)$request['category_id']);
@@ -430,10 +430,16 @@ class PartnerController extends Controller
 //            })
             ->when($request['search'] != null, function($query) use ($request) {
                 if(mb_strlen($request['search']) == 1){
-                    $query->where('fio', 'like', $request['search'].'%')
-                    ->orWhere('companyName', 'like', $request['search'].'%');
+                    $query->where(function($q) use ($request){
+                        $q->where('fio', 'like', $request['search'].'%');
+                            //->orWhere('companyName', 'like', $request['search'].'%');
+                    });
                 } else {
-                    $query->where('fio', 'like', '%'.$request['search'].'%')->orWhere('companyName', 'like', '%'.$request['search'].'%')->orWhere('basePhone', 'like', '%'.$request['search'].'%');
+                    $query->where(function($q) use ($request){
+                        $q->where('fio', 'like', '%'.$request['search'].'%')
+                        ->orWhere('companyName', 'like', $request['search'].'%');
+                    });
+
                 }
             })
 
@@ -452,7 +458,7 @@ class PartnerController extends Controller
 //            })
             
             ->groupBy('partners.id')
-	        ->where('partners.company_id', Auth::user()->company()->first()->id)
+
             ->orderBy($field, $dir)
 //            ->toSql();
 //

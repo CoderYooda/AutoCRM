@@ -82,7 +82,7 @@ class LoginController extends Controller
 
 
 
-        if($user->banned_at != null){
+        if($user && $user->banned_at != null){
             return redirect()->back()->with('banned', ['Выша учетная запись была заблокирована']);
         }
 
