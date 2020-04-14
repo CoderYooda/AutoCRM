@@ -43,7 +43,7 @@
         @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs')
         <div class="modal-footer">
             <hr>
-            <button type="submit" onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
+            <button onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
             <button type="submit" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
         </div>
         <div class="system_message"></div>

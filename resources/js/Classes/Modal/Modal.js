@@ -14,6 +14,7 @@ class Modal{
     }
 
     finitaLaComedia(forced = null){
+        window.event.preventDefault();
         if(!this.touched || forced){
             closeDialog(null, this.root_dialog.id);
             delete window[this.root_dialog.id];
