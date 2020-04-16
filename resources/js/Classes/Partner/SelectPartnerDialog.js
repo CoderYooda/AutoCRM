@@ -11,6 +11,8 @@ class selectPartnerDialog  extends Modal{
         } else {
             this.target = null;
         }
+        this.new_btn = dialog.querySelector("#new_btn");
+        this.root_category = 3;
         this.search_obj = dialog.querySelector("#partner_search");
         this.search_str = null;
         let cat_input = dialog.querySelector("#category_id");
@@ -97,11 +99,23 @@ class selectPartnerDialog  extends Modal{
         }).then(function (resp) {
             var results_container = document.querySelector('#search_partner_results');
             results_container.innerHTML = resp.data.html;
+            if(object.new_btn){
+                object.new_btn.setAttribute('onclick','openDialog(\'partnerDialog\', \'&category_select=' + category_id + '\')');
+            }
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
             window.isXHRloading = false;
         });
+    }
+
+    openPartnerModal(category_id = null)
+    {
+        let cat_id = this.root_category;
+        if(category_id != null){
+            cat_id = this.category_id;
+        }
+        window.openDialog('partnerDialog', '&category_select=' + cat_id);
     }
 
     search(object){

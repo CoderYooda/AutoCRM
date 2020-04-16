@@ -238,8 +238,6 @@ class PartnerController extends Controller
         ], $this->status);
     }
 
-
-
     private static function validateRules($request)
     {
         $rules = null;
@@ -318,8 +316,6 @@ class PartnerController extends Controller
             'html' => $content
         ]);
     }
-
-
 
     public function getSideInfo(Request $request)
     {

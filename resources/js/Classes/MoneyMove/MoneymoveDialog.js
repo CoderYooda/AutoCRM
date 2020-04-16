@@ -11,9 +11,6 @@ class moneymoveDialog extends Modal{
 
     init(){
         let object = this;
-        document.addEventListener('MoneymoveStored', function(e){
-            object.finitaLaComedia();
-        });
         let focused = document.getElementById('moneymove_dialog_focused');
         if(focused){
             focused.focus();

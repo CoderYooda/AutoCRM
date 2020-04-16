@@ -1,6 +1,6 @@
-<div class="box-body">
+<div class="box-body" data-simplebar style="max-height: 400px">
     @if($cashboxes->count() > 0)
-        <ul class="nav select-list-modal">
+        <ul class="nav select-list-modal mb-0">
             @foreach($cashboxes as $cashbox)
                 <li id="cashbox_item_{{ $cashbox->id }}" @if($request['type'] != null)onclick="try{window.{{$request['refer']}}.select{{$request['type']}}Cashbox({{ $cashbox->id }})}catch (e) {}"@else onclick="try{window.{{$request['refer']}}.selectCashbox({{ $cashbox->id }})}catch (e) {}"@endif class="pointer d-flex " >
                     <div class="ring-ico">
@@ -20,14 +20,20 @@
     @elseif($request && $request['string'] != null)
         <div class="padding text-center">
             <div>
-                Кассы по запросу "{{ $request['string'] }}" не найдено
+                <div class="out_of_search"></div>
+                <div class="mb-15">
+                    Кассы по запросу "<b>{{ $request['string'] }}</b>" не найдены
+                </div>
             </div>
             <button onclick="openDialog('cashboxDialog')" class="button primary">Новый кассовый аппарат</button>
         </div>
     @else
         <div class="padding text-center">
             <div>
-                Кассы не найдены
+                <div class="out_of_search"></div>
+                <div class="mb-15">
+                    Кассы не найдены
+                </div>
             </div>
             <button onclick="openDialog('cashboxDialog')" class="button primary">Новый кассовый аппарат</button>
         </div>

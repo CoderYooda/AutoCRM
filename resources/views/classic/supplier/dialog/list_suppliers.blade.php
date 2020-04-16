@@ -11,7 +11,7 @@
 
     <div class="modal-header">
         <form class="flex d-flex w-100">
-            <input id="supplier_search" type="text"  name="supplier_search" class="form-control mr-15" placeholder="Поиск производителя">
+            <input id="supplier_search" type="text"  name="supplier_search" class="form-control search mr-15" placeholder="Поиск производителя">
             <button onclick="selectSupplierDialog.openSupplierDialog()" class="button" type="button">Новый производитель</button>
         </form>
     </div>

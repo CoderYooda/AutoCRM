@@ -31,6 +31,12 @@
 
             <div class="box-body">
                 <div class="form-group">
+                    <label>Сумма</label>
+                    <input id="moneymove_dialog_focused" type="number" step="0.1" name="summ"
+                           @if(isset($moneymove)) value="{{ $moneymove->summ }}" @endif
+                           class="form-control" placeholder="Сумма">
+                </div>
+                <div class="form-group">
                     <label for="category_id">Касса отправитель</label>
                     <div class="input-group">
                         <button onclick="{{ $class }}.openSelectCashboxModal('In')" type="button" name="in_cashbox_id" class="in_cashbox_select form-control text-left button_select">
@@ -55,14 +61,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Сумма</label>
-                    <input type="number" step="0.1" name="summ"
-                           @if(isset($moneymove)) value="{{ $moneymove->summ }}" @endif
-                           class="form-control" placeholder="Сумма">
-                </div>
-                <div class="form-group">
                     <label for="comment">Комментарий</label>
-                    <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
+                    <textarea style="resize: none;" class="form-control w-100" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
                 </div>
             </div>
         </div>

@@ -11,8 +11,11 @@ class storeDialog extends Modal{
 
     init(){
         let object = this;
-        document.addEventListener("StoreStored", function(){
-            object.finitaLaComedia();
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+            }
         });
         let focused = document.getElementById('store_dialog_focused');
         if(focused){
@@ -27,7 +30,6 @@ class storeDialog extends Modal{
             object.finitaLaComedia(true);
         });
     }
-
 
 }
 export default storeDialog;

@@ -9,6 +9,7 @@ class shipmentDialog extends Modal{
         this.nds = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
+        this.refer = null;
         this.init();
     }
 
@@ -101,20 +102,19 @@ class shipmentDialog extends Modal{
         inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
-        // let event = '';
-        // if(object.root_dialog.dataset.id){
-        //     event = 'ShipmentStored' + object.root_dialog.dataset.id;
-        // } else {
-        //     event = 'ShipmentStored';
-        // }
-        // document.addEventListener(event, function(e){
-        //     object.finitaLaComedia();
-        // });
+
+
         this.loadItemsIfExists();
         let focused = document.getElementById('shipment_dialog_focused');
         if(focused){
             focused.focus();
         }
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
@@ -133,6 +133,7 @@ class shipmentDialog extends Modal{
     }
 
     save(elem){
+        window.event.preventDefault();
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
@@ -304,56 +305,11 @@ class shipmentDialog extends Modal{
     }
 
     addProduct(elem){
-
-        let article_id = elem.dataset.article_id;
-        let count = 1;
-
-        var object = this;
-        window.axios({
-            method: 'post',
-            url: 'product/addtolist',
-            data: {
-                refer:this.root_dialog.id,
-                type:'shipment',
-                article_id:article_id,
-                count:count,
-            }
-        }).then(function (resp) {
-
-            var isset = object.items.map(function(e){
-                return e.id;
-            }).indexOf(resp.data.product.id);
-
-            if(isset < 0){
-                object.addItem({id:resp.data.product.id, html:resp.data.html});
-            } else {
-                window.notification.notify('error', 'Товар уже в списке');
-            }
-
-
-            // let canAdd = true;
-            // [].forEach.call(object.items, function(item){
-            //     if(item.store_id === parseInt(resp.data.product.store_id) && item.id === resp.data.product.product.id){
-            //         canAdd = false;
-            //     }
-            // });
-            //
-            // console.log(canAdd);
-            // if(canAdd){
-            //     object.addItem({
-            //         id:resp.data.product.product.id,
-            //         store_id:parseInt(resp.data.product.store_id),
-            //         count:resp.data.product.count,
-            //         html:resp.data.html
-            //     });
-            // } else {
-            //     window.notification.notify('error', 'Товар уже в списке');
-            // }
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
+        let object = this;
+        window.entity.addProductToList(elem, this, 'shipment');
+        if(refer != null){
+            object.refer = refer;
+        }
     };
 
     selectPartner(id){

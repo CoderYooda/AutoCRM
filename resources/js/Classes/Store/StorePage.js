@@ -47,6 +47,22 @@ class storePage{
         window.openDialog('selectPartner', '&refer=' + 'store&category_id=' + cat_id + '&target=' + target);
     }
 
+    openCategoryModal(){
+        let cat_id = this.root_category;
+        if(this.category_id != null){
+            cat_id = this.category_id;
+        }
+        window.openDialog('categoryDialog', '&category_select=' + cat_id);
+    }
+
+    openProductModal(){
+        let cat_id = this.root_category;
+        if(this.category_id != null){
+            cat_id = this.category_id;
+        }
+        window.openDialog('productDialog', '&category_select=' + cat_id);
+    }
+
     setField(option, value = null, text, elem = null){
         let object = this;
         object[option] = value;
@@ -468,8 +484,10 @@ class storePage{
 
     init(){
         let object = this;
+        document.addEventListener('ajaxLoaded', function(e){
+            object.checkActive();
+        });
         object.linked();
-
         if(object.active_tab == 'store'){
             object.loadCategory(this.root_category, true, true);
         }
@@ -505,9 +523,9 @@ class storePage{
             object.reload();
         });
         document.addEventListener('CategoryStored', function(e){
-            object.loadCategory(object.category_id);
-            // object.prepareParams();
-            // object.reload();
+            if(object.active){
+                object.loadCategory(object.category_id, true, false);
+            }
         });
     }
 

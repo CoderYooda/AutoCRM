@@ -279,7 +279,7 @@ class WarrantController extends Controller
 
         $warrants =
             Warrant::select(DB::raw('
-                warrants.created_at, warrants.created_at as date, warrants.id as id, IF(warrants.isIncoming = 1, "Приходной ордер","Расходный ордер") as type, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, dds_articles.name as dds, cashboxes.name as cashbox, warrants.summ 
+                warrants.created_at, warrants.created_at as date, warrants.id as id, IF(warrants.isIncoming = 1, "Приходный ордер","Расходный ордер") as type, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, dds_articles.name as dds, cashboxes.name as cashbox, warrants.summ 
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'warrants.partner_id')
                 ->leftJoin('dds_articles',  'dds_articles.id', '=', 'warrants.ddsarticle_id')

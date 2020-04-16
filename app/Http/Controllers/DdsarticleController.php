@@ -30,12 +30,12 @@ class DdsarticleController extends Controller
 
     public static function ddsarticleDialog($request)
     {
-        if($request['params']){
-            $id = (int)$request['ddsarticle_id'];
-            $ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
-            $tag = 'ddsarticleDialog'.$id;
+        $tag = 'ddsarticleDialog';
+
+        if($request['ddsarticle_id']){
+            $tag .= $request['ddsarticle_id'];
+            $product = Ddsarticle::where('id', (int)$request['ddsarticle_id'])->first();
         } else {
-            $tag = 'ddsarticleDialog';
             $ddsarticle = null;
         }
 

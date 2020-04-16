@@ -1,8 +1,12 @@
 <div class="tab-pane main_tab animate fadeIn text-muted active" id="tab_base{{ $class }}">
     <div class="form-group">
-        <label for="category_id">В категории</label>
+        <label for="category_id">В категорию</label>
         <div class="input-group mb-3">
-            <button onclick="{{ $class }}.openSelectCategoryDialog(@if(isset($partner)) {{ $partner->category_id }} @else 3 @endif)" type="button" name="category_id" class="category_select form-control text-left button_select">
+            <button onclick="{{ $class }}.openSelectCategoryDialog(
+                @if(isset($partner)){{ $partner->category_id }}
+                @elseif(isset($category)){{ $category->id }}
+                @else 3 @endif
+                )" type="button" name="category_id" class="category_select form-control text-left button_select">
                 @if(isset($partner))
                     {{ $partner->category()->first()->name }}
                 @elseif(isset($category))
@@ -40,14 +44,14 @@
                class="form-control entrance" placeholder="Контактное лицо" @if(isset($partner) && $partner['isfl']) disabled @elseif(!isset($partner)) disabled @endif>
     </div>
     <div class="form-group">
-        <label>Комментарий</label>
-        <textarea type="text" name="comment" class="form-control" placeholder="Комментарий">@if(isset($partner)){{ $partner->comment }}@endif</textarea>
-    </div>
-    <div class="form-group">
         <label>Штрих код (EAN 13)</label>
         <input type="text" name="barcode" class="form-control mb-15" value="@if(isset($partner)){{ $partner->barcode }}@endif" placeholder="Штрих код">
         @if(isset($partner) && $partner->barcode != null)
             <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($partner->barcode) !!}" alt="barcode" />
         @endif
+    </div>
+    <div class="form-group mb-0">
+        <label>Комментарий</label>
+        <textarea type="text" name="comment" class="form-control w-100" placeholder="Комментарий">@if(isset($partner)){{ $partner->comment }}@endif</textarea>
     </div>
 </div>

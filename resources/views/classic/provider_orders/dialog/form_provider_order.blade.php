@@ -145,9 +145,10 @@
             </div>
             <div class="modal-footer">
                 <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button primary uppercase-btn"><i class="fa fa-plus"></i> Добавить товар</button>
+                <button class="button white ml-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
-                <button class="button white pull-right mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+
             </div>
             <div class="system_message">
             </div>

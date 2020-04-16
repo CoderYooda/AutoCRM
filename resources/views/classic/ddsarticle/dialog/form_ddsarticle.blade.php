@@ -13,7 +13,7 @@
         <div class="titlebar">Добавление статьи</div>
     @endif
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
-    <button class="btn_close" onclick="closeDialog(event)">×</button>
+    <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreDdsarticle') }}" method="POST">
         @csrf
         <div class="box-body">
@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="button white" onclick="closeDialog(event)">Закрыть</button>
+            <button class="button white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button class="button pull-right" onclick="window.{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message"></div>

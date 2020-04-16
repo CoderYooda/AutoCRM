@@ -56,7 +56,7 @@ class cashPage{
                 stack.appendChild(node);
                 //object.reload();
                 object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
-                window.notification.notify( 'success', 'Контрагент выбран');
+                window.notification.notify( 'success', 'Контакт выбран');
             }
             //document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             //console.log("Событие PartnerSelected вызвано");
@@ -140,8 +140,8 @@ class cashPage{
                     }},
                 {title:"ID", field:"id", width:80},
                 {title:"Дата", field:"date", width:150},
-                {title:"Тип", field:"type", width:150, align:"left"},
-                {title:"Контрагент", field:"partner", align:"left"},
+                {title:"Тип", field:"type", minWidth:150, align:"left"},
+                {title:"Контакт", field:"partner", minWidth:150, align:"left"},
                 {title:"Статья", field:"dds", width:130, align:"left"},
                 {title:"Касса", field:"cashbox", width:130, align:"left"},
                 {title:"Сумма", field:"summ", width:130, align:"left"},
@@ -232,6 +232,9 @@ class cashPage{
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
+            rowDblClick:function(e, row){
+                openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
+            },
             rowContext:function(e, row){
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();

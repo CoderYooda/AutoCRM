@@ -5,15 +5,21 @@ class Modal{
         this.root_dialog = dialog;
         let object = this;
         this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
-            object.touch();
+            if(e.target.classList.contains('search')){
+
+            } else {
+                object.touch();
+            }
         });
     }
 
     touch(){
         this.touched = true;
+        dd('touched');
     }
 
     finitaLaComedia(forced = null){
+
         window.event.preventDefault();
         if(!this.touched || forced){
             closeDialog(null, this.root_dialog.id);

@@ -166,15 +166,6 @@ class ProductController extends Controller
         ]);
     }
 
-
-
-
-
-
-
-
-
-
     public static function selectProductDialog($request)
     {
         return self::selectProductInner($request);
@@ -188,7 +179,7 @@ class ProductController extends Controller
     private static function selectProductInner($request){
         $class = 'selectProductDialog';
         $stores = Store::owned()->get();
-
+        $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
         $products = Article::owned()->where(function($q) use ($request){
@@ -207,7 +198,7 @@ class ProductController extends Controller
             ->orderBy('created_at', 'ASC')
             ->limit(30)
             ->get();
-        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+        $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
 

@@ -73,7 +73,10 @@
                         </li>
                         @endcanany
                     </ul>
-                    <span class="md-auto"></span>
+                    <span class="md-auto  mr-auto"><span style="line-height: 52px;
+    font-size: 20px;
+    white-space: nowrap;
+    font-weight: bold;">{{ Auth::user()->company()->first()->name }}</span></span>
                     <ul class="top-nav-bar right-nav">
 
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">

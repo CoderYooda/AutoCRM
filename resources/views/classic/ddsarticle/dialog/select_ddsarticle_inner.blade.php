@@ -30,11 +30,11 @@
                 <div>
                     <div class="out_of_search"></div>
                     <div class="mb-15">
-                        Статей по запросу <b>{{ $request['string'] }}</b> не найдено
+                        Статей по запросу "<b>{{ $request['string'] }}</b>" не найдено
                     </div>
 
                 </div>
-                <button onclick="openDialog('ddsarticleDialog')" class="button success mb-15">Новая статья</button>
+                <button onclick="openDialog('ddsarticleDialog', '&category_select={{ $categories['parent']->id }}')" class="button success mb-15">Новая статья</button>
             </div>
         @else
             <div class="padding text-center">
@@ -44,7 +44,7 @@
                         Статей в этой категории нет
                     </div>
                 </div>
-                <button onclick="openDialog('ddsarticleDialog')" class="button success mb-15">Новая статья</button>
+                <button onclick="openDialog('ddsarticleDialog', '&category_select={{ $categories['parent']->id }}')" class="button success mb-15">Новая статья</button>
             </div>
         @endif
     </div>

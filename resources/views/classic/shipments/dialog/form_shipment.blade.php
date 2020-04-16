@@ -142,7 +142,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6 form-group">
-                    <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="comment" cols="30" rows="4">@if(isset($shipment)){{ $shipment->comment }}@endif</textarea>
+                    <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="shipment_dialog_focused" cols="30" rows="4">@if(isset($shipment)){{ $shipment->comment }}@endif</textarea>
                 </div>
             </div>
 
@@ -177,7 +177,7 @@
         <div class="modal-footer" style="white-space: nowrap">
             <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button mr-15 uppercase-btn"><i class="fa fa-plus"></i> Добавить товар</button>
 
-            <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
+            <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
             <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
         </div>

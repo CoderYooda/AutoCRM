@@ -45,12 +45,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <hr>
             <button class="button white" onclick="window.{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button class="button primary pull-right" onclick="{{$class}}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">
-
         </div>
     </form>
 </div>

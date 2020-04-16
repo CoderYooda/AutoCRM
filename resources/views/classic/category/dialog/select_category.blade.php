@@ -7,7 +7,7 @@
 
     <div class="modal-header">
         <form class="flex d-flex w-100">
-            <input id="category_search" type="text"  name="category_search" class="form-control mr-15" placeholder="Поиск категории" required="">
+            <input id="category_search" type="text"  name="category_search" class="form-control search mr-15" placeholder="Поиск категории" required="">
             <button onclick="{{ $class }}.openCategoryDialog()" class="button" type="button">Новая категория</button>
         </form>
     </div>

@@ -4,16 +4,11 @@ class ddsarticleDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
-        this.active = true;
         this.init();
     }
 
     init(){
         let object = this;
-        document.addEventListener("DdsarticleStored", function(){
-            object.finitaLaComedia();
-        });
         let focused = document.getElementById('ddsarticle_dialog_focused');
         if(focused){
             focused.focus();

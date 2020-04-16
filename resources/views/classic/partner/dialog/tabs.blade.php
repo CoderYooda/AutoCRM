@@ -45,7 +45,7 @@
             </ul>
         </div>
         <div class="col-sm-7 no-pl">
-            <div class="tab-content mb-3 pl-8">
+            <div class="tab-content mb-0 pl-8">
                 @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.base')
                 @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.contacts')
                 @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.company')

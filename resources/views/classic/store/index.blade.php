@@ -5,7 +5,7 @@
 @section('title', $page ?? 'Склад')
 
 @section('tab')
-
+@php $class = 'store' @endphp
 <div class="top-container">
     <div class="search-panel box">
         <div class="search-field-container w-100">
@@ -13,10 +13,10 @@
         </div>
         <div class="actions">
             @can('Создавать категории')
-                <button onclick="openDialog('categoryDialog')" class="button primary ml-12">Новая категория</button>
+                <button onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
             @endcan
             @can('Создавать товары')
-                    <button onclick="openDialog('productDialog')" class="button primary ml-12">Новый товар</button>
+                    <button onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
             @endcan
         </div>
     </div>

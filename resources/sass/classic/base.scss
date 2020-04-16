@@ -710,7 +710,7 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .box-content{
     flex: 1;
-    max-width: calc(100vw - 595px)!important;
+    max-width: calc(100vw - 597px)!important;
 }
 .box{
     position: relative;
@@ -983,6 +983,9 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .md-auto{
     margin-left: auto!important;
+}
+.mr-auto{
+    margin-right: auto!important;
 }
 .w-290{
     width: 290px!important;

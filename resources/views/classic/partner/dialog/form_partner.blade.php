@@ -25,7 +25,7 @@
 
         <input id="isfl" type="radio" name="isfl" value="1" @if(isset($partner) && $partner['isfl']) checked @elseif(!isset($partner)) checked @endif style="display: none;">
         <input id="isul" type="radio" name="isfl" value="0" @if(isset($partner) && !$partner['isfl'])checked @endif style="display: none;">
-        <input class="category_select" type="hidden" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@else 3 @endif">
+        <input class="category_select" type="hidden" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@elseif(isset($category)){{ $category->id }}@else 3 @endif">
 
         <input type="hidden" name="page" value="@if(isset($request) && isset($request['page'])){{ $request['page'] }}@else 1 @endif">
         <input type="hidden" name="search" value="@if(isset($request) && isset($request['search'])){{ $request['search'] }}@else @endif">
@@ -42,7 +42,6 @@
         </div>
         @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs')
         <div class="modal-footer">
-            <hr>
             <button onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
             <button type="submit" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
         </div>

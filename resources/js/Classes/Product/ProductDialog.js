@@ -91,8 +91,16 @@ class ProductDialog extends Modal{
         this.root_dialog.querySelector('button[name=supplier_id]').innerHTML = elem.dataset.producer;
     }
 
-    openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
+    openSelectCategoryDialog(category_selected = null, root_category = null){
+        let category_add = '';
+        let root_add = '';
+        if(category_selected){
+            category_add = '&category_id=' + category_selected
+        }
+        if(root_category){
+            root_add = '&root_category=' + root_category
+        }
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + category_add + root_add );
     }
 
     openSelectSupplierDialog(){

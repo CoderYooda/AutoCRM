@@ -136,7 +136,13 @@
             <div class="form-group row">
                 <label for="partner_id" class="col-sm-3 col-form-label">Статья</label>
                 <div class="col-sm-9">
-                    <button onclick="{{ $class }}.openSelectDdsarticleModal()" type="button" name="ddsarticle_id" class="form-control text-left button_select">
+                    <button onclick="{{ $class }}.openSelectDdsarticleModal(
+                    @if(isset($warrant) && $warrant->id != NULL)
+                        @if($warrant->isIncoming) 1 @else 0 @endif
+                    @else
+                        @if($request['isIncoming']) 1 @else 0 @endif
+                    @endif
+                    )" type="button" name="ddsarticle_id" class="form-control text-left button_select">
                         @if(isset($warrant) && $warrant->ddsarticle()->first() != null)
                             {{ $warrant->ddsarticle()->first()->name }}
                         @else

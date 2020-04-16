@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\SettingsController;
 
 class SettingsSeed extends Seeder
 {
@@ -25,5 +26,8 @@ class SettingsSeed extends Seeder
         $fake_request['name'] = 'Резерв';
         $fake_request['manager_id'] = $fake_user->id;
         $cashbox->store($fake_request);
+
+
+        SettingsController::createCompanySettingsPack($fake_user->company()->first(), $fake_user->roles()->first());
     }
 }

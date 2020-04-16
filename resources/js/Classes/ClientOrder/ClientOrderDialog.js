@@ -35,7 +35,12 @@ class clientorderDialog extends Modal{
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
                 e.preventDefault();
-                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+                if(e.target.id == 'sms_field'){
+                    object.sendSMS();
+                } else {
+                    object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+                }
+
             }
         });
 
@@ -142,7 +147,6 @@ class clientorderDialog extends Modal{
             data: data,
         }).then(function (resp) {
 
-            console.log(resp);
         }).catch(function (error) {
             if(error.response && error.response.data.message){
                 window.notification.notify( 'error', error.response.data.message);
@@ -400,7 +404,7 @@ class clientorderDialog extends Modal{
             url: 'partner/'+ id +'/select',
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
-
+            object.touch();
             let select = object.root_dialog.querySelector('button[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
@@ -418,12 +422,7 @@ class clientorderDialog extends Modal{
             } else {
                 phones_html = '<span class="element"><div class="text-center">Номеров нет</div></span>';
             }
-
-
-
             phones_list.innerHTML = phones_html;
-
-
             //let phone_str = '<a onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="dropdown-item pointer">{{ $phone->number }}</a>';
 
             let str = resp.data.name;

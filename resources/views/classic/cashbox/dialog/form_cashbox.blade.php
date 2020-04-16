@@ -13,7 +13,7 @@
         <div class="titlebar">Добавление кассового аппарата</div>
     @endif
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
-    <button class="btn_close" onclick="closeDialog(event)">×</button>
+    <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreCashbox') }}" method="POST">
         @csrf
         <div class="box-body pb-0 mb-15">
@@ -23,7 +23,7 @@
             <div class="no-gutters align-items-stretch">
                 <div class="form-group mb-0">
                     <label for="category_id">Название</label>
-                    <input type="text"
+                    <input id="cashbox_dialog_focused" type="text"
                            @if(isset($cashbox))
                            value="{{ $cashbox->name }}"
                            @endif
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
+            <button onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
             <button class="button pull-right" onclick="window.{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message"></div>

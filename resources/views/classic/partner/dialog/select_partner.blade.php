@@ -13,8 +13,8 @@
             @if($request['category_id'])
                 <input id="category_id" type="hidden" name="category_id" value="{{ $request['category_id'] }}">
             @endif
-            <input id="partner_search" type="text" class="form-control mr-15" placeholder="Поиск контактов" required="">
-            <button onclick="openDialog('partnerDialog')" class="button" type="button">Новый контакт</button>
+            <input id="partner_search" type="text" class="form-control search mr-15" placeholder="Поиск контактов" required="">
+            <button id="new_btn" onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}' )" class="button" type="button">Новый контакт</button>
         </form>
     </div>
     <div id="partner_list">

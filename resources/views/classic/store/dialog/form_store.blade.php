@@ -13,7 +13,7 @@
         <div class="titlebar">Добавление склада</div>
     @endif
 
-    <button class="btn_close" onclick="closeDialog(event)">×</button>
+    <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreStore') }}" method="POST">
         @csrf
 
@@ -29,7 +29,7 @@
                 <div class="no-gutters align-items-stretch">
                     <div class="form-group mb-0">
                         <label for="category_id">Название</label>
-                        <input type="text"
+                        <input type="text" id="store_dialog_focused"
                                @if(isset($store))
                                value="{{ $store->name }}"
                                @endif

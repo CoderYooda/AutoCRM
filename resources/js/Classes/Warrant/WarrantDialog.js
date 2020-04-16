@@ -140,8 +140,15 @@ class warrantDialog extends Modal{
         window.openDialog('selectCashbox', '&refer=' + this.root_dialog.id);
     }
 
-    openSelectDdsarticleModal(){
-        window.openDialog('selectDdsarticle', '&refer=' + this.root_dialog.id);
+    openSelectDdsarticleModal(incoming = null){
+        let cat = 4;
+        if(incoming){
+            cat = 9;
+        } else {
+            cat = 8;
+        }
+
+        window.openDialog('selectDdsarticle', '&refer=' + this.root_dialog.id + '&category_id=' + cat);
     }
 
 }

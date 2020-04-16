@@ -37,11 +37,15 @@ class AxForm{
             if(dialog){
                 //closeDialog(event, dialog.getAttribute("id"));
             }
+
             if(response.data.message){
-                notification.notify( 'success', response.data.message);
+                if(response.data.type && response.data.type == 'error'){
+                    notification.notify( 'error', response.data.message);
+                } else {
+                    notification.notify( 'success', response.data.message);
+                }
             }
             callback(response);
-
             //rebuildLinks();
             object.setActionButtons(true, elem);
         }).catch(function (error) {
@@ -81,6 +85,8 @@ class AxForm{
 
 
                 for(var error_stack in messages){
+
+                    dd(messages[error_stack][0]);
                     var error_stack_arr = error_stack.split('.');
 
                     var iteration = 0;
@@ -113,18 +119,19 @@ class AxForm{
                     if(el !== null && el.getAttribute('type') != 'hidden'){
                         el.classList.add('is-invalid');
                         tippy(el, {
-                            content: messages[error_stack],
+                            content: messages[error_stack][0],
                             placement: 'bottom'
                         });
+                        window.notification.notify( 'error', messages[error_stack][0]);
                         // var node = helper.createElementFromHTML('<small class="nv-helper form-text text-muted">' + error.response.data.messages[error_stack] + '</small>');
                         // el.parentNode.appendChild(node);
                     }
 
                 }
             }
-            if(error.response && messages){
-                notification.notify( 'error', error.response.data.message);
-            }
+            // if(error.response && messages){
+            //
+            // }
             object.setActionButtons(true, elem);
         }).then(function(){
             object.setActionButtons(true, elem);

@@ -34,7 +34,7 @@
                     </div>
 
                 </div>
-                <button onclick="openDialog('productDialog')" class="button success mb-15">Новый товар</button>
+                <button onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="button success mb-15">Новый товар</button>
             </div>
         @else
             <div class="padding text-center">
@@ -44,7 +44,7 @@
                         Товаров в этой категории нет
                     </div>
                 </div>
-                <button onclick="openDialog('productDialog')" class="button success mb-15">Новый товар</button>
+                <button onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="button success mb-15">Новый товар</button>
             </div>
         @endif
     </div>

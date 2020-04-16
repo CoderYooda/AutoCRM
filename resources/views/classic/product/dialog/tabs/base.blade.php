@@ -20,7 +20,11 @@
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
-            <button onclick="{{ $class }}.openSelectCategoryDialog()" type="button" name="category_id" class="category_select form-control text-left button_select">
+            <button onclick="{{ $class }}.openSelectCategoryDialog(
+                @if(isset($product)){{ $product->category()->first()->id }}
+                @elseif(isset($category)){{ $category->id }}
+                @else 2 @endif
+                )" type="button" name="category_id" class="category_select form-control text-left button_select">
                 @if(isset($product))
                     {{ $product->category()->first()->name }}
                 @elseif(isset($category))

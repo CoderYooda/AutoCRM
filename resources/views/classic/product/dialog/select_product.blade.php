@@ -15,8 +15,8 @@
                 <input id="category_id" type="hidden" name="category_id" value="{{ $request['category_id'] }}">
             @endif
 
-            <input id="product_search" type="text" class="form-control mr-15" placeholder="Поиск товара" required="">
-            <button onclick="openDialog('productDialog')" class="button" type="button">Новый товар</button>
+            <input id="product_search" type="text" class="form-control search mr-15" placeholder="Поиск товара" required="">
+            <button id="new_btn" onclick="openDialog('productDialog', '&category_select={{ $categories['parent']->id }}' )" class="button" type="button">Новый товар</button>
         </form>
     </div>
     <div id="product_list">

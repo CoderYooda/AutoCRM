@@ -7,7 +7,7 @@ class partnerPage{
         this.active = true;
         this.root_id = 'partner_index_page';
         this.root_category = 3;
-        this.category_id = null;//window.helper.findGetParameter('category_id');
+        this.category_id = null;
         this.page = window.helper.findGetParameter('page');
         this.search = null;
         this.search_obj = document.querySelector("#partner_search");
@@ -42,12 +42,31 @@ class partnerPage{
         });
 
         document.addEventListener('CategoryStored', function(e){
-            object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
-            object.loadCategory(object.category_id, true, false)
+            if(object.active){
+                object.prepareParams();
+                object.table.setData('/partner/tabledata', object.prepareDataForTable());
+                object.loadCategory(object.category_id, true, false);
+            }
         });
         object.linked();
     }
+
+    openCategoryModal(){
+        let cat_id = this.root_category;
+        if(this.category_id != null){
+            cat_id = this.category_id;
+        }
+        window.openDialog('categoryDialog', '&category_select=' + cat_id);
+    }
+
+    openPartnerModal(){
+        let cat_id = this.root_category;
+        if(this.category_id != null){
+            cat_id = this.category_id;
+        }
+        window.openDialog('partnerDialog', '&category_select=' + cat_id);
+    }
+
 
     // reloadPage(){
     //     let cat_string;
@@ -89,6 +108,7 @@ class partnerPage{
         this.searchInit();
         this.initTableData();
         this.initCategoryContextual();
+        this.checkActive();
         //this.loadCategory(this.root_category, true, true);
     }
 

@@ -5,6 +5,7 @@ class partnerDialog extends Modal{
     constructor(dialog){
         super(dialog);
         console.log('Окно штрихкода инициализировано');
+        this.root_category = 3;
         this.active = true;
         this.bithdayFlatpkr = null;
         this.issuedDateFlatpkr = null;
@@ -78,7 +79,7 @@ class partnerDialog extends Modal{
     }
 
     openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_id=' + category_selected);
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_id=' + category_selected + '&root_category=' + this.root_category);
     }
 
     selectCategory(id){

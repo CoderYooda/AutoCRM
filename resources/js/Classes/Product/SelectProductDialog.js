@@ -10,6 +10,7 @@ class SelectProductDialog extends Modal{
         this.results_obj = dialog.querySelector("#search_product_results");
 
         this.refer = dialog.querySelector("#refer").value;
+        this.new_btn = dialog.querySelector("#new_btn");
         let cat_input = dialog.querySelector("#category_id");
         if(cat_input){
             this.category_id = cat_input.value;
@@ -49,6 +50,9 @@ class SelectProductDialog extends Modal{
         }).then(function (resp) {
             var results_container = document.querySelector('#search_product_results');
             results_container.innerHTML = resp.data.html;
+            if(object.new_btn){
+                object.new_btn.setAttribute('onclick','openDialog(\'productDialog\', \'&category_select=' + category_id + '\')');
+            }
         }).catch(function (error) {
             console.log(error);
         }).then(function () {

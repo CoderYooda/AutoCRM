@@ -43,7 +43,7 @@ class ClientOrder extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_client_orders', 'client_order_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count', 'price', 'total')->withTrashed();
     }
 
     public function smsMessages()

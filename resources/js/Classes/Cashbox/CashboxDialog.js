@@ -4,16 +4,16 @@ class cashboxDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
-        this.active = true;
         this.init();
-
     }
 
     init(){
         let object = this;
-        document.addEventListener("CashboxStored", function(){
-            object.finitaLaComedia();
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+            }
         });
         let focused = document.getElementById('cashbox_dialog_focused');
         if(focused){
@@ -24,6 +24,8 @@ class cashboxDialog extends Modal{
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
+        window.event.preventDefault();
+        dd(1);
         window.axform.send(elem, function(e){
             object.finitaLaComedia(true);
         });

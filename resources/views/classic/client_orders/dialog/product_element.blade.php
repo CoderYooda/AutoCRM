@@ -15,7 +15,7 @@
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
 
-    <td><input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm"
+    <td><input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
                @if(isset($client_order)) value="{{ $product->pivot->price }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
                type="number" min="0" step="0.1" ></td>
 

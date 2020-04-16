@@ -17,13 +17,13 @@
 
     <div class="modal-header">
         <form class="flex d-flex w-100">
-            <input id="cashbox_search" type="text"  name="supplier_search" class="form-control form-control-sm search mr-15" placeholder="Поиск производителя">
+            <input id="cashbox_search" type="text"  name="cashbox_search" class="form-control form-control-sm search mr-15" placeholder="Поиск производителя">
             <button onclick="openDialog('cashboxDialog')" class="button" type="button">Новый кассовый аппарат</button>
         </form>
     </div>
 
     <div id="partner_list" class="mh50-dialog">
-        <div id="search_cashbox_results" data-simplebar style="max-height: 400px">
+        <div id="search_cashbox_results">
             @include(env('DEFAULT_THEME', 'classic') . '.cashbox.dialog.select_cashbox_inner')
         </div>
     </div>

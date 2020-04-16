@@ -9,7 +9,7 @@
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
 
-            <input id="ddsarticle_search" type="text" class="form-control mr-15" placeholder="Поиск статьи" required="">
+            <input id="ddsarticle_search" type="text" class="form-control search mr-15" placeholder="Поиск статьи" required="">
                 <button onclick="openDialog('ddsarticleDialog')" class="button" type="button">Новая статья</button>
         </form>
     </div>

@@ -35,8 +35,7 @@ class CategoryController extends Controller
 //        $categories = Cache::rememberForever('categories' . $request['category_id'], function () use ($request) {
 //            return CategoryController::getCategories($request, 'store');
 //        });
-
-        $categories = CategoryController::getCategories($request, 'store');
+        $categories = CategoryController::getCategories($request, $request['class']);
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
@@ -138,12 +137,21 @@ class CategoryController extends Controller
         }
 
         $category = Category::firstOrNew(['id' => (int)$request['id']]);
-        $category->fill($request->all());
-        $category->creator_id = Auth::user()->id;
-        $category->company_id = Auth::user()->company()->first()->id;
-        $category->locked = false;
-        $category->type = $type;
-        $category->save();
+
+        if(!$category->locked){
+            $category->fill($request->all());
+            $category->creator_id = Auth::user()->id;
+            $category->company_id = Auth::user()->company()->first()->id;
+            $category->locked = false;
+            $category->type = $type;
+            $category->save();
+        } else {
+            return response()->json([
+                'id' => $category->id,
+                'type' => 'error',
+                'message' => 'Категория защищена от редактирования'
+            ], 200);
+        }
 
         UA::makeUserAction($category, 'create');
 
@@ -173,18 +181,24 @@ class CategoryController extends Controller
         }
         $category = Category::where('id', $id)->first();
         $type = 'success';
-        if($category->childs()->count() > 0 ||
-            $category->articles()->count() > 0 ||
-            $category->ddsarticles()->count() > 0 ||
-            $category->partners()->count() > 0
-        ){
+        if(!$category->locked) {
+            if ($category->childs()->count() > 0 ||
+                $category->articles()->count() > 0 ||
+                $category->ddsarticles()->count() > 0 ||
+                $category->partners()->count() > 0
+            ) {
+                $this->status = 200;
+                $type = 'error';
+                $this->message = 'Удаляемая категория не пуста, удаление невозможно.';
+            } else {
+                $category->delete();
+                $this->status = 200;
+                $this->message = 'Категория удалена';
+            }
+        } else {
             $this->status = 200;
             $type = 'error';
-            $this->message = 'Удаляемая категория не пуста, удаление невозможно.';
-        } else {
-            $category->delete();
-            $this->status = 200;
-            $this->message = 'Категория удалена';
+            $this->message = 'Удаляемая категория защищена от удаления';
         }
 
         return response()->json([
@@ -201,17 +215,17 @@ class CategoryController extends Controller
         if($request['category_id']){
             $tag .= $request['category_id'];
             $category = Category::owned()->where('id', (int)$request['category_id'])->first();
+            $parent = Category::owned()->where('id', $category->category_id)->first();
         } else {
             $category = null;
+            $parent = null;
         }
 
         if($request['category_select']){
-            $start_category_id = $request['category_select'];
-        } else {
-            $start_category_id = 2;
+            $parent = Category::owned()->where('id', $request['category_select'])->first();
         }
 
-        $parent = Category::owned()->where('id', $start_category_id)->first();
+
         return response()->json([
             'tag' => $tag,
             'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.form_category', compact('category', 'parent', 'request'))->render()
@@ -232,19 +246,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    public static function editCategoryDialog($request)
-    {
-        if($request['params']){
-            $category_id = (int)$request['category_id'];
-        } else {
-            abort(404);
-        }
-
-        $category = Category::owned()->where('id', $category_id)->first();
-
-        return response()->json(['tag' => 'editCategory', 'html' => view('category.dialog.form_category', compact('category'))->render()]);
-    }
-
     public function enterDialog(Request $request)
     {
         $class = 'selectCategoryDialog';
@@ -256,61 +257,6 @@ class CategoryController extends Controller
             'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'class', 'searching', 'category', 'request'))->render()
         ]);
     }
-
-
-
-
-
-
-
-
-
-
-//    public function dialogSearch(Request $request)
-//    {
-//        $root_category = Category::owned()->where('id', $request['root'])->first();
-//        $type = $root_category->type;
-//        if($request['string'] != null && $request['string'] != '' && $request['string'] != 'undefined'){
-//            $categories = Category::owned()
-//                ->where(function($q) use ($request){
-//                    $q->where('name', 'LIKE', '%' . $request['string'] .'%');
-//                })
-//                ->where(function($q) use ($type){
-//                    if($type != 'main'){
-//                        $q->where('type', $type);
-//                    }
-//                })
-//                ->orderBy('name', 'DESC')->limit(10)->get();
-//            $searching = true;
-//            $content = view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('categories','searching', 'request'))->render();
-//            return response()->json([
-//                'html' => $content
-//            ], 200);
-//        } else {
-//            $data = self::findSelectedId($request);
-//            $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
-//            $root = $data['root'];
-//            $searching = false;
-//            return response()->json([
-//                'tag' => 'selectCategoryDialog',
-//                'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'searching', 'category', 'request'))->render()
-//            ]);
-//        }
-//
-//    }
-//
-//    public static function selectCategoryDialog($request)
-//    {
-//        $data = self::findSelectedId($request);
-//        $category = Category::owned()->where('id', (int)$data['selected_id'])->first();
-//        $categories = CategoryController::getModalCategories(self::$root_category, $request);
-//        $root = $data['root'];
-//        $searching = false;
-//        return response()->json([
-//            'tag' => 'selectCategoryDialog',
-//            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category', compact('root', 'searching', 'category', 'categories', 'request'))->render()
-//        ]);
-//    }
 
     public static function selectCategoryDialog($request)
     {
@@ -325,7 +271,10 @@ class CategoryController extends Controller
     private static function selectCategoryInner($request){
 
         $class = 'selectCategoryDialog';
-        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
+
+        $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
+
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : $request['root_category'];
         $cats = Category::owned()
             ->where(function($q) use ($request){
                 $q->where('name', 'LIKE', '%' . $request['string'] .'%');
@@ -337,7 +286,7 @@ class CategoryController extends Controller
             ->limit(30)
             ->get();
 
-        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+        $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
         $view = $request['inner'] ? 'select_category_inner' : 'select_category';
 
@@ -347,15 +296,6 @@ class CategoryController extends Controller
             'html' => $content
         ]);
     }
-
-
-
-
-
-
-
-
-
 
     private static function findSelectedId($request){
         $selected_id = null;

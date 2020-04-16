@@ -1,7 +1,7 @@
 <div id="search_partner_categories" class="col-sm-3 no-pr">
     @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
 </div>
-<div id="search_partner_results" class="col-sm-9 no-pl">
+<div class="col-sm-9 no-pl">
     @if($partners->count() > 0)
         <div class="" data-simplebar style="max-height: 400px;">
             <div class="box-body">
@@ -33,7 +33,7 @@
                 </div>
 
             </div>
-            <button onclick="openDialog('partnerDialog')" class="button success mb-15">Новый контакт</button>
+            <button onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}')" class="button success mb-15">Новый контакт</button>
         </div>
     @else
         <div class="padding text-center">
@@ -43,7 +43,7 @@
                     Контактов в этой категории нет
                 </div>
             </div>
-            <button onclick="openDialog('partnerDialog')" class="button success mb-15">Новый контакт</button>
+            <button onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}')" class="button success mb-15">Новый контакт</button>
         </div>
     @endif
 </div>
