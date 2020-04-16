@@ -257,6 +257,9 @@ class partnerPage{
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
+            rowDblClick:function(e, row){
+                openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
+            },
             rowContext:function(e, row){
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
