@@ -15,7 +15,6 @@ class Modal{
 
     touch(){
         this.touched = true;
-        dd('touched');
     }
 
     finitaLaComedia(forced = null){

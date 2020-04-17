@@ -34,11 +34,11 @@ class ProductController extends Controller
     public function delete($id, Request $request)
     {
 
-        if(!Gate::allows('Удалять товары')){
+        if (!Gate::allows('Удалять товары')) {
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }
         $returnIds = null;
-        if($id == 'array'){
+        if ($id == 'array') {
             $products = Article::owned()->whereIn('id', $request['ids']);
             $this->message = 'Товары удалены';
             $returnIds = $products->get()->pluck('id');
@@ -59,14 +59,13 @@ class ProductController extends Controller
     }
 
 
-
     public function addToList(Request $request)
     {
-        if($request['data'] != null && count($request['data']) > 0){
-            if($request['type'] == 'providerorder'){
+        if ($request['data'] != null && count($request['data']) > 0) {
+            if ($request['type'] == 'providerorder') {
                 $providerorder = ProviderOrder::owned()->where('id', $request['providerorder_id'])->first();
                 $products = $providerorder->articles()->whereIn('article_id', array_column($request['data'], 'id'))->get();
-                foreach($products as $product) {
+                foreach ($products as $product) {
                     foreach ($request['data'] as $item) {
                         if ($item['id'] === $product->id) {
                             $count = $item['count'];
@@ -88,37 +87,37 @@ class ProductController extends Controller
         }
 
 
-        if($request['type'] && $request['type'] == 'clientOrder_quick'){
+        if ($request['type'] && $request['type'] == 'clientOrder_quick') {
 
         } else {
             $article = Article::where('id', $request['article_id'])
                 ->first();
 
-            if(!$article){
+            if (!$article) {
                 return response()->json([
                     'message' => 'Товар не найден, возможно он был удалён',
                 ], 422);
             }
-            if(!$article->canUserTake()){
+            if (!$article->canUserTake()) {
                 return response()->json([
                     'message' => 'Доступ к этому товару запрещен.',
                 ], 422);
             }
         }
 
-        if($request['type'] && $request['type'] === 'shipment'){
+        if ($request['type'] && $request['type'] === 'shipment') {
             $product = $article;
             $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element', compact('product', 'request'))->render();
 
-        } elseif($request['type'] && $request['type'] === 'clientOrder'){
+        } elseif ($request['type'] && $request['type'] === 'clientOrder') {
             $product = $article;
             $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element', compact('product', 'request'))->render();
 
-        } elseif($request['type'] && $request['type'] === 'providerOrder'){
+        } elseif ($request['type'] && $request['type'] === 'providerOrder') {
             $product = $article;
             $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.product_element', compact('product', 'request'))->render();
 
-        } elseif($request['type'] && $request['type'] === 'clientOrder_quick') {
+        } elseif ($request['type'] && $request['type'] === 'clientOrder_quick') {
             $product = new StdClass();
             $product->id = $request['article_id'];
             $product->count = $request['count'];
@@ -126,9 +125,9 @@ class ProductController extends Controller
             $product->total = 0;
             $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
 
-        } elseif($request['type'] && $request['type'] == 'adjustment'){
+        } elseif ($request['type'] && $request['type'] == 'adjustment') {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.product_element', compact('product','request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.product_element', compact('product', 'request'))->render();
 
         } else {
             $product = $article;
@@ -145,14 +144,14 @@ class ProductController extends Controller
     {
         $tag = 'productDialog';
 
-        if($request['product_id']){
+        if ($request['product_id']) {
             $tag .= $request['product_id'];
             $product = Article::where('id', (int)$request['product_id'])->first();
         } else {
             $product = null;
         }
 
-        if($request['category_select']){
+        if ($request['category_select']) {
             $category_select = (int)$request['category_select'];
         } else {
             $category_select = 2;
@@ -176,24 +175,25 @@ class ProductController extends Controller
         return self::selectProductInner($request);
     }
 
-    private static function selectProductInner($request){
+    private static function selectProductInner($request)
+    {
         $class = 'selectProductDialog';
         $stores = Store::owned()->get();
         $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
-        $products = Article::owned()->where(function($q) use ($request){
-            if($request['store_id'] != NULL) {
+        $products = Article::owned()->where(function ($q) use ($request) {
+            if ($request['store_id'] != null) {
                 $q->whereHas('stores', function ($query) use ($request) {
                     return $query->where('store_id', $request['store_id']);
                 });
             }
         })
-            ->when($request['category_id'], function($q) use ($request){
+            ->when($request['category_id'], function ($q) use ($request) {
                 $q->where('category_id', $request['category_id']);
             })
-            ->where(function($q) use ($request){
-                $q->where('foundstring', 'LIKE', '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) .'%');
+            ->where(function ($q) use ($request) {
+                $q->where('foundstring', 'LIKE', '%' . mb_strtolower(str_replace(' ', '', str_replace('-', '', $request['string']))) . '%');
             })
             ->orderBy('created_at', 'ASC')
             ->limit(30)
@@ -247,8 +247,6 @@ class ProductController extends Controller
 //    }
 
 
-
-
 //    public static function editProductDialog($request)
 //    {
 //        $tag = 'editProduct';
@@ -272,28 +270,28 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        if($request['new_supplier_name'] != NULL && $request['supplier_id'] == NULL){
+        if ($request['new_supplier_name'] != null && $request['supplier_id'] == null) {
             $supplier = SupplierController::silent_store($request);
             $request['supplier_id'] = $supplier->id;
         }
 
         $validation = Validator::make($request->all(), self::validateRules($request));
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             $this->status = 422;
-            if($request->expectsJson()){
+            if ($request->expectsJson()) {
                 return response()->json(['messages' => $validation->errors()], $this->status);
             }
         }
 
-        if($request['id'] != NULL){ //товар редактируется
+        if ($request['id'] != null) { //товар редактируется
             $compare = ['id' => $request['id']];
         } else {
             $compare = ['article' => $request['article'], 'supplier_id' => (int)$request['supplier_id']];
         }
 
         $existed_article = self::checkArticleUnique($request['id'], $request['article'], (int)$request['supplier_id']);
-        if($existed_article){
+        if ($existed_article) {
             return response()->json([
                 'system_message' => view('messages.product_already_exist', compact('existed_article'))->render(),
             ], 422);
@@ -302,33 +300,33 @@ class ProductController extends Controller
         $supplier = Supplier::owned()->where('id', $request['supplier_id'])->first();
 
         $article = Article::firstOrNew($compare);
-            if($article->exists){
-                $this->message = 'Товар обновлен';
-            } else {
-                $article->creator_id = Auth::user()->id;
-                $article->company_id = Auth::user()->company()->first()->id;
-                $this->message = 'Товар сохранён';
-            }
+        if ($article->exists) {
+            $this->message = 'Товар обновлен';
+        } else {
+            $article->creator_id = Auth::user()->id;
+            $article->company_id = Auth::user()->company()->first()->id;
+            $this->message = 'Товар сохранён';
+        }
         $article->fill($request->only($article->fields));
 
-        $prepared_article = mb_strtolower (str_replace(' ', '', $request['article']));
-        $prepared_supplier = mb_strtolower (str_replace(' ', '', $supplier->name));
-        $prepared_name = mb_strtolower (str_replace(' ', '', $request['name']));
-        $prepared_barcode = mb_strtolower (str_replace(' ', '', $request['barcode']));
+        $prepared_article = mb_strtolower(str_replace(' ', '', $request['article']));
+        $prepared_supplier = mb_strtolower(str_replace(' ', '', $supplier->name));
+        $prepared_name = mb_strtolower(str_replace(' ', '', $request['name']));
+        $prepared_barcode = mb_strtolower(str_replace(' ', '', $request['barcode']));
 
-        $article->foundstring = $prepared_article.$prepared_supplier.$prepared_barcode.$prepared_name;
+        $article->foundstring = $prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name;
 
         $article->save();
         $this->status = 200;
-        if($request['store'] != NULL){
-            foreach ($request['store'] as $id => $store_elem){
+        if ($request['store'] != null) {
+            foreach ($request['store'] as $id => $store_elem) {
                 $store = Store::where('id', $id)->first();
-                if(!Auth::user()->company()->first()->checkAccessToStore($store)){
+                if (!Auth::user()->company()->first()->checkAccessToStore($store)) {
                     $this->status = 403;
                     $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
                     return response()->json(['message' => $this->message], $this->status);
                 }
-                if(isset($store_elem['isset']) && $store_elem['isset'] == true){
+                if (isset($store_elem['isset']) && $store_elem['isset'] == true) {
                     $store->articles()->syncWithoutDetaching($article->id);
                     $article->stores()->updateExistingPivot($id, ['location' => $store_elem['location']]);
                     $article->stores()->updateExistingPivot($id, ['isset' => $store_elem['isset']]);
@@ -339,11 +337,11 @@ class ProductController extends Controller
             }
         }
 
-        if($request->expectsJson()){
+        if ($request->expectsJson()) {
             return response()->json([
                 'message' => $this->message,
                 'event' => 'ProductStored',
-                ], $this->status);
+            ], $this->status);
         } else {
             return redirect()->back();
         }
@@ -357,7 +355,7 @@ class ProductController extends Controller
     public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
     {
         $article = Article::where('article', $article)->where('supplier_id', $brand_id)->where('company_id', Auth::user()->company()->first()->id)->first();
-        if($article && $article->id != $id){
+        if ($article && $article->id != $id) {
             return $article;
         } else {
             return false;
@@ -368,55 +366,54 @@ class ProductController extends Controller
     {
 
         $size = 30;
-        if(isset($request['size'])){
+        if (isset($request['size'])) {
             $size = (int)$request['size'];
         }
 
         $field = null;
         $dir = null;
 
-        if(isset($request['sorters'])){
+        if (isset($request['sorters'])) {
             $field = $request['sorters'][0]['field'];
             $dir = $request['sorters'][0]['dir'];
         }
-        if($field === null &&  $dir === null){
+        if ($field === null && $dir === null) {
             $field = 'id';
             $dir = 'ASC';
         }
 
         $category = 0;
 
-        if($request['category_id'] === null || $request['serach'] != null){
-            if($request['active_tab'] == "store"){
+        if ($request['category_id'] === null || $request['serach'] != null) {
+            if ($request['active_tab'] == "store") {
                 $category = 2;
             }
         } else {
             $category = (int)$request['category_id'];
         }
         return Article::
-        join('suppliers','suppliers.id','=','articles.supplier_id')
-        ->leftJoin('article_store', function($join)
-        {
-            $join->on('article_store.article_id', '=', 'articles.id')
-                ->where('article_store.store_id', Auth::user()->getStoreFirst()->id);
-        })
-        ->select('suppliers.name as supplier',
-            'article_store.count as isset',
-            'article_store.midprice as price',
-            'articles.*')
-        ->where('articles.company_id', Auth::user()->company()->first()->id)
-        ->where(function($q) use ($request){
-            if(isset($request['search']) && $request['search'] != ""){
-                $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['search']))) . '%');
-            }
-        })
-        ->where(function($q) use ($request){
-            if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null"){
-                $q->where('articles.category_id', (int)$request['category_id']);
-            }
-        })
-        ->orderBy($field, $dir)
-        ->paginate($size);
+        join('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
+            ->leftJoin('article_store', function ($join) {
+                $join->on('article_store.article_id', '=', 'articles.id')
+                    ->where('article_store.store_id', Auth::user()->getStoreFirst()->id);
+            })
+            ->select('suppliers.name as supplier',
+                'article_store.count as isset',
+                'article_store.midprice as price',
+                'articles.*')
+            ->where('articles.company_id', Auth::user()->company()->first()->id)
+            ->where(function ($q) use ($request) {
+                if (isset($request['search']) && $request['search'] != "") {
+                    $q->where('articles.foundstring', 'LIKE', '%' . mb_strtolower(str_replace(' ', '', str_replace('-', '', $request['search']))) . '%');
+                }
+            })
+            ->where(function ($q) use ($request) {
+                if (isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null") {
+                    $q->where('articles.category_id', (int)$request['category_id']);
+                }
+            })
+            ->orderBy($field, $dir)
+            ->paginate($size);
 
     }
 
@@ -439,7 +436,8 @@ class ProductController extends Controller
         return $rules;
     }
 
-    public function search(Request $request){ //DEPRECATED
+    public function search(Request $request)
+    { //DEPRECATED
 
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];

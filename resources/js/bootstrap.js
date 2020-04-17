@@ -57,6 +57,18 @@ axios.interceptors.request.use(function (config) {
 // if(dialog_html){
 //     window.system_dialog = new window.bootstrap.Modal();
 // }
+setInterval(function () {
+    let date = new Date();
+    let hours = null;
+    let minutes = null;
+    let seconds = null;
+    if(date.getHours().toString().length < 2){hours = '0' + date.getHours();} else {hours = date.getHours();}
+    if(date.getMinutes().toString().length < 2){minutes = '0' + date.getMinutes();} else {minutes = date.getMinutes();}
+    if(date.getSeconds().toString().length < 2){seconds = '0' + date.getSeconds();} else {seconds = date.getSeconds();}
+    document.querySelector('#current_time .h').innerHTML = hours;
+    document.querySelector('#current_time .m').innerHTML = minutes;
+    document.querySelector('#current_time .s').innerHTML = seconds;
+}, 1000);
 
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');

@@ -62,6 +62,7 @@ class ProductDialog extends Modal{
             }
 
             let html = '';
+            dd(resp.data.brands.data);
             for (let [key, value] of Object.entries(resp.data.brands.data)) {
                 html += '<div class="tr_result" data-ident="' + value.ident + '" data-article="' + value.article + '" data-producer="' + value.producer + '" onclick="window.productDialog.appendArticle(this)">' +
                     '<span class="article">' + value.ident + '</span>' +

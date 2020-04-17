@@ -1081,6 +1081,32 @@ input:-moz-placeholder { /* Firefox 18- */
     display: block;
     position: relative;
 }
+#shop_name{
+    line-height: 44px;
+    font-size: 37px;
+    white-space: nowrap;
+    font-weight: 200;
+    color: #4d8db9;
+    height: 52px;
+    display: block;
+}
+#current_time{
+    font-weight: 100;
+    font-size: 25px;
+    width: 110px;
+    text-align: center;
+    line-height: 52px;
+    display: flex;
+    justify-content: center;
+    text-shadow: 1px 1px 4px #1e3c5f;
+}
+#current_time > div {
+    width:32px;
+}
+#current_time .h:after, #current_time .m:after{
+    content: ':';
+    position: absolute;
+}
 /*Contextual*/
 .contextualMenu{
     list-style: none;

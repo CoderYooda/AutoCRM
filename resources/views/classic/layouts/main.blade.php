@@ -73,10 +73,12 @@
                         </li>
                         @endcanany
                     </ul>
-                    <span class="md-auto  mr-auto"><span style="line-height: 52px;
-    font-size: 20px;
-    white-space: nowrap;
-    font-weight: bold;">{{ Auth::user()->company()->first()->name }}</span></span>
+                    <span class="md-auto  mr-auto"><span id="shop_name">{{ Auth::user()->company()->first()->name }}</span></span>
+                    <div id="current_time">
+                        <div class="h">00</div>
+                        <div class="m">00</div>
+                        <div class="s">00</div>
+                    </div>
                     <ul class="top-nav-bar right-nav">
 
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
