@@ -1,10 +1,10 @@
     @if(!$request['fresh'])
         <div
         @if(isset($client_order) && $client_order->id != NULL)
-        @php $class = 'clientorderDialog' . $client_order->id @endphp
+        @php $class = 'refundDialog' . $client_order->id @endphp
         id="clientorderDialog{{$client_order->id}}" data-id="{{$client_order->id}}"
         @else
-        @php $class = 'clientorderDialog' @endphp
+        @php $class = 'refundDialog' @endphp
         id="clientorderDialog"
         @endif
         class="dialog client_order_dialog " style="width:1100px">

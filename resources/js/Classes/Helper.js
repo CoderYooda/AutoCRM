@@ -14,10 +14,12 @@ import barcodeDialog from "./Barcode/BarcodeDialog";
 import shipmentDialog from "./Shipment/ShipmentDialog";
 import categoryDialog from "./Category/CategoryDialog";
 import clientorderDialog from "./ClientOrder/ClientOrderDialog";
+import refundDialog from "./Refund/RefundDialog";
 import storeDialog from "./Store/StoreDialog";
 import adjustmentDialog from "./Adjustment/AdjustmentDialog";
 import providerorderDialog from "./ProviderOrder/ProviderOrderDialog";
 import selectProviderOrderDialog from "./ProviderOrder/SelectProviderOrderDialog";
+import selectTransactionDialog from "./Transaction/SelectTransactionDialog";
 import scheduleTemplateDialog from "./Schedule/ScheduleTemplateDialog";
 import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
 import supplierDialog from "./Supplier/SupplierDialog";
@@ -54,9 +56,11 @@ const classes = {
     moneymoveDialog,
     shipmentDialog,
     clientorderDialog,
+    refundDialog,
     adjustmentDialog,
     providerorderDialog,
     selectProviderOrderDialog,
+    selectTransactionDialog,
     scheduleTemplateDialog,
     roleDialog,
     barcodeDialog,

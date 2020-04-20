@@ -116,6 +116,13 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
     Route::post('/warrant/side_info', 'WarrantController@getSideInfo')->name('GetWarrantSideInfo');
 
+    #Возвраты
+    Route::post('/refund/store', 'RefundController@store')->name('StoreRefund');// Строгое название
+    Route::post('/refund/search', 'RefundController@search')->name('RefundPageSearch');
+    Route::post('/refund/{id}/delete', 'RefundController@delete')->name('DeleteRefund');
+    Route::get('/refund/tabledata', 'RefundController@tableData')->name('StoreRefundData');
+    Route::post('/refund/side_info', 'RefundController@getSideInfo')->name('GetRefundSideInfo');
+
     #Движение средств между кассами
     Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название
     Route::post('/cashmove/search', 'MoneyMoveController@search')->name('MoneyMovePageSearch');

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class Shipment extends Model
 {
-
     public $fields = [
         'partner_id',
         'company_id',

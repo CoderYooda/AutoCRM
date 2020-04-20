@@ -132,6 +132,17 @@ class StoreController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.shipments.index', compact('request'));
     }
 
+    public static function refundTab($request)
+    {
+//        if(!Gate::allows('Смотреть продажи')){
+//            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+//        }
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-refund'){
+            return view(env('DEFAULT_THEME', 'classic') . '.refund.elements.table_container', compact('request'));
+        }
+        return view(env('DEFAULT_THEME', 'classic') . '.refund.index', compact('request'));
+    }
+
     public static function client_ordersTab($request)
     {
 	    if(!Gate::allows('Смотреть заказ клиента')){

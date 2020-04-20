@@ -68,6 +68,12 @@ class DialogController extends Controller
             case 'clientorderDialog':
                 $dialog = ClientOrdersController::clientorderDialog($request); #
                 break;
+            case 'selectTransactionDialog':
+                $dialog = TransactionController::selectTransactionDialog($request); #
+                break;
+            case 'refundDialog':
+                $dialog = RefundController::refundDialog($request); #
+                break;
             case 'providerorderDialog':
                 $dialog = ProviderOrdersController::providerorderDialog($request); #
                 break;
