@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import Helper from "../Helper";
 
 class shipmentDialog extends Modal{
 
@@ -186,46 +187,94 @@ class shipmentDialog extends Modal{
     }
 
     loadItemsIfExists(){
-        window.isXHRloading = true;
+
+        let products = this.root_dialog.querySelectorAll('.product_list_elem');
         let object = this;
-        var shipment_id = this.root_dialog.dataset.id;
-        if(shipment_id && shipment_id !== 'undefined') {
-
-            window.axios({
-                method: 'post',
-                url: 'shipment/' + shipment_id + '/get_products',
-                data: {},
-            }).then(function (resp) {
-                [].forEach.call(resp.data.products, function(elem){
-                    object.items.push({
-                        id:elem.product.id,
-                        count:elem.count,
-                        price:elem.price,
-                        total:elem.total,
-                    });
-
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id);
-
-                    let inputs = item.getElementsByTagName('input');
-
-                    [].forEach.call(inputs, function(elem){
-                        var fn = window.helper.debounce(function(e) {
-                            object.recalculate(e);
-                        }, 50);
-                        elem.addEventListener("keydown", fn);
-                        elem.addEventListener("paste", fn);
-                        elem.addEventListener("delete", fn);
-                    });
-
+        [].forEach.call(products, function(product){
+                object.items.push({
+                    id:product.dataset.id,
+                    count:product.dataset.count,
+                    price:product.dataset.price,
+                    total:product.dataset.total,
                 });
+                let inputs = product.querySelectorAll('input');
+                [].forEach.call(inputs, function(elem){
+                    var fn = window.helper.debounce(function(e) {
+                        object.recalculate(e);
+                    }, 50);
+                    elem.addEventListener("keydown", fn);
+                    elem.addEventListener("change", fn);
+                    elem.addEventListener("paste", fn);
+                    elem.addEventListener("delete", fn);
+                });
+        });
+        this.recalculate();
 
-            }).catch(function (error) {
-                console.log(error);
-            }).finally(function () {
-                window.isXHRloading = false;
-            });
+        // for(let key=0; key < products.length; key++)  {
+        //     dd(names[key].value);
+        // }
 
-        }
+
+
+        // let inputs = item.getElementsByTagName('input');
+        //
+        // [].forEach.call(inputs, function(elem){
+        //     var fn = window.helper.debounce(function(e) {
+        //         object.recalculate(e);
+        //     }, 50);
+        //     elem.addEventListener("keydown", fn);
+        //     elem.addEventListener("paste", fn);
+        //     elem.addEventListener("delete", fn);
+        //
+        //     object.items.push({
+        //         id:elem.product.id,
+        //         count:elem.count,
+        //         price:elem.price,
+        //         total:elem.total,
+        //     });
+        // });
+
+
+        // window.isXHRloading = true;
+        // let object = this;
+        // var shipment_id = this.root_dialog.dataset.id;
+        // if(shipment_id && shipment_id !== 'undefined') {
+        //
+        //     window.axios({
+        //         method: 'post',
+        //         url: 'shipment/' + shipment_id + '/get_products',
+        //         data: {},
+        //     }).then(function (resp) {
+        //         [].forEach.call(resp.data.products, function(elem){
+        //             object.items.push({
+        //                 id:elem.product.id,
+        //                 count:elem.count,
+        //                 price:elem.price,
+        //                 total:elem.total,
+        //             });
+        //
+        //             let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id);
+        //
+        //             let inputs = item.getElementsByTagName('input');
+        //
+        //             [].forEach.call(inputs, function(elem){
+        //                 var fn = window.helper.debounce(function(e) {
+        //                     object.recalculate(e);
+        //                 }, 50);
+        //                 elem.addEventListener("keydown", fn);
+        //                 elem.addEventListener("paste", fn);
+        //                 elem.addEventListener("delete", fn);
+        //             });
+        //
+        //         });
+        //
+        //     }).catch(function (error) {
+        //         console.log(error);
+        //     }).finally(function () {
+        //         window.isXHRloading = false;
+        //     });
+        //
+        // }
 
 
 

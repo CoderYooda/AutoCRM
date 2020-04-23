@@ -9,6 +9,7 @@ class clientorderDialog extends Modal{
         this.nds = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
+        this.id = this.root_dialog.querySelector('input[name=id]').value;
         this.phoneMask = null;
         this.phone_field = this.root_dialog.querySelector('#client-phone');
         this.init();
@@ -44,9 +45,9 @@ class clientorderDialog extends Modal{
             }
         });
 
-        document.addEventListener('ShipmentStored', function(e){
-            object.finitaLaComedia();
-        });
+        // document.addEventListener('ShipmentStored', function(e){
+        //     object.finitaLaComedia();
+        // });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
@@ -443,6 +444,10 @@ class clientorderDialog extends Modal{
 
     openProductmodal(){
         window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
+    }
+
+    openShipmentModal(){
+        window.openDialog('shipmentDialog', '&refer=' + this.root_dialog.id + '&clientorder_id=' + this.id) ;
     }
 
     openSelectPartnermodal(){

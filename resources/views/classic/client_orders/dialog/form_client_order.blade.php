@@ -1,20 +1,20 @@
     @if(!$request['fresh'])
         <div
         @if(isset($client_order) && $client_order->id != NULL)
-        @php $class = 'refundDialog' . $client_order->id @endphp
+        @php $class = 'clientorderDialog' . $client_order->id @endphp
         id="clientorderDialog{{$client_order->id}}" data-id="{{$client_order->id}}"
         @else
-        @php $class = 'refundDialog' @endphp
+        @php $class = 'clientorderDialog' @endphp
         id="clientorderDialog"
         @endif
-        class="dialog client_order_dialog " style="width:1100px">
+        class="dialog client_order_dialog " style="width:1200px">
     @endif
     @if(isset($client_order) && $client_order->id != NULL)
         <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
     @else
         <div class="titlebar">Новый заказ клиента</div>
     @endif
-            <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="modal-header dark" style="-webkit-justify-content: flex-start;justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
@@ -86,7 +86,7 @@
 
         @if(isset($client_order))
         <div class="modal-alt-header">
-            <span class="item-title _500">Оплачено</span>
+            <span class="item-title _500">Факт / План</span>
             <div class="item-except @if($client_order->getWarrantPositive() >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
                     <span id="payed_price">
         {{ sprintf("%.2f", $client_order->getWarrantPositive()) }} р / <span class="itogo_price">{{ $client_order->itogo }}</span> р
@@ -255,6 +255,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-toggle="tab" data-target="#tab5">Платежи</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="tab" data-target="#tab6">Продажи</a>
+                            </li>
                         </ul>
                     </div>
 
@@ -334,6 +337,33 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="tab-pane" id="tab6" data-simplebar style="height: 192px">
+                            <div class="list-group">
+                                @if(isset($client_order))
+                                    @forelse($client_order->shipments()->get() as $shipment)
+                                        <a onclick="openDialog('shipmentDialog', '&shipment_id={{ $shipment->id }}')" href="#" class="list-group-item no-border-radius">
+                                                    <span class="float-right text-right text-primary w-128 pr-2" >
+                                                        {{ $shipment->id }}
+                                                    </span>
+                                            <span class="float-right ">{{ $shipment->created_at }}</span>
+                                            {{ $shipment->id }}
+                                        </a>
+                                    @empty
+                                        <div class="no-result">
+                                            <div class="p-4 text-center">
+                                                Продаж по данному заказу не совершалось.
+                                            </div>
+                                        </div>
+                                    @endforelse
+                                @else
+                                    <div class="no-result">
+                                        <div class="p-4 text-center">
+                                            Сохраните заказ для продолжения
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -372,7 +402,8 @@
             <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Быстрый товар</button>
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
+            <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
             <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
             @if(isset($client_order))
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>

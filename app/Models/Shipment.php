@@ -13,6 +13,7 @@ class Shipment extends Model
         'company_id',
         'do_date',
         'store_id',
+        'clientorder_id',
         'summ',
         'discount',
         'inpercents',
@@ -80,6 +81,11 @@ class Shipment extends Model
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
+    }
+
+    public function clientOrder()
+    {
+        return $this->belongsTo('App\Models\ClientOrder', 'clientorder_id');
     }
 
     public function normalizedData(){

@@ -57,6 +57,11 @@ class ClientOrder extends Model
         return $this->belongsTo('App\Models\Partner', 'partner_id');
     }
 
+    public function shipments()
+    {
+        return $this->hasMany('App\Models\Shipment', 'clientorder_id');
+    }
+
     public function store()
     {
         return $this->belongsTo('App\Models\Store', 'store_id');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientOrder;
 use App\Models\Shipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,13 +18,33 @@ class ShipmentsController extends Controller
 {
     public static function shipmentDialog($request)
     {
+
+
         $tag = 'shipmentDialog';
+        $clientorder = null;
+        if($request->clientorder_id){
+            $clientorder = ClientOrder::owned()->where('id', (int)$request->clientorder_id)->first();
+            if(!$clientorder){
+                return response()->json(['type' => 'error', 'message' => 'ошибка зависимости заказа',], 200);
+            }
+        }
+
+        $preselect_articles = $clientorder ? $clientorder->articles : null;
 
         if($request['shipment_id']){
             $shipment = Shipment::where('id', (int)$request['shipment_id'])->first();
             $tag .= $shipment->id;
         } else {
             $shipment = null;
+        }
+        if($clientorder){
+            $shipment = new Shipment();
+            $shipment->id = null;
+            $shipment->partner = $clientorder->partner;
+            $shipment->summ = $clientorder->summ;
+            $shipment->itogo = $clientorder->itogo;
+            $shipment->clientorder_id = $clientorder->id;
+            $shipment->articles = $preselect_articles;
         }
 
         return response()->json([

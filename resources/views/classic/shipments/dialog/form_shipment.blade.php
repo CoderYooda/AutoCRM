@@ -1,4 +1,5 @@
 @if(!isset($inner) || !$inner)
+
 <div
     @if(isset($shipment) && $shipment->id != NULL)
     @php $class = 'shipmentDialog' . $shipment->id @endphp
@@ -10,9 +11,9 @@
     class="dialog shipment_dialog" style="width:880px;">
 @endif
     @if(isset($shipment) && $shipment->id != NULL)
-        <div class="titlebar">Продажа №{{ $shipment->id }}</div>
+        <div class="titlebar">Продажа №{{ $shipment->id }} @if($shipment->clientOrder) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
     @else
-        <div class="titlebar">Новая продажа</div>
+        <div class="titlebar">Новая продажа @if($shipment->clientOrder) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
     @endif
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
@@ -41,7 +42,7 @@
             <span class="item-title _500">Всего на сумму</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="total_price">
-                        @if(isset($shipment)){{ $shipment->summ }} @else 0.0 @endif
+                        @if(isset($shipment) && $shipment->summ != NULL){{ $shipment->summ }} @else 0.0 @endif
                     </span> р
             </div>
             <div class="item-tag tag hide">
@@ -51,7 +52,7 @@
             <span class="item-title _500">Скидка</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="percents_price">
-                        @if(isset($shipment))
+                        @if(isset($shipment) && $shipment->id != NULL)
                         {{ $shipment->discount }}  @if($shipment->inpercents)% @else р @endif
                         @else 0 р @endif
                     </span>
@@ -63,7 +64,7 @@
             <span class="item-title _500">Итого</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span id="itogo_price">
-                        @if(isset($shipment))
+                        @if(isset($shipment) && $shipment->itogo != NULL)
                             {{ $shipment->itogo }}
                         @else 0.0 @endif
                     </span> р
@@ -72,7 +73,7 @@
             </div>
         </div>
 
-        @if(isset($shipment))
+        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL )
             <div class="modal-alt-header">
                 <span class="item-title _500">Оплачено</span>
                 <div class="item-except @if($shipment->getWarrantPositive() >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
@@ -85,39 +86,44 @@
             </div>
         @endif
 
-        @if(isset($shipment) && ($shipment->getWarrantPositive() < $shipment->itogo))
+        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->getWarrantPositive() < $shipment->itogo))
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
-        @if(isset($shipment) && ($shipment->getWarrantPositive() > $shipment->itogo) )
+        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->getWarrantPositive() > $shipment->itogo) )
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
             </div>
         @endif
     </div>
-    <form class="WarrantStoredListner PartnerSelectedListner" action="{{ route('StoreShipment') }}" method="POST">
+
+    <form name="ShipmentForm" class="WarrantStoredListner PartnerSelectedListner" action="{{ route('StoreShipment') }}" method="POST">
         <div class="box-body">
             @csrf
-            @if(isset($shipment) && $shipment->id != NULL)
+            @if(isset($shipment))
                 <input type="hidden" name="id" value="{{ $shipment->id }}">
                 <input type="hidden" name="summ" value="{{ $shipment->summ }}">
                 <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
                 <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->getWarrantPositive() }}">
+                @if($shipment->clientOrder)
+                <input type="hidden" name="clientorder_id" value="{{ $shipment->clientOrder->id }}">
+                @endif
             @else
                 <input type="hidden" name="id" value="">
             @endif
+
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
-            <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($shipment)){{ $shipment->partner()->first()->id }}@endif">
-            <input id="inpercents" name="inpercents" type="hidden" @if($shipment && $shipment->inpercents) value="1" @else value="0" @endif>
+            <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($shipment) && $shipment->partner != NULL){{ $shipment->partner->id }}@endif">
+            <input id="inpercents" name="inpercents" type="hidden" @if($shipment && $shipment->id != NULL && $shipment->inpercents) value="1" @else value="0" @endif>
             <div class="row row-sm">
                 <div class="col-sm-6">
                     <div class="form-group row">
                         <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
                         <div class="col-sm-9">
                             <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
-                                @if(isset($shipment) && $shipment->partner()->first() != null)
-                                    {{ $shipment->partner()->first()->outputName() }}
+                                @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
+                                    {{ $shipment->partner->outputName() }}
                                 @else
                                     Не выбрано
                                 @endif
@@ -127,10 +133,10 @@
                     <div class="form-group row">
                         <label class="col-sm-3" for="discount">Скидка</label>
                         <div class="col-sm-9 input-group">
-                            <input onclick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment) value="{{ $shipment->discount }}" @else value="0" @endif>
+                            <input onclick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment  && $shipment->id != NULL) value="{{ $shipment->discount }}" @else value="0" @endif>
                             <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                                    <div class="drop-butt"><span id="inpercents_text"> @if(isset($shipment) && $shipment->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
+                                    <div class="drop-butt"><span id="inpercents_text"> @if(isset($shipment) && $shipment->id != NULL && $shipment->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
                                     <div class="dropdown_container">
                                         <div class="arrow"></div>
                                         <span onclick="{{ $class }}.setField('inpercents', 0, 'в рублях', this)" class="element">В рублях</span>
@@ -142,7 +148,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6 form-group">
-                    <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="shipment_dialog_focused" cols="30" rows="4">@if(isset($shipment)){{ $shipment->comment }}@endif</textarea>
+                    <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="shipment_dialog_focused" cols="30" rows="4">@if(isset($shipment) && $shipment->id != NULL){{ $shipment->comment }}@endif</textarea>
                 </div>
             </div>
 
@@ -163,7 +169,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($shipment))
-                            @foreach($shipment->articles()->get() as $product)
+                            @foreach($shipment->articles as $product)
                                 @include(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element')
                             @endforeach
                         @endif

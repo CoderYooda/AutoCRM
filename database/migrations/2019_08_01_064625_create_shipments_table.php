@@ -18,6 +18,7 @@ class CreateShipmentsTable extends Migration
             $table->bigInteger('partner_id')->unsigned()->comment('Привязка к партнеру');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
+            $table->bigInteger('clientorder_id')->unsigned()->nullable()->comment('Привязка к заказу');
             $table->dateTime('do_date')->comment('Дата исполнения');
             $table->decimal('summ', 12, 2)->comment('Общая цена');
             $table->decimal('itogo', 12, 2)->comment('Итоговая цена');

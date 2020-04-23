@@ -1,4 +1,5 @@
-<tr class="product_list_elem " id="product_selected_{{ $product->id }}">
+<tr class="product_list_elem"
+    id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td>
         @if(isset($product->instock))
