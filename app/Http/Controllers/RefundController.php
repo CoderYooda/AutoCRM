@@ -24,7 +24,7 @@ class RefundController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact('refund', 'stores', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact('refund', 'request'))->render()
         ]);
     }
 
@@ -76,18 +76,11 @@ class RefundController extends Controller
             refund.*, refund.created_at as date, refund.id as rid
         '))
             ->from(DB::raw('(
-            SELECT client_orders.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' р\')) as discount_formatted,
-            (CASE
-                WHEN client_orders.status = "active" THEN "Активен"
-                WHEN client_orders.status = "canceled" THEN "Отменен"
-                WHEN client_orders.status = "full" THEN "Укомплектован"
-                WHEN client_orders.status = "complete" THEN "Выполнен"
-                ELSE 1
-            END) AS status_formatted
-            FROM client_orders
-            left join partners on partners.id = client_orders.partner_id
-            GROUP BY client_orders.id)
-             client_orders
+            SELECT refund.*
+            FROM refund
+            left join partners on partners.id = refund.manager_id
+            GROUP BY refund.id)
+             refund
         '))
             ->when($request['provider'] != [], function ($query) use ($request) {
                 $query->whereIn('partner_id', $request['provider']);
@@ -104,8 +97,8 @@ class RefundController extends Controller
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->where('client_orders.company_id', Auth::user()->company()->first()->id)
-            ->groupBy('client_orders.id')
+            ->where('refund.company_id', Auth::user()->company()->first()->id)
+            ->groupBy('refund.id')
             ->orderBy($field, $dir)
             //->toSql();
 

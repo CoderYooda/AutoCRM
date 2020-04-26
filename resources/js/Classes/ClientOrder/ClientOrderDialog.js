@@ -60,6 +60,17 @@ class clientorderDialog extends Modal{
             }
         });
 
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('ShipmentStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('clientOrderSMS',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
@@ -310,7 +321,6 @@ class clientorderDialog extends Modal{
 
         let object = this;
         [].forEach.call(object.items, function(item){
-
             if(item.id === id){
                 object.items.splice(
                     object.items.indexOf(item), 1
@@ -447,7 +457,7 @@ class clientorderDialog extends Modal{
     }
 
     openShipmentModal(){
-        window.openDialog('shipmentDialog', '&refer=' + this.root_dialog.id + '&clientorder_id=' + this.id) ;
+        window.openDialog('shipmentDialog', '&refer=' + this.root_dialog.id + '&clientorder_id=' + this.id);
     }
 
     openSelectPartnermodal(){

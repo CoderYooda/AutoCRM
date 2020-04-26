@@ -304,6 +304,20 @@ class storePage{
                 {title:"Скидка", field:"discount", width:90, align:"left"},
                 {title:"Итого", field:"total", width:90, align:"left"},
             ];
+        } else if(object.active_tab === 'refund'){
+            object.contextDop = 'refund';
+            object.parametr = 'refund';
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Дата", field:"date", width:150},
+                {title:"Ответственный", field:"manager", align:"left"},
+                {title:"Сумма", field:"price", width:90, align:"left"},
+                {title:"Скидка", field:"discount", width:90, align:"left"},
+                {title:"Итого", field:"total", width:90, align:"left"},
+            ];
         } else if(object.active_tab === 'client_orders'){
             object.contextDop = 'clientorder';
             object.parametr = 'client_order';

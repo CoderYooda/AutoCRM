@@ -19,6 +19,7 @@ class CreateArticleClientOrdersTable extends Migration
             $table->bigInteger('client_order_id')->unsigned()->comment('Привязка к поступлению');
             $table->bigInteger('store_id')->nullable()->unsigned()->comment('Привязка к складу');
             $table->integer('count')->unsigned()->comment('Кол - во');
+            $table->integer('shipped_count')->unsigned()->comment('Отгружено Кол - во');
             $table->double('price')->unsigned()->comment('Цена');
             $table->double('total')->unsigned()->comment('Цена общая');
         });

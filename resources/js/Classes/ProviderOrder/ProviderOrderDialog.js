@@ -168,6 +168,7 @@ class providerOrderDialog extends Modal{
     }
 
     save(elem){
+        window.event.preventDefault();
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){

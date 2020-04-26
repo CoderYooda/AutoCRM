@@ -10,6 +10,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
@@ -36,6 +37,8 @@ class ClientOrdersController extends Controller
             }
             $total_complited = true;
 
+
+
             foreach ($client_order->articles as $article) {
                 if (!$article->complited) {
                     $total_complited = false;
@@ -51,7 +54,7 @@ class ClientOrdersController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'stores', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))->render()
         ]);
     }
 
@@ -122,7 +125,7 @@ class ClientOrdersController extends Controller
 
         $request['fresh'] = true;
         $class = 'clientorderDialog' . $id;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'stores', 'class', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'clientorderDialog' . $id,
@@ -173,12 +176,12 @@ class ClientOrdersController extends Controller
 
 
             #Возвращаем на склад все товары из заказа
-            if ($client_order->status === 'complete') {
-                foreach ($client_order->articles()->get() as $article) {
-                    $store = $client_order->store()->first();
-                    $store->increaseArticleCount($article->id, $article->pivot->count);
-                }
-            }
+//            if ($client_order->status === 'complete') {
+//                foreach ($client_order->articles()->get() as $article) {
+//                    $store = $client_order->store()->first();
+//                    $store->increaseArticleCount($article->id, $article->pivot->count);
+//                }
+//            }
 
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
@@ -314,13 +317,14 @@ class ClientOrdersController extends Controller
 
         $client_order->save();
 
+
         #Отнимаем со склада товары из заказа
-        if ($client_order->status === 'complete') {
-            foreach ($client_order->articles()->get() as $article) {
-                $store = $client_order->store()->first();
-                $store->decreaseArticleCount($article->id, $article->pivot->count);
-            }
-        }
+//        if ($client_order->status === 'complete') {
+//            foreach ($client_order->articles()->get() as $article) {
+//                $store = $client_order->store()->first();
+//                $store->decreaseArticleCount($article->id, $article->pivot->count);
+//            }
+//        }
 
         $client_order->partner()->first()
             ->subtraction($client_order->itogo);

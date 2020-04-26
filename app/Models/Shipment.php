@@ -66,6 +66,11 @@ class Shipment extends Model
         return $articles;
     }
 
+    public function outputName() //Вывод имени или наименования
+    {
+        return 'Продажа №' . $this->id;
+    }
+
     public function getWarrantPositive()
     {
         $minus = $this->warrants()->where('isIncoming', false)->sum('summ');

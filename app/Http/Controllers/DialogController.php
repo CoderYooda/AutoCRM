@@ -9,7 +9,6 @@ class DialogController extends Controller
 {
     public function openDialogByTag($tag, Request $request)
     {
-    	
         switch ($tag) {
             case 'selectSupplier':
                 $dialog = SupplierController::selectSupplierDialog($request);#
@@ -62,15 +61,18 @@ class DialogController extends Controller
             case 'barcodeDialog':
                 $dialog = BarcodeController::barcodeDialog($request); /////
                 break;
+            case 'selectShipment':
+                $dialog = ShipmentsController::selectShipmentDialog($request); /////
+                break;
             case 'shipmentDialog':
                 $dialog = ShipmentsController::shipmentDialog($request); #
                 break;
             case 'clientorderDialog':
                 $dialog = ClientOrdersController::clientorderDialog($request); #
                 break;
-            case 'selectTransactionDialog':
-                $dialog = TransactionController::selectTransactionDialog($request); #
-                break;
+//            case 'selectTransactionDialog':
+//                $dialog = TransactionController::selectTransactionDialog($request); #
+//                break;
             case 'refundDialog':
                 $dialog = RefundController::refundDialog($request); #
                 break;

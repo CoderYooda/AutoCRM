@@ -36,6 +36,8 @@ class ClientOrder extends Model
         return $relation;
     }
 
+
+
     public function data(){
         return $this->created_at->format('d.m H:i');
     }
@@ -43,7 +45,42 @@ class ClientOrder extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_client_orders', 'client_order_id', 'article_id')
-            ->withPivot('count', 'price', 'total')->withTrashed();
+            ->withPivot('count', 'shipped_count', 'price', 'total')->withTrashed();
+    }
+
+    public function notShippedArticles()
+    {
+        return $this->articles()->whereRaw('article_client_orders.shipped_count < article_client_orders.count');
+    }
+
+    public function getAvailableToShippingArticlesCount($article_id)
+    {
+        $article = $this->articles()->wherePivot('article_id', $article_id)->first();
+        return $article ? $article->pivot->count - $article->pivot->shipped_count : 0;
+    }
+
+    public function increaseShippedCount($article_id, $amount)
+    {
+        $count = $this->getShippedCount($article_id) + (int)$amount;
+        $this->setShippedCount($article_id, $count);
+    }
+
+    public function decreaseShippedCount($article_id, $amount)
+    {
+        $count = $this->getShippedCount($article_id) - (int)$amount;
+        $this->setShippedCount($article_id, $count);
+    }
+
+    public function setShippedCount($article_id, $count)
+    {
+        $this->articles()->updateExistingPivot($article_id, array('shipped_count' => $count), false);
+        return true;
+    }
+
+    public function getShippedCount($article_id)
+    {
+        $article = $this->articles()->where('article_id', $article_id)->first();
+        return $article ? $article->pivot->shipped_count : 0;
     }
 
     public function smsMessages()

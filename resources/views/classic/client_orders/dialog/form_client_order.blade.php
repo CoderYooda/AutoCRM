@@ -118,7 +118,7 @@
             </div>
         @endif
     </div>
-    <form class="EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
+    <form class="ShipmentStoredListner EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
         <div class="box-body">
             @csrf
             @if(isset($client_order) && $client_order->id != NULL)
@@ -376,11 +376,12 @@
                     <table class="table-modal" >
                         <thead class="text-muted">
                         <tr>
-                            <th width="30%">Наличие</th>
+                            <th width="80px">Наличие</th>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Производитель</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
+                            <th width="10%" style="min-width: 60px;">Отгружено</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
                             <th width="10%"></th>
@@ -402,10 +403,12 @@
             <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Быстрый товар</button>
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
+            @if(isset($client_order) && $client_order->id != NULL)
             <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
+            @endif
             <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
             <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
-            @if(isset($client_order))
+            @if(isset($client_order) && $client_order->id != NULL)
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
 

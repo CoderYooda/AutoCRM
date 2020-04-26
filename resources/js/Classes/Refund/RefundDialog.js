@@ -4,7 +4,7 @@ class refundDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно возвратов инициализировано');
         this.items = [];
         this.nds = true;
         this.totalPrice = 0.0;
@@ -33,8 +33,6 @@ class refundDialog extends Modal{
     openSelectTransactionModal(){
         window.openDialog('selectTransactionDialog', '&refer=' + this.root_dialog.id);
     }
-
-
 
     freshContent(id, callback = null){
         let object = this;
@@ -303,43 +301,49 @@ class refundDialog extends Modal{
         });
     }
 
-    selectPartner(id){
+    selectShipment(id){
         var object = this;
         window.axios({
             method: 'post',
-            url: 'partner/'+ id +'/select',
+            url: 'shipment/'+ id +'/select',
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
             object.touch();
-            let select = object.root_dialog.querySelector('button[name=partner_id]');
-            let input = object.root_dialog.querySelector('input[name=partner_id]');
+            let select = object.root_dialog.querySelector('button[name=shipment_id]');
+            let input = object.root_dialog.querySelector('input[name=shipment_id]');
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
-
-            let phones_list = object.root_dialog.querySelector('#phones-list');
-            object.root_dialog.querySelector('#client-phone').value = '';
-            let phones_html = '';
-            if(resp.data.phones.length > 0) {
-                [].forEach.call(resp.data.phones, function (elem) {
-                    if(elem.main){
-                        object.root_dialog.querySelector('#client-phone').value = elem.number;
-                    }
-                    phones_html += '<span onclick="' + object.root_dialog.id + '.selectNumber(this)" data-number="' + elem.number + '" class="element">' + elem.number + '</span>';
-                });
-            } else {
-                phones_html = '<span class="element"><div class="text-center">Номеров нет</div></span>';
-            }
-            phones_list.innerHTML = phones_html;
-            //let phone_str = '<a onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="dropdown-item pointer">{{ $phone->number }}</a>';
 
             let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
-            window.notification.notify( 'success', 'Контакт выбран');
-            document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
-            console.log("Событие PartnerSelected вызвано");
-            //closeDialog(event);
-            object.phoneMask.value = resp.data.phone;
-            object.phoneMask.updateControl();
+
+            window.notification.notify( 'success', 'Продажа выбрана');
+            document.dispatchEvent(new Event('ShipmentSelected', {bubbles: true}));
+            console.log("Событие ShipmentSelected вызвано");
+            object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
+
+            [].forEach.call(resp.data.items, function (elem) {
+                object.items.push({
+                    id: elem.id,
+                    count: elem.pivot.count,
+                    price: elem.pivot.price,
+                    total: elem.pivot.total,
+                });
+
+                let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+                let inputs = item.getElementsByTagName('input');
+
+                [].forEach.call(inputs, function (elem) {
+                    var fn = window.helper.debounce(function (e) {
+                        object.recalculate(e);
+                    }, 50);
+                    elem.addEventListener("keydown", fn);
+                    elem.addEventListener("paste", fn);
+                    elem.addEventListener("delete", fn);
+                });
+
+            });
+
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -351,11 +355,12 @@ class refundDialog extends Modal{
         window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
     }
 
-    openSelectPartnermodal(){
-        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id + '&category_id=7');
+    openSelectShipmentModal(){
+        window.openDialog('selectShipment', '&refer=' + this.root_dialog.id);
     }
 
     recalculate(){
+        dd(1);
         var object = this;
         this.items.forEach(function(elem){
             object.recalculateItem(elem.id);

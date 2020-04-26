@@ -92,6 +92,7 @@ class ProviderOrdersController extends Controller
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
+        $request = request();
         return response()->json([
             'id' => $providerorder->id,
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
@@ -201,7 +202,7 @@ class ProviderOrdersController extends Controller
         $request['fresh'] = true;
         $class = 'providerorderDialog' . $id;
         $inner = true;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores', 'class', 'request', 'inner'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'class', 'request', 'inner'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'providerorderDialog' . $id,

@@ -11,12 +11,13 @@
     class="dialog shipment_dialog" style="width:880px;">
 @endif
     @if(isset($shipment) && $shipment->id != NULL)
-        <div class="titlebar">Продажа №{{ $shipment->id }} @if($shipment->clientOrder) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
+        <div class="titlebar">Продажа №{{ $shipment->id }} @if($shipment->clientOrder != null) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
     @else
-        <div class="titlebar">Новая продажа @if($shipment->clientOrder) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
+        <div class="titlebar">Новая продажа @if(isset($shipment) && $shipment->clientOrder != null) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
     @endif
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
+
     <div class="modal-header" style="justify-content: normal;">
         {{--<div class="b-r pr-3 mr-3">--}}
             {{--<span class="item-title _500">Поступление</span>--}}

@@ -14,12 +14,11 @@ use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 
-class ShipmentsController extends Controller
+class
+ShipmentsController extends Controller
 {
     public static function shipmentDialog($request)
     {
-
-
         $tag = 'shipmentDialog';
         $clientorder = null;
         if($request->clientorder_id){
@@ -29,7 +28,12 @@ class ShipmentsController extends Controller
             }
         }
 
-        $preselect_articles = $clientorder ? $clientorder->articles : null;
+        $preselect_articles = $clientorder ? $clientorder->notShippedArticles : null;
+        if($preselect_articles != null){
+            foreach ($preselect_articles as $article){
+                $article->pivot->count = $clientorder->getAvailableToShippingArticlesCount($article->id);
+            }
+        }
 
         if($request['shipment_id']){
             $shipment = Shipment::where('id', (int)$request['shipment_id'])->first();
@@ -37,19 +41,100 @@ class ShipmentsController extends Controller
         } else {
             $shipment = null;
         }
+
+
         if($clientorder){
+
             $shipment = new Shipment();
             $shipment->id = null;
             $shipment->partner = $clientorder->partner;
-            $shipment->summ = $clientorder->summ;
-            $shipment->itogo = $clientorder->itogo;
+            $shipment->summ = 111;
+            $shipment->itogo = 222;
             $shipment->clientorder_id = $clientorder->id;
             $shipment->articles = $preselect_articles;
+
+            $itogo = 0;
+            foreach($shipment->articles as $article){
+                $total_of_article =  $article->pivot->count * $article->pivot->price;
+                $itogo += $total_of_article;
+                $article->pivot->total = $total_of_article;
+            }
+            $shipment->summ = $itogo;
+            $shipment->itogo = $itogo;
+
         }
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment','request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'request'))->render()
+        ]);
+    }
+
+//    public static function selectShipmentDialog($request)
+//    {
+//        $class = 'selectShipmentDialog';
+//        $shipments = Shipment::owned()->orderBy('created_at', 'DESC')->limit(10)->get();
+//        return response()->json([
+//            'tag' => 'selectShipmentDialog',
+//            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.select_shipment', compact('shipments', 'class', 'request'))->render(),
+//        ]);
+//    }
+
+    public static function selectShipmentDialog($request)
+    {
+        return self::selectShipmentInner($request);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        return self::selectShipmentInner($request);
+    }
+
+    private static function selectShipmentInner($request){
+        $class = 'selectShipmentDialog';
+//        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
+        $shipments = Shipment::where(function($q) use ($request){
+
+            $q->whereHas('partner', function($q) use ($request){
+                $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
+                    ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
+                    ->orWhereHas('phones', function ($query) use ($request) {
+                        $query->where('number', 'LIKE', '%' . $request['string'] .'%');
+                    });
+                });
+            })
+
+
+            ->where('company_id', Auth::user()->company()->first()->id)
+            ->orderBy('created_at', 'ASC')
+            ->limit(30)
+            ->get();
+
+        $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.' . $view, compact('shipments','class', 'request'))->render();
+        return response()->json([
+            'tag' => 'selectShipmentDialog',
+            'html' => $content
+        ]);
+    }
+
+
+    public function select($id)
+    {
+        $shipment = Shipment::owned()->where('id', $id)->first();
+        $request = request();
+        if(!$shipment){
+            return response()->json([
+                'message' => 'Продажа не найдена, возможно она была удалёна',
+            ], 422);
+        }
+        return response()->json([
+            'id' => $shipment->id,
+            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.products_element', compact('shipment', 'request'))->render(),
+            'items' => $shipment->articles,
+//            'info' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
+            'name' => $shipment->outputName()
         ]);
     }
 
@@ -82,6 +167,7 @@ class ShipmentsController extends Controller
         if(!Gate::allows('Удалять заказ клиента')){
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }
+
         $returnIds = null;
         if($id == 'array'){
             $shipments = Shipment::whereIn('id', $request['ids']);
@@ -95,13 +181,20 @@ class ShipmentsController extends Controller
                     }
                     #Добавляем к балансу контрагента
                     $shipment->partner()->first()->subtraction($shipment->itogo);
+                    if($shipment->clientOrder){
+                        foreach($shipment->articles as $article){
+                            $shipment->clientOrder->decreaseShippedCount($article->id, (int)$article->pivot->count);
+                        }
+                    }
                     $shipment->articles()->sync(null);
                     UA::makeUserAction($shipment, 'delete');
                 }
             }
         } else {
-
             $shipment = Shipment::where('id', $id)->first();
+
+
+
             $returnIds = $shipment->id;
             foreach($shipment->articles()->get() as $article){
                 $store = $shipment->store()->first();
@@ -109,6 +202,11 @@ class ShipmentsController extends Controller
             }
             #Добавляем к балансу контрагента
             $shipment->partner()->first()->subtraction($shipment->itogo);
+            if($shipment->clientOrder){
+                foreach($shipment->articles as $article){
+                    $shipment->clientOrder->decreaseShippedCount($article->id, (int)$article->pivot->count);
+                }
+            }
             $shipment->articles()->sync(null);
             $shipment->delete();
             $this->status = 200;
@@ -117,7 +215,8 @@ class ShipmentsController extends Controller
 
         return response()->json([
             'id' => $returnIds,
-            'message' => $this->message
+            'message' => $this->message,
+            'event' => 'ShipmentStored',
         ], 200);
 
 
@@ -148,7 +247,6 @@ class ShipmentsController extends Controller
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
             $request['inpercents'] = true;
         }
-
 
         if($request['inpercents']){
             if((int)$request['discount'] >= 100){
@@ -197,8 +295,10 @@ class ShipmentsController extends Controller
 
         if($shipmentWasExisted){
             foreach($shipment->articles()->get() as $article){
-
                 $store->increaseArticleCount($article->id, $article->pivot->count);
+                if($shipment->clientOrder){
+                    $shipment->clientOrder->decreaseShippedCount($article->id, $article->pivot->count);
+                }
             }
         }
 
@@ -215,6 +315,18 @@ class ShipmentsController extends Controller
         //$store = Store::where('id', $request['store_id'])->first();
         $shipment_data = [];
         foreach($request['products'] as $product) {
+
+            if($shipment->clientOrder){
+                if($product['count'] > $shipment->clientOrder->getAvailableToShippingArticlesCount($product['id'])){
+
+                    $name = 'products.' . $product['id'] . '.count';
+
+                    return response()->json([
+                        'messages' => [$name => ['Кол - во не может быть больше чем в заказе']]
+                    ], 422);
+                }
+
+            }
 
             $store->decreaseArticleCount($product['id'], $product['count']);
 
@@ -239,6 +351,7 @@ class ShipmentsController extends Controller
             $shipment_data[] = $pivot_data;
         }
         #Удаление всех отношений и запись новых (кастомный sync)
+        //dd($shipment_data);
         $shipment->syncArticles($shipment->id, $shipment_data);
 
 
@@ -259,6 +372,12 @@ class ShipmentsController extends Controller
         $shipment->partner()->first()->subtraction($shipment->itogo);
 
         $shipment->save();
+
+        if($shipment->clientOrder){
+            foreach($shipment->articles as $article){
+                $shipment->clientOrder->increaseShippedCount($article->id, $article->pivot->count);
+            }
+        }
 
         if($request->expectsJson()){
             return response()->json([
@@ -339,7 +458,7 @@ class ShipmentsController extends Controller
             'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required'],
-            'products.*.count' => ['integer', 'max:9999'],
+            'products.*.count' => ['integer', 'min:1', 'max:9999'],
             'products.*.price' => ['numeric', 'between:1,1000000.00'],
         ];
 

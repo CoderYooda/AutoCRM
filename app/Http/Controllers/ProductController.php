@@ -107,11 +107,11 @@ class ProductController extends Controller
 
         if ($request['type'] && $request['type'] === 'shipment') {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element', compact('product','request'))->render();
 
         } elseif ($request['type'] && $request['type'] === 'clientOrder') {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element', compact('product','request'))->render();
 
         } elseif ($request['type'] && $request['type'] === 'providerOrder') {
             $product = $article;

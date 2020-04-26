@@ -257,7 +257,7 @@ li.active .header-tab{
     background-color: #fff;
 }
 .tabulator-row.tabulator-selected {
-    background-color: #EAF6FF;
+    background-color: #EAF6FF!important;
     border: 2px solid transparent;
 }
 .tabulator-row.tabulator-selected + .tabulator-row.tabulator-selected {
@@ -266,10 +266,13 @@ li.active .header-tab{
 }
 .tabulator .tabulator-header {
     border-bottom: 1px solid #e8e9ed;
-    background-color: #fff;
+    background-color: transparent!important;
     border: 2px solid transparent;
     color: #555;
     border-radius: 4px;
+}
+.tabulator-row {
+    background-color: transparent!important;
 }
 .tabulator .tabulator-tableHolder .tabulator-table {
     width: 100%;
@@ -320,6 +323,7 @@ li.active .header-tab{
 }
 .tabulator .tabulator-tableHolder .tabulator-table {
     color: #404040;
+    background-color: transparent!important;
 }
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="asc"] .tabulator-col-content .tabulator-arrow {
     border-bottom: 6px solid #5181b8;
@@ -353,6 +357,13 @@ li.active .header-tab{
     animation: fa-spin 2s infinite linear;
     font-size: 0;
     background: transparent;
+}
+.product_list_elem.shipped{
+    background-color: #e6f7e4;
+}
+
+.product_list_elem.shipped:hover td {
+    background: #c9e5c5!important;
 }
 
 /*Dialog*/
