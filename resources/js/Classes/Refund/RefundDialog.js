@@ -6,11 +6,8 @@ class refundDialog extends Modal{
         super(dialog);
         console.log('Окно возвратов инициализировано');
         this.items = [];
-        this.nds = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
-        this.phoneMask = null;
-        this.phone_field = this.root_dialog.querySelector('#client-phone');
         this.init();
     }
 
@@ -24,14 +21,10 @@ class refundDialog extends Modal{
             }
         });
 
-        let focused = document.getElementById('clientorder_dialog_focused');
+        let focused = document.getElementById('refund_dialog_focused');
         if(focused){
             focused.focus();
         }
-    }
-
-    openSelectTransactionModal(){
-        window.openDialog('selectTransactionDialog', '&refer=' + this.root_dialog.id);
     }
 
     freshContent(id, callback = null){
@@ -47,7 +40,7 @@ class refundDialog extends Modal{
 
         window.axios({
             method: 'post',
-            url: 'clientorder/' + id + '/fresh',
+            url: 'refund/' + id + '/fresh',
             data: data,
         }).then(function (resp) {
             document.getElementById(resp.data.target).innerHTML = resp.data.html;
@@ -66,14 +59,14 @@ class refundDialog extends Modal{
         window.axform.send(elem, function(resp){
             let root_id = object.root_dialog.id;
             object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-            object.root_dialog.setAttribute('id', 'clientorderDialog' + resp.data.id);
+            object.root_dialog.setAttribute('id', 'refundDialog' + resp.data.id);
             object.root_dialog.setAttribute('data-id', resp.data.id);
             object.freshContent(resp.data.id, function(){
                 delete window[root_id];
                 let drag_dialog = window.dialogs[root_id];
                 delete window.dialogs[root_id];
-                window.dialogs['clientorderDialog' + resp.data.id] = drag_dialog;
-                drag_dialog.tag = 'clientorderDialog' + resp.data.id;
+                window.dialogs['refundDialog' + resp.data.id] = drag_dialog;
+                drag_dialog.tag = 'refundDialog' + resp.data.id;
                 window.helper.initDialogMethods();
             });
         });
@@ -161,7 +154,7 @@ class refundDialog extends Modal{
     }
 
     loadItemsIfExists(){
-        window.entity.loadItemsToList(this, 'clientorder');
+        window.entity.loadItemsToList(this, 'refund');
     }
 
     setTotalPrice(count){
@@ -228,7 +221,7 @@ class refundDialog extends Modal{
     }
 
     addProduct(elem){
-        window.entity.addProductToList(elem, this, 'clientOrder');
+        window.entity.addProductToList(elem, this, 'refund');
     };
 
     addQuickProduct(){
@@ -239,7 +232,7 @@ class refundDialog extends Modal{
             data: {
                 refer:this.root_dialog.id,
                 article_id: object.items.length + 1,
-                type:'clientOrder_quick',
+                type:'refund_quick',
                 count:1,
             }
         }).then(function (resp) {
@@ -310,11 +303,13 @@ class refundDialog extends Modal{
         }).then(function (resp) {
             object.touch();
             let select = object.root_dialog.querySelector('button[name=shipment_id]');
+            let partner_butt = object.root_dialog.querySelector('input[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=shipment_id]');
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
 
             let str = resp.data.name;
             input.value = resp.data.id;
+            partner_butt.value = resp.data.partner;
             select.innerHTML = str;
 
             window.notification.notify( 'success', 'Продажа выбрана');

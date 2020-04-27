@@ -277,13 +277,20 @@ class ClientOrdersController extends Controller
             }
         }
 
-
         foreach ($request['products'] as $id => $product) {
             if ($id !== 'new') {
 
                 //$store->decreaseArticleCount($id, $product['count']);
 
                 $vcount = $product['count'];
+
+                if($vcount < $client_order->getShippedCount($id)){
+                    $name = 'products.' . $product['id'] . '.count';
+                    return response()->json([
+                        'messages' => [$name => ['Отгружено более ' . $vcount . ' товаров, уменьшение невозможно']]
+                    ], 422);
+                }
+
                 $vprice = $product['price'];
                 $vtotal = $vprice * $vcount;
                 $client_order->summ += $vtotal;
@@ -293,7 +300,8 @@ class ClientOrdersController extends Controller
                     'client_order_id' => $client_order->id,
                     'count' => (int)$vcount,
                     'price' => (double)$vprice,
-                    'total' => (double)$vtotal
+                    'total' => (double)$vtotal,
+                    'shipped_count' => $client_order->getShippedCount($id)
                 ];
                 $client_order_data[] = $pivot_data;
             }

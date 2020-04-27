@@ -13,11 +13,13 @@
                type="number"  min="0" step="1"></td>
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
                @if(isset($shipment)) value="{{ sprintf("%.2f", $product->pivot->price) }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
-               type="number" min="0" step="0.1" ></td>
+               type="number" min="0" step="0.1" @if(isset($shipment)) disabled="disabled" @endif ></td>
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
                @if(isset($product->pivot->total)) value="{{ sprintf("%.2f", $product->pivot->total) }}"@else value="0.00" @endif
                disabled type="number"></td>
     <td>
+
+
         @if(isset($request) && $request['refer'] != null)
             <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
         @else

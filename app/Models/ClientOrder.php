@@ -59,6 +59,23 @@ class ClientOrder extends Model
         return $article ? $article->pivot->count - $article->pivot->shipped_count : 0;
     }
 
+    public function getProductPriceFromClientOrder($article_id)
+    {
+        $article = $this->articles()->wherePivot('article_id', $article_id)->first();
+        return $article->pivot->price;
+    }
+
+    public function IsAllProductsShipped(){
+        $allShipped = true;
+        foreach($this->articles as $article){
+           if($this->getShippedCount($article->id) < $article->pivot->count){
+               $allShipped = false;
+               break;
+           }
+        }
+        return $allShipped;
+    }
+
     public function increaseShippedCount($article_id, $amount)
     {
         $count = $this->getShippedCount($article_id) + (int)$amount;

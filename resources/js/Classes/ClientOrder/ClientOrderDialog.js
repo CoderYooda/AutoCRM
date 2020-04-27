@@ -457,7 +457,7 @@ class clientorderDialog extends Modal{
     }
 
     openShipmentModal(){
-        window.openDialog('shipmentDialog', '&refer=' + this.root_dialog.id + '&clientorder_id=' + this.id);
+        window.openDialog('shipmentDialog', '&refer=shipmentDialog' + '&clientorder_id=' + this.id);
     }
 
     openSelectPartnermodal(){

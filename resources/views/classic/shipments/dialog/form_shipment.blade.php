@@ -182,7 +182,9 @@
 
         </div>
         <div class="modal-footer" style="white-space: nowrap">
+            @if(!isset($shipment))
             <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button mr-15 uppercase-btn"><i class="fa fa-plus"></i> Добавить товар</button>
+            @endif
 
             <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>

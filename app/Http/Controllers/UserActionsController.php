@@ -193,6 +193,7 @@ class UserActionsController extends Controller
             case 'Sms': $model_text = 'смс'; break;
             case 'Store': $model_text = 'магазин'; break;
             case 'Supplier': $model_text = 'производитель'; break;
+            case 'Refund': $model_text = 'возврат'; break;
             case 'User': $model_text = 'пользователя'; break;
         }
 

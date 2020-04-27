@@ -14,8 +14,7 @@ use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 
-class
-ShipmentsController extends Controller
+class ShipmentsController extends Controller
 {
     public static function shipmentDialog($request)
     {
@@ -106,7 +105,7 @@ ShipmentsController extends Controller
 
 
             ->where('company_id', Auth::user()->company()->first()->id)
-            ->orderBy('created_at', 'ASC')
+            ->orderBy('created_at', 'DESC')
             ->limit(30)
             ->get();
 
@@ -133,7 +132,7 @@ ShipmentsController extends Controller
             'id' => $shipment->id,
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.products_element', compact('shipment', 'request'))->render(),
             'items' => $shipment->articles,
-//            'info' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
+            'partner' => $shipment->partner->outputName(),
             'name' => $shipment->outputName()
         ]);
     }
@@ -227,6 +226,7 @@ ShipmentsController extends Controller
         $shipment = Shipment::where('id', (int)$id)->first();
         $stores = Store::owned()->get();
         $request['fresh'] = true;
+        $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
         $class = 'shipmentDialog' . $id;
         $inner = true;
         $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
@@ -281,6 +281,9 @@ ShipmentsController extends Controller
             $wasExisted = false;
         }
 
+
+
+
         $shipment->fill($request->only($shipment->fields));
         $shipment->summ = 0;
         $shipment->balance = 0;
@@ -331,7 +334,7 @@ ShipmentsController extends Controller
             $store->decreaseArticleCount($product['id'], $product['count']);
 
             $vcount = $product['count'];
-            $vprice = $product['price'];
+            $vprice = $shipment->clientOrder->getProductPriceFromClientOrder($product['id']);
             $vtotal = $vprice * $vcount;
             $shipment->summ += $vtotal;
             $pivot_data = [

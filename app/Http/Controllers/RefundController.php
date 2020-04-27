@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Refund;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Http\Controllers\UserActionsController as UA;
 use Auth;
 
 class RefundController extends Controller
@@ -37,6 +39,57 @@ class RefundController extends Controller
         }
 
         return response()->json($refunds);
+    }
+
+    public function store(Request $request)
+    {
+        $refund = Refund::firstOrNew(['id' => $request['id']]);
+
+        $validation = Validator::make($request->all(), self::validateRules());
+
+        if($validation->fails()){
+            $this->status = 422;
+            if($request->expectsJson()){
+                return response()->json(['messages' => $validation->errors()], $this->status);
+            }
+        }
+
+        if($refund->exists){
+            $refundWasExisted = true;
+            $this->message = 'Возврат обновлен';
+//            #Отнимаем с баланса контрагента
+//            $shipment->partner()->first()->addition($shipment->itogo);
+        } else {
+            $refundWasExisted = false;
+            //$shipment->company_id = Auth::user()->company()->first()->id;
+            $this->message = 'Возврат сохранен';
+        }
+
+        $refund->fill($request->only($refund->fields));
+        $refund->summ = 0;
+        $refund->save();
+        UA::makeUserAction($refund, $refundWasExisted ? 'fresh' : 'create');
+
+        if($request->expectsJson()){
+            return response()->json([
+                'message' => $this->message,
+                'id' => $refund->id,
+                'event' => 'RefundStored',
+            ], 200);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    private static function validateRules()
+    {
+        $rules = [
+            'shipment_id' => ['required', 'exists:shipments,id'],
+            'products' => ['required'],
+            'products.*.count' => ['integer', 'min:1', 'max:9999'],
+        ];
+
+        return $rules;
     }
 
     public static function getRefunds($request)

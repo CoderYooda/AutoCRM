@@ -1,9 +1,9 @@
-<div id="selectShipmentDialog" class="dialog ShipmentStoredListner" style="width:600px;">
+<div id="selectShipmentDialog" class="dialog" style="width:600px;">
     <div class="titlebar">Выбор продажи</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
     <div class="modal-header">
-        <form class="flex d-flex w-100">
+        <form class="flex d-flex w-100 ShipmentStoredListner">
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
@@ -13,7 +13,7 @@
             @if($request['category_id'])
                 <input id="category_id" type="hidden" name="category_id" value="{{ $request['category_id'] }}">
             @endif
-            <input id="shipment_search" type="text" class="form-control search" placeholder="Поиск продаж" required="">
+            <input id="selectshipment_search" type="text" class="form-control search" placeholder="Поиск продаж" required="">
 {{--            <button id="new_btn" onclick="openDialog('shipmentDialog', '&category_select={{ $categories['parent']->id }}' )" class="button" type="button">Новый контакт</button>--}}
         </form>
     </div>

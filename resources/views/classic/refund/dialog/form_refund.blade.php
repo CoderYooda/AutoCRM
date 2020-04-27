@@ -64,11 +64,23 @@
                             </button>
                         </div>
                     </div>
+                    <div class="form-group row row-sm">
+                        <label class="col-sm-5" for="discount">Покупатель</label>
+                        <div class="col-sm-7 input-group">
+                            <input type="text" name="partner_id" value="@if(isset($refund) && $refund->shipmnet()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="form-group row row-sm">
+                        <label class="col-sm-5" for="discount">Ответственный</label>
+                        <div class="col-sm-7 input-group">
+                            <input type="text" value="{{ Auth::user()->partner->outputName() }}" class="form-control" disabled="disabled">
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group row row-sm">
                         <div class="col-sm-12">
-                            <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($refund)){{ $refund->comment }}@endif</textarea>
+                            <textarea placeholder="Комментарий" style="resize: none;height: 128px;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($refund)){{ $refund->comment }}@endif</textarea>
                         </div>
                     </div>
                 </div>

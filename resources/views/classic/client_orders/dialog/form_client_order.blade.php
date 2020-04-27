@@ -340,7 +340,7 @@
                         <div class="tab-pane" id="tab6" data-simplebar style="height: 192px">
                             <div class="list-group">
                                 @if(isset($client_order))
-                                    @forelse($client_order->shipments()->get() as $shipment)
+                                    @forelse($client_order->shipments as $shipment)
                                         <a onclick="openDialog('shipmentDialog', '&shipment_id={{ $shipment->id }}')" href="#" class="list-group-item no-border-radius">
                                                     <span class="float-right text-right text-primary w-128 pr-2" >
                                                         {{ $shipment->id }}
@@ -403,13 +403,14 @@
             <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Быстрый товар</button>
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            @if(isset($client_order) && $client_order->id != NULL)
-            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
-            @endif
-            <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+
+            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
             <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
             @if(isset($client_order) && $client_order->id != NULL)
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
+            @endif
+            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped())
+                <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
             @endif
 
 
