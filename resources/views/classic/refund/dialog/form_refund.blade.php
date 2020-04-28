@@ -32,7 +32,7 @@
             <span class="item-title _500">Дата оформления</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span>
-{{--                            {{ $refund->data() }}--}}
+                            {{ $refund->normalizedData() }}
                     </span>
             </div>
             <div class="item-tag tag hide">
@@ -49,14 +49,14 @@
                 <input type="hidden" name="id" value="">
             @endif
             <input class="shipment_select" type="hidden" name="shipment_id" value=" @if(isset($refund)){{ $refund->shipment()->first()->id }}@endif">
-
+            <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
             <div class="row row-sm">
                 <div class="col-sm-6">
                     <div class="form-group row row-sm">
                         <label for="partner_id" class="col-sm-5 no-pr col-form-label">Возврат по продаже</label>
                         <div class="col-sm-7">
                             <button onclick="{{ $class }}.openSelectShipmentModal()" type="button" name="shipment_id" class="shipment_select form-control text-left button_select">
-                                @if(isset($refund) && $refund->shipmnet()->first() != null)
+                                @if(isset($refund) && $refund->shipment()->first() != null)
                                     {{ $refund->shipment()->first()->outputName() }}
                                 @else
                                     Не выбрано
@@ -67,7 +67,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-5" for="discount">Покупатель</label>
                         <div class="col-sm-7 input-group">
-                            <input type="text" name="partner_id" value="@if(isset($refund) && $refund->shipmnet()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled="disabled">
+                            <input type="text" name="partner_id" value="@if(isset($refund) && $refund->shipment()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group row row-sm">
@@ -91,7 +91,7 @@
 
 
             <div class="form-group">
-                <div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>
+                <div for="category_id" class="mb-15"><b>Список возвращаемых номенклатур</b>
                 </div>
                 <div data-simplebar style="max-height: 300px;">
                     <table class="table-modal" >
@@ -106,11 +106,11 @@
                         </tr>
                         </thead>
                         <tbody class="product_list">
-{{--                        @if(isset($refund))--}}
-{{--                            @foreach($refund->articles as $product)--}}
-{{--                                @include(env('DEFAULT_THEME', 'classic') . '.refunds.dialog.product_element')--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
+                        @if(isset($refund))
+                            @foreach($refund->articles as $product)
+                                @include(env('DEFAULT_THEME', 'classic') . '.refund.dialog.product_element')
+                            @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>

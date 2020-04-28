@@ -34,6 +34,11 @@ class Shipment extends Model
         return $this->belongsTo('App\Models\Store', 'store_id');
     }
 
+    public function getProductPriceFromShipment($article_id)
+    {
+        $article = $this->articles()->wherePivot('article_id', $article_id)->first();
+        return $article->pivot->price;
+    }
 
     public function syncArticles($shipment_id, $pivot_array)
     {

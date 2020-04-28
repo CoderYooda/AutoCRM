@@ -314,9 +314,8 @@ class storePage{
                 {title:"№", field:"id", width:80},
                 {title:"Дата", field:"date", width:150},
                 {title:"Ответственный", field:"manager", align:"left"},
-                {title:"Сумма", field:"price", width:90, align:"left"},
-                {title:"Скидка", field:"discount", width:90, align:"left"},
-                {title:"Итого", field:"total", width:90, align:"left"},
+                {title:"Покупатель", field:"partner", align:"left"},
+                {title:"Сумма", field:"price", width:90, align:"left"}
             ];
         } else if(object.active_tab === 'client_orders'){
             object.contextDop = 'clientorder';
@@ -521,6 +520,10 @@ class storePage{
             object.reload();
         });
         document.addEventListener('EntranceStored', function(e){
+            object.prepareParams();
+            object.reload();
+        });
+        document.addEventListener('RefundStored', function(e){
             object.prepareParams();
             object.reload();
         });

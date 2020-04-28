@@ -94,6 +94,8 @@ class AdjustmentController extends Controller
             ];
             $adjustment_data[] = $pivot_data;
         }
+
+
         #Удаление всех отношений и запись новых (кастомный sync)
         $adjustment->articles()->sync($adjustment_data, true);
 

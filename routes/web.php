@@ -122,6 +122,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/refund/store', 'RefundController@store')->name('StoreRefund');// Строгое название
     Route::post('/refund/search', 'RefundController@search')->name('RefundPageSearch');
     Route::post('/refund/{id}/delete', 'RefundController@delete')->name('DeleteRefund');
+    Route::post('/refund/{id}/fresh', 'RefundController@fresh')->name('FreshRefund');
     Route::get('/refund/tabledata', 'RefundController@tableData')->name('StoreRefundData');
     Route::post('/refund/side_info', 'RefundController@getSideInfo')->name('GetRefundSideInfo');
 

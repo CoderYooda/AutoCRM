@@ -144,6 +144,29 @@ class ClientOrdersController extends Controller
 
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
+
+        #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
+        if( $client_order->IsAnyProductShipped()) {
+            $has_missed_article = false;
+            foreach ($client_order->getShippedArticlesIds() as $id) {
+                $has_missed_article = collect(array_column($request->products, 'id'))->contains($id) ? false : true;
+                if ($has_missed_article) {
+                    break;
+                }
+            }
+            if($has_missed_article) {
+                return response()->json([
+                    'system_message' => ['Удаление отгруженного товара невозможно']
+                ], 422);
+            }
+        }
+        #Конец проверки
+
+        if($client_order->IsAllProductsShipped()){
+            $client_order->status = 'complited';
+        }
+
+
         if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
             $request['inpercents'] = false;
         } else {
@@ -239,6 +262,7 @@ class ClientOrdersController extends Controller
         if (isset($request['products']['new'])) {
             foreach ($request['products']['new'] as $id => $product) {
                 $vcount = (int)$product['count'];
+
                 $vprice = (double)$product['price'];
                 $vtotal = $vprice * $vcount;
                 $client_order->summ += $vtotal;
@@ -287,11 +311,16 @@ class ClientOrdersController extends Controller
                 if($vcount < $client_order->getShippedCount($id)){
                     $name = 'products.' . $product['id'] . '.count';
                     return response()->json([
-                        'messages' => [$name => ['Отгружено более ' . $vcount . ' товаров, уменьшение невозможно']]
+                        'messages' => [$name => ['Отгружено более ' . $vcount . ' товаров, декремент невозможен']]
                     ], 422);
                 }
 
-                $vprice = $product['price'];
+                if($client_order && $client_order->getShippedCount($id)){
+                    $vprice = $client_order->getProductPriceFromClientOrder($id);
+                } else {
+                    $vprice = (double)$product['price'];
+                }
+
                 $vtotal = $vprice * $vcount;
                 $client_order->summ += $vtotal;
                 $pivot_data = [

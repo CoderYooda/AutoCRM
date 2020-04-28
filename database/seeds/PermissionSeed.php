@@ -70,6 +70,11 @@ class PermissionSeed extends Seeder
 	    Permission::create(['name' => 'Создавать контакты',                         'model' => 'Partner',       'type' => 'create']);
 	    Permission::create(['name' => 'Удалять контакты',                           'model' => 'Partner',       'type' => 'delete']);
 	    Permission::create(['name' => 'Редактировать контакты',                     'model' => 'Partner',       'type' => 'edit']);
+
+	    Permission::create(['name' => 'Смотреть возвраты',                          'model' => 'Refund',       'type' => 'read']);
+	    Permission::create(['name' => 'Создавать возвраты',                         'model' => 'Refund',       'type' => 'create']);
+	    Permission::create(['name' => 'Удалять возвраты',                           'model' => 'Refund',       'type' => 'delete']);
+	    Permission::create(['name' => 'Редактировать возвраты',                     'model' => 'Refund',       'type' => 'edit']);
 	
 	    Permission::create(['name' => 'Смотреть планировщик',                         'model' => 'Schedule',       'type' => 'read']);
 	    Permission::create(['name' => 'Редактировать планировщик',                    'model' => 'Schedule',       'type' => 'edit']);

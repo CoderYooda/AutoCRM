@@ -34,9 +34,9 @@ class refundDialog extends Modal{
 
         let data = {};
         //data.store_id = store_id;
-        if(object.refer){
-            data.refer = object.refer;
-        }
+        // if(object.refer){
+        //     data.refer = object.refer;
+        // }
 
         window.axios({
             method: 'post',
@@ -44,7 +44,6 @@ class refundDialog extends Modal{
             data: data,
         }).then(function (resp) {
             document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            object.addPhoneMask();
             console.log('Вставили html');
         }).catch(function (error) {
             console.log(error);

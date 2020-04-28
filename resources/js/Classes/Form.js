@@ -62,7 +62,7 @@ class AxForm{
 
             if(error.response && error.response.data.system_message){
                 try {
-                    dialog.querySelector('.system_message').innerHTML = error.response.data.system_message;
+                    dialog.querySelector('.system_message').innerHTML = '<div class="error-message">' + error.response.data.system_message + '</div>';
                 } catch (e) {
                     console.log(e);
                 }

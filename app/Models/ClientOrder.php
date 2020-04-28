@@ -65,6 +65,12 @@ class ClientOrder extends Model
         return $article->pivot->price;
     }
 
+    public function getShippedArticlesIds()
+    {
+        $articles = $this->articles()->wherePivot('shipped_count', '>', '0')->get();
+        return $articles ? $articles->pluck('id') : [];
+    }
+
     public function IsAllProductsShipped(){
         $allShipped = true;
         foreach($this->articles as $article){
@@ -74,6 +80,17 @@ class ClientOrder extends Model
            }
         }
         return $allShipped;
+    }
+
+    public function IsAnyProductShipped(){
+        $somthing_shipped = false;
+        foreach($this->articles as $article){
+            if($this->getShippedCount($article->id) > 0){
+                $somthing_shipped = true;
+                break;
+            }
+        }
+        return $somthing_shipped;
     }
 
     public function increaseShippedCount($article_id, $amount)

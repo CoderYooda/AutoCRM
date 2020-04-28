@@ -22,16 +22,19 @@
 
     <td><input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
                @if(isset($client_order)) value="{{ $product->pivot->price }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
-               type="number" min="0" step="0.1" ></td>
+               type="number" min="0" step="0.1" @if(isset($client_order) && $client_order->getShippedCount($product->id) > 0) disabled="disabled"  @endif></td>
 
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
                @if(isset($product->pivot->total)) value="{{ sprintf("%.2f", $product->pivot->total) }}" @else value="0.00" @endif
                disabled type="number"></td>
     <td>
-        @if(isset($request) && $request['refer'] != null)
-            <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
-        @else
-            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+
+        @if(isset($client_order) && $client_order->getShippedCount($product->id) == 0)
+            @if(isset($request) && $request['refer'] != null)
+                <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+            @else
+                <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+            @endif
         @endif
     </td>
 </tr>

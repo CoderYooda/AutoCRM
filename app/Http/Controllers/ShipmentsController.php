@@ -123,6 +123,7 @@ class ShipmentsController extends Controller
     {
         $shipment = Shipment::owned()->where('id', $id)->first();
         $request = request();
+        $products = $shipment->articles;
         if(!$shipment){
             return response()->json([
                 'message' => 'Продажа не найдена, возможно она была удалёна',
@@ -130,7 +131,7 @@ class ShipmentsController extends Controller
         }
         return response()->json([
             'id' => $shipment->id,
-            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.products_element', compact('shipment', 'request'))->render(),
+            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.products_element', compact('products', 'request'))->render(),
             'items' => $shipment->articles,
             'partner' => $shipment->partner->outputName(),
             'name' => $shipment->outputName()
@@ -156,7 +157,7 @@ class ShipmentsController extends Controller
     {
         $shipments = ShipmentsController::getShipments($request);
         foreach($shipments as $shipment){
-            $shipment->date = $shipment->created_at->format('Y.m.d/H:i');
+            $shipment->date = $shipment->created_at->format('d.m.Y/H:i');
         }
         return response()->json($shipments);
     }
@@ -316,25 +317,26 @@ class ShipmentsController extends Controller
         }
 
         //$store = Store::where('id', $request['store_id'])->first();
+
         $shipment_data = [];
         foreach($request['products'] as $product) {
-
             if($shipment->clientOrder){
                 if($product['count'] > $shipment->clientOrder->getAvailableToShippingArticlesCount($product['id'])){
-
                     $name = 'products.' . $product['id'] . '.count';
-
                     return response()->json([
                         'messages' => [$name => ['Кол - во не может быть больше чем в заказе']]
                     ], 422);
                 }
-
             }
 
             $store->decreaseArticleCount($product['id'], $product['count']);
 
             $vcount = $product['count'];
-            $vprice = $shipment->clientOrder->getProductPriceFromClientOrder($product['id']);
+            if($shipment->clientOrder) {
+                $vprice = $shipment->clientOrder->getProductPriceFromClientOrder($product['id']);
+            } else {
+                $vprice = (double)$product['price'];
+            }
             $vtotal = $vprice * $vcount;
             $shipment->summ += $vtotal;
             $pivot_data = [

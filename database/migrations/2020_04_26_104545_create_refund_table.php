@@ -16,6 +16,7 @@ class CreateRefundTable extends Migration
         Schema::create('refund', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('manager_id')->unsigned()->comment('Привязка к менеджеру');
+            $table->bigInteger('partner_id')->unsigned()->comment('Привязка к покупателю');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->bigInteger('shipment_id')->unsigned()->nullable()->comment('Привязка к заказу');

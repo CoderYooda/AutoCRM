@@ -25,6 +25,7 @@ class PermissionController extends Controller
 			'Schedule' => 'Планировщик',
 			'Settings' => 'Настройки',
 			'History' => 'История',
+			'Refund' => 'Возврат',
 		];
 		if(isset($role) && $role != null){
 			$role_permissions = $role->permissions;

@@ -232,7 +232,7 @@
                                 @if(isset($client_order))
                                     <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
                                     <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
-                                    <option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>
+                                    {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
                                     <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
                                 @else
                                     <option selected value="">Не определено</option>
@@ -242,7 +242,7 @@
                     </div>
                     <div class="form-group row row-sm">
                         <div class="col-sm-12">
-                            <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
+                            <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
                         </div>
                     </div>
                 </div>
@@ -388,11 +388,11 @@
                         </tr>
                         </thead>
                         <tbody class="product_list">
-                        @if(isset($client_order))
-                            @foreach($client_order->articles as $product)
-                                @include(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element')
-                            @endforeach
-                        @endif
+                            @if(isset($client_order))
+                                @foreach($client_order->articles as $product)
+                                    @include(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element')
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

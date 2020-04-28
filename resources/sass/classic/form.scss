@@ -59,6 +59,20 @@ h5{
     margin: 0;
     padding: 0;
 }
+.system_message .error-message{
+    margin: 15px;
+    margin-top: 0px;
+    background: #FF4949;
+    border-radius: 3px;
+    padding: 10px 15px;
+    color: #fff;
+}
+.system_message .error-message::before{
+    font-family: "FontAwesome";
+    font-weight: 900;
+    padding-right: 15px;
+    content: "\f071";
+}
 .modal-title{
     flex: 1;
 }
