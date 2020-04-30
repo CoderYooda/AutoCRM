@@ -21,6 +21,7 @@ class CreateWarrantsTable extends Migration
             $table->bigInteger('manager_id')->unsigned()->comment('Привязка к менеджеру');
             $table->bigInteger('ddsarticle_id')->unsigned()->comment('Привязка к кассовому аппарату');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
+            //$table->char('move_to')->nullable()->comment('Куда выводить');
             $table->double('summ', 12, 2)->comment('Сумма операции с двойной точностью');
             $table->char('reason')->nullable()->comment('Причина');
             $table->char('comment')->nullable()->comment('Комментарий');

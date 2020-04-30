@@ -122,7 +122,7 @@
                 <div class="col-sm-6">
                     <div class="form-group row">
                         <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-6 no-pr">
                             <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
                                 @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
                                     {{ $shipment->partner->outputName() }}
@@ -130,6 +130,12 @@
                                     Не выбрано
                                 @endif
                             </button>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="partner-balance">
+                                Баланс:<br>
+                                <span id="balance">@if(isset($shipment)){{ $shipment->partner->balance }} р@else 0.00 р@endif</span>
+                            </span>
                         </div>
                     </div>
                     <div class="form-group row">

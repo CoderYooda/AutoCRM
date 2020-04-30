@@ -76,6 +76,7 @@
         @if(isset($warrant))<input class="do_date" type="hidden" name="do_date" value="{{ $warrant->do_date }}">@endif
 
         <input type="hidden" name="isIncoming" value="@if(isset($warrant)){{ $warrant->isIncoming }}@elseif(isset($request['isIncoming'])){{ $request['isIncoming'] }}@else 1 @endif">
+        <input type="hidden" id="move_to" name="move_to" value="@if(isset($warrant)){{ $warrant->move_to }}@elseif(isset($request['move_to'])){{ $request['move_to'] }}@else out @endif">
         @if(isset($data->summ))
             <input type="hidden" name="max_summ" value="{{ $data->summ }}">
         @endif
@@ -84,23 +85,23 @@
                 <span class="text-muted pr-15">Дата</span>
                 <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
             </div>
-            <div class="pull-right flex-1">
-                <span class="text-muted">Баланс</span>
-                <span class="partner_balance text-warning">
-                                @if(isset($warrant))
-                        {{ $warrant->partner()->first()->balance }}
-                    @elseif(isset($data->partner_selected) && $data->partner_selected !== null)
-                        {{ $data->partner_selected->balance }}
-                    @else
-                        0
-                    @endif
-            </span>
-            </div>
+            {{--<div class="pull-right flex-1">--}}
+                {{--<span class="text-muted">Баланс</span>--}}
+                {{--<span class="partner_balance text-warning">--}}
+                                {{--@if(isset($warrant))--}}
+                        {{--{{ $warrant->partner()->first()->balance }}--}}
+                    {{--@elseif(isset($data->partner_selected) && $data->partner_selected !== null)--}}
+                        {{--{{ $data->partner_selected->balance }}--}}
+                    {{--@else--}}
+                        {{--0--}}
+                    {{--@endif--}}
+            {{--</span>--}}
+            {{--</div>--}}
         </div>
         <div class="box-body">
             <div class="form-group row">
                 <label for="partner_id" class="col-sm-3 no-pr col-form-label">@if(isset($warrant) && $warrant->isIncoming) Плательщик @elseif($request['isIncoming']) Плательщик @else Получатель @endif</label>
-                <div class="col-sm-9">
+                <div class="col-sm-6 no-pr">
                     <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="form-control text-left button_select">
                         @if(isset($warrant) && $warrant->partner()->first() != null)
                             {{ $warrant->partner()->first()->outputName() }}
@@ -112,7 +113,12 @@
                             @endif
                         @endif
                     </button>
-
+                </div>
+                <div class="col-sm-3">
+                    <span class="partner-balance">
+                        Баланс:<br>
+                        <span id="balance">@if(isset($shipment)){{ $shipment->partner->balance }} р@else 0.00 р@endif</span>
+                    </span>
                 </div>
             </div>
 

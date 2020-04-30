@@ -187,10 +187,9 @@ class ClientOrdersController extends Controller
         }
 
         if ($client_order->exists) {
-            $store = $client_order->store()->first();
-            #Прибавляем к балансу предидущего партнера
-            $client_order->partner()->first()
-                ->addition($client_order->itogo);
+            //$store = $client_order->store()->first();
+//            #Прибавляем к балансу предидущего партнера
+//            $client_order->partner()->first()->addition($client_order->itogo);
 
             $this->message = 'Заказ обновлен';
             $wasExisted = true;
@@ -300,7 +299,6 @@ class ClientOrdersController extends Controller
                 $client_order_data[] = $pivot_data;
             }
         }
-
         foreach ($request['products'] as $id => $product) {
             if ($id !== 'new') {
 
@@ -335,7 +333,6 @@ class ClientOrdersController extends Controller
                 $client_order_data[] = $pivot_data;
             }
         }
-        //dd($client_order_data);
         #Удаление всех отношений и запись новых (кастомный sync)
         $client_order->syncArticles($client_order->id, $client_order_data);
 
@@ -363,8 +360,8 @@ class ClientOrdersController extends Controller
 //            }
 //        }
 
-        $client_order->partner()->first()
-            ->subtraction($client_order->itogo);
+//        $client_order->partner()->first()
+//            ->subtraction($client_order->itogo);
 
 
         if ($request->expectsJson()) {

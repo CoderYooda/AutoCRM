@@ -11,8 +11,6 @@ class ProductDialog extends Modal{
         this.init();
     }
 
-
-
     init(){
         let object = this;
         // document.addEventListener("ProductStored", function(){
@@ -31,8 +29,6 @@ class ProductDialog extends Modal{
         this.article_input.addEventListener("paste", fn);
         this.article_input.addEventListener("delete", fn);
     }
-
-
 
     save(elem){
         if(window.isXHRloading) return;

@@ -14,6 +14,21 @@ class refundDialog extends Modal{
     init(){
         let object = this;
 
+        document.addEventListener("WarrantStored", function(){
+            object.save(object.root_dialog.form);
+        });
+
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
                 e.preventDefault();

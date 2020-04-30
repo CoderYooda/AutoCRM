@@ -145,11 +145,11 @@ class WarrantController extends Controller
         $partner = Partner::owned()->where('id', $request['partner_id'])->first();
 
         if($request['isIncoming']){
-            $cashbox = $cashbox->addition($request['summ']);
-            $partner = $partner->addition($request['summ']);
+            $cashbox->addition($request['summ']);
+            $partner->addition($request['summ']);
         } else{
-            $cashbox = $cashbox->subtraction($request['summ']);
-            $partner = $partner->subtraction($request['summ']);
+            $cashbox->subtraction($request['summ']);
+            $partner->addition($request['summ']);
         }
 
         $warrant->fill($request->only($warrant->fields));
@@ -192,7 +192,7 @@ class WarrantController extends Controller
                 $this->status = 200;
                 if($warrant->isIncoming){
                     $cashbox->subtraction($warrant->summ);
-                    $partner->subtraction($warrant->summ);
+                    $partner->addition($warrant->summ);
                 } else{
                     $cashbox->addition($warrant->summ);
                     $partner->subtraction($warrant->summ);
@@ -210,10 +210,10 @@ class WarrantController extends Controller
             $this->status = 200;
             if($warrant->isIncoming){
                 $cashbox->subtraction($warrant->summ);
-                $partner->subtraction($warrant->summ);
+                $partner->addition($warrant->summ);
             } else{
                 $cashbox->addition($warrant->summ);
-                $partner->addition($warrant->summ);
+                $partner->subtraction($warrant->summ);
             }
 
             $warrant->delete();

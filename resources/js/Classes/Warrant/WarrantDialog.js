@@ -42,7 +42,7 @@ class warrantDialog extends Modal{
             let selector = object.root_dialog.querySelector('button[name=partner_id]');
             //let select = object.root_dialog.querySelector('select[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
-            let balance = object.root_dialog.querySelector('.partner_balance');
+            let balance = object.root_dialog.querySelector('#balance');
             let partner_name = resp.data.name;
 
             selector.classList.remove('is-invalid');
@@ -51,7 +51,7 @@ class warrantDialog extends Modal{
             }
 
             input.value = resp.data.id;
-            balance.innerHTML = resp.data.balance;
+            balance.innerHTML = resp.data.balance + ' р.';
             //select.innerHTML = str;
             selector.innerHTML = partner_name;
             window.notification.notify( 'success', 'Контрагент выбран');
@@ -149,6 +149,15 @@ class warrantDialog extends Modal{
         }
 
         window.openDialog('selectDdsarticle', '&refer=' + this.root_dialog.id + '&category_id=' + cat);
+    }
+
+    setField(type, value, text, elem = null){
+        let object = this;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
+        object.root_dialog.querySelector('#' + type).value = value;
+        object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
     }
 
 }

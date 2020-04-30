@@ -116,6 +116,7 @@ class shipmentDialog extends Modal{
                 object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
+
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
@@ -126,6 +127,17 @@ class shipmentDialog extends Modal{
                 });
             }
         });
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('ShipmentStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
+            }
+        });
+
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('PartnerSelected',  function(){
             if(focused){
                 focused.focus();
@@ -371,13 +383,14 @@ class shipmentDialog extends Modal{
 
             let select = object.root_dialog.querySelector('button[name=partner_id]');
             let input = object.root_dialog.querySelector('input[name=partner_id]');
+            let balance = object.root_dialog.querySelector('#balance');
             let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
             window.notification.notify( 'success', 'Контрагент выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
-
+            balance.innerHTML = resp.data.balance + ' р';
             //closeDialog(event);
 
         }).catch(function (error) {
