@@ -13,21 +13,21 @@
             {{--@endcan--}}
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
-                <div class="form-group d-flex mb-10">
-                    <label class="no-wrap" for="entrance_status">Статус заказа</label>
-                    <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input readonly id="clientorder_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано" disabled>
-                        <div class="dropdown_container">
-                            <div class="arrow"></div>
-                            <span onclick="store.setField('clientorder_status', null, 'не выбрано', this)" class="element">Не выбрано</span>
-                            <span onclick="store.setField('clientorder_status', 'active', 'Активен', this)" class="element">Активен</span>
-                            <span onclick="store.setField('clientorder_status', 'canceled', 'Отменен', this)" class="element">Отменен</span>
-                            <span onclick="store.setField('clientorder_status', 'full', 'Укомплектован', this)" class="element">Укомплектован</span>
-                            <span onclick="store.setField('clientorder_status', 'complete', 'Выполнен', this)" class="element">Выполнен</span>
-                        </div>
-                    </div>
-                    <button type="button" onclick="store.setField('clientorder_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>
-                </div>
+                {{--<div class="form-group d-flex mb-10">--}}
+                    {{--<label class="no-wrap" for="entrance_status">Статус заказа</label>--}}
+                    {{--<div class="dropdown" onclick="window.helper.openModal(this, event)">--}}
+                        {{--<input readonly id="clientorder_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано" disabled>--}}
+                        {{--<div class="dropdown_container">--}}
+                            {{--<div class="arrow"></div>--}}
+                            {{--<span onclick="store.setField('clientorder_status', null, 'не выбрано', this)" class="element">Не выбрано</span>--}}
+                            {{--<span onclick="store.setField('clientorder_status', 'active', 'Активен', this)" class="element">Активен</span>--}}
+                            {{--<span onclick="store.setField('clientorder_status', 'canceled', 'Отменен', this)" class="element">Отменен</span>--}}
+                            {{--<span onclick="store.setField('clientorder_status', 'full', 'Укомплектован', this)" class="element">Укомплектован</span>--}}
+                            {{--<span onclick="store.setField('clientorder_status', 'complete', 'Выполнен', this)" class="element">Выполнен</span>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    {{--<button type="button" onclick="store.setField('clientorder_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>--}}
+                {{--</div>--}}
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="date_filter">Период</label>
                     <input id="date_filter" type="text" name="date_filter" value="{{ request('dates_range') }}" class="form-control date_filter input_as_link" placeholder="за всё время">

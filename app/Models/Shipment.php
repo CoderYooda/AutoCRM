@@ -26,7 +26,7 @@ class Shipment extends Model
     public function articles()
     {
         return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count', 'refunded_count', 'price', 'total');
     }
 
     public function store()
@@ -71,6 +71,35 @@ class Shipment extends Model
         return $articles;
     }
 
+    public function notRefundedArticles()
+    {
+        return $this->articles()->whereRaw('article_shipment.refunded_count < article_shipment.count');
+    }
+
+    public function increaseRefundedCount($article_id, $amount)
+    {
+        $count = $this->getRefundedCount($article_id) + (int)$amount;
+        $this->setRefundedCount($article_id, $count);
+    }
+
+    public function decreaseRefundedCount($article_id, $amount)
+    {
+        $count = $this->getRefundedCount($article_id) - (int)$amount;
+        $this->setRefundedCount($article_id, $count);
+    }
+
+    public function setRefundedCount($article_id, $count)
+    {
+        $this->articles()->updateExistingPivot($article_id, array('refunded_count' => $count), false);
+        return true;
+    }
+
+    public function getRefundedCount($article_id)
+    {
+        $article = $this->articles()->where('article_id', $article_id)->first();
+        return $article ? $article->pivot->shipped_count : 0;
+    }
+
     public function outputName() //Вывод имени или наименования
     {
         return 'Продажа №' . $this->id;
@@ -91,6 +120,12 @@ class Shipment extends Model
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
+    }
+
+    public function getAvailableToRefundArticlesCount($article_id)
+    {
+        $article = $this->articles()->wherePivot('article_id', $article_id)->first();
+        return $article ? $article->pivot->count - $article->pivot->refunded_count : 0;
     }
 
     public function clientOrder()

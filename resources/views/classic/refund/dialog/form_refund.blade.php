@@ -14,7 +14,7 @@
     @else
         <div class="titlebar">Новый возврат</div>
     @endif
-            <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="modal-header dark" style="-webkit-justify-content: flex-start;justify-content: normal;">
         <div class="modal-alt-header">
@@ -38,7 +38,31 @@
             <div class="item-tag tag hide">
             </div>
         </div>
+        <div class="modal-alt-header">
+            <span class="item-title _500">Итого</span>
+            <div class="item-except font-weight-bolder h-1x">
+                <span id="itogo_price">
+                    @if(isset($refund) && $refund->summ != NULL)
+                        {{ $refund->summ }}
+                    @else 0.0 @endif
+                </span> р
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
         @endif
+        @if(isset($refund) && $refund->id != NULL && (-$refund->getWarrantPositive() > $refund->summ))
+            <div class="modal-alt-header">
+                <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
+            </div>
+        @endif
+
+        @if(isset($refund) && $refund->id != NULL && (-$refund->getWarrantPositive() < $refund->summ) )
+            <div class="modal-alt-header">
+                <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
+            </div>
+        @endif
+
     </div>
     <form class="RefundStoredListner" onsubmit="console.log(123);" action="{{ route('StoreRefund') }}" method="POST">
         <div class="box-body">
@@ -49,6 +73,12 @@
                 <input type="hidden" name="id" value="">
             @endif
             <input class="shipment_select" type="hidden" name="shipment_id" value=" @if(isset($refund)){{ $refund->shipment()->first()->id }}@endif">
+            <input class="partner_id" type="hidden" name="partner_id" value=" @if(isset($refund)){{ $refund->shipment->partner->id }}@endif">
+            @if(isset($refund))
+            <input type="hidden" name="summ" value="{{ $refund->summ }}">
+            <input type="hidden" name="itogo" value="{{ $refund->summ }}">
+            <input type="hidden" name="ostatok" value="{{ $refund->summ - -$refund->getWarrantPositive() }}">
+            @endif
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
             <div class="row row-sm">
                 <div class="col-sm-6">
@@ -67,7 +97,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-5" for="discount">Покупатель</label>
                         <div class="col-sm-7 input-group">
-                            <input type="text" name="partner_id" value="@if(isset($refund) && $refund->shipment()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled="disabled">
+                            <input id="partner_butt" type="text" name="partner_id" value="@if(isset($refund) && $refund->shipment()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group row row-sm">
@@ -85,11 +115,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
             <div class="form-group">
                 <div for="category_id" class="mb-15"><b>Список возвращаемых номенклатур</b>
                 </div>

@@ -18,6 +18,7 @@ class CreateArticleShipmentTable extends Migration
             $table->bigInteger('article_id')->unsigned()->comment('Привязка к товару');
             $table->bigInteger('shipment_id')->unsigned()->comment('Привязка к поступлению');
             $table->integer('count')->unsigned()->comment('Кол - во');
+            $table->integer('refunded_count')->unsigned()->comment('Возвращено');
             $table->double('midprice')->unsigned()->nullable()->comment('Цена закупочная');
             $table->char('status')->default('to_ensure')->comment('статус');
             $table->double('price')->unsigned()->comment('Цена');

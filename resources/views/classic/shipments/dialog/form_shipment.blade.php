@@ -92,6 +92,7 @@
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
+
         @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->getWarrantPositive() > $shipment->itogo) )
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>

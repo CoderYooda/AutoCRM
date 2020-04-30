@@ -40,6 +40,18 @@ class Refund extends Model
         return $relation;
     }
 
+    public function getWarrantPositive()
+    {
+        $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
+        $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
+        return $plus - $minus;
+    }
+
+    public function warrants()
+    {
+        return $this->belongsToMany('App\Models\Warrant', 'refund_warrant',  'refund_id', 'warrant_id' );
+    }
+
     public function partner()
     {
         return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();

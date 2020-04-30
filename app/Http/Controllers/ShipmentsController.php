@@ -123,7 +123,7 @@ class ShipmentsController extends Controller
     {
         $shipment = Shipment::owned()->where('id', $id)->first();
         $request = request();
-        $products = $shipment->articles;
+        $products = $shipment->notRefundedArticles()->get();
         if(!$shipment){
             return response()->json([
                 'message' => 'Продажа не найдена, возможно она была удалёна',
@@ -132,7 +132,7 @@ class ShipmentsController extends Controller
         return response()->json([
             'id' => $shipment->id,
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.products_element', compact('products', 'request'))->render(),
-            'items' => $shipment->articles,
+            'items' => $products,
             'partner' => $shipment->partner->outputName(),
             'name' => $shipment->outputName()
         ]);
@@ -320,6 +320,7 @@ class ShipmentsController extends Controller
 
         $shipment_data = [];
         foreach($request['products'] as $product) {
+
             if($shipment->clientOrder){
                 if($product['count'] > $shipment->clientOrder->getAvailableToShippingArticlesCount($product['id'])){
                     $name = 'products.' . $product['id'] . '.count';

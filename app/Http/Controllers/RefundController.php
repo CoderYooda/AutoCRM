@@ -78,8 +78,8 @@ class RefundController extends Controller
         if($refund->exists){
             $refundWasExisted = true;
             $this->message = 'Возврат обновлен';
-//            #Отнимаем с баланса контрагента
-//            $shipment->partner()->first()->addition($shipment->itogo);
+            #Добавляем к балансу контрагента
+            $refund->partner()->first()->subtraction($refund->summ);
         } else {
             $refundWasExisted = false;
             //$shipment->company_id = Auth::user()->company()->first()->id;
@@ -100,10 +100,24 @@ class RefundController extends Controller
         if($refundWasExisted){
             foreach($refund->articles()->get() as $article){
                 $store->decreaseArticleCount($article->id, $article->pivot->count);
+                $refund->shipment->decreaseRefundedCount($article->id, $article->pivot->count);
             }
         }
 
         $refund_data = [];
+
+        foreach($request['products'] as $product) {
+            if ($refund->shipment) {
+                if ($product['count'] > $refund->shipment->getAvailableToRefundArticlesCount($product['id'])) {
+                    $name = 'products.' . $product['id'] . '.count';
+                    return response()->json([
+                        'messages' => [$name => ['Кол - во не может быть больше чем в продаже']]
+                    ], 422);
+                }
+            }
+        }
+
+
         foreach($request['products'] as $product) {
 
             $store->increaseArticleCount($product['id'], $product['count']);
@@ -123,10 +137,19 @@ class RefundController extends Controller
 
             $refund_data[] = $pivot_data;
         }
+
         $refund->save();
 
         #Удаление всех отношений и запись новых (кастомный sync)
         $refund->syncArticles($refund->id, $refund_data);
+
+        #Добавляем к балансу контрагента
+        $refund->partner->addition($refund->summ);
+
+        foreach($refund->articles as $article){
+            $refund->shipment->increaseRefundedCount($article->id, $article->pivot->count);
+        }
+
         UA::makeUserAction($refund, $refundWasExisted ? 'fresh' : 'create');
 
         if($request->expectsJson()){
@@ -158,7 +181,7 @@ class RefundController extends Controller
                         $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
                     }
                     #Добавляем к балансу контрагента
-                    $refund->partner()->first()->subtraction($refund->summ);
+                    $refund->partner()->first()->addition($refund->summ);
                     $refund->articles()->sync(null);
                     UA::makeUserAction($refund, 'delete');
                 }
@@ -171,7 +194,7 @@ class RefundController extends Controller
                 $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
             }
             #Добавляем к балансу контрагента
-            $refund->partner()->first()->subtraction($refund->summ);
+            $refund->partner()->first()->addition($refund->summ);
             $refund->articles()->sync(null);
             $refund->delete();
             $this->status = 200;

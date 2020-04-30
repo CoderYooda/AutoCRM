@@ -48,6 +48,9 @@ class WarrantController extends Controller
             $dds_type_id = null;
 
             switch ($request['warrant_type']){
+                case 'refund_of_goods':
+                    $dds_type_id = 6;
+                    break;
                 case 'sale_of_goods':
                     $dds_type_id = 2;
                     break;
@@ -77,8 +80,8 @@ class WarrantController extends Controller
         ]);
     }
 
-    public function getSideInfo(Request $request){
-
+    public function getSideInfo(Request $request)
+    {
         $warrant = Warrant::owned()->where('id', $request['id'])->first();
         $partner = $warrant->partner()->first();
         $comment = $warrant->comment;
@@ -128,7 +131,6 @@ class WarrantController extends Controller
             if($warrant->isIncoming){
                 $warrant->partner()->first()->subtraction($warrant->summ);
                 $warrant->cashbox()->first()->subtraction($warrant->summ);
-
             } else{
                 $warrant->partner()->first()->addition($warrant->summ);
                 $warrant->cashbox()->first()->addition($warrant->summ);
@@ -193,7 +195,7 @@ class WarrantController extends Controller
                     $partner->subtraction($warrant->summ);
                 } else{
                     $cashbox->addition($warrant->summ);
-                    $partner->addition($warrant->summ);
+                    $partner->subtraction($warrant->summ);
                 }
                 $warrant->delete();
                 UA::makeUserAction($warrant, 'delete');

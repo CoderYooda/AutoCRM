@@ -80,12 +80,12 @@ class refundDialog extends Modal{
     }
 
     getPayment(){
-        let warrant_type = 'sale_of_goods';
+        let warrant_type = 'refund_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
-        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let itogo = this.root_dialog.querySelector('input[name=summ]').value;
         let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
         let id = this.root_dialog.querySelector('input[name=id]').value;
-        let refer = 'client_order';
+        let refer = 'refund';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         partner = parseInt(partner);
         //console.log(partner);
@@ -100,7 +100,7 @@ class refundDialog extends Modal{
             params += '&itogo='+itogo;
         }
         if(id != null){
-            let reason = 'Реализация заказа №' + id;
+            let reason = 'Получение средств по возврату №' + id;
             params += '&reason='+reason;
         }
         if(refer != null){
@@ -117,12 +117,12 @@ class refundDialog extends Modal{
     }
 
     getBackPayment(){
-        let warrant_type = 'sale_of_goods';
+        let warrant_type = 'refund_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
-        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let itogo = this.root_dialog.querySelector('input[name=summ]').value;
         let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
         let id = this.root_dialog.querySelector('input[name=id]').value;
-        let refer = 'client_order';
+        let refer = 'refund';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         partner = parseInt(partner);
         var params = '';
@@ -137,7 +137,7 @@ class refundDialog extends Modal{
             params += '&itogo='+itogo;
         }
         if(id != null){
-            let reason = 'Возврат средств по заказу №' + id;
+            let reason = 'Возврат средств по возврату №' + id;
             params += '&reason='+reason;
         }
         if(refer != null){
@@ -302,7 +302,7 @@ class refundDialog extends Modal{
         }).then(function (resp) {
             object.touch();
             let select = object.root_dialog.querySelector('button[name=shipment_id]');
-            let partner_butt = object.root_dialog.querySelector('input[name=partner_id]');
+            let partner_butt = object.root_dialog.querySelector('#partner_butt');
             let input = object.root_dialog.querySelector('input[name=shipment_id]');
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
 
