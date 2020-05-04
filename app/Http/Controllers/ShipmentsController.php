@@ -102,8 +102,9 @@ class ShipmentsController extends Controller
                     });
                 });
             })
-
-
+            ->whereHas('articles', function($q){
+                $q->where('refunded_count', 0);
+            })
             ->where('company_id', Auth::user()->company()->first()->id)
             ->orderBy('created_at', 'DESC')
             ->limit(30)
@@ -134,6 +135,7 @@ class ShipmentsController extends Controller
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.products_element', compact('products', 'request'))->render(),
             'items' => $products,
             'partner' => $shipment->partner->outputName(),
+            'balance' => $shipment->partner->balance,
             'name' => $shipment->outputName()
         ]);
     }
@@ -167,7 +169,6 @@ class ShipmentsController extends Controller
         if(!Gate::allows('Удалять заказ клиента')){
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }
-
         $returnIds = null;
         if($id == 'array'){
             $shipments = Shipment::whereIn('id', $request['ids']);
@@ -192,9 +193,6 @@ class ShipmentsController extends Controller
             }
         } else {
             $shipment = Shipment::where('id', $id)->first();
-
-
-
             $returnIds = $shipment->id;
             foreach($shipment->articles()->get() as $article){
                 $store = $shipment->store()->first();
@@ -218,7 +216,6 @@ class ShipmentsController extends Controller
             'message' => $this->message,
             'event' => 'ShipmentStored',
         ], 200);
-
 
     }
 

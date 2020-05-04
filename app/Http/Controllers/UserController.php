@@ -21,6 +21,10 @@ class UserController extends Controller
             $request['search'] = null;
         }
 
+        if(empty($request['id'])){
+            $request['id'] = Auth::user()->id;
+        }
+
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'profile';
         }
@@ -28,7 +32,6 @@ class UserController extends Controller
         $classname = $request['active_tab'] . 'Tab';
 
         $content = self::$classname($request);
-
 
         $target = HC::selectTarget();
         if($request->expectsJson() && $request['search'] === NULL){
@@ -45,27 +48,27 @@ class UserController extends Controller
 
     public static function profileTab($request)
     {
-        return view('user.tabs.profile', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request'));
     }
 
     public static function schemeTab($request)
     {
-        return view('user.tabs.scheme', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.scheme', compact('request'));
     }
 
     public static function premiumTab($request)
     {
-        return view('user.tabs.premium', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.premium', compact('request'));
     }
 
     public static function payoutTab($request)
     {
-        return view('user.tabs.payout', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.payout', compact('request'));
     }
 
     public static function salesTab($request)
     {
-        return view('user.tabs.sales', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.sales', compact('request'));
     }
 
     public function saveSalarySchemaToUser(Request $request)

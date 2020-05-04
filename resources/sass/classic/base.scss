@@ -57,7 +57,11 @@ input[type=checkbox]:checked {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
     color: #5181b8;
 }
-
+h2{
+    margin: 0px;
+    line-height: 28px;
+    font-weight: 300;
+}
 .tippy-popper {
     z-index: 100000!important;
 }
@@ -702,6 +706,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .content-menu{
     margin: 15px 0px 15px 15px;
 }
+.content-menu.rs{
+    margin: 15px 15px 15px 0px;
+}
 .content-rightside{
     margin: 15px 15px 15px 0px;
 }
@@ -712,6 +719,7 @@ input:-moz-placeholder { /* Firefox 18- */
     display: flex;
     flex: 1;
     flex-direction: row;
+    position: relative;
 }
 .box-lister{
     margin: 15px;
@@ -817,6 +825,11 @@ input:-moz-placeholder { /* Firefox 18- */
 .row .col, .row [class*=col-] {
     padding-left: 15px;
     padding-right: 15px;
+}
+.col-sm-2 {
+    -webkit-box-flex: 0;
+    flex: 0 0 16.7777776%;
+    max-width: 16.7777776%;
 }
 .col-sm-3 {
     -webkit-box-flex: 0;
@@ -1001,6 +1014,10 @@ input:-moz-placeholder { /* Firefox 18- */
 .w-290{
     width: 290px!important;
     min-width: 290px!important;
+}
+.w-260{
+    width: 260px!important;
+    min-width: 260px!important;
 }
 .w-180{
     width: 180px!important;

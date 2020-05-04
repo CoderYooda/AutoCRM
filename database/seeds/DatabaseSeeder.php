@@ -11,10 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
-
-
-        $this->call(AdministratorSeed::class);
         $this->call(SupplierSeed::class);
         $this->call(CategorySeed::class);
         $this->call(DDSSeeder::class);
@@ -22,8 +18,13 @@ class DatabaseSeeder extends Seeder
         //$this->call(CreateBasePartners::class);
 
         $this->call(DayOffTypeSeed::class);
+
+
+
+        $this->call(AdministratorSeed::class);
         $this->call(PermissionSeed::class);
         $this->call(SettingsSeed::class);
+
         //$this->call(WarrantSeed::class);
         //$this->call(MoneymoveSeed::class);
         //$this->call(ArticleSeed::class);

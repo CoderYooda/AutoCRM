@@ -108,7 +108,7 @@
 
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
-                                <a class="element" href="#" onclick="">
+                                <a class="element ajax-nav" href="{{ route('UserIndex') }}" onclick="">
                                     Личный кабинет
                                 </a>
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">

@@ -294,7 +294,7 @@ class ProductController extends Controller
         $existed_article = self::checkArticleUnique($request['id'], $request['article'], (int)$request['supplier_id']);
         if ($existed_article) {
             return response()->json([
-                'system_message' => view('messages.product_already_exist', compact('existed_article'))->render(),
+                'system_message' => view(env('DEFAULT_THEME', 'classic') . '.messages.product_already_exist', compact('existed_article'))->render(),
             ], 422);
         }
 

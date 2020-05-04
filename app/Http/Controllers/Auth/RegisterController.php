@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -135,6 +136,7 @@ class RegisterController extends Controller
 
         Company::flushEventListeners();
 
+        Artisan::call('categories:init', ['company' => $company->id]);
 
         return $user;
     }

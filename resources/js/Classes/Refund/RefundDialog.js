@@ -320,7 +320,7 @@ class refundDialog extends Modal{
             let partner_butt = object.root_dialog.querySelector('#partner_butt');
             let input = object.root_dialog.querySelector('input[name=shipment_id]');
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
-
+            let balance = object.root_dialog.querySelector('#balance');
             let str = resp.data.name;
             input.value = resp.data.id;
             partner_butt.value = resp.data.partner;
@@ -330,7 +330,7 @@ class refundDialog extends Modal{
             document.dispatchEvent(new Event('ShipmentSelected', {bubbles: true}));
             console.log("Событие ShipmentSelected вызвано");
             object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
-
+            balance.innerHTML = resp.data.balance + ' р';
             [].forEach.call(resp.data.items, function (elem) {
                 object.items.push({
                     id: elem.id,

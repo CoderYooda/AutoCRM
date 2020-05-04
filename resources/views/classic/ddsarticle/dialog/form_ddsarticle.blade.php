@@ -25,7 +25,11 @@
             <div class="form-group">
                 <label for="category_id">В категории</label>
                 <div class="input-group mb-3">
-                    <button onclick="{{ $class }}.openSelectCategoryDialog(@if(isset($ddsarticle)){{ $ddsarticle->category_id }}@elseif(isset($category)){{ $category->id }}@endif)" type="button" name="category_id" class="category_select form-control text-left button_select">
+                    <button onclick="{{ $class }}.openSelectCategoryDialog(
+                        @if(isset($ddsarticle)){{ $product->category_id }}
+                        @elseif(isset($category)){{ $category->id }}
+                        @else 4 @endif
+                        )" type="button" name="category_id" class="category_select form-control text-left button_select">
                         @if(isset($parent))
                             {{ $parent->name }}
                         @elseif(isset($category))

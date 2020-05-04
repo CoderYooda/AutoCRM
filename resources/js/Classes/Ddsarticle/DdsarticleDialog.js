@@ -23,8 +23,16 @@ class ddsarticleDialog extends Modal{
         });
     }
 
-    openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
+    openSelectCategoryDialog(category_selected = null, root_category = null){
+        let category_add = '';
+        let root_add = '&root_category=4';
+        if(category_selected){
+            category_add = '&category_id=' + category_selected
+        }
+        if(root_category){
+            root_add = '&root_category='+ root_category
+        }
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + category_add + root_add );
     }
 
     selectCategory(id){

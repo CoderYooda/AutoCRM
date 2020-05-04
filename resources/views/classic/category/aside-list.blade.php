@@ -14,7 +14,8 @@
         Поиск
     @endif
 </div>
-<div class="box-content">
+{{--data-simplebar style="max-height: 100%;"--}}
+<div class="box-content" data-simplebar style="max-height: calc(100% - 54px);">
     <ul class="nav" id="category-block">
         @if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
             @foreach($categories['stack'] as $category)
