@@ -11,15 +11,11 @@ class BarcodeController extends Controller
 {
     public static function getBArCodeSVG($code)
     {
-        $barcode = DNS1D::getBarcodeSVG($code, "C39");
-
-        return $barcode;
+        return DNS1D::getBarcodeSVG($code, "C39");
     }
     public static function getBarCodePNG($code)
     {
-        $barcode = DNS1D::getBarcodePNG($code, "C39");
-
-        return $barcode;
+        return DNS1D::getBarcodePNG($code, "C39");
     }
 
     public static function barcodeDialog($request){

@@ -135,15 +135,8 @@ class ClientOrdersController extends Controller
     public function store(ClientOrdersRequest $request)
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
-//        if ($request->fails()) {
-//            $this->status = 422;
-//            if ($request->expectsJson()) {
-//                return response()->json(['messages' => $validation->errors()], $this->status);
-//            }
-//        }
 
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
-
 
         #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
         if( $client_order->IsAnyProductShipped()) {
@@ -165,7 +158,6 @@ class ClientOrdersController extends Controller
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complited';
         }
-
 
         if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
             $request['inpercents'] = false;

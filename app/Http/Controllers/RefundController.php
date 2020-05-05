@@ -41,12 +41,10 @@ class RefundController extends Controller
         return response()->json($refunds);
     }
 
-    public function fresh($id, Request $request)
+    public function fresh(Refund $refund, Request $request)
     {
-        $refund = Refund::where('id', (int)$id)->first();
-
         $request['fresh'] = true;
-        $class = 'refundDialog' . $id;
+        $class = 'refundDialog' . $refund->id;
         $inner = true;
         $content = view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact( 'refund','class', 'inner', 'request'))->render();
         return response()->json([
