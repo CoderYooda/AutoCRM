@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\DdsArticle;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,7 +43,6 @@ class StatisticController extends Controller
             ->sum('summ');
 
         //Получение статистики менеджера
-
         $manager_id = Auth::id();
 
         $manager_begin_date = Carbon::now()->addDays(-7);
@@ -64,10 +64,19 @@ class StatisticController extends Controller
 
         $info['manager']['warrants'] = $warrants->where('manager_id', $manager_id);
 
-        dd($info);
+        $dds_articles = DdsArticle::all();
+
+        $models = [
+            'Заявки поставщикам',
+            'Поступления',
+            'Продажи',
+            'Возвраты',
+            'Заказы клиентов',
+        ];
 
         //Формирование шаблона
-        $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'info'));
+        $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'info', 'dds_articles', 'models'))
+            ->with('managers', $company->members->load('partner'));
 
         if(class_basename($content) == "JsonResponse"){
             return $content;
