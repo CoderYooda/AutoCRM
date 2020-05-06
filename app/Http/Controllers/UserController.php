@@ -46,6 +46,40 @@ class UserController extends Controller
 
     }
 
+    public function edit(Request $request)
+    {
+        $page = 'Редактирование пользователя';
+        if($request['search'] == 'undefined'){
+            $request['search'] = null;
+        }
+
+        $editmode = true;
+
+        if(empty($request['id'])){
+            $request['id'] = Auth::user()->id;
+        }
+
+        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
+            $request['active_tab'] = 'profile';
+        }
+
+        $classname = $request['active_tab'] . 'Tab';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'editmode'));
+
+        $target = HC::selectTarget();
+        if($request->expectsJson() && $request['search'] === NULL){
+            return response()->json([
+                'target' => $target,
+                'page' => $page,
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
+
+    }
+
     public static function profileTab($request)
     {
         return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request'));

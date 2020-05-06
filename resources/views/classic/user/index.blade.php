@@ -49,7 +49,7 @@
             <div class="content-menu w-260">
                 <div class="box mb-15">
                     <div class="p-15">
-                        <small class="user_ava_id">ID 234</small>
+                        <small class="user_ava_id">ID {{ $user->id }}</small>
                         <div class="user_ava">
 
                         </div>

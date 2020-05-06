@@ -1,15 +1,21 @@
 //import Sortable from "sortablejs";
 
-class userPage{
+class usereditPage{
 
     constructor(){
-        console.log('страница профиля1 инициализировано');
+        console.log('страница редактирования профиля инициализировано');
+        this.bithdayMask = null;
         this.init();
     }
 
     init(){
         let object = this;
         this.addPhoneMask();
+        this.initMasks();
+    }
+
+    linked(){
+        this.init();
     }
 
     save(elem){
@@ -31,12 +37,23 @@ class userPage{
         });
     }
 
+    initMasks(){
+        let date = document.querySelector('input[name=birthday]');
+        this.bithdayMask = window.IMask(date, {
+                mask: Date,
+                min: new Date(1910, 0, 1),
+                max: new Date(2090, 0, 1),
+                lazy: false
+            }
+        );
+    }
+
     addPhone(element){
         var div = document.getElementById('phones');
         var count = div.getElementsByClassName('phone').length;
         var node = helper.createElementFromHTML('' +
-            '<div class="input-group mb-10 phone">' +
-            '<input type="text" name="phones[num'+ (count + 1) +'][number]" class="form-control phone_input" placeholder="Номер телефона">' +
+            '<div class="input-group mb-10 phone slim">' +
+            '<input type="text" name="phones[num'+ (count + 1) +'][number]" class="form-control slim phone_input" placeholder="Номер телефона">' +
             '<span class="input-group-append checkbox_append" title="Активный номер">' +
             '<div class="input-group-text border-left-0">' +
             '<label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">' +
@@ -46,7 +63,7 @@ class userPage{
             '</div>' +
             '</span>' +
             '<span class="input-group-append" title="Удалить номер">' +
-            '<button onclick="window.user.deletePhone(this)" class="input-group-text butt_del_append" type="button" style="height: auto">' +
+            '<button onclick="window.useredit.deletePhone(this)" class="input-group-text butt_del_append" type="button" style="height: auto">' +
             '<i class="fa fa-trash"></i>' +
             '</button>' +
             '</span>' +
@@ -191,9 +208,9 @@ class userPage{
         });
     }
 
-    linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
-        this.active_tab = window.helper.findGetParameter('active_tab');
-    }
+    // linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
+    //     this.active_tab = window.helper.findGetParameter('active_tab');
+    // }
 
 }
-export default userPage;
+export default usereditPage;

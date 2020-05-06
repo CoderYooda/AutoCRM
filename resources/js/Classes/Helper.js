@@ -35,6 +35,7 @@ import reportPage from "./Report/ReportPage";
 import employeePage from "./Employee/EmployeePage";
 import cashPage from "./Cash/CashPage";
 import userPage from "./User/UserPage";
+import usereditPage from "./User/UserEditPage";
 import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
@@ -80,6 +81,7 @@ const pages = {
     reportPage,
     employeePage,
     userPage,
+    usereditPage,
     calendarPage,
     schedulePage,
     actionsPage,
@@ -98,14 +100,10 @@ class Helper{
         //
         // }
 
-        if(container
-            // && div !== (e.target)
-            // && !div.contains(e.target)
-             && !event.target.closest('.dropdown_container')
-        ){
+        if(container){ //!event.target.closest('.dropdown_container')
             block.classList.toggle('show');
         }
-    }
+}
 
     pluck(objs, name) {
         var sol = [];
@@ -136,17 +134,26 @@ class Helper{
     }
 
     initPageMethods(){
-        let className = window.location.pathname.substring(1);
-        //console.log(window[className]);
+        let classNameStr = window.location.pathname.substring(1);
+        classNameStr = classNameStr.split('/');
+        let className = '';
+        if(Array.isArray(classNameStr)){
+            classNameStr.forEach(function(item, i, arr) {
+                className = className + item;
+            });
+        } else {
+            className = classNameStr;
+        }
         if(className !== 'undefined') {
             if(!window[className]) {
+                dd(className);
                 try {
                     window[className] = new pages[className + 'Page']();
                 } catch (err) {
                     window.helper.log(className + " - Такого конструктора не существует");
                 }
             } else {
-                // console.log('Класс ' + className + ' Linked()')
+                console.log('Класс ' + className + ' Linked()')
                 // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
                 try {window[className].linked();} catch (err) {
                     console.warn(err);

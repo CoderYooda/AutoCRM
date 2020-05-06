@@ -94,12 +94,28 @@ h5{
     font-size: 12px;
     font-weight: bold;
 }
+
+.user_stat{
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #ced4da;
+    display: flex;
+}
+.user_stat .item{
+    padding: 10px 15px;
+    font-size: 15px;
+    border-right: 1px solid #ced4da;
+}
 .user_h2 .balance{
     position: absolute;
     right: 0;
     font-weight: 700;
     font-size: 14px;
     top: 0;
+}
+.user_stat .btn-block{
+    margin: 6px;
+    margin-left: auto;
 }
 .modal-title{
     flex: 1;
@@ -262,6 +278,18 @@ label.label-sm{
     position: relative;
     -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control.slim{
+    height: 22px!important;
+}
+
+.slim .checkbox_append {
+    padding: 1px 7px;
+    height: 22px;
+}
+.slim .butt_del_append {
+    padding: 1px 7px;
+    height: 22px;
 }
 .form-control::placeholder{
     color: #D7D8DB;
@@ -565,6 +593,24 @@ label.label-sm{
 }
 .flex-1{
     flex: 1!important;
+}
+.flex-2{
+    flex: 2!important;
+}
+.flex-3{
+    flex: 3!important;
+}
+#user_index_page .name_edit{
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font-weight: 300;
+    font-size: 21px;
+    font-family: "Segoe UI" !important;
+    width: 50%;
+    height: 27px;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
 }
 .flex-1-5{
     flex: 1.5!important;
