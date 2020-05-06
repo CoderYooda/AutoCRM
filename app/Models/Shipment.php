@@ -25,13 +25,13 @@ class Shipment extends Model
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_shipment', 'shipment_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')
             ->withPivot('count', 'refunded_count', 'price', 'total');
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
     public function getProductPriceFromShipment($article_id)

@@ -135,7 +135,7 @@ class clientorderDialog extends Modal{
             object.addPhoneMask();
             console.log('Вставили html');
         }).catch(function (error) {
-            console.log(error);
+            console.log(error);w
         }).then(function () {
             callback();
         });

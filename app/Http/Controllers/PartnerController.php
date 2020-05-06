@@ -339,10 +339,9 @@ class PartnerController extends Controller
         ], 200);
     }
 
-    public function select($id)
+    public function select(Partner $partner)
     {
-        $partner = Partner::where('id', $id)->first();
-        if(!$partner){
+        if(!$partner->exists){
             return response()->json([
                 'message' => 'Контакт не найден, возможно он был удалён',
             ], 422);
@@ -359,6 +358,7 @@ class PartnerController extends Controller
     public function tableData(Request $request)
     {
         $partners = PartnerController::getPartners($request);
+
         foreach($partners as $partner){
             $partner->date = $partner->created_at->format('Y.m.d/H:i');
         }
@@ -368,7 +368,6 @@ class PartnerController extends Controller
 
     public static function getPartners($request)
     {
-
         if($request['category_id'] == 3){
             $request['category_id'] = null;
         }

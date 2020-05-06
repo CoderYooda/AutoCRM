@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WarrantRequest;
 use App\Models\Cashbox;
 use App\Models\DdsArticle;
+use App\Models\Statistic;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -104,22 +106,15 @@ class WarrantController extends Controller
         return response()->json($warrants);
     }
 
-    public function store(Request $request)
+    public function store(WarrantRequest $request)
     {
         $request['company_id'] = Auth::user()->company()->first()->id;
+
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
         }
 
         $request['summ'] = (double)$request['summ'];
-
-        $validation = Validator::make($request->all(), self::validateRules($request));
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);
 
@@ -135,7 +130,8 @@ class WarrantController extends Controller
                 $warrant->partner()->first()->addition($warrant->summ);
                 $warrant->cashbox()->first()->addition($warrant->summ);
             }
-        } else{
+        }
+        else {
             $warrant->manager_id = Auth::user()->id;
             $message = "Ордер создан";
             $wasExisted = false;
@@ -226,27 +222,6 @@ class WarrantController extends Controller
             'id' => $returnIds,
             'message' => $this->message
         ], $this->status);
-    }
-
-    private static function validateRules($request)
-    {
-        $rules = null;
-
-        $rules = [
-            'partner_id' => ['required','exists:partners,id'],
-            'cashbox_id' => ['required','exists:cashboxes,id'],
-            'ddsarticle_id' => ['required','exists:dds_articles,id'],
-            'isIncoming' => ['boolean'],
-            'summ' => ['required', 'numeric', 'between:0,99.99'],
-        ];
-
-        if(isset($request['max_summ']) && $request['max_summ'] != null){
-            $rules['summ'] = ['required', 'numeric', 'between:0,' . $request['max_summ']];
-        } else {
-            $rules['summ'] = ['required',  'numeric', 'between:0,1000000.00'];
-        }
-
-        return $rules;
     }
 
     public static function getWarrants($request)
