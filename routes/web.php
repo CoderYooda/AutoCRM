@@ -45,6 +45,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
 
+    #Статистика
+    Route::get('/statistic', 'StatisticController@index')->name('StatisticIndex');
+
     #Продукты
     Route::get('/store/test', 'ProductController@test')->name('test');
     Route::post('/store/search', 'ProductController@search')->name('StoreSearch');

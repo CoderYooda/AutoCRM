@@ -40,7 +40,7 @@ import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
 import loginPage from "./Auth/LoginPage";
-
+import statisticPage from "./Statistic/StatisticPage";
 
 const classes = {
     entranceDialog,
@@ -87,6 +87,7 @@ const pages = {
     actionsPage,
     registerPage,
     loginPage,
+    statisticPage
 };
 
 class Helper{
