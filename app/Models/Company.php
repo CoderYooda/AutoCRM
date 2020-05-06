@@ -28,6 +28,11 @@ class Company extends Model
         }
     }
 
+    public function getFirstCompanyMember() // TODO получать лидера компании
+    {
+        return $this->members()->first();
+    }
+
     public function inviteUser($user)
     {
         $user->company_id = $this->id;

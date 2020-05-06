@@ -96,8 +96,14 @@
                     </div>
                     <div class="form-group row row-sm">
                         <label class="col-sm-5" for="discount">Покупатель</label>
-                        <div class="col-sm-7 input-group">
+                        <div class="col-sm-4 input-group no-pr">
                             <input id="partner_butt" type="text" name="partner_id" value="@if(isset($refund) && $refund->shipment()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled="disabled">
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="partner-balance">
+                                Баланс:<br>
+                                <span id="balance">@if(isset($refund)){{ $refund->partner->balance }} р@else 0.00 р@endif</span>
+                            </span>
                         </div>
                     </div>
                     <div class="form-group row row-sm">

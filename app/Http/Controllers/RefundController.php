@@ -61,7 +61,7 @@ class RefundController extends Controller
 
         if(!isset($request['products']) || $request['products'] == []) {
             return response()->json([
-                'system_message' => ['Проведение возврата без товаров не возможно']
+                'system_message' => ['Проведение возврата без товаров невозможно']
             ], 422);
         }
 

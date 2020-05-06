@@ -103,8 +103,6 @@ class shipmentDialog extends Modal{
         inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
-
-
         this.loadItemsIfExists();
         let focused = document.getElementById('shipment_dialog_focused');
         if(focused){

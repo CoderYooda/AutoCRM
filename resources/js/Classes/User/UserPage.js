@@ -1,56 +1,15 @@
-import Sortable from "sortablejs";
+//import Sortable from "sortablejs";
 
 class userPage{
 
     constructor(){
         console.log('страница профиля1 инициализировано');
-        this.active = true;
-        this.active_tab = window.helper.findGetParameter('active_tab');
-        this.root_id = 'user_index_page';
-        this.category_id = 2;
-        this.page = 1;
-        this.search = 'null';
-        this.root_category = 2;
-        this.dates_range = ['null', 'null'];
-        this.date_start = 'null';
-        this.date_end = 'null';
         this.init();
-        this.linked();
     }
 
     init(){
         let object = this;
-        //
-        // document.addEventListener('ajaxLoaded', function(e){
-        //     object.checkActive();
-        //     object.linked();
-        //     object.load();
-        // });
-        // object.checkActive();
-        // object.load();
-        // document.addEventListener('ProductStored', function(e){
-        //     object.prepareParams();
-        //     object.reload();
-        // });
-        // document.addEventListener('clientOrderStored', function(e){
-        //     object.prepareParams();
-        //     object.reload();
-        // });
-        // document.addEventListener('providerOrderStored', function(e){
-        //     object.prepareParams();
-        //     object.reload();
-        // });
-        // document.addEventListener('EntranceStored', function(e){
-        //     object.prepareParams();
-        //     object.reload();
-        // });
-        // document.addEventListener('ShipmentStored', function(e){
-        //     object.prepareParams();
-        //     object.reload();
-        // });
-        // object.initShipmentDates();
-        //simplebar(document.getElementById('fof'));
-        object.initSchema();
+        this.addPhoneMask();
     }
 
     save(elem){
@@ -70,6 +29,129 @@ class userPage{
 
             elem.setAttribute('name', name.replace('convert', evt.newIndex + 1));
         });
+    }
+
+    addPhone(element){
+        var div = document.getElementById('phones');
+        var count = div.getElementsByClassName('phone').length;
+        var node = helper.createElementFromHTML('' +
+            '<div class="input-group mb-10 phone">' +
+            '<input type="text" name="phones[num'+ (count + 1) +'][number]" class="form-control phone_input" placeholder="Номер телефона">' +
+            '<span class="input-group-append checkbox_append" title="Активный номер">' +
+            '<div class="input-group-text border-left-0">' +
+            '<label class="ui-check" style="margin-bottom: 0;margin-top: 1px;">' +
+            '<input type="radio" name="phones_main" value="num'+ (count + 1) +'">' +
+            '<i class="dark-white"></i>' +
+            '</label>' +
+            '</div>' +
+            '</span>' +
+            '<span class="input-group-append" title="Удалить номер">' +
+            '<button onclick="window.user.deletePhone(this)" class="input-group-text butt_del_append" type="button" style="height: auto">' +
+            '<i class="fa fa-trash"></i>' +
+            '</button>' +
+            '</span>' +
+            '</div>' +
+            '');
+        if(this.canAddMorePhone(div)){
+            div.appendChild(node);
+        }
+        this.addPhoneMask();
+    }
+
+    deletePhone(elem){
+
+        var div = document.getElementById('phones');
+        if(this.canRemovePhone(div)){
+
+            var id = elem.closest('.phone').dataset.id;
+            if(id != undefined){
+                if (isXHRloading) { return; }
+                isXHRloading = true;
+                var dReq = new XMLHttpRequest();
+                dReq.onreadystatechange = function (e) {
+                    if (dReq.readyState === 4) {
+                        var resp = JSON.parse(this.responseText);
+                        if(dReq.status === 200){
+                            //var element = document.getElementById('product_'+resp.product_id);
+                            notification.notify( 'success', resp.message);
+                        }else{
+                            notification.notify( 'error', resp.message);
+                        }
+                    }
+                };
+                dReq.onerror = function () {
+                    var resp = JSON.parse(this.responseText);
+                    isXHRloading = false;
+                };
+                dReq.onload = function () {
+                    var resp = JSON.parse(this.responseText);
+                    //document.getElementById('category_list').innerHTML = resp.html;
+                    isXHRloading = false;
+                };
+
+                dReq.open("post", 'phone/'+id+'/delete', true);
+                dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
+                dReq.send();
+            }
+            elem.closest('.phone').remove();
+
+        }
+    }
+
+    canRemovePhone(div){
+        var elems = div.getElementsByClassName('phone');
+        if(elems.length < 2){
+            notification.notify( 'error', 'Нельзя удалить единственный номер');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    addPhoneMask(){
+        var elements = document.querySelectorAll('.phone_input');
+        [].forEach.call(elements, function(element){
+            var dispatchMask = window.IMask(element, {
+                    mask: [
+                        {
+                            mask: '+{7}(000)000-00-00',
+                            startsWith: '7',
+                            lazy: true,
+                            country: 'Россия'
+                        },
+                        {
+                            mask: '{8}(000)000-00-00',
+                            startsWith: '8',
+                            lazy: true,
+                            country: 'Россия'
+                        },
+                        {
+                            mask: '+{380}(000)000-00-00',
+                            startsWith: '3',
+                            lazy: true,
+                            country: 'Украина'
+                        },
+                    ],
+                    dispatch: function (appended, dynamicMasked) {
+                        var number = (dynamicMasked.value + appended).replace(/\D/g,'');
+
+                        return dynamicMasked.compiledMasks.find(function (m) {
+                            return number.indexOf(m.startsWith) === 0;
+                        });
+                    }
+                }
+            )
+        });
+    }
+
+    canAddMorePhone(div){
+        var elems = div.getElementsByClassName('phone');
+        if(elems.length > 4){
+            notification.notify( 'error', 'Максимальное кол-во номеров - 5');
+            return false;
+        } else {
+            return true;
+        }
     }
 
     initSchema(){
@@ -109,226 +191,9 @@ class userPage{
         });
     }
 
-    // load(){
-    //     this.active_tab = window.helper.findGetParameter('active_tab');
-    //
-    //     if(window.helper.findGetParameter('page') !== null){
-    //         this.page = window.helper.findGetParameter('page');
-    //     } else { this.page = 1}
-    //     if(window.helper.findGetParameter('search') !== null){
-    //         this.search = window.helper.findGetParameter('search');
-    //     } else { this.search = ''}
-    //
-    //     let date_start = window.helper.findGetParameter('date_start');
-    //     let date_end = window.helper.findGetParameter('date_end');
-    //     if(date_start !== null && date_end !== null){
-    //         this.date_start = date_start;
-    //         this.date_end = date_end;
-    //         this.dates_range = [this.date_start, this.date_end];
-    //     }
-    //     this.searchInit();
-    //     this.initShipmentDates();
-    // }
-    //
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.active_tab = window.helper.findGetParameter('active_tab');
-        // this.category_id = window.helper.findGetParameter('category_id');
-        // this.page = window.helper.findGetParameter('page');
-        // this.search = window.helper.findGetParameter('search');
-        // window.helper.debugBar(this);
-        this.initSchema();
     }
-    //
-    // prepareParams(){
-    //     if(this.category_id === null){
-    //         this.category_id = '';
-    //     }
-    //     if(!this.search || this.search === 'null' || this.search === null){
-    //         this.search = '';
-    //     } else {
-    //         this.category_id = this.root_category;
-    //     }
-    //     if(this.page === null || this.page === 'null'){
-    //         this.page = 1;
-    //     }
-    //     if(this.date_start === null || this.date_start === 'null'){
-    //         this.date_start = '';
-    //     }
-    //     if(this.date_end === null || this.date_end === 'null'){
-    //         this.date_end = '';
-    //     }
-    // }
-    //
-    // checkActive(){
-    //     let className = window.location.pathname.substring(1);
-    //     let link = document.getElementById('store_link');
-    //     if(className === 'store'){
-    //         link.classList.add('active');
-    //         this.active = true;
-    //     } else {
-    //         link.classList.remove('active');
-    //         this.active = false;
-    //     }
-    // }
-    //
-    // searchInit(){
-    //     var object = this;
-    //     var search;
-    //     var searchFn;
-    //     if(document.getElementById("search")){
-    //         search = document.getElementById("search");
-    //         searchFn = window.helper.debounce(function(e) {
-    //             object.search = search.value;
-    //             object.page = 1;
-    //             object.reload(e);
-    //         }, 400);
-    //         search.addEventListener("keydown", searchFn);
-    //         search.addEventListener("paste", searchFn);
-    //         search.addEventListener("delete", searchFn);
-    //     } else
-    //     if(document.getElementById("search_partner")){
-    //         search = document.getElementById("search_partner");
-    //         searchFn = window.helper.debounce(function(e) {
-    //             object.search = search.value;
-    //             object.reload(e);
-    //         }, 400);
-    //         search.addEventListener("keydown", searchFn);
-    //         search.addEventListener("paste", searchFn);
-    //         search.addEventListener("delete", searchFn);
-    //     }
-    // }
-    //
-    // resetDate(){
-    //     if(this.dates !== null){
-    //         this.dates.clear();
-    //     }
-    //     this.dates_range = ['null', 'null'];
-    //     this.date_start = 'null';
-    //     this.date_end = 'null';
-    //     this.page = 1;
-    //     this.reload();
-    // }
-    //
-    // resetSearch(){
-    //     document.getElementById('search').value = '';
-    //     this.search = '';
-    //     this.page = 1;
-    //     this.reload();
-    // }
-    //
-    // checkTrinity(search_str){
-    //     window.isXHRloading = true;
-    //
-    //     let data = {};
-    //     data.search = search_str;
-    //     window.axios({
-    //         method: 'post',
-    //         url: '/providers/trinity/search_brands',
-    //         data: data
-    //     }).then(function (resp) {
-    //         var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
-    //         let providertab = document.querySelector('#provider-tab .nav-badge');
-    //         if(providertab){
-    //             providertab.innerHTML = badge;
-    //         }
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     }).finally(function () {
-    //         window.isXHRloading = false;
-    //     });
-    // }
-    //
-    // getUrlString(){
-    //     let url = '?view_as=json';
-    //     url += '&target=ajax-table-' + this.active_tab;
-    //     if(this.category_id !== null){
-    //         url += '&category_id=';
-    //         url += this.category_id;
-    //     }
-    //     if(this.search && this.search !== 'null' || this.search !== null){
-    //         url += '&search=';
-    //         url += this.search;
-    //     }
-    //     if(this.active_tab !== null || this.active_tab !== 'null'){
-    //         url += '&active_tab=';
-    //         url += this.active_tab;
-    //     }
-    //     if(this.page !== null || this.page !== 'null'){
-    //         url += '&page=';
-    //         url += this.page;
-    //     }
-    //     if(this.date_start !== null || this.date_start !== 'null' || this.date_start !== ''){
-    //         url += '&date_start=';
-    //         url += this.date_start;
-    //     }
-    //     if(this.date_end !== null || this.date_end !== 'null' || this.date_end !== ''){
-    //         url += '&date_end=';
-    //         url += this.date_end;
-    //     }
-    //
-    //     return url;
-    // }
-    //
-    // initShipmentDates(){
-    //     let object = this;
-    //     let startDateArray = [];
-    //
-    //     if(object.dates_range[0] !== 'null' && object.dates_range[1] !== 'null'){
-    //         startDateArray = object.dates_range;
-    //     }
-    //     this.dates = window.flatpickr(".shipment_date_start", {
-    //         mode: "range",
-    //         defaultDate: startDateArray,
-    //         dateFormat: "d.m.Y",
-    //         onClose: function(selectedDates, dateStr, instance) {
-    //             object.dates_range = selectedDates;
-    //             object.page = 1;
-    //             if(selectedDates.length > 1){
-    //                 object.date_start = window.flatpickr.formatDate(selectedDates[0], "d.m.Y");
-    //                 object.date_end = window.flatpickr.formatDate(selectedDates[1], "d.m.Y");
-    //             } else {
-    //                 object.date_start = 'null';
-    //                 object.date_end = 'null';
-    //             }
-    //             object.reload();
-    //         }
-    //     });
-    // }
-    //
-    // reload(){
-    //     let object = this;
-    //     object.prepareParams();
-    //     if (isXHRloading) { return; } window.isXHRloading = true;
-    //     window.axios({
-    //         method: 'get',
-    //         url: object.getUrlString(),
-    //     }).then(function (resp) {
-    //         var results_container = document.getElementById(resp.data.target);
-    //         results_container.innerHTML = resp.data.html;
-    //
-    //
-    //         window.helper.insertParamUrl('search', object.search);
-    //         window.helper.insertParamUrl('active_tab', object.active_tab);
-    //         window.helper.insertParamUrl('date_start', object.date_start);
-    //         window.helper.insertParamUrl('date_end', object.date_end);
-    //         window.helper.insertParamUrl('page', object.page);
-    //         window.rebuildLinks();
-    //         object.load();
-    //         // if(object.search && object.search !== 'null') {
-    //         //     window.helper.insertParamUrl('search', object.search);
-    //         // }
-    //         // window.helper.insertParamUrl('category_id', object.category_id);
-    //         // window.helper.insertParamUrl('active_tab', object.active_tab);
-    //         // window.helper.insertParamUrl('page', object.page);
-    //
-    //
-    //         window.rebuildLinks();
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     }).finally(function () {
-    //         window.isXHRloading = false;
-    //     });
-    // }
 
 }
 export default userPage;

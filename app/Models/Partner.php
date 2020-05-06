@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\HelpController;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -93,6 +94,11 @@ class Partner extends Model
         }
     }
 
+    public function outputEmail()
+    {
+        return $this->email ? $this->email : 'Email не указан';
+    }
+
     public function firstLetterOfName(){
         return mb_strtoupper(mb_substr($this->outputName(), 0, 1));
     }
@@ -112,6 +118,20 @@ class Partner extends Model
 
     public function user(){
         return $this->BelongsTo('App\Models\User', 'user_id');
+    }
+
+    public function getBirthday(){
+        return $this->birthday ? Carbon::parse($this->birthday)->format('d.m.Y') : 'Не указано';
+    }
+
+    public function getBarCode(){
+        return $this->barcode ? $this->barcode : 'Штрихкод  не указан';
+    }
+
+    public function getDateMembership()
+    {
+        $user = $this->user()->first();
+        return $user ? $user->created_at->format('d.m.Y') : '-';
     }
 
     public function addition($summ){

@@ -2,7 +2,7 @@
 $messages = [];
 @endphp
 
-<div class="modal fade" id="user" data-backdrop="true" aria-hidden="true">
+<div class="modal fade" id="notifications" data-backdrop="true" aria-hidden="true">
     <div class="modal-dialog modal-right w-xl white b-l">
         <div class="d-flex flex-column h-100">
             <div class="p-15 b-b d-flex no-shrink">

@@ -53,6 +53,20 @@
 .swal2-container {
     z-index: 20000!important;
 }
+.user_ava{
+    width: 228px;
+    height: 260px;
+    display: block;
+    background: url(../images/noavatar.png) no-repeat center;
+}
+.user_ava_id{
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 9px;
+    color: #fff;
+    text-shadow: 0 0 7px #2d76a8;
+}
 h5{
     font-weight: 600;
     font-size: 16px;
@@ -73,17 +87,49 @@ h5{
     padding-right: 15px;
     content: "\f071";
 }
+.user_h2{
+    position: relative;
+}
+.user_h2 .category{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.user_stat{
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #ced4da;
+    display: flex;
+}
+.user_stat .item{
+    padding: 10px 15px;
+    font-size: 15px;
+    border-right: 1px solid #ced4da;
+}
+.user_h2 .balance{
+    position: absolute;
+    right: 0;
+    font-weight: 700;
+    font-size: 14px;
+    top: 0;
+}
+.user_stat .btn-block{
+    margin: 6px;
+    margin-left: auto;
+}
 .modal-title{
     flex: 1;
 }
 .partner-balance{
-    line-height: 12px;
+    line-height: 13px;
     font-size: 12px;
     display: block;
     color: #495057;
-    padding: 3px 10px;
+    padding: 2px 10px;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
+    text-transform: lowercase;
+    text-align: center;
 }
 .no-pr{
     padding-right: 0!important;
@@ -232,6 +278,18 @@ label.label-sm{
     position: relative;
     -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control.slim{
+    height: 22px!important;
+}
+
+.slim .checkbox_append {
+    padding: 1px 7px;
+    height: 22px;
+}
+.slim .butt_del_append {
+    padding: 1px 7px;
+    height: 22px;
 }
 .form-control::placeholder{
     color: #D7D8DB;
@@ -535,6 +593,24 @@ label.label-sm{
 }
 .flex-1{
     flex: 1!important;
+}
+.flex-2{
+    flex: 2!important;
+}
+.flex-3{
+    flex: 3!important;
+}
+#user_index_page .name_edit{
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font-weight: 300;
+    font-size: 21px;
+    font-family: "Segoe UI" !important;
+    width: 50%;
+    height: 27px;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
 }
 .flex-1-5{
     flex: 1.5!important;

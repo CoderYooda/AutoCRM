@@ -21,6 +21,10 @@ class UserController extends Controller
             $request['search'] = null;
         }
 
+        if(empty($request['id'])){
+            $request['id'] = Auth::user()->id;
+        }
+
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'profile';
         }
@@ -29,6 +33,39 @@ class UserController extends Controller
 
         $content = self::$classname($request);
 
+        $target = HC::selectTarget();
+        if($request->expectsJson() && $request['search'] === NULL){
+            return response()->json([
+                'target' => $target,
+                'page' => $page,
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
+
+    }
+
+    public function edit(Request $request)
+    {
+        $page = 'Редактирование пользователя';
+        if($request['search'] == 'undefined'){
+            $request['search'] = null;
+        }
+
+        $editmode = true;
+
+        if(empty($request['id'])){
+            $request['id'] = Auth::user()->id;
+        }
+
+        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
+            $request['active_tab'] = 'profile';
+        }
+
+        $classname = $request['active_tab'] . 'Tab';
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'editmode'));
 
         $target = HC::selectTarget();
         if($request->expectsJson() && $request['search'] === NULL){
@@ -45,27 +82,27 @@ class UserController extends Controller
 
     public static function profileTab($request)
     {
-        return view('user.tabs.profile', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request'));
     }
 
     public static function schemeTab($request)
     {
-        return view('user.tabs.scheme', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.scheme', compact('request'));
     }
 
     public static function premiumTab($request)
     {
-        return view('user.tabs.premium', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.premium', compact('request'));
     }
 
     public static function payoutTab($request)
     {
-        return view('user.tabs.payout', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.payout', compact('request'));
     }
 
     public static function salesTab($request)
     {
-        return view('user.tabs.sales', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.sales', compact('request'));
     }
 
     public function saveSalarySchemaToUser(Request $request)

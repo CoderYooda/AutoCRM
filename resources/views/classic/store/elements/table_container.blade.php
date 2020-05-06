@@ -5,7 +5,8 @@
 
 @php $class = 'store' @endphp
 
-<div class="content-menu box w-290" id="category-nav">
+<div class="content-menu box w-290" id="category-nav" >
+    {{--style="height: calc(74%); overflow: hidden"--}}
     @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')
 </div>
 <div class="box-lister box">

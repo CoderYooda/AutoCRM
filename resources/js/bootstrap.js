@@ -108,7 +108,7 @@ window.fakeCounter = 0;
 
 axios({
     method: 'GET',
-    url: 'islogged'
+    url: '/islogged'
 }).then(function (resp) {
 
     //console.log(resp.data.auth);

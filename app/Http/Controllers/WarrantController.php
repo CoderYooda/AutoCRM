@@ -149,7 +149,7 @@ class WarrantController extends Controller
             $partner->addition($request['summ']);
         } else{
             $cashbox->subtraction($request['summ']);
-            $partner->addition($request['summ']);
+            $partner->subtraction($request['summ']);
         }
 
         $warrant->fill($request->only($warrant->fields));

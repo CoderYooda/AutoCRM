@@ -94,7 +94,7 @@
                         </li>
 
                         <li class="top-nav-item">
-                            <a id="bell_badge" class="ico_link bell" data-toggle="modal" data-target="#user" data-toggle-class="modal-open-aside">
+                            <a id="bell_badge" class="ico_link bell" data-toggle="modal" data-target="#notifications" data-toggle-class="modal-open-aside">
                                 <span id="stack_bell_count" class="badge-pill"></span>
                             </a>
                         </li>
@@ -108,7 +108,7 @@
 
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
-                                <a class="element" href="#" onclick="">
+                                <a class="element ajax-nav" href="{{ route('UserIndex') }}">
                                     Личный кабинет
                                 </a>
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">

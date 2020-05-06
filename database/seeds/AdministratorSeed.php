@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Store;
 use App\Models\Partner;
+use Illuminate\Support\Facades\Artisan;
 use App\Models\Setting;
 use App\Http\Controllers\SettingsController;
 
@@ -55,7 +56,7 @@ class AdministratorSeed extends Seeder
         $company = new Company();
         $company->name = 'Тестовый магазин';
         $company->save();
-	
+
 	    $store = new Store();
 	    $store->company_id = $company->id;
 	    $store->type = 'casual';
@@ -86,6 +87,10 @@ class AdministratorSeed extends Seeder
 
         $user->save();
         $user->company()->associate($company);
+
+        Artisan::call('categories:init', [
+            'company' => $company->id
+        ]);
 
     }
 }

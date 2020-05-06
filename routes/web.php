@@ -170,6 +170,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
+    Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
 
 
