@@ -28,7 +28,7 @@
     <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
         <label>Дата рождения</label>
         <input onclick="this.select();" type="text" name="birthday"
-               @if(isset($partner)) value="{{ $partner->birthday }}" @endif
+               @if(isset($partner)) value="{{ $partner->getBirthday() }}" @endif
                class="form-control date_picker entrance" placeholder="Выберите дату" @if(isset($partner) && !$partner['isfl']) disabled @endif>
     </div>
     <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @elseif(!isset($partner)) d-none-f @elseif(!isset($partner)) disabled @endif">

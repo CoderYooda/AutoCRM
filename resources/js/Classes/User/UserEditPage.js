@@ -22,7 +22,7 @@ class usereditPage{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(e){
-            console.log(123);
+            window.goto('/user?id=' + e.data.id);
         });
     }
 

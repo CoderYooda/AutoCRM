@@ -128,6 +128,11 @@ class PartnerController extends Controller
             $request['company_id'] = Auth::user()->company()->first()->id;
             $message = "Контакт создан";
         }
+
+        if($request['birthday']){
+            $request['birthday'] = Carbon::parse($request['birthday']);
+        }
+
         $partner->fill($request->only($partner->fields));
         if(!$request['isfl']){
             $partner->fio = $request['ur_fio'];
@@ -185,7 +190,7 @@ class PartnerController extends Controller
                 //'container' => 'ajax-table-partner',
                 //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
                 'event' => 'PartnerStored',
-                //'html' => $content
+                'id' => $partner->id
             ], 200);
         } else {
             return redirect()->back();

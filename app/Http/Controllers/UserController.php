@@ -30,8 +30,11 @@ class UserController extends Controller
         }
 
         $classname = $request['active_tab'] . 'Tab';
-
-        $content = self::$classname($request);
+        $user = self::getUser($request);
+        if(!$user){
+            abort(404);
+        }
+        $content = self::$classname($request, $user);
 
         $target = HC::selectTarget();
         if($request->expectsJson() && $request['search'] === NULL){
@@ -65,7 +68,13 @@ class UserController extends Controller
 
         $classname = $request['active_tab'] . 'Tab';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'editmode'));
+        $user = self::getUser($request);
+
+        if(!$user){
+            abort(404);
+        }
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'editmode', 'user'));
 
         $target = HC::selectTarget();
         if($request->expectsJson() && $request['search'] === NULL){
@@ -80,9 +89,9 @@ class UserController extends Controller
 
     }
 
-    public static function profileTab($request)
+    public static function profileTab($request, $user)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request'));
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'user'));
     }
 
     public static function schemeTab($request)
