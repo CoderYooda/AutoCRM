@@ -45,6 +45,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
 
+    #Статистика
+    Route::get('/statistic', 'StatisticController@index')->name('StatisticIndex');
+
     #Продукты
     Route::get('/store/test', 'ProductController@test')->name('test');
     Route::post('/store/search', 'ProductController@search')->name('StoreSearch');
@@ -193,7 +196,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');
     Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
     Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
-    Route::post('/partner/{id}/select', 'PartnerController@select')->name('SelectPartner');
+    Route::post('/partner/{partner}/select', 'PartnerController@select')->name('SelectPartner');
     Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
     Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
 

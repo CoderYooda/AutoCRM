@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MoneyMoveRequest;
 use App\Models\Cashbox;
 use App\Models\MoneyMoves;
 use App\Models\Partner;
@@ -33,19 +34,12 @@ class MoneyMoveController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(MoneyMoveRequest $request)
     {
         $request['company_id'] = Auth::user()->company()->first()->id;
+
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
-        }
-
-        $validation = Validator::make($request->all(), self::validateRules($request));
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->expectsJson()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
         }
 
         $moneymove = MoneyMoves::firstOrNew(['id' => $request['id']]);
@@ -173,7 +167,7 @@ class MoneyMoveController extends Controller
             $dir = 'DESC';
         }
 
-        if($request['partner'] == null){
+        if($request['partner'] == null) {
             $request['partner'] = [];
         }
         if($request['any'] == null){
@@ -205,19 +199,5 @@ class MoneyMoveController extends Controller
             ->paginate($size);
 
         return $moneymoves;
-    }
-
-
-    private static function validateRules($request)
-    {
-        $rules = null;
-        $rules = [
-            'company_id' => ['required','exists:companies,id'],
-            'in_cashbox_id' => ['required','exists:cashboxes,id', 'different:out_cashbox_id'],
-            'out_cashbox_id' => ['required','exists:cashboxes,id', 'different:in_cashbox_id'],
-            'summ' => ['required', 'integer', 'min:0', 'max:100000000'],
-
-        ];
-        return $rules;
     }
 }

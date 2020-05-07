@@ -219,20 +219,19 @@ class ShipmentsController extends Controller
 
     }
 
-    public function fresh($id, Request $request)
+    public function fresh(Shipment $shipment, Request $request)
     {
-        $shipment = Shipment::where('id', (int)$id)->first();
         $stores = Store::owned()->get();
         $request['fresh'] = true;
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
-        $class = 'shipmentDialog' . $id;
+        $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
         $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([
             'html' => $content,
-            'target' => 'shipmentDialog' . $id,
+            'target' => 'shipmentDialog' . $shipment->id
         ], 200);
     }
 

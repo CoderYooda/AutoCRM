@@ -124,7 +124,7 @@ class Partner extends Model
     }
 
     public function user(){
-        return $this->BelongsTo('App\Models\User', 'user_id');
+        return $this->BelongsTo(User::class, 'user_id');
     }
 
     public function getBirthday(){

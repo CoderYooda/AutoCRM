@@ -98,19 +98,14 @@ class ClientOrdersController extends Controller
     }
 
 
-    public function fresh($id, Request $request)
+    public function fresh(ClientOrder $client_order, Request $request)
     {
-        $client_order = ClientOrder::where('id', (int)$id)->first();
-
         $client_order->articles = $client_order->articles()->get();
 
         foreach ($client_order->articles as $article) {
             $article->instock = $article->getCountInStoreId($client_order->store_id);
-            if ($article->instock >= $article->pivot->count) {
-                $article->complited = true;
-            } else {
-                $article->complited = false;
-            }
+
+            $article->complited = ($article->instock >= $article->pivot->count) ? true : false;
         }
 
         $total_complited = true;
@@ -124,26 +119,19 @@ class ClientOrdersController extends Controller
         $client_order->total_complited = $total_complited;
 
         $request['fresh'] = true;
-        $class = 'clientorderDialog' . $id;
+        $class = 'clientorderDialog' . $client_order->id;
         $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))->render();
         return response()->json([
             'html' => $content,
-            'target' => 'clientorderDialog' . $id,
+            'target' => 'clientorderDialog' . $client_order->id,
         ], 200);
     }
 
     public function store(ClientOrdersRequest $request)
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
-//        if ($request->fails()) {
-//            $this->status = 422;
-//            if ($request->expectsJson()) {
-//                return response()->json(['messages' => $validation->errors()], $this->status);
-//            }
-//        }
 
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
-
 
         #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
         if( $client_order->IsAnyProductShipped()) {
@@ -165,7 +153,6 @@ class ClientOrdersController extends Controller
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complited';
         }
-
 
         if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
             $request['inpercents'] = false;

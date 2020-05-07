@@ -31,11 +31,6 @@ import Scanner from './Classes/Scanner.js';
 import Auth from './Classes/Auth.js';
 import Tabs from './Classes/Tabs.js';
 
-
-
-
-
-
 import IMask from 'imask';
 window.helper = new Helper();
 window.socket = new Socket();
@@ -54,9 +49,6 @@ window.tabs = new Tabs();
 window.tippy = tippy;
 
 //window.modal = new Modal();
-
-
-
 
 Array.prototype.remove = function() {
     var what, a = arguments, L = a.length, ax;

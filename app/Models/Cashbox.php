@@ -28,9 +28,8 @@ class Cashbox extends Model
         return $this->hasMany('App\Models\Warrant', 'cashbox_id' );
     }
 
-    public function addition($summ){
-        $this->balance = $this->balance + $summ;
-        $this->save();
+    public function addition($sum){
+        $this->increment('balance', $sum);
         return $this;
     }
 
@@ -49,9 +48,8 @@ class Cashbox extends Model
         }
     }
 
-    public function subtraction($summ){
-        $this->balance = $this->balance - $summ;
-        $this->save();
+    public function subtraction($sum){
+        $this->decrement('balance', $sum);
         return $this;
     }
 
