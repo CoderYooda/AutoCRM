@@ -9,7 +9,6 @@ use App\Models\Store;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
 use App\Models\Article;

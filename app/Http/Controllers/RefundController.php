@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RefundRequest;
 use App\Models\Refund;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
@@ -53,25 +53,15 @@ class RefundController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(RefundRequest $request)
     {
         $refund = Refund::firstOrNew(['id' => $request['id']]);
-
-        $validation = Validator::make($request->all(), self::validateRules());
 
         if(!isset($request['products']) || $request['products'] == []) {
             return response()->json([
                 'system_message' => ['Проведение возврата без товаров невозможно']
             ], 422);
         }
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->expectsJson()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
-
 
         if($refund->exists){
             $refundWasExisted = true;
@@ -206,17 +196,6 @@ class RefundController extends Controller
         ], 200);
 
 
-    }
-
-    private static function validateRules()
-    {
-        $rules = [
-            'shipment_id' => ['required', 'exists:shipments,id'],
-            'products' => ['required'],
-            'products.*.count' => ['integer', 'min:1', 'max:9999'],
-        ];
-
-        return $rules;
     }
 
     public static function getRefunds($request)

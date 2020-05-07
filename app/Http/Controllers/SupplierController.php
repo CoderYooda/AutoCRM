@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -48,19 +49,8 @@ class SupplierController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(SupplierRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'string', 'max:120'],
-        ]);
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
-
         $supplier = Supplier::firstOrNew(['id' => (int)$request['id']]);
         $supplier->fill($request->all());
         $supplier->company_id = Auth::user()->company()->first()->id;

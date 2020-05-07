@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProviderOrdersRequest;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
@@ -209,12 +209,10 @@ class ProviderOrdersController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(ProviderOrdersRequest $request)
     {
         $request['discount'] = 0;
         $request['inpercents'] = 0;
-
-        $validation = Validator::make($request->all(), self::validateRules($request));
 
         #Подготовка Request`a
         if($request['nds'] === null){$request['nds'] = false;} else {$request['nds'] = true;}
@@ -223,14 +221,6 @@ class ProviderOrdersController extends Controller
             $request['nds_included'] = false;
         } else {$request['nds_included'] = true;}
         if($request['locked'] === null){$request['locked'] = false;}
-
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->expectsJson()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
 
         $partner = Partner::owned()->where('id', $request['partner_id'])->first();
 
@@ -609,18 +599,5 @@ class ProviderOrdersController extends Controller
 //        ->paginate($size);
         //dd($provider_orders);
         return $provider_orders;
-    }
-
-    private static function validateRules($request)
-    {
-        $rules = [
-            'partner_id' => ['required', 'exists:partners,id'],
-            'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
-            'products' => ['required'],
-            'products.*.count' => ['required', 'integer', 'min:0', 'max:9999'],
-            'products.*.price' => ['numeric', 'between:1,1000000.00'],
-        ];
-
-        return $rules;
     }
 }

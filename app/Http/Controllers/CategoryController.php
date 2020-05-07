@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -108,20 +109,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'string', 'max:120'],
-            'category_id' => ['required', 'min:0', 'max:12', 'exists:categories,id'],
-        ]);
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
-
         if($request['id'] == $request['category_id']){
             return response()->json([
                 'system_message' => view('messages.category_loop')->render(),

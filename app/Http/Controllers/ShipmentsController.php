@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShipmentsRequest;
 use App\Models\ClientOrder;
 use App\Models\Shipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
@@ -235,11 +235,9 @@ class ShipmentsController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(ShipmentsRequest $request)
     {
         $shipment = Shipment::firstOrNew(['id' => $request['id']]);
-
-        $validation = Validator::make($request->all(), self::validateRules());
 
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
             $request['inpercents'] = true;
@@ -256,13 +254,6 @@ class ShipmentsController extends Controller
 
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
-        }
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->expectsJson()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
         }
 
         if($shipment->exists){
@@ -452,19 +443,6 @@ class ShipmentsController extends Controller
 //        order by `created_at` desc
 
         return $shipments;
-    }
-
-    private static function validateRules()
-    {
-        $rules = [
-            'partner_id' => ['required', 'exists:partners,id'],
-            'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
-            'products' => ['required'],
-            'products.*.count' => ['integer', 'min:1', 'max:9999'],
-            'products.*.price' => ['numeric', 'between:1,1000000.00'],
-        ];
-
-        return $rules;
     }
 
     public function events(Request $request){

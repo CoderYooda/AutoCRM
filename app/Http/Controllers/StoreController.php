@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Controllers\Providers\TrinityController;
+use App\Http\Requests\StoreRequest;
 use App\Models\Article;
 use App\Models\Store;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 
@@ -193,19 +193,8 @@ class StoreController extends Controller
         return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.store.dialog.form_store', compact('store', 'request'))->render()]);
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'string', 'max:255'],
-        ]);
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
-
         $store = Store::firstOrNew(['id' => (int)$request['id']]);
         if($store->exists){
             $message = 'Склад обновлен';
