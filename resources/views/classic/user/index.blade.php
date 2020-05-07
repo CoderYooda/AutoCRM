@@ -53,6 +53,9 @@
                         <div class="user_ava">
 
                         </div>
+                        @if(isset($user) && $user->barcode != null)
+                            <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($user->barcode) !!}" alt="barcode" />
+                        @endif
                     </div>
                 </div>
                 <div class="box">

@@ -72,7 +72,14 @@ class Partner extends Model
                 $num_out = HelpController::phoneFormat( $number->number);
             }
         }
+        if(!$num_out){
+            $num_out = 'Ошибка форматирования номера';
+        }
         return $num_out;
+    }
+
+    public function getComment(){
+        return $this->comment ? $this->comment : 'Комментария нет';
     }
 
     public function passport()

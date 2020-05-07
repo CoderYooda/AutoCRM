@@ -31,7 +31,7 @@ class BarcodeController extends Controller
 
         return response()->json([
             'tag' => 'barcodeDialog',
-            'html' => view('barcode.dialog.form', compact('articles','partners', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.barcode.dialog.form', compact('articles','partners', 'request'))->render()
         ]);
     }
 }
