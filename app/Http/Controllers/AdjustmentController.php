@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdjustmentRequest;
 use App\Models\Adjustment;
 use App\Models\ClientOrder;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
@@ -42,22 +42,12 @@ class AdjustmentController extends Controller
         return response()->json($adjustments);
     }
 
-    public function store(Request $request)
+    public function store(AdjustmentRequest $request)
     {
-
         $request['partner_id'] = Auth::user()->partner()->first()->id;
 
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
-        }
-
-        $validation = Validator::make($request->all(), self::validateRules($request));
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->expectsJson()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
         }
 
         $adjustment = new Adjustment();
@@ -111,19 +101,6 @@ class AdjustmentController extends Controller
             return redirect()->back();
         }
 
-    }
-
-    private static function validateRules($request)
-    {
-        $rules = [
-            'partner_id' => ['required', 'exists:partners,id'],
-            'store_id' => ['required', 'exists:stores,id'],
-            'products' => ['required'],
-            'products.*.fact' => ['required', 'integer', 'min:0', 'max:9999'],
-            //'products.*.deviation' => ['required', 'numeric', 'between:1,1000000.00'],
-        ];
-
-        return $rules;
     }
 
     public function fresh($id, Request $request)

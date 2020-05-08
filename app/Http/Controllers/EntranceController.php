@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EntranceRequest;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Entrance;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
@@ -52,7 +52,7 @@ class EntranceController extends Controller
             'products' => $entrance->articles()->get()]);
     }
 
-    public function store(Request $request){
+    public function store(EntranceRequest $request){
 
         $entrance = Entrance::firstOrNew(['id' => $request['id']]);
 
@@ -62,19 +62,10 @@ class EntranceController extends Controller
             ], 422);
         }
 
-        $validation = Validator::make($request->all(), self::validateRules());
-
         #Подготовка Request`a
 //            if($request['nds'] === null){$request['nds'] = false;}
 //            if($request['nds_included'] === null){$request['nds_included'] = false;}
 //            if($request['locked'] === null){$request['locked'] = false;}
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
 
 
         # Склад с которым оперируем
@@ -333,17 +324,6 @@ class EntranceController extends Controller
         } else {
             return redirect()->back();
         }
-    }
-
-    private static function validateRules()
-    {
-        $rules = [
-            'providerorder_id' => ['required', 'exists:provider_orders,id'],
-//            'store_id' => ['required', 'exists:stores,id'],
-            'products' => ['required'],
-            'products.*.count' => ['integer', 'min:1', 'max:9999'],
-        ];
-        return $rules;
     }
 
     public function events(Request $request){

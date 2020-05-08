@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\PartnerRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Partner;
@@ -11,7 +12,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
 use Milon\Barcode\DNS1D;
 use App\Models\Store;
@@ -104,7 +104,7 @@ class PartnerController extends Controller
 //        return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner'))->render()]);
 //    }
 
-    public function store(Request $request)
+    public function store(PartnerRequest $request)
     {
         if($request['number']){
             $request['number'] = (int)str_replace(' ', '', $request['number']);
@@ -117,15 +117,6 @@ class PartnerController extends Controller
             $request['issued_date'] = null;
         }
 
-
-        $validation = Validator::make($request->all(), self::validateRules($request));
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->expectsJson()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){
@@ -241,47 +232,6 @@ class PartnerController extends Controller
             'id' => $returnIds,
             'message' => $this->message
         ], $this->status);
-    }
-
-    private static function validateRules($request)
-    {
-        $rules = null;
-        if((bool)$request['isfl']){
-            $rules = [
-                'fio' => ['required', 'min:4', 'string', 'max:255'],
-                'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id']
-            ];
-
-            $active = false;
-            foreach($request['phones'] as $phone){if($phone['number'] != NULL){$active = true;}}
-            if($active){$rules['phones.*.number'] = ['min:0', 'required', 'regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];}
-            if($request['number']){
-                $rules['number'] = ['min:0', 'digits:10', 'integer'];
-            }
-            if($request['issued_by']){$rules['issued_by'] = ['min:0', 'max:250'];}
-            if($request['issued_date']){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:d.m.Y'];}
-            if($request['issued_place']){$rules['issued_place'] = ['min:0', 'max:250'];}
-
-        } elseif(!(bool)$request['isfl']) {
-            $rules = [
-                'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
-                'companyName' => ['required', 'min:4', 'string', 'max:255'],
-                'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
-            ];
-        }
-        if($request['email']){$rules['email'] = ['min:3', 'email'];}
-        if($request['phone'] != null){
-            $rules['phone'] = ['unique:users'];
-        }
-
-//        foreach($request['store'] as $id => $store){
-//            if(isset($store['isset']) && $store['isset'] == true){
-//                $rules['store.' . $id . '.location'] = [ 'max:250'];
-//                $rules['store.' . $id . '.isset'] = [ 'boolean'];
-//            }
-//        }
-
-        return $rules;
     }
 
     public static function selectPartnerDialog($request)

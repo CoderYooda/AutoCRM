@@ -2,28 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CashboxRequest;
 use App\Models\Cashbox;
 use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\UserActionsController as UA;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Gate;
 
 class CashboxController extends Controller
 {
-    public function store(Request $request)
+    public function store(CashboxRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'string', 'max:255'],
-        ]);
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
-
         $cashbox = Cashbox::firstOrNew(['id' => (int)$request['id']]);
         if($cashbox->exists){
             $message = 'Касса обновлена';
@@ -37,7 +26,6 @@ class CashboxController extends Controller
         $cashbox->fill($request->all());
         $cashbox->company_id = Auth::user()->company()->first()->id;
         $cashbox->save();
-
 
 
         $cashboxes = self::getCashboxes($request);

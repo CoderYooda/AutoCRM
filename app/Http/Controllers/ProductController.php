@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Requests\ProductRequest;
 use App\Model\Catalog\Product;
 use App\Models\Adjustment;
 use App\Models\Article;
@@ -269,20 +270,11 @@ class ProductController extends Controller
 //        return response()->json(['tag' => $tag, 'html' => view('product.dialog.form_product', compact('product', 'stores'))->render()]);
 //    }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         if ($request['new_supplier_name'] != null && $request['supplier_id'] == null) {
             $supplier = SupplierController::silent_store($request);
             $request['supplier_id'] = $supplier->id;
-        }
-
-        $validation = Validator::make($request->all(), self::validateRules($request));
-
-        if ($validation->fails()) {
-            $this->status = 422;
-            if ($request->expectsJson()) {
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
         }
 
         if ($request['id'] != null) { //товар редактируется
@@ -423,18 +415,6 @@ class ProductController extends Controller
         $articles = Article::where('article', 'like', '%' . $request['search'] . '%')->orderBy('created_at', 'DESC')->paginate(24);
         dd($articles);
         return $articles;
-    }
-
-    private static function validateRules($request)
-    {
-        $rules = [
-            'name' => ['required', 'min:4', 'string', 'max:255'],
-            'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
-            'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
-            'article' => ['required', 'string', 'max:64'],
-        ];
-
-        return $rules;
     }
 
     public function search(Request $request)

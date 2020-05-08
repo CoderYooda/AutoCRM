@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SmsRequest;
 use Illuminate\Http\Request;
 use App\Models\SMSMessages;
 use App\Models\SMS;
 use stdClass;
 use App\Models\SmsConfirmation;
 use Auth;
-use Illuminate\Support\Facades\Validator;
 
 class SmsController extends Controller
 {
@@ -41,19 +41,9 @@ class SmsController extends Controller
     }
 
 
-    public function confirm(Request $request)
+    public function confirm(SmsRequest $request)
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
-        $validator = Validator::make($request->all(), [
-            'code' => ['required', 'digits:5', 'integer'],
-            'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                'messages' => $validator->errors()
-            ]);
-        }
 
         $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
 

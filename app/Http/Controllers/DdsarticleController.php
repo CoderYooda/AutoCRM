@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\DdsarticleRequest;
 use App\Models\Category;
 use App\Models\DdsType;
 use Illuminate\Http\Request;
@@ -58,26 +59,11 @@ class DdsarticleController extends Controller
 
 
 
-    public function store(Request $request)
+    public function store(DdsarticleRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'string', 'max:255'],
-            'dds_types_id' => ['required'],
-        ]);
-
-        if($validation->fails()){
-            $this->status = 422;
-            if($request->ajax()){
-                return response()->json(['messages' => $validation->errors()], $this->status);
-            }
-        }
-
         $Ddsarticle = DdsArticle::firstOrNew(['id' => (int)$request['id']]);
-        if($Ddsarticle->exists){
-            $message = 'Статья ДДС обновлена';
-        } else {
-            $message = 'Статья ДДС создана';
-        }
+
+        $message = $Ddsarticle->exists ? 'Статья ДДС обновлена' : 'Статья ДДС создана';
 
         $Ddsarticle->fill($request->all());
         $Ddsarticle->company_id = Auth::user()->company()->first()->id;

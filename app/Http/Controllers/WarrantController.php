@@ -10,7 +10,6 @@ use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Partner;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;

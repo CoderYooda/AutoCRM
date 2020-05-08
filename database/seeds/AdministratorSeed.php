@@ -21,13 +21,13 @@ class AdministratorSeed extends Seeder
         $company = new Company();
         $company->name = 'Управляющая компания';
         $company->save();
-	
-	    $store = new Store();
-	    $store->company_id = $company->id;
-	    $store->type = 'casual';
-	    $store->locked = 0;
-	    $store->name = 'Первый магазин';
-	    $store->save();
+
+        $store = new Store();
+        $store->company_id = $company->id;
+        $store->type = 'casual';
+        $store->locked = 0;
+        $store->name = 'Первый магазин';
+        $store->save();
 
         $user = User::create([
             'name' => 'Администратор',
@@ -57,12 +57,12 @@ class AdministratorSeed extends Seeder
         $company->name = 'Тестовый магазин';
         $company->save();
 
-	    $store = new Store();
-	    $store->company_id = $company->id;
-	    $store->type = 'casual';
-	    $store->locked = 0;
-	    $store->name = 'Первый магазин';
-	    $store->save();
+        $store = new Store();
+        $store->company_id = $company->id;
+        $store->type = 'casual';
+        $store->locked = 0;
+        $store->name = 'Первый магазин';
+        $store->save();
 
 
         $user = User::create([
