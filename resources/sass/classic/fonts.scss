@@ -44,6 +44,30 @@
     margin-top: 39px;
     animation: 1s linear 0s normal none infinite running i3-anim;
 }
+.list-p-items{
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #ced4da;
+    padding: 0;
+    list-style: none;
+}
+.list-p-items .item{
+    border-bottom: 1px solid #eee;
+    padding: 10px 15px;
+}
+.list-p-items .item:last-child{
+    border-bottom: none;
+}
+.list-p-items .p-status{
+    min-width: 150px;
+}
+.list-p-items .p-partner{
+    min-width: 250px;
+}
+
+.d-inline-block{
+    display: inline-block;
+}
 
 @keyframes i2r-anim {
     0%{

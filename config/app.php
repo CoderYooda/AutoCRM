@@ -168,6 +168,7 @@ return [
         Milon\Barcode\BarcodeServiceProvider::class,
         sngrl\SphinxSearch\SphinxSearchServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Shakinm\Tinkoff\TinkoffServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -231,6 +232,7 @@ return [
         'SystemMessage' => \App\Http\Controllers\SystemMessageController::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'Tinkoff' => Shakinm\Tinkoff\TinkoffFacade::class,
     ],
 
 ];

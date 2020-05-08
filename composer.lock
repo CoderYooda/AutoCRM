@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f76c26c40631110030fc2e477fb66883",
+    "content-hash": "1f7b1d2ac50215ec9c0aad68cab8d8b1",
     "packages": [
         {
             "name": "cybercog/laravel-ban",
@@ -1688,6 +1688,49 @@
                 "uuid"
             ],
             "time": "2018-07-19T23:38:55+00:00"
+        },
+        {
+            "name": "shakinm/laravel5-tinkoff",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shakinm/laravel5-tinkoff.git",
+                "reference": "9b607eb0956a682f8e8b464f8e7e7589379dd806"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shakinm/laravel5-tinkoff/zipball/9b607eb0956a682f8e8b464f8e7e7589379dd806",
+                "reference": "9b607eb0956a682f8e8b464f8e7e7589379dd806",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Shakinm\\Tinkoff\\TinkoffServiceProvider"
+                    ],
+                    "aliases": {
+                        "Tinkoff": "Shakinm\\Tinkoff\\TinkoffFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Shakinm\\Tinkoff\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mikhail Shakin",
+                    "email": "m.shakin@digitalwand.ru"
+                }
+            ],
+            "description": "Package - Tinkoff Merchant API",
+            "time": "2018-03-02T07:38:02+00:00"
         },
         {
             "name": "sngrl/sphinxsearch",
@@ -5177,6 +5220,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "shakinm/laravel5-tinkoff": 20,
         "sngrl/sphinxsearch": 20
     },
     "prefer-stable": true,

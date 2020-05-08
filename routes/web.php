@@ -16,6 +16,10 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 #СМС
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 
+#Тариф
+Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePayment');
+Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
+
 //Route::multilingual('/', 'DashboardController@index');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {

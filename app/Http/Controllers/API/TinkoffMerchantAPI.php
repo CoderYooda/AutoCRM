@@ -125,8 +125,6 @@ class TinkoffMerchantAPI
             }
         }
         $url = $this->_combineUrl($url, $path);
-
-
         return $this->_sendRequest($url, $args);
     }
 

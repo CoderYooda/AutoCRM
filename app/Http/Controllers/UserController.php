@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Models\Partner;
+use App\Models\Payment;
 use App\Models\SalarySchema;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -112,6 +113,18 @@ class UserController extends Controller
     public static function salesTab($request)
     {
         return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.sales', compact('request'));
+    }
+
+    public static function serviceTab($request)
+    {
+
+        $payments = Payment::owned()->get();
+
+        foreach ($payments as $payment){
+            $payment->freshStatus();
+        }
+
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.service', compact('request', 'payments'));
     }
 
     public function saveSalarySchemaToUser(Request $request)
