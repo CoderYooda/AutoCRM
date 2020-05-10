@@ -22,7 +22,7 @@ class MoneyMoves extends Model
 
     public function manager()
     {
-        return $this->belongsTo('App\Models\Partner', 'manager_id');
+        return $this->belongsTo(Partner::class, 'manager_id');
     }
 
     public static function owned(){
@@ -32,11 +32,11 @@ class MoneyMoves extends Model
 
     public function in_cashbox()
     {
-        return $this->belongsTo('App\Models\Cashbox', 'in_cashbox_id');
+        return $this->belongsTo(Cashbox::class, 'in_cashbox_id');
     }
 
     public function out_cashbox()
     {
-        return $this->belongsTo('App\Models\Cashbox', 'out_cashbox_id');
+        return $this->belongsTo(Cashbox::class, 'out_cashbox_id');
     }
 }

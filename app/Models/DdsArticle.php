@@ -11,17 +11,17 @@ class DdsArticle extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Models\Category', 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function ddstype()
     {
-        return $this->belongsTo('App\Models\DdsType', 'dds_types_id');
+        return $this->belongsTo(DdsType::class, 'dds_types_id');
     }
 
     public static function owned(){

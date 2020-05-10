@@ -38,27 +38,27 @@ class Partner extends Model
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function category()
     {
-        return $this->belongsTo('App\Models\Category', 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
     public function phones()
     {
-        return $this->belongsToMany('App\Models\Phone', 'partner_phone');
+        return $this->belongsToMany(Phone::class, 'partner_phone');
     }
 
     public function salarySchemas()
     {
-        return $this->belongsToMany('App\Models\SalarySchema', 'salary_schemas_partner');
+        return $this->belongsToMany(SalarySchema::class, 'salary_schemas_partner');
     }
 
     public function firstActivePhoneNumber()
@@ -68,7 +68,6 @@ class Partner extends Model
         if($phones){
             $number = $phones->where('main', true)->first();
             if($number){
-
                 $num_out = HelpController::phoneFormat( $number->number);
             }
         }
@@ -78,32 +77,31 @@ class Partner extends Model
         return $num_out;
     }
 
-    public function getComment(){
-        return $this->comment ? $this->comment : 'Комментария нет';
+    public function getComment()
+    {
+        //TODO check
+        return $this->comment ?: 'Комментария нет';
     }
 
     public function passport()
     {
-        return $this->hasOne('App\Models\Passport');
+        return $this->hasOne(Passport::class);
     }
 
     public function car()
     {
-        return $this->hasOne('App\Models\Car');
+        return $this->hasOne(Car::class);
     }
 
     public function outputName() //Вывод имени или наименования компании
     {
-        if($this->isfl){
-            return $this->fio;
-        } else {
-            return $this->companyName;
-        }
+        return $this->isfl ? $this->fio : $this->companyName;
     }
 
     public function outputEmail()
     {
-        return $this->email ? $this->email : 'Email не указан';
+        //TODO check
+        return $this->email ?: 'Email не указан';
     }
 
     public function firstLetterOfName(){
@@ -111,11 +109,7 @@ class Partner extends Model
     }
 
     public function isflText(){
-        if($this->isfl){
-            return 'Физическое лицо';
-        } else {
-            return 'Юридическое лицо';
-        }
+        return $this->isfl ? 'Физическое лицо' : 'Юридическое лицо';
     }
 
     public static function owned(){
@@ -132,7 +126,7 @@ class Partner extends Model
     }
 
     public function getBarCode(){
-        return $this->barcode ? $this->barcode : 'Штрихкод  не указан';
+        return $this->barcode ? $this->barcode : 'Штрихкод не указан';
     }
 
     public function getDateMembership()
@@ -141,16 +135,15 @@ class Partner extends Model
         return $user ? $user->created_at->format('d.m.Y') : '-';
     }
 
-    public function addition($summ){
-        $this->balance = round($this->balance + $summ, 2);
-
-        $this->save();
+    public function addition($summ)
+    {
+        $this->update(['balance' => round($this->balance + $summ, 2)]);
         return true;
     }
 
-    public function subtraction($summ){
-        $this->balance = round($this->balance - $summ, 2);
-        $this->save();
+    public function subtraction($summ)
+    {
+        $this->update(['balance' => round($this->balance - $summ, 2)]);
         return true;
     }
 

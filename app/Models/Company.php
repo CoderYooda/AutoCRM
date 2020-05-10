@@ -9,23 +9,20 @@ class Company extends Model
     protected $guarded = [];
 
     public function members(){
-        return $this->hasMany('App\Models\User', 'company_id');
+        return $this->hasMany(User::class, 'company_id');
     }
 
     public function stores(){
-        return $this->hasMany('App\Models\Store', 'company_id');
+        return $this->hasMany(Store::class, 'company_id');
     }
 
     public function cashboxes(){
-        return $this->hasMany('App\Models\Cashbox', 'company_id');
+        return $this->hasMany(Cashbox::class, 'company_id');
     }
 
     public function checkAccessToStore($store){
-        if($store == null || $this->stores()->where('id', $store->id)->first() == NULL){
-            return false;
-        } else {
-            return true;
-        }
+        //TODO check
+        return ($store == null || $this->stores()->where('id', $store->id)->first() == NULL);
     }
 
     public function getFirstCompanyMember() // TODO получать лидера компании
@@ -35,8 +32,11 @@ class Company extends Model
 
     public function inviteUser($user)
     {
-        $user->company_id = $this->id;
-        $user->save();
+        //TODO check
+        $user->update(['company_id' => $this->id]);
+
+//        $user->company_id = $this->id;
+//        $user->save();
         return 1;
     }
 }

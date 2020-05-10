@@ -20,28 +20,28 @@ class Entrance extends Model
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
+        return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
             ->withPivot('count', 'price');
     }
 
     public function partner()
     {
-        return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
+        return $this->belongsTo(Partner::class, 'partner_id')->withTrashed();
     }
 
     public function providerorder()
     {
-        return $this->belongsTo('App\Models\ProviderOrder', 'providerorder_id')->withTrashed();
+        return $this->belongsTo(ProviderOrder::class, 'providerorder_id')->withTrashed();
     }
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
     public function normalizedData(){
@@ -61,7 +61,9 @@ class Entrance extends Model
 
     public function migrateInStore($store, $newStore)
     {
-        foreach($this->articles()->get() as $article){
+        $articles = $this->articles()->get();
+
+        foreach($articles as $article){
             $count = $article->pivot->count;
             $store->decreaseArticleCount($article->id, $count);
             $newStore->increaseArticleCount($article->id, $count);

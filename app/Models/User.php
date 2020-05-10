@@ -41,11 +41,11 @@ class User extends Authenticatable
     ];
 
     public function company(){
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function partner(){
-        return $this->hasOne('App\Models\Partner', 'user_id');
+        return $this->hasOne(Partner::class, 'user_id');
     }
 
     public function getStoreFirst(){
@@ -60,8 +60,7 @@ class User extends Authenticatable
 
     public function attachToCompany($company)
     {
-        $this->company_id = $company->id;
-        $this->save();
+        $this->update(['company_id' => $company->id]);
         return 1;
     }
 }

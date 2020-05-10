@@ -25,7 +25,7 @@ class Refund extends Model
 
     public function shipment()
     {
-        return $this->belongsTo('App\Models\Shipment', 'shipment_id');
+        return $this->belongsTo(Shipment::class, 'shipment_id');
     }
 
     public function syncArticles($refund_id, $pivot_array)
@@ -49,12 +49,12 @@ class Refund extends Model
 
     public function warrants()
     {
-        return $this->belongsToMany('App\Models\Warrant', 'refund_warrant',  'refund_id', 'warrant_id' );
+        return $this->belongsToMany(Warrant::class, 'refund_warrant',  'refund_id', 'warrant_id' );
     }
 
     public function partner()
     {
-        return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
+        return $this->belongsTo(Partner::class, 'partner_id')->withTrashed();
     }
 
     public function normalizedData()
@@ -64,21 +64,16 @@ class Refund extends Model
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
+        return $article ? $article->pivot->count : 0;
     }
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_refund', 'refund_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
             ->withPivot('count', 'price', 'total')->withTrashed();
     }
 

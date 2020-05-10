@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StatisticRequest;
 use App\Models\Car;
 use App\Models\DdsArticle;
 use App\Models\Warrant;
@@ -91,5 +92,10 @@ class StatisticController extends Controller
         } else {
             return $content;
         }
+    }
+
+    public function show(StatisticRequest $request)
+    {
+        //TODO need end 
     }
 }
