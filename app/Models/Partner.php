@@ -36,6 +36,22 @@ class Partner extends Model
         'kpp',
     ];
 
+    public function pic(){
+        return $this->belongsTo('App\Models\System\Image', 'pic_id');
+    }
+
+    public function avatar(){
+        return $this->belongsTo('App\Models\System\Image', 'avatar_id');
+    }
+
+    public function getPicUrl(){
+        return $this->pic()->first() ? $this->pic()->first()->thumb_url : 'http://autocrm/images/noavatar.png';
+    }
+
+    public function getAvatarUrl(){
+        return $this->avatar()->first() ? $this->avatar()->first()->url : 'http://autocrm/images/noavatar.png';
+    }
+
     public function company()
     {
         return $this->belongsTo('App\Models\Company', 'company_id');

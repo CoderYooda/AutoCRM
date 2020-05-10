@@ -101,7 +101,7 @@
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <span class="d-flex align-items-center p-10" href="">
                                             <span class="avatar w-32 mr-3">
-                                                <img src="http://autocrm/images/noavatar.png" alt="...">
+                                                <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() }}" alt="...">
                                             </span>
                                 {{ Auth::user()->name }}
                             </span>

@@ -116,7 +116,9 @@ class PartnerController extends Controller
         if($request['issued_date'] == '__.__.____'){
             $request['issued_date'] = null;
         }
-
+        if($request['birthday'] == '__.__.____'){
+            $request['birthday'] = null;
+        }
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){

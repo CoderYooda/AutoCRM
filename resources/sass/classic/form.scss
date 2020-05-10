@@ -55,9 +55,10 @@
 }
 .user_ava{
     width: 228px;
-    height: 260px;
     display: block;
-    background: url(../images/noavatar.png) no-repeat center;
+}
+.user_ava img{
+    width: 100%;
 }
 .user_ava_id{
     position: absolute;

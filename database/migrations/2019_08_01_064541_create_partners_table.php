@@ -19,6 +19,8 @@ class CreatePartnersTable extends Migration
             $table->bigInteger('user_id')->unsigned()->nullable()->comment('Привязка к пользователю');
             $table->bigInteger('category_id')->unsigned()->comment('Привязка к категории');
             $table->bigInteger('store_id')->unsigned()->nullable()->comment('Привязка к складу');
+            $table->bigInteger('avatar_id')->unsigned()->nullable();
+            $table->bigInteger('pic_id')->unsigned()->nullable();
             $table->boolean('isfl')->comment('физическое лицо?');
             $table->double('balance')->default(0)->comment('Баланс');
             $table->char('basePhone', 15)->nullable()->comment('Основной телефон');

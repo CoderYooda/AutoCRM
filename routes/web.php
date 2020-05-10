@@ -180,6 +180,12 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
 
+    #Картинки
+    Route::post('/system/image_upload', 'System\ImageController@upload')->name('uploadImage');
+    Route::post('/system/crop_image', 'System\ImageController@cropImage')->name('CropImage');
+//    Route::post('/remove_image', 'Stock\ImageController@remove')->name('removeImage');
+//    Route::post('/rotate_image', 'Stock\ImageController@rotateImg')->name('rotateImg');
+//    Route::post('/setindexes', 'Stock\ImageController@setIndexes')->name('setIndexes');
 
     #Календарь
     Route::get('/calendar', 'CalendarController@index')->name('CalendarIndex');
