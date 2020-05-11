@@ -272,11 +272,6 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-        if ($request['new_supplier_name'] != null && $request['supplier_id'] == null) {
-            $supplier = SupplierController::silent_store($request);
-            $request['supplier_id'] = $supplier->id;
-        }
-
         if ($request['id'] != null) { //товар редактируется
             $compare = ['id' => $request['id']];
         } else {

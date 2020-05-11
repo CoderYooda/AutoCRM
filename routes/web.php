@@ -73,7 +73,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Продажи
     Route::get('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
     Route::post('/shipment/store', 'ShipmentsController@store')->name('StoreShipment');// Строгое название
-    Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
+    Route::post('/shipment/{shipment}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
     Route::post('/shipment/{id}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');

@@ -15,14 +15,18 @@ class statisticPage {
     }
 
     showResults() {
+
+        let entity_element = document.getElementById("entity");
+
         window.axios({
             method: 'post',
             url: '/statistic',
             data: {
                 refer: 'statistic',
-                manager_id: document.querySelector("input[name=manager_id]").value,
+                manager_id: Number(document.querySelector("input[name=manager_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
-                final_date: document.querySelector("input[name=final_date]").value
+                final_date: document.querySelector("input[name=final_date]").value,
+                entity: entity_element.options[entity_element.selectedIndex].value
             }
         })
         .then(response => {

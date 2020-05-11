@@ -10,6 +10,7 @@ use App\Models\Partner;
 use App\Http\Controllers\CategoryController;
 use App\Models\User;
 use Carbon\Carbon;
+use http\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\Paginator;

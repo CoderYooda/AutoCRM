@@ -6,21 +6,23 @@ use App\Http\Requests\ShipmentsRequest;
 use App\Models\ClientOrder;
 use App\Models\Shipment;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
-use Auth;
 
 class ShipmentsController extends Controller
 {
-    public static function shipmentDialog($request)
+    public static function shipmentDialog(Request $request)
     {
         $tag = 'shipmentDialog';
+
         $clientorder = null;
-        if($request->clientorder_id){
+        if($request->clientorder_id) {
             $clientorder = ClientOrder::owned()->where('id', (int)$request->clientorder_id)->first();
             if(!$clientorder){
                 return response()->json(['type' => 'error', 'message' => 'ошибка зависимости заказа',], 200);
@@ -171,12 +173,13 @@ class ShipmentsController extends Controller
         }
         $returnIds = null;
         if($id == 'array'){
-            $shipments = Shipment::whereIn('id', $request['ids']);
+            $shipments = Shipment::whereIn('id', $request['ids'])->get();
             $this->message = 'Продажи удалены';
-            $returnIds = $shipments->get()->pluck('id');
-            foreach($shipments->get() as $shipment){
+            $returnIds = $shipments->pluck('id');
+            foreach($shipments as $shipment){
                 if($shipment->delete()){
-                    foreach($shipment->articles()->get() as $article){
+                    $articles = $shipment->articles()->get();
+                    foreach($articles as $article){
                         $store = $shipment->store()->first();
                         $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
                     }
@@ -194,7 +197,10 @@ class ShipmentsController extends Controller
         } else {
             $shipment = Shipment::where('id', $id)->first();
             $returnIds = $shipment->id;
-            foreach($shipment->articles()->get() as $article){
+
+            $articles = $shipment->articles()->get();
+
+            foreach($articles as $article){
                 $store = $shipment->store()->first();
                 $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
             }
@@ -219,19 +225,21 @@ class ShipmentsController extends Controller
 
     }
 
-    public function fresh(Shipment $shipment, Request $request)
+    public function fresh($id, Request $request)
     {
+        $shipment = Shipment::owned()->where('id', $id)->first();
+
         $stores = Store::owned()->get();
         $request['fresh'] = true;
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
-        $class = 'shipmentDialog' . $shipment->id;
+        $class = 'shipmentDialog' . $id;
         $inner = true;
         $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([
             'html' => $content,
-            'target' => 'shipmentDialog' . $shipment->id
+            'target' => 'shipmentDialog' . $id
         ], 200);
     }
 
@@ -243,6 +251,7 @@ class ShipmentsController extends Controller
             $request['inpercents'] = true;
         }
 
+        //TODO добавить в валидатор проверку и выводить ошибку мб?
         if($request['inpercents']){
             if((int)$request['discount'] >= 100){
                 $request['discount'] = 100;
@@ -250,10 +259,6 @@ class ShipmentsController extends Controller
             if((int)$request['discount'] <= 0){
                 $request['discount'] = 0;
             }
-        }
-
-        if($request['do_date'] == null){
-            $request['do_date'] = Carbon::now();
         }
 
         if($shipment->exists){
@@ -269,9 +274,6 @@ class ShipmentsController extends Controller
             $wasExisted = false;
         }
 
-
-
-
         $shipment->fill($request->only($shipment->fields));
         $shipment->summ = 0;
         $shipment->balance = 0;
@@ -285,7 +287,8 @@ class ShipmentsController extends Controller
         $store = $shipment->store()->first();
 
         if($shipmentWasExisted){
-            foreach($shipment->articles()->get() as $article){
+            $articles = $shipment->articles()->get();
+            foreach($articles as $article){
                 $store->increaseArticleCount($article->id, $article->pivot->count);
                 if($shipment->clientOrder){
                     $shipment->clientOrder->decreaseShippedCount($article->id, $article->pivot->count);
@@ -294,13 +297,20 @@ class ShipmentsController extends Controller
         }
 
         if(count($request['products'])){
-            # Собираем товары в массив id шников из Request`a
-            $plucked_articles = [];
-            foreach($request['products'] as $product) {
-                $plucked_articles[] = $product['id'];
-            }
+
+            //TODO check
+
+            //after
+            $ids = collect($request['products'])->pluck('id');
+
+            //before
+//            # Собираем товары в массив id шников из Request`a
+//            $plucked_articles = [];
+//            foreach($request['products'] as $product) {
+//                $plucked_articles[] = $product['id'];
+//            }
             # Синхронизируем товары к складу
-            $store->articles()->syncWithoutDetaching($plucked_articles, false);
+            $store->articles()->syncWithoutDetaching($ids, false);
         }
 
         //$store = Store::where('id', $request['store_id'])->first();
@@ -383,8 +393,8 @@ class ShipmentsController extends Controller
         }
     }
 
-    public function getShipmentProducts($id){
-        $shipment = Shipment::where('id', $id)->first();
+    //TODO check
+    public function getShipmentProducts(Shipment $shipment){
 
         return response()->json([
             'products' => $shipment->getArticles()]);
@@ -392,10 +402,7 @@ class ShipmentsController extends Controller
 
     public static function getShipments($request)
     {
-        $size = 30;
-        if(isset($request['size'])){
-            $size = (int)$request['size'];
-        }
+        $size = isset($request['size']) ? $request['size'] : 30;
 
         $field = null;
         $dir = null;
@@ -404,7 +411,8 @@ class ShipmentsController extends Controller
             $field = $request['sorters'][0]['field'];
             $dir = $request['sorters'][0]['dir'];
         }
-        if($field === null &&  $dir === null){
+
+        if($field === null && $dir === null){
             $field = 'created_at';
             $dir = 'DESC';
         }
@@ -445,18 +453,23 @@ class ShipmentsController extends Controller
         return $shipments;
     }
 
-    public function events(Request $request){
+    public function events(Request $request)
+    {
+        //TODO check
         $client_orders = Shipment::owned()
-            ->where(function($q) use ($request){
+            ->where(function(Builder $q) use ($request) {
                 if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
                     $q->where('do_date',  '>=',  Carbon::parse($request['start']));
                 }
                 if(isset($request['end']) && $request['end'] != 'null' && $request['end'] != ''){
                     $q->where('do_date', '<=', Carbon::parse($request['end']));
                 }
-            })->get();
+            })
+            ->get();
+
         $events = [];
-        foreach($client_orders as $order){
+
+        foreach($client_orders as $order) {
             $events[] = [
                 'title' => 'Продажа №' . $order->id,
                 'start' => $order->do_date,

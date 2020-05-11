@@ -16,9 +16,10 @@ class StatisticRequest extends FormRequest
     public function rules()
     {
         return [
-            'manager_id' => ['exists:users,id'],
-            'begin_date' => ['date_format: Y-m-d'],
-            'final_date' => ['date_format: Y-m-d']
+            'manager_id' => ['exists:partners,id'],
+            'begin_date' => ['date_format:Y-m-d'],
+            'final_date' => ['date_format:Y-m-d'],
+            'entity' => ['integer', 'min:0', 'max:2']
         ];
     }
 

@@ -20,6 +20,16 @@
         </div>
 
         <div class="form-group w-128 mr-15">
+            <label>Сущность</label>
+            <select id="entity" class="form-control">
+                <option value="0">Заявки поставщикам</option>
+                <option value="1">Поступления</option>
+                <option value="2">Продажи</option>
+            </select>
+        </div>
+
+        <div class="form-group w-128 mr-15">
+            <br/>
             <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
                 @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
                     {{ $shipment->partner->outputName() }}
