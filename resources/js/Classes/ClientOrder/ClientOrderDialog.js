@@ -17,7 +17,7 @@ class clientorderDialog extends Modal{
 
     init(){
         let object = this;
-
+        helper.initTabs('cl_tabs');
         var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
 
         ///Вешаем обрабочик на поле скидки/////////////

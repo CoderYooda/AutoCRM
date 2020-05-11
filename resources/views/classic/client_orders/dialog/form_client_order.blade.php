@@ -248,15 +248,15 @@
                 </div>
                 <div class="col-sm-6 form-group no-pl intabs">
                     <div class="b-b nav-active-bg">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#" data-toggle="tab" data-target="#tab4">SMS сообщения</a>
+                        <ul class="nav nav-tabs" id="cl_tabs">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#tab4" data-toggle="tab" data-target="#tab4">SMS сообщения</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="tab" data-target="#tab5">Платежи</a>
+                                <a class="nav-link" href="#tab5" data-toggle="tab" data-target="#tab5">Платежи</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="tab" data-target="#tab6">Продажи</a>
+                                <a class="nav-link" href="#tab6" data-toggle="tab" data-target="#">Продажи</a>
                             </li>
                         </ul>
                     </div>

@@ -21,7 +21,7 @@ class ProductDialog extends Modal{
             focused.focus();
             focused.select();
         }
-
+        helper.initTabs('product_tabs');
         var fn = window.helper.debounce(function(e) {object.trinitySearch();}, 800);
 
         ///Вешаем обрабочик на поле скидки/////////////

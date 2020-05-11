@@ -17,7 +17,6 @@ class ProviderOrdersRequest extends FormRequest
     {
         return [
             'partner_id' => ['required', 'exists:partners,id'],
-            'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required'],
             'products.*.count' => ['required', 'integer', 'min:0', 'max:9999'],
             'products.*.price' => ['numeric', 'between:1,1000000.00'],

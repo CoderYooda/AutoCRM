@@ -29,6 +29,7 @@
 }
 .show{
     display: block!important;
+    opacity: 1!important;
 }
 .m-15 {
     margin: 15px !important;
@@ -172,7 +173,8 @@ h5{
     display: block;
     border-bottom: 1px solid #FFFFFF;
 }
-.modal-body .nav-link:hover, .modal-body .nav-link.active{
+
+.modal-body .nav-link:hover, .modal-body .active .nav-link{
     background-color: #1F98E9;
     color: #fff;
 }
@@ -603,6 +605,9 @@ label.label-sm{
 .flex-3{
     flex: 3!important;
 }
+#user_index_page .name_edit.is-invalid{
+    border-bottom: 1px solid #e3342f!important;
+}
 #user_index_page .name_edit{
     border: 0;
     margin: 0;
@@ -615,6 +620,7 @@ label.label-sm{
     border-bottom: 1px solid #ced4da;
     border-radius: 0;
 }
+
 .flex-1-5{
     flex: 1.5!important;
 }

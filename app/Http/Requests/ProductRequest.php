@@ -35,7 +35,6 @@ class ProductRequest extends FormRequest
                 response()->json(['messages' => $validator->errors()], 422)
             );
         }
-
         parent::failedValidation($validator);
     }
 }

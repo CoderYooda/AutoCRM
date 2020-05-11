@@ -38,7 +38,9 @@ class userPage{
             }
         }).catch(function(response){
             dd(response);
-        })
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 
     checkPayment(id){
@@ -52,7 +54,9 @@ class userPage{
 
         }).catch(function(response){
             dd(response);
-        })
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
@@ -80,7 +84,7 @@ class userPage{
 
             document.getElementById('croppr-container').appendChild(crop);
 
-
+            document.getElementById('file_upload').value = '';
 
             // $('#pick-button').hide();
             // $('#save-button').show();
@@ -107,48 +111,10 @@ class userPage{
 
         }).catch(function(response){
             dd(response);
+        }).finally(function () {
+            window.isXHRloading = false;
         });
 
-        //
-        // $.ajax({
-        //     url: $( form ).attr('action'),
-        //     type: $( form ).attr('method'),
-        //     data:  data,
-        //     success: function(response){
-        //         document.getElementById('croppr-container').innerHTML = '';
-        //         var crop = document.createElement('img');
-        //         crop.setAttribute("src", response.data.url);
-        //         crop.setAttribute("id", 'croppr');
-        //
-        //         document.getElementById('croppr-container').appendChild(crop);
-        //
-        //         // $('#pick-button').hide();
-        //         // $('#save-button').show();
-        //         // $('#another-button').show();
-        //
-        //         var croppr = new Croppr('#croppr', {
-        //             startSize: [90, 90],
-        //             minSize: [50, 50, 'px'],
-        //             aspectRatio: 1,
-        //             onCropStart: function(){
-        //                 // document.getElementById('crop_form_modal').classList.add('moving');
-        //                 // document.getElementById('modal-container').classList.add('freeze');
-        //                 // clearTimeout(window.freezeTimer);
-        //             },
-        //             onCropEnd: function(value) {
-        //                 window.cropdata = {'url':response.url, 'filename':response.filename, 'coords' : value};
-        //                 // document.getElementById('crop_form_modal').classList.remove('moving');
-        //                 // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
-        //             },
-        //             onInitialize: function(instance) {
-        //                 window.cropdata = {'url':response.url, 'filename':response.filename, 'coords' : instance.getValue()};
-        //             }
-        //         });
-        //     },
-        //     cache: false,
-        //     contentType: false,
-        //     processData: false
-        // });
     }
 
     anotherPicture(){
@@ -172,6 +138,8 @@ class userPage{
             object.crop_modal.hide();
         }).catch(function(response){
             dd(response);
+        }).finally(function () {
+            window.isXHRloading = false;
         });
     }
 }

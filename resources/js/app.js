@@ -16,6 +16,9 @@ import tippy from 'tippy.js';
 window.debug = false;
 
 import Sortable from 'sortablejs';
+import Croppr from "croppr";
+import IMask from 'imask';
+
 import { Russian } from "flatpickr/dist/l10n/ru";
 window.flatpickr.localize(Russian);
 import Pagination from './Classes/Pagination.js';
@@ -31,7 +34,7 @@ import Scanner from './Classes/Scanner.js';
 import Auth from './Classes/Auth.js';
 import Tabs from './Classes/Tabs.js';
 
-import IMask from 'imask';
+
 window.helper = new Helper();
 window.socket = new Socket();
 window.system = new System();
@@ -39,9 +42,7 @@ window.alerts = new Alerts();
 window.systemMessages = new SystemMessages();
 window.pagination = new Pagination();
 window.axform = new AxForm();
-//window.product = new Product();
 window.supplier = new Supplier();
-// window.partner = new Partner();
 window.entity = new Entity();
 window.scanner = new Scanner();
 window.auth = new Auth();

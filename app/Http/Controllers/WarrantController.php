@@ -112,7 +112,7 @@ class WarrantController extends Controller
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
         }
-
+-
         $request['summ'] = (double)$request['summ'];
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);

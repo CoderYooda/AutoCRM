@@ -31,9 +31,9 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col-sm-5 no-pr d-flex">
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#{{$class}}_tab_base" data-toggle="tab" data-target="#{{$class}}_tab_base">
+                    <ul class="nav" id="product_tabs">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#{{$class}}_tab_base" data-toggle="tab" data-target="#{{$class}}_tab_base">
                                 Основные
                                 <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>

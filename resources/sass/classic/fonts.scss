@@ -5,17 +5,19 @@
     display:none!important;
 }
 .preloader{
-    position: fixed;
-    width: 100px;
-    height: 100px;
-    left: -9000px;
-    top: calc(100vh - 260px);
-    transform: scale(0.6);
-    opacity: 0.4;
+    display: none;
+    position: absolute;
+    top: -5px;
+    left: -17px;
+    width: 58px;
+    height: 90px;
+    text-align: center;
     z-index: 999999;
+    transform: rotateZ(90deg);
 }
+
 .loading .preloader{
-    left: -12px;
+    display: block;
 }
 .preloader .porsh{
     animation:  1s linear infinite i1-anim;

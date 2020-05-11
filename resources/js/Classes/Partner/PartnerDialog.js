@@ -18,13 +18,13 @@ class partnerDialog extends Modal{
     init(){
         let object = this;
         this.initDatePicker();
-
         this.addPhoneMask();
         this.addPassportMask();
         let focused = document.getElementById('partner_dialog_focused');
         if(focused){
             focused.focus();
         }
+        helper.initTabs('partner_tabs');
         this.addLoginPhoneMask();
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
@@ -34,7 +34,6 @@ class partnerDialog extends Modal{
                 object.save(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
-        //elem.addEventListener("click", this.activateTab('fl'));
     }
 
     initDatePicker(){

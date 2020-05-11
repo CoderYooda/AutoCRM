@@ -24,7 +24,13 @@
         <div class="p-15">
             <h2 class="user_h2">
                 @if(isset($editmode) && $editmode)
-                <input class="name_edit" type="text" name="fio" value="{{ $user->fio }}">
+                    @if($user->isfl)
+                        <input class="name_edit" type="text" name="fio" value="{{ $user->fio }}">
+                    @else
+                        <input class="name_edit" type="text" name="companyName" value="{{ $user->companyName }}">
+                    @endif
+
+
                 @else
                     {{ $user->outputName() }}
                 @endif
@@ -64,6 +70,20 @@
                         <div class="col-sm-4">Участник системы с:</div>
                         <div class="col-sm-8"><b>{{ $user->getDateMembership() }}</b></div>
                     </div>
+                    @if(!$user->isfl)
+                    <div class="row row-sm mb-10">
+                        <div class="col-sm-4">Ответственное лицо</div>
+                        <div class="col-sm-8">
+                            @if(isset($editmode) && $editmode)
+                                <input type="text" name="ur_fio"
+                                       @if(isset($user)) value="{{ $user->fio }}" @endif
+                                       class="form-control slim" placeholder="Ответственное лицо">
+                            @else
+                                <b>{{ $user->fio }}</b>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
                     <div class="row row-sm mb-10">
                         <div class="col-sm-4">Email:</div>
                         <div class="col-sm-8">

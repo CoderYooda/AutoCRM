@@ -219,8 +219,9 @@ class ShipmentsController extends Controller
 
     }
 
-    public function fresh(Shipment $shipment, Request $request)
+    public function fresh($id, Request $request)
     {
+        $shipment = Shipment::owned()->where('id', $id)->first();
         $stores = Store::owned()->get();
         $request['fresh'] = true;
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];

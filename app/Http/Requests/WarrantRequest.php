@@ -15,12 +15,23 @@ class WarrantRequest extends FormRequest
 
     public function rules()
     {
+
+//        $between = isset($this->max_summ) ? $this->max_summ : '99.99';
+//        return [
+//            'partner_id' => ['required','exists:partners,id'],
+//            'cashbox_id' => ['required','exists:cashboxes,id'],
+//            'ddsarticle_id' => ['required','exists:dds_articles,id'],
+//            'isIncoming' => ['boolean'],
+//            'summ' => ['required', 'numeric', 'between:0,' . $between],
+//        ];
+
+
         return [
             'partner_id' => ['required','exists:partners,id'],
             'cashbox_id' => ['required','exists:cashboxes,id'],
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
             'isIncoming' => ['boolean'],
-            'summ' => ['required', 'numeric', 'between:0,' . isset($this->max_summ) ? $this->max_summ : '99.99'],
+            'summ' => ['required', 'numeric', 'between:0,' . (isset($this->max_summ) ? $this->max_summ : PHP_INT_MAX)],
         ];
     }
 
