@@ -45,11 +45,13 @@ class Partner extends Model
     }
 
     public function getPicUrl(){
-        return $this->pic()->first() ? $this->pic()->first()->thumb_url : 'http://autocrm/images/noavatar.png';
+        return ($this->pic()->first() && file_exists(public_path($this->pic()->first()->url))) ? $this->pic()->first()->thumb_url : 'http://autocrm/images/noavatar.png';
     }
 
     public function getAvatarUrl(){
-        return $this->avatar()->first() ? $this->avatar()->first()->url : 'http://autocrm/images/noavatar.png';
+
+
+        return ($this->avatar()->first() && file_exists(public_path($this->avatar()->first()->url))) ? $this->avatar()->first()->url : 'http://autocrm/images/noavatar.png';
     }
 
     public function company()

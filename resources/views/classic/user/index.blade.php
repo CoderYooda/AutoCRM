@@ -60,7 +60,8 @@
                         <div class="user_ava">
                             <img class="user_avatar" src="{{ $user->getAvatarUrl() }}" alt="...">
                         </div>
-                        <input id="file_upload" type="file" name="file" class="form-control" onchange="user.uploadImage(this)">
+                        <button  onclick="document.getElementById('file_upload').click()" class="button primary w-100">Обновить фото</button>
+                        <input style="display: none" id="file_upload" type="file" name="file" class="form-control" onchange="user.uploadImage(this)">
 
                         @if(isset($user) && $user->barcode != null)
                             <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($user->barcode) !!}" alt="barcode" />
@@ -72,8 +73,6 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group" id="croppr-container"></div>
-            <button class="button primary" onclick="user.cropImage(window.cropdata);">сохранить</button>
             <div id="ajax-tab-content" class="content-menu box box-lister">
                 @yield('tab')
             </div>

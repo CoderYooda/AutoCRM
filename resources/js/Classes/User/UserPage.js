@@ -7,11 +7,23 @@ class userPage{
     constructor(){
         console.log('страница профиля1 инициализировано');
         this.credit = 0;
+        this.crop_modal = null;
         this.init();
     }
 
     init(){
         let object = this;
+
+        let myModal = document.getElementById('croppr_dialog');
+        let options = {
+                backdrop: true,
+                keyboard: true,
+            }
+        this.crop_modal = new bootstrap.Modal(myModal, options);
+        // object.crop_modal.show();
+        // setTimeout(function(){
+        //     object.crop_modal.hide();
+        // }, 1000)
     }
 
     getPayment(){
@@ -48,6 +60,7 @@ class userPage{
     }
 
     uploadImage(input){
+        let object = this;
         var form = input.closest('form');
 
         var data = new FormData();
@@ -59,12 +72,15 @@ class userPage{
             url: '/system/image_upload',
             data: data
         }).then(function (response){
+            object.crop_modal.show();
             document.getElementById('croppr-container').innerHTML = '';
             var crop = document.createElement('img');
             crop.setAttribute("src", response.data.images[0].url);
             crop.setAttribute("id", 'croppr');
 
             document.getElementById('croppr-container').appendChild(crop);
+
+
 
             // $('#pick-button').hide();
             // $('#save-button').show();
@@ -135,8 +151,12 @@ class userPage{
         // });
     }
 
-    cropImage(cropdata){
+    anotherPicture(){
+        document.getElementById('file_upload').click();
+    }
 
+    cropImage(cropdata){
+        let object = this;
         axios({
             method: 'POST',
             url: '/system/crop_image',
@@ -149,7 +169,7 @@ class userPage{
                 elem.src = response.data.avatar.thumb_url;
             });
             document.getElementsByClassName('user_avatar')[0].src = response.data.avatar.url;
-
+            object.crop_modal.hide();
         }).catch(function(response){
             dd(response);
         });

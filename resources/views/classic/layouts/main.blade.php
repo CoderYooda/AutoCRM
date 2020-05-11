@@ -231,6 +231,7 @@
                 <div id="dialogs"></div>
                 @include(env('DEFAULT_THEME', 'classic') . '.system.aside_messages')
                 @include(env('DEFAULT_THEME', 'classic') . '.system.system_dialog')
+                @include(env('DEFAULT_THEME', 'classic') . '.system.croppr_dialog')
             </div>
 
         </div>
