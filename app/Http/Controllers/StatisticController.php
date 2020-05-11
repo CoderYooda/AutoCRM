@@ -96,6 +96,6 @@ class StatisticController extends Controller
 
     public function show(StatisticRequest $request)
     {
-        //TODO need end 
+        //TODO need end
     }
 }

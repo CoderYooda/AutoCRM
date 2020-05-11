@@ -14,6 +14,7 @@ class CashboxController extends Controller
     public function store(CashboxRequest $request)
     {
         $cashbox = Cashbox::firstOrNew(['id' => (int)$request['id']]);
+
         if($cashbox->exists){
             $message = 'Касса обновлена';
             $wasExisted = true;
@@ -23,6 +24,7 @@ class CashboxController extends Controller
             $message = 'Касса создана';
             $wasExisted = false;
         }
+
         $cashbox->fill($request->all());
         $cashbox->company_id = Auth::user()->company()->first()->id;
         $cashbox->save();
@@ -89,10 +91,10 @@ class CashboxController extends Controller
         }
         $returnIds = null;
         if($id == 'array'){
-            $cashboxes = Cashbox::whereIn('id', $request['ids']);
+            $cashboxes = Cashbox::whereIn('id', $request['ids'])->get();
             $this->message = 'Кассы удалены';
-            $returnIds = $cashboxes->get()->pluck('id');
-            foreach($cashboxes->get() as $cashbox){
+            $returnIds = $cashboxes->pluck('id');
+            foreach($cashboxes as $cashbox){
                 $this->status = 200;
                 if($cashbox->company()->first()->id != Auth::user()->company()->first()->id){
                     $this->message = 'Вам не разрешено удалять эту кассу';
