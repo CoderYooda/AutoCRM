@@ -91,35 +91,14 @@ class statisticPage {
     }
 
     openSelectManagerModal(){
-        window.openDialog('selectPartner', '?refer=statistic&category_id=5');
-    }
-
-    selectManager(id) {
-
-        let object = this;
-        window.axios({
-            method: 'post',
-            url: 'partner/'+ id +'/select',
-            data: {refer: 'statistic'}
-        }).then((resp) => {
-
-            document.querySelector('input[name=manager_id]').value = resp.data.id;
-            document.getElementById('manager_name').innerHTML = resp.data.name;
-
-            object.root_dialog.finitaLaComedia();
-
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
+        window.openDialog('selectPartner', '&refer=statistic&category_id=5&target=manager');
     }
 
     openSelectPartnerModal(){
-        window.openDialog('selectPartner', '?refer=statistic&category_id=5');
+        window.openDialog('selectPartner', '&refer=statistic&category_id=7&target=partner');
     }
 
-    selectPartner(id) {
+    selectPartner(id, type) {
 
         let object = this;
         window.axios({
@@ -127,11 +106,11 @@ class statisticPage {
             url: 'partner/'+ id +'/select',
             data: {refer: 'statistic'}
         }).then((resp) => {
-
-            document.querySelector('input[name=partner_id]').value = resp.data.id;
-            document.getElementById('partner_name').innerHTML = resp.data.name;
-
-            object.root_dialog.finitaLaComedia();
+            document.querySelector('input[name=' + type + '_id]').value = resp.data.id;
+            document.getElementById(type + '_name').innerHTML = resp.data.name;
+            
+            window.notification.notify( 'success', 'Контакт выбран');
+            document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
 
         }).catch(function (error) {
             console.log(error);
