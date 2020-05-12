@@ -25,7 +25,9 @@
     letter-spacing: 0.0015em;
     font-weight: bold;
 }
-
+.button:disabled {
+    opacity: 0.6;
+}
 .button.primary {
     background-color: #1F98E9;
     color: #fff;

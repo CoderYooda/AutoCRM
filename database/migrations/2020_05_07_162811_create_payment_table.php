@@ -15,7 +15,10 @@ class CreatePaymentTable extends Migration
     {
         Schema::create('payment', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->char('orderId')->nullable();
             $table->unsignedBigInteger('company_id')->comment('Привязка к компании');
+            $table->unsignedInteger('add_days')->comment('Прибавлено дней');
+            $table->unsignedInteger('add_balance')->comment('Прибавлено денег');
             $table->unsignedBigInteger('partner_id')->comment('Привязка к Плательщику');
             $table->bigInteger('paymentId')->nullable()->comment('ID оплаты');
             $table->bigInteger('amount')->nullable()->comment('Сумма в копейках');

@@ -16,6 +16,8 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->char('name')->nullable();
+            $table->unsignedInteger('balance')->default(0);
+            $table->unsignedInteger('payed_days')->default(0);
             $table->timestamps();
         });
     }

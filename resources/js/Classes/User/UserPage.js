@@ -26,8 +26,8 @@ class userPage{
         // }, 1000)
     }
 
-    getPayment(){
-        let data = 1;
+    getPayment(tariff_id){
+        let data = {tariff_id: tariff_id};
         axios({
             method: 'POST',
             url: '/tariff/get_payment',
@@ -76,9 +76,8 @@ class userPage{
             url: '/system/image_upload',
             data: data
         }).then(function (response){
-            object.crop_modal.show();
             document.getElementById('croppr-container').innerHTML = '';
-            var crop = document.createElement('img');
+            let crop = document.createElement('img');
             crop.setAttribute("src", response.data.images[0].url);
             crop.setAttribute("id", 'croppr');
 
@@ -86,12 +85,9 @@ class userPage{
 
             document.getElementById('file_upload').value = '';
 
-            // $('#pick-button').hide();
-            // $('#save-button').show();
-            // $('#another-button').show();
             var croppr = new Croppr('#croppr', {
-                startSize: [90, 90],
-                minSize: [50, 50, 'px'],
+                startSize: [100, 100, '%'],
+                minSize: [140, 195, 'px'],
                 aspectRatio: 1.4,
                 onCropStart: function(){
                     // document.getElementById('crop_form_modal').classList.add('moving');
@@ -104,9 +100,24 @@ class userPage{
                     // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
                 },
                 onInitialize: function(instance) {
+                    object.crop_modal.show();
+                    setTimeout(function(){
+                        let w = document.getElementsByClassName('croppr-image')[0].clientWidth;
+                        let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
+                        instance.moveTo(w/2, h/2);
+                        instance.resizeTo(140, 195);
+
+                    }, 100);
                     window.cropdata = {'url':response.data.images[0].url, 'filename':response.data.images[0].filename, 'coords' : instance.getValue()};
                 }
             });
+
+            // $('#pick-button').hide();
+            // $('#save-button').show();
+            // $('#another-button').show();
+
+
+
 
         }).catch(function(response){
             dd(response);

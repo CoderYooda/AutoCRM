@@ -51,6 +51,37 @@
     width: 5px!important;
 }
 
+.system_balance{
+    font-size: 18px;
+}
+.list {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.list-item {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    /* align-items: flex-start; */
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    padding: 0.75rem 0.5rem;
+    position: relative;
+}
+
+.tariff-container h3{
+    margin: 0 !important;
+    padding: 10px 15px!important;
+    font-size: 20px;
+}
+
+.tariff-container h6{
+    margin: 0 !important;
+    font-size: 20px;
+    padding-top: 15px;
+}
+
 .swal2-container {
     z-index: 20000!important;
 }
