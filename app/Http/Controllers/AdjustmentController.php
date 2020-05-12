@@ -44,12 +44,6 @@ class AdjustmentController extends Controller
 
     public function store(AdjustmentRequest $request)
     {
-        $request['partner_id'] = Auth::user()->partner()->first()->id;
-
-        if($request['do_date'] == null){
-            $request['do_date'] = Carbon::now();
-        }
-
         $adjustment = new Adjustment();
         $adjustment->company_id = Auth::user()->company()->first()->id;
         $this->message = 'Корректировка сохранена';

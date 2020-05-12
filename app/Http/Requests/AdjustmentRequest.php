@@ -5,12 +5,23 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Auth;
+use Carbon\Carbon;
 
 class AdjustmentRequest extends FormRequest
 {
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        $this['partner_id'] = Auth::user()->partner()->first()->id;
+
+        if($this['do_date'] == null){
+            $this['do_date'] = Carbon::now();
+        }
     }
 
     public function rules()
