@@ -2,15 +2,26 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class MoneyMoveRequest extends FormRequest
 {
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        $this['company_id'] = Auth::user()->company()->first()->id;
+
+        if($this['do_date'] == null) {
+            $this['do_date'] = Carbon::now();
+        }
     }
 
     public function rules()
