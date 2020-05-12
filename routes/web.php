@@ -79,7 +79,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/shipment/{id}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
-    Route::post('/shipment/{id}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');
+    Route::post('/shipment/{shipment}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');
     Route::post('/shipment/{id}/select', 'ShipmentsController@select')->name('SelectShipment');
     Route::post('/shipment/dialog/search', 'ShipmentsController@dialogSearch')->name('ShipmentDialogSearch');
     Route::get('/shipments/tabledata', 'ShipmentsController@tableData')->name('StoreShipmentData');

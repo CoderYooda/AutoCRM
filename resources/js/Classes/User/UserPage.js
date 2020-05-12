@@ -89,7 +89,6 @@ class userPage{
             // $('#pick-button').hide();
             // $('#save-button').show();
             // $('#another-button').show();
-
             var croppr = new Croppr('#croppr', {
                 startSize: [90, 90],
                 minSize: [50, 50, 'px'],

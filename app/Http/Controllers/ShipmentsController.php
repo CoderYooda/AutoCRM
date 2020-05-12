@@ -122,7 +122,7 @@ class ShipmentsController extends Controller
 
     public function select($id)
     {
-        $shipment = Shipment::owned()->where('id', $id)->first();
+        $shipment = Shipment::where('id', $id)->first();
         $request = request();
         $products = $shipment->notRefundedArticles()->get();
         if(!$shipment){
@@ -142,7 +142,7 @@ class ShipmentsController extends Controller
 
     public function getSideInfo(Request $request){
 
-        $shipment = Shipment::owned()->where('id', $request['id'])->first();
+        $shipment = Shipment::where('id', $request['id'])->first();
         $partner = $shipment->partner()->first();
         $comment = $shipment->comment;
         if($request->expectsJson()){
@@ -174,6 +174,8 @@ class ShipmentsController extends Controller
             $shipments = Shipment::whereIn('id', $request['ids']);
             $this->message = 'Продажи удалены';
             $returnIds = $shipments->get()->pluck('id');
+
+
             foreach($shipments->get() as $shipment){
                 if($shipment->delete()){
                     foreach($shipment->articles()->get() as $article){
@@ -219,10 +221,9 @@ class ShipmentsController extends Controller
 
     }
 
-    public function fresh($id, Request $request)
+    public function fresh(Shipment $shipment, Request $request)
     {
-        $shipment = Shipment::owned()->where('id', $id)->first();
-        $stores = Store::owned()->get();
+        $stores = Store::get();
         $request['fresh'] = true;
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
         $class = 'shipmentDialog' . $shipment->id;
@@ -421,7 +422,7 @@ class ShipmentsController extends Controller
         }
 
         $shipments =
-            Shipment::select(DB::raw('
+            Shipment::withoutGlobalScopes()->select(DB::raw('
                 shipments.*, shipments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' р\')) as discount, shipments.summ as price, shipments.itogo as total
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
@@ -447,8 +448,7 @@ class ShipmentsController extends Controller
     }
 
     public function events(Request $request){
-        $client_orders = Shipment::owned()
-            ->where(function($q) use ($request){
+        $client_orders = Shipment::where(function($q) use ($request){
                 if(isset($request['start']) && $request['start'] != 'null' && $request['start'] != ''){
                     $q->where('do_date',  '>=',  Carbon::parse($request['start']));
                 }

@@ -13,6 +13,23 @@ class PartnerRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        if($this['number']){
+            $this['number'] = (int)str_replace(' ', '', $this['number']);
+        }
+        if($this['phone'] != null){
+            $this['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $this['phone']);
+        }
+        if($this['issued_date'] == '__.__.____'){
+            $this['issued_date'] = null;
+        }
+
+        if($this['birthday'] == '__.__.____'){
+            $this['birthday'] = null;
+        }
+    }
+
     public function rules()
     {
         $rules = null;

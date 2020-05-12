@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class Shipment extends Model
@@ -23,6 +24,13 @@ class Shipment extends Model
 
     protected $guarded = [];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('shipment', function (Builder $builder) {
+            $builder->where('company_id', Auth::user()->company()->first()->id);
+        });
+    }
 
     public function articles()
     {

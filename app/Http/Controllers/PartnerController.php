@@ -106,19 +106,6 @@ class PartnerController extends Controller
 
     public function store(PartnerRequest $request)
     {
-        if($request['number']){
-            $request['number'] = (int)str_replace(' ', '', $request['number']);
-        }
-        if($request['phone'] != null){
-            $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
-        }
-
-        if($request['issued_date'] == '__.__.____'){
-            $request['issued_date'] = null;
-        }
-        if($request['birthday'] == '__.__.____'){
-            $request['birthday'] = null;
-        }
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){
