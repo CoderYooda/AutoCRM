@@ -29,21 +29,35 @@ class Payment extends Model
 
     public function freshStatus(){
 
-        if($this->status == 'CONFIRMED' || $this->status == 'REJECTED' || $this->status == 'REFUNDED'){
-            //todo
-        } else {
-            $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
 
-            $params = [
-                'TerminalKey'   => env('TINKOFF_TERMINAL_KEY'),
-                'PaymentId'     => $this->paymentId,
-            ];
+        $previous_status = $this->status;
 
-            $api->getState($params);
 
-            if($api->error == ''){
-                $this->status = $api->status;
-                $this->save();
+        $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
+
+        $params = [
+            'TerminalKey'   => env('TINKOFF_TERMINAL_KEY'),
+            'PaymentId'     => $this->paymentId,
+        ];
+
+        $api->getState($params);
+
+        if($api->error == ''){
+            $this->status = $api->status;
+            $this->save();
+        }
+
+        $new_status = $this->status;
+
+        if($previous_status !== $new_status){
+            $company = $this->company;
+            if($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW' && $new_status == 'CONFIRMED'){
+                $company->increment('balance', $this->add_balance);
+                $company->increment('payed_days', $this->add_days);
+            }
+            if($previous_status == 'CONFIRMED' && $new_status == 'REFUNDED'){
+                $company->decrement('balance', $this->add_balance);
+                $company->decrement('payed_days', $this->add_days);
             }
         }
 
