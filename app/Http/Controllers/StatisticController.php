@@ -109,13 +109,14 @@ class StatisticController extends Controller
             ClientOrder::class
         ];
 
-        $partner = Partner::find($request->manager_id);
+        $manager = Partner::find($request->manager_id);
 
         $entities = $sort_classes[$request->entity]::selectRaw('SUM(summ) as amount, created_at')
-            ->where('company_id', $partner->company_id)
+            ->where('company_id', $manager->company_id)
+            ->where('manager_id', $request->manager_id)
+            ->where('partner_id', $request->partner_id)
             ->where('created_at', '>=', $request->begin_date)
             ->where('created_at', '<=', $request->final_date)
-            ->groupBy('created_at')
             ->get();
 
         $updated_entities = [];

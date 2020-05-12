@@ -1,6 +1,6 @@
 class statisticPage {
 
-    constructor(){
+    constructor() {
         console.log('страница статистики инициализировано');
 
         this.chart = null;
@@ -8,7 +8,7 @@ class statisticPage {
         this.init();
     }
 
-    init(){
+    init() {
         this.linked();
 
         let ctx = document.getElementById('statistic-chart').getContext('2d');
@@ -32,8 +32,7 @@ class statisticPage {
         });
     }
 
-    linked()
-    {
+    linked() {
     }
 
     showResults() {
@@ -46,6 +45,7 @@ class statisticPage {
             data: {
                 refer: 'statistic',
                 manager_id: Number(document.querySelector("input[name=manager_id]").value),
+                partner_id: Number(document.querySelector("input[name=partner_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
                 final_date: document.querySelector("input[name=final_date]").value,
                 entity: entity_element.options[entity_element.selectedIndex].value
@@ -62,8 +62,16 @@ class statisticPage {
             //Обновляем даты на графике
             let data = response.data;
 
-            Object.keys(data).forEach(key => {
-               this.chart.data.labels.push(key);
+            Object.keys(data).map((key, index) => {
+                let value = data[key];
+
+                this.chart.data.labels.push(key);
+
+                let ul = document.getElementById('statistic-list');
+
+                let li = document.createElement('li');
+                ul.appendChild(li);
+                li.innerHTML = '[' + index + '] ' + key + ': ' + value;
             });
 
             //Вставляем новые данные
@@ -78,38 +86,28 @@ class statisticPage {
         })
         .catch(response => {
             console.log(response);
-        })
+        });
     }
 
-    addChartData(label, data) {
-
-        // this.chart.data.datasets.forEach((dataset) => {
-        //     dataset.data.push(data);
-        // });
-
-        this.chart.update();
-    }
-
-    openSelectManagerModal(){
+    openSelectManagerModal() {
         window.openDialog('selectPartner', '&refer=statistic&category_id=5&target=manager');
     }
 
-    openSelectPartnerModal(){
+    openSelectPartnerModal() {
         window.openDialog('selectPartner', '&refer=statistic&category_id=7&target=partner');
     }
 
     selectPartner(id, type) {
 
-        let object = this;
         window.axios({
             method: 'post',
-            url: 'partner/'+ id +'/select',
+            url: 'partner/' + id + '/select',
             data: {refer: 'statistic'}
         }).then((resp) => {
             document.querySelector('input[name=' + type + '_id]').value = resp.data.id;
             document.getElementById(type + '_name').innerHTML = resp.data.name;
-            
-            window.notification.notify( 'success', 'Контакт выбран');
+
+            window.notification.notify('success', 'Контакт выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
 
         }).catch(function (error) {

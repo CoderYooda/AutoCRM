@@ -17,6 +17,7 @@ class StatisticRequest extends FormRequest
     {
         return [
             'manager_id' => ['exists:partners,id'],
+            'partner_id' => ['exists:partners,id'],
             'begin_date' => ['date_format:Y-m-d', 'before:final_date'],
             'final_date' => ['date_format:Y-m-d', 'after:begin_date'],
             'entity' => ['integer', 'min:0', 'max:3']

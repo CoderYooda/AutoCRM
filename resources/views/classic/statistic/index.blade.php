@@ -67,19 +67,7 @@
             </div>
             <div class="d-flex">
                 <div class="flex-1">
-                    <ul class="nav select-list-modal">
-                        <li>
-                            Элемент спмска сущности
-                        </li>
-                        <li>
-                            Элемент спмска сущности
-                        </li>
-                        <li>
-                            Элемент спмска сущности
-                        </li>
-                        <li>
-                            Элемент спмска сущности
-                        </li>
+                    <ul id="statistic-list" class="nav select-list-modal">
                     </ul>
                 </div>
             </div>
