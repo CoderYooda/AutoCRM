@@ -211,27 +211,9 @@ class ProviderOrdersController extends Controller
 
     public function store(ProviderOrdersRequest $request)
     {
-        $request['discount'] = 0;
-        $request['inpercents'] = 0;
+        //TODO где это использовать?
+//        $partner = Partner::owned()->where('id', $this['partner_id'])->first();
 
-        #Подготовка Request`a
-        if($request['nds'] === null){$request['nds'] = false;} else {$request['nds'] = true;}
-        if($request['inpercents'] === null){$request['inpercents'] = false;} else {$request['inpercents'] = true;}
-        if($request['nds_included'] === null){
-            $request['nds_included'] = false;
-        } else {$request['nds_included'] = true;}
-        if($request['locked'] === null){$request['locked'] = false;}
-
-        $partner = Partner::owned()->where('id', $request['partner_id'])->first();
-
-        if($request['inpercents']){
-            if((int)$request['discount'] >= 100){
-                $request['discount'] = 100;
-            }
-            if((int)$request['discount'] <= 0){
-                $request['discount'] = 0;
-            }
-        }
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
         $request['do_date'] = Carbon::now();
@@ -248,7 +230,6 @@ class ProviderOrdersController extends Controller
             #Отнимаем с баланса контрагента
             $provider_order->partner()->first()->subtraction($provider_order->itogo);
 
-
             $this->message = 'Заказ поставщику обновлен';
 
             $wasExisted = true;
@@ -263,6 +244,7 @@ class ProviderOrdersController extends Controller
         $provider_order->balance = 0;
         $provider_order->itogo = 0;
         $provider_order->save();
+
         UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
 //        foreach($provider_order->entrances()->get() as $entrance){
 //            $entrance->increaseInStore($provider_order->store()->first());

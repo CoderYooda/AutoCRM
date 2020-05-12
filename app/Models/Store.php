@@ -12,23 +12,18 @@ class Store extends Model
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_store', 'store_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_store', 'store_id', 'article_id')
             ->withPivot('location', 'count', 'isset', 'midprice');
     }
 
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
+        return $article ? $article->pivot->count : 0;
     }
 
     public function getMidPriceById($id){

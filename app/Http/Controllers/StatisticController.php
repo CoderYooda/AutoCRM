@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StatisticRequest;
 use App\Models\Car;
+use App\Models\ClientOrder;
 use App\Models\DdsArticle;
+use App\Models\Entrance;
+use App\Models\ProviderOrder;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -91,5 +95,23 @@ class StatisticController extends Controller
         } else {
             return $content;
         }
+    }
+
+    public function show(StatisticRequest $request)
+    {
+        $sort_classes = [
+            ProviderOrder::class,
+            Entrance::class,
+            ClientOrder::class
+        ];
+
+        $entities = $sort_classes[$request->entity]::owned()
+            ->where('created_at', '>=', $request->begin_date)
+            ->where('created_at', '<=', $request->final_date)
+            ->get();
+
+        dd($entities);
+
+        //TODO need end
     }
 }

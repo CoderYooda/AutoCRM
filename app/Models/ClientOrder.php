@@ -36,15 +36,13 @@ class ClientOrder extends Model
         return $relation;
     }
 
-
-
     public function data(){
         return $this->created_at->format('d.m H:i');
     }
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_client_orders', 'client_order_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_client_orders', 'client_order_id', 'article_id')
             ->withPivot('count', 'shipped_count', 'price', 'total')->withTrashed();
     }
 
@@ -71,26 +69,24 @@ class ClientOrder extends Model
         return $articles ? $articles->pluck('id') : [];
     }
 
-    public function IsAllProductsShipped(){
-        $allShipped = true;
+    public function IsAllProductsShipped()
+    {
         foreach($this->articles as $article){
            if($this->getShippedCount($article->id) < $article->pivot->count){
-               $allShipped = false;
-               break;
+               return false;
            }
         }
-        return $allShipped;
+        return true;
     }
 
-    public function IsAnyProductShipped(){
-        $somthing_shipped = false;
+    public function IsAnyProductShipped()
+    {
         foreach($this->articles as $article){
             if($this->getShippedCount($article->id) > 0){
-                $somthing_shipped = true;
-                break;
+                return true;
             }
         }
-        return $somthing_shipped;
+        return false;
     }
 
     public function increaseShippedCount($article_id, $amount)
@@ -125,17 +121,17 @@ class ClientOrder extends Model
 
     public function partner()
     {
-        return $this->belongsTo('App\Models\Partner', 'partner_id');
+        return $this->belongsTo(Partner::class, 'partner_id');
     }
 
     public function shipments()
     {
-        return $this->hasMany('App\Models\Shipment', 'clientorder_id');
+        return $this->hasMany(Shipment::class, 'clientorder_id');
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
     public function normalizedData()
@@ -150,17 +146,13 @@ class ClientOrder extends Model
 
     public function isFinished()
     {
-        return $this->status == 'complete' ? true : false ;
+        return $this->status == 'complete';
     }
 
-    public function getArticlesCountById($id){
+    public function getArticlesCountById($id)
+    {
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
+        return $article ? $article->pivot->count : 0;
     }
 
     public function getWarrantPositive()
@@ -172,7 +164,7 @@ class ClientOrder extends Model
 
     public function warrants()
     {
-        return $this->belongsToMany('App\Models\Warrant', 'client_orders_warrant',  'client_order_id', 'warrant_id' );
+        return $this->belongsToMany(Warrant::class, 'client_orders_warrant',  'client_order_id', 'warrant_id' );
     }
 
     public static function owned(){

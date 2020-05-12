@@ -13,12 +13,21 @@ class ArticleStock extends Model
 
     public static function loadProductToStore($article_id, $store_id, $cost)
     {
-        $stocked = new ArticleStock();
-        $stocked->company_id = Auth::user()->company()->first()->id;
-        $stocked->store_id = $store_id;
-        $stocked->article_id = $article_id;
-        $stocked->cost = $cost;
-        $stocked->save();
+        //TODO after
+        ArticleStock::create([
+           'company_id' => Auth::user()->company()->first()->id,
+           'store_id' => $store_id,
+           'article_id' => $article_id,
+           'cost' => $cost,
+        ]);
+
+        //TODO before
+//        $stocked = new ArticleStock();
+//        $stocked->company_id = Auth::user()->company()->first()->id;
+//        $stocked->store_id = $store_id;
+//        $stocked->article_id = $article_id;
+//        $stocked->cost = $cost;
+//        $stocked->save();
     }
 
 }

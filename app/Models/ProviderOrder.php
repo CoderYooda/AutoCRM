@@ -31,23 +31,19 @@ class ProviderOrder extends Model
 
     public function articles()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_provider_orders', 'provider_order_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
             ->withPivot('count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
     }
 
     public function getArticleCount($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
-        if($article != null){
-            return $article->pivot->count;
-        } else {
-            return 0;
-        }
+        return $article != null ? $article->pivot->count : 0;
     }
 
     public function entrances()
     {
-        return $this->hasMany('App\Models\Entrance', 'providerorder_id');
+        return $this->hasMany(Entrance::class, 'providerorder_id');
     }
 
     public function getArticleEntredCount($article_id, $not_self_id = null)
@@ -68,7 +64,7 @@ class ProviderOrder extends Model
 
     public function warrants()
     {
-        return $this->belongsToMany('App\Models\Warrant', 'provider_order_warrant',  'providerorder_id', 'warrant_id' );
+        return $this->belongsToMany(Warrant::class, 'provider_order_warrant',  'providerorder_id', 'warrant_id' );
     }
 
     public function getWarrantPositive()
@@ -81,29 +77,26 @@ class ProviderOrder extends Model
     public function getArticlePrice($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
-        if($article != null){
-            return $article->pivot->price;
-        } else {
-            return 0;
-        }
+        return $article != null ? $article->pivot->price : 0;
     }
 
     public function partner()
     {
-        return $this->belongsTo('App\Models\Partner', 'partner_id');
+        return $this->belongsTo(Partner::class, 'partner_id');
     }
 
     public function manager()
     {
-        return $this->belongsTo('App\Models\Partner', 'manager_id');
+        return $this->belongsTo(Partner::class, 'manager_id');
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function normalizedData(){
+    public function normalizedData()
+    {
         return $this->created_at->format('d.m.Y (H:i)');
     }
 
@@ -114,15 +107,8 @@ class ProviderOrder extends Model
 
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
+        return $article ? $article->pivot->count : 0;
     }
-
-
 
     public static function owned(){
         $company_id = Auth::user()->company()->first()->id;

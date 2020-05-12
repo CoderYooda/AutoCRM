@@ -43,14 +43,11 @@ class Adjustment extends Model
         return $this->created_at->format('d.m.Y H:i');
     }
 
-    public function getArticlesCountById($id){
+    public function getArticlesCountById($id)
+    {
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
+
+        return $article ? $article->pivot->count : 0;
     }
 
     public static function owned(){

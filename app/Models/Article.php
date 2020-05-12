@@ -31,12 +31,9 @@ class Article extends Model
 
     protected $guarded = [];
 
-    public function canUserTake(){
-        if($this->company_id == Auth::user()->company()->first()->id){
-            return true;
-        } else {
-            return false;
-        }
+    public function canUserTake()
+    {
+        return $this->company_id == Auth::user()->company()->first()->id;
     }
 
     public function company()
@@ -73,7 +70,7 @@ class Article extends Model
 
     public function getCountSelfOthers()
     {
-        return$this->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) . ' / ' . $this->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id);
+        return $this->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) . ' / ' . $this->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id);
     }
 
 //    public function providerorder()
@@ -84,21 +81,14 @@ class Article extends Model
 
     public function getArticlesCountInAllStores(){
         //$stores = Store::owned()->get();
-        $count = $this->stores()->sum('count');
-        return $count;
+        return $this->stores()->sum('count');
     }
 
     public function getCountInStoreId($store_id)
     {
         $article = $this->stores()->get()->where('id', $store_id)->first();
 
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-
-        return $count;
+        return $article ? $article->pivot->count : 0;
     }
 
     public function getCountInOthersStores($store_id)
@@ -115,7 +105,6 @@ class Article extends Model
         $midprice = 0;
         if($relation){
             $midprice = $relation->pivot->midprice;
-
         }
 
         $retail = $midprice + ( $midprice / 100 * $markup );

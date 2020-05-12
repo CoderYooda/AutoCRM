@@ -14,28 +14,45 @@ class statisticPage {
     {
     }
 
+    showResults() {
+
+        let entity_element = document.getElementById("entity");
+
+        window.axios({
+            method: 'post',
+            url: '/statistic',
+            data: {
+                refer: 'statistic',
+                manager_id: Number(document.querySelector("input[name=manager_id]").value),
+                begin_date: document.querySelector("input[name=begin_date]").value,
+                final_date: document.querySelector("input[name=final_date]").value,
+                entity: entity_element.options[entity_element.selectedIndex].value
+            }
+        })
+        .then(response => {
+            console.log(response);
+        })
+        .catch(response => {
+            console.log(response);
+        })
+    }
+
     selectPartner(id) {
 
-        var object = this;
+        let object = this;
         window.axios({
             method: 'post',
             url: 'partner/'+ id +'/select',
             data: {refer: 'statistic'}
-        }).then(function (resp) {
+        }).then((resp) => {
 
-            $('')
-
-            let select = object.root_dialog.querySelector('button[name=partner_id]');
-            let input = object.root_dialog.querySelector('input[name=partner_id]');
-            let balance = object.root_dialog.querySelector('#balance');
-            let str = resp.data.name;
-
-            input.value = resp.data.id;
+            document.querySelector('input[name=manager_id]').value = resp.data.id;
+            document.querySelector('button[name=partner_id]').innerHTML = resp.data.name;
 
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
-            window.isXHRloading = false;
+            window.isXHRloading = false;openSelectPartnerModal
         });
     }
 

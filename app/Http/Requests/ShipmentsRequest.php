@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -11,6 +12,12 @@ class ShipmentsRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        //TODO check
+        if($this->do_date == null) $this->do_date = Carbon::now();
     }
 
     public function rules()

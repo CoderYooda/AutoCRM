@@ -16,7 +16,7 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsTo('App\Models\Category', 'category_id')
+        return $this->belongsTo(Category::class, 'category_id')
             ->where(function($q){
                 $company_id = Auth::user()->company()->first()->id;
                 $q->where('company_id', $company_id)->orWhere('company_id', NUll);
@@ -25,7 +25,7 @@ class Category extends Model
 
     public function childs()
     {
-        return $this->hasMany('App\Models\Category', 'category_id')
+        return $this->hasMany(Category::class, 'category_id')
             ->where(function($q){
                 $company_id = Auth::user()->company()->first()->id;
                 $q->where('company_id', $company_id)->orWhere('company_id', NUll);
@@ -34,16 +34,17 @@ class Category extends Model
 
     public function articles()
     {
-        return $this->hasMany('App\Models\Article', 'category_id');
+        return $this->hasMany(Article::class, 'category_id');
     }
+
     public function partners()
     {
-        return $this->hasMany('App\Models\Partner', 'category_id');
+        return $this->hasMany(Partner::class, 'category_id');
     }
 
     public function ddsarticles()
     {
-        return $this->hasMany('App\Models\DdsArticle', 'category_id');
+        return $this->hasMany(DdsArticle::class, 'category_id');
     }
 
     public function getRootType() //Находит тип ближайшей залоченой категории и выдаёт роут редиректа
