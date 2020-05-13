@@ -44,7 +44,6 @@ class providerOrderDialog extends Modal{
             object.finitaLaComedia();
         });
 
-
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
                 e.preventDefault();

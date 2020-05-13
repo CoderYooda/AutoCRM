@@ -7,7 +7,10 @@
             <div class="box-body">
                 <ul class="nav select-list-modal mb-0">
                     @foreach($partners as $partner)
-                        <li id="providerorder_item_{{ $partner->id }}" onclick="try{window.{{$request['refer']}}.selectPartner({{ $partner->id }}@if(isset($request['target']) && $request['target'] != null), '{{$request['target']}}' @endif)}catch (e) {}" class="pointer d-flex " >
+                        <li id="providerorder_item_{{ $partner->id }}" onclick="
+                            try{
+                            window.{{$request['refer']}}.selectPartner( {{ $partner->id }} @if(isset($request['target']) && $request['target'] != null),  '{{$request['target']}}' @endif)
+                            }catch (e) {}" class="pointer d-flex ">
                             <div class="ring-ico">
                                 <span class="first_letter">{{ $partner->firstLetterOfName() }}</span>
                             </div>
@@ -33,7 +36,9 @@
                 </div>
 
             </div>
-            <button onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}')" class="button success mb-15">Новый контакт</button>
+            <button onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}')"
+                    class="button success mb-15">Новый контакт
+            </button>
         </div>
     @else
         <div class="padding text-center">
@@ -43,7 +48,9 @@
                     Контактов в этой категории нет
                 </div>
             </div>
-            <button onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}')" class="button success mb-15">Новый контакт</button>
+            <button onclick="openDialog('partnerDialog', '&category_select={{ $categories['parent']->id }}')"
+                    class="button success mb-15">Новый контакт
+            </button>
         </div>
     @endif
 </div>

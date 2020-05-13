@@ -18,16 +18,14 @@ class AdministratorSeed extends Seeder
      */
     public function run()
     {
-        $company = new Company();
-        $company->name = 'Управляющая компания';
-        $company->save();
+        $company = Company::create(['name' => 'Управляющая компания']);
 
-        $store = new Store();
-        $store->company_id = $company->id;
-        $store->type = 'casual';
-        $store->locked = 0;
-        $store->name = 'Первый магазин';
-        $store->save();
+        Store::create([
+           'company_id' => $company->id,
+            'type' => 'casual',
+            'locked' => 0,
+            'name' => 'Первый магазин'
+        ]);
 
         $user = User::create([
             'name' => 'Администратор',
@@ -45,25 +43,22 @@ class AdministratorSeed extends Seeder
             'fio' => 'Админ',
             'companyName' => $company->name,
             'company_id' => $company->id,
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now()
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
 
-        $user->save();
         $user->company()->associate($company);
 
         #######################################
-        $company = new Company();
-        $company->name = 'Тестовый магазин';
-        $company->save();
 
-        $store = new Store();
-        $store->company_id = $company->id;
-        $store->type = 'casual';
-        $store->locked = 0;
-        $store->name = 'Первый магазин';
-        $store->save();
+        $company = Company::create(['name' => 'Тестовый магазин']);
 
+        Store::create([
+            'company_id' => $company->id,
+            'type' => 'casual',
+            'locked' => 0,
+            'name' => 'Первый магазин'
+        ]);
 
         $user = User::create([
             'name' => 'Сергей',
@@ -85,7 +80,6 @@ class AdministratorSeed extends Seeder
             'updated_at' => \Carbon\Carbon::now()
         ]);
 
-        $user->save();
         $user->company()->associate($company);
 
         Artisan::call('categories:init', [

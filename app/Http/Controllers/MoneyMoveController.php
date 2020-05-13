@@ -9,9 +9,9 @@ use App\Models\Partner;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Auth;
 
 class MoneyMoveController extends Controller
 {
@@ -35,12 +35,6 @@ class MoneyMoveController extends Controller
 
     public function store(MoneyMoveRequest $request)
     {
-        $request['company_id'] = Auth::user()->company()->first()->id;
-
-        if($request['do_date'] == null){
-            $request['do_date'] = Carbon::now();
-        }
-
         $moneymove = MoneyMoves::firstOrNew(['id' => $request['id']]);
 
         if($moneymove->exists){

@@ -69,7 +69,7 @@ const classes = {
     barcodeDialog,
     categoryDialog,
     selectSupplierDialog,
-    supplierDialog,
+    supplierDialog
 };
 
 const pages = {

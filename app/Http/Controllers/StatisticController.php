@@ -7,7 +7,10 @@ use App\Models\Car;
 use App\Models\ClientOrder;
 use App\Models\DdsArticle;
 use App\Models\Entrance;
+use App\Models\Partner;
 use App\Models\ProviderOrder;
+use App\Models\Refund;
+use App\Models\User;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -102,16 +105,27 @@ class StatisticController extends Controller
         $sort_classes = [
             ProviderOrder::class,
             Entrance::class,
+            Refund::class,
             ClientOrder::class
         ];
 
-        $entities = $sort_classes[$request->entity]::owned()
+        $manager = Partner::find($request->manager_id);
+
+        $entities = $sort_classes[$request->entity]::selectRaw('SUM(summ) as amount, created_at')
+            ->where('company_id', $manager->company_id)
+            ->where('manager_id', $request->manager_id)
+            ->where('partner_id', $request->partner_id)
             ->where('created_at', '>=', $request->begin_date)
             ->where('created_at', '<=', $request->final_date)
             ->get();
 
-        dd($entities);
+        $updated_entities = [];
 
-        //TODO need end
+        foreach ($entities as $entity) {
+            $format_date = $entity->created_at->format('d.m.Y');
+            $updated_entities[$format_date] = $entity->amount;
+        }
+
+        return response($updated_entities, 200);
     }
 }
