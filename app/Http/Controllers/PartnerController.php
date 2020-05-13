@@ -21,6 +21,7 @@ use SystemMessage;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\SmsController;
+use App\Models\Role;
 
 
 class PartnerController extends Controller
@@ -161,6 +162,10 @@ class PartnerController extends Controller
                 $partner->user_id = $user->id;
                 $partner->store_id = $request['store_id'];
                 $partner->save();
+
+                $role = Role::owned()->whereId(SettingsController::getSettingByKey('role_id')->value)->first();
+                $user->syncRoles([$role->id]);
+
                 if($user){
                     SmsController::sendSMS($user->phone, 'Вам предоставлен доступ к ' . env('APP_NAME') .'! Логин: ' . $user->phone . ' Пароль: ' . $password);
                 }

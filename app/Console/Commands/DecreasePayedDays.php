@@ -42,6 +42,10 @@ class DecreasePayedDays extends Command
         foreach($companies as $company){
             if($company->payed_days > 0) {
                 $company->decrement('payed_days');
+                if($company->payed_days == 0){
+                    $company->blocked = true;
+                    $company->save();
+                }
             } else {
                 $company->blocked = true;
                 $company->save();

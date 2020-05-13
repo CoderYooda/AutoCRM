@@ -122,7 +122,7 @@ class RegisterController extends Controller
         $store->company_id = $company->id;
         $store->type = 'casual';
         $store->locked = 0;
-        $store->name = 'Первый магазин';
+        $store->name = 'Мой магазин';
         $store->save();
 
         $partner = new Partner();

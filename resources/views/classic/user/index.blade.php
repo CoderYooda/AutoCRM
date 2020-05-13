@@ -68,10 +68,10 @@
                         @endif
                     </div>
                 </div>
-                <div class="box">
-                    <div class="p-15">
-                    </div>
-                </div>
+                {{--<div class="box">--}}
+                    {{--<div class="p-15">--}}
+                    {{--</div>--}}
+                {{--</div>--}}
             </div>
             <div id="ajax-tab-content" class="box-lister">
                 @yield('tab')

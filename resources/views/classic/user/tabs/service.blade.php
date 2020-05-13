@@ -9,7 +9,7 @@
                 @if(Auth::user()->company->blocked)
                     <span class="system_balance"> Компания "{{ Auth::user()->company->name }}" заблокирована. Для активации выберите тариф или свяжитесь с администратором</span>
                 @else
-                    <span class="system_balance pr-15"> Дней до отключения: <b>{{ Auth::user()->company->payed_days }}</b></span>
+                    <span class="system_balance pr-15">Состояние записи: <b>Активно</b>. Дней до отключения: <b>{{ Auth::user()->company->payed_days }}</b></span>
                 @endif
             </div>
         </div>
@@ -89,7 +89,7 @@
     <div class="box mb-15">
         <div class="p-15">
             <span><b>История платежей</b></span>
-            <div class="mt-15 p-container">
+            <div class="mt-15 p-container no-wrap">
                 <ul class="list-p-items mb-0 mt-0 bb-0">
                     <li class="item d-flex">
                         <div class="flex-1 p-id"><b>ID</b></div>
@@ -102,11 +102,24 @@
                     </li>
                 </ul>
                 <ul data-simplebar style="max-height: 400px;" class="list-p-items mb-0 mt-0">
-                    @foreach($payments as $payment)
-                        <li class="item d-flex" id="payment{{ $payment->id }}">
-                            @include(env('DEFAULT_THEME', 'classic') . '.tariff.payment_element')
+                    @if($payments->count() > 0)
+                        @foreach($payments as $payment)
+                            <li class="item d-flex no-wrap" id="payment{{ $payment->id }}">
+                                @include(env('DEFAULT_THEME', 'classic') . '.tariff.payment_element')
+                            </li>
+                        @endforeach
+                    @else
+                        <li>
+                            <div class="padding text-center">
+                                <div>
+                                    <div class="out_of_search"></div>
+                                    <div class="mb-15">
+                                        Платежей ранее не совершалось
+                                    </div>
+                                </div>
+                            </div>
                         </li>
-                    @endforeach
+                    @endif
                 </ul>
             </div>
         </div>

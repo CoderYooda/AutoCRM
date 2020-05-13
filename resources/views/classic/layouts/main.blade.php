@@ -117,6 +117,7 @@
                                 <a class="element ajax-nav" href="{{ route('UserIndex') }}">
                                     Личный кабинет
                                 </a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}"> Мои услуги</a>
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                     Выход
                                 </a>
