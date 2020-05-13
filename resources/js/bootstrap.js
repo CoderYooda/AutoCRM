@@ -73,6 +73,7 @@ setInterval(function () {
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');
     window.isXHRloading = false;
+
     if(response.data.event){
         let event = new Event(response.data.event, {bubbles: true});
         let listns = document.getElementsByClassName(response.data.event + 'Listner');
@@ -86,6 +87,11 @@ window.axios.interceptors.response.use(function (response) {
 }, function (error) {
     if (error.response.status === 401) {
         window.location.href = "/login";
+    }
+    if (error.response.status === 422) {
+        if(error.response.data.message && error.response.data.type){
+            window.notification.notify( error.response.data.type, error.response.data.message);
+        }
     }
     if (error.response.status === 403) {
         if(error.response.data.type == "gateClosed"){

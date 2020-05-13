@@ -37,17 +37,17 @@ class userPage{
                 window.location.href = response.data.redirect;
             }
         }).catch(function(response){
-            dd(response);
+
         }).finally(function () {
             window.isXHRloading = false;
         });
     }
 
-    checkPayment(id){
+    checkPayment(order_id){
         axios({
             method: 'POST',
             url: '/tariff/check_payment',
-            data: {id: id}
+            data: {order_id: order_id}
         }).then(function (response){
             let div = document.getElementById(response.data.target);
             div.innerHTML = response.data.html;

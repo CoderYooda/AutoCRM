@@ -43,8 +43,6 @@ class SmsController extends Controller
 
     public function confirm(SmsRequest $request)
     {
-        $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
-
         $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
 
         if($sms->code != null && $sms->code == $request['code']){

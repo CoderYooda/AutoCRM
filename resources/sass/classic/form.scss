@@ -27,6 +27,9 @@
 .w-350{
     width: 350px!important;
 }
+.bb-0{
+    border-bottom: none!important;
+}
 .show{
     display: block!important;
     opacity: 1!important;
@@ -58,7 +61,11 @@
     padding-left: 0;
     padding-right: 0;
 }
-
+.p-container{
+    border-color: #ced4da!important;
+    border-left: 1px solid;
+    border-right: 1px solid;
+}
 .list-item {
     display: -ms-flexbox;
     display: flex;

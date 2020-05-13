@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div id="ajax-tab-content" class="content-menu box box-lister">
+            <div id="ajax-tab-content" class="box-lister">
                 @yield('tab')
             </div>
         </div>

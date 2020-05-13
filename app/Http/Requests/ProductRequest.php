@@ -21,9 +21,9 @@ class ProductRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if ($this->new_supplier_name != null && $this->supplier_id == null) {
+        if ($this['new_supplier_name'] != null && $this['supplier_id'] == null) {
             $supplier = SupplierController::silent_store($this);
-            $this->supplier_id = $supplier->id;
+            $this['supplier_id'] = $supplier->id;
         }
     }
 

@@ -75,7 +75,11 @@ class TariffController extends Controller
 
         $amount = 0;
         $days = 0;
-
+//        return response()->json([
+//            'message' => 'Выбраный тариф не существует или не актуален',
+//            'type' => 'danger',
+//        ], 422);
+        $error = false;
         if($request['tariff_id'] !== null){
             switch($request['tariff_id']){
                 case 30:
@@ -90,8 +94,21 @@ class TariffController extends Controller
                     $amount = 27600;
                     $days = 360;
                     break;
+                default:
+                    $error = true;
+                    break;
             }
+        } else {
+            $error = true;
         }
+
+        if($error){
+            return response()->json([
+                'message' => 'Выбраный тариф не существует или не актуален',
+                'type' => 'danger',
+            ], 422);
+        }
+
 
         $amount = $amount * 100;
 
@@ -117,9 +134,9 @@ class TariffController extends Controller
         $payment->add_days = $days;
         $payment->add_balance = $amount / 100;
         $payment->save();
-
+        $payment->OrderId = $payment->id . date("_md_s");
         $params = [
-            'OrderId' => $payment->id,
+            'OrderId' => $payment->OrderId,
             'Amount'  => $amount,
             'SuccessURL' => route('UserIndex', ['id' => Auth::user()->id, 'active_tab' => 'service']),
             'DATA'    => [
@@ -172,7 +189,7 @@ class TariffController extends Controller
 
     public static function checkPayment(Request $request){
 
-        $payment = Payment::owned()->where('id', $request['id'])->first();
+        $payment = Payment::owned()->where('OrderId', $request['order_id'])->first();
 
         $payment->freshStatus();
 

@@ -13,6 +13,11 @@ class SmsRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        $this['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $this['phone']);
+    }
+
     public function rules()
     {
         return [

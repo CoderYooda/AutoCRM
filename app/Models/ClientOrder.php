@@ -36,6 +36,11 @@ class ClientOrder extends Model
         return $relation;
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
     public function data(){
         return $this->created_at->format('d.m H:i');
     }
@@ -44,6 +49,11 @@ class ClientOrder extends Model
     {
         return $this->belongsToMany(Article::class, 'article_client_orders', 'client_order_id', 'article_id')
             ->withPivot('count', 'shipped_count', 'price', 'total')->withTrashed();
+    }
+
+    public static function getActiveOrders()
+    {
+        return self::where('status', '!=', 'complete')->where('status', '!=', 'canceled')->where('status', '!=', 'full')->get();
     }
 
     public function notShippedArticles()

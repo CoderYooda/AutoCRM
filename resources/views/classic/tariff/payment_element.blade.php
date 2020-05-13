@@ -4,4 +4,4 @@
 <div class="flex-2 p-idn">{{ $payment->paymentId }}</div>
 <div class="flex-1 p-status">{{ $payment->getStatus() }}</div>
 <div class="flex-1 p-data">{{ $payment->getDate() }}</div>
-<div class="flex-1 p-data"><a onclick="user.checkPayment({{ $payment->id }})"><i class="fa fa-refresh"></i></a></div>
+<div class="flex-1 p-data"><a onclick="user.checkPayment({{ $payment->OrderId }})"><i class="fa fa-refresh"></i></a></div>
