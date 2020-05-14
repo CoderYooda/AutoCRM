@@ -67,7 +67,8 @@ class SelectProductDialog extends Modal{
         // }
     }
 
-    searchInit(){
+    searchInit()
+    {
         let object = this;
         var searchFn = window.helper.debounce(function(e) {
             object.search(e);
@@ -80,13 +81,12 @@ class SelectProductDialog extends Modal{
         document.addEventListener("ProductStored", searchFn);
     }
 
-    markAsAdded(){
+    markAsAdded()
+    {
         let items_in_refer = [];
-
         [].forEach.call(window[this.refer].items, function(elem){
             items_in_refer.push(elem.id);
         });
-
         let items_in_selector = this.results_obj.querySelectorAll('.list-item');
         [].forEach.call(items_in_selector, function(elem){
 
@@ -94,8 +94,6 @@ class SelectProductDialog extends Modal{
                 elem.classList.add('already_selected');
             }
         });
-
-        //console.log(items_in_refer);
     }
 
     search(){
@@ -111,9 +109,6 @@ class SelectProductDialog extends Modal{
         if(object.refer){
             data.refer = object.refer;
         }
-
-
-
         window.axios({
             method: 'post',
             url: 'product/dialog/search',

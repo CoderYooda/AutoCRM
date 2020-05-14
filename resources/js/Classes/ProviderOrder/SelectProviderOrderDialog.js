@@ -4,27 +4,20 @@ class selectProviderOrderDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
-        this.search_obj = null;//dialog.querySelector("#providerorder_search");
+        console.log('Окно поиска заявок поставщику инициализировано');
+        this.search_obj = null;
         this.order_id = null;
-        //this.results_obj = dialog.querySelector("#search_providerorder_results");
         this.refer = dialog.querySelector("#refer").value;
-
         this.articles_container = dialog.querySelector("#articles_container");
-        //this.searchInit();
-        //this.markAsAdded();
         this.init();
-
     }
 
     init(){
         let object = this;
         let focused = document.getElementById('select_provider_order_dialog_focused');
-
         document.addEventListener("ProviderOrderSelected", function(){
             object.finitaLaComedia();
         });
-
         if(focused){
             focused.focus();
         }
@@ -40,7 +33,8 @@ class selectProviderOrderDialog extends Modal{
         //this.store_obj.addEventListener("change", searchFn);
         this.search_obj.addEventListener("paste", searchFn);
         this.search_obj.addEventListener("delete", searchFn);
-        document.addEventListener("ProductStored", searchFn);
+        document.addEventListener("ProviderOrderStored", searchFn);
+
     }
 
     markAsAdded(){

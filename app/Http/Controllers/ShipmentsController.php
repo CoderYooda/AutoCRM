@@ -71,16 +71,6 @@ class ShipmentsController extends Controller
         ]);
     }
 
-//    public static function selectShipmentDialog($request)
-//    {
-//        $class = 'selectShipmentDialog';
-//        $shipments = Shipment::owned()->orderBy('created_at', 'DESC')->limit(10)->get();
-//        return response()->json([
-//            'tag' => 'selectShipmentDialog',
-//            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.select_shipment', compact('shipments', 'class', 'request'))->render(),
-//        ]);
-//    }
-
     public static function selectShipmentDialog($request)
     {
         return self::selectShipmentInner($request);
@@ -279,8 +269,6 @@ class ShipmentsController extends Controller
         UA::makeUserAction($shipment, $wasExisted ? 'fresh' : 'create');
         ##########################################################################
 
-
-//dd($shipment->articles()->get());
         $store = $shipment->store()->first();
 
         if($shipmentWasExisted){
@@ -293,29 +281,18 @@ class ShipmentsController extends Controller
             }
         }
 
-        if(count($request['products'])){
-
+        if(count($request['products']))
+        {
             //TODO check
-
-            //after
             $ids = collect($request['products'])->pluck('id');
-
-            //before
-//            # Собираем товары в массив id шников из Request`a
-//            $plucked_articles = [];
-//            foreach($request['products'] as $product) {
-//                $plucked_articles[] = $product['id'];
-//            }
             # Синхронизируем товары к складу
             $store->articles()->syncWithoutDetaching($ids, false);
         }
 
-        //$store = Store::where('id', $request['store_id'])->first();
-
         $shipment_data = [];
-        foreach($request['products'] as $product) {
 
-            if($shipment->clientOrder){
+        if($shipment->clientOrder){
+            foreach($request['products'] as $product) {
                 if($product['count'] > $shipment->clientOrder->getAvailableToShippingArticlesCount($product['id'])){
                     $name = 'products.' . $product['id'] . '.count';
                     return response()->json([
@@ -323,6 +300,9 @@ class ShipmentsController extends Controller
                     ], 422);
                 }
             }
+        }
+
+        foreach($request['products'] as $product) {
 
             $store->decreaseArticleCount($product['id'], $product['count']);
 

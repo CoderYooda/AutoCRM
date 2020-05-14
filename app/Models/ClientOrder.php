@@ -56,11 +56,13 @@ class ClientOrder extends Model
         return self::where('status', '!=', 'complete')->where('status', '!=', 'canceled')->where('status', '!=', 'full')->get();
     }
 
+    #Получить не отгруженные товары по заказу
     public function notShippedArticles()
     {
         return $this->articles()->whereRaw('article_client_orders.shipped_count < article_client_orders.count');
     }
 
+    #Получить доступные для отгрузки товары (кол-во)
     public function getAvailableToShippingArticlesCount($article_id)
     {
         $article = $this->articles()->wherePivot('article_id', $article_id)->first();
@@ -81,12 +83,17 @@ class ClientOrder extends Model
 
     public function IsAllProductsShipped()
     {
+        //$callback = true;
+        //dd($this->articles);
         foreach($this->articles as $article){
-           if($this->getShippedCount($article->id) < $article->pivot->count){
-               return false;
-           }
+                //dd($this->getShippedCount($article->id) < $article->pivot->count);
+               if($this->getShippedCount($article->id) < $article->pivot->count){
+                   //dd(1);
+                   return false;
+
+               }
         }
-        return true;
+        //return true;
     }
 
     public function IsAnyProductShipped()

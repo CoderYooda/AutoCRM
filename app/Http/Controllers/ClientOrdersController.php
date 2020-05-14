@@ -148,9 +148,9 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
-
+        dd($client_order->IsAllProductsShipped());
         if($client_order->IsAllProductsShipped()){
-            $client_order->status = 'complited';
+            $client_order->status = 'complete';
         }
 
         if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
@@ -414,7 +414,7 @@ class ClientOrdersController extends Controller
                 WHEN client_orders.status = "canceled" THEN "Отменен"
                 WHEN client_orders.status = "full" THEN "Укомплектован"
                 WHEN client_orders.status = "complete" THEN "Выполнен"
-                ELSE 1
+                ELSE "Статус не определён"
             END) AS status_formatted
             FROM client_orders
             left join partners on partners.id = client_orders.partner_id

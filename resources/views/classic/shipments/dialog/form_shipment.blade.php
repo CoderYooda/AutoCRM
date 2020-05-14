@@ -134,7 +134,7 @@
                         <div class="col-sm-3">
                             <span class="partner-balance">
                                 Баланс:<br>
-                                <span id="balance">@if(isset($shipment) && isset($shipment->partner)){{ $shipment->partner()->first()->balance }} р@else 0.00 р@endif</span>
+                                <span id="balance">@if(isset($shipment) && isset($shipment->partner)){{ $shipment->partner->balance }} р@else 0.00 р@endif</span>
                             </span>
                         </div>
                     </div>

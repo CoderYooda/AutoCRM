@@ -16,49 +16,6 @@
     @endif
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-        {{--<div class="modal-header dark" style="justify-content: normal;">--}}
-            {{--<div class="b-r pr-3 mr-3">--}}
-                {{--<span class="item-title _500">Поступление</span>--}}
-                {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}
-                    {{--@if(isset($entrance) && $entrance->id != NULL)--}}
-                        {{--№{{ $entrance->id }}--}}
-                    {{--@else--}}
-                        {{--Новое--}}
-                    {{--@endif--}}
-                {{--</div>--}}
-                {{--<div class="item-tag tag hide">--}}
-                {{--</div>--}}
-            {{--</div>--}}
-            {{--<div class="b-r pr-3 mr-3">--}}
-                {{--<span class="item-title _500">Всего на сумму</span>--}}
-                {{--<div class="item-except font-weight-bolder h-1x">--}}
-                    {{--<span id="total_price">--}}
-                        {{--@if(isset($entrance))@else 0.0 @endif--}}
-                    {{--</span> р--}}
-                {{--</div>--}}
-                {{--<div class="item-tag tag hide">--}}
-                {{--</div>--}}
-            {{--</div>--}}
-
-            {{--@if(isset($entrance))--}}
-                {{--<div class="b-r pr-3 mr-3">--}}
-                    {{--<span class="item-title _500">Оплачено</span>--}}
-                    {{--<div class="item-except @if($entrance->warrants()->sum('summ') >= $entrance->totalPrice) text-success @endif font-weight-bolder h-1x">--}}
-                    {{--<span id="payed_price">--}}
-                        {{--{{ sprintf("%.2f", $entrance->warrants()->sum('summ')) }} р / {{ $entrance->totalPrice }} р--}}
-                    {{--</span>--}}
-                    {{--</div>--}}
-                    {{--<div class="item-tag tag hide">--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--@endif--}}
-
-            {{--@if(isset($entrance) && ($entrance->warrants()->sum('summ') < $entrance->totalPrice) )--}}
-                {{--<div class="b-r pr-3 mr-3">--}}
-                    {{--<button onclick="{{ $class }}.getPayment()" class="btn btn-fw success">Оплатить</button>--}}
-                {{--</div>--}}
-            {{--@endif--}}
-        {{--</div>--}}
     <form class="WarrantStoredListner" action="{{ route('StoreEntrance') }}" method="POST">
         @csrf
         @if(isset($entrance) && $entrance->id != NULL)
@@ -124,9 +81,6 @@
                         </tbody>
                     </table>
                 </div>
-                {{--<div class="input-group">--}}
-                    {{--<button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="btn btn-fw white"><i class="fa fa-plus"></i> Добавить товар</button>--}}
-                {{--</div>--}}
             </div>
         </div>
         <div class="modal-footer">
