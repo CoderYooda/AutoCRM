@@ -30,6 +30,11 @@
                         <option value="1">Поступления</option>
                         <option value="2">Возвраты</option>
                         <option value="3">Продажи</option>
+                        <option value="4">Заказы клиентов</option>
+                        <option value="5">Корректировки</option>
+                        <option value="6">Приходные ордеры</option>
+                        <option value="7">Расходные ордеры</option>
+                        <option value="8">Перемещения</option>
                     </select>
                 </div>
 
@@ -61,7 +66,7 @@
                 <div class="flex-1">
                     <canvas id="statistic-chart" style="max-width: 600px; max-height: 400px;"></canvas>
                 </div>
-                <div class="flex-1">
+                <div id="desc" class="flex-1">
                     Описание выводимой статистики
                 </div>
             </div>
