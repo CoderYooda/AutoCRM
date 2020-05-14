@@ -15,7 +15,7 @@ class statisticPage {
 
         this.chart = new chartjs(ctx, {
             // The type of chart we want to create
-            type: 'line',
+            type: 'bar',
 
             // The data for our dataset
             data: {
@@ -60,18 +60,26 @@ class statisticPage {
             this.chart.data.labels.length = 0;
 
             //Обновляем даты на графике
-            let data = response.data;
+            let data = response.data.entities;
 
-            Object.keys(data).map((key, index) => {
+            let desc = response.data.desc;
+
+            let desc_element = document.getElementById('desc');
+
+            desc_element.innerText = desc;
+
+            let ul = document.getElementById('statistic-list');
+
+            ul.innerHTML = '';
+
+            Object.keys(data).map((key) => {
                 let value = data[key];
 
                 this.chart.data.labels.push(key);
 
-                let ul = document.getElementById('statistic-list');
-
                 let li = document.createElement('li');
                 ul.appendChild(li);
-                li.innerHTML = '[' + index + '] ' + key + ': ' + value;
+                li.innerHTML = key + ': ' + value;
             });
 
             //Вставляем новые данные

@@ -13,14 +13,20 @@ class StatisticRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        if($this['manager_id'] == 0) unset($this['manager_id']);
+        if($this['partner_id'] == 0) unset($this['partner_id']);
+    }
+
     public function rules()
     {
         return [
             'manager_id' => ['exists:partners,id'],
             'partner_id' => ['exists:partners,id'],
-            'begin_date' => ['date_format:Y-m-d', 'before:final_date'],
-            'final_date' => ['date_format:Y-m-d', 'after:begin_date'],
-            'entity' => ['integer', 'min:0', 'max:3']
+            'begin_date' => ['required', 'date_format:Y-m-d', 'before:final_date'],
+            'final_date' => ['required', 'date_format:Y-m-d', 'after:begin_date'],
+            'entity' => ['required', 'integer', 'min:0', 'max:8']
         ];
     }
 

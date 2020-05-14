@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StatisticRequest;
+use App\Models\Adjustment;
 use App\Models\Car;
 use App\Models\ClientOrder;
 use App\Models\DdsArticle;
 use App\Models\Entrance;
+use App\Models\MoneyMoves;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
 use App\Models\Refund;
+use App\Models\Shipment;
 use App\Models\User;
 use App\Models\Warrant;
 use Carbon\Carbon;
@@ -106,26 +109,81 @@ class StatisticController extends Controller
             ProviderOrder::class,
             Entrance::class,
             Refund::class,
-            ClientOrder::class
+            Shipment::class,
+            ClientOrder::class,
+            Adjustment::class,
+            Warrant::class, //Приходные
+            Warrant::class, //Расходные
+            MoneyMoves::class
         ];
 
-        $manager = Partner::find($request->manager_id);
+        $sort_name = [
+            'Заявки поставщикам',
+            'Поступления',
+            'Возвраты',
+            'Продажи',
+            'Заказы клиентов',
+            'Корректировки',
+            'Приходные ордеры',
+            'Расходные ордеры',
+            'Перемещения'
+        ];
 
-        $entities = $sort_classes[$request->entity]::selectRaw('SUM(summ) as amount, created_at')
-            ->where('company_id', $manager->company_id)
-            ->where('manager_id', $request->manager_id)
-            ->where('partner_id', $request->partner_id)
+        $manager = null;
+        $partner = null;
+
+        $query = $sort_classes[$request->entity]::selectRaw('SUM(summ) as amount, created_at')
+            ->where('company_id', Auth::user()->company()->first()->id)
             ->where('created_at', '>=', $request->begin_date)
             ->where('created_at', '<=', $request->final_date)
-            ->get();
+            ->groupBy('created_at');
+
+        if($sort_classes[$request->entity] == Warrant::class) {
+            //providerorder
+            $query = $query->where('isIncoming', $request->entity == 6 ? 1 : 0);
+        }
+
+        if(isset($request->manager_id)) {
+            $manager = Partner::find($request->manager_id);
+            $query = $query->where('manager_id', $request->manager_id);
+        }
+
+        if(isset($request->partner_id)) {
+            $partner = Partner::find($request->partner_id);
+            $query = $query->where('partner_id', $request->partner_id);
+        }
+
+        $entities = $query->get();
 
         $updated_entities = [];
 
-        foreach ($entities as $entity) {
-            $format_date = $entity->created_at->format('d.m.Y');
-            $updated_entities[$format_date] = $entity->amount;
+        if(count($entities)) {
+            foreach ($entities as $entity) {
+                $format_date = $entity->created_at->format('d.m.Y');
+                $updated_entities[$format_date] = $entity->amount;
+            }
         }
 
-        return response($updated_entities, 200);
+        $desc = null;
+
+        if(isset($manager) && isset($partner)) {
+            $desc = 'Статистика менеджера ' . $manager->fio . ' по отношению к партнёру ' . $partner->fio;
+        }
+        else if(isset($manager)) {
+            $desc = 'Статистика по менеджеру ' . $manager->fio;
+        }
+        else if(isset($partner)) {
+            $desc = 'Статистика по партнёру ' . $partner->fio;
+        }
+        else {
+            $desc = 'Статистика по ' . $sort_name[$request->entity];
+        }
+
+        $data = [
+            'entities' => $updated_entities,
+            'desc' => $desc
+        ];
+
+        return response($data, 200);
     }
 }
