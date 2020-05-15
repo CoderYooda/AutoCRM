@@ -31,18 +31,17 @@ class providerOrderDialog extends Modal{
         // inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
-        let event = '';
-        if(object.root_dialog.dataset.id){
-            event = 'ShipmentStored' + object.root_dialog.dataset.id;
-        } else {
-            event = 'ShipmentStored';
-        }
+        // let event = '';
+        // if(object.root_dialog.dataset.id){
+        //     event = 'ShipmentStored' + object.root_dialog.dataset.id;
+        // } else {
+        //     event = 'ShipmentStored';
+        // }
+        //
+        // document.addEventListener(event, function(e){
+        //     object.finitaLaComedia();
+        // });
 
-        console.log(event);
-
-        document.addEventListener(event, function(e){
-            object.finitaLaComedia();
-        });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {

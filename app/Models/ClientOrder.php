@@ -83,17 +83,11 @@ class ClientOrder extends Model
 
     public function IsAllProductsShipped()
     {
-        //$callback = true;
-        //dd($this->articles);
         foreach($this->articles as $article){
-                //dd($this->getShippedCount($article->id) < $article->pivot->count);
-               if($this->getShippedCount($article->id) < $article->pivot->count){
-                   //dd(1);
-                   return false;
-
-               }
+           if($this->getShippedCount($article->id) < $article->pivot->count){
+               return false;
+           }
         }
-        //return true;
     }
 
     public function IsAnyProductShipped()

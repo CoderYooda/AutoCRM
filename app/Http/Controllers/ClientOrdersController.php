@@ -148,7 +148,7 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
-        dd($client_order->IsAllProductsShipped());
+        //dd($client_order->IsAllProductsShipped());
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complete';
         }

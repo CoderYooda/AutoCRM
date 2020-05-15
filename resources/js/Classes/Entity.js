@@ -23,7 +23,6 @@ class Entity{
             confirmButtonText: 'Удалить!'
         }).then((result) => {
             if (result.value) {
-                isXHRloading = true;
                 axios({
                     method: 'POST',
                     url: tag + '/' + id + '/delete',
@@ -50,14 +49,6 @@ class Entity{
                         console.log("Событие " + resp.data.event + " объявлено");
                     }
                     notification.notify( type, resp.data.message);
-
-
-                }).catch(function (error) {
-                    //console.log(error);
-                    notification.notify( 'error', error.message);
-                }).finally(function(){
-
-                    isXHRloading = false;
                 });
             } else {
             }

@@ -1,8 +1,8 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.cash.layout.tabs')
 
 @section('tab')
-    <div id="ajax-table-cashmove" class="bottom-container">
-        <div class="box-lister box">
+    <div id="ajax-table-cashmove" class="bottom-container full-box-cont">
+        <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
                 <div id="cashmove-table" ></div>
             </div>

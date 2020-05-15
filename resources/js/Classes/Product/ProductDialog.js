@@ -39,10 +39,9 @@ class ProductDialog extends Modal{
     }
 
     trinitySearch(){
+
         let object = this;
 
-
-        window.isXHRloading = true;
         document.getElementById('trin_preload').classList.remove('hide');
         let data = {};
         data.search = this.article_input.value;

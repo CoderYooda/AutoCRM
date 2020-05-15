@@ -52,8 +52,9 @@ class EntranceController extends Controller
             'products' => $entrance->articles()->get()]);
     }
 
-    public function store(EntranceRequest $request){
-
+    public function store(EntranceRequest $request)
+    {
+        PermissionController::canByPregMatch( $request['id'] ? 'Редактировать поступления' : 'Создавать поступления');
         $entrance = Entrance::firstOrNew(['id' => $request['id']]);
 
         if($entrance->locked){
@@ -62,19 +63,12 @@ class EntranceController extends Controller
             ], 422);
         }
 
-        #Подготовка Request`a
-//            if($request['nds'] === null){$request['nds'] = false;}
-//            if($request['nds_included'] === null){$request['nds_included'] = false;}
-//            if($request['locked'] === null){$request['locked'] = false;}
-
-
         # Склад с которым оперируем
         if(isset($entranceWasExisted) && $entranceWasExisted) {
             $store = $entrance->providerorder()->first()->store()->first();
         } else {
             $store = Auth::user()->getStoreFirst();
         }
-
 
         $messages = [];
         foreach($request['products'] as $id => $product) {
@@ -121,9 +115,6 @@ class EntranceController extends Controller
             $entrance->company_id = Auth::user()->company()->first()->id;
             $entrance->partner_id = Auth::user()->partner()->first()->id;
             $entrance->save();
-
-
-
 
         # Исходные состояния товаров к поступлению до операции
             $previous_article_entrance = $entrance->articles()->get();
@@ -355,6 +346,8 @@ class EntranceController extends Controller
 
     public function delete($id, Request $request)
     {
+        PermissionController::canByPregMatch( $request['id'] ? 'Редактировать поступления' : 'Создавать поступления');
+
         if(!Gate::allows('Удалять поступления')){
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }

@@ -45,7 +45,7 @@
                                 <div class="flex-1 text-center">Удаление</div>
                                 <div class="flex-1 text-center">Редактирование</div>
                             </div>
-                            <div class="p-10 ">
+                            <div class="p-10" data-simplebar style="max-height: 400px;">
                                 @foreach($permissions as $permission)
                                     <div class="d-flex item">
                                         <div class="flex-1-5">{{ $permission['name'] }}</div>

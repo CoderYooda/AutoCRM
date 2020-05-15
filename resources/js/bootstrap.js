@@ -95,8 +95,7 @@ window.axios.interceptors.response.use(function (response) {
     }
     if (error.response.status === 403) {
         if(error.response.data.type == "gateClosed"){
-            document.getElementById('sys_mess_text').innerHTML = error.response.data.message;
-            window.system_dialog.show();
+            window.notification.notify( 'error', error.response.data.message);
         }
     }
     document.body.classList.remove('loading');

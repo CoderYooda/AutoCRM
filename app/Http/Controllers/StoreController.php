@@ -15,6 +15,7 @@ class StoreController extends Controller
 {
     public function index(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть товары');
     	// точка входа в страницу
         $page_title = 'Склад';
 
@@ -34,8 +35,7 @@ class StoreController extends Controller
         $classname = $request['active_tab'] . 'Tab';
 
         $content = self::$classname($request);
-        
-        
+
         if(class_basename($content) == "JsonResponse"){
         	return $content;
         }
@@ -80,9 +80,7 @@ class StoreController extends Controller
     public static function storeTab($request)
     {
         $page = 'Склад';
-	    if(!Gate::allows('Смотреть товары')){
-		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-	    }
+        PermissionController::canByPregMatch('Смотреть товары');
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
@@ -99,9 +97,7 @@ class StoreController extends Controller
 
     public static function entranceTab($request)
     {
-        if(!Gate::allows('Смотреть поступления')){
-		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-	    }
+        PermissionController::canByPregMatch('Смотреть поступления');
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance'){
             return view(env('DEFAULT_THEME', 'classic') . '.entrance.elements.table_container', compact('request'));
         }
@@ -110,9 +106,7 @@ class StoreController extends Controller
 
     public static function providerTab($request)
     {
-        if(!Gate::allows('Смотреть заявки поставщикам')){
-		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-	    }
+        //PermissionController::canByPregMatch('Смотреть заявки поставщикам');
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
         if($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-provider'){
@@ -123,9 +117,7 @@ class StoreController extends Controller
 
     public static function shipmentsTab($request)
     {
-	    if(!Gate::allows('Смотреть продажи')){
-		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-	    }
+        PermissionController::canByPregMatch('Смотреть продажи');
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments'){
             return view(env('DEFAULT_THEME', 'classic') . '.shipments.elements.table_container', compact('request'));
         }
@@ -134,9 +126,7 @@ class StoreController extends Controller
 
     public static function refundTab($request)
     {
-//        if(!Gate::allows('Смотреть продажи')){
-//            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-//        }
+        PermissionController::canByPregMatch('Смотреть возвраты');
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-refund'){
             return view(env('DEFAULT_THEME', 'classic') . '.refund.elements.table_container', compact('request'));
         }
@@ -145,9 +135,7 @@ class StoreController extends Controller
 
     public static function client_ordersTab($request)
     {
-	    if(!Gate::allows('Смотреть заказ клиента')){
-		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-	    }
+        PermissionController::canByPregMatch('Смотреть заказ клиента');
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders'){
             return view(env('DEFAULT_THEME', 'classic') . '.client_orders.elements.table_container', compact('request'));
         }
@@ -156,6 +144,7 @@ class StoreController extends Controller
 
     public static function provider_ordersTab($request)
     {
+        PermissionController::canByPregMatch('Смотреть заявки поставщикам');
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider_orders'){
             return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.elements.table_container', compact('request'));
         }
@@ -164,9 +153,7 @@ class StoreController extends Controller
 
     public static function adjustmentTab($request)
     {
-        if(!Gate::allows('Смотреть корректировки')){
-		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-	    }
+        PermissionController::canByPregMatch('Смотреть корректировки');
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment'){
             return view(env('DEFAULT_THEME', 'classic') . '.adjustments.elements.table_container', compact('request'));
         }
@@ -178,7 +165,6 @@ class StoreController extends Controller
         $pivot = Store::where('id', $store_id)->articles()->where('article_id', $article_id)->first();
         dd($pivot);
         $pivot->{$param} = $value;
-        //$store = Store::where('company_id', Auth::user()->company()->first()->id)->first();->updateExistingPivot($user, array('status' => 1), false);
     }
 
     public static function storeDialog($request)
@@ -216,11 +202,8 @@ class StoreController extends Controller
         }
     }
 
-    public function checkstock(Request $request){
-
-//        $store = Store::owned()->where('id', $request['store_id'])->first();
-//        $articles = $store->articles()->whereIn('article_id', $request['ids'])->get();
-
+    public function checkstock(Request $request)
+    {
         $items = [];
         foreach ($request['ids'] as $id){
             $article = Article::owned()->where('id', $id)->first();
@@ -268,14 +251,16 @@ class StoreController extends Controller
 
     public static function getStores($request)
     {
-        return Store::where('company_id', Auth::user()->id)->get();
+        return Store::owned()->get();
     }
 
-    public static function getStoreById($id){
+    public static function getStoreById($id)
+    {
         return Store::owned()->where('id', $id)->first();
     }
 
-    public static function getStoreNameById($id){
+    public static function getStoreNameById($id)
+    {
         $store = Store::owned()->where('id', $id)->first();
         if($store){
             return $store->name;

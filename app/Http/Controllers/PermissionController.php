@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PermissionController extends Controller
 {
@@ -26,6 +28,7 @@ class PermissionController extends Controller
 			'Settings' => 'Настройки',
 			'History' => 'История',
 			'Refund' => 'Возврат',
+			'Payment' => 'Оплата',
 		];
 		if(isset($role) && $role != null){
 			$role_permissions = $role->permissions;
@@ -43,9 +46,17 @@ class PermissionController extends Controller
 				}
 			}
 		}
-		//dd($perms_array);
 		return $perms_array;
 	}
+
+	public static function canByPregMatch($string)
+    {
+        if(!Gate::allows($string)){
+            throw new HttpResponseException(
+                request()->expectsJson() ? self::closedResponse('Вам запрещено ' . mb_strtolower($string) . '.') : abort(403, 'Вам запрещено ' . mb_strtolower($string) . '.')
+            );
+        }
+    }
 	
 	public static function closedResponse($message){
 		return response()->json([
