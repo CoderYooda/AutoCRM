@@ -11,6 +11,30 @@ class statisticPage {
     init() {
         this.linked();
 
+        // let ctx = document.getElementById('statistic-chart').getContext('2d');
+        //
+        // this.chart = new chartjs(ctx, {
+        //     // The type of chart we want to create
+        //     type: 'bar',
+        //
+        //     // The data for our dataset
+        //     data: {
+        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        //         datasets: [{
+        //             label: 'My First dataset',
+        //             backgroundColor: 'rgb(255, 99, 132)',
+        //             borderColor: 'rgb(255, 99, 132)',
+        //             data: [0, 10, 5, 2, 20, 30, 45]
+        //         }]
+        //     },
+        //
+        //     options: {}
+        // });
+    }
+
+    update(dates, sets) {
+        console.log(sets);
+
         let ctx = document.getElementById('statistic-chart').getContext('2d');
 
         this.chart = new chartjs(ctx, {
@@ -19,16 +43,27 @@ class statisticPage {
 
             // The data for our dataset
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [{
-                    label: 'My First dataset',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [0, 10, 5, 2, 20, 30, 45]
-                }]
+                labels: dates,
+                datasets: sets
             },
 
-            options: {}
+            options: {
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+
+                responsive: true,
+
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
         });
     }
 

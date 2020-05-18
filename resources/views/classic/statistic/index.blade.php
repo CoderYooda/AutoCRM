@@ -31,10 +31,9 @@
                         <option value="2">Возвраты</option>
                         <option value="3">Продажи</option>
                         <option value="4">Заказы клиентов</option>
-                        <option value="5">Корректировки</option>
-                        <option value="6">Приходные ордеры</option>
-                        <option value="7">Расходные ордеры</option>
-                        <option value="8">Перемещения</option>
+                        <option value="5">Приходные ордеры</option>
+                        <option value="6">Расходные ордеры</option>
+                        <option value="7">Перемещения</option>
                     </select>
                 </div>
 
@@ -67,7 +66,7 @@
                     <canvas id="statistic-chart" style="max-width: 600px; max-height: 400px;"></canvas>
                 </div>
                 <div id="desc" class="flex-1">
-                    Описание выводимой статистики
+                    {{ $desc }}
                 </div>
             </div>
             <div class="d-flex">
@@ -82,3 +81,41 @@
 
     </div>
 @endsection
+
+@push('scripts')
+
+    <script>
+
+        let labels = [
+            @foreach($dates as $date)
+                '{{ $date }}',
+            @endforeach
+        ];
+
+        let sets = [
+            @foreach($updated_statistic as $name => $dates)
+            {
+                label: '{{ $name }}',
+                backgroundColor: 'rgb(' + getRandomInt(255) + ', 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data:
+                    [
+                        @foreach($dates as $date)
+                        {{ $date }},
+                        @endforeach
+                    ]
+            },
+            @endforeach
+        ];
+
+        setTimeout(() => {
+            window.{{ $class }}.update(labels, sets);
+        }, 3000);
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+    </script>
+
+@endpush

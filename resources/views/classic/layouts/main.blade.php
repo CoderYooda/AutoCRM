@@ -254,4 +254,7 @@
         </form>
         <div id="login-form" class="hide"></div>
     </body>
+
+    @stack('scripts')
+
 </html>

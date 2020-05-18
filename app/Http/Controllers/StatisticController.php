@@ -12,13 +12,17 @@ use App\Models\MoneyMoves;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
 use App\Models\Refund;
+use App\Models\Setting;
 use App\Models\Shipment;
 use App\Models\User;
 use App\Models\Warrant;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 
 class StatisticController extends Controller
 {
@@ -32,61 +36,84 @@ class StatisticController extends Controller
 
         $company = Auth::user()->company()->first();
 
-        //Получение статистики компании
-        $info = [];
-
-        $company_begin_date = Carbon::now()->addDays(-7);
-        $company_final_date = Carbon::now()->addDays(7);
-
-        $warrants = Warrant::where('company_id', $company->id)->get();
-
-        $info['company']['profit'] = $warrants
-            ->where('isIncoming', 1)
-            ->where('created_at', '>=', $company_begin_date)
-            ->where('created_at', '<=', $company_final_date)
-            ->sum('summ');
-
-        $info['company']['expenses'] = $warrants
-            ->where('isIncoming', 0)
-            ->where('created_at', '>=', $company_begin_date)
-            ->where('created_at', '<=', $company_final_date)
-            ->sum('summ');
-
-        //Получение статистики менеджера
-        $manager_id = Auth::id();
-
-        $manager_begin_date = Carbon::now()->addDays(-7);
-        $manager_final_date = Carbon::now()->addDays(7);
-
-        $info['manager']['profit'] = $warrants
-            ->where('isIncoming', 1)
-            ->where('manager_id', $manager_id)
-            ->where('created_at', '>=', $manager_begin_date)
-            ->where('created_at', '<=', $manager_final_date)
-            ->sum('summ');
-
-        $info['manager']['expenses'] = $warrants
-            ->where('isIncoming', 0)
-            ->where('manager_id', $manager_id)
-            ->where('created_at', '>=', $manager_begin_date)
-            ->where('created_at', '<=', $manager_final_date)
-            ->sum('summ');
-
-        $info['manager']['warrants'] = $warrants->where('manager_id', $manager_id);
-
-        $dds_articles = DdsArticle::all();
-
-        $models = [
-            'Заявки поставщикам',
-            'Поступления',
-            'Продажи',
-            'Возвраты',
-            'Заказы клиентов',
+        $classes = [
+            ProviderOrder::class,
+            Entrance::class,
+            Refund::class,
+            Shipment::class,
+            ClientOrder::class,
+            Warrant::class, //Приходные
+            Warrant::class, //Расходные
+            MoneyMoves::class
         ];
 
+        $sort_name = [
+            'Заявки поставщикам',
+            'Поступления',
+            'Возвраты',
+            'Продажи',
+            'Заказы клиентов',
+            'Приходные ордеры',
+            'Расходные ордеры',
+            'Перемещения'
+        ];
+
+        $statistic = [];
+
+        $date = Carbon::now();
+
+        $day = Setting::where('company_id', 2)->where('key', 'day_id')->first()->value;
+
+        $date_from = Carbon::create($date->year, $date->month, $day);
+        $date_to = Carbon::create($date->year, $date->addMonth()->month, $day);
+
+        foreach ($classes as $key => $class) {
+
+            $query = $classes[$key]::where('company_id', $company->id)
+                ->where('created_at', '>=', $date_from)
+                ->where('created_at', '<=', $date_to)
+                ->groupBy('created_at');
+
+            if($class == Entrance::class) {
+                $query = $query->with('providerorder');
+            }
+            else {
+                $query = $query->selectRaw('SUM(summ) as amount, created_at');
+            }
+
+            $entities = $query->get();
+
+            if($class == Entrance::class) {
+                foreach ($entities as $entity) {
+                    $entity['amount'] = $entity->providerorder->summ;
+                }
+            }
+
+            $statistic[$sort_name[$key]] = $entities;
+        }
+
+        $desc = 'Полная статистика с ' . $date_from->format('d.m.Y') . ' по ' . $date_to->format('d.m.Y');
+
+        $updated_statistic = [];
+
+        $dates = [];
+
+        foreach ($statistic as $statistic_name => $entities) {
+            foreach ($entities as $key => $entity) {
+                $date = $entity['created_at']->format('d.m.Y');
+
+                $updated_statistic[$statistic_name][$date] = $entity['amount'];
+
+                $dates[] = $date;
+            }
+        }
+
+//        dd($updated_statistic);
+
         //Формирование шаблона
-        $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'info', 'dds_articles', 'models'))
-            ->with('managers', $company->members->load('partner'));
+        $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'updated_statistic', 'desc'))
+            ->with('managers', $company->members->load('partner'))
+            ->with('dates', array_sort(array_unique($dates)));
 
         if(class_basename($content) == "JsonResponse"){
             return $content;
@@ -111,7 +138,6 @@ class StatisticController extends Controller
             Refund::class,
             Shipment::class,
             ClientOrder::class,
-            Adjustment::class,
             Warrant::class, //Приходные
             Warrant::class, //Расходные
             MoneyMoves::class
@@ -123,7 +149,6 @@ class StatisticController extends Controller
             'Возвраты',
             'Продажи',
             'Заказы клиентов',
-            'Корректировки',
             'Приходные ордеры',
             'Расходные ордеры',
             'Перемещения'
@@ -132,14 +157,19 @@ class StatisticController extends Controller
         $manager = null;
         $partner = null;
 
-        $query = $sort_classes[$request->entity]::selectRaw('SUM(summ) as amount, created_at')
-            ->where('company_id', Auth::user()->company()->first()->id)
+        $query = $sort_classes[$request->entity]::where('company_id', Auth::user()->company()->first()->id)
             ->where('created_at', '>=', $request->begin_date)
             ->where('created_at', '<=', $request->final_date)
             ->groupBy('created_at');
 
+        if($sort_classes[$request->entity] == Entrance::class) {
+            $query = $query->with('providerorder');
+        }
+        else {
+            $query = $query->selectRaw('SUM(summ) as amount, created_at');
+        }
+
         if($sort_classes[$request->entity] == Warrant::class) {
-            //providerorder
             $query = $query->where('isIncoming', $request->entity == 6 ? 1 : 0);
         }
 
@@ -154,6 +184,12 @@ class StatisticController extends Controller
         }
 
         $entities = $query->get();
+
+        if($sort_classes[$request->entity] == Entrance::class) {
+            foreach ($entities as $entity) {
+                $entity->amount = $entity->providerorder->summ;
+            }
+        }
 
         $updated_entities = [];
 
