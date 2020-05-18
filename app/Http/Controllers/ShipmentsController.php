@@ -156,9 +156,7 @@ class ShipmentsController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять заказ клиента')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять продажи');
         $returnIds = null;
         if($id == 'array'){
             $shipments = Shipment::whereIn('id', $request['ids'])->get();
@@ -232,6 +230,8 @@ class ShipmentsController extends Controller
 
     public function store(ShipmentsRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать продажи' : 'Создавать продажи');
+
         $shipment = Shipment::firstOrNew(['id' => $request['id']]);
 
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
@@ -257,6 +257,7 @@ class ShipmentsController extends Controller
         } else {
             $shipmentWasExisted = false;
             $shipment->company_id = Auth::user()->company()->first()->id;
+            $shipment->manager_id = Auth::user()->partner()->first()->id;
             $this->message = 'Продажа сохранена';
             $wasExisted = false;
         }

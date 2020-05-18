@@ -93,6 +93,6 @@ class RoleController extends Controller
 		$role3 = LRole::create(['name' => 'Стажер', 'company_id' => $company->id]);
 		$permissions = Permission::all()->pluck('id');
 		$role->givePermissionTo($permissions);
-		return $role2;
+		return $role;
 	}
 }

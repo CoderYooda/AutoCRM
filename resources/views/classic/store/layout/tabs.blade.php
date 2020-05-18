@@ -26,9 +26,11 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'shipments', 'target' => 'ajax-tab-content']) }}">Продажи</a>
             </li>
         @endcan
+        @can('Смотреть возвраты')
             <li id="refund-tab" data-tab="refund" class="@if($request['active_tab'] == 'refund') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'refund', 'target' => 'ajax-tab-content']) }}">Возвраты</a>
             </li>
+        @endcan
         @can('Смотреть заказ клиента')
             <li id="client_orders-tab" data-tab="client_orders" class="@if($request['active_tab'] == 'client_orders') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-tab-content']) }}">Заказы клиентов</a>

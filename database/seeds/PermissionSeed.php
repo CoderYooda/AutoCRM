@@ -51,8 +51,8 @@ class PermissionSeed extends Seeder
 	
 	    Permission::create(['name' => 'Смотреть корректировки',            'model' => 'Adjustment',       'type' => 'read']);
 	    Permission::create(['name' => 'Создавать корректировки',           'model' => 'Adjustment',       'type' => 'create']);
-	    Permission::create(['name' => 'Удалять корректировки',             'model' => 'Adjustment',       'type' => 'delete']);
-	    Permission::create(['name' => 'Редактировать корректировки',       'model' => 'Adjustment',       'type' => 'edit']);
+//	    Permission::create(['name' => 'Удалять корректировки',             'model' => 'Adjustment',       'type' => 'delete']);
+//	    Permission::create(['name' => 'Редактировать корректировки',       'model' => 'Adjustment',       'type' => 'edit']);
 	    
 	    Permission::create(['name' => 'Смотреть денежные операции',            'model' => 'Warrant',       'type' => 'read']);
 	    Permission::create(['name' => 'Создавать денежные операции',           'model' => 'Warrant',       'type' => 'create']);

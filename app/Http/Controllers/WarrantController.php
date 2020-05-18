@@ -107,12 +107,15 @@ class WarrantController extends Controller
 
     public function store(WarrantRequest $request)
     {
+        dd($request['id']);
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать денежные операции' : 'Создавать денежные операции');
+
         $request['company_id'] = Auth::user()->company()->first()->id;
 
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
         }
--
+
         $request['summ'] = (double)$request['summ'];
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);
@@ -171,9 +174,7 @@ class WarrantController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять продажи')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять денежные операции');
         $returnIds = null;
         if($id == 'array'){
             $warrants = Warrant::owned()->whereIn('id', $request['ids']);

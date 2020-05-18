@@ -70,9 +70,7 @@ class ClientOrdersController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять продажи')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять заказ клиента');
         $returnIds = null;
         if ($id == 'array') {
             $client_orders = ClientOrder::whereIn('id', $request['ids']);
@@ -128,6 +126,8 @@ class ClientOrdersController extends Controller
 
     public function store(ClientOrdersRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заказ клиента' : 'Создавать заказ клиента');
+
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
 
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
@@ -193,6 +193,7 @@ class ClientOrdersController extends Controller
 
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
+            $client_order->manager_id = Auth::user()->partner()->first()->id;
             $this->message = 'Заказ сохранен';
             $wasExisted = false;
         }
