@@ -17,6 +17,7 @@ class statisticPage {
             // The type of chart we want to create
             type: 'bar',
 
+
             // The data for our dataset
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -28,39 +29,19 @@ class statisticPage {
                 }]
             },
 
-            options: {}
-        });
-    }
-
-    update(dates, sets) {
-        console.log(sets);
-
-        let ctx = document.getElementById('statistic-chart').getContext('2d');
-
-        this.chart = new chartjs(ctx, {
-            // The type of chart we want to create
-            type: 'bar',
-
-            // The data for our dataset
-            data: {
-                labels: dates,
-                datasets: sets
-            },
-
             options: {
+                maintainAspectRatio: false,
                 tooltips: {
                     mode: 'index',
                     intersect: false
                 },
-
                 responsive: true,
-
                 scales: {
                     xAxes: [{
-                        stacked: false,
+                        stacked: true,
                     }],
                     yAxes: [{
-                        stacked: false
+                        stacked: true
                     }]
                 }
             }
@@ -91,32 +72,60 @@ class statisticPage {
             //Удаляем данные с графика
             this.chart.data.datasets.length = 0;
 
-            //Удаляем даты
-            this.chart.data.labels.length = 0;
-
             let dates = response.data.dates;
             let desc = response.data.desc;
             let list = response.data.list;
 
-            console.log(desc);
-            console.log(list);
-
             let desc_element = document.getElementById('desc');
-            desc_element.outerHTML = desc;
+            desc_element.innerHTML = desc;
 
 
             let list_element = document.getElementById('statistic-list');
-            list_element.outerHTML = list;
+            list_element.innerHTML = list;
 
+            //Обновляем даты
             this.chart.data.labels = Object.keys(dates);
 
-            //Вставляем новые данные
-            this.chart.data.datasets.push({
-                label: 'Общая сумма',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: Object.values(dates)
-            });
+            //Если полная статистика
+            if(!Number.isInteger(Object.values(dates)[0])) {
+
+                let datasets = {};
+
+                //Получаем названия сущностей
+                let first_entities = Object.values(dates)[0];
+
+                Object.keys(first_entities).map(entity => {
+                    datasets[entity] = [];
+                });
+
+                //Формируем порядковый массив для сущностей
+                Object.keys(dates).map(date => {
+                    let entities = dates[date];
+
+                    Object.keys(entities).map(entity => {
+                        datasets[entity].push(entities[entity]);
+                    });
+                });
+
+                //Выводим информацию
+                Object.keys(datasets).map((name) => {
+                    this.chart.data.datasets.push({
+                        label: name,
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: datasets[name]
+                    });
+                });
+            }
+            //Если по определённой сущности
+            else {
+                this.chart.data.datasets.push({
+                    label: 'Общая сумма',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: Object.values(dates)
+                });
+            }
 
             this.chart.update();
         })

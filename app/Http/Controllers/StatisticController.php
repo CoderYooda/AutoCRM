@@ -28,25 +28,28 @@ class StatisticController extends Controller
 {
     public function index(Request $request)
     {
-        // точка входа в страницу
-        $page_title = 'Статистика';
-
         // цель динамической подгрузки
         $target = HC::selectTarget();
 
-        $company = Auth::user()->company()->first();
+        //Формирование шаблона
+        $content = view(get_template() . '.statistic.index', compact('request'));
 
-        $classes = [
-            ProviderOrder::class,
-            Entrance::class,
-            Refund::class,
-            Shipment::class,
-            ClientOrder::class,
-            Warrant::class, //Приходные
-            Warrant::class, //Расходные
-            MoneyMoves::class
-        ];
+        if(class_basename($content) == "JsonResponse"){
+            return $content;
+        }
 
+        if($request['view_as'] != 'json') return $content;
+
+        return response()->json([
+            'target' => $target,
+            'page' => 'Статистика',
+            'html' => $content->render()
+        ]);
+    }
+
+    public function show(StatisticRequest $request)
+    {
+        #Названия сортировок
         $sort_name = [
             'Заявки поставщикам',
             'Поступления',
@@ -58,157 +61,137 @@ class StatisticController extends Controller
             'Перемещения'
         ];
 
-        $statistic = [];
+        $global_data = [];
 
-        $date = Carbon::now();
+        $company = Auth::user()->company()->first();
 
-        $day = Setting::where('company_id', 2)->where('key', 'day_id')->first()->value;
+        #Формарование дат
+        for($i = strtotime($request->begin_date); $i <= strtotime($request->final_date); $i += 86400) {
+            $date = date('d.m.Y', $i);
 
-        $date_from = Carbon::create($date->year, $date->month, $day);
-        $date_to = Carbon::create($date->year, $date->addMonth()->month, $day);
+            foreach ($sort_name as $sort) {
+                $global_data[$date][$sort] = 0;
+            }
+        }
 
-        foreach ($classes as $key => $class) {
+        #Отображение всех сущностей сразу
+        if($request->entity == -1) {
 
-            $query = $classes[$key]::where('company_id', $company->id)
-                ->where('created_at', '>=', $date_from)
-                ->where('created_at', '<=', $date_to)
-                ->groupBy('created_at');
+            $classes = [
+                ProviderOrder::class,
+                Entrance::class,
+                Refund::class,
+                Shipment::class,
+                ClientOrder::class,
+                Warrant::class, //Приходные
+                Warrant::class, //Расходные
+                MoneyMoves::class
+            ];
 
-            if($class == Entrance::class) {
+            $current_date = Carbon::now();
+
+            $day = Setting::where('company_id', 2)->where('key', 'day_id')->first()->value;
+
+            $date_from = Carbon::create($current_date->year, $current_date->month, $day);
+            $date_to = Carbon::create($current_date->year, $current_date->addMonth()->month, $day);
+
+            foreach ($classes as $key => $class) {
+                $query = $classes[$key]::where('company_id', $company->id)
+                    ->where('created_at', '>=', $date_from)
+                    ->where('created_at', '<=', $date_to)
+                    ->groupBy(DB::raw('DAY(created_at)'));
+
+                if ($class != Entrance::class) {
+                    $query = $query->selectRaw('SUM(summ) as amount, created_at');
+                } else {
+                    $query = $query->with('providerorder');
+                }
+
+                $entities = $query->get();
+
+                if ($class == Entrance::class) {
+                    foreach ($entities as $entity) {
+                        $entity['amount'] = $entity->providerorder->summ;
+                    }
+                }
+
+                foreach ($entities as $entity) {
+                    $date = $entity->created_at->format('d.m.Y');
+                    $global_data[$date][$sort_name[$key]] = $entity->amount;
+                }
+            }
+        }
+        #Отображение одной сущности
+        else {
+            $sort_classes = [
+                ProviderOrder::class,
+                Entrance::class,
+                Refund::class,
+                Shipment::class,
+                ClientOrder::class,
+                Warrant::class, //Приходные
+                Warrant::class, //Расходные
+                MoneyMoves::class
+            ];
+
+            $sort_name = [
+                'заявкам поставщиков',
+                'поступлениям',
+                'возвратам',
+                'продажам',
+                'заказам клиентов',
+                'приходным ордерам',
+                'расходным ордерам',
+                'перемещениям'
+            ];
+
+            $manager = null;
+            $partner = null;
+
+            $query = $sort_classes[$request->entity]::where('company_id', $company->id)
+                ->where('created_at', '>=', $request->begin_date)
+                ->where('created_at', '<=', $request->final_date)
+                ->groupBy(DB::raw('DAY(created_at)'));
+
+            if($sort_classes[$request->entity] == Entrance::class) {
                 $query = $query->with('providerorder');
             }
             else {
                 $query = $query->selectRaw('SUM(summ) as amount, created_at');
             }
 
+            if($sort_classes[$request->entity] == Warrant::class) {
+                $query = $query->where('isIncoming', $request->entity == 5 ? 1 : 0);
+            }
+
+            if(isset($request->manager_id)) {
+                $manager = Partner::find($request->manager_id);
+                $query = $query->where('manager_id', $request->manager_id);
+            }
+
+            if(isset($request->partner_id)) {
+                $partner = Partner::find($request->partner_id);
+                $query = $query->where('partner_id', $request->partner_id);
+            }
+
             $entities = $query->get();
 
-            if($class == Entrance::class) {
+            if($sort_classes[$request->entity] == Entrance::class) {
                 foreach ($entities as $entity) {
-                    $entity['amount'] = $entity->providerorder->summ;
+                    $entity->amount = $entity->providerorder->summ;
                 }
             }
 
-            $statistic[$sort_name[$key]] = $entities;
-        }
-
-        $desc = 'Полная статистика с ' . $date_from->format('d.m.Y') . ' по ' . $date_to->format('d.m.Y');
-
-        $updated_statistic = [];
-
-        $dates = [];
-
-        foreach ($statistic as $statistic_name => $entities) {
-            foreach ($entities as $key => $entity) {
-                $date = $entity['created_at']->format('d.m.Y');
-                $dates[$date][$statistic_name] = [];
+            for($i = strtotime($request->begin_date); $i <= strtotime($request->final_date); $i += 86400) {
+                $date = date('d.m.Y', $i);
+                $global_data[$date] = 0;
             }
-        }
 
-        foreach ($statistic as $statistic_name => $entities) {
-            foreach ($entities as $key => $entity) {
-                $date = $entity['created_at']->format('d.m.Y');
-
-                $updated_statistic[$statistic_name][$date] = $entity['amount'];
-
-                $dates[] = $date;
-            }
-        }
-
-        //dd($updated_statistic);
-
-        //Формирование шаблона
-        $content = view(get_template() . '.statistic.index', compact('request', 'updated_statistic', 'desc'))
-            ->with('managers', $company->members->load('partner'))
-            ->with('dates', $dates);
-
-        if(class_basename($content) == "JsonResponse"){
-            return $content;
-        }
-
-        if($request['view_as'] != null && $request['view_as'] == 'json'){
-            return response()->json([
-                'target' => $target,
-                'page' => $page_title,
-                'html' => $content->render()
-            ]);
-        } else {
-            return $content;
-        }
-    }
-
-    public function show(StatisticRequest $request)
-    {
-        $sort_classes = [
-            ProviderOrder::class,
-            Entrance::class,
-            Refund::class,
-            Shipment::class,
-            ClientOrder::class,
-            Warrant::class, //Приходные
-            Warrant::class, //Расходные
-            MoneyMoves::class
-        ];
-
-        $sort_name = [
-            'заявкам поставщиков',
-            'поступлениям',
-            'возвратам',
-            'продажам',
-            'заказам клиентов',
-            'приходным ордерам',
-            'расходным ордерам',
-            'перемещениям'
-        ];
-
-        $manager = null;
-        $partner = null;
-
-        $query = $sort_classes[$request->entity]::where('company_id', Auth::user()->company()->first()->id)
-            ->where('created_at', '>=', $request->begin_date)
-            ->where('created_at', '<=', $request->final_date)
-            ->groupBy('created_at');
-
-        if($sort_classes[$request->entity] == Entrance::class) {
-            $query = $query->with('providerorder');
-        }
-        else {
-            $query = $query->selectRaw('SUM(summ) as amount, created_at');
-        }
-
-        if($sort_classes[$request->entity] == Warrant::class) {
-            $query = $query->where('isIncoming', $request->entity == 5 ? 1 : 0);
-        }
-
-        if(isset($request->manager_id)) {
-            $manager = Partner::find($request->manager_id);
-            $query = $query->where('manager_id', $request->manager_id);
-        }
-
-        if(isset($request->partner_id)) {
-            $partner = Partner::find($request->partner_id);
-            $query = $query->where('partner_id', $request->partner_id);
-        }
-
-        $entities = $query->get();
-
-        if($sort_classes[$request->entity] == Entrance::class) {
-            foreach ($entities as $entity) {
-                $entity->amount = $entity->providerorder->summ;
-            }
-        }
-
-        $global_data = [];
-
-        for($i = strtotime($request->begin_date); $i <= strtotime($request->final_date); $i += 86400) {
-            $date = date('d.m.Y', $i);
-            $global_data[$date] = 0;
-        }
-
-        if(count($entities)) {
-            foreach ($entities as $entity) {
-                $format_date = $entity->created_at->format('d.m.Y');
-                $global_data[$format_date] = $entity->amount;
+            if(count($entities)) {
+                foreach ($entities as $entity) {
+                    $format_date = $entity->created_at->format('d.m.Y');
+                    $global_data[$format_date] = $entity->amount;
+                }
             }
         }
 
@@ -223,14 +206,17 @@ class StatisticController extends Controller
         else if(isset($partner)) {
             $desc = 'Статистика по партнёру ' . $partner->fio;
         }
-        else {
+        else if($request->entity != -1){
             $desc = 'Статистика по ' . $sort_name[$request->entity];
+        }
+        else {
+            $desc = 'Общая статистика';
         }
 
         $response = [
             'dates' => $global_data,
             'desc' => view(get_template() . '.statistic.desc', compact('desc', 'sort_name'))->render(),
-            'list' => view(get_template() . '.statistic.list', compact('global_data'))->render()
+            'list' => view(get_template() . '.statistic.list', compact('global_data', 'sort_name'))->render()
         ];
 
         return response($response, 200);
