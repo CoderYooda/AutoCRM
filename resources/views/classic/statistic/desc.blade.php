@@ -4,4 +4,3 @@
     <div class="mb-10">Дата начала: {{ request()->begin_date }}</div>
     <div class="mb-10">Дата конца: {{ request()->final_date }}</div>
 </div>
-
