@@ -101,6 +101,19 @@ class StatisticController extends Controller
         foreach ($statistic as $statistic_name => $entities) {
             foreach ($entities as $key => $entity) {
                 $date = $entity['created_at']->format('d.m.Y');
+                $dates[$date][$statistic_name] = [];
+            }
+        }
+
+        dd($dates);
+
+        foreach ($dates as $date => $array) {
+            dd($date);
+        }
+
+        foreach ($statistic as $statistic_name => $entities) {
+            foreach ($entities as $key => $entity) {
+                $date = $entity['created_at']->format('d.m.Y');
 
                 $updated_statistic[$statistic_name][$date] = $entity['amount'];
 
@@ -108,12 +121,10 @@ class StatisticController extends Controller
             }
         }
 
-//        dd($updated_statistic);
-
         //Формирование шаблона
         $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'updated_statistic', 'desc'))
             ->with('managers', $company->members->load('partner'))
-            ->with('dates', array_sort(array_unique($dates)));
+            ->with('dates', $dates);
 
         if(class_basename($content) == "JsonResponse"){
             return $content;

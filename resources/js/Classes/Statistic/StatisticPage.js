@@ -57,10 +57,10 @@ class statisticPage {
 
                 scales: {
                     xAxes: [{
-                        stacked: true,
+                        stacked: false,
                     }],
                     yAxes: [{
-                        stacked: true
+                        stacked: false
                     }]
                 }
             }
