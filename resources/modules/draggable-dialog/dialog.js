@@ -70,14 +70,9 @@ window.openDialog = function(tag, params = null, reload = false) {
             appendDialog(resp.data, resp.data.tag);
             window.helper.initDialogMethods();
         }
-        window.isXHRloading = false;
-    }).catch(function (error) {
-        window.notification.notify( 'error', error.message);
-        window.isXHRloading = false;
-    }).then(function () {
+    }).finally(function(){
         window.isXHRloading = false;
     });
-
 }
 
 window.closeDialog = function(event, id = null){

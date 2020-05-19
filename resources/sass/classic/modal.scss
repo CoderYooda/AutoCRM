@@ -27,7 +27,15 @@
     width: auto;
     pointer-events: none;
     max-width: 50%;
-    margin: 200px auto;
+    margin: 125px auto;
+}
+#croppr-container{
+    max-height: 500px!important;
+    min-height: 500px;
+}
+#croppr-container img{
+    max-height: 500px!important;
+    min-height: 500px;
 }
 .modal-content {
     position: relative;

@@ -33,7 +33,6 @@ class RegisterController extends Controller
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
         $request['name'] = $request['fio'];
-        //dd($request);
         //SmsController::sendTo($data['phone']);
         return Validator::make($request->all(), [
             'fio' => ['required', 'string', 'min:5', 'max:255'],
@@ -110,6 +109,7 @@ class RegisterController extends Controller
 
         $company = new Company();
         $company->name = 'Новая компания';
+        $company->payed_days = 14;
         $company->save();
 
         $user->company()->associate($company);
@@ -122,7 +122,7 @@ class RegisterController extends Controller
         $store->company_id = $company->id;
         $store->type = 'casual';
         $store->locked = 0;
-        $store->name = 'Первый магазин';
+        $store->name = 'Мой магазин';
         $store->save();
 
         $partner = new Partner();

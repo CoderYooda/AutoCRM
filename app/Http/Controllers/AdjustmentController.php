@@ -44,8 +44,10 @@ class AdjustmentController extends Controller
 
     public function store(AdjustmentRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать корректировки' : 'Создавать корректировки');
         $adjustment = new Adjustment();
         $adjustment->company_id = Auth::user()->company()->first()->id;
+        $adjustment->manager_id = Auth::user()->partner()->first()->id;
         $this->message = 'Корректировка сохранена';
         $adjustment->fill($request->only($adjustment->fields));
         $adjustment->save();

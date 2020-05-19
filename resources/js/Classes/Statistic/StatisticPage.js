@@ -17,6 +17,7 @@ class statisticPage {
             // The type of chart we want to create
             type: 'bar',
 
+
             // The data for our dataset
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -28,7 +29,22 @@ class statisticPage {
                 }]
             },
 
-            options: {}
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
         });
     }
 

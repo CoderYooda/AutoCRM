@@ -16,6 +16,7 @@ class CreateShipmentsTable extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('partner_id')->unsigned()->comment('Привязка к партнеру');
+            $table->bigInteger('manager_id')->unsigned()->comment('Привязка к менеджеру');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->bigInteger('clientorder_id')->unsigned()->nullable()->comment('Привязка к заказу');

@@ -16,6 +16,7 @@ class CreateClientOrdersTable extends Migration
         Schema::create('client_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('partner_id')->unsigned()->comment('Привязка к партнеру');
+            $table->bigInteger('manager_id')->unsigned()->comment('Привязка к партнеру');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');
             $table->bigInteger('store_id')->unsigned()->comment('Привязка к складу');
             $table->dateTime('do_date')->comment('Дата исполнения');

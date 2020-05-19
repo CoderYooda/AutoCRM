@@ -126,12 +126,9 @@ class ProviderOrdersController extends Controller
         ]);
     }
 
-
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять заявки поставщикам')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять заявки поставщикам');
         $returnIds = null;
         if($id == 'array'){
             $provider_orders = ProviderOrder::whereIn('id', $request['ids']);
@@ -211,8 +208,7 @@ class ProviderOrdersController extends Controller
 
     public function store(ProviderOrdersRequest $request)
     {
-        //TODO где это использовать?
-//        $partner = Partner::owned()->where('id', $this['partner_id'])->first();
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам');
 
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
@@ -246,11 +242,6 @@ class ProviderOrdersController extends Controller
         $provider_order->save();
 
         UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
-//        foreach($provider_order->entrances()->get() as $entrance){
-//            $entrance->increaseInStore($provider_order->store()->first());
-//        }
-
-        //$store = Store::where('id', $request['store_id'])->first();
 
         $provider_order_pivot_data = [];
 
@@ -308,20 +299,8 @@ class ProviderOrdersController extends Controller
             }
         }
 
-        //products.502.price
-
         # Синхронизируем товары к заявке
-            $provider_order->articles()->sync($provider_order_pivot_data);
-
-
-//        $article_providerorder_pivot_data = [];
-//        foreach($request['products'] as $id => $product) {
-//            $article_providerorder_pivot_data[$id] = self::calculatePivotArticleProviderOrder($request, $product);
-//        }
-//
-//        $provider_order->articles()->sync($article_providerorder_pivot_data, true);
-
-
+        $provider_order->articles()->sync($provider_order_pivot_data);
 
         if($request['inpercents']){
             $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);

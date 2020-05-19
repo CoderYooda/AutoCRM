@@ -8,6 +8,7 @@ use App\Models\Partner;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\Setting;
 use App\Http\Controllers\SettingsController;
+use Carbon\Carbon;
 
 class AdministratorSeed extends Seeder
 {

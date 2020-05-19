@@ -21,6 +21,7 @@ use SystemMessage;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\SmsController;
+use App\Models\Role;
 
 
 class PartnerController extends Controller
@@ -34,6 +35,8 @@ class PartnerController extends Controller
 
     public function index(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть контакты');
+
         $target = HC::selectTarget();
 	    if(!Gate::allows('Смотреть контакты')){
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
@@ -107,6 +110,8 @@ class PartnerController extends Controller
 
     public function store(PartnerRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать контакты' : 'Создавать контакты');
+
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){
@@ -161,6 +166,10 @@ class PartnerController extends Controller
                 $partner->user_id = $user->id;
                 $partner->store_id = $request['store_id'];
                 $partner->save();
+
+                $role = Role::owned()->whereId(SettingsController::getSettingByKey('role_id')->value)->first();
+                $user->syncRoles([$role->id]);
+
                 if($user){
                     SmsController::sendSMS($user->phone, 'Вам предоставлен доступ к ' . env('APP_NAME') .'! Логин: ' . $user->phone . ' Пароль: ' . $password);
                 }
@@ -189,6 +198,8 @@ class PartnerController extends Controller
 
     public function delete($id, Request $request)
     {
+        PermissionController::canByPregMatch('Удалять контакты');
+
         $returnIds = null;
         if($id == 'array'){
             $partners = Partner::owned()->whereIn('id', $request['ids']);

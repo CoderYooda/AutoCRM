@@ -17,8 +17,6 @@ class PermissionSeed extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-
-
         Permission::create(['name' => 'Управлять системой',         'model' => 'App',      'type' => 'hidden']);
 
         Permission::create(['name' => 'Смотреть категории',         'model' => 'Category',      'type' => 'read']);
@@ -53,8 +51,8 @@ class PermissionSeed extends Seeder
 	
 	    Permission::create(['name' => 'Смотреть корректировки',            'model' => 'Adjustment',       'type' => 'read']);
 	    Permission::create(['name' => 'Создавать корректировки',           'model' => 'Adjustment',       'type' => 'create']);
-	    Permission::create(['name' => 'Удалять корректировки',             'model' => 'Adjustment',       'type' => 'delete']);
-	    Permission::create(['name' => 'Редактировать корректировки',       'model' => 'Adjustment',       'type' => 'edit']);
+//	    Permission::create(['name' => 'Удалять корректировки',             'model' => 'Adjustment',       'type' => 'delete']);
+//	    Permission::create(['name' => 'Редактировать корректировки',       'model' => 'Adjustment',       'type' => 'edit']);
 	    
 	    Permission::create(['name' => 'Смотреть денежные операции',            'model' => 'Warrant',       'type' => 'read']);
 	    Permission::create(['name' => 'Создавать денежные операции',           'model' => 'Warrant',       'type' => 'create']);
@@ -83,6 +81,8 @@ class PermissionSeed extends Seeder
 	    Permission::create(['name' => 'Редактировать настройки',                    'model' => 'Settings',       'type' => 'edit']);
 	    
 	    Permission::create(['name' => 'Смотреть историю',                           'model' => 'History',       'type' => 'read']);
+
+	    Permission::create(['name' => 'Смотреть баланс',                           'model' => 'Payment',       'type' => 'read']);
 
 	    $superAdmin = Role::create(['name' => 'Суперадмин', 'company_id' => 1]);
         $superAdmin->givePermissionTo('Смотреть настройки');

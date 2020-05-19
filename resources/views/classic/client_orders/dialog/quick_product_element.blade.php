@@ -20,6 +20,9 @@
                value="1"
                type="number" >
     </td>
+    <td><input name="products[{{ $product->id }}][shipped]" class="form-control form-control-sm"
+               @if(isset($client_order)) value="{{ $product->pivot->shipped_count }}" @else value="0" @endif
+               type="number" disabled></td>
     <td>
         <input name="products[new][{{ $product->id }}][price]" class="form-control form-control-sm j_price"
                value="0"

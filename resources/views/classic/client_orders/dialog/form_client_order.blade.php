@@ -231,6 +231,7 @@
                             <select name="status" class="form-control" @if(!isset($client_order)) disabled="" @endif>
                                 @if(isset($client_order))
                                     <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
+                                    <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
                                     <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
                                     {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
                                     <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>

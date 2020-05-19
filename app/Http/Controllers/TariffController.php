@@ -60,10 +60,60 @@ class TariffController extends Controller
         ];
 
         $enabledTaxation = true;
-        $amount = 1000 * 100;
+
+
+
+        $isShipping = false;
+
+        if (!empty($isShipping[2]['Name'] === 'shipping')) {
+            $isShipping = true;
+        }
+
+
+
+        $enabledTaxation = true;
+
+        $amount = 0;
+        $days = 0;
+//        return response()->json([
+//            'message' => 'Выбраный тариф не существует или не актуален',
+//            'type' => 'danger',
+//        ], 422);
+        $error = false;
+        if($request['tariff_id'] !== null){
+            switch($request['tariff_id']){
+                case 30:
+                    $amount = 2500;
+                    $days = 30;
+                    break;
+                case 180:
+                    $amount = 14400;
+                    $days = 180;
+                    break;
+                case 360:
+                    $amount = 27600;
+                    $days = 360;
+                    break;
+                default:
+                    $error = true;
+                    break;
+            }
+        } else {
+            $error = true;
+        }
+
+        if($error){
+            return response()->json([
+                'message' => 'Выбраный тариф не существует или не актуален',
+                'type' => 'danger',
+            ], 422);
+        }
+
+
+        $amount = $amount * 100;
 
         $receiptItem = [[
-            'Name'          => 'Оплата подписки',
+            'Name'          => 'Оплата ' . $days . ' дней пользования CRM',
             'Price'         => $amount,
             'Quantity'      => 1,
             'Amount'        => $amount,
@@ -72,33 +122,34 @@ class TariffController extends Controller
             'Tax'           => $vats['none']
         ]];
 
-        $isShipping = false;
-
-        if (!empty($isShipping[2]['Name'] === 'shipping')) {
-            $isShipping = true;
-        }
-
         $receipt = [
             'EmailCompany' => $emailCompany,
-            'Email'        => $email,
+            'Phone'        => Auth::user()->phone,
             'Taxation'     => $taxations['osn'],
             'Items'        => self::balanceAmount($isShipping, $receiptItem, $amount),
         ];
 
-        $enabledTaxation = true;
 
         $payment = new Payment();
+        $payment->add_days = $days;
+        $payment->add_balance = $amount / 100;
         $payment->save();
-
+        $payment->OrderId = $payment->id . date("_md_s");
         $params = [
-            'OrderId' => $payment->id,
+            'OrderId' => $payment->OrderId,
             'Amount'  => $amount,
             'SuccessURL' => route('UserIndex', ['id' => Auth::user()->id, 'active_tab' => 'service']),
             'DATA'    => [
-                'Email'           => $email,
+                'Email'           => 'Coderyooda@gmail.com',//Auth::user()->phone,
                 'Connection_type' => 'example'
             ],
         ];
+
+        //dd($params);
+
+
+
+
 
         if ($enabledTaxation) {
             $params['Receipt'] = $receipt;
@@ -138,7 +189,7 @@ class TariffController extends Controller
 
     public static function checkPayment(Request $request){
 
-        $payment = Payment::owned()->where('id', $request['id'])->first();
+        $payment = Payment::owned()->where('OrderId', $request['order_id'])->first();
 
         $payment->freshStatus();
 

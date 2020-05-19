@@ -29,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         });
         \App\Models\Shipment::observe(\App\Observers\ShipmentObserver::class);
         \App\Models\Company::observe(\App\Observers\CompanyObserver::class);
+        \App\Models\Partner::observe(\App\Observers\PartnerObserver::class);
     }
 }

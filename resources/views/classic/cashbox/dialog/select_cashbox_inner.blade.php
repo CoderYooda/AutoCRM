@@ -4,7 +4,7 @@
             @foreach($cashboxes as $cashbox)
                 <li id="cashbox_item_{{ $cashbox->id }}" @if($request['type'] != null)onclick="try{window.{{$request['refer']}}.select{{$request['type']}}Cashbox({{ $cashbox->id }})}catch (e) {}"@else onclick="try{window.{{$request['refer']}}.selectCashbox({{ $cashbox->id }})}catch (e) {}"@endif class="pointer d-flex " >
                     <div class="ring-ico">
-                        <span class="first_letter"><img class="list-icon" src="icons/cashbox.svg" alt="Кассовый аппарат"></span>
+                        <span class="first_letter"><img class="list-icon" src="{{ asset('images/icons/cashbox.svg') }}" alt="Кассовый аппарат"></span>
                     </div>
                     <div class="list-title">
                         {{ $cashbox->name }}

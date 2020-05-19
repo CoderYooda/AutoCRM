@@ -36,6 +36,11 @@ class ClientOrder extends Model
         return $relation;
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
     public function data(){
         return $this->created_at->format('d.m H:i');
     }
@@ -46,11 +51,18 @@ class ClientOrder extends Model
             ->withPivot('count', 'shipped_count', 'price', 'total')->withTrashed();
     }
 
+    public static function getActiveOrders()
+    {
+        return self::where('status', '!=', 'complete')->where('status', '!=', 'canceled')->where('status', '!=', 'full')->get();
+    }
+
+    #Получить не отгруженные товары по заказу
     public function notShippedArticles()
     {
         return $this->articles()->whereRaw('article_client_orders.shipped_count < article_client_orders.count');
     }
 
+    #Получить доступные для отгрузки товары (кол-во)
     public function getAvailableToShippingArticlesCount($article_id)
     {
         $article = $this->articles()->wherePivot('article_id', $article_id)->first();
@@ -76,7 +88,6 @@ class ClientOrder extends Model
                return false;
            }
         }
-        return true;
     }
 
     public function IsAnyProductShipped()

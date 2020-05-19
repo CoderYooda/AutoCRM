@@ -53,7 +53,7 @@
                 </div>
             @endif
         </div>
-        <form class="WarrantStoredListner providerOrderStoredListner" action="{{ route('StoreProviderOrder') }}" method="POST">
+        <form class="WarrantStoredListner ProviderOrderStoredListner" action="{{ route('StoreProviderOrder') }}" method="POST">
             <div class="box-body">
                 @csrf
                 @if(isset($provider_order) && $provider_order->id != NULL)

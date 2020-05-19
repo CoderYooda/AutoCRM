@@ -41,21 +41,17 @@ class ClientOrdersCheck extends Command
 
     public function handle()
     {
-        $clientOrders = ClientOrder::where('status', '!=', 'complete')->where('status', '!=', 'canceled')->where('status', '!=', 'full')->get();
-        foreach($clientOrders as $clientOrder){
-            $articles = $clientOrder->articles()->get();
+        foreach(ClientOrder::getActiveOrders() as $clientOrder){
             $complited = true; // Состояние заказа
-            foreach($articles as $article){
-                //echo $article->name . ' - ' .$article->pivot->count;
-                //echo $article->getCountInStoreId($clientOrder->store_id);
+            foreach($clientOrder->articles as $article){
                 if($article->getCountInStoreId($clientOrder->store_id) < $article->pivot->count ){
                     $complited = false;
                 }
             }
             if($complited){
-//                $clientOrder->status = 'full';
-//                $clientOrder->save();
-                SystemMessage::sendToCompany(2, 'success', 'Заказ № ' . $clientOrder->id . ' укомплектован и готов к выдаче', $clientOrder);
+                $clientOrder->status = 'full';
+                $clientOrder->save();
+                SystemMessage::sendToCompany($clientOrder->company->id, 'success', 'Заказ № ' . $clientOrder->id . ' укомплектован и готов к выдаче', $clientOrder);
             }
 
         }

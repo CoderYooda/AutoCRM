@@ -5,11 +5,13 @@
 
 @php $class = 'store' @endphp
 
-<div class="content-menu box w-290" id="category-nav" >
-    {{--style="height: calc(74%); overflow: hidden"--}}
-    @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')
-</div>
-<div class="box-lister box">
+@can('Смотреть категории')
+    <div class="content-menu box w-290" id="category-nav" >
+        @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')
+    </div>
+@endcan
+
+<div class="box-lister box" style="width: 1px!important;">
     <div class="box-header" id="breadcrumbs-nav">
     </div>
     <div id="table-container" class="box-content">

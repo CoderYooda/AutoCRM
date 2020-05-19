@@ -70,13 +70,16 @@ class AxForm{
             }
 
             let messages = {};
-            if(error.response.data.messages){
-                messages = error.response.data.messages;
-            } else if(error.response.data.errors){
-                messages = error.response.data.errors;
+            if(error.response && error.response.data){
+                if(error.response.data.messages){
+                    messages = error.response.data.messages;
+                } else if(error.response.data.errors){
+                    messages = error.response.data.errors;
+                }
             }
 
-            if(error.response && (error.response.data.messages || error.response.data.errors)){
+
+            if(error.response && error.response.data &&(error.response.data.messages || error.response.data.errors)){
                 var all_butt_butts = document.querySelectorAll(".helper_danger");
                 Array.prototype.forEach.call(all_butt_butts, function(el) {
                     el.setAttribute("style", "");

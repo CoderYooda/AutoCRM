@@ -71,16 +71,6 @@ class ShipmentsController extends Controller
         ]);
     }
 
-//    public static function selectShipmentDialog($request)
-//    {
-//        $class = 'selectShipmentDialog';
-//        $shipments = Shipment::owned()->orderBy('created_at', 'DESC')->limit(10)->get();
-//        return response()->json([
-//            'tag' => 'selectShipmentDialog',
-//            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.select_shipment', compact('shipments', 'class', 'request'))->render(),
-//        ]);
-//    }
-
     public static function selectShipmentDialog($request)
     {
         return self::selectShipmentInner($request);
@@ -166,9 +156,7 @@ class ShipmentsController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять заказ клиента')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять продажи');
         $returnIds = null;
         if($id == 'array'){
             $shipments = Shipment::whereIn('id', $request['ids'])->get();
@@ -242,6 +230,8 @@ class ShipmentsController extends Controller
 
     public function store(ShipmentsRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать продажи' : 'Создавать продажи');
+
         $shipment = Shipment::firstOrNew(['id' => $request['id']]);
 
         if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
@@ -267,6 +257,7 @@ class ShipmentsController extends Controller
         } else {
             $shipmentWasExisted = false;
             $shipment->company_id = Auth::user()->company()->first()->id;
+            $shipment->manager_id = Auth::user()->partner()->first()->id;
             $this->message = 'Продажа сохранена';
             $wasExisted = false;
         }
@@ -279,8 +270,6 @@ class ShipmentsController extends Controller
         UA::makeUserAction($shipment, $wasExisted ? 'fresh' : 'create');
         ##########################################################################
 
-
-//dd($shipment->articles()->get());
         $store = $shipment->store()->first();
 
         if($shipmentWasExisted){
@@ -293,29 +282,18 @@ class ShipmentsController extends Controller
             }
         }
 
-        if(count($request['products'])){
-
+        if(count($request['products']))
+        {
             //TODO check
-
-            //after
             $ids = collect($request['products'])->pluck('id');
-
-            //before
-//            # Собираем товары в массив id шников из Request`a
-//            $plucked_articles = [];
-//            foreach($request['products'] as $product) {
-//                $plucked_articles[] = $product['id'];
-//            }
             # Синхронизируем товары к складу
             $store->articles()->syncWithoutDetaching($ids, false);
         }
 
-        //$store = Store::where('id', $request['store_id'])->first();
-
         $shipment_data = [];
-        foreach($request['products'] as $product) {
 
-            if($shipment->clientOrder){
+        if($shipment->clientOrder){
+            foreach($request['products'] as $product) {
                 if($product['count'] > $shipment->clientOrder->getAvailableToShippingArticlesCount($product['id'])){
                     $name = 'products.' . $product['id'] . '.count';
                     return response()->json([
@@ -323,6 +301,9 @@ class ShipmentsController extends Controller
                     ], 422);
                 }
             }
+        }
+
+        foreach($request['products'] as $product) {
 
             $store->decreaseArticleCount($product['id'], $product['count']);
 

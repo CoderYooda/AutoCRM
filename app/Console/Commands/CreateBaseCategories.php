@@ -23,7 +23,7 @@ class CreateBaseCategories extends Command
 
         $category_id = 2;
 
-        $categories_txt = file_get_contents('public/demo/categories.txt');
+        $categories_txt = file_get_contents(public_path('demo/categories.txt'));
 
         $categories_rows = explode("\n", $categories_txt);
 

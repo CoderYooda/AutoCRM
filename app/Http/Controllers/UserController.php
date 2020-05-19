@@ -22,8 +22,10 @@ class UserController extends Controller
             $request['search'] = null;
         }
 
+
+
         if(empty($request['id'])){
-            $request['id'] = Auth::user()->id;
+            $request['id'] = Auth::user()->partner->id;
         }
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
@@ -32,6 +34,7 @@ class UserController extends Controller
 
         $classname = $request['active_tab'] . 'Tab';
         $user = self::getUser($request);
+
         if(!$user){
             abort(404);
         }
@@ -60,7 +63,7 @@ class UserController extends Controller
         $editmode = true;
 
         if(empty($request['id'])){
-            $request['id'] = Auth::user()->id;
+            $request['id'] = Auth::user()->partner->id;
         }
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
@@ -118,7 +121,7 @@ class UserController extends Controller
     public static function serviceTab($request)
     {
 
-        $payments = Payment::owned()->get();
+        $payments = Payment::owned()->orderBy('id', 'DESC')->get();
 
         foreach ($payments as $payment){
             $payment->freshStatus();
@@ -142,10 +145,10 @@ class UserController extends Controller
 
     public static function getUser($request)
     {
-        $user = Partner::owned()->with('passport')->where(function($q) use ($request){
+        $partner = Partner::owned()->with('passport')->where(function($q) use ($request){
             $q->where('id', $request['id']);
         })->first();
-        return $user;
+        return $partner;
     }
 
     public function getChannel(){ //Выделение канала для сокет вещания

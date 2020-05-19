@@ -16,9 +16,7 @@ class UserActionsController extends Controller
     public function index(Request $request)
     {
         $target = HC::selectTarget();
-        if(!Gate::allows('Смотреть историю')){
-            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-        }
+        PermissionController::canByPregMatch('Смотреть историю');
         $actions = self::getActions($request);
         //$system_messages = SM::owned()->get();
         $system_messages = SM::getMessages($request);
@@ -38,7 +36,6 @@ class UserActionsController extends Controller
 
     public static function getActions($request)
     {
-
         if ($request['category_id'] == 3) {
             $request['category_id'] = null;
         }

@@ -34,10 +34,7 @@ class ProductController extends Controller
 
     public function delete($id, Request $request)
     {
-
-        if (!Gate::allows('Удалять товары')) {
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять товары');
         $returnIds = null;
         if ($id == 'array') {
             $products = Article::owned()->whereIn('id', $request['ids']);
@@ -58,7 +55,6 @@ class ProductController extends Controller
             'message' => $this->message
         ], $this->status);
     }
-
 
     public function addToList(Request $request)
     {
@@ -144,12 +140,15 @@ class ProductController extends Controller
 
     public static function productDialog($request)
     {
+        PermissionController::canByPregMatch('Смотреть товары');
+
         $tag = 'productDialog';
 
         if ($request['product_id']) {
             $tag .= $request['product_id'];
             $product = Article::where('id', (int)$request['product_id'])->first();
         } else {
+            PermissionController::canByPregMatch('Создавать товары');
             $product = null;
         }
 
@@ -159,7 +158,7 @@ class ProductController extends Controller
             $category_select = 2;
         }
 
-        $stores = Store::where('company_id', Auth::user()->id)->get();
+        $stores = Store::owned()->get();
         $category = Category::where('id', $category_select)->first();
         return response()->json([
             'tag' => $tag,
@@ -210,68 +209,11 @@ class ProductController extends Controller
             'html' => $content
         ]);
     }
-//
-//    public static function selectProductDialog($request)
-//    {
-//        $stores = Store::owned()->get();
-//        $products = Article::owned()->orderBy('id', 'DESC')->limit(10)->get();
-//        $categories = CategoryController::getModalCategories(self::$root_category, $request);
-//        return response()->json([
-//            'tag' => 'selectProductDialog',
-//            'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product', compact('products', 'stores', 'categories', 'request'))->render(),
-//        ]);
-//    }
-//
-//    public function dialogSearch(Request $request)
-//    {
-//        $stores = Store::owned()->get();
-//
-//        $products = Article::owned()->where(function($q) use ($request){
-//            if($request['store_id'] != NULL) {
-//                $q->whereHas('stores', function ($query) use ($request) {
-//                    return $query->where('store_id', $request['store_id']);
-//                });
-//            }
-//        })
-//        ->where(function($q) use ($request){
-//            $q->where('foundstring', 'LIKE', '%' . mb_strtolower (str_replace(' ', '', str_replace('-', '', $request['string']))) .'%');
-////            $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
-////            $q->orWhereHas('supplier', function ($query) use ($request) {
-////                $query->where('name', 'LIKE', '%' . $request['string'] .'%');
-////            });
-//        })
-//        ->orderBy('id', 'DESC')->limit(10)->get();
-//
-//        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product_inner', compact('products', 'stores', 'request'))->render();
-//        return response()->json([
-//            'html' => $content
-//        ], 200);
-//    }
-
-
-//    public static function editProductDialog($request)
-//    {
-//        $tag = 'editProduct';
-//        if($request['product_id']){
-//            $tag .= $request['product_id'];
-//            $product = Article::where('id', (int)$request['product_id'])->first();
-//        } else {
-//            return response()->json(['message' => 'Недопустимое значение товара'], 500);
-//        }
-//        if($product){
-//            $stores = Store::
-//            where('company_id', Auth::user()->company()->first()->id)
-//                ->with(['articles' => function($q) use ($product){
-//                    $q->where('article_id', $product->id);
-//                }])
-//                ->get();
-//        }
-//
-//        return response()->json(['tag' => $tag, 'html' => view('product.dialog.form_product', compact('product', 'stores'))->render()]);
-//    }
 
     public function store(ProductRequest $request)
     {
+        PermissionController::canByPregMatch('Редактировать товары');
+
         if ($request['id'] != null) { //товар редактируется
             $compare = ['id' => $request['id']];
         } else {
@@ -412,17 +354,4 @@ class ProductController extends Controller
         return $articles;
     }
 
-    public function search(Request $request)
-    { //DEPRECATED
-
-        $categories = CategoryController::getCategories($request, 'store');
-        $cat_info = [];
-        $cat_info['route'] = 'StoreIndex';
-        $cat_info['params'] = ['active_tab' => 'store', 'target' => 'ajax-table-store'];
-        $content = view('store.elements.table_container', compact('categories', 'cat_info', 'request'))->render();
-        return response()->json([
-            'html' => $content,
-            'target' => 'ajax-table-store',
-        ], 200);
-    }
 }

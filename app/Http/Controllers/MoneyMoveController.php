@@ -35,6 +35,8 @@ class MoneyMoveController extends Controller
 
     public function store(MoneyMoveRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать денежные перемещения' : 'Создавать денежные перемещения');
+
         $moneymove = MoneyMoves::firstOrNew(['id' => $request['id']]);
 
         if($moneymove->exists){
@@ -86,9 +88,7 @@ class MoneyMoveController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять денежные перемещения')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять денежные перемещения');
         $returnIds = null;
         if($id == 'array'){
             $moneymoves = MoneyMoves::owned()->whereIn('id', $request['ids']);

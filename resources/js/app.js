@@ -8,7 +8,9 @@ require('./navigation');                                            // Нави�
 window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
+
 window.chartjs = require('chart.js');
+
 window.simplebar = require('simplebar/dist/simplebar.min');
 //window.selection = require('@simonwep/selection-js');
 import tippy from 'tippy.js';
@@ -16,7 +18,6 @@ import tippy from 'tippy.js';
 window.debug = false;
 
 import Sortable from 'sortablejs';
-import Croppr from "croppr";
 import IMask from 'imask';
 
 import { Russian } from "flatpickr/dist/l10n/ru";

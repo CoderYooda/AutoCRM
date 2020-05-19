@@ -1,8 +1,8 @@
 @extends($request['view_as'] == 'json' && $request['target'] != null ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.store.layout.tabs')
 
 @section('tab')
-    <div id="ajax-table-provider_orders" class="bottom-container">
-        <div class="box-lister">
+    <div id="ajax-table-provider_orders" class="bottom-container" style="height: calc(100% - 79px)!important;">
+        <div class="box-lister" style="width: 1px!important;">
             <div class="w-100 box box-search mb-15">
                 <input id="search" name="search" placeholder="Поиск по контрагентам" class="input w-100" value="{{ request('search') }}" type="text">
                 <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">

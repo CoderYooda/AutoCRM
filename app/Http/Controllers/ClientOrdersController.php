@@ -70,9 +70,7 @@ class ClientOrdersController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять продажи')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять заказ клиента');
         $returnIds = null;
         if ($id == 'array') {
             $client_orders = ClientOrder::whereIn('id', $request['ids']);
@@ -128,6 +126,8 @@ class ClientOrdersController extends Controller
 
     public function store(ClientOrdersRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заказ клиента' : 'Создавать заказ клиента');
+
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
 
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
@@ -148,9 +148,9 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
-
+        //dd($client_order->IsAllProductsShipped());
         if($client_order->IsAllProductsShipped()){
-            $client_order->status = 'complited';
+            $client_order->status = 'complete';
         }
 
         if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
@@ -193,6 +193,7 @@ class ClientOrdersController extends Controller
 
         } else {
             $client_order->company_id = Auth::user()->company()->first()->id;
+            $client_order->manager_id = Auth::user()->partner()->first()->id;
             $this->message = 'Заказ сохранен';
             $wasExisted = false;
         }
@@ -414,7 +415,7 @@ class ClientOrdersController extends Controller
                 WHEN client_orders.status = "canceled" THEN "Отменен"
                 WHEN client_orders.status = "full" THEN "Укомплектован"
                 WHEN client_orders.status = "complete" THEN "Выполнен"
-                ELSE 1
+                ELSE "Статус не определён"
             END) AS status_formatted
             FROM client_orders
             left join partners on partners.id = client_orders.partner_id

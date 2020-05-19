@@ -4,7 +4,7 @@
     </div>
     <div class="col-sm-9 no-pl">
         @if($products->count() > 0)
-            <div  data-simplebar style="max-height: 400px;">
+            <div data-simplebar style="max-height: 400px;">
                 <div class="box-body">
                     <ul  class="nav select-list-modal ">
                         @foreach($products as $product)

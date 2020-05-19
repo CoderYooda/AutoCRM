@@ -1,8 +1,8 @@
 @extends($request['view_as'] == 'json' && $request['target'] != null ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.store.layout.tabs')
 
 @section('tab')
-    <div id="ajax-table-shipments" class="bottom-container">
-        <div class="box-lister box">
+    <div id="ajax-table-shipments" class="bottom-container full-box-cont">
+        <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
                 <div id="shipments-table"></div>
             </div>

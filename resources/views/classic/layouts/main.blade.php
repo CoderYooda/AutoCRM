@@ -117,6 +117,7 @@
                                 <a class="element ajax-nav" href="{{ route('UserIndex') }}">
                                     Личный кабинет
                                 </a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}"> Мои услуги</a>
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                     Выход
                                 </a>
@@ -242,13 +243,13 @@
 
         </div>
         <div id="square_select" class=""></div>
-        <div class="preloader">
-            <div class="porsh">
-                <div class="i2-element"></div>
-                <div class="i1-element"></div>
-            </div>
-            <div class="i3-element"></div>
-        </div>
+        {{--<div class="preloader">--}}
+            {{--<div class="porsh">--}}
+                {{--<div class="i2-element"></div>--}}
+                {{--<div class="i1-element"></div>--}}
+            {{--</div>--}}
+            {{--<div class="i3-element"></div>--}}
+        {{--</div>--}}
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>

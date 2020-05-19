@@ -537,6 +537,45 @@ input:-moz-placeholder { /* Firefox 18- */
     color: #adb0b3;
 }
 
+/*Statistic*/
+
+#statistic-list{
+    max-width: 590px;
+}
+#statistic-list .bold_title > div{
+    font-weight: bold!important;
+}
+#statistic-list > ul > li {
+    padding: 0 15px;
+    border-bottom: 1px solid #ced4da;
+    line-height: 32px;
+}
+#statistic-list > ul > li > div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+}
+
+#statistic-list > ul > li .stat_id {
+    max-width: 40px!important;
+}
+#statistic-list > ul > li .stat_name {
+    min-width: 200px
+}
+#statistic-list > ul > li .stat_summ{
+    max-width: 80px!important;
+}
+#statistic-list > ul > li .stat_date {
+    max-width: 80px!important;
+}
+.stat_header{
+    color: #2D76A8;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 400;
+}
+
 /*Main content*/
 
 #ajax-content{
@@ -730,7 +769,7 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .box-content{
     flex: 1;
-    max-width: calc(100vw - 597px)!important;
+    //max-width: calc(100vw - 597px)!important;
 }
 .box{
     position: relative;
@@ -947,6 +986,12 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .p-15{
     padding: 15px;
+}
+.pr-75{
+    padding-right: 7.5px!important;
+}
+.pl-75{
+    padding-left: 7.5px!important;
 }
 .mb-0{
     margin-bottom: 0px!important;

@@ -23,7 +23,11 @@
 @else
     <div class="padding text-center">
         <div>
-            Заявок постащикам не найдено, <a href="#" class="text-success" onclick="openDialog('providerorderDialog')">создайте</a> первую
+            <div class="out_of_search"></div>
+            <div class="mb-15">
+                Заявок постащикам не найдено
+            </div>
         </div>
     </div>
 @endif
+

@@ -21,11 +21,20 @@
 .d-none-f{
     display: none!important;
 }
+.w-px{
+    width: 1px!important;
+}
+.full-box-cont{
+    height: calc(100% - 79px)!important;
+}
 .pr-0{
     padding-right: 0px!important;
 }
 .w-350{
     width: 350px!important;
+}
+.bb-0{
+    border-bottom: none!important;
 }
 .show{
     display: block!important;
@@ -49,6 +58,41 @@
 .simplebar-scrollbar {
     right: 3px!important;
     width: 5px!important;
+}
+
+.system_balance{
+    font-size: 18px;
+}
+.list {
+    padding-left: 0;
+    padding-right: 0;
+}
+.p-container{
+    border-color: #ced4da!important;
+    border-left: 1px solid;
+    border-right: 1px solid;
+}
+.list-item {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    /* align-items: flex-start; */
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    padding: 0.75rem 0.5rem;
+    position: relative;
+}
+
+.tariff-container h3{
+    margin: 0 !important;
+    padding: 10px 15px!important;
+    font-size: 20px;
+}
+
+.tariff-container h6{
+    margin: 0 !important;
+    font-size: 20px;
+    padding-top: 15px;
 }
 
 .swal2-container {

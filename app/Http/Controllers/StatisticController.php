@@ -161,7 +161,7 @@ class StatisticController extends Controller
             }
 
             if($sort_classes[$request->entity] == Warrant::class) {
-                $query = $query->where('isIncoming', $request->entity == 6 ? 1 : 0);
+                $query = $query->where('isIncoming', $request->entity == 5 ? 1 : 0);
             }
 
             if(isset($request->manager_id)) {

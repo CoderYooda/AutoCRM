@@ -31,11 +31,8 @@ class CategoryController extends Controller
         dd($categories);
     }
 
-    public function loadAside(Request $request){
-
-//        $categories = Cache::rememberForever('categories' . $request['category_id'], function () use ($request) {
-//            return CategoryController::getCategories($request, 'store');
-//        });
+    public function loadAside(Request $request)
+    {
         $categories = CategoryController::getCategories($request, $request['class']);
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
@@ -117,6 +114,8 @@ class CategoryController extends Controller
             ], 422);
         }
 
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать категории' : 'Создавать категории');
+
         $type = null;
         if($request['category_id'] != null){
             $parent = Category::owned()->where('id', (int)$request['category_id'])->first();
@@ -165,9 +164,7 @@ class CategoryController extends Controller
 
     public function delete($id)
     {
-        if(!Gate::allows('Удалять категории')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять категории');
         $category = Category::where('id', $id)->first();
         $type = 'success';
         if(!$category->locked) {
@@ -358,7 +355,6 @@ class CategoryController extends Controller
 
     public static function getModalCategories($root_category, $request)
     {
-    	
         if($request['category_id'] != null){
             $category_id = (int)$request['category_id'];
         }else {

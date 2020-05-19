@@ -20,13 +20,9 @@ class SettingsController extends Controller
 
     public function index(Request $request)
     {
-
+        PermissionController::canByPregMatch('Смотреть настройки');
         $this->page_title = 'Настройки';
         $target = HC::selectTarget(); // цель ajax подгрузки
-
-        if(!Gate::allows('Смотреть настройки')){
-            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-        }
 
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'index';
@@ -117,6 +113,8 @@ class SettingsController extends Controller
 
     public function baseStore(Request $request)
     {
+        PermissionController::canByPregMatch('Редактировать настройки');
+
         $company = Company::firstOrNew(['id' => $request['id']]);
         $company->name = $request['company_name'];
         $company->save();
