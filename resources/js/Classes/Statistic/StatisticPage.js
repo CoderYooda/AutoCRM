@@ -61,10 +61,10 @@ class statisticPage {
             let list = response.data.list;
 
             let desc_element = document.getElementById('desc');
-            desc_element.outerHTML = desc;
+            desc_element.innerHTML = desc;
 
             let list_element = document.getElementById('statistic-list');
-            list_element.outerHTML = list;
+            list_element.innerHTML = list;
 
             //Обновляем даты
             this.chart.data.labels = Object.keys(dates);

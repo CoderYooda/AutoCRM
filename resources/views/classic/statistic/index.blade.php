@@ -72,8 +72,9 @@
             </div>
             <div class="d-flex">
                 <div class="flex-1">
-                    <ul id="statistic-list" class="nav select-list-modal">
-                    </ul>
+                    <div id="statistic-list">
+
+                    </div>
                 </div>
             </div>
 
