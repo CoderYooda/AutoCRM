@@ -107,7 +107,7 @@ class WarrantController extends Controller
 
     public function store(WarrantRequest $request)
     {
-        PermissionController::canByPregMatch($request['id'] ? 'Редактировать денежные операции' : 'Создавать денежные операции');
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать возвраты' : 'Создавать возвраты');
 
         $request['company_id'] = Auth::user()->company()->first()->id;
 
@@ -174,6 +174,7 @@ class WarrantController extends Controller
     public function delete($id, Request $request)
     {
         PermissionController::canByPregMatch('Удалять денежные операции');
+
         $returnIds = null;
         if($id == 'array'){
             $warrants = Warrant::owned()->whereIn('id', $request['ids']);

@@ -35,6 +35,8 @@ class PartnerController extends Controller
 
     public function index(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть контакты');
+
         $target = HC::selectTarget();
 	    if(!Gate::allows('Смотреть контакты')){
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
@@ -108,6 +110,8 @@ class PartnerController extends Controller
 
     public function store(PartnerRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать контакты' : 'Создавать контакты');
+
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){
@@ -194,6 +198,8 @@ class PartnerController extends Controller
 
     public function delete($id, Request $request)
     {
+        PermissionController::canByPregMatch('Удалять контакты');
+
         $returnIds = null;
         if($id == 'array'){
             $partners = Partner::owned()->whereIn('id', $request['ids']);

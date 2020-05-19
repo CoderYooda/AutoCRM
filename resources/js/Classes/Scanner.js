@@ -40,8 +40,6 @@ class Scanner{
             }, 100);
         }, 20);
 
-
-
         document.addEventListener("keydown", function(e) {
             const textInput = e.key || String.fromCharCode(e.keyCode);
             const targetName = e.target.localName;

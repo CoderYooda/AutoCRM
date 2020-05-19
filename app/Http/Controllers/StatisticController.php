@@ -105,12 +105,6 @@ class StatisticController extends Controller
             }
         }
 
-//        dd($dates);
-//
-//        foreach ($dates as $date => $array) {
-//            dd($date);
-//        }
-
         foreach ($statistic as $statistic_name => $entities) {
             foreach ($entities as $key => $entity) {
                 $date = $entity['created_at']->format('d.m.Y');
@@ -124,7 +118,7 @@ class StatisticController extends Controller
         //dd($updated_statistic);
 
         //Формирование шаблона
-        $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'updated_statistic', 'desc'))
+        $content = view(get_template() . '.statistic.index', compact('request', 'updated_statistic', 'desc'))
             ->with('managers', $company->members->load('partner'))
             ->with('dates', $dates);
 
@@ -157,14 +151,14 @@ class StatisticController extends Controller
         ];
 
         $sort_name = [
-            'Заявки поставщикам',
-            'Поступления',
-            'Возвраты',
-            'Продажи',
-            'Заказы клиентов',
-            'Приходные ордеры',
-            'Расходные ордеры',
-            'Перемещения'
+            'заявкам поставщиков',
+            'поступлениям',
+            'возвратам',
+            'продажам',
+            'заказам клиентов',
+            'приходным ордерам',
+            'расходным ордерам',
+            'перемещениям'
         ];
 
         $manager = null;
@@ -204,12 +198,17 @@ class StatisticController extends Controller
             }
         }
 
-        $updated_entities = [];
+        $global_data = [];
+
+        for($i = strtotime($request->begin_date); $i <= strtotime($request->final_date); $i += 86400) {
+            $date = date('d.m.Y', $i);
+            $global_data[$date] = 0;
+        }
 
         if(count($entities)) {
             foreach ($entities as $entity) {
                 $format_date = $entity->created_at->format('d.m.Y');
-                $updated_entities[$format_date] = $entity->amount;
+                $global_data[$format_date] = $entity->amount;
             }
         }
 
@@ -228,11 +227,12 @@ class StatisticController extends Controller
             $desc = 'Статистика по ' . $sort_name[$request->entity];
         }
 
-        $data = [
-            'entities' => $updated_entities,
-            'desc' => $desc,
+        $response = [
+            'dates' => $global_data,
+            'desc' => view(get_template() . '.statistic.desc', compact('desc', 'sort_name'))->render(),
+            'list' => view(get_template() . '.statistic.list', compact('global_data'))->render()
         ];
 
-        return response($data, 200);
+        return response($response, 200);
     }
 }

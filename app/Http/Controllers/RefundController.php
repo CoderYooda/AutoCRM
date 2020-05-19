@@ -55,6 +55,7 @@ class RefundController extends Controller
 
     public function store(RefundRequest $request)
     {
+        PermissionController::canByPregMatch('Редактировать планировщик');
         $refund = Refund::firstOrNew(['id' => $request['id']]);
 
         if(!isset($request['products']) || $request['products'] == []) {
@@ -153,9 +154,7 @@ class RefundController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Gate::allows('Удалять возвраты')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
+        PermissionController::canByPregMatch('Удалять возвраты');
 
         $returnIds = null;
         if($id == 'array'){

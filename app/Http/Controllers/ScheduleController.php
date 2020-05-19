@@ -15,12 +15,10 @@ use SystemMessage;
 
 class ScheduleController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
+        PermissionController::canByPregMatch('Смотреть планировщик');
         $target = HC::selectTarget();
-
-        if(!Gate::allows('Смотреть планировщик')){
-            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
-        }
 
         if($request->expectsJson() && $request['search'] === NULL){
             $content = view(env('DEFAULT_THEME', 'classic') . '.schedule.index', compact('request'))->render();
@@ -61,7 +59,10 @@ class ScheduleController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
+        PermissionController::canByPregMatch('Смотреть планировщик');
+
         SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', new Schedule());
         DB::transaction(function() use ($request) {
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d');

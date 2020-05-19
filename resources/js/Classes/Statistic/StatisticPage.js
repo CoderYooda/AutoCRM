@@ -19,7 +19,7 @@ class statisticPage {
 
             // The data for our dataset
             data: {
-                labels: ['12', '13', '14', '15', '16', '17', '18'],
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [{
                     label: 'My First dataset',
                     backgroundColor: 'rgb(255, 99, 132)',
@@ -94,39 +94,28 @@ class statisticPage {
             //Удаляем даты
             this.chart.data.labels.length = 0;
 
-            //Обновляем даты на графике
-            let data = response.data.entities;
-
+            let dates = response.data.dates;
             let desc = response.data.desc;
+            let list = response.data.list;
+
+            console.log(desc);
+            console.log(list);
 
             let desc_element = document.getElementById('desc');
-
-            desc_element.innerText = desc;
-
-            let ul = document.getElementById('statistic-list');
-
-            ul.innerHTML = '';
+            desc_element.outerHTML = desc;
 
 
+            let list_element = document.getElementById('statistic-list');
+            list_element.outerHTML = list;
 
-
-
-            Object.keys(data).map((key) => {
-                let value = data[key];
-
-                this.chart.data.labels.push(key);
-
-                let li = document.createElement('li');
-                ul.appendChild(li);
-                li.innerHTML = key + ': ' + value;
-            });
+            this.chart.data.labels = Object.keys(dates);
 
             //Вставляем новые данные
             this.chart.data.datasets.push({
                 label: 'Общая сумма',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: Object.values(data)
+                data: Object.values(dates)
             });
 
             this.chart.update();

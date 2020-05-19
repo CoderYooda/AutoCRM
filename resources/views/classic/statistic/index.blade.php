@@ -77,45 +77,5 @@
             </div>
 
         </div>
-
-
     </div>
 @endsection
-
-@push('scripts')
-
-    {{--<script>--}}
-
-        {{--let labels = [--}}
-            {{--@foreach($dates as $date)--}}
-                {{--'{{ $date }}',--}}
-            {{--@endforeach--}}
-        {{--];--}}
-
-        {{--let sets = [--}}
-            {{--@foreach($updated_statistic as $name => $dates)--}}
-            {{--{--}}
-                {{--label: '{{ $name }}',--}}
-                {{--backgroundColor: 'rgb(' + getRandomInt(255) + ', 99, 132)',--}}
-                {{--borderColor: 'rgb(255, 99, 132)',--}}
-                {{--data:--}}
-                    {{--[--}}
-                        {{--@foreach($dates as $date)--}}
-                        {{--{{ $date }},--}}
-                        {{--@endforeach--}}
-                    {{--]--}}
-            {{--},--}}
-            {{--@endforeach--}}
-        {{--];--}}
-
-        {{--setTimeout(() => {--}}
-            {{--window.{{ $class }}.update(labels, sets);--}}
-        {{--}, 3000);--}}
-
-        {{--function getRandomInt(max) {--}}
-            {{--return Math.floor(Math.random() * Math.floor(max));--}}
-        {{--}--}}
-
-    {{--</script>--}}
-
-@endpush

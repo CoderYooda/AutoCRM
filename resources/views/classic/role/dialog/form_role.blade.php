@@ -39,7 +39,7 @@
                         <span class="pull-right"><a class="pl-8" onclick="window.{{ $class }}.selectAll()">выделить всё</a><a class="pl-8" onclick="window.{{ $class }}.unselectAll()" >cнять выделение</a></span>
                         <div class="box w-100 checkbox-list">
                             <div class="d-flex title-head">
-                                <div class="flex-1-5">Сущность</div>
+                                <div class="flex-1-5">Раздел</div>
                                 <div class="flex-1 text-center">Чтение</div>
                                 <div class="flex-1 text-center">Создание</div>
                                 <div class="flex-1 text-center">Удаление</div>
