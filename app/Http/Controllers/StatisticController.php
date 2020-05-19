@@ -105,11 +105,11 @@ class StatisticController extends Controller
             }
         }
 
-        dd($dates);
-
-        foreach ($dates as $date => $array) {
-            dd($date);
-        }
+//        dd($dates);
+//
+//        foreach ($dates as $date => $array) {
+//            dd($date);
+//        }
 
         foreach ($statistic as $statistic_name => $entities) {
             foreach ($entities as $key => $entity) {
@@ -120,6 +120,8 @@ class StatisticController extends Controller
                 $dates[] = $date;
             }
         }
+
+        //dd($updated_statistic);
 
         //Формирование шаблона
         $content = view(env('DEFAULT_THEME', 'classic') . '.statistic.index', compact('request', 'updated_statistic', 'desc'))
@@ -181,7 +183,7 @@ class StatisticController extends Controller
         }
 
         if($sort_classes[$request->entity] == Warrant::class) {
-            $query = $query->where('isIncoming', $request->entity == 6 ? 1 : 0);
+            $query = $query->where('isIncoming', $request->entity == 5 ? 1 : 0);
         }
 
         if(isset($request->manager_id)) {
@@ -228,7 +230,7 @@ class StatisticController extends Controller
 
         $data = [
             'entities' => $updated_entities,
-            'desc' => $desc
+            'desc' => $desc,
         ];
 
         return response($data, 200);

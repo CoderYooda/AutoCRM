@@ -11,25 +11,25 @@ class statisticPage {
     init() {
         this.linked();
 
-        // let ctx = document.getElementById('statistic-chart').getContext('2d');
-        //
-        // this.chart = new chartjs(ctx, {
-        //     // The type of chart we want to create
-        //     type: 'bar',
-        //
-        //     // The data for our dataset
-        //     data: {
-        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        //         datasets: [{
-        //             label: 'My First dataset',
-        //             backgroundColor: 'rgb(255, 99, 132)',
-        //             borderColor: 'rgb(255, 99, 132)',
-        //             data: [0, 10, 5, 2, 20, 30, 45]
-        //         }]
-        //     },
-        //
-        //     options: {}
-        // });
+        let ctx = document.getElementById('statistic-chart').getContext('2d');
+
+        this.chart = new chartjs(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: ['12', '13', '14', '15', '16', '17', '18'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 2, 20, 30, 45]
+                }]
+            },
+
+            options: {}
+        });
     }
 
     update(dates, sets) {
@@ -106,6 +106,10 @@ class statisticPage {
             let ul = document.getElementById('statistic-list');
 
             ul.innerHTML = '';
+
+
+
+
 
             Object.keys(data).map((key) => {
                 let value = data[key];

@@ -107,7 +107,6 @@ class WarrantController extends Controller
 
     public function store(WarrantRequest $request)
     {
-        dd($request['id']);
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать денежные операции' : 'Создавать денежные операции');
 
         $request['company_id'] = Auth::user()->company()->first()->id;
