@@ -11,25 +11,25 @@ class statisticPage {
     init() {
         this.linked();
 
-        // let ctx = document.getElementById('statistic-chart').getContext('2d');
-        //
-        // this.chart = new chartjs(ctx, {
-        //     // The type of chart we want to create
-        //     type: 'bar',
-        //
-        //     // The data for our dataset
-        //     data: {
-        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        //         datasets: [{
-        //             label: 'My First dataset',
-        //             backgroundColor: 'rgb(255, 99, 132)',
-        //             borderColor: 'rgb(255, 99, 132)',
-        //             data: [0, 10, 5, 2, 20, 30, 45]
-        //         }]
-        //     },
-        //
-        //     options: {}
-        // });
+        let ctx = document.getElementById('statistic-chart').getContext('2d');
+
+        this.chart = new chartjs(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 2, 20, 30, 45]
+                }]
+            },
+
+            options: {}
+        });
     }
 
     update(dates, sets) {
@@ -94,35 +94,27 @@ class statisticPage {
             //Удаляем даты
             this.chart.data.labels.length = 0;
 
-            //Обновляем даты на графике
-            let data = response.data.entities;
-
+            let dates = response.data.dates;
             let desc = response.data.desc;
+            let list = response.data.list;
+
+            console.log(desc);
+            console.log(list);
 
             let desc_element = document.getElementById('desc');
+            desc_element.outerHTML = desc;
 
-            desc_element.innerText = desc;
+            let list_element = document.getElementById('statistic-list');
+            list_element.outerHTML = list;
 
-            let ul = document.getElementById('statistic-list');
-
-            ul.innerHTML = '';
-
-            Object.keys(data).map((key) => {
-                let value = data[key];
-
-                this.chart.data.labels.push(key);
-
-                let li = document.createElement('li');
-                ul.appendChild(li);
-                li.innerHTML = key + ': ' + value;
-            });
+            this.chart.data.labels = Object.keys(dates);
 
             //Вставляем новые данные
             this.chart.data.datasets.push({
                 label: 'Общая сумма',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: Object.values(data)
+                data: Object.values(dates)
             });
 
             this.chart.update();
