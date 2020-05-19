@@ -7,13 +7,10 @@ use Illuminate\Support\Facades\Request as FR;
 
 class HelpController extends Controller
 {
+    //TODO check
     public static function selectTarget()
     {
-        $target = 'ajax-content';
-        if(request('target') != NULL){
-            $target = request('target');
-        }
-        return $target;
+        return request('target') ?: 'ajax-content';
     }
 
     public static function setActive($path)

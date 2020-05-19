@@ -1,6 +1,6 @@
 {{--@extends('product.layout.tabs')--}}
 
-@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.store.layout.tabs')
+@extends(request()->view_as == 'json' && request()->target == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.store.layout.tabs')
 
 @section('title', $page ?? 'Статистика')
 
@@ -24,8 +24,9 @@
                 </div>
 
                 <div class="form-group w-128 mr-15">
-                    <label>Сущность</label>
+                    <label>Разделы</label>
                     <select id="entity" class="form-control">
+                        <option value="-1">Все разделы</option>
                         <option value="0">Заявки поставщикам</option>
                         <option value="1">Поступления</option>
                         <option value="2">Возвраты</option>
@@ -66,7 +67,7 @@
                     <canvas id="statistic-chart" style="max-width: 600px; max-height: 400px;"></canvas>
                 </div>
                 <div id="desc" class="flex-1">
-                    {{ $desc }}
+{{--                    {{ $desc }}--}}
                 </div>
             </div>
             <div class="d-flex">
