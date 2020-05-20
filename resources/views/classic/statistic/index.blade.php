@@ -12,13 +12,13 @@
             <div class="d-flex box p-15">
                 <div class="form-group w-128 mr-15 mb-0">
                     <label>Дата начала</label>
-                    <input type="date" type="text" name="begin_date" class="form-control date_picker_start"
+                    <input onclick="this.select();" type="text" name="begin_date" class="form-control date_picker_start flatpickr-input"
                            placeholder="Выберите дату">
                 </div>
 
                 <div class="form-group w-128 mr-15 mb-0">
                     <label>Дата конца</label>
-                    <input type="date" type="text" name="final_date" class="form-control date_picker_end"
+                    <input onclick="this.select();" type="text" name="final_date" class="form-control date_picker_end flatpickr-input"
                            placeholder="Выберите дату">
                 </div>
 

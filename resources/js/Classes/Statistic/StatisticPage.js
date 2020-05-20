@@ -49,6 +49,7 @@ class statisticPage {
     }
 
     linked() {
+        this.initRangeSelector();
     }
 
     showResults() {
@@ -102,7 +103,7 @@ class statisticPage {
                     let entities = dates[date];
 
                     Object.keys(entities).map(entity => {
-                        datasets[entity].push(entities[entity]);
+                        datasets[entity].push(entities[entity].amount);
                     });
                 });
 
@@ -159,6 +160,38 @@ class statisticPage {
         }).finally(function () {
             window.isXHRloading = false;
         });
+    }
+
+    initRangeSelector(){
+        let object = this;
+        let start_date = document.querySelector('.begin_date');
+        let end_date = document.querySelector('.final_date');
+        start_date.value = this.start_date.getDate() + '.' + (this.start_date.getMonth() + 1) + '.' + this.start_date.getFullYear();
+        end_date.value = this.end_date.getDate() + '.' + ( this.end_date.getMonth() + 1 ) + '.' + this.end_date.getFullYear();
+
+        object.start_date_flatpkr = window.flatpickr(".begin_date", {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+        object.end_date_flatpkr = window.flatpickr(".final_date", {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+
+        object.start_date_mask = window.IMask(start_date, {
+                mask: Date,
+                min: new Date(1990, 0, 1),
+                max: new Date(2030, 0, 1),
+                lazy: false
+            }
+        );
+        object.end_date_mask = window.IMask(end_date, {
+                mask: Date,
+                min: new Date(1990, 0, 1),
+                max: new Date(2030, 0, 1),
+                lazy: false
+            }
+        )
     }
 }
 

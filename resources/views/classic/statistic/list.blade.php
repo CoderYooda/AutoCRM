@@ -1,24 +1,35 @@
-@foreach($global_data as $date => $value)
+@foreach($list as $entity => $dates)
 
-    @if(is_array($value))
+    @foreach($dates as $date => $attributes)
 
-        @if(array_sum($value))
-        <h2 class="mt-0 stat_header p-15">Заявки поставщикам</h2>
+        @continue($attributes == [])
+
+        @if($loop->first)
+
+            <h2 class="mt-0 stat_header p-15">{{ $entity }}</h2>
+
+            <ul class="nav">
+                <li class="item d-flex bold_title">
+                    <div class="flex-1 stat_id">ID</div>
+                    <div class="flex-1 stat_name">Партнёр</div>
+                    <div class="flex-1 stat_name">Менеджер</div>
+                    <div class="flex-1 stat_summ">Сумма</div>
+                    <div class="flex-1 stat_date">Дата</div>
+                </li>
+            </ul>
+
         @endif
 
-        @foreach($value as $entity => $amount)
-
-        @continue($amount == 0)
-
         <ul class="nav">
-            <li class="item d-flex bold_title">
-                <div class="flex-1 stat_id">ID</div>
-                <div class="flex-1 stat_name">{{ $entity }}</div>
-                <div class="flex-1 stat_summ">{{ $amount }}</div>
+            <li class="item d-flex">
+                <div class="flex-1 stat_id">{{ $attributes['id'] }}</div>
+                <div class="flex-1 stat_name">{{ $attributes['partner'] }}</div>
+                <div class="flex-1 stat_name">{{ $attributes['manager'] }}</div>
+                <div class="flex-1 stat_summ">{{ $attributes['amount'] }}</div>
                 <div class="flex-1 stat_date">{{ $date }}</div>
             </li>
         </ul>
-        @endforeach
 
-    @endif
+    @endforeach
+
 @endforeach

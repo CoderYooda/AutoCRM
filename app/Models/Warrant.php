@@ -39,6 +39,11 @@ class Warrant extends Model
         return $this->belongsTo(Cashbox::class, 'cashbox_id');
     }
 
+    public function manager()
+    {
+        return $this->belongsTo(Partner::class, 'manager_id');
+    }
+
     public function client_order()
     {
         return $this->belongsToMany(ClientOrder::class, 'client_orders_warrant', 'warrant_id', 'client_order_id' );
