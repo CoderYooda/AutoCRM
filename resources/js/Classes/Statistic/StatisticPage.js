@@ -50,8 +50,6 @@ class statisticPage {
 
     showResults() {
 
-        let entity_element = document.getElementById("entity");
-
         window.axios({
             method: 'post',
             url: '/statistic',
@@ -61,7 +59,7 @@ class statisticPage {
                 partner_id: Number(document.querySelector("input[name=partner_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
                 final_date: document.querySelector("input[name=final_date]").value,
-                entity: entity_element.options[entity_element.selectedIndex].value
+                entity: Number(document.getElementById("entity_id").value)
             }
         })
         .then(response => {
@@ -188,6 +186,11 @@ class statisticPage {
                 lazy: false
             }
         )
+    }
+
+    setEntity(value){
+        document.getElementById('entity_id').value = value;
+        document.getElementById('entity_name').value = event.target.innerText;
     }
 }
 

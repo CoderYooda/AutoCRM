@@ -98,11 +98,11 @@ class StatisticController extends Controller
                 ->where('company_id', $company->id)
                 ->where('created_at', '>=', $request->begin_date)
                 ->where('created_at', '<=', $request->final_date)
-                ->groupBy(DB::raw('DAY(created_at)'))
+//                ->groupBy(DB::raw('DAY(created_at)'))
                 ->limit(10);
 
             if ($class != Entrance::class) {
-                $query = $query->selectRaw('id, SUM(summ) as amount, created_at, manager_id')->with('manager');
+                $query = $query->selectRaw('id, summ as amount, created_at, manager_id')->with('manager');
             }
             else {
                 $query = $query->with('providerorder');
@@ -117,7 +117,7 @@ class StatisticController extends Controller
                 $query = $query->where('manager_id', $request->manager_id);
             }
 
-            if (isset($request->partner_id)) {
+            if ($classes[$key] != MoneyMoves::class && isset($request->partner_id)) {
                 $query = $query->where('partner_id', $request->partner_id);
             }
 
@@ -139,6 +139,8 @@ class StatisticController extends Controller
             }
         }
 
+        dd($global_data);
+
         #Пересобираем массив для отображения в list.blade.php
         $list = [];
 
@@ -151,7 +153,6 @@ class StatisticController extends Controller
                 $list[$entity][$date]['manager'] = $attributes['manager'];
             }
         }
-
 
         $response = [
             'dates' => $global_data,

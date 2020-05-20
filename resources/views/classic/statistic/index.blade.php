@@ -24,17 +24,23 @@
 
                 <div class="form-group w-128 mr-15 mb-0">
                     <label>Разделы</label>
-                    <select id="entity" class="form-control">
-                        <option value="-1">Все разделы</option>
-                        <option value="0">Заявки поставщикам</option>
-                        <option value="1">Поступления</option>
-                        <option value="2">Возвраты</option>
-                        <option value="3">Продажи</option>
-                        <option value="4">Заказы клиентов</option>
-                        <option value="5">Приходные ордера</option>
-                        <option value="6">Расходные ордера</option>
-                        <option value="7">Перемещения</option>
-                    </select>
+
+                    <div class="dropdown" onclick="window.helper.openModal(this, event)">
+                        <input readonly id="entity_name" type="text" class="form-control entrance_status" value="Не выбрано" disabled>
+                        <input type="hidden" id="entity_id" value="-1" />
+                        <div class="dropdown_container">
+                            <div class="arrow"></div>
+                            <span onclick="{{ $class }}.setEntity(-1)" class="element">Все разделы</span>
+                            <span onclick="{{ $class }}.setEntity(0)" class="element">Заявки поставщикам</span>
+                            <span onclick="{{ $class }}.setEntity(1)" class="element">Поступления</span>
+                            <span onclick="{{ $class }}.setEntity(2)" class="element">Возвраты</span>
+                            <span onclick="{{ $class }}.setEntity(3)" class="element">Продажи</span>
+                            <span onclick="{{ $class }}.setEntity(4)" class="element">Заказы клиентов</span>
+                            <span onclick="{{ $class }}.setEntity(5)" class="element">Приходные ордера</span>
+                            <span onclick="{{ $class }}.setEntity(6)" class="element">Расходные ордера</span>
+                            <span onclick="{{ $class }}.setEntity(7)" class="element">Перемещения</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group w-128 mr-15 mb-0">
