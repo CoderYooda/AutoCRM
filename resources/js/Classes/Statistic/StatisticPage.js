@@ -5,6 +5,8 @@ class statisticPage {
 
         this.chart = null;
 
+        this.start_date = new Date();
+
         this.init();
     }
 
