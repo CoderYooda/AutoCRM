@@ -14,6 +14,8 @@ class statisticPage {
         this.init();
     }
 
+
+
     init() {
 
         let ctx = document.getElementById('statistic-chart').getContext('2d');
@@ -56,7 +58,6 @@ class statisticPage {
 
     linked() {
         this.init();
-        this.initRangeSelector();
     }
 
     showResults() {

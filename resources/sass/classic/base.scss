@@ -540,15 +540,19 @@ input:-moz-placeholder { /* Firefox 18- */
 /*Statistic*/
 
 #statistic-list{
-    max-width: 590px;
+   // max-width: 590px;
 }
 #statistic-list .bold_title > div{
-    font-weight: bold!important;
+     font-weight: bold!important;
+}
+#statistic-list .bold_title{
+    border-bottom: 0!important;
 }
 #statistic-list > ul > li {
     padding: 0 15px;
     border-bottom: 1px solid #ced4da;
     line-height: 32px;
+    position: relative;
 }
 #statistic-list > ul > li > div {
     white-space: nowrap;
@@ -556,18 +560,36 @@ input:-moz-placeholder { /* Firefox 18- */
     text-overflow: ellipsis;
     padding: 0 10px;
 }
+#statistic-list tr{
+
+}
+
+#statistic-list tr > td:not(:last-child){
+    padding-right: 10px;
+}
+#statistic-list tr > td{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#statistic-list > ul > li div:first-child {
+    padding-left: 0!important;
+}
+#statistic-list > ul > li div:last-child{
+    padding-right: 0!important;
+}
 
 #statistic-list > ul > li .stat_id {
     max-width: 40px!important;
 }
 #statistic-list > ul > li .stat_name {
-    min-width: 200px
+    min-width: 37%;
 }
 #statistic-list > ul > li .stat_summ{
     max-width: 80px!important;
 }
 #statistic-list > ul > li .stat_date {
-    max-width: 80px!important;
+    max-width: 88px!important;
 }
 .stat_header{
     color: #2D76A8;
@@ -978,6 +1000,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .mt-5{
     margin-top: 5px!important;
 }
+.pt-0{
+    padding-top: 0!important;
+}
 .pr-8{
     padding-right: 8px!important;
 }
@@ -1029,7 +1054,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .mr-15{
     margin-right: 15px!important;
 }
-
+.mr-0{
+    margin-right: 0!important;
+}
 .pl-15{
     padding-left: 15px!important;
 }

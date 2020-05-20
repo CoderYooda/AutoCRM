@@ -65,14 +65,34 @@
                 <div class="box mr-15 p-15" style="height: calc(100vh - 191px)!important; flex: 1.5!important;">
                     <canvas id="statistic-chart" ></canvas>
                 </div>
-                <div id="desc" class="flex-1 box mr-15">
-
-                </div>
                 <div class="flex-1 box" >
                     <div data-simplebar style="max-height: calc(100vh - 191px);">
-                        <div id="statistic-list">
-
+                        <div id="statistic-list" style="position: relative">
+                            {{--<h2 class="mt-0 stat_header p-15">24</h2>--}}
+                            {{--<table class="table w-100 p-15">--}}
+                                {{--<thead>--}}
+                                    {{--<th>ID</th>--}}
+                                    {{--<th>Менеджер</th>--}}
+                                    {{--<th>Контакт</th>--}}
+                                    {{--<th>Сумма</th>--}}
+                                    {{--<th>Дата</th>--}}
+                                {{--</thead>--}}
+                                {{--<tbody>--}}
+                                    {{--<tr>--}}
+                                        {{--<td>12344</td>--}}
+                                        {{--<td>Сенаторов С.</td>--}}
+                                        {{--<td>Валунов М.</td>--}}
+                                        {{--<td>3 200</td>--}}
+                                        {{--<td>21.01.2009</td>--}}
+                                    {{--</tr>--}}
+                                {{--</tbody>--}}
+                            {{--</table>--}}
                         </div>
+                    </div>
+                </div>
+                <div class="content-rightside mt-0 mr-0 ml-15 mb-0">
+                    <div id="desc" class="box w-290 filter-panel h-100">
+
                     </div>
                 </div>
             </div>

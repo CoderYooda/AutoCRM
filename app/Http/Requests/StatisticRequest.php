@@ -17,6 +17,7 @@ class StatisticRequest extends FormRequest
     {
         if($this['manager_id'] == 0) unset($this['manager_id']);
         if($this['partner_id'] == 0) unset($this['partner_id']);
+
     }
 
     public function rules()
@@ -24,8 +25,8 @@ class StatisticRequest extends FormRequest
         return [
             'manager_id' => ['exists:partners,id'],
             'partner_id' => ['exists:partners,id'],
-            'begin_date' => ['required', 'date_format:Y-m-d', 'before:final_date'],
-            'final_date' => ['required', 'date_format:Y-m-d', 'after:begin_date'],
+            'begin_date' => ['required', 'date_format:d.m.Y', 'before:final_date'],
+            'final_date' => ['required', 'date_format:d.m.Y', 'after:begin_date'],
             'entity' => ['required', 'integer', 'min:-1', 'max:7']
         ];
     }
