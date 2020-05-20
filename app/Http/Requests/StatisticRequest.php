@@ -2,9 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class StatisticRequest extends FormRequest
 {
@@ -18,6 +21,10 @@ class StatisticRequest extends FormRequest
         if($this['manager_id'] == 0) unset($this['manager_id']);
         if($this['partner_id'] == 0) unset($this['partner_id']);
 
+        if(!isDate($this['begin_date']) && !isDate($this['final_date'])) {
+            $this['begin_date'] = Carbon::now()->addMonth(-1)->format('d.m.Y');
+            $this['final_date'] = Carbon::now()->format('d.m.Y');
+        }
     }
 
     public function rules()

@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Http\Controllers\SettingsController;
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 
 class Article extends Model
 {
-    use SoftDeletes;
+    use OwnedTrait, SoftDeletes;
 
     public $fields = [
         'company_id',
@@ -55,11 +56,6 @@ class Article extends Model
     {
         return $this->belongsToMany('App\Models\Store', 'article_store', 'article_id', 'store_id')
             ->withPivot('location', 'count', 'isset', 'midprice');
-    }
-
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
     }
 
     public function shipment()

@@ -8,32 +8,25 @@ class statisticPage {
         this.start_date = new Date();
         this.start_date.setDate(this.start_date.getDate() - 30); // На 30 дней назад
 
-
         this.end_date = new Date();
 
         this.init();
     }
 
-
+    linked() {
+        this.init();
+    }
 
     init() {
 
         let ctx = document.getElementById('statistic-chart').getContext('2d');
 
         this.chart = new chartjs(ctx, {
-            // The type of chart we want to create
             type: 'bar',
 
-
-            // The data for our dataset
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [{
-                    label: 'My First dataset',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [0, 10, 5, 2, 20, 30, 45]
-                }]
+                labels: [],
+                datasets: []
             },
 
             options: {
@@ -44,20 +37,15 @@ class statisticPage {
                 },
                 responsive: true,
                 scales: {
-                    xAxes: [{
-                        stacked: true,
-                    }],
-                    yAxes: [{
-                        stacked: true
-                    }]
+                    xAxes: [{ stacked: true }],
+                    yAxes: [{ stacked: true }]
                 }
             }
         });
-        this.initRangeSelector();
-    }
 
-    linked() {
-        this.init();
+        this.initRangeSelector();
+
+        this.showResults();
     }
 
     showResults() {
@@ -111,7 +99,7 @@ class statisticPage {
                     let entities = dates[date];
 
                     Object.keys(entities).map(entity => {
-                        datasets[entity].push(entities[entity].amount);
+                        datasets[entity].push(entities[entity].amount != null ? entities[entity].amount : 0);
                     });
                 });
 

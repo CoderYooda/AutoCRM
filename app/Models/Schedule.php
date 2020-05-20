@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Auth;
 
 class Schedule extends Model
 {
+    use OwnedTrait;
+
     protected $table = 'schedule';
     protected $hidden = ['created_at', 'id', 'company_id', 'updated_at'];
     protected $guarded = [];
@@ -23,9 +26,5 @@ class Schedule extends Model
     public function getEndAttribute($value)
     {
         return Carbon::parse($value)->format('H:i');
-    }
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
     }
 }

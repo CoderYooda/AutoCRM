@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 
 class Entrance extends Model
 {
+    use OwnedTrait;
 
     public $fields = [
         'company_id',
@@ -48,11 +50,6 @@ class Entrance extends Model
        return $this->created_at->format('d.m.Y (H:i)');
     }
 
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
-    }
-
     public function freshPriceByArticleId($article_id, $price)
     {
         $this->articles()->updateExistingPivot($article_id, ['price' => $price], false);
@@ -77,12 +74,7 @@ class Entrance extends Model
 
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
+        return $article ? $article->pivot->count : 0;
     }
 
 }

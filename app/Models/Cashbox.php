@@ -2,35 +2,24 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Auth;
 
 class Cashbox extends Model
 {
-    use SoftDeletes;
+    use OwnedTrait, SoftDeletes;
 
     protected $guarded = [];
 
-
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
-    }
-
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function warrants()
     {
-        return $this->hasMany('App\Models\Warrant', 'cashbox_id' );
-    }
-
-    public function addition($sum){
-        $this->increment('balance', $sum);
-        return $this;
+        return $this->hasMany(Warrant::class, 'cashbox_id' );
     }
 
     public function getLastOperation()
@@ -48,7 +37,14 @@ class Cashbox extends Model
         }
     }
 
-    public function subtraction($sum){
+    public function addition($sum)
+    {
+        $this->increment('balance', $sum);
+        return $this;
+    }
+
+    public function subtraction($sum)
+    {
         $this->decrement('balance', $sum);
         return $this;
     }

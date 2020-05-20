@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientOrder extends Model
 {
+    use OwnedTrait;
+
     public $fields = [
         'partner_id',
         'company_id',
@@ -176,11 +179,6 @@ class ClientOrder extends Model
     public function warrants()
     {
         return $this->belongsToMany(Warrant::class, 'client_orders_warrant',  'client_order_id', 'warrant_id' );
-    }
-
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
     }
 
 }

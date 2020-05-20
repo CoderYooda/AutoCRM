@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\HelpController;
+use App\Traits\OwnedTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +11,7 @@ use Auth;
 
 class Partner extends Model
 {
-    use SoftDeletes;
+    use OwnedTrait, SoftDeletes;
 
     protected $guarded = [];
 
@@ -95,6 +96,16 @@ class Partner extends Model
         return $num_out;
     }
 
+    public function getCutSurnameAttribute()
+    {
+        $formatted = explode(" ", $this->fio);
+
+        $surname = ucfirst($formatted[0]);
+        $name = isset($formatted[1]) ? (' ' . ucfirst(mb_substr($formatted[1], 0, 1)) . '.') : null;
+
+        return $surname . ($name ?: '');
+    }
+
     public function getComment()
     {
         //TODO check
@@ -128,11 +139,6 @@ class Partner extends Model
 
     public function isflText(){
         return $this->isfl ? 'Физическое лицо' : 'Юридическое лицо';
-    }
-
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
     }
 
     public function user(){

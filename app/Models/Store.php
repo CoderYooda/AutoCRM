@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 
 
 class Store extends Model
 {
+    use OwnedTrait;
+
     protected $guarded = [];
 
     public function company()
@@ -34,12 +37,6 @@ class Store extends Model
             $midprice = $article->pivot->midprice;
         }
         return $midprice;
-    }
-
-    public static function owned()
-    {
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
     }
 
     public function recalculateMidprice($article_id)

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,8 +11,7 @@ use Auth;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-    use HasRoles;
+    use OwnedTrait, Notifiable, HasRoles;
 
     protected $fillable = [
         'name', 'email', 'phone', 'password', 'company_id', 'banned_at'
@@ -36,12 +36,6 @@ class User extends Authenticatable
     public function getStoreFirst(){
         return $this->partner()->first()->store()->first();
     }
-	
-	public static function owned()
-	{
-		$company_id = Auth::user()->company()->first()->id;
-		return self::where('company_id', $company_id);
-	}
 
     public function attachToCompany($company)
     {

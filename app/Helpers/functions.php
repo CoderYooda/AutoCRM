@@ -8,3 +8,10 @@ if(!function_exists('get_template')) {
         return $template;
     }
 }
+
+if(!function_exists('isDate')) {
+    function isDate($string)
+    {
+        return is_numeric(strtotime($string));
+    }
+}

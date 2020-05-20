@@ -31,8 +31,8 @@
                         <option value="2">Возвраты</option>
                         <option value="3">Продажи</option>
                         <option value="4">Заказы клиентов</option>
-                        <option value="5">Приходные ордеры</option>
-                        <option value="6">Расходные ордеры</option>
+                        <option value="5">Приходные ордера</option>
+                        <option value="6">Расходные ордера</option>
                         <option value="7">Перемещения</option>
                     </select>
                 </div>
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-group w-128 mr-15 mb-0">
-                    <label>Партнёр</label>
+                    <label>Контрагент</label>
                     <button onclick="{{ $class }}.openSelectPartnerModal()" type="button"
                             class="partner_select form-control text-left button_select">
                         <div id="partner_name">Не выбрано</div>

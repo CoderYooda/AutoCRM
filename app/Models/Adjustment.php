@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
 
 class Adjustment extends Model
 {
+    use OwnedTrait;
+
     public $fields = [
         'partner_id',
         'company_id',
@@ -48,10 +50,5 @@ class Adjustment extends Model
         $article = $this->articles()->where('article_id', $id)->first();
 
         return $article ? $article->pivot->count : 0;
-    }
-
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
     }
 }

@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 
 class Supplier extends Model
 {
-    protected $guarded = [];
+    use OwnedTrait;
 
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
-    }
+    protected $guarded = [];
 }

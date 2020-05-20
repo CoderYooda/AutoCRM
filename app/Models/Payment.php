@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use Auth;
 
 class Payment extends Model
 {
+    use OwnedTrait;
+
     protected $table = 'payment';
 
     protected $guarded = [];
@@ -21,11 +24,6 @@ class Payment extends Model
         'status',
         'error'
     ];
-
-    public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
-        return self::where('company_id', $company_id);
-    }
 
     public function freshStatus(){
 
