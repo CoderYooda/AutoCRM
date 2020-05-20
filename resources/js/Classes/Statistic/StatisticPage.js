@@ -5,6 +5,12 @@ class statisticPage {
 
         this.chart = null;
 
+        this.start_date = new Date();
+        this.start_date.setDate(this.start_date.getDate() - 30); // На 30 дней назад
+
+
+        this.end_date = new Date();
+
         this.init();
     }
 
@@ -45,10 +51,12 @@ class statisticPage {
                 }
             }
         });
+        this.initRangeSelector();
     }
 
     linked() {
         this.init();
+        this.initRangeSelector();
     }
 
     showResults() {
@@ -79,7 +87,6 @@ class statisticPage {
             let desc_element = document.getElementById('desc');
             desc_element.innerHTML = desc;
 
-
             let list_element = document.getElementById('statistic-list');
             list_element.innerHTML = list;
 
@@ -103,7 +110,7 @@ class statisticPage {
                     let entities = dates[date];
 
                     Object.keys(entities).map(entity => {
-                        datasets[entity].push(entities[entity]);
+                        datasets[entity].push(entities[entity].amount);
                     });
                 });
 
@@ -160,6 +167,38 @@ class statisticPage {
         }).finally(function () {
             window.isXHRloading = false;
         });
+    }
+
+    initRangeSelector(){
+        let object = this;
+        let start_date = document.querySelector('input[name=begin_date]');
+        let end_date = document.querySelector('input[name=final_date]');
+        start_date.value = this.start_date.getDate() + '.' + (this.start_date.getMonth() + 1) + '.' + this.start_date.getFullYear();
+        end_date.value = this.end_date.getDate() + '.' + ( this.end_date.getMonth() + 1 ) + '.' + this.end_date.getFullYear();
+
+        object.start_date_flatpkr = window.flatpickr("input[name=begin_date]", {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+        object.end_date_flatpkr = window.flatpickr("input[name=final_date]", {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+        });
+
+        object.start_date_mask = window.IMask(start_date, {
+                mask: Date,
+                min: new Date(1990, 0, 1),
+                max: new Date(2030, 0, 1),
+                lazy: false
+            }
+        );
+        object.end_date_mask = window.IMask(end_date, {
+                mask: Date,
+                min: new Date(1990, 0, 1),
+                max: new Date(2030, 0, 1),
+                lazy: false
+            }
+        )
     }
 }
 

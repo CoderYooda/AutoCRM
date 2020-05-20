@@ -43,6 +43,11 @@ class Shipment extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
+    public function manager()
+    {
+        return $this->belongsTo(Partner::class, 'manager_id');
+    }
+
     public function getProductPriceFromShipment($article_id)
     {
         $article = $this->articles()->wherePivot('article_id', $article_id)->first();

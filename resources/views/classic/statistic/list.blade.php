@@ -1,18 +1,35 @@
-<h2 class="mt-0 stat_header p-15">Заявки поставщикам</h2>
-<ul class="nav">
-    <li class="item d-flex bold_title">
-        <div class="flex-1" style="max-width: 40px!important;">ID</div>
-        <div class="flex-1" style="min-width: 200px">Наименование</div>
-        <div class="flex-1" style="max-width: 80px!important;">Сумма</div>
-        <div class="flex-1" style="max-width: 80px!important;">Дата</div>
-    </li>
+@foreach($list as $entity => $dates)
 
-    {{--@foreach($global_data as $date => $amount)--}}
+    @foreach($dates as $date => $attributes)
 
-    {{--@continue($amount == 0)--}}
+        @continue($attributes == [])
 
-    {{--<li>{{ $date }}: {{ $amount }}</li>--}}
+        @if($loop->first)
 
-    {{--@endforeach--}}
+            <h2 class="mt-0 stat_header p-15">{{ $entity }}</h2>
 
-</ul>
+            <ul class="nav">
+                <li class="item d-flex bold_title">
+                    <div class="flex-1 stat_id">ID</div>
+                    <div class="flex-1 stat_name">Партнёр</div>
+                    <div class="flex-1 stat_name">Менеджер</div>
+                    <div class="flex-1 stat_summ">Сумма</div>
+                    <div class="flex-1 stat_date">Дата</div>
+                </li>
+            </ul>
+
+        @endif
+
+        <ul class="nav">
+            <li class="item d-flex">
+                <div class="flex-1 stat_id">{{ $attributes['id'] }}</div>
+                <div class="flex-1 stat_name">{{ $attributes['partner'] }}</div>
+                <div class="flex-1 stat_name">{{ $attributes['manager'] }}</div>
+                <div class="flex-1 stat_summ">{{ $attributes['amount'] }}</div>
+                <div class="flex-1 stat_date">{{ $date }}</div>
+            </li>
+        </ul>
+
+    @endforeach
+
+@endforeach
