@@ -12,13 +12,15 @@ class PartnerObserver
 
     }
 
-    //public function updated(Partner $partner)
+    //public function updated(Partner $partner){}
+
+
     public function saving(Partner $partner)
     {
+        #Обновление имени учетной записи
         $user = $partner->user;
         if($user){
             $name = explode( ' ', $partner->fio );
-
             if(count($name) >= 2){
                 $name = $name[1];
             } else {

@@ -78,6 +78,11 @@
                             </a>
                         </li>
                         @endcanany
+                        <li id="actions_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('StatisticIndex') }}">
+                                Статистика
+                            </a>
+                        </li>
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name">{{ Auth::user()->company()->first()->name }}</span></span>
                     <div id="current_time">
@@ -123,24 +128,24 @@
                                 </a>
                             </div>
                         </li>
-                        <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
-                            <span class="d-flex align-items-center p-10" href="">
-                                 <span class="avatar w-32 mr-3">
-                                    <img src="http://autocrm/images/noavatar.png" alt="...">
-                                 </span>
-                                 {{ Auth::user()->company()->first()->name }}
-                            </span>
+                        {{--<li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">--}}
+                            {{--<span class="d-flex align-items-center p-10" href="">--}}
+                                 {{--<span class="avatar w-32 mr-3">--}}
+                                    {{--<img src="http://autocrm/images/noavatar.png" alt="...">--}}
+                                 {{--</span>--}}
+                                 {{--{{ Auth::user()->company()->first()->name }}--}}
+                            {{--</span>--}}
 
-                            <div class="dropdown_container">
-                                <div class="arrow"></div>
-                                <a class="element" href="#" onclick="">
-                                    Личный кабинет
-                                </a>
-                                <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                    Выход
-                                </a>
-                            </div>
-                        </li>
+                            {{--<div class="dropdown_container">--}}
+                                {{--<div class="arrow"></div>--}}
+                                {{--<a class="element" href="#" onclick="">--}}
+                                    {{--Личный кабинет--}}
+                                {{--</a>--}}
+                                {{--<a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">--}}
+                                    {{--Выход--}}
+                                {{--</a>--}}
+                            {{--</div>--}}
+                        {{--</li>--}}
                         @can('СуперАдмин')
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <span class="d-flex align-items-center p-10" href="">

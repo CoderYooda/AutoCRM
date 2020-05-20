@@ -17,6 +17,8 @@ use App\Http\Controllers\SmsController;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CashboxController;
+use App\Http\Requests\CashboxRequest;
 
 class RegisterController extends Controller
 {
@@ -116,7 +118,16 @@ class RegisterController extends Controller
         $user->save();
         $role = RoleController::createStartRoles($company);
 	    $user->assignRole($role);
-	    SettingsController::createCompanySettingsPack($company, $role);
+
+//	    #Создаём первую кассу###########################################################
+//        $cashbox = new CashboxController();
+//        $fake_request = new CashboxRequest();
+//        $fake_request['name'] = 'Основная касса';
+//        $fake_request['manager_id'] = $user->id;
+//        $fake_request['company_id'] = $company->id;
+//        $cashbox->store($fake_request);
+//	    SettingsController::createCompanySettingsPack($company, $role);
+//	    #Конец##########################################################################
 	    
         $store = new Store();
         $store->company_id = $company->id;
