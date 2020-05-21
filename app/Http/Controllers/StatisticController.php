@@ -17,6 +17,7 @@ use App\Models\Shipment;
 use App\Models\User;
 use App\Models\Warrant;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
@@ -96,9 +97,8 @@ class StatisticController extends Controller
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
-                ->where('created_at', '>=', $request->begin_date)
-                ->where('created_at', '<=', $request->final_date)
-//                ->groupBy(DB::raw('DAY(created_at)'))
+                ->where('created_at', '>=', DateTime::createFromFormat('d.m.Y', $request->begin_date))
+                ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date))
                 ->limit(10);
 
             if ($class != Entrance::class) {
@@ -132,32 +132,35 @@ class StatisticController extends Controller
 
             #Заполнение массива данными из базы
             foreach ($entities as $entity) {
+                $id = $entity->id;
                 $date = $entity->created_at->format('d.m.Y');
-                $global_data[$date][$sort_name[$key]]['id'] = $entity->id;
-                $global_data[$date][$sort_name[$key]]['amount'] = $entity->amount;
-                $global_data[$date][$sort_name[$key]]['manager'] = isset($entity->manager) ? $entity->manager->cut_surname : '-';
+                $global_data[$date][$sort_name[$key]][$id]['amount'] = $entity->amount;
+                $global_data[$date][$sort_name[$key]][$id]['manager'] = isset($entity->manager) ? $entity->manager->cut_surname : '-';
             }
         }
-
-        dd($global_data);
 
         #Пересобираем массив для отображения в list.blade.php
         $list = [];
 
         foreach ($global_data as $date => $entities) {
-            foreach ($entities as $entity => $attributes) {
-                if($attributes == []) continue;
+            foreach ($entities as $entity_name => $entities) {
 
-                $list[$entity][$date]['id'] = $attributes['id'];
-                $list[$entity][$date]['amount'] = $attributes['amount'];
-                $list[$entity][$date]['manager'] = $attributes['manager'];
+                if($entities == []) continue;
+
+                foreach ($entities as $entity_id => $attributes) {
+
+                    if($attributes == []) continue;
+
+                    $list[$entity_name][$date][$entity_id]['amount'] = $attributes['amount'];
+                    $list[$entity_name][$date][$entity_id]['manager'] = $attributes['manager'];
+                }
             }
         }
 
         $response = [
             'dates' => $global_data,
             'desc' => view(get_template() . '.statistic.desc', compact('sort_name', 'partner', 'manager'))->render(),
-            'list' => view(get_template() . '.statistic.list', compact('sort_name', 'list'))->render()
+            'list' => view(get_template() . '.statistic.list', compact('list'))->render()
         ];
 
         return response($response, 200);

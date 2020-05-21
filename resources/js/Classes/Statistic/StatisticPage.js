@@ -80,46 +80,43 @@ class statisticPage {
             //Обновляем даты
             this.chart.data.labels = Object.keys(dates);
 
-            //Если полная статистика
-            if(!Number.isInteger(Object.values(dates)[0])) {
+            let datasets = {};
 
-                let datasets = {};
+            //Получаем названия сущностей
+            let first_entities = Object.values(dates)[0];
 
-                //Получаем названия сущностей
-                let first_entities = Object.values(dates)[0];
+            Object.keys(first_entities).map(entity => {
+                datasets[entity] = [];
+            });
 
-                Object.keys(first_entities).map(entity => {
-                    datasets[entity] = [];
-                });
+            //Формируем порядковый массив для сущностей
+            Object.keys(dates).map(date => {
+                let entities = dates[date];
 
-                //Формируем порядковый массив для сущностей
-                Object.keys(dates).map(date => {
-                    let entities = dates[date];
+                Object.keys(entities).map(entity => {
+                    let ids = entities[entity];
 
-                    Object.keys(entities).map(entity => {
-                        datasets[entity].push(entities[entity].amount != null ? entities[entity].amount : 0);
+                    let day_amount = 0;
+
+                    Object.keys(ids).map(id => {
+                        day_amount += ids[id].amount;
                     });
-                });
 
-                //Выводим информацию
-                Object.keys(datasets).map((name) => {
-                    this.chart.data.datasets.push({
-                        label: name,
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        data: datasets[name]
-                    });
+                    console.log(date, entity, day_amount);
+
+                    datasets[entity].push(day_amount);
                 });
-            }
-            //Если по определённой сущности
-            else {
+            });
+
+            //Выводим информацию
+            Object.keys(datasets).map((name) => {
                 this.chart.data.datasets.push({
-                    label: 'Общая сумма',
+                    label: name,
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
-                    data: Object.values(dates)
+                    data: datasets[name]
                 });
-            }
+            });
 
             this.chart.update();
         })
