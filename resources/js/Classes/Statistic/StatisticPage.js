@@ -82,6 +82,17 @@ class statisticPage {
 
             let datasets = {};
 
+            let colors = [
+                'rgb(0, 0, 0)',
+                'rgb(25, 0, 0)',
+                'rgb(50, 0, 0)',
+                'rgb(75, 0, 0)',
+                'rgb(100, 0, 0)',
+                'rgb(125, 0, 0)',
+                'rgb(150, 0, 0)',
+                'rgb(175, 0, 0)'
+            ];
+
             //Получаем названия сущностей
             let first_entities = Object.values(dates)[0];
 
@@ -102,18 +113,16 @@ class statisticPage {
                         day_amount += ids[id].amount;
                     });
 
-                    console.log(date, entity, day_amount);
-
                     datasets[entity].push(day_amount);
                 });
             });
 
             //Выводим информацию
-            Object.keys(datasets).map((name) => {
+            Object.keys(datasets).map((name, index) => {
                 this.chart.data.datasets.push({
                     label: name,
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: colors[index],
+                    borderColor: 'rgb(0,0,0)',
                     data: datasets[name]
                 });
             });

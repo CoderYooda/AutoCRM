@@ -61,7 +61,7 @@ class StatisticController extends Controller
             'Расходные ордера',
             'Перемещения'
         ];
-
+        
         $classes = [
             ProviderOrder::class,
             Entrance::class,
