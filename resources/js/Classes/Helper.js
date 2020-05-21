@@ -36,6 +36,7 @@ import employeePage from "./Employee/EmployeePage";
 import cashPage from "./Cash/CashPage";
 import userPage from "./User/UserPage";
 import usereditPage from "./User/UserEditPage";
+import userpasswordeditPage from "./User/UserPasswordEdit";
 import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
@@ -82,6 +83,7 @@ const pages = {
     employeePage,
     userPage,
     usereditPage,
+    userpasswordeditPage,
     calendarPage,
     schedulePage,
     actionsPage,

@@ -116,18 +116,10 @@ class RegisterController extends Controller
 
         $user->company()->associate($company);
         $user->save();
+
         $role = RoleController::createStartRoles($company);
 	    $user->assignRole($role);
-
-//	    #Создаём первую кассу###########################################################
-//        $cashbox = new CashboxController();
-//        $fake_request = new CashboxRequest();
-//        $fake_request['name'] = 'Основная касса';
-//        $fake_request['manager_id'] = $user->id;
-//        $fake_request['company_id'] = $company->id;
-//        $cashbox->store($fake_request);
-//	    SettingsController::createCompanySettingsPack($company, $role);
-//	    #Конец##########################################################################
+        SettingsController::createCompanySettingsPack($company, $role);
 	    
         $store = new Store();
         $store->company_id = $company->id;

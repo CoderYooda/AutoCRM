@@ -249,11 +249,15 @@ class PartnerController extends Controller
         $class = 'selectPartnerDialog';
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
         $partners = Partner::where(function($q) use ($request){
-            $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
-                ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
-                ->orWhereHas('phones', function ($query) use ($request) {
-                    $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-                });
+
+
+            $q->where('foundstring', 'LIKE', '%' . $request['string'] .'%');
+            #Не оптимизированно, но более точно
+//            $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
+//                ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
+//                ->orWhereHas('phones', function ($query) use ($request) {
+//                    $query->where('number', 'LIKE', '%' . $request['string'] .'%');
+//                });
         })
             ->when($request['category_id'], function($q) use ($request){
                 $q->where('category_id', $request['category_id']);
