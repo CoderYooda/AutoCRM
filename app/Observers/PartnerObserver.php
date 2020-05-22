@@ -30,6 +30,19 @@ class PartnerObserver
             $user->name = $name;
             $user->save();
         }
+
+
+
+    }
+
+    public function updated(Partner $partner){
+        #Генерация поисковой строки
+//        $phones = $partner->phones()->pluck('number');
+//        $phones_str = '';
+//        foreach($phones as $phone){
+//            $phones_str .= substr($phone, -4);
+//        }
+
     }
 
     public function deleted(Partner $partner)

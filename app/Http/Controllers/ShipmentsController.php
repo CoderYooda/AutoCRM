@@ -352,6 +352,10 @@ class ShipmentsController extends Controller
         #Добавляем к балансу контрагента
         $shipment->partner()->first()->subtraction($shipment->itogo);
 
+        if($request['created_at']){
+            $shipment->created_at = $request['created_at'];
+        }
+
         $shipment->save();
 
         if($shipment->clientOrder){

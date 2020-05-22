@@ -4,7 +4,7 @@ class selectPartnerDialog  extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно выбора партнера инициализировано');
         this.refer = dialog.querySelector("#refer").value;
         if(dialog.querySelector("#target")){
             this.target = dialog.querySelector("#target").value;
@@ -49,7 +49,8 @@ class selectPartnerDialog  extends Modal{
         if(el){
             el.addEventListener("keydown", searchFn);
             el.addEventListener("paste", searchFn);
-            el.addEventListener("delete", searchFn);}
+            el.addEventListener("delete", searchFn);
+        }
 
 
 

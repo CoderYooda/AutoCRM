@@ -136,7 +136,6 @@ class PartnerController extends Controller
         if($phones->count()){
             $partner->basePhone = $phones->where('main', true)->first()->number;
         }
-
         $partner->save();
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
@@ -147,6 +146,14 @@ class PartnerController extends Controller
         //$content = view('partner.elements.list_container', compact('partners', 'categories', 'request'))->render();
 
         //SystemMessage::sendToAllButOne();
+
+        $phones_str = '';
+        foreach($partner->phones as $phone){
+            $phones_str .= $phone->number;
+        }
+        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str));
+        $partner->save();
+
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
 
         if($request['access']){
@@ -249,11 +256,15 @@ class PartnerController extends Controller
         $class = 'selectPartnerDialog';
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
         $partners = Partner::where(function($q) use ($request){
-            $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
-                ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
-                ->orWhereHas('phones', function ($query) use ($request) {
-                    $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-                });
+
+
+            $q->where('foundstring', 'LIKE', '%' . $request['string'] .'%');
+            #Не оптимизированно, но более точно
+//            $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
+//                ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
+//                ->orWhereHas('phones', function ($query) use ($request) {
+//                    $query->where('number', 'LIKE', '%' . $request['string'] .'%');
+//                });
         })
             ->when($request['category_id'], function($q) use ($request){
                 $q->where('category_id', $request['category_id']);
@@ -382,15 +393,12 @@ class PartnerController extends Controller
             ->when($request['search'] != null, function($query) use ($request) {
                 if(mb_strlen($request['search']) == 1){
                     $query->where(function($q) use ($request){
-                        $q->where('fio', 'like', $request['search'].'%');
-                            //->orWhere('companyName', 'like', $request['search'].'%');
+                        $q->where('fio', 'like', $request['search'].'%')->orWhere('companyName', 'like', $request['search']);
                     });
                 } else {
                     $query->where(function($q) use ($request){
-                        $q->where('fio', 'like', '%'.$request['search'].'%')
-                        ->orWhere('companyName', 'like', $request['search'].'%');
+                        $q->where('foundstring', 'like', '%' . str_replace(array('(', ')', ' ', '-'), '', $request['search']) . '%');
                     });
-
                 }
             })
 

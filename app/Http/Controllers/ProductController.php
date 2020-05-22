@@ -321,6 +321,7 @@ class ProductController extends Controller
         } else {
             $category = (int)$request['category_id'];
         }
+
         return Article::
         join('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
             ->leftJoin('article_store', function ($join) {
@@ -338,7 +339,7 @@ class ProductController extends Controller
                 }
             })
             ->where(function ($q) use ($request) {
-                if (isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null") {
+                if (isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null") {
                     $q->where('articles.category_id', (int)$request['category_id']);
                 }
             })

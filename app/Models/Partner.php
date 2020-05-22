@@ -20,6 +20,8 @@ class Partner extends Model
         'user_id',
         'category_id',
         'store_id',
+        'foundstring',
+        'basePhone',
         'isfl',
         'fio',
         'birthday',

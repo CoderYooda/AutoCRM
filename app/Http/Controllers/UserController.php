@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\PasswordRequest;
 use App\Models\Partner;
 use App\Models\Payment;
 use App\Models\SalarySchema;
@@ -12,6 +13,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Auth\Authenticatable as SystemAuth;
 use Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -92,6 +94,61 @@ class UserController extends Controller
         }
 
     }
+
+    public function passwordEdit(Request $request)
+    {
+        $page = 'Смена пароля';
+
+        if(empty($request['id'])){
+            $request['id'] = Auth::user()->partner->id;
+        }
+
+        if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
+            $request['active_tab'] = 'profile';
+        }
+
+        $classname = $request['active_tab'] . 'Tab';
+
+        $user = self::getUser($request);
+
+        if(!$user){
+            abort(404);
+        }
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.password', compact('request',  'user'));
+
+        $target = HC::selectTarget();
+        if($request->expectsJson() && $request['search'] === NULL){
+            return response()->json([
+                'target' => $target,
+                'page' => $page,
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
+    }
+
+    public function passwordStore(PasswordRequest $request)
+    {
+        $user = Auth::user();
+        if(Hash::check($request->old_password, $user->password)){
+            $user->password = bcrypt($request->password);
+            $user->save();
+            return response()->json([
+                'type' => 'success',
+                'messages' => 'Пароль обновлен',
+                'redirect' => '/user'
+            ], 200);
+        } else {
+            return response()->json([
+                'type' => 'error',
+                'messages' => ['old_password' => ['Пароль не верен']]
+            ], 422);
+        }
+    }
+
+
 
     public static function profileTab($request, $user)
     {

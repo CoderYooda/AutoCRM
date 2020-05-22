@@ -358,7 +358,7 @@ label.label-sm{
 }
 .form-control.is-invalid, .was-validated .form-control:invalid {
     border-color: #e3342f;
-    padding-right: calc(1.6em + .75rem);
+    //padding-right: calc(1.6em + .75rem);
     background-repeat: no-repeat;
     background-position: right calc(.4em + .1875rem) center;
     background-size: calc(.8em + .375rem) calc(.8em + .375rem);

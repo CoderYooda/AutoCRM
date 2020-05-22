@@ -66,6 +66,9 @@
                         @if(isset($user) && $user->barcode != null)
                             <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($user->barcode) !!}" alt="barcode" />
                         @endif
+                        <div class="links-block mt-15">
+                            <a href="{{ route('UserPassChange', ['target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">Сменить пароль</a>
+                        </div>
                     </div>
                 </div>
                 {{--<div class="box">--}}

@@ -23,6 +23,17 @@ Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('Che
 //Route::multilingual('/', 'DashboardController@index');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
+
+//    Route::get('/password/reset/email', 'Auth\PasswordController@getEmail');
+//    Route::post('/password/reset/email', 'Auth\PasswordController@postEmail');
+//
+//    Route::get('/password/email', 'Auth\PasswordController@sendResetLinkEmail');
+//
+//    Route::get('/password/reset/{token}', 'Auth\PasswordController@showResetForm');
+//    Route::post('/password/reset', 'Auth\PasswordController@reset');
+
+
+
     #Статистика и панель управления
     Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
 
@@ -179,6 +190,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
+
+    Route::get('/user/password/edit', 'UserController@passwordEdit')->name('UserPassChange');
+    Route::post('/user/password/save', 'UserController@passwordStore')->name('UserPassStore');
+
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
 
     #Картинки

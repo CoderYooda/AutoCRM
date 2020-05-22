@@ -88,7 +88,7 @@ window.axios.interceptors.response.use(function (response) {
     if (error.response.status === 401) {
         window.location.href = "/login";
     }
-    if (error.response.status === 422) {
+    if (error.response.status === 422 || error.response.status === 200) {
         if(error.response.data.message && error.response.data.type){
             window.notification.notify( error.response.data.type, error.response.data.message);
         }
