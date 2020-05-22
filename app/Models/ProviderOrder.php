@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Auth;
 
 class ProviderOrder extends Model
 {
-    use OwnedTrait, SoftDeletes;
+    use OwnedTrait, SoftDeletes, HasManagerAndPartnerTrait;
 
     public $fields = [
         'partner_id',
@@ -79,16 +79,6 @@ class ProviderOrder extends Model
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
         return $article != null ? $article->pivot->price : 0;
-    }
-
-    public function partner()
-    {
-        return $this->belongsTo(Partner::class, 'partner_id');
-    }
-
-    public function manager()
-    {
-        return $this->belongsTo(Partner::class, 'manager_id');
     }
 
     public function store()
