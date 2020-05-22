@@ -25,22 +25,16 @@
                 <div class="form-group w-128 mr-15 mb-0">
                     <label>Разделы</label>
 
-                    <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input readonly id="entity_name" type="text" class="form-control entrance_status" value="Не выбрано" disabled>
-                        <input type="hidden" id="entity_id" value="-1" />
-                        <div class="dropdown_container">
-                            <div class="arrow"></div>
-                            <span onclick="{{ $class }}.setEntity(-1)" class="element">Все разделы</span>
-                            <span onclick="{{ $class }}.setEntity(0)" class="element">Заявки поставщикам</span>
-                            <span onclick="{{ $class }}.setEntity(1)" class="element">Поступления</span>
-                            <span onclick="{{ $class }}.setEntity(2)" class="element">Возвраты</span>
-                            <span onclick="{{ $class }}.setEntity(3)" class="element">Продажи</span>
-                            <span onclick="{{ $class }}.setEntity(4)" class="element">Заказы клиентов</span>
-                            <span onclick="{{ $class }}.setEntity(5)" class="element">Приходные ордера</span>
-                            <span onclick="{{ $class }}.setEntity(6)" class="element">Расходные ордера</span>
-                            <span onclick="{{ $class }}.setEntity(7)" class="element">Перемещения</span>
-                        </div>
-                    </div>
+                    <select id="entity" class="form-control input-c" multiple>
+                        <option selected value="0">Заявки поставщикам</option>
+                        <option selected value="1">Поступления</option>
+                        <option selected value="2">Возвраты</option>
+                        <option selected value="3">Продажи</option>
+                        <option selected value="4">Заказы клиентов</option>
+                        <option selected value="5">Приходные ордера</option>
+                        <option selected value="6">Расходные ордера</option>
+                        <option selected value="7">Перемещения</option>
+                    </select>
                 </div>
 
                 <div class="form-group w-128 mr-15 mb-0">
@@ -74,25 +68,7 @@
                 <div class="flex-1 box" >
                     <div data-simplebar style="max-height: calc(100vh - 191px);">
                         <div id="statistic-list" style="position: relative">
-                            {{--<h2 class="mt-0 stat_header p-15">24</h2>--}}
-                            {{--<table class="table w-100 p-15">--}}
-                                {{--<thead>--}}
-                                    {{--<th>ID</th>--}}
-                                    {{--<th>Менеджер</th>--}}
-                                    {{--<th>Контакт</th>--}}
-                                    {{--<th>Сумма</th>--}}
-                                    {{--<th>Дата</th>--}}
-                                {{--</thead>--}}
-                                {{--<tbody>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>12344</td>--}}
-                                        {{--<td>Сенаторов С.</td>--}}
-                                        {{--<td>Валунов М.</td>--}}
-                                        {{--<td>3 200</td>--}}
-                                        {{--<td>21.01.2009</td>--}}
-                                    {{--</tr>--}}
-                                {{--</tbody>--}}
-                            {{--</table>--}}
+
                         </div>
                     </div>
                 </div>

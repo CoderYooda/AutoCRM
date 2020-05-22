@@ -59,7 +59,7 @@ class statisticPage {
                 partner_id: Number(document.querySelector("input[name=partner_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
                 final_date: document.querySelector("input[name=final_date]").value,
-                entity: Number(document.getElementById("entity_id").value)
+                entity: this.getSelectValues(document.getElementById("entity"))
             }
         })
         .then(response => {
@@ -83,14 +83,14 @@ class statisticPage {
             let datasets = {};
 
             let colors = [
-                'rgb(0, 0, 0)',
-                'rgb(25, 0, 0)',
-                'rgb(50, 0, 0)',
-                'rgb(75, 0, 0)',
-                'rgb(100, 0, 0)',
-                'rgb(125, 0, 0)',
-                'rgb(150, 0, 0)',
-                'rgb(175, 0, 0)'
+                'rgb(0, 167, 142)',
+                'rgb(44, 159, 69)',
+                'rgb(255, 79, 129)',
+                'rgb(251, 176, 52)',
+                'rgb(184, 69, 146)',
+                'rgb(1, 205, 116)',
+                'rgb(234, 128, 237)',
+                'rgb(137, 186, 22)'
             ];
 
             //Получаем названия сущностей
@@ -119,6 +119,7 @@ class statisticPage {
 
             //Выводим информацию
             Object.keys(datasets).map((name, index) => {
+
                 this.chart.data.datasets.push({
                     label: name,
                     backgroundColor: colors[index],
@@ -194,9 +195,19 @@ class statisticPage {
         )
     }
 
-    setEntity(value){
-        document.getElementById('entity_id').value = value;
-        document.getElementById('entity_name').value = event.target.innerText;
+    getSelectValues(select) {
+        var result = [];
+        var options = select && select.options;
+        var opt;
+
+        for (var i=0, iLen=options.length; i<iLen; i++) {
+            opt = options[i];
+
+            if (opt.selected) {
+                result.push(opt.value || opt.text);
+            }
+        }
+        return result;
     }
 }
 

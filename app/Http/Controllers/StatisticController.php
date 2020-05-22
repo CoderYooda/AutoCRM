@@ -92,8 +92,8 @@ class StatisticController extends Controller
         #Запрос по запрошенным разделам
 
         foreach ($classes as $key => $class) {
-            #Проверка на вывод одной сущности
-            if($request->entity != -1 && $request->entity != $key) continue;
+
+            if(!in_array($key, $request->entity)) continue;
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
