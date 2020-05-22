@@ -10,8 +10,7 @@ $factory->define(Partner::class, function (Faker $faker) {
     return [
         'category_id' =>  rand(5,7),
         'isfl' => rand(0,1),
-        'balance' => rand(0, 100000000),
-        'basePhone' => str_replace(array('(', ')', ' ', '-', '+'), '', substr_replace($faker->unique()->phoneNumber, 7, 0, 1)),
+        'balance' => 0,
         'fio' => $faker->name,
         'birthday' => $faker->dateTimeBetween($startDate = '-80 years', $endDate = '-30 years'),
         'address' => $faker->city . ', ' . $faker->streetAddress . ' дом ' . rand(1, 233),

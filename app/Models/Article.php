@@ -16,7 +16,6 @@ class Article extends Model
         'company_id',
         'category_id',
         'creator_id',
-        'creator_id',
         'supplier_id',
         'measurement_id',
         'foundstring',
@@ -26,7 +25,6 @@ class Article extends Model
         'barcode_local',
         'barcode',
         'name',
-        'blockedCount',
         'blockedCount',
     ];
 

@@ -8,7 +8,7 @@
     @php $class = 'shipmentDialog' @endphp
     id="shipmentDialog"
     @endif
-    class="dialog shipment_dialog" style="width:880px;">
+    class="dialog shipment_dialog" style="width:920px;">
 @endif
     @if(isset($shipment) && $shipment->id != NULL)
         <div class="titlebar">Продажа №{{ $shipment->id }} @if($shipment->clientOrder != null) по заказу № {{ $shipment->clientOrder->id }} @endif</div>

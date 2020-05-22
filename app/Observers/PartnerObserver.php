@@ -31,7 +31,7 @@ class PartnerObserver
             $user->save();
         }
 
-        $partner->foundstring = strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $partner->basePhone));
+
 
     }
 

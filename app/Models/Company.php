@@ -12,12 +12,20 @@ class Company extends Model
         return $this->hasMany(User::class, 'company_id');
     }
 
+    public function partners(){
+        return $this->hasMany(Partner::class, 'company_id');
+    }
+
     public function stores(){
         return $this->hasMany(Store::class, 'company_id');
     }
 
     public function cashboxes(){
         return $this->hasMany(Cashbox::class, 'company_id');
+    }
+
+    public function settings(){
+        return $this->hasMany(Setting::class, 'company_id');
     }
 
     public function checkAccessToStore($store){
