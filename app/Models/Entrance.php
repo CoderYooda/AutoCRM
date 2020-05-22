@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
 
 class Entrance extends Model
 {
-    use OwnedTrait;
+    use OwnedTrait, HasManagerAndPartnerTrait;
 
     public $fields = [
         'company_id',
@@ -24,11 +24,6 @@ class Entrance extends Model
     {
         return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
             ->withPivot('count', 'price');
-    }
-
-    public function partner()
-    {
-        return $this->belongsTo(Partner::class, 'partner_id')->withTrashed();
     }
 
     public function providerorder()

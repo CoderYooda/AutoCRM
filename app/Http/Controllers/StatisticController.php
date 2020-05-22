@@ -105,7 +105,7 @@ class StatisticController extends Controller
                 $query = $query->selectRaw('id, summ as amount, created_at, manager_id')->with('manager');
             }
             else {
-                $query = $query->with('providerorder');
+                $query = $query->select('*')->with('manager', 'providerorder');
             }
 
             #Сортировка по входящим и исходящим ордерам
