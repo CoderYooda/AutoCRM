@@ -4,9 +4,7 @@
     <div class="box">
         @if(isset($editmode) && $editmode)
             <form id="act_form_partner" action="{{ route('StorePartner') }}" method="POST">
-
                 @csrf
-
                 <input type="hidden" name="id" value="{{ $user->id }}">
 
                 <input id="isfl" type="radio" name="isfl" value="1" @if(isset($user) && $user['isfl']) checked
