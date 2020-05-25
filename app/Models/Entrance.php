@@ -64,7 +64,7 @@ class Entrance extends Model
 
     public function warrants()
     {
-        return $this->belongsToMany('App\Models\Warrant', 'entrance_warrant',  'entrance_id', 'warrant_id' );
+        return $this->belongsToMany(Warrant::class, 'entrance_warrant',  'entrance_id', 'warrant_id' );
     }
 
     public function getArticlesCountById($id){

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Warrant extends Model
 {
-    use OwnedTrait;
+    use OwnedTrait, HasManagerAndPartnerTrait;
 
     protected $guarded = [];
 
@@ -26,11 +27,6 @@ class Warrant extends Model
         'refer_id',
     ];
 
-    public function partner()
-    {
-        return $this->belongsTo(Partner::class, 'partner_id')->withTrashed();
-    }
-
     public function ddsarticle()
     {
         return $this->belongsTo(DdsArticle::class, 'ddsarticle_id');
@@ -39,11 +35,6 @@ class Warrant extends Model
     public function cashbox()
     {
         return $this->belongsTo(Cashbox::class, 'cashbox_id');
-    }
-
-    public function manager()
-    {
-        return $this->belongsTo(Partner::class, 'manager_id');
     }
 
     public function client_order()

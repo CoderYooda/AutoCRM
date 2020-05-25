@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class Shipment extends Model
 {
-    use OwnedTrait;
+    use OwnedTrait, HasManagerAndPartnerTrait;
 
     public $fields = [
         'id',
@@ -30,6 +31,7 @@ class Shipment extends Model
     protected static function boot()
     {
         parent::boot();
+
         static::addGlobalScope('shipment', function (Builder $builder) {
             $builder->where('company_id', Auth::user()->company()->first()->id);
         });
@@ -44,11 +46,6 @@ class Shipment extends Model
     public function store()
     {
         return $this->belongsTo(Store::class, 'store_id');
-    }
-
-    public function manager()
-    {
-        return $this->belongsTo(Partner::class, 'manager_id');
     }
 
     public function getProductPriceFromShipment($article_id)
@@ -132,11 +129,6 @@ class Shipment extends Model
     public function elements()
     {
         return $this->articles->merge($this->stores);
-    }
-
-    public function partner()
-    {
-        return $this->belongsTo('App\Models\Partner', 'partner_id')->withTrashed();
     }
 
     public function getAvailableToRefundArticlesCount($article_id)

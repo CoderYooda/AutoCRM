@@ -66,12 +66,12 @@ class Payment extends Model
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function partner()
     {
-        return $this->belongsTo('App\Models\Partner', 'partner_id');
+        return $this->belongsTo(Partner::class, 'partner_id');
     }
 
     public function getAmount(){
