@@ -2,14 +2,19 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\EntranceController;
 use App\Http\Controllers\HelpController;
+use App\Http\Controllers\ProviderOrdersController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShipmentsController;
+use App\Http\Requests\EntranceRequest;
+use App\Http\Requests\ProviderOrdersRequest;
 use App\Http\Requests\ShipmentsRequest;
 use App\Models\Article;
 use App\Models\Company;
 use App\Models\Partner;
+use App\Models\ProviderOrder;
 use App\Models\Role;
 use App\Models\Shipment;
 use App\Models\Store;
@@ -20,6 +25,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Models\Phone;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Faker\Factory as Faker;
 
 class StressTest extends Command
 {
@@ -30,10 +36,11 @@ class StressTest extends Command
      */
     protected $signature = 'stress:seed';
 
-    private $partners_count = 500;
+    private $partners_count = 100;
     private $count_suppliers = 100;
-    private $count_products = 500;
-    private $count_shipments = 200;
+    private $count_products = 100;
+    private $count_shipments = 15;
+    private $count_providerorder = 150;
 
     /**
      * The console command description.
@@ -59,6 +66,8 @@ class StressTest extends Command
      */
     public function handle()
     {
+        $faker = Faker::create();
+
         $company = factory(Company::class)->make();
         $company->save();
 
@@ -124,7 +133,33 @@ class StressTest extends Command
         for($i = 0; $i < $count_shipments; $i++){
             $user = $company->members()->inRandomOrder()->first();
             Auth::login($user);
-            self::createShipment($company->partners()->inRandomOrder()->first(), HelpController::generateRandomString(200), $company);
+            self::createShipment($company->partners()->inRandomOrder()->first(), $faker->text(250), $company);
+            Auth::logout($user);
+            $bar->advance();
+        }
+        $bar->finish();
+
+        # Создаем заявки поставщику
+        $count_providerorder = rand(0, $this->count_providerorder);
+        $bar = $this->output->createProgressBar($count_providerorder);
+        $bar->start();
+        for($i = 0; $i < $count_providerorder; $i++){
+            $user = $company->members()->inRandomOrder()->first();
+            Auth::login($user);
+            self::createProviderOrder($company->partners()->inRandomOrder()->first(), $faker->text(250), $company);
+            Auth::logout($user);
+            $bar->advance();
+        }
+        $bar->finish();
+
+        # Создаем поступления
+        $provider_orders = ProviderOrder::owned($company)->get();
+        $bar = $this->output->createProgressBar($count_providerorder);
+        $bar->start();
+        foreach($provider_orders as $provider_order){
+            $user = $company->members()->inRandomOrder()->first();
+            Auth::login($user);
+            self::createEntrance($provider_order, $faker->text(250), $company);
             Auth::logout($user);
             $bar->advance();
         }
@@ -180,9 +215,9 @@ class StressTest extends Command
         $date = $date->addSeconds(rand(0, 60));
         $inpercents = rand(0,1);
         if($inpercents){
-            $discount = rand(0,50);
+            $discount = rand(0,20);
         } else {
-            $discount = rand(0,5000);
+            $discount = rand(0,1200);
         }
         $fake_request = new ShipmentsRequest();
         $products = [];
@@ -205,5 +240,65 @@ class StressTest extends Command
         $fake_request['products'] = $products;
 
         $shipmnetController->store($fake_request);
+    }
+
+    private static function createProviderOrder($partner, $comment, $company){
+        $providerOrderController = new ProviderOrdersController();
+        $date = Carbon::now()->addDays(rand(-365, 0));
+        $date = $date->addHours(rand(0, 24));
+        $date = $date->addMinutes(rand(0, 60));
+        $date = $date->addSeconds(rand(0, 60));
+
+        $fake_request = new ProviderOrdersRequest();
+        $products = [];
+        $products_count = rand(1, 50);
+
+        for($e = 0; $e < $products_count; $e++){
+            $product = Article::owned($company)->inRandomOrder()->first();
+            $products[$product->id]['id'] = $product->id;
+            $products[$product->id]['count'] = rand(1, 12);
+            $products[$product->id]['price'] = rand(1, 2000);
+        }
+        $nds_included = 0;
+        $nds = rand(0,1);
+        if($nds){
+            $nds_included = rand(0,1);
+        }
+
+        $fake_request['nds'] = $nds;
+        $fake_request['nds_included'] = $nds_included;
+        $fake_request['do_date'] = $date;
+        $fake_request['created_at'] = $date;
+        $fake_request['partner_id'] = $partner->id;
+        $fake_request['store_id'] = $company->stores()->first()->id;
+        $fake_request['comment'] = $comment;
+        $fake_request['products'] = $products;
+        $providerOrderController->store($fake_request);
+    }
+
+    private static function createEntrance($providerOrder, $comment, $company){
+
+        if(!rand(0,4)){
+            $entrance = new EntranceController();
+            $fake_request = new EntranceRequest();
+
+            $articles = $providerOrder->articles()->get();
+
+            $fake_request['providerorder_id'] = $providerOrder->id;
+            $fake_request['comment'] = $comment;
+
+            $products = [];
+            foreach($articles as $article){
+                //$fake_request[$article->id]['id'] = $article->id;
+                $fake_request[$article->id]['price'] = $article->pivot->price;
+                $fake_request[$article->id]['count'] = rand(1, $article->pivot->count);
+            }
+            $entrance->store($fake_request);
+
+        } else{
+            return true;
+        }
+
+
     }
 }
