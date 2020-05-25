@@ -17,7 +17,7 @@
             </ul>
 
         @endif
-        
+
         @foreach($entity_ids as $entity_id => $attributes)
 
             <ul class="nav w-100 mb-0 mt-0">

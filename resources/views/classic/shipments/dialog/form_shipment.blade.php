@@ -2,14 +2,20 @@
 
 <div
     @if(isset($shipment) && $shipment->id != NULL)
-    @php $class = 'shipmentDialog' . $shipment->id @endphp
-    id="shipmentDialog{{$shipment->id}}" data-id="{{$shipment->id}}"
+        @php
+            $class = 'shipmentDialog' . $shipment->id
+        @endphp
+        id="shipmentDialog{{$shipment->id}}" data-id="{{$shipment->id}}"
     @else
-    @php $class = 'shipmentDialog' @endphp
-    id="shipmentDialog"
+        @php
+            $class = 'shipmentDialog'
+        @endphp
+        id="shipmentDialog"
     @endif
+
     class="dialog shipment_dialog" style="width:920px;">
 @endif
+
     @if(isset($shipment) && $shipment->id != NULL)
         <div class="titlebar">Продажа №{{ $shipment->id }} @if($shipment->clientOrder != null) по заказу № {{ $shipment->clientOrder->id }} @endif</div>
     @else
@@ -178,7 +184,7 @@
                         <tbody class="product_list">
                         @if(isset($shipment))
                             @foreach($shipment->articles as $product)
-                                @include(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element')
+                                @include(get_template() . '.shipments.dialog.product_element')
                             @endforeach
                         @endif
                         </tbody>
@@ -201,6 +207,7 @@
 
         </div>
     </form>
+
 @if(!isset($inner) || !$inner)
 </div>
 @endif
