@@ -63,7 +63,7 @@
                         @if(isset($user) && $user->barcode != null)
                             <img class="w-100" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($user->barcode) !!}" alt="barcode" />
                         @endif
-                        
+
                         <button  onclick="document.getElementById('file_upload').click()" class="button primary w-100">Обновить фото</button>
                         <input style="display: none" id="file_upload" type="file" name="file" class="form-control" onchange="user.uploadImage(this)">
 

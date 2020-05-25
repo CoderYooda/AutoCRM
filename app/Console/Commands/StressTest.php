@@ -32,8 +32,8 @@ class StressTest extends Command
 
     private $partners_count = 500;
     private $count_suppliers = 100;
-    private $count_products = 10000;
-    private $count_shipments = 3500;
+    private $count_products = 500;
+    private $count_shipments = 200;
 
     /**
      * The console command description.
