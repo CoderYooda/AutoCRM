@@ -250,8 +250,8 @@ class storePage{
                 {title:"Модель", field:"name"},
                 {title:"Артикул", field:"article", width:150, align:"left"},
                 {title:"Бренд", field:"supplier", width:150, align:"left"},
-                {title:"Наличие", field:"isset", width:130, align:"left"},
-                {title:"Цена (Ррозница)", field:"price", width:130, align:"left", formatter:priceFormatter},
+                // {title:"Наличие", field:"isset", width:130, align:"left"},
+                // {title:"Цена (Ррозница)", field:"price", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'provider_orders'){
             object.contextDop = 'providerorder';
