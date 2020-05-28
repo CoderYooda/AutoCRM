@@ -34,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Partner::observe(\App\Observers\PartnerObserver::class);
         \App\Models\User::observe(\App\Observers\UserObserver::class);
         \App\Models\Warrant::observe(\App\Observers\WarrantObserver::class);
+        \App\Models\Article::observe(\App\Observers\ArticleObserver::class);
     }
 }

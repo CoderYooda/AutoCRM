@@ -73,7 +73,7 @@ class StoreController extends Controller
         foreach($products as $product){
             //TODO решить проблему
 //            $product->isset = $product->getCountSelfOthers();
-//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+            $product->price = $product->getMidPriceByStoreId(session('store_id'));
         }
         return response()->json($products);
     }

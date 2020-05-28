@@ -19,6 +19,7 @@ class CreateArticlesTable extends Migration
             $table->bigInteger('category_id')->unsigned()->nullable()->comment('Привязка к категории');
             $table->bigInteger('creator_id')->unsigned()->nullable()->comment('Привязка к пользователю');
             $table->bigInteger('supplier_id')->unsigned()->default(1)->comment('Привязка к производителю');
+            $table->char('supplier')->comment('Производитель');
             $table->bigInteger('measurement_id')->unsigned()->nullable()->comment('Привязка к типу измерений');
             $table->char('foundstring', 255)->default(0)->comment('Артикул детали для поиска');
             $table->char('article', 64)->default(0)->comment('Артикул детали');
