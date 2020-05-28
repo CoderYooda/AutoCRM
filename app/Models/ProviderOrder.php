@@ -25,6 +25,7 @@ class ProviderOrder extends Model
         'nds_included',
         'inpercents',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];

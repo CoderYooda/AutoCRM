@@ -22,6 +22,7 @@ class Refund extends Model
         'store_id',
         'summ',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];

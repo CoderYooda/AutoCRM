@@ -15,6 +15,7 @@ class Adjustment extends Model
         'do_date',
         'store_id',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];

@@ -49,20 +49,9 @@
             </tr>
         </thead>
         @foreach($dates as $date => $entities)
-            {{--@if($loop->first)--}}
-            {{--@endif--}}
-            <tr>
-                <td colspan="4">{{ $date }}</td>
-            </tr>
-            {{--<tr>--}}
-                {{--<td width="200px" ></td>--}}
-                {{--<td>ID</td>--}}
-                {{--<td>Менеджер</td>--}}
-                {{--<td>Сумма</td>--}}
-            {{--</tr>--}}
             @foreach($entities as $entity_id => $attributes)
                 <tr>
-                    <td width="200px" ></td>
+                    <td width="200px" >{{ $date }}</td>
                     <td>{{ $entity_id }}</td>
                     <td>{{ $attributes->manager }}</td>
                     <td>{{ $attributes->amount }}</td>

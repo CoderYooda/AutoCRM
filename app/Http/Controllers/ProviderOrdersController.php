@@ -320,6 +320,7 @@ class ProviderOrdersController extends Controller
         $provider_order->partner()->first()->addition($provider_order->itogo);
 
         $provider_order->summ = $provider_order->articles()->sum('total');
+
         $provider_order->save();
 
         if($request->expectsJson()){

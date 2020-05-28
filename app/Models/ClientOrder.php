@@ -25,6 +25,7 @@ class ClientOrder extends Model
         'comment',
         'status',
         'color',
+        'created_at'
     ];
 
     protected $guarded = [];
