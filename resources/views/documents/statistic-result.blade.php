@@ -32,11 +32,13 @@
 </style>
 
 <div style="text-align: center">
-    <img src="https://via.placeholder.com/700" alt="">
+    <img src="{{ json_decode($request->data)->image }}" alt="">
 </div>
 
-
 @foreach(json_decode($request->data) as $entity => $dates)
+
+    @continue($entity == 'image')
+
     <h2>{{ $entity }}</h2>
     <table>
         <tbody>
@@ -54,7 +56,7 @@
                     <td width="200px" >{{ $date }}</td>
                     <td>{{ $entity_id }}</td>
                     <td>{{ $attributes->manager }}</td>
-                    <td>{{ $attributes->amount }}</td>
+                    <td>{{ number_format($attributes->amount, 2, ',', ' ')  }}</td>
                 </tr>
             @endforeach
 

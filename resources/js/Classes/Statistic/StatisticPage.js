@@ -81,8 +81,6 @@ class statisticPage {
 
             this.graph_data = response.data.entities;
 
-            console.log(dates);
-
             //Обновляем даты
             this.chart.data.labels = Object.keys(dates);
 
@@ -122,8 +120,6 @@ class statisticPage {
                     datasets[entity].push(day_amount);
                 });
             });
-
-            console.log(datasets);
 
             //Выводим информацию
             Object.keys(datasets).map((name, index) => {
@@ -219,6 +215,11 @@ class statisticPage {
     }
 
     print(){
+
+        let element = document.getElementById('statistic-chart');
+
+        this.graph_data.image = element.toDataURL('image/png');
+
         window.helper.printDocument('statistic-result', null, JSON.stringify(this.graph_data));
     }
 }
