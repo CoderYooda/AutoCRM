@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
+use App\Traits\PayableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class Shipment extends Model
 {
-    use OwnedTrait, HasManagerAndPartnerTrait;
+    use OwnedTrait, HasManagerAndPartnerTrait, PayableTrait;
 
     public $fields = [
         'id',
@@ -31,10 +32,12 @@ class Shipment extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('shipment', function (Builder $builder) {
-            $builder->where('company_id', Auth::user()->company()->first()->id);
-        });
+        $user = Auth::user();
+        if($user){
+            static::addGlobalScope('shipment', function (Builder $builder) use ($user) {
+                $builder->where('company_id', $user->company()->first()->id);
+            });
+        }
     }
 
     public function articles()
@@ -121,9 +124,9 @@ class Shipment extends Model
 
     public function getWarrantPositive()
     {
-        $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
-        $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
-        return $plus - $minus;
+        $negative = $this->warrants()->where('isIncoming', false)->sum('summ');
+        $positive = $this->warrants()->where('isIncoming', true)->sum('summ');
+        return $positive - $negative;
     }
 
     public function elements()
@@ -156,8 +159,4 @@ class Shipment extends Model
         return $count;
     }
 
-    public function warrants()
-    {
-        return $this->belongsToMany('App\Models\Warrant', 'shipment_warrant',  'shipment_id', 'warrant_id' );
-    }
 }

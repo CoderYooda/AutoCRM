@@ -411,7 +411,7 @@ class ShipmentsController extends Controller
 
         $shipments =
             Shipment::withoutGlobalScopes()->select(DB::raw('
-                shipments.*, shipments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' р\')) as discount, shipments.summ as price, shipments.itogo as total
+                shipments.*, shipments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' ₽\')) as discount, shipments.summ as price, shipments.itogo as total
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
                 ->where('shipments.company_id', Auth::user()->company()->first()->id)

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
+use App\Traits\PayableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProviderOrder extends Model
 {
-    use OwnedTrait, SoftDeletes, HasManagerAndPartnerTrait;
+    use OwnedTrait, SoftDeletes, HasManagerAndPartnerTrait, PayableTrait;
 
     public $fields = [
         'partner_id',
@@ -61,11 +62,6 @@ class ProviderOrder extends Model
         }
 
         return $summ;
-    }
-
-    public function warrants()
-    {
-        return $this->belongsToMany(Warrant::class, 'provider_order_warrant',  'providerorder_id', 'warrant_id' );
     }
 
     public function getWarrantPositive()

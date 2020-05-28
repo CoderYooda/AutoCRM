@@ -2,14 +2,20 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\AdjustmentController;
+use App\Http\Controllers\ClientOrdersController;
 use App\Http\Controllers\EntranceController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProviderOrdersController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShipmentsController;
+use App\Http\Requests\AdjustmentRequest;
+use App\Http\Requests\ClientOrdersRequest;
 use App\Http\Requests\EntranceRequest;
 use App\Http\Requests\ProviderOrdersRequest;
+use App\Http\Requests\RefundRequest;
 use App\Http\Requests\ShipmentsRequest;
 use App\Models\Article;
 use App\Models\Company;
@@ -36,11 +42,13 @@ class StressTest extends Command
      */
     protected $signature = 'stress:seed';
 
-    private $partners_count = 100;
-    private $count_suppliers = 100;
-    private $count_products = 100;
-    private $count_shipments = 15;
-    private $count_providerorder = 150;
+    private $partners_count = 500;
+    private $count_suppliers = 500;
+    private $count_products = 200;
+    private $count_shipments = 200;
+    private $count_providerorder = 200;
+    private $count_clientorder = 200;
+    private $count_adjustments = 200;
 
     /**
      * The console command description.
@@ -86,7 +94,7 @@ class StressTest extends Command
 
 
         # Создаем фейковых партнеров
-        $count_partners = rand(0, $this->partners_count);
+        $count_partners = rand(10, $this->partners_count);
         $bar = $this->output->createProgressBar($count_partners);
         $bar->start();
         for($i = 0; $i < $count_partners; $i++){
@@ -99,7 +107,7 @@ class StressTest extends Command
         Artisan::call('categories:init', ['company' => $company->id]);
 
         # Создаем производителей
-        $count_suppliers = rand(0, $this->count_suppliers);
+        $count_suppliers = rand(10, $this->count_suppliers);
         $bar = $this->output->createProgressBar($count_suppliers);
         $bar->start();
         $suppliers = [];
@@ -113,11 +121,11 @@ class StressTest extends Command
         $bar->finish();
 
         # Создаем товары
-        $count_products = rand(0, $this->count_products);
+        $count_products = rand(10, $this->count_products);
         $bar = $this->output->createProgressBar($count_products);
         $bar->start();
         for($i = 0; $i < $count_products; $i++){
-            $product = factory(Article::class)->make(['supplier_id' => array_rand($suppliers)]);
+            $product = factory(Article::class)->make(['supplier_id' => $suppliers[array_rand($suppliers)]]);
             $product->category_id = \App\Models\Category::where('company_id', $company->id)->where('type', 'store')->inRandomOrder()->first()->id;
             $product->company_id = $company->id;
             $product->creator_id = $company->id;
@@ -127,7 +135,7 @@ class StressTest extends Command
         $bar->finish();
 
         # Создаем продажи
-        $count_shipments = rand(0, $this->count_shipments);
+        $count_shipments = rand(10, $this->count_shipments);
         $bar = $this->output->createProgressBar($count_shipments);
         $bar->start();
         for($i = 0; $i < $count_shipments; $i++){
@@ -140,7 +148,7 @@ class StressTest extends Command
         $bar->finish();
 
         # Создаем заявки поставщику
-        $count_providerorder = rand(0, $this->count_providerorder);
+        $count_providerorder = rand(10, $this->count_providerorder);
         $bar = $this->output->createProgressBar($count_providerorder);
         $bar->start();
         for($i = 0; $i < $count_providerorder; $i++){
@@ -160,6 +168,45 @@ class StressTest extends Command
             $user = $company->members()->inRandomOrder()->first();
             Auth::login($user);
             self::createEntrance($provider_order, $faker->text(250), $company);
+            Auth::logout($user);
+            $bar->advance();
+        }
+        $bar->finish();
+
+        # Создаем возвраты
+        $shipments = Shipment::all();
+        $bar = $this->output->createProgressBar($shipments->count());
+        $bar->start();
+        foreach($shipments as $shipment){
+            $user = $company->members()->inRandomOrder()->first();
+            Auth::login($user);
+            self::createRefund($shipment, $faker->text(250), $company);
+            Auth::logout($user);
+            $bar->advance();
+        }
+        $bar->finish();
+
+        # Создаем Заказы клиентов
+        $count_clientorder = rand(10, $this->count_clientorder);
+        $bar = $this->output->createProgressBar($count_clientorder);
+        $bar->start();
+        for($i = 0; $i < $count_clientorder; $i++){
+            $user = $company->members()->inRandomOrder()->first();
+            Auth::login($user);
+            self::createClientOrder($company->partners()->inRandomOrder()->first(), $faker->text(250), $company);
+            Auth::logout($user);
+            $bar->advance();
+        }
+        $bar->finish();
+
+        # Создаем Корректировки
+        $count_adjustments = rand(10, $this->count_adjustments);
+        $bar = $this->output->createProgressBar($count_adjustments);
+        $bar->start();
+        for($i = 0; $i < $count_adjustments; $i++){
+            $user = $company->members()->inRandomOrder()->first();
+            Auth::login($user);
+            self::createAdjustment($faker->text(250), $company);
             Auth::logout($user);
             $bar->advance();
         }
@@ -276,29 +323,110 @@ class StressTest extends Command
         $providerOrderController->store($fake_request);
     }
 
-    private static function createEntrance($providerOrder, $comment, $company){
-
+    private static function createEntrance($providerOrder, $comment, $company)
+    {
         if(!rand(0,4)){
             $entrance = new EntranceController();
             $fake_request = new EntranceRequest();
-
             $articles = $providerOrder->articles()->get();
-
             $fake_request['providerorder_id'] = $providerOrder->id;
             $fake_request['comment'] = $comment;
-
             $products = [];
             foreach($articles as $article){
-                //$fake_request[$article->id]['id'] = $article->id;
-                $fake_request[$article->id]['price'] = $article->pivot->price;
-                $fake_request[$article->id]['count'] = rand(1, $article->pivot->count);
+                $products[$article->id]['id'] = $article->id;
+                $products[$article->id]['price'] = $article->pivot->price;
+                $products[$article->id]['count'] = rand(1, $article->pivot->count);
             }
+            $fake_request['products'] = $products;
             $entrance->store($fake_request);
-
         } else{
             return true;
         }
-
-
     }
+    private static function createRefund($shipment, $comment, $company)
+    {
+        if(rand(0,2)){
+            $refund = new RefundController();
+            $fake_request = null;
+            $fake_request = new RefundRequest();
+            $articles = $shipment->articles()->get();
+
+            $fake_request['shipment_id'] = $shipment->id;
+            $fake_request['comment'] = $comment;
+            $products = [];
+            foreach($articles as $article){
+                $products[$article->id]['id'] = $article->id;
+                $products[$article->id]['price'] = $article->pivot->price;
+                $products[$article->id]['count'] = rand(1, $article->pivot->count);
+            }
+            $fake_request['products'] = $products;
+            $refund->store($fake_request);
+        } else{
+            return true;
+        }
+    }
+
+    private static function createClientOrder($partner, $comment, $company){
+        $clientOrderController = new ClientOrdersController();
+        $date = Carbon::now()->addDays(rand(-365, 0));
+        $date = $date->addHours(rand(0, 24));
+        $date = $date->addMinutes(rand(0, 60));
+        $date = $date->addSeconds(rand(0, 60));
+        unset($fake_request);
+        $fake_request = new ClientOrdersRequest();
+        $products = [];
+        $products_count = rand(1, 50);
+
+        for($e = 0; $e < $products_count; $e++){
+            $product = Article::owned($company)->inRandomOrder()->first();
+            $products[$product->id]['id'] = $product->id;
+            $products[$product->id]['count'] = rand(1, 12);
+            $products[$product->id]['price'] = rand(1, 2000);
+            $products['new'] = null;
+        }
+
+        $discount = rand(0,1);
+        $inpercents = $discount ? true : false;
+        $skid = 0;
+        if($discount){
+            if($inpercents){
+                $skid = rand(0,30);
+            } else {
+                $skid = rand(0,2000);
+            }
+        }
+
+        $fake_request['inpercents'] = $inpercents;
+        $fake_request['discount'] = $skid;
+
+        $fake_request['do_date'] = $date;
+        $fake_request['created_at'] = $date;
+        $fake_request['partner_id'] = $partner->id;
+        $fake_request['phone'] = $partner->phones()->first()->id;
+        $fake_request['comment'] = $comment;
+        $fake_request['products'] = $products;
+        $clientOrderController->store($fake_request);
+    }
+
+    private static function createAdjustment($comment, $company)
+    {
+        if(rand(0,2)){
+            $adjustment = new AdjustmentController();
+            $fake_request = null;
+            $fake_request = new AdjustmentRequest();
+            $fake_request['comment'] = $comment;
+            $products = [];
+            $articles =  Article::owned($company)->limit(rand(4, 14))->inRandomOrder()->get();
+            foreach($articles as $article){
+                $products[$article->id]['id'] = $article->id;
+                $products[$article->id]['fact'] = rand(0,12);
+            }
+            $fake_request['products'] = $products;
+            $adjustment->store($fake_request);
+        } else{
+            return true;
+        }
+    }
+
+
 }

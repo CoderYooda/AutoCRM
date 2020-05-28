@@ -134,6 +134,15 @@ class cashPage{
         if(object.active_tab === 'warrant') {
             object.contextDop = 'warrant';
             object.parametr = 'warrant';
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -144,7 +153,7 @@ class cashPage{
                 {title:"Контакт", field:"partner", minWidth:150, align:"left"},
                 {title:"Статья", field:"dds", width:130, align:"left"},
                 {title:"Касса", field:"cashbox", width:130, align:"left"},
-                {title:"Сумма", field:"summ", width:130, align:"left"},
+                {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'cashmove'){
             object.contextDop = 'moneymove';
@@ -154,7 +163,15 @@ class cashPage{
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
                 });
             };
-
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -165,7 +182,7 @@ class cashPage{
                 {title:"Куда", field:"cout", width:160, align:"left"},
                 {title:"Ответственный", field:"manager", align:"left"},
                 {title:"Комментарий", field:"comment", width:150, align:"left"},
-                {title:"Сумма", field:"summ", width:90, align:"left"},
+                {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
             ];
         }
         return columns;

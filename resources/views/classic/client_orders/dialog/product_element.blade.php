@@ -1,3 +1,4 @@
+
 <tr class="product_list_elem @if(isset($client_order) && $product->pivot->shipped_count == $product->pivot->count) shipped @endif"
     id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
@@ -9,9 +10,9 @@
     <td title="{{ $product->name }}" style="max-width: 350px"><span class="product_list_element_name">{{ $product->name }}</span></td>
 
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
-
+    @if($product->supplier()->first())
     <td><span class="no-wrap">{{ $product->supplier()->first()->name }}</span></td>
-
+    @endif
     <td><input onClick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>

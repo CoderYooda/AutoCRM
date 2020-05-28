@@ -252,19 +252,15 @@ class Helper{
         // }, false);
     }
 
-    printDocument(doc, id){
-
-        //let form =
-        //console.log(data);
+    printDocument(doc, id, data = null){
         axios({
             method: 'GET',
-            url: '/document?doc=' + doc + '&id=' + id,
+            url: '/document?doc=' + doc + '&id=' + id + '&data=' + data,
         }).then(function (response) {
             var printContents = response.data;
 
             let unprinted = document.getElementById('unprinted');
             let printed = document.getElementById('printed');
-            //unprinted.classList.add('hide');
 
             printed.innerHTML = printContents;
             window.print();
@@ -274,8 +270,6 @@ class Helper{
         }).then(function (error) {
 
         });
-
-
     }
 
     insertParam(elem, key, value)

@@ -17,7 +17,7 @@ class shipmentDialog extends Modal{
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
-        let refer = 'shipment';
+        let refer = 'Shipment';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
         let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;

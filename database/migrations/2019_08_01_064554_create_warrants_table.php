@@ -27,8 +27,8 @@ class CreateWarrantsTable extends Migration
             $table->char('comment')->nullable()->comment('Комментарий');
             $table->boolean('isIncoming')->comment('Входящая или исходящая операция');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
-            $table->char('refer')->nullable()->comment('Привязанная сущность');
-            $table->bigInteger('refer_id')->unsigned()->nullable()->comment('ID привязанной сущности');
+            $table->char('payable_type')->nullable()->comment('Привязанная сущность');
+            $table->bigInteger('payable_id')->unsigned()->nullable()->comment('ID привязанной сущности');
             $table->timestamps();
         });
     }

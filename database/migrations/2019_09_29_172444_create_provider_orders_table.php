@@ -28,6 +28,16 @@ class CreateProviderOrdersTable extends Migration
             $table->boolean('inpercents')->default(false)->comment('В процентах?');
             $table->char('comment')->nullable()->comment('Комментарий');
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
+
+
+            $table->unsignedInteger('pays')->default(0)->comment('Индикатор оплаты');
+            $table->unsignedInteger('incomes')->default(0)->comment('Индикатор поступлений');
+            $table->unsignedInteger('entred_count')->default(0)->comment('Кол-во поступлений');
+            $table->unsignedInteger('order_count')->default(0)->comment('Кол-во в заказе');
+            $table->double('wsumm')->default(0.00)->comment('Оплаченная сумма');
+//            $table->integer('order_count')->comment('Кол-во в заказе');
+
+
             $table->timestamps();
             $table->softDeletes();
         });

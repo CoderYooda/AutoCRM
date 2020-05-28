@@ -229,21 +229,19 @@ class storePage{
             object.parametr = 'product';
             var priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    //console.log(cell.getValue());
-                    cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
-                    window.IMask(document.getElementById('price_' + cell.getData().id),   {
-                            mask: 'N',
-                            blocks: {
-                                N: {
-                                    mask: Number,
-                                    signed: true,
-                                    thousandsSeparator: ' '
-                                }
-                            }
-                        }
-                    );
+
+                    if(isNaN(cell.getValue())){
+                        cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ cell.getValue() +'</span>';
+                    } else {
+                        var formatter = new Intl.NumberFormat('ru-RU', {
+                            style: 'currency',
+                            currency: 'RUB',
+                        });
+                        cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                    }
                 });
             };
+
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -253,7 +251,7 @@ class storePage{
                 {title:"Артикул", field:"article", width:150, align:"left"},
                 {title:"Бренд", field:"supplier", width:150, align:"left"},
                 {title:"Наличие", field:"isset", width:130, align:"left"},
-                {title:"Цена (Ррозница)", field:"price", width:160, align:"left", formatter:priceFormatter},
+                {title:"Цена (Ррозница)", field:"price", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'provider_orders'){
             object.contextDop = 'providerorder';
@@ -263,7 +261,15 @@ class storePage{
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
                 });
             };
-
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -272,9 +278,9 @@ class storePage{
                 {title:"Оплата", field:"pays", width:80, formatter:iconFormatter},
                 {title:"Поступление", field:"incomes",align:"left", width:130, formatter:iconFormatter},
                 {title:"Дата", field:"date", width:150},
-                {title:"Поставщик", field:"name", align:"left"},
+                {title:"Поставщик", field:"partner", align:"left"},
                 {title:"Ответственный", field:"manager", align:"left"},
-                {title:"Сумма", field:"itogo", width:90, align:"left"},
+                {title:"Сумма", field:"itogo", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'entrance'){
             object.contextDop = 'entrance';
@@ -293,6 +299,15 @@ class storePage{
         } else if(object.active_tab === 'shipments'){
             object.contextDop = 'shipment';
             object.parametr = 'shipment';
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -300,13 +315,22 @@ class storePage{
                 {title:"№", field:"id", width:80},
                 {title:"Дата", field:"date", width:150},
                 {title:"Покупатель", field:"partner", align:"left"},
-                {title:"Сумма", field:"price", width:90, align:"left"},
+                {title:"Сумма", field:"price", width:130, align:"left", formatter:priceFormatter},
                 {title:"Скидка", field:"discount", width:90, align:"left"},
-                {title:"Итого", field:"total", width:90, align:"left"},
+                {title:"Итого", field:"total", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'refund'){
             object.contextDop = 'refund';
             object.parametr = 'refund';
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -315,11 +339,20 @@ class storePage{
                 {title:"Дата", field:"date", width:150},
                 {title:"Ответственный", field:"manager", align:"left"},
                 {title:"Покупатель", field:"partner", align:"left"},
-                {title:"Сумма", field:"price", width:90, align:"left"}
+                {title:"Сумма", field:"price", width:130, align:"left", formatter:priceFormatter}
             ];
         } else if(object.active_tab === 'client_orders'){
             object.contextDop = 'clientorder';
             object.parametr = 'client_order';
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
                         cell.getRow().toggleSelect();
@@ -328,9 +361,9 @@ class storePage{
                 {title:"Статус", field:"status_formatted", width:150},
                 {title:"Дата", field:"date", width:150},
                 {title:"Покупатель", field:"partner", align:"left"},
-                {title:"Сумма", field:"summ", width:90, align:"left"},
+                {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
                 {title:"Скидка", field:"discount_formatted", width:90, align:"left"},
-                {title:"Итого", field:"itogo", width:90, align:"left"},
+                {title:"Итого", field:"itogo", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'adjustment'){
             object.contextDop = 'adjustment';
