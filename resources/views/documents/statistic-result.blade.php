@@ -60,6 +60,13 @@
                 </tr>
             @endforeach
 
+            <tr>
+                <td width="200px" ></td>
+                <td></td>
+                <td></td>
+                <td>{{ number_format(collect($entities)->sum('amount'), 2, ',', ' ') }}</td>
+            </tr>
+
         @endforeach
         </tbody>
     </table>
