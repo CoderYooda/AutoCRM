@@ -155,6 +155,10 @@ class ClientOrder extends Model
         return $this->created_at->format('d.m.Y H:i');
     }
 
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
+    }
+
     public function isFinished()
     {
         return $this->status == 'complete';

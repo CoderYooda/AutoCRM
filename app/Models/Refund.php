@@ -50,6 +50,10 @@ class Refund extends Model
         return $plus - $minus;
     }
 
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
+    }
+
     public function normalizedData()
     {
         return $this->created_at->format('d.m.Y (H:i)');

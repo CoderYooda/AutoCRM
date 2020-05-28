@@ -140,6 +140,10 @@ class Shipment extends Model
         return $article ? $article->pivot->count - $article->pivot->refunded_count : 0;
     }
 
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
+    }
+
     public function clientOrder()
     {
         return $this->belongsTo('App\Models\ClientOrder', 'clientorder_id');

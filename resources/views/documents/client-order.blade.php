@@ -557,7 +557,7 @@
         overflow: hidden;
     }
 </style>
-<table style="width:0px; height:0px; " cellspacing="0">
+<table style="width:0px; height:0px; width: 100% " cellspacing="0">
     <colgroup>
         <col width="7">
         <col width="35">

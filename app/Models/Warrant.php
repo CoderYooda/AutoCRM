@@ -47,7 +47,7 @@ class Warrant extends Model
 
     public function payable()
     {
-        return $this->morphTo(__FUNCTION__, 'payable_type', 'payable_id');
+        return $this->morphTo();
     }
 
     public function providerorder()

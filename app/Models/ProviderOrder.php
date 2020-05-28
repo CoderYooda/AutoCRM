@@ -92,6 +92,22 @@ class ProviderOrder extends Model
         return 'Заявка поставщику №' . $this->id;
     }
 
+    public function freshWsumm(){
+
+        if(isset($this->pays)){
+            if(-$this->wsumm <= 0) {
+                $this->pays = 0;
+            } else if(-$this->wsumm > 0 && -$this->wsumm < $this->summ){
+                $this->pays = 1;
+            } else if(-$this->wsumm == $this->summ){
+                $this->pays = 2;
+            } else if(-$this->wsumm > $this->summ){
+                $this->pays = 3;
+            }
+        }
+        $this->save();
+    }
+
     public function getArticlesCountById($id){
         $article = $this->articles()->where('article_id', $id)->first();
         return $article ? $article->pivot->count : 0;

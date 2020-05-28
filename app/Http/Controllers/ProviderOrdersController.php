@@ -253,7 +253,6 @@ class ProviderOrdersController extends Controller
 
             $entred_count = $provider_order->getArticleEntredCount($id);
 
-
             if($entred_count > $vcount){
                 $errors['products.' . $id . '.count'] = 'Кол-во в заявке не может быть меньше чем поступивших товаров.';
             }
@@ -292,6 +291,8 @@ class ProviderOrdersController extends Controller
             $store->recalculateMidprice($product['id']);
 
         }
+        $provider_order->freshWsumm();
+
 
         if(count($errors) > 0){
             if($request->expectsJson()){
