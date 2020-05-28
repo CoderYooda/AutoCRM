@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasManagerAndPartnerTrait;
+use App\Traits\OwnedTrait;
+use App\Traits\PayableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use Illuminate\Support\Facades\DB;
 
 class Refund extends Model
 {
+    use PayableTrait, OwnedTrait, HasManagerAndPartnerTrait;
     protected $table = 'refund';
-
 
     public $fields = [
         'shipment_id',
@@ -45,16 +48,6 @@ class Refund extends Model
         $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
         $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
         return $plus - $minus;
-    }
-
-    public function warrants()
-    {
-        return $this->belongsToMany(Warrant::class, 'refund_warrant',  'refund_id', 'warrant_id' );
-    }
-
-    public function partner()
-    {
-        return $this->belongsTo(Partner::class, 'partner_id')->withTrashed();
     }
 
     public function normalizedData()

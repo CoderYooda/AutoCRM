@@ -384,53 +384,59 @@ class ProviderOrdersController extends Controller
             $request['provider'] = [];
         }
 
+//        , IF(partners.isfl = 1, partners.fio,partners.companyName) as name,
+//            (
+//            CASE
+//                WHEN wsumm = 0 THEN 0
+//                WHEN wsumm > 0 && wsumm < provider_orders.itogo THEN 1
+//                WHEN wsumm = provider_orders.itogo THEN 2
+//                WHEN wsumm > provider_orders.itogo THEN 3
+//                ELSE 0
+//            END) AS pays,
+//            (
+//            CASE
+//                WHEN ent_count = 0 THEN 0
+//                WHEN ent_count > 0 && ent_count < apo_count THEN 1
+//                WHEN ent_count = apo_count THEN 2
+//                WHEN ent_count > apo_count THEN 3
+//                ELSE 0
+//            END) AS incomes,
+//            SUM(article_entrance.count) as entred_count,
+//            SUM(article_provider_orders.count) as order_count
+
         $provider_orders =
         ProviderOrder::select(DB::raw('
-            provider_orders.*, provider_orders.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as name,
-            (
-            CASE
-                WHEN wsumm = 0 THEN 0
-                WHEN wsumm > 0 && wsumm < provider_orders.itogo THEN 1
-                WHEN wsumm = provider_orders.itogo THEN 2
-                WHEN wsumm > provider_orders.itogo THEN 3
-                ELSE 0
-            END) AS pays,
-            (
-            CASE
-                WHEN ent_count = 0 THEN 0
-                WHEN ent_count > 0 && ent_count < apo_count THEN 1
-                WHEN ent_count = apo_count THEN 2
-                WHEN ent_count > apo_count THEN 3
-                ELSE 0
-            END) AS incomes,
-            SUM(article_entrance.count) as entred_count,
-            SUM(article_provider_orders.count) as order_count
+            provider_orders.*, provider_orders.created_at as date, IF(partner.isfl = 1, partner.fio,partner.companyName) as partner, IF(manager.isfl = 1, manager.fio,manager.companyName) as manager
         '))
-            ->from(DB::raw('(
-            SELECT provider_orders.*, SUM(article_provider_orders.count) as apo_count, phones.number as phone, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
-                FROM (SELECT provider_orders.*, SUM(article_entrance.count) as ent_count FROM (
-                    SELECT provider_orders.*, SUM(IF(w.isIncoming = 1, -w.summ, w.summ)) as wsumm FROM provider_orders 
-                    left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
-                    left join warrants as w on pow.warrant_id = w.id
-                    GROUP BY provider_orders.id) provider_orders
-                left join entrances on entrances.providerorder_id = provider_orders.id
-                left join article_entrance on article_entrance.entrance_id = entrances.id
-                GROUP BY provider_orders.id)provider_orders
+//            ->from(DB::raw('(
+//            SELECT provider_orders.*, SUM(article_provider_orders.count) as apo_count, phones.number as phone, IF(partners.isfl = 1, partners.fio,partners.companyName) as manager
+//                FROM (SELECT provider_orders.*, SUM(article_entrance.count) as ent_count FROM (
+//                    SELECT provider_orders.*, SUM(IF(w.isIncoming = 1, -w.summ, w.summ)) as wsumm FROM provider_orders
+//                    left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
+//                    left join warrants as w on pow.warrant_id = w.id
+//                    GROUP BY provider_orders.id) provider_orders
+//                left join entrances on entrances.providerorder_id = provider_orders.id
+//                left join article_entrance on article_entrance.entrance_id = entrances.id
+//                GROUP BY provider_orders.id)provider_orders
+//
+//                left join partners on partners.id = provider_orders.manager_id
+//                left join (SELECT partner_phone.phone_id, partner_phone.partner_id FROM partner_phone LEFT JOIN phones on phones.id = partner_phone.phone_id WHERE phones.main = 1) as pp on pp.partner_id = provider_orders.partner_id
+//                left join phones on pp.phone_id = phones.id
+//                left join article_provider_orders on article_provider_orders.provider_order_id = provider_orders.id
+//                GROUP BY provider_orders.id
+//            ) provider_orders
+//            '))
+            ->leftJoin('partners as partner',  'partner.id', '=', 'provider_orders.partner_id')
+            ->leftJoin('partners as manager',  'manager.id', '=', 'provider_orders.manager_id')
 
-                left join partners on partners.id = provider_orders.manager_id
-                left join (SELECT partner_phone.phone_id, partner_phone.partner_id FROM partner_phone LEFT JOIN phones on phones.id = partner_phone.phone_id WHERE phones.main = 1) as pp on pp.partner_id = provider_orders.partner_id
-                left join phones on pp.phone_id = phones.id 
-                left join article_provider_orders on article_provider_orders.provider_order_id = provider_orders.id
-                GROUP BY provider_orders.id
-            ) provider_orders
-            '))
-            ->leftJoin('partners',  'partners.id', '=', 'provider_orders.partner_id')
-            ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
-            ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
-            ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
-            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.providerorder_id')
-            ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
-            ->where('provider_orders.deleted_at', null)
+
+
+//            ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
+//            ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
+//            ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
+//            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.providerorder_id')
+//            ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
+
             ->when($request['provider'] != null, function($query) use ($request) {
                 $query->whereIn('provider_orders.partner_id', $request['provider']);
             })
@@ -439,29 +445,15 @@ class ProviderOrdersController extends Controller
             })
             ->when($request['search'] != null, function($query) use ($request) {
                 $query->where('provider_orders.id', 'like', '%'.$request['search'].'%')
-                    ->orWhere('partners.fio', 'like', '%'.$request['search'].'%')
-                    ->orWhere('partners.companyName', 'like', '%'.$request['search'].'%')
+                    ->orWhere('partner.fio', 'like', '%'.$request['search'].'%')
+                    ->orWhere('partner.companyName', 'like', '%'.$request['search'].'%')
                     ->orWhere('provider_orders.phone', 'like', '%'.$request['search'].'%');
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
             ->when($request['pay_status'] != null, function($query) use ($request) {
-                switch ($request['pay_status']) {
-                    case 0:
-                        $query->where('wsumm', 0)->orWhere('wsumm', null);
-                        break;
-                    case 1:
-                        $query->whereRaw('`provider_orders`.`wsumm` > 0 and `provider_orders`.`wsumm` < `provider_orders`.`itogo`');
-                        break;
-                    case 2:
-                        $query->whereRaw('`provider_orders`.`wsumm` = `provider_orders`.`itogo`');
-                        break;
-                    case 3:
-                        $query->whereRaw('`provider_orders`.`wsumm` > `provider_orders`.`itogo`');
-                        break;
-                }
-
+                $query->where('pays', $request['pay_status']);
             })
             ->when($request['entrance_status'] != null, function($query) use ($request) {
                 switch ($request['entrance_status']) {
@@ -480,6 +472,7 @@ class ProviderOrdersController extends Controller
                 }
 
             })
+            ->where('provider_orders.deleted_at', null)
             ->where('provider_orders.company_id', Auth::user()->company()->first()->id)
             ->groupBy('provider_orders.id')
             ->orderBy($field, $dir)
@@ -488,7 +481,6 @@ class ProviderOrdersController extends Controller
 
        //dd($provider_orders);
             ->paginate($size);
-
 //        where('provider_orders.company_id', Auth::user()->company()->first()->id)
 //            ->where('provider_orders.deleted_at', null)
 //            ->join('partners','partners.id','=','provider_orders.partner_id')

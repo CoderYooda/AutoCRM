@@ -87,9 +87,9 @@
         @if(isset($client_order))
         <div class="modal-alt-header">
             <span class="item-title _500">Факт / План</span>
-            <div class="item-except @if($client_order->getWarrantPositive() >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
+            <div class="item-except @if($client_order->wsumm >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
                     <span id="payed_price">
-        {{ sprintf("%.2f", $client_order->getWarrantPositive()) }} р / <span class="itogo_price">{{ $client_order->itogo }}</span> р
+        {{ sprintf("%.2f", $client_order->wsumm) }} р / <span class="itogo_price">{{ $client_order->itogo }}</span> р
                     </span>
             </div>
             <div class="item-tag tag hide">
@@ -107,12 +107,12 @@
                 </div>
             </div>
         @endif
-        @if(isset($client_order) && ($client_order->getWarrantPositive() < $client_order->itogo) )
+        @if(isset($client_order) && ($client_order->wsumm < $client_order->itogo) )
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
-        @if(isset($client_order) && ($client_order->getWarrantPositive() > $client_order->itogo) )
+        @if(isset($client_order) && ($client_order->wsumm > $client_order->itogo) )
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
             </div>
@@ -125,7 +125,7 @@
                 <input type="hidden" name="id" value="{{ $client_order->id }}">
                 <input type="hidden" name="summ" value="{{ $client_order->summ }}">
                 <input type="hidden" name="itogo" value="{{ $client_order->itogo }}">
-                <input type="hidden" name="ostatok" value="{{ $client_order->itogo - $client_order->getWarrantPositive() }}">
+                <input type="hidden" name="ostatok" value="{{ $client_order->itogo - $client_order->wsumm }}">
             @else
                 <input type="hidden" name="id" value="">
             @endif

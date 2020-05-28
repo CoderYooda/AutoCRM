@@ -55,14 +55,15 @@ class RefundController extends Controller
 
     public function store(RefundRequest $request)
     {
-        PermissionController::canByPregMatch('Редактировать планировщик');
+        PermissionController::canByPregMatch('Редактировать возвраты');
         $refund = Refund::firstOrNew(['id' => $request['id']]);
+//        dd(1);
+//        if(!isset($request['products']) || $request['products'] == []) {
+//            return response()->json([
+//                'system_message' => ['Проведение возврата без товаров невозможно']
+//            ], 422);
+//        }
 
-        if(!isset($request['products']) || $request['products'] == []) {
-            return response()->json([
-                'system_message' => ['Проведение возврата без товаров невозможно']
-            ], 422);
-        }
 
         if($refund->exists){
             $refundWasExisted = true;
@@ -84,7 +85,7 @@ class RefundController extends Controller
         $refund->summ = 0;
         $refund->save();
 
-        $store = $refund->store()->first();
+        $store = $refund->shipment->store()->first();
 
         if($refundWasExisted){
             foreach($refund->articles()->get() as $article){

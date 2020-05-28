@@ -28,7 +28,7 @@
 
                 <input class="store_select" type="hidden" name="store_id" value=" @if(isset($adjustment)){{ $adjustment->store_id }}@endif">
 
-                <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($adjustment)){{ $adjustment->partner()->first()->id }}@endif">
+                {{--<input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($adjustment)){{ $adjustment->partner()->first()->id }}@endif">--}}
 
                 <div class="row row-sm">
                     <div class="col-sm-6">

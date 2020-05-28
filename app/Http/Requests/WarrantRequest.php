@@ -13,6 +13,24 @@ class WarrantRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        if($this->refer ==! null){
+            $refer = 'App\Models\\' . $this->refer;
+            if(!is_subclass_of($refer, 'Illuminate\Database\Eloquent\Model')){
+                throw new HttpResponseException(
+                    response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
+                );
+            }
+            $model = $refer::owned()->whereId($this->refer_id)->first();
+            if($model == null){
+                throw new HttpResponseException(
+                    response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
+                );
+            }
+        }
+    }
+
     public function rules()
     {
         return [

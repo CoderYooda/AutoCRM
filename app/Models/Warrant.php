@@ -23,8 +23,6 @@ class Warrant extends Model
         'comment',
         'isIncoming',
         'balance',
-        'refer',
-        'refer_id',
     ];
 
     public function ddsarticle()
@@ -45,6 +43,11 @@ class Warrant extends Model
     public function refund()
     {
         return $this->belongsToMany(Refund::class, 'refund_warrant', 'warrant_id', 'refund_id' );
+    }
+
+    public function payable()
+    {
+        return $this->morphTo(__FUNCTION__, 'payable_type', 'payable_id');
     }
 
     public function providerorder()

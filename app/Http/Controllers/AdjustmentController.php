@@ -48,6 +48,9 @@ class AdjustmentController extends Controller
         $adjustment = new Adjustment();
         $adjustment->company_id = Auth::user()->company()->first()->id;
         $adjustment->manager_id = Auth::user()->partner()->first()->id;
+        if($request['store_id'] == null){
+            $adjustment->store_id = Auth::user()->partner()->first()->store()->first()->id;
+        }
         $this->message = 'Корректировка сохранена';
         $adjustment->fill($request->only($adjustment->fields));
         $adjustment->save();
@@ -186,7 +189,7 @@ class AdjustmentController extends Controller
             Adjustment::select(DB::raw('
                 adjustments.*, adjustments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, stores.name as store
             '))
-                ->leftJoin('partners',  'partners.id', '=', 'adjustments.partner_id')
+                ->leftJoin('partners',  'partners.id', '=', 'adjustments.manager_id')
                 ->leftJoin('stores',  'stores.id', '=', 'adjustments.store_id')
 
                 ->where('adjustments.company_id', Auth::user()->company()->first()->id)

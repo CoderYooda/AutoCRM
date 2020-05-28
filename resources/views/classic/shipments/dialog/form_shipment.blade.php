@@ -79,13 +79,12 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-
         @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL )
             <div class="modal-alt-header">
                 <span class="item-title _500">Оплачено</span>
-                <div class="item-except @if($shipment->getWarrantPositive() >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
+                <div class="item-except @if($shipment->wsumm >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
                     <span>
-        {{ sprintf("%.2f", $shipment->getWarrantPositive()) }} р / <span id="payed_price">{{ $shipment->itogo }}</span> р
+        {{ sprintf("%.2f", $shipment->wsumm) }} р / <span id="payed_price">{{ $shipment->itogo }}</span> р
                     </span>
                 </div>
                 <div class="item-tag tag hide">
@@ -93,13 +92,13 @@
             </div>
         @endif
 
-        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->getWarrantPositive() < $shipment->itogo))
+        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->wsumm < $shipment->itogo))
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
 
-        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->getWarrantPositive() > $shipment->itogo) )
+        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL && ($shipment->wsumm > $shipment->itogo) )
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
             </div>
@@ -113,7 +112,7 @@
                 <input type="hidden" name="id" value="{{ $shipment->id }}">
                 <input type="hidden" name="summ" value="{{ $shipment->summ }}">
                 <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
-                <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->getWarrantPositive() }}">
+                <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->wsumm }}">
                 @if($shipment->clientOrder)
                 <input type="hidden" name="clientorder_id" value="{{ $shipment->clientOrder->id }}">
                 @endif

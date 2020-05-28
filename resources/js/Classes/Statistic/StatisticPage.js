@@ -209,6 +209,14 @@ class statisticPage {
         }
         return result;
     }
+    
+    printStatistic(){
+        window.helper.printDocument('statistic-result', null, {
+            st:{
+                options: 'awdawd'
+            }
+        });
+    }
 }
 
 export default statisticPage;

@@ -51,13 +51,13 @@
             </div>
         </div>
         @endif
-        @if(isset($refund) && $refund->id != NULL && (-$refund->getWarrantPositive() > $refund->summ))
+        @if(isset($refund) && $refund->id != NULL && (-$refund->wsumm > $refund->summ))
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
 
-        @if(isset($refund) && $refund->id != NULL && (-$refund->getWarrantPositive() < $refund->summ) )
+        @if(isset($refund) && $refund->id != NULL && (-$refund->wsumm < $refund->summ) )
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
             </div>
@@ -77,7 +77,7 @@
             @if(isset($refund))
             <input type="hidden" name="summ" value="{{ abs($refund->summ) }}">
             <input type="hidden" name="itogo" value="{{ abs($refund->summ) }}">
-            <input type="hidden" name="ostatok" value="{{ abs($refund->summ - -$refund->getWarrantPositive()) }}">
+            <input type="hidden" name="ostatok" value="{{ abs($refund->summ - -$refund->wsumm) }}">
             @endif
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
             <div class="row row-sm">

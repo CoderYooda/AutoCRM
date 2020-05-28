@@ -17,7 +17,7 @@ class shipmentDialog extends Modal{
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
-        let refer = 'shipment';
+        let refer = 'Shipment';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
         let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
@@ -349,8 +349,8 @@ class shipmentDialog extends Modal{
                 return e.id
             }).indexOf(id), 1
         );
+        this.recalculate(id);
         this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
     }
 
     setField(type, value, text, elem = null){
@@ -443,6 +443,7 @@ class shipmentDialog extends Modal{
 
     recalculateItem(id){
         let object = this;
+
         let item = this.root_dialog.querySelector('#product_selected_' + id);
         let total = item.querySelector("input[name='products[" + id + "][total_price]']");
         let count = item.querySelector("input[name='products[" + id + "][count]']");

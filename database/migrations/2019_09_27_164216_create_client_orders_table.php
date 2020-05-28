@@ -29,6 +29,7 @@ class CreateClientOrdersTable extends Migration
             $table->double('balance', 12, 2)->comment('Остаток в кассе после выполнения операции');
             $table->char('status')->default('active')->comment('Статус заказа');
             $table->char('color')->nullable()->comment('Маркировка');
+            $table->double('wsumm')->default(0.00)->comment('Оплаченная сумма');
             $table->timestamps();
         });
     }

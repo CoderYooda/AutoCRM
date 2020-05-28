@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WarrantRequest;
 use App\Models\Cashbox;
 use App\Models\DdsArticle;
+use App\Models\ProviderOrder;
+use App\Models\Refund;
+use App\Models\Shipment;
 use App\Models\Statistic;
 use App\Models\Warrant;
 use Carbon\Carbon;
@@ -119,6 +122,17 @@ class WarrantController extends Controller
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);
 
+        $payable = $warrant->payable;
+        if($payable && $warrant->exists){
+            if($warrant->isIncoming){
+                $payable->wsumm = $payable->wsumm - $warrant->summ;
+                $payable->save();
+            } else {
+                $payable->wsumm = $payable->wsumm + $warrant->summ;
+                $payable->save();
+            }
+        }
+
         if($warrant->exists){
             $message = "Ордер обновлен";
             $wasExisted = true;
@@ -149,17 +163,33 @@ class WarrantController extends Controller
             $partner->subtraction($request['summ']);
         }
 
+
+
         $warrant->fill($request->only($warrant->fields));
         $warrant->balance = $cashbox->balance;
-        $warrant->save();
         $warrant->created_at = $request['do_date'];
+
+
+        if($request->refer != null){
+            $refer = 'App\Models\\' . $request->refer;
+            $model = $refer::owned()->whereId($request['refer_id'])->first();
+
+            if(isset($model) && $model != null){
+                $warrant->payable()->associate($model);
+            }
+        }
+
         $warrant->save();
+
+
         UA::makeUserAction($warrant, $wasExisted ? 'fresh' : 'create');
 
-        $method = $warrant->refer;
-        if($method !== null){
-            $warrant->$method()->syncWithoutDetaching($warrant->refer_id);
-        }
+
+
+//        $method = $warrant->refer;
+//        if($method !== null){
+//            $warrant->$method()->syncWithoutDetaching($warrant->refer_id);
+//        }
 
         if($request->expectsJson()){
             return response()->json([

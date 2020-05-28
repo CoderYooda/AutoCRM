@@ -31,10 +31,10 @@
             @if(isset($provider_order))
                 <div class="modal-alt-header">
                     <span class="item-title _500">Оплачено</span>
-                    <div class="item-except @if($provider_order->getWarrantPositive() === $provider_order->itogo) text-success
-                        @elseif($provider_order->getWarrantPositive() > $provider_order->itogo) text-danger @endif font-weight-bolder h-1x">
+                    <div class="item-except @if(-$provider_order->wsumm === $provider_order->itogo) text-success
+                        @elseif(-$provider_order->wsumm > $provider_order->itogo) text-danger @endif font-weight-bolder h-1x">
                         <span id="payed_price">
-                            {{ sprintf("%.2f", $provider_order->getWarrantPositive()) }} р / <span id="itogo_price">{{ $provider_order->itogo }}</span> р
+                            {{ sprintf("%.2f", -$provider_order->wsumm) }} р / <span id="itogo_price">{{ $provider_order->itogo }}</span> р
                         </span>
                     </div>
                     <div class="item-tag tag hide">
@@ -42,12 +42,12 @@
                 </div>
             @else
             @endif
-            @if(isset($provider_order) && ($provider_order->getWarrantPositive() < $provider_order->itogo) )
+            @if(isset($provider_order) && (-$provider_order->wsumm < $provider_order->itogo) )
                 <div class="modal-alt-header">
                     <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Оплатить</button>
                 </div>
             @endif
-            @if(isset($provider_order) && ($provider_order->getWarrantPositive() > $provider_order->itogo) )
+            @if(isset($provider_order) && (-$provider_order->wsumm > $provider_order->itogo) )
                 <div class="b-r pr-3 mr-3">
                     <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
                 </div>
@@ -60,7 +60,7 @@
                     <input type="hidden" name="id" value="{{ $provider_order->id }}">
                     <input type="hidden" name="summ" value="{{ $provider_order->summ }}">
                     <input type="hidden" name="itogo" value="{{ $provider_order->itogo }}">
-                    <input type="hidden" name="ostatok" value="{{ $provider_order->itogo - $provider_order->getWarrantPositive() }}">
+                    <input type="hidden" name="ostatok" value="{{ $provider_order->itogo - -$provider_order->wsumm }}">
                 @else
                     <input type="hidden" name="id" value="">
                 @endif

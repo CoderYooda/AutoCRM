@@ -221,8 +221,9 @@ class ClientOrdersController extends Controller
 
         #### Проверка на дубли
         $messages = [];
-        if (isset($request['products']['new'])) {
-            foreach ($request['products']['new'] as $id => $product) {
+        $rp = $request['products'];
+        if (isset($rp['new']) && $rp['new'] != null) {
+            foreach ($rp['new'] as $id => $product) {
 
                 if ($id === 'new') {
                     $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
@@ -245,8 +246,8 @@ class ClientOrdersController extends Controller
         }
 
         #Сохраняем быстрые товары
-        if (isset($request['products']['new'])) {
-            foreach ($request['products']['new'] as $id => $product) {
+        if (isset($rp['new'])) {
+            foreach ($rp['new'] as $id => $product) {
                 $vcount = (int)$product['count'];
 
                 $vprice = (double)$product['price'];
@@ -286,7 +287,7 @@ class ClientOrdersController extends Controller
                 $client_order_data[] = $pivot_data;
             }
         }
-        foreach ($request['products'] as $id => $product) {
+        foreach ($rp as $id => $product) {
             if ($id !== 'new') {
 
                 //$store->decreaseArticleCount($id, $product['count']);
@@ -409,7 +410,7 @@ class ClientOrdersController extends Controller
             client_orders.*, client_orders.created_at as date, client_orders.id as coid
         '))
             ->from(DB::raw('(
-            SELECT client_orders.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' р\')) as discount_formatted,
+            SELECT client_orders.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' ₽\')) as discount_formatted,
             (CASE
                 WHEN client_orders.status = "active" THEN "Активен"
                 WHEN client_orders.status = "canceled" THEN "Отменен"

@@ -22,6 +22,7 @@ class CreateRefundTable extends Migration
             $table->bigInteger('shipment_id')->unsigned()->nullable()->comment('Привязка к заказу');
             $table->decimal('summ', 12, 2)->comment('Общая цена');
             $table->char('comment')->nullable()->comment('Комментарий');
+            $table->double('wsumm')->default(0.00)->comment('Оплаченная сумма');
             $table->timestamps();
         });
     }

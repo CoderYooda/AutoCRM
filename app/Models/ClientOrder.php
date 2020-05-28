@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
+use App\Traits\PayableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientOrder extends Model
 {
-    use OwnedTrait;
+    use OwnedTrait, PayableTrait, HasManagerAndPartnerTrait;
 
     public $fields = [
         'partner_id',
@@ -133,11 +135,6 @@ class ClientOrder extends Model
             ->orderBy('created_at', 'DESC');
     }
 
-    public function partner()
-    {
-        return $this->belongsTo(Partner::class, 'partner_id');
-    }
-
     public function shipments()
     {
         return $this->hasMany(Shipment::class, 'clientorder_id');
@@ -175,10 +172,4 @@ class ClientOrder extends Model
         $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
         return $plus - $minus;
     }
-
-    public function warrants()
-    {
-        return $this->belongsToMany(Warrant::class, 'client_orders_warrant',  'client_order_id', 'warrant_id' );
-    }
-
 }
