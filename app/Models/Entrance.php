@@ -16,6 +16,7 @@ class Entrance extends Model
         'partner_id',
         'locked',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];

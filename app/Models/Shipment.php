@@ -25,6 +25,7 @@ class Shipment extends Model
         'discount',
         'inpercents',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];
@@ -138,6 +139,10 @@ class Shipment extends Model
     {
         $article = $this->articles()->wherePivot('article_id', $article_id)->first();
         return $article ? $article->pivot->count - $article->pivot->refunded_count : 0;
+    }
+
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
     }
 
     public function clientOrder()

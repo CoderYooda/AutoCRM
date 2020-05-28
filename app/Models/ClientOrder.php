@@ -25,6 +25,7 @@ class ClientOrder extends Model
         'comment',
         'status',
         'color',
+        'created_at'
     ];
 
     protected $guarded = [];
@@ -153,6 +154,10 @@ class ClientOrder extends Model
     public function onlyData()
     {
         return $this->created_at->format('d.m.Y H:i');
+    }
+
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
     }
 
     public function isFinished()

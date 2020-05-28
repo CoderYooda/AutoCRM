@@ -22,6 +22,7 @@ class Refund extends Model
         'store_id',
         'summ',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];
@@ -48,6 +49,10 @@ class Refund extends Model
         $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
         $plus = $this->warrants()->where('isIncoming', true)->sum('summ');
         return $plus - $minus;
+    }
+
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
     }
 
     public function normalizedData()

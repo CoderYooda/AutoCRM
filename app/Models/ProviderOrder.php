@@ -25,6 +25,7 @@ class ProviderOrder extends Model
         'nds_included',
         'inpercents',
         'comment',
+        'created_at'
     ];
 
     protected $guarded = [];
@@ -90,6 +91,22 @@ class ProviderOrder extends Model
     public function outputName() //Вывод имени или наименования
     {
         return 'Заявка поставщику №' . $this->id;
+    }
+
+    public function freshWsumm(){
+
+        if(isset($this->pays)){
+            if(-$this->wsumm <= 0) {
+                $this->pays = 0;
+            } else if(-$this->wsumm > 0 && -$this->wsumm < $this->summ){
+                $this->pays = 1;
+            } else if(-$this->wsumm == $this->summ){
+                $this->pays = 2;
+            } else if(-$this->wsumm > $this->summ){
+                $this->pays = 3;
+            }
+        }
+        $this->save();
     }
 
     public function getArticlesCountById($id){

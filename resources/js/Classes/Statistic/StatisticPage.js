@@ -79,7 +79,7 @@ class statisticPage {
             let list_element = document.getElementById('statistic-list');
             list_element.innerHTML = list;
 
-            this.graph_data = dates;
+            this.graph_data = response.data.entities;
 
             console.log(dates);
 

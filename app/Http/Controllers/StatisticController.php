@@ -109,8 +109,8 @@ class StatisticController extends Controller
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
                 ->where('created_at', '>=', DateTime::createFromFormat('d.m.Y', $request->begin_date))
-                ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date))
-                ->limit(10);
+                ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date));
+                //->limit(10);
 
             if ($class != Entrance::class) {
                 $query = $query->selectRaw('id, summ as amount, created_at, manager_id')->with('manager');
@@ -173,7 +173,8 @@ class StatisticController extends Controller
         $response = [
             'dates' => $global_data,
             'desc' => view(get_template() . '.statistic.desc', compact('sort_name', 'partner', 'manager'))->render(),
-            'list' => view(get_template() . '.statistic.list', compact('list'))->render()
+            'list' => view(get_template() . '.statistic.list', compact('list'))->render(),
+            'entities' => $list
         ];
 
         return response($response, 200);

@@ -26,6 +26,7 @@ use App\Models\Shipment;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\User;
+use Faker\Provider\DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\Phone;
@@ -302,7 +303,6 @@ class StressTest extends Command
         if($nds){
             $nds_included = rand(0,1);
         }
-
         $fake_request['nds'] = $nds;
         $fake_request['nds_included'] = $nds_included;
         $fake_request['do_date'] = $date;
@@ -320,7 +320,12 @@ class StressTest extends Command
             $entrance = new EntranceController();
             $fake_request = new EntranceRequest();
             $articles = $providerOrder->articles()->get();
+            $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
             $fake_request['providerorder_id'] = $providerOrder->id;
+            $fake_request['created_at'] = $date;
             $fake_request['comment'] = $comment;
             $products = [];
             foreach($articles as $article){
@@ -342,6 +347,11 @@ class StressTest extends Command
             $fake_request = new RefundRequest();
             $articles = $shipment->articles()->get();
 
+            $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
+
             $fake_request['shipment_id'] = $shipment->id;
             $fake_request['comment'] = $comment;
             $products = [];
@@ -351,6 +361,7 @@ class StressTest extends Command
                 $products[$article->id]['count'] = rand(1, $article->pivot->count);
             }
             $fake_request['products'] = $products;
+            $fake_request['created_at'] = $date;
             $refund->store($fake_request);
         } else{
             return true;
@@ -405,7 +416,12 @@ class StressTest extends Command
             $adjustment = new AdjustmentController();
             $fake_request = null;
             $fake_request = new AdjustmentRequest();
+            $date = Carbon::now()->addDays(rand(-365, 0));
+            $date = $date->addHours(rand(0, 24));
+            $date = $date->addMinutes(rand(0, 60));
+            $date = $date->addSeconds(rand(0, 60));
             $fake_request['comment'] = $comment;
+            $fake_request['created_at'] = $date;
             $products = [];
             $articles =  Article::owned($company)->limit(rand(4, 14))->inRandomOrder()->get();
             foreach($articles as $article){
