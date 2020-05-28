@@ -267,8 +267,8 @@ class Helper{
             let unprinted = document.getElementById('unprinted');
             let printed = document.getElementById('printed');
 
-            unprinted.innerHTML = printContents;
-            // window.print();
+            printed.innerHTML = printContents;
+            window.print();
 
             unprinted.classList.remove('hide');
             printed.innerHTML = '';
