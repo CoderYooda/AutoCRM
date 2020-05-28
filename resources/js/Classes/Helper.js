@@ -268,7 +268,6 @@ class Helper{
             let printed = document.getElementById('printed');
             printed.innerHTML = printContents;
 
-
             setTimeout(()=>{
                 window.print();
                 unprinted.classList.remove('hide');
