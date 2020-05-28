@@ -705,15 +705,16 @@ label.label-sm{
 #printed{
     width: 100vw;
     height: 100vh;
+    position: absolute;
+    margin-left: -100vw;
     z-index: 999999999;
-    display: none;
 }
 #unprinted{
     display: block;
 }
 @media print { /* Стиль для печати */
     #printed{
-        display: block;
+        margin-left: 0;
     }
     #unprinted{
         display: none;

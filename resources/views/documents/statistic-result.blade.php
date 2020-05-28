@@ -31,8 +31,8 @@
     }
 </style>
 
-<div style="text-align: center">
-    <img src="{{ json_decode($request->data)->image }}" alt="">
+<div style="text-align: center; height: 500px; background-image: url({{ json_decode($request->data)->image }})">
+    {{--<img src="{{ json_decode($request->data)->image }}" alt="">--}}
 </div>
 
 @foreach(json_decode($request->data) as $entity => $dates)
