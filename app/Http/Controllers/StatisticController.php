@@ -170,8 +170,6 @@ class StatisticController extends Controller
             }
         }
 
-//        dd($list);
-
         $response = [
             'dates' => $global_data,
             'desc' => view(get_template() . '.statistic.desc', compact('sort_name', 'partner', 'manager'))->render(),
