@@ -71,8 +71,9 @@ class StoreController extends Controller
     {
         $products = ProductController::getArticles($request);
         foreach($products as $product){
-            $product->isset = $product->getCountSelfOthers();
-            $product->price = $product->getMidPriceByStoreId(session('store_id'));
+            //TODO решить проблему
+//            $product->isset = $product->getCountSelfOthers();
+//            $product->price = $product->getMidPriceByStoreId(session('store_id'));
         }
         return response()->json($products);
     }
