@@ -17,4 +17,5 @@
     <div class="mb-10"><b>Контрагент:</b> {{ $partner != null ? $partner->fio : 'Не выбрано' }}</div>
     <div class="mb-10"><b>Дата начала:</b> {{ request()->begin_date }}</div>
     <div class="mb-10"><b>Дата конца:</b> {{ request()->final_date }}</div>
+    <button class=" button primary" onclick="statistic.printStatistic()">Печать</button>
 </div>
