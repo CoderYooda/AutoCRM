@@ -5,6 +5,8 @@ class statisticPage {
 
         this.chart = null;
 
+        this.graph_data = null;
+
         this.start_date = new Date();
         this.start_date.setDate(this.start_date.getDate() - 30); // На 30 дней назад
 
@@ -77,6 +79,10 @@ class statisticPage {
             let list_element = document.getElementById('statistic-list');
             list_element.innerHTML = list;
 
+            this.graph_data = dates;
+
+            console.log(dates);
+
             //Обновляем даты
             this.chart.data.labels = Object.keys(dates);
 
@@ -110,12 +116,14 @@ class statisticPage {
                     let day_amount = 0;
 
                     Object.keys(ids).map(id => {
-                        day_amount += ids[id].amount;
+                        day_amount += Number(ids[id].amount);
                     });
 
                     datasets[entity].push(day_amount);
                 });
             });
+
+            console.log(datasets);
 
             //Выводим информацию
             Object.keys(datasets).map((name, index) => {
@@ -209,13 +217,9 @@ class statisticPage {
         }
         return result;
     }
-    
-    printStatistic(){
-        window.helper.printDocument('statistic-result', null, {
-            st:{
-                options: 'awdawd'
-            }
-        });
+
+    print(){
+        window.helper.printDocument('statistic-result', null, JSON.stringify(this.graph_data));
     }
 }
 

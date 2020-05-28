@@ -31,9 +31,9 @@ class AdministratorSeed extends Seeder
         $user = User::create([
             'name' => 'Администратор',
             'email' => 'CoderYooda@gmail.com',
-            'phone' => '79524365062',
+            'phone' => '79999999999', //9999999999
             'company_id' => $company->id,
-            'password' => bcrypt('senatorov616322')
+            'password' => bcrypt('password')
         ]);
 
         Partner::create([

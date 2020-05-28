@@ -1,8 +1,5 @@
 <table>
-    <tr>
-        <td>
-            123
-            {{ $request['data'] }}
-        </td>
-    </tr>
+
+    {{ dd(json_decode($request->data)) }}
+
 </table>

@@ -61,7 +61,18 @@ class StatisticController extends Controller
             'Расходные ордера',
             'Перемещения'
         ];
-        
+
+        $dialogs = [
+            ['dialog' => 'providerorder', 'field' => 'provider_order_id'],
+            ['dialog' => 'entrance', 'field' => 'entrance_id'],
+            ['dialog' => 'refund', 'field' => 'refund_id'],
+            ['dialog' => 'shipment', 'field' => 'shipment_id'],
+            ['dialog' => 'clientorder', 'field' => 'clientorder_id'],
+            ['dialog' => 'warrant', 'field' => 'warrant_id'],
+            ['dialog' => 'warrant', 'field' => 'warrant_id'],
+            ['dialog' => 'moneymove', 'field' => 'moneymove_id']
+        ];
+
         $classes = [
             ProviderOrder::class,
             Entrance::class,
@@ -93,7 +104,7 @@ class StatisticController extends Controller
 
         foreach ($classes as $key => $class) {
 
-            if(!in_array($key, $request->entity)) continue;
+            if (!in_array($key, $request->entity)) continue;
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
@@ -103,8 +114,7 @@ class StatisticController extends Controller
 
             if ($class != Entrance::class) {
                 $query = $query->selectRaw('id, summ as amount, created_at, manager_id')->with('manager');
-            }
-            else {
+            } else {
                 $query = $query->select('*')->with('manager', 'providerorder');
             }
 
@@ -132,10 +142,11 @@ class StatisticController extends Controller
 
             #Заполнение массива данными из базы
             foreach ($entities as $entity) {
-                $id = $entity->id;
                 $date = $entity->created_at->format('d.m.Y');
-                $global_data[$date][$sort_name[$key]][$id]['amount'] = $entity->amount;
-                $global_data[$date][$sort_name[$key]][$id]['manager'] = isset($entity->manager) ? $entity->manager->cut_surname : '-';
+                $global_data[$date][$sort_name[$key]][$entity->id]['amount'] = $entity->amount;
+                $global_data[$date][$sort_name[$key]][$entity->id]['manager'] = $entity->manager->cut_surname;
+                $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
+                $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
             }
         }
 
@@ -145,14 +156,16 @@ class StatisticController extends Controller
         foreach ($global_data as $date => $entities) {
             foreach ($entities as $entity_name => $entities) {
 
-                if($entities == []) continue;
+                if ($entities == []) continue;
 
                 foreach ($entities as $entity_id => $attributes) {
 
-                    if($attributes == []) continue;
+                    if ($attributes == []) continue;
 
                     $list[$entity_name][$date][$entity_id]['amount'] = $attributes['amount'];
                     $list[$entity_name][$date][$entity_id]['manager'] = $attributes['manager'];
+                    $list[$entity_name][$date][$entity_id]['dialog_name'] = $attributes['dialog_name'];
+                    $list[$entity_name][$date][$entity_id]['dialog_field'] = $attributes['dialog_field'];
                 }
             }
         }

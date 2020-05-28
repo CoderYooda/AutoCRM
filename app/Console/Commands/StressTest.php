@@ -76,22 +76,16 @@ class StressTest extends Command
     {
         $faker = Faker::create();
 
-        $company = factory(Company::class)->make();
-        $company->save();
+        $company = factory(Company::class)->create();
 
-        $user = factory(User::class)->make();
-        $user->company_id = $company->id;
-        $user->save();
+        $user = factory(User::class)->create(['company_id' => $company->id]);
 
         $role = RoleController::createStartRoles($company);
         $user->assignRole($role);
         SettingsController::createCompanySettingsPack($company, $role);
 
-        $store = factory(Store::class)->make();
-        $store->company_id = $company->id;
-        $store->save();
+        $store = factory(Store::class)->create(['company_id' => $company->id]);
         $partner = self::createPartner($user, $company, $store);
-
 
         # Создаем фейковых партнеров
         $count_partners = rand(10, $this->partners_count);
@@ -112,10 +106,7 @@ class StressTest extends Command
         $bar->start();
         $suppliers = [];
         for($i = 0; $i < $count_suppliers; $i++){
-            $supplier = factory(Supplier::class)->make();
-            $supplier->company_id = $company->id;
-            $supplier->save();
-            $suppliers[] = $supplier->id;
+            $suppliers[] = factory(Supplier::class)->create(['company_id' => $company->id]);
             $bar->advance();
         }
         $bar->finish();

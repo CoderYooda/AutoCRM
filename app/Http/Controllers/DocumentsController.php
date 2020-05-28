@@ -8,14 +8,13 @@ class DocumentsController extends Controller
 {
     public function document(Request $request)
     {
-        if($request['doc'] === 'out-warrant'){
-            return view('documents.out-warrant', compact('request'));
-        } elseif($request['doc'] === 'client-order'){
-            return view('documents.client-order', compact('request'));
-        } elseif($request['doc'] === 'provider-order'){
-            return view('documents.provider-order', compact('request'));
-        } elseif($request['doc'] === 'statistic-result'){
-            return view('documents.statistic-result', compact('request'));
-        }
+        $names = [
+            'out-warrant' => 'documents.out-warrant',
+            'client-order' => 'documents.client-order',
+            'provider-order' => 'documents.provider-order',
+            'statistic-result' => 'documents.statistic-result'
+        ];
+
+        return view($names[$request->doc], compact('request'));
     }
 }

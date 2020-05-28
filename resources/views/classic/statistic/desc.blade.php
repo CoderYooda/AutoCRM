@@ -13,9 +13,9 @@
 
             @endif
     </div>
-    <div class="mb-10"><b>Менеджер:</b> {{ $manager != null ? $manager->fio : 'Не выбрано' }}</div>
-    <div class="mb-10"><b>Контрагент:</b> {{ $partner != null ? $partner->fio : 'Не выбрано' }}</div>
+    <div class="mb-10"><b>Менеджер:</b> {{ $manager ? $manager->fio : 'Не выбрано' }}</div>
+    <div class="mb-10"><b>Контрагент:</b> {{ $partner ? $partner->fio : 'Не выбрано' }}</div>
     <div class="mb-10"><b>Дата начала:</b> {{ request()->begin_date }}</div>
     <div class="mb-10"><b>Дата конца:</b> {{ request()->final_date }}</div>
-    <button class=" button primary" onclick="statistic.printStatistic()">Печать</button>
+    <button class=" button primary" onclick="statistic.print()">Печать</button>
 </div>

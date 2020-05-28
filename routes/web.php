@@ -230,7 +230,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
     #Документы
-    Route::get('/document', 'DocumentsController@document')->name('Document');
+    Route::any('/document', 'DocumentsController@document')->name('Document');
 
     #Отчеты
     Route::get('/report', 'SmsController@index')->name('ReportIndex');// Строгое название

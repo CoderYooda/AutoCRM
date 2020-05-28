@@ -254,8 +254,13 @@ class Helper{
 
     printDocument(doc, id, data = null){
         axios({
-            method: 'GET',
-            url: '/document?doc=' + doc + '&id=' + id + '&data=' + data,
+            method: 'POST',
+            url: '/document',
+            data: {
+                doc: doc,
+                id: id,
+                data: data
+            }
         }).then(function (response) {
             var printContents = response.data;
 
