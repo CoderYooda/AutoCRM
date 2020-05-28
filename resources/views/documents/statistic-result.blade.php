@@ -50,6 +50,7 @@
                 <td>Сумма</td>
             </tr>
         </thead>
+        <tbody>
         @foreach($dates as $date => $entities)
             @foreach($entities as $entity_id => $attributes)
                 <tr>

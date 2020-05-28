@@ -268,10 +268,14 @@ class Helper{
             let printed = document.getElementById('printed');
 
             printed.innerHTML = printContents;
-            window.print();
 
-            unprinted.classList.remove('hide');
-            printed.innerHTML = '';
+            setTimeout(()=> {
+                window.print();
+
+                unprinted.classList.remove('hide');
+                printed.innerHTML = '';
+            }, 1000);
+
         }).then(function (error) {
 
         });
