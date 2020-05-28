@@ -323,16 +323,16 @@ class ProductController extends Controller
         }
 
         return Article::
-        join('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
-            ->leftJoin('article_store', function ($join) {
-                $join->on('article_store.article_id', '=', 'articles.id')
-                    ->where('article_store.store_id', Auth::user()->getStoreFirst()->id);
-            })
-            ->select('suppliers.name as supplier',
-                'article_store.count as isset',
-                'article_store.midprice as price',
-                'articles.*')
-            ->where('articles.company_id', Auth::user()->company()->first()->id)
+//        join('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
+//            ->leftJoin('article_store', function ($join) {
+//                $join->on('article_store.article_id', '=', 'articles.id')
+//                    ->where('article_store.store_id', Auth::user()->getStoreFirst()->id);
+//            })
+//            ->select('suppliers.name as supplier',
+//                'article_store.count as isset',
+//                'article_store.midprice as price',
+//                'articles.*')
+            where('articles.company_id', Auth::user()->company()->first()->id)
             ->where(function ($q) use ($request) {
                 if (isset($request['search']) && $request['search'] != "") {
                     $q->where('articles.foundstring', 'LIKE', '%' . mb_strtolower(str_replace(' ', '', str_replace('-', '', $request['search']))) . '%');
