@@ -193,6 +193,16 @@ class Helper{
         return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
     }
 
+    array_count(array) {
+        let amount = 0;
+
+        for(let i = 0; i < array.length; i++) {
+            amount += array[i];
+        }
+
+        return amount;
+    }
+
     findGetParameter(parameterName) {
         var result = null,
             tmp = [];
@@ -268,7 +278,7 @@ class Helper{
             let printed = document.getElementById('printed');
             printed.innerHTML = printContents;
 
-            setTimeout(()=>{
+            setTimeout(()=> {
                 window.print();
                 unprinted.classList.remove('hide');
                 printed.innerHTML = '';

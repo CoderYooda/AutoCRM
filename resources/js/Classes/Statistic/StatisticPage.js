@@ -1,9 +1,13 @@
+import Tagify from '@yaireo/tagify'
+
 class statisticPage {
 
     constructor() {
         console.log('страница статистики инициализировано');
 
         this.chart = null;
+
+        this.sections = [];
 
         this.graph_data = null;
 
@@ -20,6 +24,38 @@ class statisticPage {
     }
 
     init() {
+
+        let whitelist = ["Заявки поставщикам", "Поступления", "Возвраты", "Продажи", "Заказы клиентов", "Приходные ордера", "Расходные ордера", "Перемещения"];
+
+        let input = document.getElementById('sections');
+
+        let tagify = new Tagify(input, {
+                whitelist: whitelist,
+                maxTags: 8,
+                dropdown: {
+                    maxItems: 8,           // <- mixumum allowed rendered suggestions
+                    classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
+                    enabled: 0,             // <- show suggestions on focus
+                    closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+                }
+            })
+            .on('add', e => {
+                let name = e.detail.data.value;
+                let index = whitelist.indexOf(name);
+
+                if(index === -1) tagify.removeTags(name);
+                else this.sections.push(index);
+            })
+            .on('remove', e => {
+                let name = e.detail.data.value;
+                let index = whitelist.indexOf(name);
+
+                this.sections.splice(index, 1);
+            });
+
+        tagify.addTags(whitelist);
+
+        //Chart.js
 
         let ctx = document.getElementById('statistic-chart').getContext('2d');
 
@@ -45,7 +81,11 @@ class statisticPage {
             }
         });
 
+        //Date selector
+
         this.initRangeSelector();
+
+        //Chart result
 
         this.showResults();
     }
@@ -61,13 +101,14 @@ class statisticPage {
                 partner_id: Number(document.querySelector("input[name=partner_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
                 final_date: document.querySelector("input[name=final_date]").value,
-                entity: this.getSelectValues(document.getElementById("entity"))
+                entity: this.sections,
             }
         })
         .then(response => {
 
             //Удаляем данные с графика
             this.chart.data.datasets.length = 0;
+            this.chart.data.labels.length = 0;
 
             let dates = response.data.dates;
             let desc = response.data.desc;
@@ -124,12 +165,14 @@ class statisticPage {
             //Выводим информацию
             Object.keys(datasets).map((name, index) => {
 
-                this.chart.data.datasets.push({
-                    label: name,
-                    backgroundColor: colors[index],
-                    borderColor: 'rgb(0,0,0)',
-                    data: datasets[name]
-                });
+                if(helper.array_count(datasets[name]) !== 0) {
+                    this.chart.data.datasets.push({
+                        label: name,
+                        backgroundColor: colors[index],
+                        borderColor: 'rgb(0,0,0)',
+                        data: datasets[name]
+                    });
+                }
             });
 
             this.chart.update();
@@ -137,6 +180,12 @@ class statisticPage {
         .catch(response => {
             console.log(response);
         });
+    }
+
+    openSelectSectionModal(element) {
+        element.classList.toggle('show');
+
+        console.log(123);
     }
 
     openSelectManagerModal() {
@@ -197,21 +246,6 @@ class statisticPage {
                 lazy: false
             }
         )
-    }
-
-    getSelectValues(select) {
-        var result = [];
-        var options = select && select.options;
-        var opt;
-
-        for (var i=0, iLen=options.length; i<iLen; i++) {
-            opt = options[i];
-
-            if (opt.selected) {
-                result.push(opt.value || opt.text);
-            }
-        }
-        return result;
     }
 
     print(){

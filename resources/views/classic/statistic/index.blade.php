@@ -23,18 +23,8 @@
                 </div>
 
                 <div class="form-group w-128 mr-15 mb-0">
-                    <label>Разделы</label>
-
-                    <select id="entity" class="form-control input-c" multiple>
-                        <option selected value="0">Заявки поставщикам</option>
-                        <option selected value="1">Поступления</option>
-                        <option selected value="2">Возвраты</option>
-                        <option selected value="3">Продажи</option>
-                        <option selected value="4">Заказы клиентов</option>
-                        <option selected value="5">Приходные ордера</option>
-                        <option selected value="6">Расходные ордера</option>
-                        <option selected value="7">Перемещения</option>
-                    </select>
+                    <label class="no-wrap" for="sections">Разделы</label>
+                    <input id="sections" type="text" class="form-control" />
                 </div>
 
                 <div class="form-group w-128 mr-15 mb-0">
