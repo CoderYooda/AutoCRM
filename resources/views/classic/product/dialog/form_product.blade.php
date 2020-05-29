@@ -16,6 +16,20 @@
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
 
+    <div class="modal-header dark" style="justify-content: normal;">
+        <div class="modal-alt-header">
+            <span class="item-title _500">Всего на сумму</span>
+            <div class="item-except font-weight-bolder h-1x">
+                <span id="total_price">
+                   {{ $product->getMidPriceByStoreId(session('store_id')) }}
+                </span> р
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
+    </div>
+
+
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="
