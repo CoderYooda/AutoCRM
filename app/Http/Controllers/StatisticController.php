@@ -172,7 +172,6 @@ class StatisticController extends Controller
 
         $response = [
             'dates' => $global_data,
-            'desc' => view(get_template() . '.statistic.desc', compact('sort_name', 'partner', 'manager'))->render(),
             'list' => view(get_template() . '.statistic.list', compact('list'))->render(),
             'entities' => $list
         ];

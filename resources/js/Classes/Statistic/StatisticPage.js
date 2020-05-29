@@ -18,21 +18,23 @@ class statisticPage {
 
         this.tagify = null;
 
+        this.whitelist = ["Заявки поставщикам", "Поступления", "Возвраты", "Продажи", "Заказы клиентов", "Приходные ордера", "Расходные ордера", "Перемещения"];
+
         this.init();
     }
 
     linked() {
+        this.sections = [];
+
         this.init();
     }
 
     init() {
 
-        let whitelist = ["Заявки поставщикам", "Поступления", "Возвраты", "Продажи", "Заказы клиентов", "Приходные ордера", "Расходные ордера", "Перемещения"];
-
         let input = document.getElementById('sections');
 
         this.tagify = new Tagify(input, {
-                whitelist: whitelist,
+                whitelist: this.whitelist,
                 maxTags: 8,
                 editTags: null,
                 dropdown: {
@@ -44,20 +46,20 @@ class statisticPage {
             }) //asdad
             .on('add', e => {
                 let name = e.detail.data.value;
-                let index = whitelist.indexOf(name);
+                let index = this.whitelist.indexOf(name);
 
                 if(index === -1) this.tagify.removeTags(name);
                 else this.sections.push(index);
             })
             .on('remove', e => {
                 let name = e.detail.data.value;
-                let index_whitelist = whitelist.indexOf(name);
+                let index_whitelist = this.whitelist.indexOf(name);
                 let index_sections = this.sections.indexOf(index_whitelist);
 
                 this.sections.splice(index_sections, 1);
             });
 
-        this.tagify.addTags(whitelist);
+        this.tagify.addTags(this.whitelist);
 
         document.getElementsByClassName('tagify')[0].addEventListener('click', function(){
             document.getElementsByClassName('tagify__input')[0].click();
@@ -175,7 +177,9 @@ class statisticPage {
             //Выводим информацию
             Object.keys(datasets).map((name, index) => {
 
-                if(helper.array_count(datasets[name]) !== 0) {
+                let entity_index = this.whitelist.indexOf(name);
+
+                if(this.sections.indexOf(entity_index) !== -1) {
                     this.chart.data.datasets.push({
                         label: name,
                         backgroundColor: colors[index],
@@ -190,12 +194,6 @@ class statisticPage {
         .catch(response => {
             console.log(response);
         });
-    }
-
-    openSelectSectionModal(element) {
-        element.classList.toggle('show');
-
-        console.log(123);
     }
 
     openSelectManagerModal() {
