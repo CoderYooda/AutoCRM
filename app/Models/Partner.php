@@ -39,6 +39,11 @@ class Partner extends Model
         'kpp',
     ];
 
+    public function garage()
+    {
+        return $this->hasMany(Garage::class, 'partner_id', 'id');
+    }
+
     public function pic(){
         return $this->belongsTo('App\Models\System\Image', 'pic_id');
     }

@@ -72,6 +72,14 @@
                         </span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a id="tab_access{{ $class }}-tab" href="#tab_access{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_vehicles{{ $class }}" aria-selected="false" role="tab" class="nav-link">
+                        Транспорт
+                        <span class="float-right helper_danger d-none-f">
+                            <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="col-sm-7 no-pl">
@@ -94,6 +102,9 @@
 
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_access{{ $class }}-tab" id="tab_access{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')
+                </div>
+                <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_access{{ $class }}-tab" id="tab_vehicles{{ $class }}">
+                    @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.vehicles')
                 </div>
             </div>
         </div>

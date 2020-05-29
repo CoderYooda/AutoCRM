@@ -69,13 +69,12 @@ class PartnerController extends Controller
     {
         $tag = 'partnerDialog';
 
+        $partner = null;
+
         if($request['partner_id']){
             $tag .= $request['partner_id'];
-            $partner = Partner::where('id', (int)$request['partner_id'])->with('passport')->first();
-        } else {
-            $partner = null;
+            $partner = Partner::with('garage', 'passport')->findOrFail($request['partner_id']);
         }
-
 
 //        if($request['partner_select']){
 //            $partner_select = (int)$request['partner_select'];
@@ -86,16 +85,9 @@ class PartnerController extends Controller
 //            $tag = 'partnerDialog';
 //        }
 
-
         $stores = Store::owned()->get();
 
-
-        if($request['category_select']){
-            $category_select = (int)$request['category_select'];
-        } else {
-            $category_select = 3;
-        }
-        $category = Category::where('id', $category_select)->first();
+        $category = Category::findOrFail($request['category_select'] ?: 3);
 
         return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))->render()]);
     }
