@@ -34,13 +34,14 @@ class statisticPage {
         this.tagify = new Tagify(input, {
                 whitelist: whitelist,
                 maxTags: 8,
+                editTags: null,
                 dropdown: {
                     maxItems: 8,           // <- mixumum allowed rendered suggestions
                     classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
                     enabled: 0,             // <- show suggestions on focus
                     closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
                 }
-            })
+            }) //asdad
             .on('add', e => {
                 let name = e.detail.data.value;
                 let index = whitelist.indexOf(name);
@@ -50,9 +51,10 @@ class statisticPage {
             })
             .on('remove', e => {
                 let name = e.detail.data.value;
-                let index = whitelist.indexOf(name);
+                let index_whitelist = whitelist.indexOf(name);
+                let index_sections = this.sections.indexOf(index_whitelist);
 
-                this.sections.splice(index, 1);
+                this.sections.splice(index_sections, 1);
             });
 
         this.tagify.addTags(whitelist);
@@ -101,6 +103,8 @@ class statisticPage {
     }
 
     showResults() {
+
+        console.log(this.sections);
 
         window.axios({
             method: 'post',
