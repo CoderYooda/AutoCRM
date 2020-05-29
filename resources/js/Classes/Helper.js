@@ -272,7 +272,7 @@ class Helper{
                 window.print();
                 unprinted.classList.remove('hide');
                 printed.innerHTML = '';
-            }, 3000);
+            }, 700);
 
         }).then(function (error) {
 
