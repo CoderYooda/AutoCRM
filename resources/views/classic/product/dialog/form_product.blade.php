@@ -16,18 +16,30 @@
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
 
+    @if($product)
     <div class="modal-header dark" style="justify-content: normal;">
         <div class="modal-alt-header">
-            <span class="item-title _500">Всего на сумму</span>
+            <span class="item-title _500">Розничная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->getMidPriceByStoreId(session('store_id')) }}
-                </span> р
+                   {{ $product->getMidPriceByStoreId(Auth::user()->partner->store->id) }}
+                </span>
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
+        <div class="modal-alt-header">
+            <span class="item-title _500">На своем складе / на других</span>
+            <div class="item-except font-weight-bolder h-1x">
+                <span id="total_price">
+                   {{ $product->getCountSelfOthers() }}
+                </span>
             </div>
             <div class="item-tag tag hide">
             </div>
         </div>
     </div>
+    @endif
 
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf

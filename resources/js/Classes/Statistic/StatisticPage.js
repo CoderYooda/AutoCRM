@@ -16,6 +16,8 @@ class statisticPage {
 
         this.end_date = new Date();
 
+        this.tagify = null;
+
         this.init();
     }
 
@@ -29,7 +31,7 @@ class statisticPage {
 
         let input = document.getElementById('sections');
 
-        let tagify = new Tagify(input, {
+        this.tagify = new Tagify(input, {
                 whitelist: whitelist,
                 maxTags: 8,
                 dropdown: {
@@ -43,7 +45,7 @@ class statisticPage {
                 let name = e.detail.data.value;
                 let index = whitelist.indexOf(name);
 
-                if(index === -1) tagify.removeTags(name);
+                if(index === -1) this.tagify.removeTags(name);
                 else this.sections.push(index);
             })
             .on('remove', e => {
@@ -53,7 +55,11 @@ class statisticPage {
                 this.sections.splice(index, 1);
             });
 
-        tagify.addTags(whitelist);
+        this.tagify.addTags(whitelist);
+
+        document.getElementsByClassName('tagify')[0].addEventListener('click', function(){
+            document.getElementsByClassName('tagify__input')[0].click();
+        });
 
         //Chart.js
 
@@ -90,6 +96,10 @@ class statisticPage {
         this.showResults();
     }
 
+    openSelectSection(){
+        //this.tagify.
+    }
+
     showResults() {
 
         window.axios({
@@ -111,11 +121,7 @@ class statisticPage {
             this.chart.data.labels.length = 0;
 
             let dates = response.data.dates;
-            let desc = response.data.desc;
             let list = response.data.list;
-
-            let desc_element = document.getElementById('desc');
-            desc_element.innerHTML = desc;
 
             let list_element = document.getElementById('statistic-list');
             list_element.innerHTML = list;

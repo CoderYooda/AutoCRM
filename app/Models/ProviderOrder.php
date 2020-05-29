@@ -44,6 +44,21 @@ class ProviderOrder extends Model
         return $article != null ? $article->pivot->count : 0;
     }
 
+    public function getPlanArticleCount()
+    {
+        $count = $this->articles()->sum('count');
+        return (int)$count;
+    }
+
+    public function getEnteredArticleCount()
+    {
+        $entered_count = 0;
+        foreach($this->entrances()->get() as $entrance){
+            $entered_count += $entrance->articles()->sum('count');
+        }
+        return $entered_count;
+    }
+
     public function entrances()
     {
         return $this->hasMany(Entrance::class, 'providerorder_id');
@@ -107,6 +122,24 @@ class ProviderOrder extends Model
             }
         }
         $this->save();
+    }
+
+    public function freshIncomes(){
+
+        $plan = $this->getPlanArticleCount();
+        $fact = $this->getEnteredArticleCount();
+
+        if($fact == 0) {
+            $this->incomes = 0;
+        } else if($fact > 0 && $fact < $plan){
+            $this->incomes = 1;
+        } else if($fact == $plan){
+            $this->incomes = 2;
+        } else if($fact > $plan){
+            $this->incomes = 3;
+        }
+        $this->save();
+
     }
 
     public function getArticlesCountById($id){

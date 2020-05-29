@@ -190,7 +190,7 @@ class partnerDialog extends Modal{
         console.log(1);
         var container = this.root_dialog.querySelector('#act_form_partner');
 
-        var links = container.getElementsByClassName('nav-link');
+        var links = container.getElementsByClassName('nav-item');
 
         [].forEach.call(links, function(elem){
             if(elem.classList.contains('main_tab')){

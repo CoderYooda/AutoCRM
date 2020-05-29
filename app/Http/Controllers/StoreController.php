@@ -70,11 +70,6 @@ class StoreController extends Controller
     public function tableData(Request $request)
     {
         $products = ProductController::getArticles($request);
-        foreach($products as $product){
-            //TODO решить проблему
-//            $product->isset = $product->getCountSelfOthers();
-    //        $product->price = $product->getMidPriceByStoreId(session('store_id'));
-        }
         return response()->json($products);
     }
 

@@ -720,6 +720,20 @@ label.label-sm{
         display: none;
     }
 }
+
+.tagify.form-control{
+    height: auto;
+    padding: 0;
+    min-height: 32px;
+}
+.tagify__input{
+    position: absolute;
+    margin-left: -100vw;
+}
+.tagify__dropdown > div{
+    //padding: 5px;
+    border: none;
+}
 .nav-tabs{
     display: flex;
     flex-wrap: wrap;
