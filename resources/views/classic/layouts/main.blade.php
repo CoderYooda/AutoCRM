@@ -84,7 +84,8 @@
                             </a>
                         </li>
                     </ul>
-                    <span class="md-auto  mr-auto"><span id="shop_name">{{ Auth::user()->company()->first()->name }}</span></span>
+                    {{--{{ Auth::user()->company()->first()->name }}--}}
+                    <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
                     <div id="current_time">
                         <div class="h">00</div>
                         <div class="m">00</div>

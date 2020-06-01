@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Controllers\Providers\TrinityController;
+use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreRequest;
 use App\Models\Article;
 use App\Models\Store;
@@ -13,7 +14,7 @@ use Auth;
 
 class StoreController extends Controller
 {
-    public function index(Request $request)
+    public function index(StoreGetRequest $request)
     {
         PermissionController::canByPregMatch('Смотреть товары');
     	// точка входа в страницу
@@ -67,7 +68,7 @@ class StoreController extends Controller
 	    }
     }
 
-    public function tableData(Request $request)
+    public function tableData(StoreGetRequest $request)
     {
         $products = ProductController::getArticles($request);
         return response()->json($products);
