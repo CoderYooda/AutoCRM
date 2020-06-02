@@ -263,7 +263,6 @@ class ProductController extends Controller
                 } else {
                     $article->stores()->updateExistingPivot($id, ['isset' => false]);
                 }
-
             }
         }
 

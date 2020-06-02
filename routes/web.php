@@ -196,6 +196,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
 
+    Route::post('/vehicles', 'VehicleController@store')->name('StoreVehicle');
+
     #Картинки
     Route::post('/system/image_upload', 'System\ImageController@upload')->name('uploadImage');
     Route::post('/system/crop_image', 'System\ImageController@cropImage')->name('CropImage');

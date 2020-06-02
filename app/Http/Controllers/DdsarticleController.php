@@ -48,8 +48,6 @@ class DdsarticleController extends Controller
 
         $category = Category::where('id', $category_select)->first();
 
-
-
         $ddstypes = DdsType::all();
         return response()->json([
             'tag' => $tag,

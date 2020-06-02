@@ -15,7 +15,7 @@ class VehicleRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $this['partner_id'] = Auth::user()->partner->id;
+        $this['partner_id'] = $this['partner_id'] ?? Auth::user()->partner->id;
     }
 
     public function rules()

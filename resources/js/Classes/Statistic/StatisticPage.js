@@ -43,12 +43,6 @@ class statisticPage {
             },
 
             options: {
-                // scaleLabel: function (valueObject) {
-                //     return '$' + valueObject.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                // },
-                // tooltipTemplate: function (valueObject) {
-                //     return valueObject.label + ': $' + valueObject.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                // },
                 maintainAspectRatio: false,
                 tooltips: {
                     mode: 'index',

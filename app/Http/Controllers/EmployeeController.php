@@ -39,7 +39,6 @@ class EmployeeController extends Controller
         foreach($employees as $employee){
             $employee->date = $employee->created_at->format('Y.m.d/H:i');
         }
-
         return response()->json($employees);
     }
 

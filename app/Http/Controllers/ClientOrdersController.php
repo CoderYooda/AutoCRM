@@ -127,9 +127,7 @@ class ClientOrdersController extends Controller
     public function store(ClientOrdersRequest $request)
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать заказ клиента' : 'Создавать заказ клиента');
-
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
-
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
         #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
@@ -148,7 +146,6 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
-        //dd($client_order->IsAllProductsShipped());
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complete';
         }
@@ -173,16 +170,8 @@ class ClientOrdersController extends Controller
         }
 
         if ($client_order->exists) {
-            //$store = $client_order->store()->first();
-//            #Прибавляем к балансу предидущего партнера
-//            $client_order->partner()->first()->addition($client_order->itogo);
-
             $this->message = 'Заказ обновлен';
             $wasExisted = true;
-
-            #Производим действия со складом в зависимости статуса заказа
-
-
             #Возвращаем на склад все товары из заказа
 //            if ($client_order->status === 'complete') {
 //                foreach ($client_order->articles()->get() as $article) {
