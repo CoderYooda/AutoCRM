@@ -1,5 +1,5 @@
-<div data-simplebar style="max-height: 200px;">
-    <ul class="nav select-list-modal" style="background-color: transparent;">
+<div data-simplebar style="max-height: 370px;">
+    <ul class="select-list-modal" style="background-color: transparent; padding: 0">
         @foreach($vehicles as $vehicle)
             <li id="vehicle_item_{{ $vehicle->id }}" onclick="openDialog('vehicleDialog', '&vehicle_id={{ $vehicle->id }}')" class="pointer d-flex mb-15">
                 <div class="ring-ico">
