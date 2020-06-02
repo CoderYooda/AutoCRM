@@ -11,12 +11,12 @@ class Vehicle extends Model
 
     public function mark()
     {
-        return $this->hasOne(VehicleMark::class, 'id');
+        return $this->hasOne(VehicleMark::class, 'id', 'mark_id');
     }
 
     public function model()
     {
-        return $this->hasOne(VehicleModel::class, 'id');
+        return $this->hasOne(VehicleModel::class, 'id', 'model_id');
     }
 
     public function getFullNameAttribute()
