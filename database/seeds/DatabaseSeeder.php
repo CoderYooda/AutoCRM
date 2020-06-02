@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeed::class);
         $this->call(SettingsSeed::class);
 
-        $this->call(GarageSeed::class);
+        $this->call(VehicleSeed::class);
 
         //$this->call(WarrantSeed::class);
         //$this->call(MoneymoveSeed::class);

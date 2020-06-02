@@ -7,6 +7,8 @@
         @php $class = 'partnerDialog' @endphp
     @endif
     class="dialog" style="width:600px;">
+
+
     @if(isset($partner) && $partner->id != NULL)
         <div class="titlebar">{{ $partner->outputName() }}</div>
     @else

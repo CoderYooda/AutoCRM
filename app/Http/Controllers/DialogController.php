@@ -91,6 +91,9 @@ class DialogController extends Controller
             case 'roleDialog':
                 $dialog = RoleController::roleDialog($request); #
                 break;
+            case 'vehicleDialog':
+                $dialog = VehicleController::vehicleDialog($request); #
+                break;
         }
 
         if(!isset($dialog)){
