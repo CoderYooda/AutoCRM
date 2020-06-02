@@ -30,43 +30,6 @@ class statisticPage {
     }
 
     init() {
-
-        // let input = document.getElementById('sections');
-        //
-        // this.tagify = new Tagify(input, {
-        //         whitelist: this.whitelist,
-        //         maxTags: 8,
-        //         editTags: null,
-        //         dropdown: {
-        //             maxItems: 8,           // <- mixumum allowed rendered suggestions
-        //             classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
-        //             enabled: 0,             // <- show suggestions on focus
-        //             closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
-        //         }
-        //     }) //asdad
-        //     .on('add', e => {
-        //         let name = e.detail.data.value;
-        //         let index = this.whitelist.indexOf(name);
-        //
-        //         if(index === -1) this.tagify.removeTags(name);
-        //         else this.sections.push(index);
-        //     })
-        //     .on('remove', e => {
-        //         let name = e.detail.data.value;
-        //         let index_whitelist = this.whitelist.indexOf(name);
-        //         let index_sections = this.sections.indexOf(index_whitelist);
-        //
-        //         this.sections.splice(index_sections, 1);
-        //     });
-        //
-        // this.tagify.addTags(this.whitelist);
-
-
-
-        //document.getElementsByClassName('tagify')[0].addEventListener('click', function(){
-        //     document.getElementsByClassName('tagify__input')[0].click();
-        // });
-
         //Chart.js
 
         let ctx = document.getElementById('statistic-chart').getContext('2d');
@@ -88,6 +51,8 @@ class statisticPage {
                 // },
                 maintainAspectRatio: false,
                 tooltips: {
+                    mode: 'index',
+                    intersect: false,
                     // Disable the on-canvas tooltip
                     enabled: false,
 
@@ -182,6 +147,7 @@ class statisticPage {
                         },
                     }],
                     yAxes: [{
+                        stacked: true,
                         ticks: {
                             beginAtZero:false
                         },
@@ -189,11 +155,11 @@ class statisticPage {
                             display: true,
                             labelString: 'Сумма в рублях'
                         },
-                        afterTickToLabelConversion : function(q){
-                            for(var tick in q.ticks){
-                                q.ticks[tick] = new Intl.NumberFormat().format(q.ticks[tick]) + ' ₽';
-                            }
-                        }
+                        // afterTickToLabelConversion : function(q){
+                        //     for(var tick in q.ticks){
+                        //         q.ticks[tick] = new Intl.NumberFormat().format(q.ticks[tick]) + ' ₽';
+                        //     }
+                        // }
                     }]
                 }
             }
@@ -210,14 +176,14 @@ class statisticPage {
 
     initSections(){
         this.sections = [];
-        if(document.getElementById('partnerOrder').checked){this.sections.push(1)}
-        if(document.getElementById('entrance').checked){this.sections.push(2)}
-        if(document.getElementById('refund').checked){this.sections.push(3)}
-        if(document.getElementById('shipment').checked){this.sections.push(4)}
-        if(document.getElementById('clientOrder').checked){this.sections.push(5)}
-        if(document.getElementById('inWarrant').checked){this.sections.push(6)}
-        if(document.getElementById('outWarrant').checked){this.sections.push(7)}
-        if(document.getElementById('cashMove').checked){this.sections.push(8)}
+        if(document.getElementById('partnerOrder').checked){this.sections.push(0)}
+        if(document.getElementById('entrance').checked){this.sections.push(1)}
+        if(document.getElementById('refund').checked){this.sections.push(2)}
+        if(document.getElementById('shipment').checked){this.sections.push(3)}
+        if(document.getElementById('clientOrder').checked){this.sections.push(4)}
+        if(document.getElementById('inWarrant').checked){this.sections.push(5)}
+        if(document.getElementById('outWarrant').checked){this.sections.push(6)}
+        if(document.getElementById('cashMove').checked){this.sections.push(7)}
     }
 
     openSelectSection(){

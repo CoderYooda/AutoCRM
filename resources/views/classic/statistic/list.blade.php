@@ -1,4 +1,5 @@
-@foreach($list as $entity => $dates)
+
+@forelse($list as $entity => $dates)
 
     @foreach($dates as $date => $entity_ids)
 
@@ -35,5 +36,13 @@
         @endforeach
 
     @endforeach
-
-@endforeach
+@empty
+    <div class="padding text-center">
+        <div>
+            <div class="out_of_search"></div>
+            <div class="mb-15">
+                Нет данных за указанный период
+            </div>
+        </div>
+    </div>
+@endforelse
