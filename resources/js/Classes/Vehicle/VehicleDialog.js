@@ -8,6 +8,8 @@ class vehicleDialog extends Modal {
         this.mark_choices = null;
         this.model_choices = null;
 
+        this.refer = dialog.getElementById('refer').value;
+
         this.init();
     }
 
@@ -69,7 +71,12 @@ class vehicleDialog extends Modal {
             data: data
         })
             .then(response => {
+
+                let data = response.data;
+
                 window.notification.notify( 'success', 'Транспорт был сохранён.');
+
+                window[this.refer].vehicles.push(data.id);
             });
     }
 }

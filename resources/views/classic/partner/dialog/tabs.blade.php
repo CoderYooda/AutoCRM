@@ -101,7 +101,7 @@
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')
                 </div>
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_vehicles{{ $class }}-tab" id="tab_vehicles{{ $class }}">
-                    @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.vehicles')
+                    @include(get_template() . '.partner.dialog.tabs.vehicles')
                 </div>
             </div>
         </div>

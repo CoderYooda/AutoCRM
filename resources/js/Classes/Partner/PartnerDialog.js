@@ -12,6 +12,7 @@ class partnerDialog extends Modal{
         this.bithdayMask = null;
         this.phoneLoginMask = null;
         this.issuedDateMask = null;
+        this.vehicles = [];
         this.init();
     }
 
