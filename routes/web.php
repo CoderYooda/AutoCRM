@@ -33,9 +33,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 //    Route::post('/password/reset', 'Auth\PasswordController@reset');
 
 
-
-    #Статистика и панель управления
-    Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
+    Route::get('/', function (){
+        return redirect(route('StoreIndex'));
+    });
 
     #Производители
     Route::post('/suppliers/store', 'SupplierController@store')->name('StoreSupplier');

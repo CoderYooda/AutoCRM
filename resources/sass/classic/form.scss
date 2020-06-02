@@ -2,6 +2,70 @@
 //    background-color: #fff!important;
 //    color: #404040!important;
 //}
+/*
+Switch
+*/
+.ui-switch {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 18px;
+    border-radius: 30px;
+    background-color: #22b66e;
+    margin: 0; }
+.ui-switch input {
+    position: absolute;
+    opacity: 0; }
+.ui-switch input:checked + i:before {
+    top: 50%;
+    bottom: 50%;
+    left: 50%;
+    right: 5px;
+    border-width: 0;
+    border-radius: 5px; }
+.ui-switch input:checked + i:after {
+    margin-left: 15px; }
+.ui-switch i:before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 30px;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s; }
+.ui-switch i:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    background-color: #fff;
+    width: 16px;
+    top: 1px;
+    bottom: 1px;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+    -webkit-transition: margin 0.3s;
+    transition: margin 0.3s; }
+
+.ui-switch-md {
+    width: 40px;
+    height: 24px; }
+.ui-switch-md input:checked + i:after {
+    margin-left: 17px; }
+.ui-switch-md i:after {
+    width: 22px; }
+
+.ui-switch-lg {
+    width: 50px;
+    height: 30px; }
+.ui-switch-lg input:checked + i:after {
+    margin-left: 21px; }
+.ui-switch-lg i:after {
+    width: 28px; }
 
 .flash{
      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;

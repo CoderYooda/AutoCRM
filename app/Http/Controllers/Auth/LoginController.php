@@ -30,7 +30,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/statistic';
+    protected $redirectTo = '/store';
 
     /**
      * Create a new controller instance.
@@ -73,6 +73,11 @@ class LoginController extends Controller
     public function password()
     {
         return 'password';
+    }
+
+    public function redirectTo()
+    {
+        return '/store';
     }
 
     public function login(Request $request)

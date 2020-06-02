@@ -7,7 +7,7 @@ class statisticPage {
 
         this.chart = null;
 
-        this.sections = [];
+        this.sections = [1, 2, 3, 4, 5, 6, 7, 8];
 
         this.graph_data = null;
 
@@ -31,39 +31,41 @@ class statisticPage {
 
     init() {
 
-        let input = document.getElementById('sections');
+        // let input = document.getElementById('sections');
+        //
+        // this.tagify = new Tagify(input, {
+        //         whitelist: this.whitelist,
+        //         maxTags: 8,
+        //         editTags: null,
+        //         dropdown: {
+        //             maxItems: 8,           // <- mixumum allowed rendered suggestions
+        //             classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
+        //             enabled: 0,             // <- show suggestions on focus
+        //             closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+        //         }
+        //     }) //asdad
+        //     .on('add', e => {
+        //         let name = e.detail.data.value;
+        //         let index = this.whitelist.indexOf(name);
+        //
+        //         if(index === -1) this.tagify.removeTags(name);
+        //         else this.sections.push(index);
+        //     })
+        //     .on('remove', e => {
+        //         let name = e.detail.data.value;
+        //         let index_whitelist = this.whitelist.indexOf(name);
+        //         let index_sections = this.sections.indexOf(index_whitelist);
+        //
+        //         this.sections.splice(index_sections, 1);
+        //     });
+        //
+        // this.tagify.addTags(this.whitelist);
 
-        this.tagify = new Tagify(input, {
-                whitelist: this.whitelist,
-                maxTags: 8,
-                editTags: null,
-                dropdown: {
-                    maxItems: 8,           // <- mixumum allowed rendered suggestions
-                    classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
-                    enabled: 0,             // <- show suggestions on focus
-                    closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
-                }
-            }) //asdad
-            .on('add', e => {
-                let name = e.detail.data.value;
-                let index = this.whitelist.indexOf(name);
 
-                if(index === -1) this.tagify.removeTags(name);
-                else this.sections.push(index);
-            })
-            .on('remove', e => {
-                let name = e.detail.data.value;
-                let index_whitelist = this.whitelist.indexOf(name);
-                let index_sections = this.sections.indexOf(index_whitelist);
 
-                this.sections.splice(index_sections, 1);
-            });
-
-        this.tagify.addTags(this.whitelist);
-
-        document.getElementsByClassName('tagify')[0].addEventListener('click', function(){
-            document.getElementsByClassName('tagify__input')[0].click();
-        });
+        //document.getElementsByClassName('tagify')[0].addEventListener('click', function(){
+        //     document.getElementsByClassName('tagify__input')[0].click();
+        // });
 
         //Chart.js
 
@@ -78,15 +80,121 @@ class statisticPage {
             },
 
             options: {
+                // scaleLabel: function (valueObject) {
+                //     return '$' + valueObject.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                // },
+                // tooltipTemplate: function (valueObject) {
+                //     return valueObject.label + ': $' + valueObject.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                // },
                 maintainAspectRatio: false,
                 tooltips: {
-                    mode: 'index',
-                    intersect: false
+                    // Disable the on-canvas tooltip
+                    enabled: false,
+
+                    custom: function(tooltipModel) {
+                        // Tooltip Element
+                        var tooltipEl = document.getElementById('chartjs-tooltip');
+
+                        // Create element on first render
+                        if (!tooltipEl) {
+                            tooltipEl = document.createElement('div');
+                            tooltipEl.id = 'chartjs-tooltip';
+                            tooltipEl.innerHTML = '<table></table>';
+                            document.body.appendChild(tooltipEl);
+                        }
+
+                        // Hide if no tooltip
+                        if (tooltipModel.opacity === 0) {
+                            tooltipEl.style.opacity = 0;
+                            return;
+                        }
+
+                        // Set caret Position
+                        tooltipEl.classList.remove('above', 'below', 'no-transform');
+                        if (tooltipModel.yAlign) {
+                            tooltipEl.classList.add(tooltipModel.yAlign);
+                        } else {
+                            tooltipEl.classList.add('no-transform');
+                        }
+
+                        function getBody(bodyItem) {
+                            return bodyItem.lines;
+                        }
+
+                        // Set Text
+                        if (tooltipModel.body) {
+                            var titleLines = tooltipModel.title || [];
+                            var bodyLines = tooltipModel.body.map(getBody);
+
+                            var innerHtml = '<thead>';
+
+                            titleLines.forEach(function(title) {
+                                innerHtml += '<tr><th>' + title + '</th></tr>';
+                            });
+                            innerHtml += '</thead><tbody>';
+
+                            bodyLines.forEach(function(body, i) {
+
+
+                                let number = new Intl.NumberFormat().format(parseInt(body[0].match(/\d+/)[0])) + ' ₽';
+                                let text = body[0].replace(/[0-9]/g, '');
+
+                                var colors = tooltipModel.labelColors[i];
+                                var style = 'background:' + colors.backgroundColor;
+                                style += '; border-color:' + colors.borderColor;
+                                style += '; border-width: 2px';
+                                var span = '<span style="' + style + '"></span>';
+
+                                innerHtml += '<tr><td>' + span + text + number + '</td></tr>';
+                            });
+                            innerHtml += '</tbody>';
+
+                            var tableRoot = tooltipEl.querySelector('table');
+                            tableRoot.innerHTML = innerHtml;
+                        }
+
+                        // `this` will be the overall tooltip
+                        var position = this._chart.canvas.getBoundingClientRect();
+
+                        // Display, position, and set styles for font
+                        tooltipEl.style.opacity = 1;
+                        tooltipEl.style.background = 'rgba(45, 118, 168, 0.69)';
+                        tooltipEl.style.borderRadius = '3px';
+                        tooltipEl.style.border = '1px solid #2d76a8';
+                        tooltipEl.style.color = '#fff';
+                        tooltipEl.style.position = 'absolute';
+                        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                        tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                        tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                        tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                        tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                        tooltipEl.style.pointerEvents = 'none';
+                    }
                 },
                 responsive: true,
                 scales: {
-                    xAxes: [{ stacked: true }],
-                    yAxes: [{ stacked: true }]
+                    xAxes: [{
+                        stacked: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Дата'
+                        },
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Сумма в рублях'
+                        },
+                        afterTickToLabelConversion : function(q){
+                            for(var tick in q.ticks){
+                                q.ticks[tick] = new Intl.NumberFormat().format(q.ticks[tick]) + ' ₽';
+                            }
+                        }
+                    }]
                 }
             }
         });
@@ -100,13 +208,24 @@ class statisticPage {
         this.showResults();
     }
 
+    initSections(){
+        this.sections = [];
+        if(document.getElementById('partnerOrder').checked){this.sections.push(1)}
+        if(document.getElementById('entrance').checked){this.sections.push(2)}
+        if(document.getElementById('refund').checked){this.sections.push(3)}
+        if(document.getElementById('shipment').checked){this.sections.push(4)}
+        if(document.getElementById('clientOrder').checked){this.sections.push(5)}
+        if(document.getElementById('inWarrant').checked){this.sections.push(6)}
+        if(document.getElementById('outWarrant').checked){this.sections.push(7)}
+        if(document.getElementById('cashMove').checked){this.sections.push(8)}
+    }
+
     openSelectSection(){
         //this.tagify.
     }
 
     showResults() {
-
-        console.log(this.sections);
+        this.initSections();
 
         window.axios({
             method: 'post',
