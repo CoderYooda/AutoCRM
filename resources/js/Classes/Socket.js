@@ -7,9 +7,9 @@ class Socket{
         this.socket = null;
         this.channel = 'system:message';
         this.systemChannel = 'app_base_channel:systemMessage';
-        //this.init();
+        this.init();
         this.ownChannel = [];
-        this.allowedOrigins = "192.168.1.104:* autocrm:* ";
+        this.allowedOrigins = "192.168.1.105:* autocrm:* ";
         console.log('Сокеты подключены');
     }
 

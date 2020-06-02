@@ -97,9 +97,6 @@
                 <div role="tabpanel" class="tab-pane animate text-muted fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif" aria-labelledby="tab_passport{{ $class }}-tab" id="tab_passport{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.passport')
                 </div>
-
-{{--                @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.cars')--}}
-
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_access{{ $class }}-tab" id="tab_access{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')
                 </div>

@@ -86,16 +86,21 @@ class ShipmentsController extends Controller
 //        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
         $shipments = Shipment::where(function($q) use ($request){
 
-            $q->whereHas('partner', function($q) use ($request){
-                $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
-                    ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
-                    ->orWhereHas('phones', function ($query) use ($request) {
-                        $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-                    });
-                });
-            })
-            ->whereHas('articles', function($q){
-                $q->where('refunded_count', 0);
+            $q->where('foundstring', str_replace(["-","!","?",".", ""],  "", trim($request['string'])));
+
+//            $q->whereHas('partner', function($q) use ($request){
+//
+//
+//
+//                $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
+//                    ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
+//                    ->orWhereHas('phones', function ($query) use ($request) {
+//                        $query->where('number', 'LIKE', '%' . $request['string'] .'%');
+//                    });
+//                });
+//            })
+//            ->whereHas('articles', function($q){
+//                $q->where('refunded_count', 0);
             })
             ->where('company_id', Auth::user()->company()->first()->id)
             ->orderBy('created_at', 'DESC')
@@ -352,6 +357,10 @@ class ShipmentsController extends Controller
         #Добавляем к балансу контрагента
         $shipment->partner()->first()->subtraction($shipment->itogo);
 
+
+
+        $shipment->foundstring = str_replace(["-","!","?",".", ""],  "", trim($shipment->id . $shipment->partner->foundstring));
+
         if($request['created_at']){
             $shipment->created_at = $request['created_at'];
         }
@@ -384,6 +393,7 @@ class ShipmentsController extends Controller
 
     public static function getShipments($request)
     {
+
         $size = isset($request['size']) ? $request['size'] : 30;
 
         $field = null;

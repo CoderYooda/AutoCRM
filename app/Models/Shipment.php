@@ -25,6 +25,7 @@ class Shipment extends Model
         'discount',
         'inpercents',
         'comment',
+        'foundstring',
         'created_at'
     ];
 

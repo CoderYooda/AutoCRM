@@ -9,10 +9,17 @@ class SupplierDialog extends Modal{
     }
 
     init(){
+        let object = this;
         let focused = document.getElementById('supplier_dialog_focused');
         if(focused){
             focused.focus();
         }
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
     }
 
     save(elem){

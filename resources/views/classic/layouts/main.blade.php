@@ -10,6 +10,14 @@
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
 
+        <script>
+
+            window.socket_origins = '{{ env('SOCKET_ORIGINS') }}';
+            window.socket_port = '{{ env('SOCKET_PORT') }}';
+            window.socket_domain = '{{ env('SOCKET_DOMAIN') }}';
+
+        </script>
+
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/base.css') }}" rel="stylesheet">
@@ -84,7 +92,8 @@
                             </a>
                         </li>
                     </ul>
-                    <span class="md-auto  mr-auto"><span id="shop_name">{{ Auth::user()->company()->first()->name }}</span></span>
+                    {{--{{ Auth::user()->company()->first()->name }}--}}
+                    <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
                     <div id="current_time">
                         <div class="h">00</div>
                         <div class="m">00</div>

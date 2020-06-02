@@ -244,7 +244,7 @@ class ProductController extends Controller
         $prepared_name = mb_strtolower(str_replace(' ', '', $request['name']));
         $prepared_barcode = mb_strtolower(str_replace(' ', '', $request['barcode']));
 
-        $article->foundstring = $prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name;
+        $article->foundstring = str_replace(["-","!","?",".", ""],  "", trim($prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name));
 
         $article->save();
         $this->status = 200;
@@ -322,20 +322,10 @@ class ProductController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        return Article::
-//        join('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
-//            ->leftJoin('article_store', function ($join) {
-//                $join->on('article_store.article_id', '=', 'articles.id')
-//                    ->where('article_store.store_id', Auth::user()->getStoreFirst()->id);
-//            })
-//            ->select('suppliers.name as supplier',
-//                'article_store.count as isset',
-//                'article_store.midprice as price',
-//                'articles.*')
-            where('articles.company_id', Auth::user()->company()->first()->id)
+        return Article::where('articles.company_id', Auth::user()->company()->first()->id)
             ->where(function ($q) use ($request) {
-                if (isset($request['search']) && $request['search'] != "") {
-                    $q->where('articles.foundstring', 'LIKE', '%' . mb_strtolower(str_replace(' ', '', str_replace('-', '', $request['search']))) . '%');
+                if (isset($request->search) && $request->search != "") {
+                    $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
                 }
             })
             ->where(function ($q) use ($request) {

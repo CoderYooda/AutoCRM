@@ -9,6 +9,7 @@ window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');
 
+window.choices = require('choices.js');
 window.chartjs = require('chart.js');
 
 window.simplebar = require('simplebar/dist/simplebar.min');
@@ -34,7 +35,6 @@ import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
 import Auth from './Classes/Auth.js';
 import Tabs from './Classes/Tabs.js';
-
 
 window.helper = new Helper();
 window.socket = new Socket();

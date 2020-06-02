@@ -33,9 +33,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 //    Route::post('/password/reset', 'Auth\PasswordController@reset');
 
 
-
-    #Статистика и панель управления
-    Route::get('/', 'DashboardController@index')->name('DashboardIndex');// Строгое название
+    Route::get('/', function (){
+        return redirect(route('StoreIndex'));
+    });
 
     #Производители
     Route::post('/suppliers/store', 'SupplierController@store')->name('StoreSupplier');
@@ -195,6 +195,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/user/password/save', 'UserController@passwordStore')->name('UserPassStore');
 
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
+
+    Route::post('/vehicles', 'VehicleController@store')->name('StoreVehicle');
 
     #Картинки
     Route::post('/system/image_upload', 'System\ImageController@upload')->name('uploadImage');

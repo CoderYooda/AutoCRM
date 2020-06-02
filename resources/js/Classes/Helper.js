@@ -312,6 +312,7 @@ class Helper{
     }
     insertParamUrl(key, value)
     {
+        if(value == null){ value = ''}
         key = encodeURI(key); value = encodeURI(value);
 
         var kvp = document.location.search.substr(1).split('&');

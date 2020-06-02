@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\VehicleRequest;
 use App\Models\Partner;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
+    public function store(VehicleRequest $request)
+    {
+
+    }
+
     public static function vehicleDialog(Request $request)
     {
-        $tag = 'vehicleDialog';
-
         $vehicle = Vehicle::find($request->vehicle_id);
 
-        $view = view(get_template() . '.partner.dialog.form_vehicle', compact('request', 'vehicle', 'tag'))
-            ->with('class', 'vehicle')
+        $tag = 'vehicleDialog' . ($vehicle->id ?? '');
+
+        $view = view(get_template() . '.vehicles.dialog.form_vehicle', compact('request', 'vehicle', 'tag'))
+            ->with('class', 'vehicleDialog')
             ->render();
 
         $response = [
