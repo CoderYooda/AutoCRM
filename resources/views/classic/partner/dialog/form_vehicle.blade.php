@@ -5,7 +5,7 @@
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form id="act_form_partner" action="#" method="POST">
-
+l;
         @csrf
 
         @if(isset($vehicle->id))
