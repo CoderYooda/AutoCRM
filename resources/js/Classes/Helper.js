@@ -25,6 +25,7 @@ import scheduleTemplateDialog from "./Schedule/ScheduleTemplateDialog";
 import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
 import supplierDialog from "./Supplier/SupplierDialog";
 import roleDialog from "./Role/RoleDialog";
+import vehicleDialog from "./Vehicle/VehicleDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -70,7 +71,8 @@ const classes = {
     barcodeDialog,
     categoryDialog,
     selectSupplierDialog,
-    supplierDialog
+    supplierDialog,
+    vehicleDialog
 };
 
 const pages = {

@@ -10,4 +10,9 @@ class VehicleMark extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function model()
+    {
+        return $this->hasOne(VehicleModel::class, 'id');
+    }
 }

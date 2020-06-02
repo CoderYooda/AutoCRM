@@ -73,7 +73,7 @@ class PartnerController extends Controller
 
         if($request['partner_id']){
             $tag .= $request['partner_id'];
-            $partner = Partner::with('garage', 'passport')->findOrFail($request['partner_id']);
+            $partner = Partner::with('vehicles', 'passport')->findOrFail($request['partner_id']);
         }
 
 //        if($request['partner_select']){
@@ -89,7 +89,16 @@ class PartnerController extends Controller
 
         $category = Category::findOrFail($request['category_select'] ?: 3);
 
-        return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))->render()]);
+        $view = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
+            ->with('vehicles', Auth::user()->partner->vehicles)
+            ->render();
+
+        $response = [
+            'tag' => $tag,
+            'html' => $view,
+        ];
+
+        return response()->json($response);
     }
 
 //    public static function partnerDialog($request)

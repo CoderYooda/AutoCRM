@@ -39,9 +39,9 @@ class Partner extends Model
         'kpp',
     ];
 
-    public function garage()
+    public function vehicles()
     {
-        return $this->hasMany(Garage::class, 'partner_id', 'id');
+        return $this->hasMany(Vehicle::class, 'partner_id', 'id');
     }
 
     public function pic(){
