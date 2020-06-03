@@ -16,6 +16,22 @@
     transform: rotateZ(90deg);
 }
 
+.choices__inner {
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 1.5px 3.5px 3.75px;
+    font-size: 12px;
+    min-height: 32px;
+    overflow: hidden;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+.choices[data-type*=select-one] .choices__inner {
+    padding-bottom: unset!important;
+}
+
 .loading .preloader{
     display: block;
 }

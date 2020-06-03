@@ -57,37 +57,23 @@ class vehicleDialog extends Modal {
         document.getElementsByName('model_id')[0].value = model_id;
     }
 
-    save() {
+    save(elem){
+        let object = this;
+        if(!window.isXHRloading){
+            window.axform.send(elem, function(response){
+                dd(response);
+                // let data = response.data;
+                // console.log(data.vehicle.partner_id);
+                //
+                // if(data.vehicle.partner_id === undefined) {
+                //     window[this.refer].vehicles.push(data.vehicle.id);
+                //     document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
+                // }
 
-        event.preventDefault();
-
-        let form_element = document.getElementById('save_vehicle_form');
-
-        let data = new FormData(form_element);
-
-        data.append('refer', this.refer);
-
-        window.axios({
-            method: 'post',
-            url: '/vehicles',
-            data: data
-        })
-            .then(response => {
-
-                let data = response.data;
-
-                //window.notification.notify( 'success', 'Транспорт был сохранён.');
-
-                console.log(data.vehicle.partner_id);
-
-                if(data.vehicle.partner_id === undefined) {
-                    window[this.refer].vehicles.push(data.vehicle.id);
-
-                    document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
-                }
-
-                this.finitaLaComedia(true);
+                object.finitaLaComedia(true);
             });
+        }
     }
+
 }
 export default vehicleDialog;

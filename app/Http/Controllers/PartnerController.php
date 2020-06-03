@@ -112,8 +112,6 @@ class PartnerController extends Controller
 
     public function store(PartnerRequest $request)
     {
-        dd($request->all());
-
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать контакты' : 'Создавать контакты');
 
         $partner = Partner::firstOrNew(['id' => $request['id']]);

@@ -1,5 +1,5 @@
 <div data-simplebar style="max-height: 370px;">
-    <ul id="vehicle-list" class="select-list-modal" style="background-color: transparent; padding: 0">
+    <ul id="vehicle-list" class="select-list-modal categories_list " style="background-color: transparent; padding: 0">
         @foreach($vehicles as $vehicle)
             @include('classic.partner.dialog.tabs.includes.list-item', $vehicle)
         @endforeach

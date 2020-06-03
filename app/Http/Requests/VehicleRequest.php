@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class VehicleRequest extends FormRequest
 {
@@ -24,5 +26,16 @@ class VehicleRequest extends FormRequest
             'year' => ['nullable', 'integer', 'min:1950', 'max:' . Carbon::now()->year],
             'numberplate' => ['nullable', 'string']
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if($this->expectsJson()) {
+            throw new HttpResponseException(
+                response()->json(['messages' => $validator->errors()], 422)
+            );
+        }
+
+        parent::failedValidation($validator);
     }
 }
