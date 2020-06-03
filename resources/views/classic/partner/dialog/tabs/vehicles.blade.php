@@ -1,7 +1,7 @@
 <div data-simplebar style="max-height: 370px;">
     <ul class="select-list-modal" style="background-color: transparent; padding: 0">
         @foreach($vehicles as $vehicle)
-            <li id="vehicle_item_{{ $vehicle->id }}" onclick="openDialog('vehicleDialog', '&vehicle_id={{ $vehicle->id }}')" class="pointer d-flex mb-15">
+            <li id="vehicle_item_{{ $vehicle->id }}" onclick="openDialog('vehicleDialog', '&refer={{ $class }}&vehicle_id={{ $vehicle->id }}')" class="pointer d-flex mb-15">
                 <div class="ring-ico">
                     <span class="first_letter">{{ mb_substr($vehicle->mark->name, 0, 1) }}</span>
                 </div>
@@ -17,7 +17,7 @@
         @endforeach
         <li>
             <div class="box pointer">
-                <i onclick="openDialog('vehicleDialog')" class="fa fa-plus-square add-icon"></i>
+                <i onclick="openDialog('vehicleDialog', '&refer={{ $class }}')" class="fa fa-plus-square add-icon"></i>
             </div>
         </li>
     </ul>
