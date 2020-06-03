@@ -7,7 +7,7 @@ class vehicleDialog extends Modal {
 
         this.mark_choices = null;
         this.model_choices = null;
-        this.refer = dialog.querySelector('#refer').value;
+        this.refer = document.getElementById('refer').value;
         this.init();
     }
 
@@ -63,13 +63,19 @@ class vehicleDialog extends Modal {
     }
 
     save(elem){
+
+        event.preventDefault();
+
         if(!window.isXHRloading){
+
             window.axform.send(elem, response => {
 
                 let data = response.data;
 
-                window[this.refer].vehicles.push(data.vehicle.id);
-                document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
+                let vehicle_element =  document.getElementById('vehicle_item_' + data.vehicle.id);
+
+                if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
+                else document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
 
                 this.finitaLaComedia(true);
             });
