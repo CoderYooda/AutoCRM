@@ -29,6 +29,7 @@ class VehicleController extends Controller
         $vehicle->delete();
 
         return response()->json([
+            'vehicle' => $vehicle,
             'message' => 'Транспорт был успешно удалён.',
         ], 200);
     }

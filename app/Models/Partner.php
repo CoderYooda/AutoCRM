@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\HelpController;
+use App\Models\System\Image;
 use App\Traits\OwnedTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -45,11 +46,11 @@ class Partner extends Model
     }
 
     public function pic(){
-        return $this->belongsTo('App\Models\System\Image', 'pic_id');
+        return $this->belongsTo(Image::class, 'pic_id');
     }
 
     public function avatar(){
-        return $this->belongsTo('App\Models\System\Image', 'avatar_id');
+        return $this->belongsTo(Image::class, 'avatar_id');
     }
 
     public function getPicUrl(){

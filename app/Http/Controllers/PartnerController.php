@@ -72,9 +72,9 @@ class PartnerController extends Controller
 
         $partner = null;
 
-        if($request['partner_id']){
-            $tag .= $request['partner_id'];
-            $partner = Partner::with('vehicles', 'passport')->findOrFail($request['partner_id']);
+        if($request->partner_id != null){
+            $tag .= $request->partner_id;
+            $partner = Partner::with('vehicles', 'passport')->findOrFail($request->partner_id);
         }
 
 //        if($request['partner_select']){
@@ -90,8 +90,8 @@ class PartnerController extends Controller
 
         $category = Category::findOrFail($request['category_select'] ?: 3);
 
-        $view = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
-            ->with('vehicles', $partner ? Auth::user()->partner->vehicles : [])
+        $view = view(get_template() . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
+            ->with('vehicles', $partner->vehicles ?? [])
             ->render();
 
         $response = [

@@ -205,6 +205,12 @@ class Helper{
         return amount;
     }
 
+    removeItemFromArrayByValue(array, value) {
+        let index = array.indexOf(value);
+
+        return array.splice(index, 1);
+    }
+
     findGetParameter(parameterName) {
         var result = null,
             tmp = [];

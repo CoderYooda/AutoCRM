@@ -13,13 +13,18 @@ class vehicleDialog extends Modal {
 
     init() {
 
+        let config = {
+            loadingText: 'Загрузка...',
+            noResultsText: 'Совпадений не найдено',
+            noChoicesText: 'Нет вариантов для выбора',
+            itemSelectText: 'Нажмите для выбора',
+        };
+
         let mark_element = document.getElementById('mark');
-        this.mark_choices = new window.choices(mark_element);
+        this.mark_choices = new window.choices(mark_element, config);
 
         let model_element = document.getElementById('model');
-        this.model_choices = new window.choices(model_element);
-
-        console.log(this.refer);
+        this.model_choices = new window.choices(model_element, config);
     }
 
     changeMark() {
@@ -58,19 +63,15 @@ class vehicleDialog extends Modal {
     }
 
     save(elem){
-        let object = this;
         if(!window.isXHRloading){
-            window.axform.send(elem, function(response){
-                dd(response);
-                // let data = response.data;
-                // console.log(data.vehicle.partner_id);
-                //
-                // if(data.vehicle.partner_id === undefined) {
-                //     window[this.refer].vehicles.push(data.vehicle.id);
-                //     document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
-                // }
+            window.axform.send(elem, response => {
 
-                object.finitaLaComedia(true);
+                let data = response.data;
+
+                window[this.refer].vehicles.push(data.vehicle.id);
+                document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
+
+                this.finitaLaComedia(true);
             });
         }
     }
