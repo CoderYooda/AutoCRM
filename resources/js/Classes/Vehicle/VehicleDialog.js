@@ -8,7 +8,8 @@ class vehicleDialog extends Modal {
         this.mark_choices = null;
         this.model_choices = null;
         this.modify_choices = null;
-        this.refer = document.getElementById('refer').value;
+        this.refer = dialog.querySelector('#refer').value;
+
         this.init();
     }
 
@@ -29,6 +30,12 @@ class vehicleDialog extends Modal {
 
         let modify_element = document.getElementById('modify');
         this.modify_choices = new window.choices(modify_element, config);
+    }
+
+    parserVinCode() {
+        let vin_code = document.getElementById('vin_code').value;
+
+
     }
 
     changeMark() {
@@ -113,13 +120,13 @@ class vehicleDialog extends Modal {
             window.axform.send(elem, response => {
 
                 let data = response.data;
+                this.finitaLaComedia(true);
 
                 let vehicle_element =  document.getElementById('vehicle_item_' + data.vehicle.id);
 
                 if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
                 else document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
 
-                this.finitaLaComedia(true);
             });
         }
     }

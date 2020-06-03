@@ -17,6 +17,7 @@ class CreateVehiclesTable extends Migration
             $table->unsignedBigInteger('mark_id');
             $table->unsignedBigInteger('model_id');
             $table->unsignedBigInteger('modify_id');
+
             $table->string('color')->nullable();
             $table->string('type')->nullable();
             $table->string('vin_code')->nullable();

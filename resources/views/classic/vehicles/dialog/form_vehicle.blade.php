@@ -19,6 +19,14 @@
                 <input type="hidden" name="model_id" value="{{ $vehicle->model_id ?? 1 }}" />
                 <input type="hidden" name="modify_id" value="{{ $vehicle->modify_id ?? 1 }}" />
 
+                <div class="form-group d-flex">
+                    <label for="vin_code">VIN:</label>
+                    <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
+                           @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
+                           class="form-control" />
+                    <button onclick="{{ $tag }}.parserVinCode()" class="button primary">Найти</button>
+                </div>
+
                 <div class="form-group">
                     <label>Марка:</label>
                     <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control">
@@ -51,9 +59,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>VIN:</label>
-                    <input onclick="this.select();" type="text" name="vin_code"
-                           @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
+                    <label>Год:</label>
+                    <input onclick="this.select();" type="text" name="year"
+                           @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
                            class="form-control" />
                 </div>
 
@@ -64,12 +72,6 @@
                            class="form-control" />
                 </div>
 
-                <div class="form-group">
-                    <label>Год:</label>
-                    <input onclick="this.select();" type="text" name="year"
-                           @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
-                           class="form-control" />
-                </div>
             </div>
 
         </div>
