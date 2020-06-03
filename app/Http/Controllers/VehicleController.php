@@ -13,15 +13,24 @@ class VehicleController extends Controller
 {
     public function store(VehicleRequest $request)
     {
-        $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $request->except('id', '_token'));
-        //$vehicle_html = view('')
+        $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $request->except('id', '_token', 'refer'));
 
         return response()->json([
             'vehicle' => $vehicle,
             'message' => 'Транспорт был сохранён.',
-            'vehicle_html' => $vehicle
+            'html' => view(get_template() . '.partner.dialog.tabs.includes.list-item', compact('vehicle'))
+                ->with('class', $request->refer)
+                ->render()
         ], 200);
-        //return response()->json($vehicle);
+    }
+
+    public function destroy(Vehicle $vehicle)
+    {
+        $vehicle->delete();
+
+        return response()->json([
+            'message' => 'Транспорт был успешно удалён.',
+        ], 200);
     }
 
     public function list(VehicleMark $mark)

@@ -1,21 +1,9 @@
 <div data-simplebar style="max-height: 370px;">
-    <ul class="select-list-modal" style="background-color: transparent; padding: 0">
+    <ul id="vehicle-list" class="select-list-modal" style="background-color: transparent; padding: 0">
         @foreach($vehicles as $vehicle)
-            <li id="vehicle_item_{{ $vehicle->id }}" onclick="openDialog('vehicleDialog', '&refer={{ $class }}&vehicle_id={{ $vehicle->id }}')" class="pointer d-flex mb-15">
-                <div class="ring-ico">
-                    <span class="first_letter">{{ mb_substr($vehicle->mark->name, 0, 1) }}</span>
-                </div>
-                <div class="list-title">
-                    {{ $vehicle->mark->name }}
-                    <div class="secondary">{{ $vehicle->model->name }}</div>
-                </div>
-                <div class="list-body">
-                    <div class="date">Год:</div>
-                    <div class="secondary">{{ $vehicle->year }}</div>
-                </div>
-            </li>
+            @include('classic.partner.dialog.tabs.includes.list-item', $vehicle)
         @endforeach
-        <li>
+        <li id="vehicle_item_create">
             <div class="box pointer">
                 <i onclick="openDialog('vehicleDialog', '&refer={{ $class }}')" class="fa fa-plus-square add-icon"></i>
             </div>
