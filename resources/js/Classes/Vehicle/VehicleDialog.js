@@ -7,7 +7,7 @@ class vehicleDialog extends Modal {
 
         this.mark_choices = null;
         this.model_choices = null;
-        this.refer = dialog.getElementById('refer').value;
+        this.refer = dialog.querySelector('#refer').value;
         this.init();
     }
 

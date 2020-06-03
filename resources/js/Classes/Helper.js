@@ -252,16 +252,6 @@ class Helper{
                     //height: true
                 });
         }
-
-        // let myLastTab = myTabsCollection[myTabsCollection.length-1];
-        // let myLastTabInit = myLastTab.Tab;
-        // myLastTabInit.show();
-        // myLastTab.addEventListener('show.bs.tab', function(event){
-        //     // do some cool stuff
-        //     // event.target is myLastTab
-        //     // event.relatedTarget is the previous active tab
-        //     dd(1);
-        // }, false);
     }
 
     printDocument(doc, id, data = null){

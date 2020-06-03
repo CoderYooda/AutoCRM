@@ -1,33 +1,4 @@
 <div class="modal-body">
-{{--    <div id="myTabsWrapper">--}}
-
-{{--        <!-- Nav tabs -->--}}
-{{--        <ul id="myTabs" class="nav nav-tabs" role="tablist">--}}
-{{--            <li role="presentation" class="active">--}}
-{{--                <a id="home-tab" href="#home" data-toggle="tab" data-height="true" aria-controls="home" aria-selected="true" role="tab">Home</a>--}}
-{{--            </li>--}}
-{{--            <li role="presentation">--}}
-{{--                <a id="profile-tab" href="#profile" data-toggle="tab" data-height="true" aria-controls="profile" aria-selected="false" role="tab">Profile</a>--}}
-{{--            </li>--}}
-{{--            <li role="presentation">--}}
-{{--                <a id="messages-tab" href="#messages" data-toggle="tab" data-height="true" aria-controls="messages" aria-selected="false" role="tab">Messages</a>--}}
-{{--            </li>--}}
-{{--            <li role="presentation">--}}
-{{--                <a id="settings-tab" href="#settings" data-toggle="tab" data-height="true" aria-controls="settings" aria-selected="false" role="tab">Settings</a>--}}
-{{--            </li>--}}
-{{--        </ul>--}}
-
-{{--        <!-- Tab panes -->--}}
-{{--        <div class="tab-content">--}}
-{{--            <div role="tabpanel" class="tab-pane active" aria-labelledby="home-tab" id="home">...</div>--}}
-{{--            <div role="tabpanel" class="tab-pane" aria-labelledby="profile-tab" id="profile">...</div>--}}
-{{--            <div role="tabpanel" class="tab-pane" aria-labelledby="messages-tab" id="messages">...</div>--}}
-{{--            <div role="tabpanel" class="tab-pane" aria-labelledby="settings-tab" id="settings">...</div>--}}
-{{--        </div>--}}
-
-{{--    </div>--}}
-
-
     <div class="row">
         <div class="col-sm-5 no-pr d-flex">
             <ul class="nav" id="partner_tabs" role="tablist">

@@ -186,31 +186,42 @@ class partnerDialog extends Modal{
         });
     }
 
-    activateTab(tag){
+    activateTab(tag, elem){
         let object = this;
         console.log(1);
-        var container = this.root_dialog.querySelector('#act_form_partner');
 
-        var links = container.getElementsByClassName('nav-item');
+        var container = this.root_dialog.querySelector('#fl_ul_tabs');
+
+        var links = container.querySelectorAll('.nav-item a');
 
         [].forEach.call(links, function(elem){
-            if(elem.classList.contains('main_tab')){
-                elem.classList.remove('active');
-                elem.classList.add('active');
-            } else {
-                elem.classList.remove('active');
-            }
+            elem.classList.remove('active');
         });
-        var tabs = container.getElementsByClassName('tab-pane');
+        elem.querySelector('a').classList.add('active');
 
-        [].forEach.call(tabs, function(elem){
-            if(elem.classList.contains('main_tab')){
-                elem.classList.remove('active');
-                elem.classList.add('active');
-            } else {
-                elem.classList.remove('active');
-            }
-        });
+
+        // var container = this.root_dialog.querySelector('#act_form_partner');
+        //
+        // var links = container.getElementsByClassName('nav-item');
+        //
+        // [].forEach.call(links, function(elem){
+        //     if(elem.classList.contains('main_tab')){
+        //         elem.classList.remove('active');
+        //         elem.classList.add('active');
+        //     } else {
+        //         elem.classList.remove('active');
+        //     }
+        // });
+        // var tabs = container.getElementsByClassName('tab-pane');
+        //
+        // [].forEach.call(tabs, function(elem){
+        //     if(elem.classList.contains('main_tab')){
+        //         elem.classList.remove('active');
+        //         elem.classList.add('active');
+        //     } else {
+        //         elem.classList.remove('active');
+        //     }
+        // });
 
         var activate;
         var deactivate;
@@ -236,6 +247,7 @@ class partnerDialog extends Modal{
                 elem.disabled = true;
             });
         });
+        //helper.initTabs('partner_tabs');
     }
 
     addPhone(element){

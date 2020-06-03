@@ -33,12 +33,12 @@
         <input type="hidden" name="search" value="@if(isset($request) && isset($request['search'])){{ $request['search'] }}@else @endif">
 
         <div class="modal-header tab-container">
-            <ul class="nav header_selects_navs">
+            <ul id="fl_ul_tabs" class="nav header_selects_navs">
                 <li class="nav-item" onclick="window.{{ $class }}.activateTab('fl', this);">
-                    <a href="#physial_tab" class="button primary mr-15 tab-btn @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif"  data-toggle="tab" data-target="#physial_tab">Физическое лицо</a>
+                    <a class="button primary mr-15 tab-btn @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif" >Физическое лицо</a>
                 </li>
                 <li class="nav-item" onclick="window.{{ $class }}.activateTab('ul', this);">
-                    <a href="#uridical_tab" class="button primary tab-btn @if(isset($partner) && !$partner['isfl']) active @endif"  data-toggle="tab" data-target="#uridical_tab">Юридическое лицо</a>
+                    <a class="button primary tab-btn @if(isset($partner) && !$partner['isfl']) active @endif" >Юридическое лицо</a>
                 </li>
             </ul>
         </div>
