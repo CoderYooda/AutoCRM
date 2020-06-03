@@ -18,6 +18,8 @@ class vehicleDialog extends Modal {
 
         let model_element = document.getElementById('model');
         this.model_choices = new window.choices(model_element);
+
+        console.log(this.refer);
     }
 
     changeMark() {

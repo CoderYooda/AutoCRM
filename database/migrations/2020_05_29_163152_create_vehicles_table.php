@@ -10,7 +10,7 @@ class CreateVehiclesTable extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('partner_id');
+            $table->unsignedBigInteger('partner_id')->nullable();
             $table->unsignedBigInteger('mark_id');
             $table->unsignedBigInteger('model_id');
             $table->string('vin_code');

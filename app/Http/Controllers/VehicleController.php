@@ -13,7 +13,9 @@ class VehicleController extends Controller
 {
     public function store(VehicleRequest $request)
     {
-        dd($request->all());
+        if(isset($request->id)) {
+
+        }
     }
 
     public function list(VehicleMark $mark)
