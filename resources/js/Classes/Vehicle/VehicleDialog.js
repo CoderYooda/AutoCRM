@@ -63,15 +63,17 @@ class vehicleDialog extends Modal {
     }
 
     save(elem){
-        if(!window.isXHRloading){
-            window.axform.send(elem, response => {
 
+        event.preventDefault();
+
+        if(!window.isXHRloading){
+
+            window.axform.send(elem, response => {
                 let data = response.data;
                 this.finitaLaComedia(true);
-                document.getElementById('vehicle_item_create').before(window.helper.createElementFromHTML(data.html));
-
-
-
+                let vehicle_element =  document.getElementById('vehicle_item_' + data.vehicle.id);
+                if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
+                else document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
             });
         }
     }

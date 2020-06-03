@@ -13,7 +13,15 @@
                 @if(isset($vehicle))
                     <input type="hidden" name="id" value="{{ $vehicle->id }}">
                 @endif
-                
+                <div class="form-group">
+                    <label for="vin_code">VIN:</label>
+                    <div class="d-flex">
+                        <div class="form-group d-flex w-100 mb-0">
+                            <input onclick="this.select();" id="vin_code" type="text"  name="vin_code" class="form-control search mr-15" placeholder="VIN">
+                            <button class="button" type="button">Пробить вин</button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label>Марка:</label>
@@ -24,7 +32,7 @@
                     </select>
                 </div>
 
-                <input type="hidden" id="refer" value="{{ request('refer') }}">
+                <input type="hidden" id="refer" name="refer" value="{{ request('refer') }}">
                 <input type="hidden" name="mark_id" value="{{ $vehicle->mark->id ?? 1 }}" />
                 <input type="hidden" name="model_id" value="{{ $vehicle->model->id ?? 1 }}" />
 
@@ -37,13 +45,6 @@
                             @endforeach
                         @endif
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <label>VIN:</label>
-                    <input onclick="this.select();" type="text" name="vin_code"
-                           @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
-                           class="form-control" />
                 </div>
 
                 <div class="form-group">
