@@ -218,7 +218,6 @@ class Helper{
         return result;
     }
 
-
     createElementFromHTML(htmlString) {
         var div = document.createElement('div');
         div.innerHTML = htmlString.trim();
