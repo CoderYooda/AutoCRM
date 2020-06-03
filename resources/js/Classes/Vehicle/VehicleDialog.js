@@ -78,7 +78,13 @@ class vehicleDialog extends Modal {
 
                 window.notification.notify( 'success', 'Транспорт был сохранён.');
 
-                window[this.refer].vehicles.push(data.id);
+                console.log(data.partner_id);
+
+                if(data.partner_id === undefined) {
+                    window[this.refer].vehicles.push(data.id);
+                }
+
+                this.finitaLaComedia();
             });
     }
 }

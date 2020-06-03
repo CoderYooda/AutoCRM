@@ -68,6 +68,11 @@ class partnerDialog extends Modal{
     save(elem){
         let object = this;
         if(!window.isXHRloading){
+
+            if(this.vehicles.length !== 0) {
+                elem.append('vehicle_ids[]', this.vehicles);
+            }
+
             window.axform.send(elem, function(e){
                 object.finitaLaComedia(true);
             });

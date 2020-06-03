@@ -13,9 +13,9 @@ class CreateVehiclesTable extends Migration
             $table->unsignedBigInteger('partner_id')->nullable();
             $table->unsignedBigInteger('mark_id');
             $table->unsignedBigInteger('model_id');
-            $table->string('vin_code');
-            $table->integer('year');
-            $table->string('numberplate');
+            $table->string('vin_code')->nullable();
+            $table->integer('year')->nullable();
+            $table->string('numberplate')->nullable();
             $table->timestamps();
         });
     }
