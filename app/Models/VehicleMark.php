@@ -11,8 +11,8 @@ class VehicleMark extends Model
 
     public $timestamps = false;
 
-    public function model()
+    public function models()
     {
-        return $this->hasOne(VehicleModel::class, 'id');
+        return $this->hasMany(VehicleModel::class, 'mark_id', 'id');
     }
 }

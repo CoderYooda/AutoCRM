@@ -16,21 +16,30 @@
 
                 <div class="form-group">
                     <label>Марка:</label>
-                    <input id="mark" onclick="this.select();" type="text" name="mark_id"
-                           @if(isset($vehicle)) value="{{ $vehicle->mark->name }}" @endif
-                           class="form-control" />
+                    <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control">
+                        @foreach($marks as $mark)
+                            <option @if($vehicle && $vehicle->mark->name == $mark->name) selected @endif value="{{ $mark->id }}">{{ $mark->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
+
+                <input type="hidden" name="mark_id" value="{{ $vehicle->mark->id ?? -1 }}" />
+                <input type="hidden" name="model_id" value="{{ $vehicle->model->id ?? -1 }}" />
 
                 <div class="form-group">
                     <label>Модель:</label>
-                    <input onclick="this.select();" type="text" name="model_id"
-                           @if(isset($vehicle)) value="{{ $vehicle->model->name }}" @endif
-                           class="form-control" />
+                    <select onchange="{{ $tag }}.changeModel()" id="model" data-trigger class="form-control">
+                        @if(count($models))
+                            @foreach($models as $model)
+                                <option @if($vehicle && $vehicle->model->name == $model->name) selected @endif value="{{ $model->id }}">{{ $model->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label>VIN:</label>
-                    <input onclick="this.select();" type="text" name="numberplate"
+                    <input onclick="this.select();" type="text" name="vin_code"
                            @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
                            class="form-control" />
                 </div>

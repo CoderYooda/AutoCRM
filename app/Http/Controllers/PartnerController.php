@@ -65,7 +65,7 @@ class PartnerController extends Controller
 
     }
 
-    public static function partnerDialog($request)
+    public static function partnerDialog(Request $request)
     {
         $tag = 'partnerDialog';
 
@@ -90,7 +90,7 @@ class PartnerController extends Controller
         $category = Category::findOrFail($request['category_select'] ?: 3);
 
         $view = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
-            ->with('vehicles', Auth::user()->partner->vehicles)
+            ->with('vehicles', $partner ? Auth::user()->partner->vehicles : [])
             ->render();
 
         $response = [
