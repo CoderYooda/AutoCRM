@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Partner;
 use App\Http\Controllers\CategoryController;
 use App\Models\User;
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use http\Exception;
 use Illuminate\Http\Request;
@@ -111,6 +112,8 @@ class PartnerController extends Controller
 
     public function store(PartnerRequest $request)
     {
+        dd($request->all());
+
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать контакты' : 'Создавать контакты');
 
         $partner = Partner::firstOrNew(['id' => $request['id']]);
@@ -188,6 +191,10 @@ class PartnerController extends Controller
                 $user->banned_at = Carbon::now();
                 $user->save();
             }
+        }
+
+        if($request->has('vehicle_ids')) {
+            Vehicle::whereIn('id', $request->vehicle_ids)->update(['partner_id' => $partner->id]);
         }
 
         if($request->expectsJson()){

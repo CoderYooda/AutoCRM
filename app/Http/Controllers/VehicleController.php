@@ -13,9 +13,9 @@ class VehicleController extends Controller
 {
     public function store(VehicleRequest $request)
     {
-        if(isset($request->id)) {
+        $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $request->except('id', '_token'));
 
-        }
+        return response()->json($vehicle);
     }
 
     public function list(VehicleMark $mark)
