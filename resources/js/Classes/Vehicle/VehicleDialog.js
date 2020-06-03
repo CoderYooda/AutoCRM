@@ -8,7 +8,7 @@ class vehicleDialog extends Modal {
         this.mark_choices = null;
         this.model_choices = null;
 
-        this.refer = dialog.getElementById('refer').value;
+        this.refer = document.getElementById('refer').value;
 
         this.init();
     }
@@ -20,6 +20,8 @@ class vehicleDialog extends Modal {
 
         let model_element = document.getElementById('model');
         this.model_choices = new window.choices(model_element);
+
+        console.log(this.refer);
     }
 
     changeMark() {

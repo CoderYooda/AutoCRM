@@ -23,7 +23,7 @@
                     </select>
                 </div>
 
-                <input type="hidden" id="refer" value="{{ $request['refer'] }}">
+                <input type="hidden" id="refer" value="{{ request('refer') }}">
                 <input type="hidden" name="mark_id" value="{{ $vehicle->mark->id ?? -1 }}" />
                 <input type="hidden" name="model_id" value="{{ $vehicle->model->id ?? -1 }}" />
 
