@@ -14,8 +14,14 @@ class VehicleController extends Controller
     public function store(VehicleRequest $request)
     {
         $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $request->except('id', '_token'));
+        //$vehicle_html = view('')
 
-        return response()->json($vehicle);
+        return response()->json([
+            'vehicle' => $vehicle,
+            'message' => 'Транспорт был сохранён.',
+            'vehicle_html' => $vehicle
+        ], 200);
+        //return response()->json($vehicle);
     }
 
     public function list(VehicleMark $mark)

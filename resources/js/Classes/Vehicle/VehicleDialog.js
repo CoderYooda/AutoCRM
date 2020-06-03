@@ -74,7 +74,7 @@ class vehicleDialog extends Modal {
 
                 let data = response.data;
 
-                window.notification.notify( 'success', 'Транспорт был сохранён.');
+                //window.notification.notify( 'success', 'Транспорт был сохранён.');
 
                 console.log(data.partner_id);
 
