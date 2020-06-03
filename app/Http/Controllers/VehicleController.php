@@ -27,14 +27,12 @@ class VehicleController extends Controller
     public function list(VehicleMark $mark)
     {
         $marks = [];
-
         foreach ($mark->models as $model) {
             $marks[] = [
                 'value' => $model->id,
                 'label' => $model->name
             ];
         }
-
         return response()->json($marks);
     }
 
