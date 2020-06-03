@@ -13,6 +13,7 @@
                 @if(isset($vehicle))
                     <input type="hidden" name="id" value="{{ $vehicle->id }}">
                 @endif
+                
 
                 <div class="form-group">
                     <label>Марка:</label>

@@ -67,11 +67,11 @@ class vehicleDialog extends Modal {
             window.axform.send(elem, response => {
 
                 let data = response.data;
-
-                window[this.refer].vehicles.push(data.vehicle.id);
-                document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
-
                 this.finitaLaComedia(true);
+                document.getElementById('vehicle_item_create').before(window.helper.createElementFromHTML(data.html));
+
+
+
             });
         }
     }
