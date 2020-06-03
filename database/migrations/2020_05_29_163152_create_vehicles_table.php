@@ -10,12 +10,19 @@ class CreateVehiclesTable extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->bigIncrements('id');
+
             $table->unsignedBigInteger('partner_id')->nullable();
+            $table->foreign('partner_id')->on('partners')->references('id')->onDelete('cascade');
+
             $table->unsignedBigInteger('mark_id');
             $table->unsignedBigInteger('model_id');
+            $table->unsignedBigInteger('modify_id');
+            $table->string('color')->nullable();
+            $table->string('type')->nullable();
             $table->string('vin_code')->nullable();
             $table->integer('year')->nullable();
             $table->string('numberplate')->nullable();
+
             $table->timestamps();
         });
     }

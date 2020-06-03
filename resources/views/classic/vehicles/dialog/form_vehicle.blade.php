@@ -14,25 +14,37 @@
                     <input type="hidden" name="id" value="{{ $vehicle->id }}">
                 @endif
 
+                <input type="hidden" id="refer" name="refer" value="{{ request('refer') }}">
+                <input type="hidden" name="mark_id" value="{{ $vehicle->mark_id ?? 1 }}" />
+                <input type="hidden" name="model_id" value="{{ $vehicle->model_id ?? 1 }}" />
+                <input type="hidden" name="modify_id" value="{{ $vehicle->modify_id ?? 1 }}" />
+
                 <div class="form-group">
                     <label>Марка:</label>
                     <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control">
                         @foreach($marks as $mark)
-                            <option @if($vehicle && $vehicle->mark->name == $mark->name) selected @endif value="{{ $mark->id }}">{{ $mark->name }}</option>
+                            <option @if($vehicle && $vehicle->mark_id == $mark->id) selected @endif value="{{ $mark->id }}">{{ $mark->name }}</option>
                         @endforeach
                     </select>
                 </div>
-
-                <input type="hidden" id="refer" name="refer" value="{{ request('refer') }}">
-                <input type="hidden" name="mark_id" value="{{ $vehicle->mark->id ?? 1 }}" />
-                <input type="hidden" name="model_id" value="{{ $vehicle->model->id ?? 1 }}" />
 
                 <div class="form-group">
                     <label>Модель:</label>
                     <select onchange="{{ $tag }}.changeModel()" id="model" data-trigger class="form-control">
                         @if(count($models))
                             @foreach($models as $model)
-                                <option @if($vehicle && $vehicle->model->name == $model->name) selected @endif value="{{ $model->id }}">{{ $model->name }}</option>
+                                <option @if($vehicle && $vehicle->model_id == $model->id) selected @endif value="{{ $model->id }}">{{ $model->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Модификация:</label>
+                    <select onchange="{{ $tag }}.changeModify()" id="modify" data-trigger class="form-control">
+                        @if(count($modifies))
+                            @foreach($modifies as $modify)
+                                <option @if($vehicle && $vehicle->modify_id == $modify->id) selected @endif value="{{ $modify->id }}">{{ $modify->name }}</option>
                             @endforeach
                         @endif
                     </select>

@@ -19,6 +19,11 @@ class Vehicle extends Model
         return $this->hasOne(VehicleModel::class, 'id', 'model_id');
     }
 
+    public function modify()
+    {
+        return $this->hasOne(VehicleModify::class, 'id', 'modify_id');
+    }
+
     public function getFullNameAttribute()
     {
         return $this->mark->name . ' ' . $this->model->name;

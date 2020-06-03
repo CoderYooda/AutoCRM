@@ -7,6 +7,7 @@ class vehicleDialog extends Modal {
 
         this.mark_choices = null;
         this.model_choices = null;
+        this.modify_choices = null;
         this.refer = document.getElementById('refer').value;
         this.init();
     }
@@ -25,6 +26,9 @@ class vehicleDialog extends Modal {
 
         let model_element = document.getElementById('model');
         this.model_choices = new window.choices(model_element, config);
+
+        let modify_element = document.getElementById('modify');
+        this.modify_choices = new window.choices(modify_element, config);
     }
 
     changeMark() {
@@ -33,9 +37,11 @@ class vehicleDialog extends Modal {
         let model_element = document.getElementById('model');
 
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
+        let model_id = model_element.options[model_element.selectedIndex].value;
 
         document.getElementsByName('mark_id')[0].value = mark_id;
 
+        //Список моделей
         window.axios({
             method: 'get',
             url: '/models/' + mark_id + '/list',
@@ -47,19 +53,55 @@ class vehicleDialog extends Modal {
                 this.model_choices.clearChoices();
                 this.model_choices.setChoices(data);
 
-                let model_id = data[0].value;
+                model_id = data[0].value;
 
                 this.model_choices.setChoiceByValue(model_id);
                 this.changeModel();
             });
     }
 
-    changeModel() {
+    changeModel(model_id = null) {
         let model_element = document.getElementById('model');
 
-        let model_id = model_element.options[model_element.selectedIndex].value;
+        if(model_id == null) {
+            model_id = model_element.options[model_element.selectedIndex].value;
+        }
 
         document.getElementsByName('model_id')[0].value = model_id;
+
+        //Обновление списка модификаций
+
+        let mark_element = document.getElementById('mark');
+        let mark_id = mark_element.options[mark_element.selectedIndex].value;
+
+        //Список модификаций
+        window.axios({
+            method: 'get',
+            url: '/modifies/' + mark_id + '/' + model_id + '/list',
+        })
+            .then(response => {
+
+                let data = response.data;
+
+                this.modify_choices.clearChoices();
+                this.modify_choices.setChoices(data);
+
+                let modify_id = data[0].value;
+
+                this.modify_choices.setChoiceByValue(modify_id);
+
+                this.changeModify();
+            });
+    }
+
+    changeModify(modify_id = null) {
+        let modify_element = document.getElementById('modify');
+
+        if(modify_id == null) {
+            modify_id = modify_element.options[modify_element.selectedIndex].value;
+        }
+
+        document.getElementsByName('modify_id')[0].value = modify_id;
     }
 
     save(elem){

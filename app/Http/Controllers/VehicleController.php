@@ -7,6 +7,7 @@ use App\Models\Partner;
 use App\Models\Vehicle;
 use App\Models\VehicleMark;
 use App\Models\VehicleModel;
+use App\Models\VehicleModify;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
@@ -34,16 +35,34 @@ class VehicleController extends Controller
         ], 200);
     }
 
-    public function list(VehicleMark $mark)
+    public function modelList(VehicleMark $mark)
     {
-        $marks = [];
+        $models = [];
+
         foreach ($mark->models as $model) {
-            $marks[] = [
+            $models[] = [
                 'value' => $model->id,
                 'label' => $model->name
             ];
         }
-        return response()->json($marks);
+
+        return response()->json($models);
+    }
+
+    public function modifyList(VehicleMark $mark, VehicleModel $model)
+    {
+        $modify_list = VehicleModify::where(['mark_id' => $mark->id, 'model_id' => $model->id])->get();
+
+        $modifies = [];
+
+        foreach ($modify_list as $modify) {
+            $modifies[] = [
+                'value' => $modify->id,
+                'label' => $modify->name
+            ];
+        }
+
+        return response()->json($modifies);
     }
 
     public static function vehicleDialog(Request $request)
@@ -53,10 +72,12 @@ class VehicleController extends Controller
         $tag = 'vehicleDialog' . ($vehicle->id ?? '');
 
         $mark_id = $vehicle ? $vehicle->mark_id : VehicleMark::first()->id;
+        $model_id = $vehicle ? $vehicle->model_id : VehicleModel::first()->id;
 
         $models = VehicleModel::where('mark_id', $mark_id)->get();
+        $modifies = VehicleModify::where(['mark_id' => $mark_id, 'model_id' => $model_id])->get();
 
-        $view = view(get_template() . '.vehicles.dialog.form_vehicle', compact('request', 'vehicle', 'tag', 'models'))
+        $view = view(get_template() . '.vehicles.dialog.form_vehicle', compact('request', 'vehicle', 'tag', 'models', 'modifies'))
             ->with('marks', VehicleMark::all())
             ->render();
 
