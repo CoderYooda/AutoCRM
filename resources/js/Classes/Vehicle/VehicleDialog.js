@@ -65,6 +65,8 @@ class vehicleDialog extends Modal {
 
         let data = new FormData(form_element);
 
+        data.append('refer', this.refer);
+
         window.axios({
             method: 'post',
             url: '/vehicles',
@@ -76,13 +78,15 @@ class vehicleDialog extends Modal {
 
                 //window.notification.notify( 'success', 'Транспорт был сохранён.');
 
-                console.log(data.partner_id);
+                console.log(data.vehicle.partner_id);
 
-                if(data.partner_id === undefined) {
-                    window[this.refer].vehicles.push(data.id);
+                if(data.vehicle.partner_id === undefined) {
+                    window[this.refer].vehicles.push(data.vehicle.id);
+
+                    document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
                 }
 
-                this.finitaLaComedia();
+                this.finitaLaComedia(true);
             });
     }
 }

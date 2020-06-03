@@ -69,14 +69,25 @@ class partnerDialog extends Modal{
         let object = this;
         if(!window.isXHRloading){
 
-            if(this.vehicles.length !== 0) {
-                elem.append('vehicle_ids[]', this.vehicles);
-            }
-
             window.axform.send(elem, function(e){
                 object.finitaLaComedia(true);
             });
         }
+    }
+
+    deleteVehicle(vehicle_id) {
+
+        event.preventDefault();
+
+        window.axios({
+            method: 'post',
+            url: '/vehicles/'+ vehicle_id,
+            data: {
+                _method: 'DELETE'
+            }
+        }).then(response => {
+            document.getElementById('vehicle_item_' + vehicle_id).remove();
+        });
     }
 
     openCategoryModal(category_selected = null){

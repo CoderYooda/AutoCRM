@@ -62,6 +62,9 @@ class PartnerRequest extends FormRequest
             $rules['phone'] = ['unique:users'];
         }
 
+        $rules['vehicle_ids'] = ['nullable', 'array'];
+        $rules['vehicle_ids.*'] = ['exists:vehicles,id'];
+
 //        foreach($this->store as $id => $store){
 //            if(isset($store['isset']) && $store['isset'] == true){
 //                $rules['store.' . $id . '.location'] = [ 'max:250'];
