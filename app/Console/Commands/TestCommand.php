@@ -37,33 +37,25 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        $milliseconds = 2000;
 
-        $curl = curl_init();
+        $half = 1000;
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://vindecoder.p.rapidapi.com/decode_vin?vin=WVWZZZ6XZ1W017671",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "x-rapidapi-host: vindecoder.p.rapidapi.com",
-                "x-rapidapi-key: 6b6b458a3amsh08a05d2cd2b5fccp1a8d60jsn69286d5090a5"
-            ),
-        ));
+        $lamp = true;
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+        do {
+            $milliseconds--;
 
-        curl_close($curl);
+            if($milliseconds == $half) {
+                $half = $milliseconds / 2;
 
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            echo $response;
+                $lamp = !$lamp;
+
+                $this->info('MILLISECONDS: ' . $milliseconds . ', LAMP: ' . ($lamp ? 'on' : 'off'));
+            }
         }
+        while($milliseconds > 0);
+
+        $this->info('answer: ' . ($lamp ? 'on' : 'off'));
     }
 }

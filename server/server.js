@@ -13,14 +13,16 @@ var io = require('socket.io')(6001,{
 //Посредник авторизации
 io.use(function (socket,next) {
 
-    console.log(process.env.SOCKET_DOMAIN);
+    if(!socket_doamain){
+        console.log('Домен заменен на autocrm');
+        socket_doamain = 'autocrm';
+    }
 
     request.get({
         url:'http://' + socket_doamain + '/ws/check-auth',
         headers: {cookie : socket.request.headers.cookie},
         json: true,
     } , function(error, response, json){
-
 
         return json.auth ? next() : next(new Error(' Вы не авторизованы в системе'));
     });
@@ -31,6 +33,10 @@ io.use(function (socket,next) {
 io.on('connection', function(socket){
     socket.on('subscribe', function(channel){
         console.log('Кто кто хочет войти в: ' + channel);
+        if(!socket_doamain){
+            console.log('Домен заменен на autocrm');
+            socket_doamain = 'autocrm';
+        }
         request.get({
             url:'http://' + socket_doamain + '/ws/check-sub/' + channel,
             headers: {cookie : socket.request.headers.cookie},
