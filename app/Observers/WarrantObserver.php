@@ -19,9 +19,8 @@ class WarrantObserver
                 $payable->wsumm = $payable->wsumm - $warrant->summ;
                 $payable->save();
             }
+            $payable->freshWsumm();
         }
-
-        $payable->freshWsumm();
     }
 
     public function deleted(Warrant $warrant)

@@ -110,7 +110,11 @@ class Article extends Model
                 return 'Не уст.';
             }
         } else {
-            return number_format($retail, 2, ',', ' ') . ' ₽';
+            if($isInteger){
+                return (int)$retail;
+            } else {
+                return number_format($retail, 2, ',', ' ') . ' ₽';
+            }
         }
 
     }

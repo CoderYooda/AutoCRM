@@ -34,7 +34,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
 
     Route::get('/', function (){
-        return redirect(route('StoreIndex'));
+        $redir = Auth::user()->hasRole('Суперадмин') ? route('AdminDashboard') : route('StoreIndex');
+        return redirect($redir);
     });
 
     #Производители
@@ -275,6 +276,13 @@ Route::get('/islogged', function(){
 });
 
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
-
 Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUser');
+
+
+
+#Коморка разработчиков
+Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth', 'superAdmin']], function () {
+
+    Route::get('/dashboard', 'Admin\DashboardController@dashboard')->name('AdminDashboard');
+});
 

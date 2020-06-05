@@ -244,6 +244,14 @@ h5{
     text-align: center;
     margin-bottom: 0px;
 }
+.admin_letter{
+    display: block;
+    text-align: center;
+    font-size: 25px;
+    color: #fff;
+    font-weight: bold;
+    opacity: 0.4;
+}
 .no-pr{
     padding-right: 0!important;
 }
@@ -392,6 +400,10 @@ label.label-sm{
     position: relative;
     -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-control:focus{
+    outline-color: #2D76A8;
 }
 .form-control.slim{
     height: 22px!important;

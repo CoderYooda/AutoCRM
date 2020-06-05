@@ -238,7 +238,7 @@ class clientorderDialog extends Modal{
         let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
         let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
         let id = this.root_dialog.querySelector('input[name=id]').value;
-        let refer = 'client_order';
+        let refer = 'ClientOrder';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         partner = parseInt(partner);
         var params = '';

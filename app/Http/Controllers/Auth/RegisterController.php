@@ -135,6 +135,11 @@ class RegisterController extends Controller
         $partner->fio = $data['fio'];
         $partner->company_id = $company->id;
         $partner->store_id = $store->id;
+        $phones_str = '';
+        foreach($partner->phones as $phone){
+            $phones_str .= $phone->number;
+        }
+        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str));
         $partner->save();
 
         Company::flushEventListeners();

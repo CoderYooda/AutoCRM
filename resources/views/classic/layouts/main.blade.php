@@ -38,7 +38,13 @@
                 </div>
                 <div class="top-navs">
                     <ul class="nav top-nav-bar app-top-menu">
-
+                        @can('СуперАдмин')
+                        <li id="actions_link" class="top-nav-item" >
+                            <a class="header-tab ajax-nav" href="{{ route('AdminDashboard') }}">
+                                Панель управления
+                            </a>
+                        </li>
+                        @else
                         @canany(['Смотреть товары','Смотреть заявки поставщикам','Смотреть поступления','Смотреть продажи','Смотреть заказ клиента','Смотреть корректировки'])
                         <li id="store_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('StoreIndex', \App\Http\Controllers\StoreController::getAllowedPage()) }}">
@@ -91,8 +97,8 @@
                                 Статистика
                             </a>
                         </li>
+                        @endcan
                     </ul>
-                    {{--{{ Auth::user()->company()->first()->name }}--}}
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
                     <div id="current_time">
                         <div class="h">00</div>
@@ -138,24 +144,6 @@
                                 </a>
                             </div>
                         </li>
-                        {{--<li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">--}}
-                            {{--<span class="d-flex align-items-center p-10" href="">--}}
-                                 {{--<span class="avatar w-32 mr-3">--}}
-                                    {{--<img src="http://autocrm/images/noavatar.png" alt="...">--}}
-                                 {{--</span>--}}
-                                 {{--{{ Auth::user()->company()->first()->name }}--}}
-                            {{--</span>--}}
-
-                            {{--<div class="dropdown_container">--}}
-                                {{--<div class="arrow"></div>--}}
-                                {{--<a class="element" href="#" onclick="">--}}
-                                    {{--Личный кабинет--}}
-                                {{--</a>--}}
-                                {{--<a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">--}}
-                                    {{--Выход--}}
-                                {{--</a>--}}
-                            {{--</div>--}}
-                        {{--</li>--}}
                         @can('СуперАдмин')
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <span class="d-flex align-items-center p-10" href="">
@@ -177,53 +165,69 @@
             <div id="app" class="app-content">
                 <div class="aside">
                     <ul class="nav">
-                        @can('Смотреть планировщик')
-                        <li>
-                            <a href="{{ route('ScheduleIndex') }}" class="ajax-nav update_url">
-                                    <span class="nav-icon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                <span class="nav-text">Календарь</span>
-                            </a>
-                        </li>
-                        @endcan
-                        @can('Создавать денежные операции')
-                        <li>
-                            <a onclick="openDialog('warrantDialog', '&isIncoming=1')" class="ajax-nav update_url">
-                                    <span class="nav-icon">
-                                        <i class="fa fa-sign-in"></i>
-                                    </span>
-                                <span class="nav-text">Приход</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a onclick="openDialog('warrantDialog', '&isIncoming=0')" class="ajax-nav update_url">
-                                    <span class="nav-icon">
-                                        <i class="fa fa-sign-out"></i>
-                                    </span>
-                                <span class="nav-text">Расход</span>
-                            </a>
-                        </li>
-                        @endcan
-                        @can('Создавать продажи')
-                        <li>
-                            <a onclick="openDialog('shipmentDialog')" class="ajax-nav update_url">
-                                    <span class="nav-icon">
-                                        <i class="fa fa-money"></i>
-                                    </span>
-                                <span class="nav-text">Продажа</span>
-                            </a>
-                        </li>
-                        @endcan
-                        @can('Создавать заказ клиента')
-                        <li>
-                            <a onclick="openDialog('clientorderDialog')" class="ajax-nav update_url">
-                                    <span class="nav-icon">
-                                        <i class="fa fa-clipboard"></i>
-                                    </span>
-                                <span class="nav-text">Заказ</span>
-                            </a>
-                        </li>
+                        @can('СуперАдмин')
+                            <li><span class="admin_letter">А</span></li>
+                            <li><span class="admin_letter">Д</span></li>
+                            <li><span class="admin_letter">М</span></li>
+                            <li><span class="admin_letter">И</span></li>
+                            <li><span class="admin_letter">Н</span></li>
+                            <li><span class="admin_letter">И</span></li>
+                            <li><span class="admin_letter">С</span></li>
+                            <li><span class="admin_letter">Т</span></li>
+                            <li><span class="admin_letter">Р</span></li>
+                            <li><span class="admin_letter">А</span></li>
+                            <li><span class="admin_letter">Т</span></li>
+                            <li><span class="admin_letter">О</span></li>
+                            <li><span class="admin_letter">Р</span></li>
+                        @else
+                            @can('Смотреть планировщик')
+                            <li>
+                                <a href="{{ route('ScheduleIndex') }}" class="ajax-nav update_url">
+                                        <span class="nav-icon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    <span class="nav-text">Календарь</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('Создавать денежные операции')
+                            <li>
+                                <a onclick="openDialog('warrantDialog', '&isIncoming=1')" class="ajax-nav update_url">
+                                        <span class="nav-icon">
+                                            <i class="fa fa-sign-in"></i>
+                                        </span>
+                                    <span class="nav-text">Приход</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="openDialog('warrantDialog', '&isIncoming=0')" class="ajax-nav update_url">
+                                        <span class="nav-icon">
+                                            <i class="fa fa-sign-out"></i>
+                                        </span>
+                                    <span class="nav-text">Расход</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('Создавать продажи')
+                            <li>
+                                <a onclick="openDialog('shipmentDialog')" class="ajax-nav update_url">
+                                        <span class="nav-icon">
+                                            <i class="fa fa-money"></i>
+                                        </span>
+                                    <span class="nav-text">Продажа</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('Создавать заказ клиента')
+                            <li>
+                                <a onclick="openDialog('clientorderDialog')" class="ajax-nav update_url">
+                                        <span class="nav-icon">
+                                            <i class="fa fa-clipboard"></i>
+                                        </span>
+                                    <span class="nav-text">Заказ</span>
+                                </a>
+                            </li>
+                            @endcan
                         @endcan
                         {{--<li>--}}
                             {{--<a href="#" class="ajax-nav update_url">--}}

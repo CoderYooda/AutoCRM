@@ -84,23 +84,9 @@ class ShipmentsController extends Controller
     private static function selectShipmentInner($request){
         $class = 'selectShipmentDialog';
 //        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
-        $shipments = Shipment::where(function($q) use ($request){
-
-            $q->where('foundstring', str_replace(["-","!","?",".", ""],  "", trim($request['string'])));
-
-//            $q->whereHas('partner', function($q) use ($request){
-//
-//
-//
-//                $q->where('fio', 'LIKE', '%' . $request['string'] .'%')
-//                    ->orWhere('companyName', 'LIKE', '%' . $request['string'] .'%')
-//                    ->orWhereHas('phones', function ($query) use ($request) {
-//                        $query->where('number', 'LIKE', '%' . $request['string'] .'%');
-//                    });
-//                });
-//            })
-//            ->whereHas('articles', function($q){
-//                $q->where('refunded_count', 0);
+        $shipments = Shipment::
+            when($request['string'], function ($q) use ($request) {
+                $q->where('foundstring', str_replace(["-","!","?",".", ""],  "", trim($request['string'])));
             })
             ->where('company_id', Auth::user()->company()->first()->id)
             ->orderBy('created_at', 'DESC')
@@ -115,7 +101,6 @@ class ShipmentsController extends Controller
             'html' => $content
         ]);
     }
-
 
     public function select(Shipment $shipment, Request $request)
     {

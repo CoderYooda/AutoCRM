@@ -11,7 +11,7 @@ class vehicleDialog extends Modal {
         this.model_choices = null;
         this.modify_choices = null;
         this.refer = dialog.querySelector('#refer').value;
-
+        
         this.init();
     }
 
@@ -149,15 +149,19 @@ class vehicleDialog extends Modal {
         if(!window.isXHRloading){
 
             window.axform.send(elem, response => {
-
                 let data = response.data;
                 this.finitaLaComedia(true);
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
                 let vehicle_element =  document.getElementById('vehicle_item_' + data.vehicle.id);
-
                 if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
                 else document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
             });
         }
     }
