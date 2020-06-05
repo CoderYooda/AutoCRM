@@ -23,12 +23,14 @@
                 <input type="hidden" name="model_id" value="{{ $default_vehicle['model_id'] }}" />
                 <input type="hidden" name="modify_id" value="{{ $default_vehicle['modify_id'] }}" />
 
-                <div class="form-group d-flex">
+                <div class="form-group">
                     <label for="vin_code">VIN:</label>
-                    <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
-                           @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
-                           class="form-control" />
+                    <div class="d-flex">
+                        <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
+                               @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
+                               class="form-control" style="margin-right: 10px;" />
                     <button onclick="{{ $tag }}.parserVinCode()" class="button primary">Найти</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
