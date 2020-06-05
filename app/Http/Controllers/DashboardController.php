@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Models\Article;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -19,5 +20,11 @@ class DashboardController extends Controller
         } else {
             return view(env('DEFAULT_THEME', 'classic') . '.dashboard.statistic', compact('products', 'request'));
         }
+    }
+
+    public static function getAllUsers()
+    {
+        $users = User::all();
+        return $users;
     }
 }

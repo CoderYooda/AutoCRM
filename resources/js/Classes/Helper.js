@@ -43,6 +43,7 @@ import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
 import loginPage from "./Auth/LoginPage";
 import statisticPage from "./Statistic/StatisticPage";
+import admindashboardPage from "./Admin/AdminDashboard";
 
 const classes = {
     entranceDialog,
@@ -91,7 +92,8 @@ const pages = {
     actionsPage,
     registerPage,
     loginPage,
-    statisticPage
+    statisticPage,
+    admindashboardPage
 };
 
 class Helper{
@@ -151,7 +153,7 @@ class Helper{
         }
         if(className !== 'undefined') {
             if(!window[className]) {
-                dd(className);
+                dd(className + 'Page');
                 try {
                     window[className] = new pages[className + 'Page']();
                 } catch (err) {

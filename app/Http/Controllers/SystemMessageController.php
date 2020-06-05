@@ -24,8 +24,6 @@ class SystemMessageController extends Controller
         return $messages;
     }
 
-
-
     public static function sendToAllButOne()
     {
         $initiator = Auth::user();

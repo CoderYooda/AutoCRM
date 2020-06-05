@@ -125,12 +125,17 @@
                             </a>
                         </li>
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
-                            <span class="d-flex align-items-center p-10" href="">
-                                            <span class="avatar w-32 mr-3">
-                                                <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() }}" alt="...">
-                                            </span>
-                                {{ Auth::user()->name }}
-                            </span>
+                            <div class="d-flex align-items-center">
+                                <div class="w-52 p-10">
+                                    <div class="avatar w-32 mr-3">
+                                        <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() }}" alt="...">
+                                    </div>
+                                </div>
+                                <div class="pr-10">
+                                    <div style="line-height: 14px;">{{ Auth::user()->name }}</div>
+                                    <div style="font-size: 12px;font-weight: bold;line-height: 14px;">{{ Auth::user()->roles()->first()->name }}</div>
+                                </div>
+                            </div>
 
                             <div class="dropdown_container">
                                 <div class="arrow"></div>

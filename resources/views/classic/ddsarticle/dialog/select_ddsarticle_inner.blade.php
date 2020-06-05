@@ -16,10 +16,6 @@
                                     {{ $ddsarticle->name }}
                                     <div class="secondary">{{ $ddsarticle->ddstype()->first()->name }}</div>
                                 </div>
-                                {{--<div class="list-body">--}}
-                                {{--<div class="date">Дисконт: в разработке</div>--}}
-                                {{--<div class="secondary">Тип: 2</div>--}}
-                                {{--</div>--}}
                             </li>
                         @endforeach
                     </ul>

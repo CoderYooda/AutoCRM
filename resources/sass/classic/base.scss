@@ -1066,6 +1066,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .w-100{
     width: 100%!important;
 }
+.pr-10{
+    padding-right: 10px;
+}
 .p-10{
     padding: 10px;
 }
@@ -1095,6 +1098,10 @@ input:-moz-placeholder { /* Firefox 18- */
 .w-180{
     width: 180px!important;
     min-width: 180px!important;
+}
+.w-52 {
+    width: 52px;
+    height: 52px;
 }
 .w-32 {
     width: 32px;

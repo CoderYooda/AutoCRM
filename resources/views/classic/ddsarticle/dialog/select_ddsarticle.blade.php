@@ -3,6 +3,7 @@
     <div class="titlebar">Выбор статьи</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
+    <input type="hidden" id="selectedCategory" value="{{ $categories['parent']->id }}">
     <div class="modal-header">
         <form class="flex d-flex w-100">
             @if($request['refer'])
@@ -10,7 +11,7 @@
             @endif
 
             <input id="ddsarticle_search" type="text" class="form-control search mr-15" placeholder="Поиск статьи" required="">
-                <button onclick="openDialog('ddsarticleDialog')" class="button" type="button">Новая статья</button>
+                <button onclick="window.{{ $class }}.openDdsArticleDialog()" class="button" type="button">Новая статья</button>
         </form>
     </div>
     <div id="ddsarticle_list">

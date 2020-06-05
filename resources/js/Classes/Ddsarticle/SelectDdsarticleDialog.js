@@ -7,6 +7,8 @@ class selectDdsarticleDialog extends Modal{
         console.log('Окно штрихкода инициализировано');
         this.refer = dialog.querySelector("#refer").value;
         this.active = true;
+        this.category_id = dialog.querySelector('#selectedCategory').value;
+        this.root_category = 4;
         this.init();
     }
 
@@ -80,13 +82,22 @@ class selectDdsarticleDialog extends Modal{
         }).then(function (resp) {
             var results_container = document.querySelector('#search_ddsarticle_results');
             results_container.innerHTML = resp.data.html;
+            this.category_id = category_id;
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
             window.isXHRloading = false;
         });
-    }
 
+}
+    openDdsArticleDialog()
+    {
+        let cat_id = this.root_category;
+        if(this.category_id != null){
+            cat_id = this.category_id;
+        }
+        window.openDialog('ddsarticleDialog', '&category_select=' + this.category_id + '&refer=' + this.root_dialog.id);
+    }
 
     search(el){
         let object = this;
@@ -97,6 +108,7 @@ class selectDdsarticleDialog extends Modal{
         let data = {};
         data.string = string;
         data.inner = true;
+        data.category_id = this.category_id;
         if(object.refer){
             data.refer = object.refer;
         }

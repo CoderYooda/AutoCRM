@@ -116,7 +116,7 @@
                 <div class="col-sm-6">
                     <div class="form-group row row-sm">
                         <div class="col-sm-12">
-                            <textarea placeholder="Комментарий" style="resize: none;height: 128px;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($refund)){{ $refund->comment }}@endif</textarea>
+                            <textarea placeholder="Комментарий" style="resize: none;height: 128px;" class="form-control" name="comment" id="refund_dialog_focused" cols="30" rows="5">@if(isset($refund)){{ $refund->comment }}@endif</textarea>
                         </div>
                     </div>
                 </div>

@@ -12,7 +12,7 @@
     @else
         <div class="titlebar">Добавление статьи</div>
     @endif
-        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <form action="{{ route('StoreDdsarticle') }}" method="POST">
         @csrf
@@ -20,7 +20,7 @@
             @if(isset($ddsarticle) && $ddsarticle->id != NULL)
                 <input type="hidden" name="id" value="{{ $ddsarticle->id }}">
             @endif
-            <input class="category_select" type="hidden" name="category_id" value="@if(isset($ddsarticle)){{ $ddsarticle->category()->first()->id }}@else 4 @endif">
+            <input class="category_select" type="hidden" name="category_id" value="@if(isset($ddsarticle)){{ $ddsarticle->category()->first()->id }}@elseif(isset($category)){{ $category->id }}@else 4 @endif">
 
             <div class="form-group">
                 <label for="category_id">В категории</label>

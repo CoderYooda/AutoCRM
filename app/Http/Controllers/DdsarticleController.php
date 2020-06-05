@@ -103,26 +103,6 @@ class DdsarticleController extends Controller
         return response()->json(['id' => $Ddsarticle->id, 'message' => $message], $status);
     }
 
-//    public static function selectDdsarticleDialog($request)
-//    {
-//        $ddsarticles = Ddsarticle::owned()->orderBy('id', 'DESC')->paginate(12);
-//        return response()->json([
-//            'tag' => 'selectDdsarticleDialog',
-//            'html' => view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle', compact('ddsarticles', 'request'))->render()
-//        ]);
-//    }
-//    public function dialogSearch(Request $request){
-//        $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
-//            ->orderBy('id', 'DESC')
-//            ->paginate(12);
-//        //dd($ddsarticles);
-//        $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle_inner', compact('ddsarticles', 'request'))->render();
-//        return response()->json([
-//            'html' => $content
-//        ], 200);
-//    }
-
-
     public static function selectDdsarticleDialog($request)
     {
         return self::selectDdsarticleInner($request);
@@ -140,7 +120,7 @@ class DdsarticleController extends Controller
             ->when($request['category_id'], function($q) use ($request){
                 $q->where('category_id', $request['category_id']);
             })
-            ->orderBy('created_at', 'ASC')
+            ->orderBy('created_at', 'DESC')
             ->limit(30)
             ->get();
         $categories = CategoryController::getModalCategories(self::$root_category, $request);

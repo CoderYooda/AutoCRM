@@ -81,12 +81,12 @@ class ShipmentsController extends Controller
         return self::selectShipmentInner($request);
     }
 
-    private static function selectShipmentInner($request){
+    private static function selectShipmentInner($request)
+    {
         $class = 'selectShipmentDialog';
-//        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
         $shipments = Shipment::
             when($request['string'], function ($q) use ($request) {
-                $q->where('foundstring', str_replace(["-","!","?",".", ""],  "", trim($request['string'])));
+                $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
             ->where('company_id', Auth::user()->company()->first()->id)
             ->orderBy('created_at', 'DESC')
@@ -370,8 +370,8 @@ class ShipmentsController extends Controller
     }
 
     //TODO check
-    public function getShipmentProducts(Shipment $shipment){
-
+    public function getShipmentProducts(Shipment $shipment)
+    {
         return response()->json([
             'products' => $shipment->getArticles()]);
     }

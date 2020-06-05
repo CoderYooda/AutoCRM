@@ -32,7 +32,6 @@ class Socket{
         object.socket = io(window.socket_domain + ':' + window.socket_port,{origins:object.allowedOrigins});
         object.socket.on('connect', function(){
 
-
             object.socket.emit('subscribe', object.systemChannel);
             [].forEach.call(object.ownChannel, function(chanel){
                 object.socket.emit('subscribe',  chanel);
@@ -67,7 +66,7 @@ class Socket{
     sendMessage(){
         let object = this;
         object.socket.emit(
-            'system',
+            'message',
             {
                 from: 'User',
                 text: '123'

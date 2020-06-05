@@ -24,6 +24,13 @@ class ProductDialog extends Modal{
         helper.initTabs('product_tabs');
         var fn = window.helper.debounce(function(e) {object.trinitySearch();}, 800);
 
+        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
+
         ///Вешаем обрабочик на поле скидки/////////////
         this.article_input.addEventListener("keydown", fn);
         this.article_input.addEventListener("paste", fn);

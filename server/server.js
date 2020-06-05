@@ -28,7 +28,6 @@ io.use(function (socket,next) {
     });
 });
 
-
 //Разрешение на подключение к каналу
 io.on('connection', function(socket){
     socket.on('subscribe', function(channel){

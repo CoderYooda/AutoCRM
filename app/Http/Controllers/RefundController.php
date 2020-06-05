@@ -157,43 +157,48 @@ class RefundController extends Controller
     {
         PermissionController::canByPregMatch('Удалять возвраты');
 
-        $returnIds = null;
-        if($id == 'array'){
-            $refunds = Refund::whereIn('id', $request['ids']);
-            $this->message = 'Возвраты удалены';
-            $returnIds = $refunds->get()->pluck('id');
-            foreach($refunds->get() as $refund){
-                if($refund->delete()){
-                    foreach($refund->articles()->get() as $article){
-                        $store = $refund->store()->first();
-                        $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
-                    }
-                    #Добавляем к балансу контрагента
-                    $refund->partner()->first()->addition($refund->summ);
-                    $refund->articles()->sync(null);
-                    UA::makeUserAction($refund, 'delete');
-                }
-            }
-        } else {
-            $refund = Refund::where('id', $id)->first();
-            $returnIds = $refund->id;
-            foreach($refund->articles()->get() as $article){
-                $store = $refund->store()->first();
-                $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
-            }
-            #Добавляем к балансу контрагента
-            $refund->partner()->first()->addition($refund->summ);
-            $refund->articles()->sync(null);
-            $refund->delete();
-            $this->status = 200;
-            $this->message = 'Возврат удален';
-        }
-
         return response()->json([
-            'id' => $returnIds,
-            'message' => $this->message,
-            'event' => 'RefundStored',
-        ], 200);
+            'message' => 'Удаление невозможно',
+            'type' => 'error',
+        ], 422);
+
+//        $returnIds = null;
+//        if($id == 'array'){
+//            $refunds = Refund::whereIn('id', $request['ids']);
+//            $this->message = 'Возвраты удалены';
+//            $returnIds = $refunds->get()->pluck('id');
+//            foreach($refunds->get() as $refund){
+//                if($refund->delete()){
+//                    foreach($refund->articles()->get() as $article){
+//                        $store = $refund->store()->first();
+//                        $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
+//                    }
+//                    #Добавляем к балансу контрагента
+//                    $refund->partner()->first()->addition($refund->summ);
+//                    $refund->articles()->sync(null);
+//                    UA::makeUserAction($refund, 'delete');
+//                }
+//            }
+//        } else {
+//            $refund = Refund::where('id', $id)->first();
+//            $returnIds = $refund->id;
+//            foreach($refund->articles()->get() as $article){
+//                $store = $refund->store()->first();
+//                $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
+//            }
+//            #Добавляем к балансу контрагента
+//            $refund->partner()->first()->addition($refund->summ);
+//            $refund->articles()->sync(null);
+//            $refund->delete();
+//            $this->status = 200;
+//            $this->message = 'Возврат удален';
+//        }
+//
+//        return response()->json([
+//            'id' => $returnIds,
+//            'message' => $this->message,
+//            'event' => 'RefundStored',
+//        ], 200);
 
 
     }

@@ -17,7 +17,7 @@ class SuperAdmin
     public function handle($request, Closure $next)
     {
         if(!Auth::user()->hasRole('Суперадмин')){
-            abort(404);
+            return redirect(route('StoreIndex'));
         }
         return $next($request);
     }
