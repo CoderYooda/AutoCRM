@@ -48,7 +48,6 @@
                 </div>
 
                 <div class="form-group">
-<<<<<<< HEAD
                     <label>Модификация:</label>
                     <select onchange="{{ $tag }}.changeModify()" id="modify" data-trigger class="form-control">
                         @if(count($modifies))
@@ -63,11 +62,6 @@
                     <label>Год:</label>
                     <input onclick="this.select();" type="text" id="year" name="year"
                            @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
-=======
-                    <label>Гос. номер:</label>
-                    <input onclick="this.select();" type="text" name="numberplate"
-                           @if(isset($vehicle)) value="{{ $vehicle->numberplate }}" @endif
->>>>>>> origin/master
                            class="form-control" />
                 </div>
 
