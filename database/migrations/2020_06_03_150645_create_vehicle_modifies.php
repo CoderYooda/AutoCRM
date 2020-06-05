@@ -15,7 +15,6 @@ class CreateVehicleModifies extends Migration
     {
         Schema::create('vehicle_modifies', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('mark_id');
             $table->unsignedBigInteger('model_id');
             $table->string('name');
         });

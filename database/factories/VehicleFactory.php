@@ -22,7 +22,7 @@ $factory->define(Vehicle::class, function (Faker $faker) {
 
     $mark_id = VehicleMark::all()->random()->id;
     $model_id = VehicleModel::where('mark_id', $mark_id)->orderByRaw('RAND()')->first()->id;
-    $modify_id = VehicleModify::where(['mark_id' => $mark_id, 'model_id' => $model_id])->orderByRaw('RAND()')->first()->id;
+    $modify_id = VehicleModify::where(['model_id' => $model_id])->orderByRaw('RAND()')->first()->id;
 
     return [
         'partner_id' => Partner::where('company_id', $company_id)->first()->id,

@@ -51,7 +51,7 @@ class VehicleController extends Controller
 
     public function modifyList(VehicleMark $mark, VehicleModel $model)
     {
-        $modify_list = VehicleModify::where(['mark_id' => $mark->id, 'model_id' => $model->id])->get();
+        $modify_list = VehicleModify::where(['model_id' => $model->id])->get();
 
         $modifies = [];
 
@@ -72,10 +72,10 @@ class VehicleController extends Controller
         $tag = 'vehicleDialog' . ($vehicle->id ?? '');
 
         $mark_id = $vehicle ? $vehicle->mark_id : VehicleMark::first()->id;
-        $model_id = $vehicle ? $vehicle->model_id : VehicleModel::first()->id;
+        $model_id = $vehicle ? $vehicle->model_id : VehicleModel::where('mark_id', $mark_id)->first()->id;
 
         $models = VehicleModel::where('mark_id', $mark_id)->get();
-        $modifies = VehicleModify::where(['mark_id' => $mark_id, 'model_id' => $model_id])->get();
+        $modifies = VehicleModify::where(['model_id' => $model_id])->get();
 
         $view = view(get_template() . '.vehicles.dialog.form_vehicle', compact('request', 'vehicle', 'tag', 'models', 'modifies'))
             ->with('marks', VehicleMark::all())

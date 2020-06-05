@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\API\DecoderController;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class Test extends Command
 {
@@ -37,14 +39,8 @@ class Test extends Command
      */
     public function handle()
     {
-        $vin = "1FMCU9G97EUE42764";
-        $secureKey = "************";
+        $info = DecoderController::getInfo('WVWZZZ6XZ1W017671');
 
-        $requestURL = "http://www.vindecoderz.com/service/'.$vin.'/'.$secureKey";
-
-        $data = file_get_contents(requestURL, false);
-        $response = json_decode($data);
-
-        var_dump($response);
+        dd($info);
     }
 }

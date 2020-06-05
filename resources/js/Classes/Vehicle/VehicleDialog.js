@@ -1,5 +1,7 @@
 import Modal from "../Modal/Modal";
 
+import IMask from 'imask';
+
 class vehicleDialog extends Modal {
 
     constructor(dialog) {
@@ -22,7 +24,8 @@ class vehicleDialog extends Modal {
             itemSelectText: 'Нажмите для выбора',
         };
 
-        let mark_element = document.getElementById('mark');
+        //TODO rewrite document to current_dialog
+        let mark_element = this.current_dialog.querySelector('#mark');
         this.mark_choices = new window.choices(mark_element, config);
 
         let model_element = document.getElementById('model');
@@ -30,6 +33,34 @@ class vehicleDialog extends Modal {
 
         let modify_element = document.getElementById('modify');
         this.modify_choices = new window.choices(modify_element, config);
+
+        let vin_element = document.getElementById('vin_code');
+
+        IMask(vin_element, {
+            mask: '*****************',
+            maxLength: 17,
+            lazy: false,
+            placeholderChar: '_'
+        });
+
+        let year_element = document.getElementById('year');
+
+        IMask(year_element, {
+            mask: Number,
+            min: 1950,
+            max: 2030,
+        });
+
+        let numberplate_element = document.getElementById('numberplate');
+
+        IMask(numberplate_element, {
+            mask: 'a000aa00[0]',
+            maxLength: 9,
+            lazy: false,
+            placeholderChar: '_'
+        });
+
+        //^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$
     }
 
     parserVinCode() {

@@ -42,6 +42,12 @@
                     Мои услуги
                 </a>
             </li>
+            <li id="vehicles-tab" data-tab="vehicles" class="@if($request['active_tab'] == 'vehicles') active @endif nav-item tab">
+                <a href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles', 'target' => 'ajax-tab-content']) }}"
+                   class="nav-link ajax-nav update_url">
+                   Гараж
+                </a>
+            </li>
             {{--<li id="setting-cashbox-tab" data-tab="ddsarticle" class="@if($request['active_tab'] == 'ddsarticle') active @endif tab">--}}
             {{--<a href="{{ route('SettingsIndex', ['active_tab' => 'ddsarticle', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">--}}
             {{--<span class="nav-text">Статьи ДДС</span>--}}

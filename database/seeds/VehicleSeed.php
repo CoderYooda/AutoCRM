@@ -6,28 +6,15 @@ use App\Models\VehicleModel;
 
 use App\Models\VehicleModify;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class VehicleSeed extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        $vehicles = simplexml_load_file(public_path('demo/') . 'vehicles.xml');
-
-        foreach ($vehicles as $vehicle) {
-            $mark_id = VehicleMark::firstOrCreate(['name' => (string)$vehicle->marka])->id;
-            $model_id = VehicleModel::firstOrCreate(['name' => (string)$vehicle->model, 'mark_id' => $mark_id])->id;
-
-            VehicleModify::firstOrCreate([
-                'name' => (string)$vehicle->modification,
-                'mark_id' => $mark_id,
-                'model_id' => $model_id
-            ]);
-        }
+        DB::unprepared(file_get_contents(public_path('demo\vehicle_marks.sql')));
+        DB::unprepared(file_get_contents(public_path('demo\vehicle_models.sql')));
+        DB::unprepared(file_get_contents(public_path('demo\vehicle_modifies.sql')));
 
         factory(Vehicle::class, 10)->create();
     }

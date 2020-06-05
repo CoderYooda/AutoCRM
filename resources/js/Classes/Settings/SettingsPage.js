@@ -137,6 +137,9 @@ class settingsPage{
     reload(){
         let object = this;
         if (isXHRloading) { return; } window.isXHRloading = true;
+
+        console.log(object.getUrlString());
+
         window.axios({
             method: 'get',
             url: object.getUrlString(),

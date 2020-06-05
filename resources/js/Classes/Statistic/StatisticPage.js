@@ -7,7 +7,7 @@ class statisticPage {
 
         this.chart = null;
 
-        this.sections = [1, 2, 3, 4, 5, 6, 7, 8];
+        this.sections = [0, 1, 2, 3, 4, 5, 6, 7];
 
         this.graph_data = null;
 
@@ -31,6 +31,8 @@ class statisticPage {
 
     init() {
         //Chart.js
+
+        this.checkActive();
 
         let ctx = document.getElementById('statistic-chart').getContext('2d');
 
@@ -281,6 +283,43 @@ class statisticPage {
 
     openSelectPartnerModal() {
         window.openDialog('selectPartner', '&refer=statistic&category_id=7&target=partner');
+    }
+
+    checkActive(){
+        let className = window.location.pathname.substring(1);
+        let link = document.getElementById('statistic_link');
+        if(className === 'statistic'){
+            link.classList.add('active');
+            this.active = true;
+        } else {
+            link.classList.remove('active');
+            this.active = false;
+        }
+    }
+
+    resetBeginDate() {
+        this.start_date = new Date();
+        this.start_date.setDate(this.start_date.getDate() - 30); // На 30 дней назад
+
+        let start_date = document.querySelector('input[name=begin_date]');
+        start_date.value = this.start_date.getDate().toString().padStart(2, "0") + '.' + (this.start_date.getMonth() + 1).toString().padStart(2, "0") + '.' + this.start_date.getFullYear();
+    }
+
+    resetFinalDate() {
+        this.end_date = new Date();
+
+        let end_date = document.querySelector('input[name=final_date]');
+        end_date.value = this.end_date.getDate().toString().padStart(2, "0") + '.' + ( this.end_date.getMonth() + 1 ).toString().padStart(2, "0") + '.' + this.end_date.getFullYear();
+    }
+
+    clearManager() {
+        document.querySelector('input[name=manager_id]').value = '';
+        document.getElementById('manager_name').innerText = 'Не выбрано';
+    }
+
+    clearPartner() {
+        document.querySelector('input[name=partner_id]').value = '';
+        document.getElementById('partner_name').innerText = 'Не выбрано';
     }
 
     selectPartner(id, type) {

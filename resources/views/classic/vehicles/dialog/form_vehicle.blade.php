@@ -60,14 +60,14 @@
 
                 <div class="form-group">
                     <label>Год:</label>
-                    <input onclick="this.select();" type="text" name="year"
+                    <input onclick="this.select();" type="text" id="year" name="year"
                            @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
                            class="form-control" />
                 </div>
 
                 <div class="form-group">
                     <label>Гос. номер:</label>
-                    <input onclick="this.select();" type="text" name="numberplate"
+                    <input onclick="this.select();" type="text" id="numberplate" name="numberplate"
                            @if(isset($vehicle)) value="{{ $vehicle->numberplate }}" @endif
                            class="form-control" />
                 </div>
