@@ -75,7 +75,15 @@ window.axios.interceptors.response.use(function (response) {
     window.isXHRloading = false;
 
     if(response.data.event){
-        let event = new Event(response.data.event, {bubbles: true});
+
+        //let event = new Event(response.data.event, {bubbles: true});
+
+        let event = new CustomEvent(response.data.event, {
+            'detail' : {
+                data: response.data
+            },
+        });
+
         let listns = document.getElementsByClassName(response.data.event + 'Listner');
         [].forEach.call(listns, function(elem){
             elem.dispatchEvent(event);

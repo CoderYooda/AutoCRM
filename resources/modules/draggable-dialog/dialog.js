@@ -181,7 +181,6 @@ window.flashDialog = function(tag, onlySelect = false){
 	console.info('Окно ' + tag + ' подсвечено');
 }
 
-
 function dialogPosition(tag){
 	var position = [];
 	var dialog = document.getElementById(tag);

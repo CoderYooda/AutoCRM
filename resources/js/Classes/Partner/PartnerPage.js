@@ -27,6 +27,7 @@ class partnerPage{
         //object.searchInit();
 
         document.addEventListener('PartnerStored', function(e){
+
             object.prepareParams();
             object.table.setData('/partner/tabledata', object.prepareDataForTable());
         });
