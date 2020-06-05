@@ -3,6 +3,7 @@ class Modal{
     constructor(dialog){
         this.touched = false;
         this.root_dialog = dialog;
+        this.current_dialog = dialog; //alias to root_dialog
         let object = this;
         this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if(e.target.classList.contains('search')){

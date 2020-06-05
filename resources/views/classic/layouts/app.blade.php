@@ -73,7 +73,7 @@
                             <li class="top-nav-item">
                                 <a class="d-flex align-items-center p-10" href="">
                                     <span class="avatar w-32 mr-3">
-                                        <img src="http://autocrm/images/noavatar.png" alt="...">
+                                        <img src="{{ asset('images/noavatar.png') }}" alt="...">
                                     </span>
                                     {{ Auth::user()->name }}
                                 </a>

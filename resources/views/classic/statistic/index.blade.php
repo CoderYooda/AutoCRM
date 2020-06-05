@@ -26,12 +26,14 @@
                         <div class="p-15 w-290" style="position: relative">
                             <div class="form-group w-100  mb-10">
                                 <label>Дата начала</label>
+                                <i onclick="{{ $class }}.resetBeginDate()" class="fa fa-undo pointer"></i>
                                 <input onclick="this.select();" type="text" name="begin_date" class="form-control date_picker_start flatpickr-input"
                                        placeholder="Выберите дату">
                             </div>
 
                             <div class="form-group w-100 mb-10">
                                 <label>Дата конца</label>
+                                <i onclick="{{ $class }}.resetFinalDate()" class="fa fa-undo pointer"></i>
                                 <input onclick="this.select();" type="text" name="final_date" class="form-control date_picker_end flatpickr-input"
                                        placeholder="Выберите дату">
                             </div>
@@ -52,7 +54,7 @@
                                 <div>
                                     <label for="refund" href="#" class="_500 pt-2 text-muted">Возвраты</label>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label style="background: rgb(255, 79, 129)" class="ui-switch orange mt-1"><input name="refund" id="refund" type="checkbox"><i></i></label>
+                                        <label style="background: rgb(255, 79, 129)" class="ui-switch orange mt-1"><input name="refund" id="refund" type="checkbox" checked><i></i></label>
                                     </span>
                                 </div>
                                 <div>
@@ -70,25 +72,26 @@
                                 <div>
                                     <label for="inWarrant" href="#" class="_500 pt-2 text-muted">Приходные ордера</label>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label style="background: rgb(1, 205, 116)" class="ui-switch orange mt-1"><input name="inWarrant" id="inWarrant" type="checkbox"><i></i></label>
+                                        <label style="background: rgb(1, 205, 116)" class="ui-switch orange mt-1"><input name="inWarrant" id="inWarrant" type="checkbox" checked><i></i></label>
                                     </span>
                                 </div>
                                 <div>
                                     <label for="outWarrant" href="#" class="_500 pt-2 text-muted">Расходные ордера</label>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label style="background: rgb(234, 128, 237)" class="ui-switch orange mt-1"><input name="outWarrant" id="outWarrant" type="checkbox"><i></i></label>
+                                        <label style="background: rgb(234, 128, 237)" class="ui-switch orange mt-1"><input name="outWarrant" id="outWarrant" type="checkbox" checked><i></i></label>
                                     </span>
                                 </div>
                                 <div>
                                     <label for="cashMove" href="#" class="_500 pt-2 text-muted">Перемещения</label>
                                     <span class="float-right ml-2" style="line-height: 0;">
-                                        <label style="background: rgb(137, 186, 22)" class="ui-switch orange mt-1"><input name="cashMove" id="cashMove" type="checkbox" ><i></i></label>
+                                        <label style="background: rgb(137, 186, 22)" class="ui-switch orange mt-1"><input name="cashMove" id="cashMove" type="checkbox" checked><i></i></label>
                                     </span>
                                 </div>
                             </div>
 
                             <div class="form-group w-100 mb-10">
                                 <label>Менеджер</label>
+                                <i onclick="{{ $class }}.clearManager()" class="fa fa-times-circle pointer"></i>
                                 <button onclick="{{ $class }}.openSelectManagerModal()" type="button"
                                         class="partner_select form-control text-left button_select">
                                     <div id="manager_name">Не выбрано</div>
@@ -97,6 +100,7 @@
 
                             <div class="form-group w-100 mb-10">
                                 <label>Контрагент</label>
+                                <i onclick="{{ $class }}.clearPartner()" class="fa fa-times-circle pointer"></i>
                                 <button onclick="{{ $class }}.openSelectPartnerModal()" type="button"
                                         class="partner_select form-control text-left button_select">
                                     <div id="partner_name">Не выбрано</div>

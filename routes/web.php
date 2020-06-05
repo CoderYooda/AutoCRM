@@ -199,7 +199,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Транспорт
     Route::post('/vehicles', 'VehicleController@store')->name('StoreVehicle');
-    Route::get('/models/{mark}/list', 'VehicleController@list');
+    Route::get('/models/{mark}/list', 'VehicleController@modelList');
+    Route::get('/modifies/{mark}/{model}/list', 'VehicleController@modifyList');
     Route::delete('/vehicles/{vehicle}', 'VehicleController@destroy');
 
     #Картинки

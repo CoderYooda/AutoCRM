@@ -10,4 +10,9 @@ class VehicleModel extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function mofifies()
+    {
+        return $this->hasMany(VehicleModify::class, 'model_id', 'id');
+    }
 }

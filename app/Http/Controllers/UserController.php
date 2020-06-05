@@ -24,8 +24,6 @@ class UserController extends Controller
             $request['search'] = null;
         }
 
-
-
         if(empty($request['id'])){
             $request['id'] = Auth::user()->partner->id;
         }
@@ -173,6 +171,12 @@ class UserController extends Controller
     public static function salesTab($request)
     {
         return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.sales', compact('request'));
+    }
+
+    public static function vehiclesTab($request)
+    {
+        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.vehicles', compact('request'))
+            ->with('vehicles', Auth::user()->partner->vehicles);
     }
 
     public static function serviceTab($request)

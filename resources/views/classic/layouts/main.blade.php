@@ -92,7 +92,7 @@
                             </a>
                         </li>
                         @endcanany
-                        <li id="actions_link" class="top-nav-item" >
+                        <li id="statistic_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('StatisticIndex') }}">
                                 Статистика
                             </a>
@@ -139,10 +139,11 @@
 
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
-                                <a class="element ajax-nav" href="{{ route('UserIndex') }}">
-                                    Личный кабинет
-                                </a>
+
+                                <a class="element ajax-nav" href="{{ route('UserIndex') }}">Личный кабинет</a>
                                 <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}"> Мои услуги</a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles']) }}"> Гараж</a>
+
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                     Выход
                                 </a>
@@ -152,7 +153,7 @@
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <span class="d-flex align-items-center p-10" href="">
                                 <span class="avatar w-32 mr-3">
-                                    <img src="http://autocrm/images/noavatar.png" alt="...">
+                                    <img src="{{ asset('images/noavatar.png') }}" alt="...">
                                 </span>
                                 Админ
                             </span>
