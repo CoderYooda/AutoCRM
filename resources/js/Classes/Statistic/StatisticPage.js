@@ -198,7 +198,7 @@ class statisticPage {
                 partner_id: Number(document.querySelector("input[name=partner_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
                 final_date: document.querySelector("input[name=final_date]").value,
-                entity: this.sections,
+                entities: this.sections,
             }
         })
         .then(response => {

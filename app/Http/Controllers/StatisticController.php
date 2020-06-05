@@ -104,7 +104,7 @@ class StatisticController extends Controller
 
         foreach ($classes as $key => $class) {
 
-            if (!in_array($key, $request->entity)) continue;
+            if (!in_array($key, $request->entities)) continue;
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)

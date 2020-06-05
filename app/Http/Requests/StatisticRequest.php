@@ -34,8 +34,8 @@ class StatisticRequest extends FormRequest
             'partner_id' => ['exists:partners,id'],
             'begin_date' => ['required', 'date_format:d.m.Y', 'before:final_date'],
             'final_date' => ['required', 'date_format:d.m.Y', 'after:begin_date'],
-            'entity' => ['required', 'array'],
-            'entity.*' => ['min:-1', 'max:7']
+            'entities' => ['array'],
+            'entities.*' => ['min:-1', 'max:7']
         ];
     }
 
