@@ -14,10 +14,14 @@
                     <input type="hidden" name="id" value="{{ $vehicle->id }}">
                 @endif
 
+                @if(isset($partner))
+                    <input type="hidden" name="partner_id" value="{{ $partner->id }}">
+                @endif
+
                 <input type="hidden" id="refer" name="refer" value="{{ request('refer') }}">
-                <input type="hidden" name="mark_id" value="{{ $vehicle->mark_id ?? 1 }}" />
-                <input type="hidden" name="model_id" value="{{ $vehicle->model_id ?? 1 }}" />
-                <input type="hidden" name="modify_id" value="{{ $vehicle->modify_id ?? 1 }}" />
+                <input type="hidden" name="mark_id" value="{{ $default_vehicle['mark_id'] }}" />
+                <input type="hidden" name="model_id" value="{{ $default_vehicle['model_id'] }}" />
+                <input type="hidden" name="modify_id" value="{{ $default_vehicle['modify_id'] }}" />
 
                 <div class="form-group d-flex">
                     <label for="vin_code">VIN:</label>

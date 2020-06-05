@@ -24,17 +24,16 @@ class vehicleDialog extends Modal {
             itemSelectText: 'Нажмите для выбора',
         };
 
-        //TODO rewrite document to current_dialog
         let mark_element = this.current_dialog.querySelector('#mark');
         this.mark_choices = new window.choices(mark_element, config);
 
-        let model_element = document.getElementById('model');
+        let model_element = this.current_dialog.querySelector('#model');
         this.model_choices = new window.choices(model_element, config);
 
-        let modify_element = document.getElementById('modify');
+        let modify_element = this.current_dialog.querySelector('#modify');
         this.modify_choices = new window.choices(modify_element, config);
 
-        let vin_element = document.getElementById('vin_code');
+        let vin_element = this.current_dialog.querySelector('#vin_code');
 
         IMask(vin_element, {
             mask: '*****************',
@@ -43,7 +42,7 @@ class vehicleDialog extends Modal {
             placeholderChar: '_'
         });
 
-        let year_element = document.getElementById('year');
+        let year_element = this.current_dialog.querySelector('#year');
 
         IMask(year_element, {
             mask: Number,
@@ -51,7 +50,7 @@ class vehicleDialog extends Modal {
             max: 2030,
         });
 
-        let numberplate_element = document.getElementById('numberplate');
+        let numberplate_element = this.current_dialog.querySelector('#numberplate');
 
         IMask(numberplate_element, {
             mask: 'a000aa00[0]',
@@ -71,8 +70,8 @@ class vehicleDialog extends Modal {
 
     changeMark() {
 
-        let mark_element = document.getElementById('mark');
-        let model_element = document.getElementById('model');
+        let mark_element = this.current_dialog.querySelector('#mark');
+        let model_element = this.current_dialog.querySelector('#model');
 
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
         let model_id = model_element.options[model_element.selectedIndex].value;
@@ -99,7 +98,7 @@ class vehicleDialog extends Modal {
     }
 
     changeModel(model_id = null) {
-        let model_element = document.getElementById('model');
+        let model_element = this.current_dialog.querySelector('#model');
 
         if(model_id == null) {
             model_id = model_element.options[model_element.selectedIndex].value;
@@ -107,12 +106,9 @@ class vehicleDialog extends Modal {
 
         document.getElementsByName('model_id')[0].value = model_id;
 
-        //Обновление списка модификаций
-
-        let mark_element = document.getElementById('mark');
+        let mark_element = this.current_dialog.querySelector('#mark');
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
 
-        //Список модификаций
         window.axios({
             method: 'get',
             url: '/modifies/' + mark_id + '/' + model_id + '/list',
@@ -133,7 +129,7 @@ class vehicleDialog extends Modal {
     }
 
     changeModify(modify_id = null) {
-        let modify_element = document.getElementById('modify');
+        let modify_element = this.current_dialog.querySelector('#modify');
 
         if(modify_id == null) {
             modify_id = modify_element.options[modify_element.selectedIndex].value;
@@ -150,11 +146,12 @@ class vehicleDialog extends Modal {
 
             window.axform.send(elem, response => {
                 let data = response.data;
+                let vehicle_element =  this.current_dialog.querySelector('#vehicle_item_' + data.vehicle.id);
+
                 this.finitaLaComedia(true);
 
-                let vehicle_element =  document.getElementById('vehicle_item_' + data.vehicle.id);
                 if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
-                else document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
+                else this.current_dialog.querySelector('#vehicle_item_create').before(helper.createElementFromHTML(data.html));
             });
         }
     }

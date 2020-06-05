@@ -5,14 +5,14 @@
     <div class="box mb-15">
         <div class="container tariff-container p-15">
 
-            <button onclick="openDialog('vehicleDialog')" class="button right">Добавить транспорт</button>
+            <button onclick="openDialog('vehicleDialog', '&partner_id={{ auth()->user()->partner->id }}')" class="button right">Добавить транспорт</button>
 
-            <div class="row no-gutters">
+            <div id="vehicle-list" class="row no-gutters">
 
                 @foreach($vehicles as $vehicle)
 
-                <div class="col-sm-4 pr-75 py-3">
-                    <div onclick="openDialog('vehicleDialog', '&vehicle_id={{ $vehicle->id }}')" class="box pointer">
+                <div id="vehicle_{{ $vehicle->id }}" class="col-sm-4 pr-75 py-3">
+                    <div onclick="openDialog('vehicleDialog', '&vehicle_id={{ $vehicle->id }}&partner_id={{ auth()->user()->partner->id }}')" class="box pointer">
                         <div class="box-body r-t mb-10 d-flex">
                             <div class="vehicle-info">
                                 Марка {{ $vehicle->mark->name }}
