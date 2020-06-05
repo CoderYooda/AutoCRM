@@ -19,6 +19,7 @@ class VehicleController extends Controller
         return response()->json([
             'vehicle' => $vehicle,
             'message' => 'Транспорт был сохранён.',
+            'event' => 'VehicleStored',
             'html' => view(get_template() . '.partner.dialog.tabs.includes.list-item', compact('vehicle'))
                 ->with('class', $request->refer)
                 ->render()

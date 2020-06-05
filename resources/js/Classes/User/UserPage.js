@@ -20,6 +20,9 @@ class userPage{
                 keyboard: true,
             }
         this.crop_modal = new bootstrap.Modal(myModal, options);
+
+        document.addEventListener('VehicleStored', (e => this.freshVehicles(e)));
+
         // object.crop_modal.show();
         // setTimeout(function(){
         //     object.crop_modal.hide();
@@ -129,6 +132,10 @@ class userPage{
 
     anotherPicture(){
         document.getElementById('file_upload').click();
+    }
+
+    freshVehicles(){
+        dd('TADA');
     }
 
     cropImage(cropdata){

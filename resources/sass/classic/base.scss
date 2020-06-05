@@ -1310,3 +1310,14 @@ input:-moz-placeholder { /* Firefox 18- */
 .contextualMenuHidden{
     max-height: 0;
 }
+.vehicle-info {
+    white-space: pre-line;
+    text-align: center;
+    padding-left: 15px;
+    padding-top: 15px;
+    width: 50%;
+}
+.vehicle-image {
+    padding-top: 15px;
+    padding-left: 10%;
+}
