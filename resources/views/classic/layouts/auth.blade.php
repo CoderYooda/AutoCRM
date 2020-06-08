@@ -13,17 +13,15 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/base.css') }}" rel="stylesheet">
+{{--    <link href="{{ asset('dependencies/particles/style.css') }}" rel="stylesheet">--}}
 </head>
     <body>
 
     <div class="app auth-main">
-        <div class="left-side">
+        <div id="particles-js" class="left-side">
             <div class="bb-text-auth">
-                <h1 class="">BB<span class="text-primary">CRM</span> <br><span class="text-muted"> магазин автозапчастей</span></h1>
-                <h5 class="">
-                    Коль не кончился бензин, заезжай к нам в магазин!
-                    Подберём тебе тюнячки. Чудо будет, а не тачка!
-                </h5>
+                <h1 class="">Помогаем <br>бизнесу работать</h1>
+                <h5 class="">Эффективное решение <br>для ведения дела</h5>
             </div>
         </div>
 
@@ -49,5 +47,7 @@
         {{--</div>--}}
     {{--</div>--}}
         <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('dependencies/particles/particles.js') }}" defer></script>
+        <script src="{{ asset('dependencies/particles/app.js') }}" defer></script>
     </body>
 </html>

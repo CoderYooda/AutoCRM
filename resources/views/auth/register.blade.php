@@ -1,7 +1,7 @@
 @extends(env('DEFAULT_THEME', 'classic') . '.layouts.auth')
 
 @section('content')
-    <div class="auth-block text-center">
+    <div class="auth-block">
         <div id="sms-box" class="black-back hide">
             <div class="p-4 box sms-confirm animate fadeIn fadeOut">
                 <h2 class="mt-4 font-bold text-center">Подтверждение номера</h2>
@@ -14,8 +14,7 @@
             </div>
         </div>
         <div class="auth-form-block">
-            <div class="px-3">
-                <div class="mb-5 text-center">
+                <div class="mb-5">
                     <h5 class="login-text">Регистрация</h5>
                     @if (\Session::has('banned'))
                         <h4>{!! \Session::get('banned')[0] !!}</h4>
@@ -25,20 +24,17 @@
                     @csrf
 
                     <div class="mx-auto  animate fadeIn text-left" >
-                        <div class="form-group row row-sm @error('fio') is-invalid @enderror">
-                            <label class="col-sm-5">Фамилия Имя Отчество</label>
-                            <div class="col-sm-7">
-                                <input class="md-input form-control" name="fio" value="{{ old('fio') }}" onkeyup="this.setAttribute('value', this.value);" required>
-                            </div>
+                        <div class="form-group @error('fio') is-invalid @enderror">
+                            <label>Фамилия Имя Отчество</label>
+                            <input class="md-input form-control" name="fio" value="{{ old('fio') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('fio')
                             <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-
                         </div>
 
-                        <div class="form-group row row-sm float-label">
+                        {{--<div class="form-group row row-sm float-label">
                             <label class="col-sm-5">Страна</label>
                             <div class="col-sm-7">
                                 <select id="country" class="md-input form-control" name="country" onchange="window.register.changeCountry(this)" required>
@@ -49,35 +45,29 @@
                                 </select>
                             </div>
 
-                        </div>
+                        </div>--}}
 
-                        <div class="form-group row row-sm @error('phone') is-invalid @enderror">
-                            <label class="col-sm-5">Номер телефона</label>
-                            <div class="col-sm-7">
-                                <input id="phone_input" class="md-input form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
-                            </div>
+                        <div class="form-group @error('phone') is-invalid @enderror">
+                            <label>Номер телефона</label>
+                            <input id="phone_input" class="md-input form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('phone')
-                            <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group row row-sm @error('password') is-invalid @enderror">
-                            <label class="col-sm-5">Пароль</label>
-                            <div class="col-sm-7">
-                                <input type="password" name="password" class="md-input form-control" value="{{ old('password') }}" onkeyup="this.setAttribute('value', this.value);" required>
-                            </div>
+                        <div class="form-group @error('password') is-invalid @enderror">
+                            <label>Пароль</label>
+                            <input type="password" name="password" class="md-input form-control" value="{{ old('password') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('password')
-                            <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group row row-sm float-label">
-                            <label class="col-sm-5">Подтверждение</label>
-                            <div class="col-sm-7">
-                                <input type="password" name="password_confirmation" class="md-input form-control" value="{{ old('password_confirmation') }}" onkeyup="this.setAttribute('value', this.value);" required>
-                            </div>
+                        <div class="form-group">
+                            <label>Подтверждение</label>
+                            <input type="password" name="password_confirmation" class="md-input form-control" value="{{ old('password_confirmation') }}" onkeyup="this.setAttribute('value', this.value);" required>
                         </div>
                     </div>
                     <div id="info" class="box-color danger pos-rlt hide">
@@ -95,14 +85,24 @@
                     </div>
                     @enderror
 
+                    <p class="login-policy">
+                        Регистрируясь, вы подтверждаете, что принимаете
+                        <a href="#" target="_blank" class="login-policy-link">Пользовательское соглашение</a>
+                        и даете
+                        <a href="#" target="_blank" class="login-policy-link">Согласие на обработку персональных данных</a>.
+                    </p>
+
                     <button type="submit" class="button login-button">
                         Создать аккаунт
                     </button>
                 </form>
                 <div class="create-acc-box">
-                    <a href="{{ route('login') }}" class="">Авторизация</a>
+                    <a href="{{ route('login') }}" class="">Уже есть аккаунт</a>
                 </div>
-            </div>
+                <div class="create-acc-box">
+                    <a href="#" class="">Восстановить пароль</a>
+                </div>
+
         </div>
     </div>
 
