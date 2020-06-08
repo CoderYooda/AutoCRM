@@ -100,9 +100,7 @@
 
                     <p class="login-policy">
                         Регистрируясь, вы подтверждаете, что принимаете
-                        <a href="#" target="_blank" class="login-policy-link">Пользовательское соглашение</a>
-                        и даете
-                        <a href="#" target="_blank" class="login-policy-link">Согласие на обработку персональных данных</a>.
+                        <a href="https://bbcrm.ru/files/contract.pdf" target="_blank" class="login-policy-link">Договор-оферту и обработку персональных данных</a>.
                     </p>
 
                     <button type="submit" class="button login-button">
@@ -119,92 +117,4 @@
         </div>
     </div>
 
-
-
-    {{--<div class="py-5 text-center" style="position: relative">--}}
-
-        {{--<div class="mx-auto w-xxl w-auto-xs">--}}
-            {{--<div class="px-3">--}}
-
-                {{--<form onsubmit="register.submitForm(this, event)" id="registerForm" method="POST" action="{{ route('register') }}">--}}
-                    {{--@csrf--}}
-
-                    {{--<div class="mx-auto  animate fadeIn text-left" >--}}
-                        {{--<div class="mb-5 text-center">--}}
-                            {{--<h5 class="mt-4 font-bold text-center">Регистрация</h5>--}}
-                        {{--</div>--}}
-
-                        {{--<div class="md-form-group float-label @error('fio') is-invalid @enderror">--}}
-                            {{--<input class="md-input" name="fio" value="{{ old('fio') }}" onkeyup="this.setAttribute('value', this.value);" required>--}}
-                            {{--@error('fio')--}}
-                                {{--<span class="invalid-feedback" role="alert">--}}
-                                    {{--<strong>{{ $message }}</strong>--}}
-                                {{--</span>--}}
-                            {{--@enderror--}}
-                            {{--<label>Фамилия Имя Отчество</label>--}}
-                        {{--</div>--}}
-
-                        {{--<div class="md-form-group float-label">--}}
-                            {{--<select id="country" class="md-input" name="country" onchange="window.register.changeCountry(this)" required>--}}
-                                {{--<option value="7">Россия</option>--}}
-                                {{--<option value="375">Беларусь</option>--}}
-                                {{--<option value="380">Украина</option>--}}
-                                {{--<option value="7">Казахстан</option>--}}
-                            {{--</select>--}}
-                            {{--<label>Страна</label>--}}
-                        {{--</div>--}}
-
-                        {{--<div class="md-form-group float-label @error('phone') is-invalid @enderror">--}}
-                            {{--<input id="phone_input" class="md-input" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>--}}
-                            {{--@error('phone')--}}
-                                {{--<span class="invalid-feedback" role="alert">--}}
-                                    {{--<strong>{{ $message }}</strong>--}}
-                                {{--</span>--}}
-                            {{--@enderror--}}
-                            {{--<label>Номер телефона</label>--}}
-                        {{--</div>--}}
-                        {{--<div class="md-form-group float-label @error('password') is-invalid @enderror">--}}
-                            {{--<input type="password" name="password" class="md-input" value="{{ old('password') }}" onkeyup="this.setAttribute('value', this.value);" required>--}}
-                            {{--@error('password')--}}
-                            {{--<span class="invalid-feedback" role="alert">--}}
-                                    {{--<strong>{{ $message }}</strong>--}}
-                                {{--</span>--}}
-                            {{--@enderror--}}
-                            {{--<label>Пароль</label>--}}
-                        {{--</div>--}}
-                        {{--<div class="md-form-group float-label">--}}
-                            {{--<input type="password" name="password_confirmation" class="md-input" value="{{ old('password_confirmation') }}" onkeyup="this.setAttribute('value', this.value);" required>--}}
-                            {{--<label>Подтверждение</label>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                    {{--<div id="info" class="box-color danger pos-rlt hide">--}}
-                        {{--<div class="box-body">--}}
-                            {{--b-danger--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-
-
-                    {{--@error('sms')--}}
-                        {{--<div class="alert alert-success">--}}
-                            {{--<ul>--}}
-                                {{--<li>{{ $message }}</li>--}}
-                            {{--</ul>--}}
-                        {{--</div>--}}
-                    {{--@enderror--}}
-
-
-                    {{--<div class="form-group mb-0">--}}
-                        {{--<button type="submit" class="btn primary">--}}
-                            {{--Создать аккаунт--}}
-                        {{--</button>--}}
-                    {{--</div>--}}
-                {{--</form>--}}
-                {{--<div class="py-4 text-center">--}}
-                    {{--<div>--}}
-                        {{--<a href="{{ route('login') }}" class="text-primary _600">Войти в аккаунт</a>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
 @endsection
