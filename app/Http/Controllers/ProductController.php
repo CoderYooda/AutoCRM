@@ -274,6 +274,7 @@ class ProductController extends Controller
         } else {
             return redirect()->back();
         }
+
     }
 
     public static function getProductCategories()

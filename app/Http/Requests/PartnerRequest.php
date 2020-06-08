@@ -18,7 +18,7 @@ class PartnerRequest extends FormRequest
         if($this['number']){
             $this['number'] = (int)str_replace(' ', '', $this['number']);
         }
-        if($this['phone'] != null){
+        if($this->access && $this['phone'] != null){
             $this['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $this['phone']);
         }
         if($this['issued_date'] == '__.__.____'){
