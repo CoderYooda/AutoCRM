@@ -35,10 +35,10 @@ class WarrantRequest extends FormRequest
     {
         return [
             'partner_id' => ['required','exists:partners,id'],
-            'cashbox_id' => ['required','exists:cashboxes,id'],
+            'cashbox_id' => ['required','exists:cashboxes,id'], 
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
             'isIncoming' => ['boolean'],
-            'summ' => ['required', 'numeric', 'between:0,' . (isset($this->max_summ) ? $this->max_summ : PHP_INT_MAX)],
+            'summ' => ['required', 'numeric', 'between:1,' . (isset($this->max_summ) ? $this->max_summ : PHP_INT_MAX)],
         ];
     }
 
