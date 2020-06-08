@@ -164,7 +164,7 @@ body {
 
 .login-policy {
     line-height: 22px;
-    margin: 30px 0 50px;
+    margin: 0 0 50px;
     padding-bottom: 30px;
     border-bottom: 1px solid #dbdbdb;
 }
@@ -241,4 +241,16 @@ body {
 }
 .sms-desc {
     color: #E84545;
+}
+
+#sms-box {
+    height: 178px;
+    transform: scale(1);
+    transition: all .3s;
+}
+#sms-box.hide {
+    display: block !important;
+    height: 0;
+    transform: scale(0);
+    transition: all .3s;
 }
