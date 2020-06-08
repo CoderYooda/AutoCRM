@@ -27,6 +27,11 @@ use Illuminate\Support\Facades\DB;
 
 class StatisticController extends Controller
 {
+    const PRODIVERORDER = 0;
+    const ENTRANCE = 1;
+    const REFUND = 2;
+    const SHIPMENT = 3;
+    const CLIENTORDER = 4;
     const INCOMING_WARRANT = 5;
     const OUTCOMING_WARRANT = 6;
 
@@ -99,13 +104,12 @@ class StatisticController extends Controller
 
             foreach ($sort_name as $sort) {
                 $global_data[$date][$sort] = [];
+                $global_data[$date]['providerorder_payed'] = 0;
+                $global_data[$date]['shipment_payed'] = 0;
             }
         }
 
-        $partner = isset($request->partner_id) ? Partner::find($request->partner_id) : null;
-        $manager = isset($request->manager_id) ? Partner::find($request->manager_id) : null;
-
-        #Запрос по запрошенным разделам
+        #Запросы по запрошенным разделам
 
         foreach ($classes as $key => $class) {
 
@@ -118,15 +122,18 @@ class StatisticController extends Controller
                 //->limit(10);
 
             if ($class != Entrance::class) {
-                $query = $query->selectRaw('id, summ as amount, created_at, manager_id')->with('manager');
+                $query = $query->selectRaw('*, summ as amount')->with('manager');
             } else {
                 $query = $query->select('*')->with('manager', 'providerorder');
+            }
+
+            if($classes[$key] == Shipment::class) {
+                $query = $query->with('warrants');
             }
 
             #Сортировка по входящим и исходящим ордерам
             if ($classes[$key] == Warrant::class) {
                 $query = $query->where('isIncoming', $key == 5 ? 1 : 0);
-                $query = $query->with('shipment');
             }
 
             if (isset($request->manager_id)) {
@@ -150,36 +157,36 @@ class StatisticController extends Controller
 
             #Заполнение массива данными из базы
             foreach ($entities as $entity) {
+
                 $date = $entity->created_at->format('d.m.Y');
                 $global_data[$date][$sort_name[$key]][$entity->id]['amount'] = $entity->amount;
                 $global_data[$date][$sort_name[$key]][$entity->id]['manager'] = $entity->manager->cut_surname;
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
 
-                #Маржа
-                if($key == self::OUTCOMING_WARRANT) {
+                #Формирование данных для маржи
+                if(get_class($entity) == ProviderOrder::class) {
+                    $global_data[$date]['providerorder_payed'] = $entity->warrants->sum('summ');
+                }
 
-                    dd($queries[$key]);
-
-                    $outcoming_amount = collect($global_data[$date][$sort_name[self::OUTCOMING_WARRANT]])->sum('amount');
-                    $incoming_amount = collect($global_data[$date][$sort_name[self::INCOMING_WARRANT]])->sum('amount');
-
-                    $global_data[$date]['Маржа'] = $incoming_amount - $outcoming_amount;
+                if(get_class($entity) == Shipment::class) {
+                    $global_data[$date]['shipment_payed'] = $entity->warrants->sum('summ');
                 }
             }
         }
-
 
         #Пересобираем массив для отображения в list.blade.php
         $list = [];
 
         foreach ($global_data as $date => $entities) {
 
-            $global_data[$date]['Маржа'] = $global_data[$date]['Маржа'] ?? 0;
+            $global_data[$date]['Маржа'] = $global_data[$date]['shipment_payed'] - $global_data[$date]['providerorder_payed'];
+
+            #Формирование list.blade.php
 
             foreach ($entities as $entity_name => $entity_ids) {
 
-                if($entity_ids == [] || $entity_name == 'Маржа') continue;
+                if($entity_ids == [] || !in_array($entity_name, $sort_name)) continue;
 
                 foreach ($entity_ids as $entity_id => $attributes) {
 
@@ -190,6 +197,10 @@ class StatisticController extends Controller
                 }
             }
         }
+
+        #Маржа
+
+        //$global_data[$date]['Маржа']
 
         dd($global_data);
 

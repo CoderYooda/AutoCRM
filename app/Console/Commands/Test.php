@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\API\DecoderController;
+use App\Models\Shipment;
+use App\Models\Warrant;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -39,8 +41,8 @@ class Test extends Command
      */
     public function handle()
     {
-        $info = DecoderController::getInfo('WVWZZZ6XZ1W017671');
+        $warrant = Warrant::where('id', 5)->first();
 
-        dd($info);
+        dd($warrant->payable);
     }
 }
