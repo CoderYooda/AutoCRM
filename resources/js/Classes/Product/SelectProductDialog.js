@@ -84,6 +84,7 @@ class SelectProductDialog extends Modal{
     markAsAdded()
     {
         let items_in_refer = [];
+        //dd(window[this.refer]);
         [].forEach.call(window[this.refer].items, function(elem){
             items_in_refer.push(elem.id);
         });

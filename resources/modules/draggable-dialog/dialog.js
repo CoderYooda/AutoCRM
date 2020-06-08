@@ -18,7 +18,6 @@ document.addEventListener('keydown', function(e){
             var d = document.getElementById(elem.tag);
 
             if(d.classList.contains('selected')){
-                console.log(d.id);
                 window[d.id].finitaLaComedia();
             }
         });
@@ -178,7 +177,6 @@ window.flashDialog = function(tag, onlySelect = false){
             d.classList.remove('flash');
         }, 300);
     }
-	console.info('Окно ' + tag + ' подсвечено');
 }
 
 function dialogPosition(tag){
