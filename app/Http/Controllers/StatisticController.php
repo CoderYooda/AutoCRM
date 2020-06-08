@@ -27,6 +27,9 @@ use Illuminate\Support\Facades\DB;
 
 class StatisticController extends Controller
 {
+    const INCOMING_WARRANT = 5;
+    const OUTCOMING_WARRANT = 6;
+
     public function index(Request $request)
     {
         // цель динамической подгрузки
@@ -86,6 +89,8 @@ class StatisticController extends Controller
 
         $global_data = [];
 
+        $queries = [];
+
         $company = Auth::user()->company()->first();
 
         #Формарование дат
@@ -121,6 +126,7 @@ class StatisticController extends Controller
             #Сортировка по входящим и исходящим ордерам
             if ($classes[$key] == Warrant::class) {
                 $query = $query->where('isIncoming', $key == 5 ? 1 : 0);
+                $query = $query->with('shipment');
             }
 
             if (isset($request->manager_id)) {
@@ -131,7 +137,9 @@ class StatisticController extends Controller
                 $query = $query->where('partner_id', $request->partner_id);
             }
 
-            $entities = $query->get();
+            $queries[$key] = $query->get();
+
+            $entities = $queries[$key];
 
             #Добавлене в Entrance свойства 'amount' из связи, т.к в модели его нет
             if ($class == Entrance::class) {
@@ -147,20 +155,33 @@ class StatisticController extends Controller
                 $global_data[$date][$sort_name[$key]][$entity->id]['manager'] = $entity->manager->cut_surname;
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
+
+                #Маржа
+                if($key == self::OUTCOMING_WARRANT) {
+
+                    dd($queries[$key]);
+
+                    $outcoming_amount = collect($global_data[$date][$sort_name[self::OUTCOMING_WARRANT]])->sum('amount');
+                    $incoming_amount = collect($global_data[$date][$sort_name[self::INCOMING_WARRANT]])->sum('amount');
+
+                    $global_data[$date]['Маржа'] = $incoming_amount - $outcoming_amount;
+                }
             }
         }
+
 
         #Пересобираем массив для отображения в list.blade.php
         $list = [];
 
         foreach ($global_data as $date => $entities) {
-            foreach ($entities as $entity_name => $entities) {
 
-                if ($entities == []) continue;
+            $global_data[$date]['Маржа'] = $global_data[$date]['Маржа'] ?? 0;
 
-                foreach ($entities as $entity_id => $attributes) {
+            foreach ($entities as $entity_name => $entity_ids) {
 
-                    if ($attributes == []) continue;
+                if($entity_ids == [] || $entity_name == 'Маржа') continue;
+
+                foreach ($entity_ids as $entity_id => $attributes) {
 
                     $list[$entity_name][$date][$entity_id]['amount'] = $attributes['amount'];
                     $list[$entity_name][$date][$entity_id]['manager'] = $attributes['manager'];
@@ -169,6 +190,8 @@ class StatisticController extends Controller
                 }
             }
         }
+
+        dd($global_data);
 
         $response = [
             'dates' => $global_data,
