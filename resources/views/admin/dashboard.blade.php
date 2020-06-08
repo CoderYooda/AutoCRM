@@ -18,7 +18,7 @@
                                 <textarea class="form-control" name="" id="message" cols="30" rows="10"></textarea>
                             </div>
                             <div class="col-sm-3">
-                                <button class="button primary">Отправить</button>
+                                <button onclick="window.admindashboard.sendSystemMessage()" class="button primary">Отправить</button>
                             </div>
                         </div>
                     </div>

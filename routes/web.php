@@ -284,5 +284,6 @@ Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUs
 Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth', 'superAdmin']], function () {
 
     Route::get('/dashboard', 'Admin\DashboardController@dashboard')->name('AdminDashboard');
+    Route::post('/system_message/send', 'SystemMessageController@sendSystenMessageTo')->name('AdminSendMessage');
 });
 
