@@ -75,6 +75,15 @@ body {
     margin-top: 10px;
     display: block;
 }
+.invalid-feedback {
+    text-align: left;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.04em;
+    color: #E84545;
+    margin-top: 10px;
+    display: block;
+}
 .left-side{
     background: #0a0d2c;
     flex: 0 0 43.75%;
@@ -93,12 +102,25 @@ body {
      align-self: center;
 }
 .bb-text-auth {
-    /* padding: 3rem !important; */
-    /* align-self: center !important; */
+     //padding: 3rem !important;
+    align-self: center !important;
     position: absolute;
-    top: 260px;
+    //top: 260px;
     right: 99px;
     max-width: 438px;
+}
+.back-site {
+    position: absolute;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.03em;
+    color: #FFFFFF;
+    top: 70px;
+    right: 99px;
+}
+.back-site img {
+    margin-right: 20px;
 }
 .bb-text-auth h1 {
     font-weight: 700;
@@ -196,5 +218,27 @@ body {
     background: #ff5656;
     color: #fff;
 }
-
-
+.sms-wrap {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.register-number-confirm {
+    width: 120px !important;
+    margin-right: 25px;
+}
+.sms-link {
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all .3s;
+}
+.sms-link:hover {
+    text-decoration: underline;
+    color: #1F98E9;
+    transition: all .3s;
+}
+.sms-desc {
+    color: #E84545;
+}

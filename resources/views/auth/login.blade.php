@@ -29,7 +29,7 @@
                             <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('phone')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                {{ $message }}
                             </span>
                             @enderror
                         </div>
@@ -38,7 +38,7 @@
                             <input id="password" type="password" class="form-control" name="password" value="{{ old('password') }}" onkeyup="this.setAttribute('value', this.value);" required>
                             @error('password')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                {{ $message }}
                             </span>
                             @enderror
                         </div>

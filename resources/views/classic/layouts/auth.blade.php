@@ -17,18 +17,22 @@
 </head>
     <body>
 
-    <div class="app auth-main">
-        <div id="particles-js" class="left-side">
-            <div class="bb-text-auth">
-                <h1 class="">Помогаем <br>бизнесу работать</h1>
-                <h5 class="">Эффективное решение <br>для ведения дела</h5>
+        <div class="app auth-main">
+            <div id="particles-js" class="left-side">
+                <div class="bb-text-auth">
+                    <h1 class="">Помогаем <br>бизнесу работать</h1>
+                    <h5 class="">Эффективное решение <br>для ведения дела</h5>
+                </div>
+                <a href="https://bbcrm.ru/" class="back-site" target="_blank">
+                    <img src="{{ asset('images/icons/arrow-left.svg') }}" alt="icon">
+                    Вернуться на сайт
+                </a>
+            </div>
+
+            <div class="right-side">
+                @yield('content')
             </div>
         </div>
-
-        <div class="right-side">
-            @yield('content')
-        </div>
-    </div>
 
 
 
@@ -47,7 +51,7 @@
         {{--</div>--}}
     {{--</div>--}}
         <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('dependencies/particles/particles.js') }}" defer></script>
+        <script src="{{ asset('dependencies/particles/particles.js') }}" defer></script>
         <script src="{{ asset('dependencies/particles/app.js') }}" defer></script>
     </body>
 </html>

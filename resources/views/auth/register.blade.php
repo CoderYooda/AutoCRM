@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="auth-block">
-        <div id="sms-box" class="black-back hide">
+        {{--<div id="sms-box" class="black-back hide">
             <div class="p-4 box sms-confirm animate fadeIn fadeOut">
                 <h2 class="mt-4 font-bold text-center">Подтверждение номера</h2>
                 <span style="padding: 20px 0;display: block;">На Ваш номер выслан SMS-код для подтверждения телефона. Он придет в течение минуты.</span>
@@ -12,7 +12,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>--}}
+
+
         <div class="auth-form-block">
                 <div class="mb-5">
                     <h5 class="login-text">Регистрация</h5>
@@ -68,6 +70,17 @@
                         <div class="form-group">
                             <label>Подтверждение</label>
                             <input type="password" name="password_confirmation" class="md-input form-control" value="{{ old('password_confirmation') }}" onkeyup="this.setAttribute('value', this.value);" required>
+                        </div>
+
+                        <div id="sms-box" class="hide">{{--hide--}}
+                            <div class="form-group">
+                                <label>Код смс</label>
+                                <div class="sms-wrap">
+                                    <input onkeydown="window.register.typeSms(this)" maxlength="5" class="form-control text-center register-number-confirm" type="text">
+                                    <span class="sms-link" onclick="{{--window.register.--}}">Повторно отправить смс</span>
+                                </div>
+                                <span class="sms-desc">На Ваш номер выслан SMS-код для подтверждения телефона. Он придет в течение минуты.</span>
+                            </div>
                         </div>
                     </div>
                     <div id="info" class="box-color danger pos-rlt hide">
