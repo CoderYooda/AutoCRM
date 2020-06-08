@@ -71,7 +71,7 @@ class Warrant extends Model
 
     public function shipment()
     {
-        return $this->belongsToMany(Shipment::class, 'shipment_warrant', 'warrant_id', 'shipment_id' );
+        return $this->morphTo(Shipment::class );
     }
 
 }
