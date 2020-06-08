@@ -254,6 +254,7 @@
                                 </a>
                             </li>
                         </ul>
+                        <div class="version">ver {{ config('version') }}</div>
                     </div>
                 </div>
                 <div id="ajax-content">
