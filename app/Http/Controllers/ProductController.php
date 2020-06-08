@@ -190,11 +190,15 @@ class ProductController extends Controller
                 });
             }
         })
-            ->when($request['category_id'], function ($q) use ($request) {
-                $q->where('category_id', $request['category_id']);
+
+            ->when($request['string'], function($q) use ($request){
+                $q->where('foundstring', 'LIKE', '%' .  str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
             })
-            ->where(function ($q) use ($request) {
-                $q->where('foundstring', 'LIKE', '%' . mb_strtolower(str_replace(' ', '', str_replace('-', '', $request['string']))) . '%');
+
+            ->when(!$request['string'], function($q) use ($request){
+                $q->when($request['category_id'], function ($q) use ($request) {
+                    $q->where('category_id', $request['category_id']);
+                });
             })
             ->orderBy('created_at', 'ASC')
             ->limit(30)

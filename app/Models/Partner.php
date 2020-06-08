@@ -54,7 +54,7 @@ class Partner extends Model
     }
 
     public function getPicUrl(){
-        return ($this->pic()->first() && file_exists(public_path($this->pic()->first()->url))) ? $this->pic()->first()->thumb_url : asset('images/noavatar.png');
+        return ( $this->pic()->first() && file_exists(public_path($this->pic()->first()->url)) ) ? $this->pic()->first()->thumb_url : asset('images/noavatar.png');
     }
 
     public function getAvatarUrl(){
