@@ -36,16 +36,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a id="tab_access{{ $class }}-tab" href="#tab_access{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_access{{ $class }}" aria-selected="false" role="tab" class="nav-link">
-                        Доступ в систему
+                    <a id="tab_vehicles{{ $class }}-tab" href="#tab_vehicles{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_vehicles{{ $class }}" aria-selected="false" role="tab" class="nav-link">
+                        Транспорт
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                         </span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a id="tab_vehicles{{ $class }}-tab" href="#tab_vehicles{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_vehicles{{ $class }}" aria-selected="false" role="tab" class="nav-link">
-                        Транспорт
+                    <a id="tab_access{{ $class }}-tab" href="#tab_access{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_access{{ $class }}" aria-selected="false" role="tab" class="nav-link">
+                        Доступ в систему
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                         </span>
@@ -68,11 +68,11 @@
                 <div role="tabpanel" class="tab-pane animate text-muted fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif" aria-labelledby="tab_passport{{ $class }}-tab" id="tab_passport{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.passport')
                 </div>
-                <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_access{{ $class }}-tab" id="tab_access{{ $class }}">
-                    @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')
-                </div>
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_vehicles{{ $class }}-tab" id="tab_vehicles{{ $class }}">
                     @include(get_template() . '.partner.dialog.tabs.vehicles')
+                </div>
+                <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_access{{ $class }}-tab" id="tab_access{{ $class }}">
+                    @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')
                 </div>
             </div>
         </div>

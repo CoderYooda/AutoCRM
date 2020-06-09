@@ -28,8 +28,8 @@
                     <div class="d-flex">
                         <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
                                @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
-                               class="form-control" style="margin-right: 10px;" />
-                    <button onclick="{{ $tag }}.parserVinCode()" class="button primary">Найти</button>
+                               class="form-control" />
+{{--                    <button onclick="{{ $tag }}.parserVinCode()" class="button primary">Найти</button>--}}
                     </div>
                 </div>
 

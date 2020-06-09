@@ -104,8 +104,14 @@ class StatisticController extends Controller
 
             foreach ($sort_name as $sort) {
                 $global_data[$date][$sort] = [];
+
                 $global_data[$date]['providerorder_payed'] = 0;
+                $global_data[$date]['providerorder_debt'] = 0;
+
                 $global_data[$date]['shipment_payed'] = 0;
+                $global_data[$date]['shipment_debt'] = 0;
+
+                $global_data[$date]['clientorder_debt'] = 0;
             }
         }
 
@@ -164,13 +170,22 @@ class StatisticController extends Controller
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
 
-                #Формирование данных для маржи
+                if(get_class($entity) == ClientOrder::class) {
+                    $global_data[$date]['clientorder_debt'] += ($entity->amount - $entity->getPaidAmount());
+                }
+
                 if(get_class($entity) == ProviderOrder::class) {
-                    $global_data[$date]['providerorder_payed'] = $entity->warrants->sum('summ');
+                    $providerorder_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['providerorder_payed'] += $providerorder_payed;
+                    $global_data[$date]['providerorder_debt'] += ($entity->amount - $providerorder_payed);
                 }
 
                 if(get_class($entity) == Shipment::class) {
-                    $global_data[$date]['shipment_payed'] = $entity->warrants->sum('summ');
+                    $shipment_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['shipment_payed'] += $shipment_payed;
+                    $global_data[$date]['shipment_debt'] += ($entity->amount - $shipment_payed);
                 }
             }
         }
@@ -180,7 +195,15 @@ class StatisticController extends Controller
 
         foreach ($global_data as $date => $entities) {
 
+            $gross_profit = $global_data[$date]['shipment_debt'] + $global_data[$date]['shipment_payed']; //валовая прибыль
+            $expenses = $global_data[$date]['providerorder_payed'] + $global_data[$date]['providerorder_debt']; //расходы
+
             $global_data[$date]['Маржа'] = $global_data[$date]['shipment_payed'] - $global_data[$date]['providerorder_payed'];
+            $global_data[$date]['Долг поставщикам'] = $global_data[$date]['providerorder_debt'];
+            $global_data[$date]['Долги клиентов'] = $global_data[$date]['clientorder_debt'];
+            $global_data[$date]['Долги по продажам'] = $global_data[$date]['shipment_debt'];
+            $global_data[$date]['Валовая прибыль'] = $gross_profit;
+            $global_data[$date]['ROI'] = $expenses ? ($gross_profit - $expenses) / $expenses * 100.0 : 0;
 
             #Формирование list.blade.php
 
