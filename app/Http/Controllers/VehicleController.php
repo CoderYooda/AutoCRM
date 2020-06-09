@@ -44,12 +44,7 @@ class VehicleController extends Controller
 
     public function modelList(VehicleMark $mark)
     {
-        $models = [
-            [
-                'value' => '',
-                'label' => ''
-            ]
-        ];
+        $models = [];
 
         foreach ($mark->models as $model) {
             $models[] = [
@@ -65,12 +60,7 @@ class VehicleController extends Controller
     {
         $modify_list = VehicleModify::where(['model_id' => $model->id])->get();
 
-        $modifies = [
-            [
-                'value' => '',
-                'label' => ''
-            ]
-        ];
+        $modifies = [];
 
         foreach ($modify_list as $modify) {
             $modifies[] = [
