@@ -105,13 +105,23 @@ class StatisticController extends Controller
             foreach ($sort_name as $sort) {
                 $global_data[$date][$sort] = [];
 
+                $global_data[$date]['providerorder_total'] = 0;
                 $global_data[$date]['providerorder_payed'] = 0;
                 $global_data[$date]['providerorder_debt'] = 0;
 
+                $global_data[$date]['shipment_total'] = 0;
                 $global_data[$date]['shipment_payed'] = 0;
                 $global_data[$date]['shipment_debt'] = 0;
 
+                $global_data[$date]['clientorder_total'] = 0;
+                $global_data[$date]['clientorder_payed'] = 0;
                 $global_data[$date]['clientorder_debt'] = 0;
+
+                $global_data[$date]['refund_total'] = 0;
+                $global_data[$date]['refund_payed'] = 0;
+
+                $global_data[$date]['expenses_total'] = 0;
+                $global_data[$date]['profit_total'] = 0;
             }
         }
 
@@ -127,6 +137,12 @@ class StatisticController extends Controller
                 ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date));
                 //->limit(10);
 
+            $class_fields = (new $classes[$key])->fields;
+
+            if(isset($request->dds_id) && in_array('dds_articleid', $class_fields)) {
+                $query = $query->where('ddsarticle_id', $request->dds_id);
+            }
+
             if ($class != Entrance::class) {
                 $query = $query->selectRaw('*, summ as amount')->with('manager');
             } else {
@@ -139,14 +155,14 @@ class StatisticController extends Controller
 
             #Сортировка по входящим и исходящим ордерам
             if ($classes[$key] == Warrant::class) {
-                $query = $query->where('isIncoming', $key == 5 ? 1 : 0);
+                $query = $query->where('isIncoming', $key == self::INCOMING_WARRANT ? 1 : 0);
             }
 
             if (isset($request->manager_id)) {
                 $query = $query->where('manager_id', $request->manager_id);
             }
 
-            if ($classes[$key] != MoneyMoves::class && isset($request->partner_id)) {
+            if (isset($request->partner_id) && in_array('partner_id', $class_fields)) {
                 $query = $query->where('partner_id', $request->partner_id);
             }
 
@@ -170,13 +186,25 @@ class StatisticController extends Controller
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
 
+                if(get_class($entity) == Refund::class) {
+                    $refund_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['refund_total'] += $entity->amount;
+                    $global_data[$date]['refund_payed'] += $refund_payed;
+                }
+
                 if(get_class($entity) == ClientOrder::class) {
-                    $global_data[$date]['clientorder_debt'] += ($entity->amount - $entity->getPaidAmount());
+                    $clientorder_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['clientorder_total'] += $entity->amount;
+                    $global_data[$date]['clientorder_payed'] += $clientorder_payed;
+                    $global_data[$date]['clientorder_debt'] += ($entity->amount - $clientorder_payed);
                 }
 
                 if(get_class($entity) == ProviderOrder::class) {
                     $providerorder_payed = $entity->getPaidAmount();
 
+                    $global_data[$date]['providerorder_total'] += $entity->amount;
                     $global_data[$date]['providerorder_payed'] += $providerorder_payed;
                     $global_data[$date]['providerorder_debt'] += ($entity->amount - $providerorder_payed);
                 }
@@ -184,8 +212,13 @@ class StatisticController extends Controller
                 if(get_class($entity) == Shipment::class) {
                     $shipment_payed = $entity->getPaidAmount();
 
+                    $global_data[$date]['shipment_total'] += $entity->amount;
                     $global_data[$date]['shipment_payed'] += $shipment_payed;
                     $global_data[$date]['shipment_debt'] += ($entity->amount - $shipment_payed);
+                }
+
+                if(get_class($entity) == Warrant::class) {
+                    $global_data[$date][$entity->isIncoming ? 'profit_total' : 'expenses_total'] += $entity->amount;
                 }
             }
         }
@@ -195,15 +228,23 @@ class StatisticController extends Controller
 
         foreach ($global_data as $date => $entities) {
 
-            $gross_profit = $global_data[$date]['shipment_debt'] + $global_data[$date]['shipment_payed']; //валовая прибыль
-            $expenses = $global_data[$date]['providerorder_payed'] + $global_data[$date]['providerorder_debt']; //расходы
+            #Маржа = Приходные минус расходные ордера
+            $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
 
-            $global_data[$date]['Маржа'] = $global_data[$date]['shipment_payed'] - $global_data[$date]['providerorder_payed'];
+            #Валовая прибыль = Продажи + заказы клиентов - возвраты
+            $global_data[$date]['Валовая прибыль'] = ($global_data[$date]['shipment_total'] + $global_data[$date]['clientorder_total']) - $global_data[$date]['refund_total'];
+
+            #Долги поставщикам = Неоплаченные заявки поставщикам
             $global_data[$date]['Долг поставщикам'] = $global_data[$date]['providerorder_debt'];
-            $global_data[$date]['Долги клиентов'] = $global_data[$date]['clientorder_debt'];
+
+            #Долги по заказам клиентов = неоплаченные заказы клиентов
+            $global_data[$date]['Долги по заказам клиентов'] = $global_data[$date]['clientorder_debt'];
+
+            #Долги по продажам = неоплаченные продажи клиентов
             $global_data[$date]['Долги по продажам'] = $global_data[$date]['shipment_debt'];
-            $global_data[$date]['Валовая прибыль'] = $gross_profit;
-            $global_data[$date]['ROI'] = $expenses ? ($gross_profit - $expenses) / $expenses * 100.0 : 0;
+
+            #ROI = Маржа / 100 * общий расход
+            $global_data[$date]['ROI'] = $global_data[$date]['expenses_total'] ? ($global_data[$date]['Маржа'] * 100) / $global_data[$date]['expenses_total'] : 0;
 
             #Формирование list.blade.php
 
@@ -220,10 +261,6 @@ class StatisticController extends Controller
                 }
             }
         }
-
-        #Маржа
-
-        //$global_data[$date]['Маржа']
 
         dd($global_data);
 

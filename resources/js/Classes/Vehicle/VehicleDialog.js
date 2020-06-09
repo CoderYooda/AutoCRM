@@ -22,6 +22,7 @@ class vehicleDialog extends Modal {
             noResultsText: 'Совпадений не найдено',
             noChoicesText: 'Нет вариантов для выбора',
             itemSelectText: 'Нажмите для выбора',
+            placeholder: true,
         };
 
         let mark_element = this.current_dialog.querySelector('#mark');
@@ -58,12 +59,10 @@ class vehicleDialog extends Modal {
             lazy: false,
             placeholderChar: '_'
         });
-
-        //^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$
     }
 
     parserVinCode() {
-        let vin_code = document.getElementById('vin_code').value;
+        let vin_code = this.current_dialog.querySelector('#vin_code').value;
 
 
     }
@@ -71,12 +70,13 @@ class vehicleDialog extends Modal {
     changeMark() {
 
         let mark_element = this.current_dialog.querySelector('#mark');
-        let model_element = this.current_dialog.querySelector('#model');
 
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
-        let model_id = model_element.options[model_element.selectedIndex].value;
 
-        document.getElementsByName('mark_id')[0].value = mark_id;
+        this.current_dialog.querySelector('#mark_id').value = mark_id;
+
+        this.model_choices.clearChoices();
+        this.modify_choices.clearChoices();
 
         //Список моделей
         window.axios({
@@ -84,58 +84,36 @@ class vehicleDialog extends Modal {
             url: '/models/' + mark_id + '/list',
         })
             .then(response => {
-
-                let data = response.data;
-
-                this.model_choices.clearChoices();
-                this.model_choices.setChoices(data);
-
-                model_id = data[0].value;
-
-                this.model_choices.setChoiceByValue(model_id);
-                this.changeModel();
+                this.model_choices.setChoices(response.data);
             });
     }
 
-    changeModel(model_id = null) {
-        let model_element = this.current_dialog.querySelector('#model');
-
-        if(model_id == null) {
-            model_id = model_element.options[model_element.selectedIndex].value;
-        }
-
-        document.getElementsByName('model_id')[0].value = model_id;
+    changeModel() {
 
         let mark_element = this.current_dialog.querySelector('#mark');
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
+
+        let model_element = this.current_dialog.querySelector('#model');
+        let model_id = model_element.options[model_element.selectedIndex].value;
+
+        this.current_dialog.querySelector('#model_id').value = model_id;
+
+        this.modify_choices.clearChoices();
 
         window.axios({
             method: 'get',
             url: '/modifies/' + mark_id + '/' + model_id + '/list',
         })
             .then(response => {
-
-                let data = response.data;
-
-                this.modify_choices.clearChoices();
-                this.modify_choices.setChoices(data);
-
-                let modify_id = data[0].value;
-
-                this.modify_choices.setChoiceByValue(modify_id);
-
-                this.changeModify();
+                this.modify_choices.setChoices(response.data);
             });
     }
 
-    changeModify(modify_id = null) {
+    changeModify() {
         let modify_element = this.current_dialog.querySelector('#modify');
+        let modify_id = modify_element.options[modify_element.selectedIndex].value;
 
-        if(modify_id == null) {
-            modify_id = modify_element.options[modify_element.selectedIndex].value;
-        }
-
-        document.getElementsByName('modify_id')[0].value = modify_id;
+        this.current_dialog.querySelector('#modify_id').value = modify_id;
     }
 
     save(elem){

@@ -11,22 +11,22 @@
                 @csrf
 
                 @if(isset($vehicle))
-                    <input type="hidden" name="id" value="{{ $vehicle->id }}">
+                    <input type="hidden" id="id" value="{{ $vehicle->id }}">
                 @endif
 
                 @if(isset($partner))
-                    <input type="hidden" name="partner_id" value="{{ $partner->id }}">
+                    <input type="hidden" id="partner_id" value="{{ $partner->id }}">
                 @endif
 
-                <input type="hidden" id="refer" name="refer" value="{{ request('refer') }}">
-                <input type="hidden" name="mark_id" value="{{ $default_vehicle['mark_id'] }}" />
-                <input type="hidden" name="model_id" value="{{ $default_vehicle['model_id'] }}" />
-                <input type="hidden" name="modify_id" value="{{ $default_vehicle['modify_id'] }}" />
+                <input type="hidden" id="refer" value="{{ request('refer') }}">
+                <input type="hidden" id="mark_id" value="{{ $default_vehicle['mark_id'] }}" />
+                <input type="hidden" id="model_id" value="{{ $default_vehicle['model_id'] }}" />
+                <input type="hidden" id="modify_id" value="{{ $default_vehicle['modify_id'] }}" />
 
                 <div class="form-group">
                     <label for="vin_code">VIN:</label>
                     <div class="d-flex">
-                        <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
+                        <input id="vin_code" onclick="this.select();" type="text"
                                @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
                                class="form-control" />
 {{--                    <button onclick="{{ $tag }}.parserVinCode()" class="button primary">Найти</button>--}}
@@ -36,6 +36,7 @@
                 <div class="form-group">
                     <label>Марка:</label>
                     <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control">
+                        <option value="">Не выбрано</option>
                         @foreach($marks as $mark)
                             <option @if($vehicle && $vehicle->mark_id == $mark->id) selected @endif value="{{ $mark->id }}">{{ $mark->name }}</option>
                         @endforeach
@@ -45,6 +46,7 @@
                 <div class="form-group">
                     <label>Модель:</label>
                     <select onchange="{{ $tag }}.changeModel()" id="model" data-trigger class="form-control">
+                        <option value="">Не выбрано</option>
                         @if(count($models))
                             @foreach($models as $model)
                                 <option @if($vehicle && $vehicle->model_id == $model->id) selected @endif value="{{ $model->id }}">{{ $model->name }}</option>
@@ -56,6 +58,7 @@
                 <div class="form-group">
                     <label>Модификация:</label>
                     <select onchange="{{ $tag }}.changeModify()" id="modify" data-trigger class="form-control">
+                        <option value="">Не выбрано</option>
                         @if(count($modifies))
                             @foreach($modifies as $modify)
                                 <option @if($vehicle && $vehicle->modify_id == $modify->id) selected @endif value="{{ $modify->id }}">{{ $modify->name }}</option>
@@ -65,15 +68,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Год:</label>
-                    <input onclick="this.select();" type="text" id="year" name="year"
+                    <label>Год:</label>v
+                    <input id="year" onclick="this.select();" type="text"
                            @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
                            class="form-control" />
                 </div>
 
                 <div class="form-group">
                     <label>Гос. номер:</label>
-                    <input onclick="this.select();" type="text" id="numberplate" name="numberplate"
+                    <input id="numberplate" onclick="this.select();" type="text"
                            @if(isset($vehicle)) value="{{ $vehicle->numberplate }}" @endif
                            class="form-control" />
                 </div>

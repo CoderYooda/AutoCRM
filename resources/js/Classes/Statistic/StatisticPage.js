@@ -171,19 +171,42 @@ class statisticPage {
     }
 
     initSections(){
+
         this.sections = [];
-        if(document.getElementById('partnerOrder').checked){this.sections.push(0)}
-        if(document.getElementById('entrance').checked){this.sections.push(1)}
-        if(document.getElementById('refund').checked){this.sections.push(2)}
-        if(document.getElementById('shipment').checked){this.sections.push(3)}
-        if(document.getElementById('clientOrder').checked){this.sections.push(4)}
-        if(document.getElementById('inWarrant').checked){this.sections.push(5)}
-        if(document.getElementById('outWarrant').checked){this.sections.push(6)}
-        if(document.getElementById('cashMove').checked){this.sections.push(7)}
+
+        let entities = ['partnerOrder', 'entrance', 'refund', 'shipment', 'clientOrder', 'inWarrant', 'outWarrant', 'cashMove'];
+
+        entities.forEach((entity, index) => {
+            if(document.getElementById(entity).checked){this.sections.push(index)};
+        });
     }
 
-    openSelectSection(){
-        //this.tagify.
+    selectDdsarticle(id){
+        var object = this;
+        window.axios({
+            method: 'post',
+            url: 'ddsarticle/'+ id +'/select',
+            data: {refer: 'statistic'}
+        }).then(function (resp) {
+
+            document.querySelector('input[name=dds_id]').value = resp.data.id;
+            document.getElementById('dds_name').innerHTML = resp.data.name;
+
+            window.notification.notify( 'success', 'Статья выбрана');
+            document.dispatchEvent(new Event('DdsarticleSelected', {bubbles: true}));
+            console.log("Событие DdsarticleSelected вызвано");
+            //closeDialog(event);
+
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    };
+
+    clearDdsarticle() {
+        document.querySelector('input[name=dds_id]').value = '';
+        document.getElementById('dds_name').innerText = 'Не выбрано';
     }
 
     showResults() {
@@ -196,12 +219,15 @@ class statisticPage {
                 refer: 'statistic',
                 manager_id: Number(document.querySelector("input[name=manager_id]").value),
                 partner_id: Number(document.querySelector("input[name=partner_id]").value),
+                dds_id: Number(document.querySelector("input[name=dds_id]").value),
                 begin_date: document.querySelector("input[name=begin_date]").value,
                 final_date: document.querySelector("input[name=final_date]").value,
                 entities: this.sections,
             }
         })
         .then(response => {
+
+            console.log(response);
 
             //Удаляем данные с графика
             this.chart.data.datasets.length = 0;
@@ -228,7 +254,16 @@ class statisticPage {
                 'rgb(184, 69, 146)',
                 'rgb(1, 205, 116)',
                 'rgb(234, 128, 237)',
-                'rgb(137, 186, 22)'
+                'rgb(137, 186, 22)',
+
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
+                'rgb(137, 186, 22)',
             ];
 
             //Получаем названия сущностей

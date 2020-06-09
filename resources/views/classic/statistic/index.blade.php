@@ -107,8 +107,18 @@
                                 </button>
                             </div>
 
+                            <div class="form-group w-100 mb-10">
+                                <label>Статья ДДС</label>
+                                <i onclick="{{ $class }}.clearDdsarticle()" class="fa fa-times-circle pointer"></i>
+                                <button onclick="window.openDialog('selectDdsarticle', '&refer={{ $class }}');" type="button"
+                                        class="partner_select form-control text-left button_select">
+                                    <div id="dds_name">Не выбрано</div>
+                                </button>
+                            </div>
+
                             <input type="hidden" name="manager_id"/>
                             <input type="hidden" name="partner_id"/>
+                            <input type="hidden" name="dds_id"/>
 
                             <div class="form-group w-100 mb-10">
                                 <button class="button primary mt-30" onclick="{{ $class }}.showResults()">Показать</button>

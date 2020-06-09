@@ -44,7 +44,12 @@ class VehicleController extends Controller
 
     public function modelList(VehicleMark $mark)
     {
-        $models = [];
+        $models = [
+            [
+                'value' => '',
+                'label' => ''
+            ]
+        ];
 
         foreach ($mark->models as $model) {
             $models[] = [
@@ -60,7 +65,12 @@ class VehicleController extends Controller
     {
         $modify_list = VehicleModify::where(['model_id' => $model->id])->get();
 
-        $modifies = [];
+        $modifies = [
+            [
+                'value' => '',
+                'label' => ''
+            ]
+        ];
 
         foreach ($modify_list as $modify) {
             $modifies[] = [
@@ -78,12 +88,12 @@ class VehicleController extends Controller
 
         $tag = 'vehicleDialog' . ($vehicle->id ?? '');
 
-        $mark_id = $vehicle ? $vehicle->mark_id : VehicleMark::first()->id;
-        $model_id = $vehicle ? $vehicle->model_id : VehicleModel::where('mark_id', $mark_id)->first()->id;
-        $modify_id = $vehicle ? $vehicle->modify_id : VehicleModify::where('model_id', $model_id)->first()->id;
+        $mark_id = $vehicle ? $vehicle->mark_id : null;
+        $model_id = $vehicle ? $vehicle->model_id : null;
+        $modify_id = $vehicle ? $vehicle->modify_id : null;
 
-        $models = VehicleModel::where('mark_id', $mark_id)->get();
-        $modifies = VehicleModify::where(['model_id' => $model_id])->get();
+        $models = $mark_id ? VehicleModel::where('mark_id', $mark_id)->get() : [];
+        $modifies = $models ? VehicleModify::where(['model_id' => $model_id])->get() : [];
 
         $default_vehicle = [
             'mark_id' => $mark_id,
