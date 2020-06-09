@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Broadcasting\SystemMessageChannel;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -16,20 +17,29 @@ class SystemMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    protected  $message;
+    protected  $user;
 
-    public function __construct(SM $message)
+    public function __construct(SM $message, $user)
     {
         $this->message = $message;
+        $this->user = $user;
     }
 
     public function broadcastOn()
     {
-        return ['base_channel'];
+        return new PrivateChannel('system_message.1');
     }
 
     public function broadcastAs()
     {
-        return 'user_' . $this->message->reciever_id . '_channel';
+        return 'sss';
     }
+
+//    public function broadcastWith()
+//    {
+//        return [
+//            'view' => view('classic.tasks.system_message.index')->render()
+//        ];
+//    }
 }

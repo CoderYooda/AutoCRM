@@ -1,4 +1,4 @@
-import io from 'socket.io-client';
+//import io from 'socket.io-client';
 //require('dotenv').config();
 class Socket{
 
@@ -7,7 +7,7 @@ class Socket{
         this.socket = null;
         this.channel = 'system:message';
         this.systemChannel = 'app_base_channel:systemMessage';
-        this.init();
+        //this.init();
         this.ownChannel = [];
         this.allowedOrigins = window.socket_origins;
         console.log('Сокеты подключены');
