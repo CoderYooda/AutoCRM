@@ -64,3 +64,18 @@ Array.prototype.remove = function() {
 };
 
 window.dd = console.log.bind(document);
+
+
+// import Echo from "laravel-echo"
+// window.io = require('socket.io-client');
+//
+// let echo = new Echo({
+//     broadcaster: 'socket.io',
+//     host: 'http://autocrm:6001' // значение должно быть равным authHost из конфига + порт
+// });
+//
+// echo
+//     .channel('system_message.1')
+//     .listen('sss', (e) => {
+//         console.log(e);
+//     });

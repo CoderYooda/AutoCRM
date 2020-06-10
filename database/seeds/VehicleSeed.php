@@ -12,9 +12,9 @@ class VehicleSeed extends Seeder
 {
     public function run()
     {
-        DB::unprepared(file_get_contents(public_path('demo\vehicle_marks.sql')));
-        DB::unprepared(file_get_contents(public_path('demo\vehicle_models.sql')));
-        DB::unprepared(file_get_contents(public_path('demo\vehicle_modifies.sql')));
+        DB::unprepared(file_get_contents(public_path('demo/vehicle_marks.sql')));
+        DB::unprepared(file_get_contents(public_path('demo/vehicle_models.sql')));
+        DB::unprepared(file_get_contents(public_path('demo/vehicle_modifies.sql')));
 
         factory(Vehicle::class, 10)->create();
     }

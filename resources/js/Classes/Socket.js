@@ -1,6 +1,5 @@
 import Echo from "laravel-echo"
 window.io = require('socket.io-client');
-
 //require('dotenv').config();
 
 window.echo = new Echo({

@@ -6,11 +6,6 @@ use App\Models\User;
 
 class MessagesChannel
 {
-    /**
-     * Create a new channel instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         //
