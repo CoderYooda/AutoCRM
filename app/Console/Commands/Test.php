@@ -5,42 +5,28 @@ namespace App\Console\Commands;
 use App\Http\Controllers\API\DecoderController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Models\SystemMessage as SM;
+use App\Events\SystemMessage;
 
 class Test extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'command:test';
+    protected $signature = 'system:message {message}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Command description';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
-        $info = DecoderController::getInfo('WVWZZZ6XZ1W017671');
+        $system_message = new SM();
+        $system_message->type = 'test';
+        $system_message->message = $this->argument('message');
+        $system_message->save();
 
-        dd($info);
+        event(new SystemMessage($system_message)); // Это для примера. Отправка сообщения всем активным пользователям канала
+        ///broadcast(new SystemMessage($system_message))->toOthers(); // Отправляю сообщение всем, кроме текущего пользователя
     }
 }

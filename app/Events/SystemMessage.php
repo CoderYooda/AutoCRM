@@ -25,11 +25,20 @@ class SystemMessage implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return ['base_channel'];
+        //return new PresenceChannel('chat.1');
+        return new PrivateChannel('chat.1');
+
     }
 
-    public function broadcastAs()
+//    public function broadcastAs()
+//    {
+//        return 'SystemMessage';
+//    }
+
+    public function broadcastWith()
     {
-        return 'user_' . $this->message->reciever_id . '_channel';
+        return [
+            'view' => view('classic.socket.system_message')->render()
+        ];
     }
 }
