@@ -1006,6 +1006,11 @@ input:-moz-placeholder { /* Firefox 18- */
 .pr-8{
     padding-right: 8px!important;
 }
+
+.mw-200 {
+    max-width: 200px;
+}
+
 .pb-0{
     padding-bottom: 0px!important;
 }
@@ -1048,6 +1053,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .ml-12{
     margin-left: 12px!important;
 }
+.ml-10{
+    margin-left: 10px!important;
+}
 .ml-15{
     margin-left: 15px!important;
 }
@@ -1057,6 +1065,11 @@ input:-moz-placeholder { /* Firefox 18- */
 .mr-0{
     margin-right: 0!important;
 }
+
+.pl-10{
+    padding-left: 10px!important;
+}
+
 .pl-15{
     padding-left: 15px!important;
 }
@@ -1067,7 +1080,7 @@ input:-moz-placeholder { /* Firefox 18- */
     width: 100%!important;
 }
 .pr-10{
-    padding-right: 10px;
+    padding-right: 10px !important;
 }
 .p-10{
     padding: 10px;
@@ -1318,6 +1331,99 @@ input:-moz-placeholder { /* Firefox 18- */
     width: 50%;
 }
 .vehicle-image {
-    padding-top: 15px;
-    padding-left: 10%;
+    margin: 4px;
+    border-radius: 4px;
+    background: #fff;
+    text-align: center;
+}
+
+.vehicle-element .box {
+    transition: 0.2s;
+}
+
+.vehicle-element > .box {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #F7F7F7 100%), #FFFFFF;
+}
+
+.vehicle-image > img {
+    width: 107px;
+    height: 70px;
+    margin: 20px 0;
+}
+
+.vehicle-element:hover > .box {
+    background: #2D76A8;
+}
+
+.vehicle-element:hover .user-page-vehicle-properties {
+    color: #fff;
+}
+
+.user-page-vehicle-title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.user-page-vehicle-title:not(:nth-child(1)) {
+    padding-top: 16px;
+}
+
+.user-page-vehicle-desc {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vehicle-buttons > div {
+    border: 0;
+    box-sizing: border-box;
+    //border-radius: 4px;
+    width: 50%;
+    height: 44px;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    border-top: 1px solid #DDDEE2;
+}
+
+.vehicle-buttons > div:first-child {
+    border-right: 1px solid #DDDEE2;
+}
+
+.vehicle-element:hover .vehicle-buttons > div {
+    border: 0;
+    color: white;
+    background: #2D76A8;
+    border-top: 1px solid #4F9FD7;
+    &:hover {
+        background: #195680;
+    }
+}
+
+.vehicle-element:hover .vehicle-buttons > div:first-child {
+    border-right: 1px solid #4F9FD7;
+}
+
+.vehicle-element {
+    flex: 0 0 25%;
+    max-width: 25%
+}
+
+@media (min-width: 1480px) {
+    .vehicle-element {
+        flex: 0 0 20%;
+        max-width: 20%
+    }
+}
+
+@media (min-width: 1920px) {
+    .vehicle-element {
+        flex: 0 0 16.66666%;
+        max-width: 16.66666%
+    }
 }

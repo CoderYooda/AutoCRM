@@ -35,7 +35,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li id="vehicle_tab" class="nav-item" @if(!isset($partner) || $partner->category_id != 7) style="display: none;" @endif>
                     <a id="tab_vehicles{{ $class }}-tab" href="#tab_vehicles{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_vehicles{{ $class }}" aria-selected="false" role="tab" class="nav-link">
                         Транспорт
                         <span class="float-right helper_danger d-none-f">

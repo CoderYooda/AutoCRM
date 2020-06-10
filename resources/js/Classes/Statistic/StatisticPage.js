@@ -7,8 +7,6 @@ class statisticPage {
 
         this.chart = null;
 
-        this.sections = [0, 1, 2, 3, 4, 5, 6, 7];
-
         this.graph_data = null;
 
         this.start_date = new Date();
@@ -17,6 +15,17 @@ class statisticPage {
         this.end_date = new Date();
 
         this.tagify = null;
+
+        this.entity_names = [
+            'Заявки поставщикам',
+            'Поступления',
+            'Возвраты',
+            'Продажи',
+            'Заказы клиентов',
+            'Приходные ордера',
+            'Расходные ордера',
+            'Перемещения'
+        ];
 
         this.whitelist = ["Заявки поставщикам", "Поступления", "Возвраты", "Продажи", "Заказы клиентов", "Приходные ордера", "Расходные ордера", "Перемещения"];
 
@@ -170,14 +179,14 @@ class statisticPage {
         this.showResults();
     }
 
-    initSections(){
+    initSections() {
 
         this.sections = [];
 
         let entities = ['partnerOrder', 'entrance', 'refund', 'shipment', 'clientOrder', 'inWarrant', 'outWarrant', 'cashMove'];
 
         entities.forEach((entity, index) => {
-            if(document.getElementById(entity).checked){this.sections.push(index)};
+            if(document.getElementById(entity).checked){this.sections.push(this.entity_names[index])};
         });
     }
 
@@ -294,11 +303,12 @@ class statisticPage {
             Object.keys(datasets).map((name, index) => {
 
                 let entity_index = this.whitelist.indexOf(name);
+                let color_index = this.entity_names.indexOf(name);
 
                 if(this.sections.indexOf(entity_index) !== -1) {
                     this.chart.data.datasets.push({
                         label: name,
-                        backgroundColor: colors[index],
+                        backgroundColor: colors[color_index],
                         borderColor: 'rgb(0,0,0)',
                         data: datasets[name]
                     });

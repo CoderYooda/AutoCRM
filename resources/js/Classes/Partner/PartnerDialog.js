@@ -26,35 +26,50 @@ class partnerDialog extends Modal{
         }
         helper.initTabs('partner_tabs');
         this.addLoginPhoneMask();
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+        object.current_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
                 object.bithdayFlatpkr.close();
                 object.issuedDateFlatpkr.close();
                 e.preventDefault();
-                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+                object.save(object.current_dialog.getElementsByTagName('form')[0]);
             }
         });
+
+        document.addEventListener('VehicleStored', (e => this.freshVehicles(e)));
     }
 
-    initDatePicker(){
-        let date = this.root_dialog.querySelector('input[name=birthday]');
-        this.bithdayFlatpkr = window.flatpickr(date, {
+    freshVehicles(event) {
+        let data = event.detail.data;
+        let vehicle = data.vehicle;
+
+        let vehicle_element =  this.current_dialog.querySelector('#vehicle_item_' + vehicle.id);
+
+        if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
+        else this.current_dialog.querySelector('#vehicle_item_create').before(helper.createElementFromHTML(data.html));
+    }
+
+    initDatePicker() {
+
+        let birthday_input = this.current_dialog.querySelector('input[name=birthday]');
+
+        this.bithdayFlatpkr = window.flatpickr(birthday_input, {
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        this.bithdayMask = window.IMask(date, {
+        this.bithdayMask = window.IMask(birthday_input, {
                 mask: Date,
                 min: new Date(1910, 0, 1),
                 max: new Date(2090, 0, 1),
                 lazy: false
             }
         );
-        let date2 = this.root_dialog.querySelector('input[name=issued_date]');
-        this.issuedDateFlatpkr = window.flatpickr(date2, {
+
+        let issued_input = this.current_dialog.querySelector('input[name=issued_date]');
+        this.issuedDateFlatpkr = window.flatpickr(issued_input, {
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        this.issuedDateMask = window.IMask(date2, {
+        this.issuedDateMask = window.IMask(issued_input, {
                 mask: Date,
                 //pattern: 'd-m-Y',
                 min: new Date(1910, 0, 1),
@@ -65,11 +80,10 @@ class partnerDialog extends Modal{
     }
 
     save(elem){
-        let object = this;
-        if(!window.isXHRloading){
 
-            window.axform.send(elem, function(e){
-                object.finitaLaComedia(true);
+        if(!window.isXHRloading){
+            window.axform.send(elem, e => {
+                this.finitaLaComedia(true);
             });
         }
     }
@@ -90,11 +104,11 @@ class partnerDialog extends Modal{
     }
 
     openCategoryModal(category_selected = null){
-        window.openDialog('categoryDialog', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
+        window.openDialog('categoryDialog', '&refer=' + this.current_dialog.id + '&category_selected=' + category_selected);
     }
 
     openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_id=' + category_selected + '&root_category=' + this.root_category);
+        window.openDialog('selectCategory', '&refer=' + this.current_dialog.id + '&category_id=' + category_selected + '&root_category=' + this.root_category);
     }
 
     selectCategory(id){
@@ -102,14 +116,18 @@ class partnerDialog extends Modal{
         window.axios({
             method: 'post',
             url: 'category/'+ id +'/select',
-            data: {refer:this.root_dialog.id}
-        }).then(function (resp) {
+            data: {refer:this.current_dialog.id}
+        }).then((resp) => {
 
-            let select = object.root_dialog.querySelector('button[name=category_id]');
-            let input = object.root_dialog.querySelector('input[name=category_id]');
+            let select = this.current_dialog.querySelector('button[name=category_id]');
+            let input = this.current_dialog.querySelector('input[name=category_id]');
             let str = resp.data.name;
             input.value = resp.data.id;
             select.innerHTML = str;
+
+            //Показываем вкладку с транспортом
+            this.current_dialog.querySelector('#vehicle_tab').style.display =  resp.data.id === 7 ? 'block' : 'none';
+
             window.notification.notify( 'success', 'Категория выбрана');
             document.dispatchEvent(new Event('CategorySelected', {bubbles: true}));
             console.log("Событие CategorySelected вызвано");
@@ -151,7 +169,7 @@ class partnerDialog extends Modal{
     }
 
     addPhoneMask(){
-        var elements = this.root_dialog.querySelectorAll('.phone_input');
+        var elements = this.current_dialog.querySelectorAll('.phone_input');
         [].forEach.call(elements, function(element){
             var dispatchMask = window.IMask(element, {
                     mask: [
@@ -205,7 +223,7 @@ class partnerDialog extends Modal{
         let object = this;
         console.log(1);
 
-        var container = this.root_dialog.querySelector('#fl_ul_tabs');
+        var container = this.current_dialog.querySelector('#fl_ul_tabs');
 
         var links = container.querySelectorAll('.nav-item a');
 
@@ -215,7 +233,7 @@ class partnerDialog extends Modal{
         elem.querySelector('a').classList.add('active');
 
 
-        // var container = this.root_dialog.querySelector('#act_form_partner');
+        // var container = this.current_dialog.querySelector('#act_form_partner');
         //
         // var links = container.getElementsByClassName('nav-item');
         //
@@ -242,13 +260,13 @@ class partnerDialog extends Modal{
         var deactivate;
 
         if(tag === 'fl'){
-            object.root_dialog.querySelector('#isfl').click();
-            activate = object.root_dialog.querySelectorAll('.fl_only');
-            deactivate = object.root_dialog.querySelectorAll('.ul_only');
+            object.current_dialog.querySelector('#isfl').click();
+            activate = object.current_dialog.querySelectorAll('.fl_only');
+            deactivate = object.current_dialog.querySelectorAll('.ul_only');
         }else if(tag === 'ul'){
-            this.root_dialog.querySelector('#isul').click();
-            deactivate = object.root_dialog.querySelectorAll('.fl_only');
-            activate = object.root_dialog.querySelectorAll('.ul_only');
+            this.current_dialog.querySelector('#isul').click();
+            deactivate = object.current_dialog.querySelectorAll('.fl_only');
+            activate = object.current_dialog.querySelectorAll('.ul_only');
         }
         [].forEach.call(activate, function(elem){
             elem.classList.remove('d-none-f');
@@ -280,7 +298,7 @@ class partnerDialog extends Modal{
             '</div>' +
             '</span>' +
             '<span class="input-group-append" title="Удалить номер">' +
-            '<button onclick="window.' + this.root_dialog.id + '.deletePhone(this)" class="input-group-text butt_del_append" type="button" style="height: auto">' +
+            '<button onclick="window.' + this.current_dialog.id + '.deletePhone(this)" class="input-group-text butt_del_append" type="button" style="height: auto">' +
             '<i class="fa fa-trash"></i>' +
             '</button>' +
             '</span>' +
@@ -294,7 +312,7 @@ class partnerDialog extends Modal{
 
     toggleAccess(elem){
         let object = this;
-        var account_datas = object.root_dialog.querySelectorAll('.account_data');;
+        var account_datas = object.current_dialog.querySelectorAll('.account_data');;
         if(account_datas){
             if(elem.value == 1){
                 [].forEach.call(account_datas, function(elem){

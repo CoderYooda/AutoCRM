@@ -3,13 +3,14 @@
 namespace App\Http\Requests;
 
 use App\Models\Setting;
+use App\Rules\ValidateFilters;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
-class StatisticRequest extends FormRequest
+class   StatisticRequest extends FormRequest
 {
     public function authorize()
     {
@@ -37,7 +38,7 @@ class StatisticRequest extends FormRequest
             'begin_date' => ['required', 'date_format:d.m.Y', 'before:final_date'],
             'final_date' => ['required', 'date_format:d.m.Y', 'after:begin_date'],
             'entities' => ['array'],
-            'entities.*' => ['min:-1', 'max:7']
+            'entities.*' => [new ValidateFilters]
         ];
     }
 

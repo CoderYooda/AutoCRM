@@ -129,13 +129,12 @@ class StatisticController extends Controller
 
         foreach ($classes as $key => $class) {
 
-            if (!in_array($key, $request->entities)) continue;
+            if (!in_array($sort_name[$key], $request->entities)) continue;
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
                 ->where('created_at', '>=', DateTime::createFromFormat('d.m.Y', $request->begin_date))
                 ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date));
-                //->limit(10);
 
             $class_fields = (new $classes[$key])->fields;
 
@@ -261,8 +260,6 @@ class StatisticController extends Controller
                 }
             }
         }
-
-        dd($global_data);
 
         $response = [
             'dates' => $global_data,

@@ -26,14 +26,14 @@
                         <div class="p-15 w-290" style="position: relative">
                             <div class="form-group w-100  mb-10">
                                 <label>Дата начала</label>
-                                <i onclick="{{ $class }}.resetBeginDate()" class="fa fa-undo pointer"></i>
+                                <button type="button" onclick="{{ $class }}.resetBeginDate()" class="right-remove"><i class="fa fa-remove"></i></button>
                                 <input onclick="this.select();" type="text" name="begin_date" class="form-control date_picker_start flatpickr-input"
                                        placeholder="Выберите дату">
                             </div>
 
                             <div class="form-group w-100 mb-10">
                                 <label>Дата конца</label>
-                                <i onclick="{{ $class }}.resetFinalDate()" class="fa fa-undo pointer"></i>
+                                <button type="button" onclick="{{ $class }}.resetFinalDate()" class="right-remove"><i class="fa fa-remove"></i></button>
                                 <input onclick="this.select();" type="text" name="final_date" class="form-control date_picker_end flatpickr-input"
                                        placeholder="Выберите дату">
                             </div>
@@ -91,7 +91,7 @@
 
                             <div class="form-group w-100 mb-10">
                                 <label>Менеджер</label>
-                                <i onclick="{{ $class }}.clearManager()" class="fa fa-times-circle pointer"></i>
+                                <button type="button" onclick="{{ $class }}.clearManager()" class="right-remove"><i class="fa fa-remove"></i></button>
                                 <button onclick="{{ $class }}.openSelectManagerModal()" type="button"
                                         class="partner_select form-control text-left button_select">
                                     <div id="manager_name">Не выбрано</div>
@@ -100,7 +100,7 @@
 
                             <div class="form-group w-100 mb-10">
                                 <label>Контрагент</label>
-                                <i onclick="{{ $class }}.clearPartner()" class="fa fa-times-circle pointer"></i>
+                                <button type="button" onclick="{{ $class }}.clearPartner()" class="right-remove"><i class="fa fa-remove"></i></button>
                                 <button onclick="{{ $class }}.openSelectPartnerModal()" type="button"
                                         class="partner_select form-control text-left button_select">
                                     <div id="partner_name">Не выбрано</div>
@@ -109,7 +109,7 @@
 
                             <div class="form-group w-100 mb-10">
                                 <label>Статья ДДС</label>
-                                <i onclick="{{ $class }}.clearDdsarticle()" class="fa fa-times-circle pointer"></i>
+                                <button type="button" onclick="{{ $class }}.clearDdsarticle()" class="right-remove"><i class="fa fa-remove"></i></button>
                                 <button onclick="window.openDialog('selectDdsarticle', '&refer={{ $class }}');" type="button"
                                         class="partner_select form-control text-left button_select">
                                     <div id="dds_name">Не выбрано</div>

@@ -11,25 +11,25 @@
                 @csrf
 
                 @if(isset($vehicle))
-                    <input type="hidden" id="id" value="{{ $vehicle->id }}">
+                    <input type="hidden" id="id" name="id" value="{{ $vehicle->id }}">
                 @endif
 
                 @if(isset($partner))
-                    <input type="hidden" id="partner_id" value="{{ $partner->id }}">
+                    <input type="hidden" id="partner_id" name="partner_id" value="{{ $partner->id }}">
                 @endif
 
-                <input type="hidden" id="refer" value="{{ request('refer') }}">
-                <input type="hidden" id="mark_id" value="{{ $default_vehicle['mark_id'] }}" />
-                <input type="hidden" id="model_id" value="{{ $default_vehicle['model_id'] }}" />
-                <input type="hidden" id="modify_id" value="{{ $default_vehicle['modify_id'] }}" />
+                <input type="hidden" id="refer" name="refer" value="{{ request('refer') }}">
+                <input type="hidden" id="mark_id" name="mark_id" value="{{ $default_vehicle['mark_id'] }}" />
+                <input type="hidden" id="model_id" name="model_id" value="{{ $default_vehicle['model_id'] }}" />
+                <input type="hidden" id="modify_id" name="modify_id" value="{{ $default_vehicle['modify_id'] }}" />
 
                 <div class="form-group">
                     <label for="vin_code">VIN:</label>
                     <div class="d-flex">
-                        <input id="vin_code" onclick="this.select();" type="text"
+                        <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
                                @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
-                               class="form-control" />
-{{--                    <button onclick="{{ $tag }}.parserVinCode()" class="button primary">Найти</button>--}}
+                               class="form-control mw-100" />
+                    <button onclick="{{ $tag }}.copy()" class="button primary ml-10">Скопировать</button>
                     </div>
                 </div>
 
@@ -68,18 +68,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Год:</label>v
-                    <input id="year" onclick="this.select();" type="text"
+                    <label>Год:</label>
+                    <input id="year" onclick="this.select();" type="text" name="year"
                            @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
                            class="form-control" />
                 </div>
 
-                <div class="form-group">
-                    <label>Гос. номер:</label>
-                    <input id="numberplate" onclick="this.select();" type="text"
-                           @if(isset($vehicle)) value="{{ $vehicle->numberplate }}" @endif
-                           class="form-control" />
-                </div>
+{{--                <div class="form-group">--}}
+{{--                    <label>Гос. номер:</label>--}}
+{{--                    <input id="numberplate" onclick="this.select();" type="text"--}}
+{{--                           @if(isset($vehicle)) value="{{ $vehicle->numberplate }}" @endif--}}
+{{--                           class="form-control" />--}}
+{{--                </div>--}}
 
             </div>
 

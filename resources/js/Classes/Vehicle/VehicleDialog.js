@@ -17,7 +17,7 @@ class vehicleDialog extends Modal {
 
     init() {
 
-        let config = {
+        this.config = {
             loadingText: 'Загрузка...',
             noResultsText: 'Совпадений не найдено',
             noChoicesText: 'Нет вариантов для выбора',
@@ -26,21 +26,24 @@ class vehicleDialog extends Modal {
         };
 
         let mark_element = this.current_dialog.querySelector('#mark');
-        this.mark_choices = new window.choices(mark_element, config);
+        this.mark_choices = new window.choices(mark_element, this.config);
 
         let model_element = this.current_dialog.querySelector('#model');
-        this.model_choices = new window.choices(model_element, config);
+        this.model_choices = new window.choices(model_element, this.config);
 
         let modify_element = this.current_dialog.querySelector('#modify');
-        this.modify_choices = new window.choices(modify_element, config);
+        this.modify_choices = new window.choices(modify_element, this.config);
 
         let vin_element = this.current_dialog.querySelector('#vin_code');
 
         IMask(vin_element, {
             mask: '*****************',
             maxLength: 17,
-            lazy: false,
-            placeholderChar: '_'
+            prepare: function (str) {
+                return str.toUpperCase();
+            },
+            // lazy: true,
+            // placeholderChar: '_'
         });
 
         let year_element = this.current_dialog.querySelector('#year');
@@ -51,20 +54,22 @@ class vehicleDialog extends Modal {
             max: 2030,
         });
 
-        let numberplate_element = this.current_dialog.querySelector('#numberplate');
-
-        IMask(numberplate_element, {
-            mask: 'a000aa00[0]',
-            maxLength: 9,
-            lazy: false,
-            placeholderChar: '_'
-        });
+        // let numberplate_element = this.current_dialog.querySelector('#numberplate');
+        //
+        // IMask(numberplate_element, {
+        //     mask: 'a000aa00[0]',
+        //     maxLength: 9,
+        //     lazy: true,
+        //     placeholderChar: '_'
+        // });
     }
 
-    parserVinCode() {
-        let vin_code = this.current_dialog.querySelector('#vin_code').value;
+    copy() {
+        event.preventDefault();
 
-
+        let vin_element = this.current_dialog.querySelector('#vin_code');
+        vin_element.select();
+        document.execCommand("copy");
     }
 
     changeMark() {
@@ -75,8 +80,8 @@ class vehicleDialog extends Modal {
 
         this.current_dialog.querySelector('#mark_id').value = mark_id;
 
-        this.model_choices.clearChoices();
-        this.modify_choices.clearChoices();
+        this.clearModel();
+        this.clearModify();
 
         //Список моделей
         window.axios({
@@ -86,6 +91,14 @@ class vehicleDialog extends Modal {
             .then(response => {
                 this.model_choices.setChoices(response.data);
             });
+    }
+
+    clearModel() {
+
+        this.model_choices.destroy();
+
+        let model_element = this.current_dialog.querySelector('#model');
+        this.model_choices = new window.choices(model_element, this.config);
     }
 
     changeModel() {
@@ -98,7 +111,7 @@ class vehicleDialog extends Modal {
 
         this.current_dialog.querySelector('#model_id').value = model_id;
 
-        this.modify_choices.clearChoices();
+        this.clearModify();
 
         window.axios({
             method: 'get',
@@ -107,6 +120,13 @@ class vehicleDialog extends Modal {
             .then(response => {
                 this.modify_choices.setChoices(response.data);
             });
+    }
+
+    clearModify() {
+        this.modify_choices.destroy();
+
+        let modify_element = this.current_dialog.querySelector('#modify');
+        this.modify_choices = new window.choices(modify_element, this.config);
     }
 
     changeModify() {
@@ -120,16 +140,9 @@ class vehicleDialog extends Modal {
 
         event.preventDefault();
 
-        if(!window.isXHRloading){
-
-            window.axform.send(elem, response => {
-                let data = response.data;
-                let vehicle_element =  this.current_dialog.querySelector('#vehicle_item_' + data.vehicle.id);
-
+        if(!window.isXHRloading) {
+            window.axform.send(elem, event => {
                 this.finitaLaComedia(true);
-
-                if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
-                else this.current_dialog.querySelector('#vehicle_item_create').before(helper.createElementFromHTML(data.html));
             });
         }
     }

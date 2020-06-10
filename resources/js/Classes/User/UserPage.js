@@ -29,6 +29,18 @@ class userPage{
         // }, 1000)
     }
 
+    removeVehicle(vehicle_id) {
+        window.axios({
+            method: 'post',
+            url: '/vehicles/'+ vehicle_id,
+            data: {
+                _method: 'DELETE'
+            }
+        }).then(response => {
+            document.getElementById('vehicle_' + vehicle_id).remove();
+        });
+    }
+
     getPayment(tariff_id){
         let data = {tariff_id: tariff_id};
         axios({
