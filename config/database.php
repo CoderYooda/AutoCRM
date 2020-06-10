@@ -143,7 +143,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'predis'),
-            'prefix' => 'app_',
+            'prefix' => '',
         ],
 
         'default' => [
