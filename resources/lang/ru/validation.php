@@ -166,6 +166,7 @@ return [
         'first_name'            => 'Имя',
         'last_name'             => 'Фамилия',
         'password'              => 'Пароль',
+        'fio'                   => 'ФИО',
         'password_confirmation' => 'Подтверждение пароля',
         'city'                  => 'Город',
         'country'               => 'Страна',

@@ -13,17 +13,6 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="text-left">
-                        {{--<div class="form-group row row-sm ">
-                            <label class="col-sm-5">Страна</label>
-                            <div class="col-sm-7">
-                                <select id="country" class="form-control input-c" name="country" onchange="window.login.changeCountry(this)" required>
-                                    <option value="7">Россия</option>
-                                    <option value="375">Беларусь</option>
-                                    <option value="380">Украина</option>
-                                    <option value="7">Казахстан</option>
-                                </select>
-                            </div>
-                        </div>--}}
                         <div class="form-group  @error('phone') is-invalid @enderror">
                             <label>Номер телефона</label>
                             <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
@@ -49,7 +38,7 @@
                     <a href="{{ route('register') }}" class="">Создать аккаунт</a>
                 </div>
                 <div class="create-acc-box">
-                    <a href="#" class="">Восстановить пароль</a>
+                    <a href="{{ route('PassReset') }}" class="">Восстановить пароль</a>
                 </div>
             </div>
         </div>

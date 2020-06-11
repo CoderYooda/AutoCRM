@@ -36,19 +36,6 @@
                             @enderror
                         </div>
 
-                        {{--<div class="form-group row row-sm float-label">
-                            <label class="col-sm-5">Страна</label>
-                            <div class="col-sm-7">
-                                <select id="country" class="md-input form-control" name="country" onchange="window.register.changeCountry(this)" required>
-                                    <option value="7">Россия</option>
-                                    <option value="375">Беларусь</option>
-                                    <option value="380">Украина</option>
-                                    <option value="7">Казахстан</option>
-                                </select>
-                            </div>
-
-                        </div>--}}
-
                         <div class="form-group @error('phone') is-invalid @enderror">
                             <label>Номер телефона</label>
                             <input id="phone_input" class="md-input form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
@@ -77,7 +64,7 @@
                                 <label>Код смс</label>
                                 <div class="sms-wrap">
                                     <input onkeydown="window.register.typeSms(this)" maxlength="5" class="form-control text-center register-number-confirm" type="text">
-                                    <span class="sms-link" onclick="{{--window.register.--}}">Повторно отправить смс</span>
+                                    <span class="sms-link" onclick="window.register.sendSMSAgain()">Повторно отправить смс</span>
                                 </div>
                                 <span class="sms-desc">На Ваш номер выслан SMS-код для подтверждения телефона. Он придет в течение минуты.</span>
                             </div>
@@ -111,7 +98,7 @@
                     <a href="{{ route('login') }}" class="">Уже есть аккаунт</a>
                 </div>
                 <div class="create-acc-box">
-                    <a href="#" class="">Восстановить пароль</a>
+                    <a href="{{ route('PassReset') }}" class="">Восстановить пароль</a>
                 </div>
 
         </div>

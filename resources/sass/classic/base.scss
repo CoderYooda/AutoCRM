@@ -828,9 +828,8 @@ input:-moz-placeholder { /* Firefox 18- */
 .box{
     position: relative;
     background: #fff;
-    border-radius: 4px;
-    border: 1px solid #ced4da;
-    //box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    border-radius: 4px; 
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
 }
 .box .box-header{
     /*border-bottom: 1px solid #e7e8ec;*/

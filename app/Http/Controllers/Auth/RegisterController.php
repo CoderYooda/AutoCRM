@@ -92,6 +92,10 @@ class RegisterController extends Controller
         }
     }
 
+    public function smsRetry(Request $request){
+        SmsController::smsRetry($request['sms_id']);
+    }
+
     protected function create(array $data)
     {
 

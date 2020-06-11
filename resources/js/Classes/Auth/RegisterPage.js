@@ -13,6 +13,7 @@ class registerPage{
 
     init(){
         this.addPhoneMask()
+        this.sms_id = null;
     }
 
     save(){
@@ -52,6 +53,21 @@ class registerPage{
 
     }
 
+    sendSMSAgain(){
+
+        let data = {
+            sms_id: this.sms_id
+        };
+
+        window.axios({
+            method: 'post',
+            url: '/sms_retry',
+            data: data,
+        }).then(function (resp) {
+            console.log(resp);
+        });
+    }
+
     submitForm(form, event){
         let object = this;
         event.preventDefault();
@@ -60,16 +76,14 @@ class registerPage{
             method: 'post',
             url: '/register',
             data: data,
-            // data: {
-            //     phone:object.phoneMask._unmaskedValue
-            // }
         }).then(function (resp) {
             console.log(resp.data.sms);
+
+            object.sms_id = resp.data.sms.sms_id;
+
             if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK') {
-                console.log(2);
-                //object.sms_phone.innerHTML = resp.data.phone;
+
                 object.smsBox.classList.remove('hide');
-                console.log(object.smsBox);
 
             } else  if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'ERROR'){
 
