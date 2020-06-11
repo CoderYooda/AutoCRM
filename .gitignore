@@ -5,6 +5,7 @@
 /public/js
 /public/fonts
 /public/images
+/public/dependencies
 /vendor
 .env
 .env.backup

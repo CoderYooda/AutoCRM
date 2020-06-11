@@ -11,6 +11,7 @@ mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ pr
 
 mix.copyDirectory('resources/fonts', 'public/fonts');
 mix.copyDirectory('resources/images', 'public/images');
+mix.copyDirectory('resources/modules/dependencies', 'public/dependencies');
 
 if( !mix.inProduction() ) {
     mix.webpackConfig({
