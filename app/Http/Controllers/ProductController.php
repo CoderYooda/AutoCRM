@@ -252,6 +252,23 @@ class ProductController extends Controller
 
         $article->save();
         $this->status = 200;
+        if($request['storage'] != null){
+            foreach ($request['storage'] as $store_id => $storage){
+                $store = Store::where('id', $store_id)->first();
+                if (Auth::user()->company()->first()->checkAccessToStore($store)) {
+                    $this->status = 403;
+                    $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
+                    return response()->json(['message' => $this->message], $this->status);
+                }
+                $store->articles()->syncWithoutDetaching($article->id);
+
+                $article->stores()->updateExistingPivot($store_id, ['storage_zone' => $storage['storage_zone']]);
+                $article->stores()->updateExistingPivot($store_id, ['storage_rack' => $storage['storage_rack']]);
+                $article->stores()->updateExistingPivot($store_id, ['storage_vertical' => $storage['storage_vertical']]);
+                $article->stores()->updateExistingPivot($store_id, ['storage_horizontal' => $storage['storage_horizontal']]);
+            }
+        }
+
         if ($request['store'] != null) {
             foreach ($request['store'] as $id => $store_elem) {
                 $store = Store::where('id', $id)->first();
@@ -262,6 +279,8 @@ class ProductController extends Controller
                 }
                 if (isset($store_elem['isset']) && $store_elem['isset'] == true) {
                     $store->articles()->syncWithoutDetaching($article->id);
+
+
                     $article->stores()->updateExistingPivot($id, ['location' => $store_elem['location']]);
                     $article->stores()->updateExistingPivot($id, ['isset' => $store_elem['isset']]);
                 } else {

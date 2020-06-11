@@ -38,6 +38,16 @@
             <div class="item-tag tag hide">
             </div>
         </div>
+        <div class="modal-alt-header">
+            <span class="item-title _500">Хранение</span>
+            <div class="item-except font-weight-bolder h-1x">
+                <span id="total_price">
+                   {!! $product->getStorageCode() !!}
+                </span>
+            </div>
+            <div class="item-tag tag hide">
+            </div>
+        </div>
     </div>
     @endif
 

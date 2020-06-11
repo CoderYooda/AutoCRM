@@ -70,6 +70,38 @@ h2{
     display: block;
     text-align: center;
 }
+.storage_store {
+    width: 25%;
+    float: left;
+    padding: 3px 3px;
+    border-radius: unset;
+    font-size: 11px;
+    text-align: center;
+}
+
+.storage_store_container{
+    overflow: hidden;
+    width: 120px;
+}
+
+.bb_1{border-bottom: 4px solid #212121;}
+.bb_2{border-bottom: 4px solid #4298bb;}
+.bb_3{border-bottom: 4px solid #d32b2a;}
+.bb_4{border-bottom: 4px solid #278a51;}
+
+.faq_1{border-left: 22px solid #212121}
+.faq_2{border-left: 22px solid #4298bb}
+.faq_3{border-left: 22px solid #d32b2a}
+.faq_4{border-left: 22px solid #278a51}
+
+.bb_faq{
+    margin: 10px;
+    padding-left: 10px;
+}
+
+.storage_store:not(:first-child) {
+    border-left: none;
+}
 /* Dropdown */
 
 .dropdown{

@@ -1,10 +1,10 @@
 {
-	"authHost": "http://autocrm",
+	"authHost": "http://autocrm/",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{
-			"appId": "5d821a9e42d5630d",
-			"key": "d6160101032cfcac6a83f16e8676fa75",
+			"appId": "07e2e5f94fe0411e",
+			"key": "bf3507ec6f0edc9c36b909f646f99e32"
 		}
 	],
 	"database": "redis",

@@ -71,11 +71,9 @@
                     <a class="button primary tab-btn
                         @if(isset($partner) && !$partner['isfl'])
                             active
-                        @else
+                        @elseif(!isset($partner))
                             @if($category->type == 'partner')
                                 active
-                            @else
-
                             @endif
                         @endif" >Юридическое лицо</a>
                 </li>
