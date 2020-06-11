@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatMessage;
 use App\Models\DayOffType;
 use App\Models\Partner;
 use App\Models\Schedule;
@@ -63,7 +64,21 @@ class ScheduleController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть планировщик');
 
-        SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', new Schedule());
+        //SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', new Schedule());
+
+        $system_message = new \App\Models\SystemMessage();
+        $system_message->user_id = 1;
+        $system_message->type = 'test';
+        $system_message->message = 'Партнер обновлен';
+        $system_message->save();
+        event(new \App\Events\SystemMessage($system_message));
+
+        event(new ChatMessage($system_message)); // Это для примера. Отправка сообщения всем активным пользователям канала
+        broadcast(new ChatMessage($system_message))->toOthers(); // Отправляю сообщение всем, кроме текущего пользователя
+
+
+        //broadcast(new \App\Events\SystemMessage($system_message))->toOthers();
+
         DB::transaction(function() use ($request) {
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
             $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');

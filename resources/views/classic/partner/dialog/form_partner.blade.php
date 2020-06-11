@@ -25,20 +25,59 @@
             <input type="hidden" name="id" value="{{ $partner->id }}">
         @endif
 
-        <input id="isfl" type="radio" name="isfl" value="1" @if(isset($partner) && $partner['isfl']) checked @elseif(!isset($partner)) checked @endif style="display: none;">
-        <input id="isul" type="radio" name="isfl" value="0" @if(isset($partner) && !$partner['isfl'])checked @endif style="display: none;">
+        <input id="isfl" type="radio" name="isfl" value="1"
+               @if(isset($partner) && $partner['isfl'])
+               checked
+               @elseif(!isset($partner))
+                   @if($category->type == 'partner')
+                   @else
+                   checked
+                   @endif
+               @endif
+               style="display: none;">
+
+        <input id="isul" type="radio" name="isfl" value="0"
+               @if(isset($partner) && !$partner['isfl'])
+               checked
+                   @elseif(!isset($partner))
+                    @if($category->type == 'partner')
+                    checked
+                    @else
+                   @endif
+               @endif
+               style="display: none;">
         <input class="category_select" type="hidden" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@elseif(isset($category)){{ $category->id }}@else 3 @endif">
+
+        <input id="category_type" class="category_type" type="hidden" name="category_type" value="@if(!isset($partner)){{ $category->type }}@endif">
 
         <input type="hidden" name="page" value="@if(isset($request) && isset($request['page'])){{ $request['page'] }}@else 1 @endif">
         <input type="hidden" name="search" value="@if(isset($request) && isset($request['search'])){{ $request['search'] }}@else @endif">
 
         <div class="modal-header tab-container">
             <ul id="fl_ul_tabs" class="nav header_selects_navs">
-                <li class="nav-item" onclick="window.{{ $class }}.activateTab('fl', this);">
-                    <a class="button primary mr-15 tab-btn @if(isset($partner) && $partner['isfl']) active @elseif(!isset($partner)) active @endif" >Физическое лицо</a>
+                <li id="fl_butt" class="nav-item" onclick="window.{{ $class }}.activateTab('fl', this);">
+                    <a class="button primary mr-15 tab-btn
+                    @if(isset($partner) && $partner['isfl'])
+                        active
+                    @elseif(!isset($partner))
+                        @if($category->type == 'partner')
+
+                        @else
+                            active
+                        @endif
+                    @endif" >Физическое лицо</a>
                 </li>
-                <li class="nav-item" onclick="window.{{ $class }}.activateTab('ul', this);">
-                    <a class="button primary tab-btn @if(isset($partner) && !$partner['isfl']) active @endif" >Юридическое лицо</a>
+                <li id="ul_butt" class="nav-item" onclick="window.{{ $class }}.activateTab('ul', this);">
+                    <a class="button primary tab-btn
+                        @if(isset($partner) && !$partner['isfl'])
+                            active
+                        @else
+                            @if($category->type == 'partner')
+                                active
+                            @else
+
+                            @endif
+                        @endif" >Юридическое лицо</a>
                 </li>
             </ul>
         </div>

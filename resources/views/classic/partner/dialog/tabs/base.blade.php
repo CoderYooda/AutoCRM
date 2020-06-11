@@ -19,7 +19,7 @@
 
 <div class="form-group fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
     <label>ФИО</label>
-    <input type="text" name="fio" id="partner_dialog_focused"
+    <input type="text" name="fio" id="fl_dialog_focused"
            @if(isset($partner)) value="{{ $partner->fio }}" @endif
            class="form-control entrance" placeholder="ФИО" @if(isset($partner) && !$partner['isfl']) disabled @endif>
 </div>
@@ -32,7 +32,7 @@
 </div>
 <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @elseif(!isset($partner)) d-none-f @elseif(!isset($partner)) disabled @endif">
     <label>Название компании</label>
-    <input type="text" name="companyName"
+    <input type="text" name="companyName" id="ul_dialog_focused"
            @if(isset($partner)) value="{{ $partner->companyName }}" @endif
            class="form-control entrance" placeholder="Название компании" @if(isset($partner) && $partner['isfl']) disabled @endif>
 </div>

@@ -261,6 +261,8 @@ class StatisticController extends Controller
             }
         }
 
+        dd($global_data);
+
         $response = [
             'dates' => $global_data,
             'list' => view(get_template() . '.statistic.list', compact('list'))->render(),

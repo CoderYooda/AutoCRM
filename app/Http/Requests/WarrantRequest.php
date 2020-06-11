@@ -19,13 +19,13 @@ class WarrantRequest extends FormRequest
             $refer = 'App\Models\\' . $this->refer;
             if(!is_subclass_of($refer, 'Illuminate\Database\Eloquent\Model')){
                 throw new HttpResponseException(
-                    response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
+                    response()->json(['message' => 'Попытка взлома зафиксирована1', 'type' => 'error'], 422)
                 );
             }
             $model = $refer::owned()->whereId($this->refer_id)->first();
             if($model == null){
                 throw new HttpResponseException(
-                    response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
+                    response()->json(['message' => 'Попытка взлома зафиксирована2', 'type' => 'error'], 422)
                 );
             }
         }
@@ -38,7 +38,7 @@ class WarrantRequest extends FormRequest
             'cashbox_id' => ['required','exists:cashboxes,id'],
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
             'isIncoming' => ['boolean'],
-            'summ' => ['required', 'numeric', 'between:0,' . (isset($this->max_summ) ? $this->max_summ : PHP_INT_MAX)],
+            'summ' => ['required', 'numeric', 'between:1,' . (isset($this->max_summ) ? $this->max_summ : PHP_INT_MAX)],
         ];
     }
 

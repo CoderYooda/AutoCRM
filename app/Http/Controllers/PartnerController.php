@@ -90,6 +90,8 @@ class PartnerController extends Controller
 
         $category = Category::findOrFail($request['category_select'] ?: 3);
 
+
+
         $view = view(get_template() . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
             ->with('vehicles', $partner->vehicles ?? [])
             ->render();

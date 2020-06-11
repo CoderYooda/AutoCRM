@@ -15,7 +15,8 @@ class CreateDefaultAutopartManufactures extends Migration
     {
         Schema::create('default_autopart_manufactures', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->string('name');
+            $table->integer('fapi_id');
         });
     }
 

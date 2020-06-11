@@ -7,56 +7,110 @@ use App\Models\Shipment;
 use App\Models\Warrant;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Models\SystemMessage as SM;
+use App\Events\SystemMessage;
 
 class Test extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'command:test';
+    protected $signature = 'command:test {article}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Command description';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
+    //n - артикул(номер)
+    //ui - ключ для API
+    //dbi - индетефикатор в базе производителя
+    //
+
     public function handle()
     {
-        $manufacturers = $this->getManufacturerList();
+        $article = $this->argument('article');
 
-        foreach ($manufacturers->mf as $manufacturer) {
-            dd($manufacturer);
-        }
+        $manufacturers = $this->getManufacturersByArticle($article);
+
+        $index = 10;
+
+        $part = $manufacturers[$index];
+
+        $this->info('Выбранная деталь ' . $part['m_id'] . ': ' . $part['p_id']);
+
+        $analogues = $this->getAnalogues($article, $manufacturers[$index]['m_id']);
+
+        dd($analogues);
     }
 
-    public function getManufacturerList()
+    public function getAnalogues($article, $m_id)
     {
-        $url = 'https://fapi.iisis.ru/fapi/v2/manufacturerList?';
-
         $attributes = [
-            'ui' => '73fe9d3a-6b61-40f5-a44f-6d1e0183917a', //API ключ
+            'n' => $article,
+            'mfi' => $m_id,
         ];
 
-        $url .= http_build_query($attributes);
+        $response = $this->makeRequest('analogList', $attributes);
+
+        $mans_collect = collect($response->manufacturerList->mf);
+        $parts_collect = collect($response->productList->p);
+        $analog_collect = collect($response->analogList->a);
+
+        $analogues = [];
+
+        for ($i = 0; $i < count($analog_collect); $i++) {
+
+            $analog = $analog_collect[$i];
+
+            $manufacturer = $mans_collect->where('i', $analog->mfai)->first();
+            $part = $parts_collect->where('i', $analog->pai)->first();
+
+            $analogues[] = [
+                'm_id' => $manufacturer->dbi,
+                'm_name' => $manufacturer->da,
+                'p_id' => $part->dbi,
+                'p_name' => $part->d,
+                'nsa' => $analog->nsa,
+            ];
+        }
+
+        return $analogues;
+    }
+
+    public function getManufacturersByArticle(string $article)
+    {
+        $response = $this->makeRequest('productList', [ 'n' => $article ]);
+
+        #Фильтр запроса
+
+        $manufacturers = [];
+
+        $mans_collect = collect($response->manufacturerList->mf);
+        $parts_collect = collect($response->productList->p);
+
+        for($i = 0; $i < count($parts_collect); $i++) {
+
+            $part = $parts_collect[$i];
+            $manufacturer = $mans_collect->where('i', $part->mfi)->first();
+
+            $manufacturers[] = [
+                'm_id' => $manufacturer->dbi,
+                'm_name' => $manufacturer->da,
+                'p_id' => $part->dbi,
+                'p_name' => $part->d
+            ];
+        }
+
+        return $manufacturers;
+    }
+
+    public function makeRequest(string $method, array $params = [])
+    {
+        $url = 'https://fapi.iisis.ru/fapi/v2/' . $method . '?';
+
+        $params['ui'] = '73fe9d3a-6b61-40f5-a44f-6d1e0183917a';
+
+        $url .= http_build_query($params);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -70,10 +124,8 @@ class Test extends Command
 
         $response = curl_exec($ch);
 
-        curl_close ($ch);
+        curl_close($ch);
 
-        $response = json_decode($response);
-
-        return $response;
+        return json_decode($response);
     }
 }

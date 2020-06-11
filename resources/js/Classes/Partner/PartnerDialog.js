@@ -20,10 +20,22 @@ class partnerDialog extends Modal{
         this.initDatePicker();
         this.addPhoneMask();
         this.addPassportMask();
-        let focused = document.getElementById('partner_dialog_focused');
+
+        let category_type = this.root_dialog.querySelector('#category_type');
+
+        let fl_but = this.root_dialog.querySelector('#fl_butt');
+        let ul_but = this.root_dialog.querySelector('#ul_butt');
+        let focused = document.getElementById('fl_dialog_focused');
+
+        if(category_type && category_type.value == 'partner'){
+            this.activateTab('ul', ul_but);
+            focused = document.getElementById('ul_dialog_focused');
+        }
+
         if(focused){
             focused.focus();
         }
+
         helper.initTabs('partner_tabs');
         this.addLoginPhoneMask();
         object.current_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
