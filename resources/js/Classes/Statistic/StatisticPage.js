@@ -302,13 +302,12 @@ class statisticPage {
             //Выводим информацию
             Object.keys(datasets).map((name, index) => {
 
-                let entity_index = this.whitelist.indexOf(name);
                 let color_index = this.entity_names.indexOf(name);
 
-                if(this.sections.indexOf(entity_index) !== -1) {
+                if(this.sections.indexOf(name) !== -1) {
                     this.chart.data.datasets.push({
                         label: name,
-                        backgroundColor: colors[color_index],
+                        backgroundColor: colors[color_index === -1 ? 0 : color_index],
                         borderColor: 'rgb(0,0,0)',
                         data: datasets[name]
                     });
