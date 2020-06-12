@@ -1048,17 +1048,23 @@ input:-moz-placeholder { /* Firefox 18- */
 .p-15{
     padding: 15px;
 }
+.p-16{
+    padding: 16px;
+}
 .pr-75{
     padding-right: 7.5px!important;
 }
 .pl-75{
     padding-left: 7.5px!important;
 }
-.mb-0{
+.mb-0 {
     margin-bottom: 0px!important;
 }
 .mt-10{
     margin-top: 10px!important;
+}
+.mt-16{
+    margin-top: 16px!important;
 }
 .mt-30{
     margin-top: 30px!important;
@@ -1072,8 +1078,19 @@ input:-moz-placeholder { /* Firefox 18- */
 .mb-15{
     margin-bottom: 15px!important;
 }
+.mb-16{
+    margin-bottom: 16px!important;
+}
 .mr-15{
     margin-right: 15px!important;
+}
+
+.pt-16 {
+    margin-top: 16px !important;
+}
+
+.mr-16{
+    margin-right: 16px!important;
 }
 .m-0{
     margin: 0!important;
@@ -1090,6 +1107,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .ml-15{
     margin-left: 15px!important;
 }
+.ml-16{
+    margin-left: 16px!important;
+}
 .mr-15{
     margin-right: 15px!important;
 }
@@ -1101,11 +1121,21 @@ input:-moz-placeholder { /* Firefox 18- */
     padding-left: 10px!important;
 }
 
+.pb-10{
+    padding-bottom: 10px!important;
+}
+
 .pl-15{
-    padding-left: 15px!important;
+     padding-left: 15px!important;
+}
+.pl-16{
+    padding-left: 16px!important;
 }
 .pr-15{
     padding-right: 15px!important;
+}
+.pr-16{
+    padding-right: 16px!important;
 }
 .w-100{
     width: 100%!important;
@@ -1457,4 +1487,50 @@ input:-moz-placeholder { /* Firefox 18- */
         flex: 0 0 16.66666%;
         max-width: 16.66666%
     }
+}
+
+.statistic-row {
+    display: -webkit-box;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    margin-left: 16px;
+}
+
+.statistic-filter {
+    flex: 0 0 18.666667%;
+    max-width: 18.666667%;
+}
+
+.statistic-title {
+    padding-top: 18px;
+    padding-left: 16px;
+    color: #BBBBBB;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.statistic-summ {
+    padding-top: 32px;
+    text-align: center;
+    color: #575757;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 32px;
+}
+
+.statistic-checkbox {
+    float: left;
+    padding-top: 15px;
+    padding-left: 16px;
+}
+
+.statistic-question {
+    cursor: help;
+    float: right;
+    padding-top: 16px;
+    padding-right: 16px;
 }

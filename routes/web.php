@@ -63,7 +63,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Статистика
     Route::get('/statistic', 'StatisticController@index')->name('StatisticIndex');
-    Route::post('/statistic', 'StatisticController@show')->name('StatisticShow');
+    Route::get('/statistic/show', 'StatisticController@show')->name('StatisticShow');
 
     #Продукты
     Route::get('/store/test', 'ProductController@test')->name('test');

@@ -40,8 +40,25 @@ class StatisticController extends Controller
         // цель динамической подгрузки
         $target = HC::selectTarget();
 
+        $sorts = [
+            ['name' => 'Заявки поставщикам', 'field_name' => 'partnerOrder', 'color' => '#00A78E', 'desc' => 'Описание'],
+            ['name' => 'Поступления', 'field_name' => 'entrance', 'color' => '#2C9F45', 'desc' => 'Описание'],
+            ['name' => 'Возвраты', 'field_name' => 'refund', 'color' => '#FF4F81', 'desc' => 'Описание'],
+            ['name' => 'Продажи', 'field_name' => 'shipment', 'color' => '#FBB034', 'desc' => 'Описание'],
+            ['name' => 'Заказы клиентов', 'field_name' => 'clientOrder', 'color' => '#B84592', 'desc' => 'Описание'],
+            ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  ', 'desc' => 'Описание'],
+            ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED', 'desc' => 'Описание'],
+            ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16', 'desc' => 'Описание'],
+            ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4', 'desc' => 'Описание'],
+            ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000', 'desc' => 'Описание'],
+            ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8', 'desc' => 'Описание'],
+            ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541', 'desc' => 'Описание'],
+            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0', 'desc' => 'Описание'],
+            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'desc' => 'Описание']
+        ];
+
         //Формирование шаблона
-        $content = view(get_template() . '.statistic.index', compact('request'));
+        $content = view(get_template() . '.statistic.index', compact('request', 'sorts'));
 
         if (class_basename($content) == "JsonResponse") {
             return $content;
@@ -138,7 +155,7 @@ class StatisticController extends Controller
 
             $class_fields = (new $classes[$key])->fields;
 
-            if(isset($request->dds_id) && in_array('dds_articleid', $class_fields)) {
+            if (isset($request->dds_id) && in_array('dds_articleid', $class_fields)) {
                 $query = $query->where('ddsarticle_id', $request->dds_id);
             }
 
@@ -148,7 +165,7 @@ class StatisticController extends Controller
                 $query = $query->select('*')->with('manager', 'providerorder');
             }
 
-            if($classes[$key] == Shipment::class) {
+            if ($classes[$key] == Shipment::class) {
                 $query = $query->with('warrants');
             }
 
@@ -185,14 +202,14 @@ class StatisticController extends Controller
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
 
-                if(get_class($entity) == Refund::class) {
+                if (get_class($entity) == Refund::class) {
                     $refund_payed = $entity->getPaidAmount();
 
                     $global_data[$date]['refund_total'] += $entity->amount;
                     $global_data[$date]['refund_payed'] += $refund_payed;
                 }
 
-                if(get_class($entity) == ClientOrder::class) {
+                if (get_class($entity) == ClientOrder::class) {
                     $clientorder_payed = $entity->getPaidAmount();
 
                     $global_data[$date]['clientorder_total'] += $entity->amount;
@@ -200,7 +217,7 @@ class StatisticController extends Controller
                     $global_data[$date]['clientorder_debt'] += ($entity->amount - $clientorder_payed);
                 }
 
-                if(get_class($entity) == ProviderOrder::class) {
+                if (get_class($entity) == ProviderOrder::class) {
                     $providerorder_payed = $entity->getPaidAmount();
 
                     $global_data[$date]['providerorder_total'] += $entity->amount;
@@ -208,7 +225,7 @@ class StatisticController extends Controller
                     $global_data[$date]['providerorder_debt'] += ($entity->amount - $providerorder_payed);
                 }
 
-                if(get_class($entity) == Shipment::class) {
+                if (get_class($entity) == Shipment::class) {
                     $shipment_payed = $entity->getPaidAmount();
 
                     $global_data[$date]['shipment_total'] += $entity->amount;
@@ -216,7 +233,7 @@ class StatisticController extends Controller
                     $global_data[$date]['shipment_debt'] += ($entity->amount - $shipment_payed);
                 }
 
-                if(get_class($entity) == Warrant::class) {
+                if (get_class($entity) == Warrant::class) {
                     $global_data[$date][$entity->isIncoming ? 'profit_total' : 'expenses_total'] += $entity->amount;
                 }
             }
@@ -249,7 +266,7 @@ class StatisticController extends Controller
 
             foreach ($entities as $entity_name => $entity_ids) {
 
-                if($entity_ids == [] || !in_array($entity_name, $sort_name)) continue;
+                if ($entity_ids == [] || !in_array($entity_name, $sort_name)) continue;
 
                 foreach ($entity_ids as $entity_id => $attributes) {
 
@@ -261,14 +278,16 @@ class StatisticController extends Controller
             }
         }
 
-//        dd($global_data);
+        if($request->expectsJson()) {
+            $response = [
+                'dates' => $global_data,
+                'list' => view(get_template() . '.statistic.includes.list', compact('list'))->render(),
+                'entities' => $list,
+            ];
 
-        $response = [
-            'dates' => $global_data,
-            'list' => view(get_template() . '.statistic.list', compact('list'))->render(),
-            'entities' => $list
-        ];
+            return response($response, 200);
+        }
 
-        return response($response, 200);
+        return view(get_template() . '.statistic.show', compact('request'));
     }
 }

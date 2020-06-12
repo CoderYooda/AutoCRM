@@ -28,7 +28,7 @@ class Test extends Command
 
         $manufacturers = AnalogController::getManufacturersByArticle($article);
 
-        $index = 10;
+        $index = 0;
 
         $part = $manufacturers[$index];
 
