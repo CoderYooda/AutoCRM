@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(env('DEFAULT_THEME', 'classic') . '.layouts.auth')
 
 @section('content')
 <div class="container">
@@ -8,7 +8,8 @@
                 <div class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
+                    {{--{{ route('password.update') }}--}}
+                    <form method="POST" action="">
                         @csrf
 
                         <input type="hidden" name="token" value="{{ $token }}">

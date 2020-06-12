@@ -34,6 +34,11 @@ class ProductRequest extends FormRequest
             'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
             'article' => ['required', 'string', 'max:64'],
+
+            'storage_zone' => ['string', 'max:2'],
+            'storage_rack' => ['string', 'max:2'],
+            'storage_vertical' => ['string', 'max:2'],
+            'storage_horizontal' => ['string', 'max:2'],
         ];
     }
 

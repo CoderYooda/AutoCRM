@@ -53,7 +53,7 @@ class Article extends Model
     public function stores()
     {
         return $this->belongsToMany('App\Models\Store', 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'count', 'isset', 'midprice');
+            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
     public function shipment()
@@ -65,6 +65,11 @@ class Article extends Model
     public function getCountSelfOthers()
     {
         return $this->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) . ' / ' . $this->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id);
+    }
+
+    public function getStorageCode(){
+        $store = $this->stores()->where('store_id', session('store_id'))->first();
+        return view('classic.product.storage_code', compact('store'));
     }
 
 //    public function providerorder()

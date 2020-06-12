@@ -65,6 +65,12 @@ class SmsController extends Controller
         }
     }
 
+    public static function smsRetry($sms_id){
+        $sms_confirmation = SmsConfirmation::where(['ip' => request()->ip(), 'sms_id' => $sms_id])->first();
+        SmsController::sendTo($sms_confirmation->phone);
+        return true;
+    }
+
     public static function sendTo($phone)
     {
         $confirm_code = rand(10000, 99999);
@@ -76,7 +82,7 @@ class SmsController extends Controller
         $data->test = 0;
         $sms = $smsru->send_one($data);
         if ($sms->status == "OK") {
-            $sms_confirmation = SmsConfirmation::firstOrNew(['ip' => request()->ip()]);
+            $sms_confirmation = SmsConfirmation::firstOrNew(['ip' => request()->ip(), 'phone' => $phone]);
 
             if ($sms_confirmation->exists) {
                 $sms_confirmation->attempts = $sms_confirmation->attempts + 1;
