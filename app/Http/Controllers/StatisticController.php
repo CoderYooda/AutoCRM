@@ -261,7 +261,7 @@ class StatisticController extends Controller
             }
         }
 
-        dd($global_data);
+//        dd($global_data);
 
         $response = [
             'dates' => $global_data,
