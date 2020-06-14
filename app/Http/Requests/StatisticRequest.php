@@ -44,7 +44,7 @@ class   StatisticRequest extends FormRequest
 
     protected function passedValidation()
     {
-        $this['entities'] = array_keys($this['entities']);
+//        $this['entities'] = array_keys($this['entities']);
     }
 
     protected function failedValidation(Validator $validator)

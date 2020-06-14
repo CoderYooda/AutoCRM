@@ -22,7 +22,7 @@
                                 <div class="statistic-checkbox">
                                     <span class="float-right ml-2" style="line-height: 0;">
                                         <label style="background: {{ $sort['color'] }}" class="ui-switch orange mt-1">
-                                            <input name="entities[{{ $sort['name'] }}]" id="{{ $sort['field_name'] }}" type="checkbox" checked><i></i>
+                                            <input name="entities[]" id="{{ $sort['field_name'] }}" type="checkbox" value="{{ $sort['name'] }}"><i></i>
                                         </label>
                                     </span>
                                 </div>
