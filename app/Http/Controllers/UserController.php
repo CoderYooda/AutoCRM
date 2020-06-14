@@ -53,6 +53,10 @@ class UserController extends Controller
 
     }
 
+    public function whoami(){
+        return Auth::check() ? Auth::user() : abort(403);
+    }
+
     public function edit(Request $request)
     {
         $page = 'Редактирование пользователя';

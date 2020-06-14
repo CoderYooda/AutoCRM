@@ -17,21 +17,29 @@ class SystemMessages{
             method: 'get',
             url: '/systemMessages/load'
         }).then(function (resp) {
-            object.bell.classList.add('add');
-            object.stack_bell_count.innerHTML = resp.data.count;
-            setTimeout(function () {
-                object.bell.classList.remove('add');
 
-            }, 200);
             if(resp.data.count > 0){
                 object.bell.classList.add('active');
             } else {
                 object.bell.classList.remove('active');
             }
             object.container.innerHTML = resp.data.html;
+            object.bellCall();
         }).catch(function (error) {
             console.warn(error);
         });
+    }
+
+    bellCall(){
+        let count = document.querySelector('#system_messages .list-group').childElementCount;
+        this.stack_bell_count.innerHTML = count;
+        this.bell.classList.add('add');
+
+        setTimeout(() => {
+            this.bell.classList.remove('add');
+
+        }, 200);
+
     }
 
     readMessage(id){

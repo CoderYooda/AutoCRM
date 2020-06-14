@@ -21,10 +21,15 @@ class Test extends Command
 
     public function handle()
     {
+        dd(1);
+
         $system_message = new SM();
         $system_message->type = 'test';
         $system_message->message = $this->argument('message');
+        $system_message->reciever_id = 2;
         $system_message->save();
+
+        dd($system_message);
 
         event(new SystemMessage($system_message)); // Это для примера. Отправка сообщения всем активным пользователям канала
         ///broadcast(new SystemMessage($system_message))->toOthers(); // Отправляю сообщение всем, кроме текущего пользователя
