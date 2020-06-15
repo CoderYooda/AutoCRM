@@ -625,9 +625,10 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .stat_header{
     color: #2D76A8;
+    font-style: normal;
+    font-weight: 600;
     font-size: 20px;
-    line-height: 20px;
-    font-weight: 400;
+    line-height: 27px;
 }
 
 /*Main content*/
@@ -1031,6 +1032,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .mt-5{
     margin-top: 5px!important;
 }
+.mt-8{
+    margin-top: 8px!important;
+}
 .pt-0{
     padding-top: 0!important;
 }
@@ -1058,7 +1062,7 @@ input:-moz-placeholder { /* Firefox 18- */
     padding-left: 7.5px!important;
 }
 .mb-0 {
-    margin-bottom: 0px!important;
+    margin-bottom: 0 !important;
 }
 .mt-10{
     margin-top: 10px!important;
@@ -1396,9 +1400,15 @@ input:-moz-placeholder { /* Firefox 18- */
     border-radius: 4px;
     background: #fff;
     text-align: center;
+    position: absolute;
+    width: calc(100% - 8px);
+    top: 0;
 }
 
+
+
 .vehicle-element .box {
+    padding-top: 99px;
     transition: 0.2s;
 }
 
@@ -1409,7 +1419,7 @@ input:-moz-placeholder { /* Firefox 18- */
 .vehicle-image > img {
     width: 107px;
     height: 70px;
-    margin: 20px 0;
+    margin-top: 4.5px;
 }
 
 .vehicle-element:hover > .box {
@@ -1490,16 +1500,54 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 .statistic-row {
-    display: -webkit-box;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 16px;
-    margin-left: 16px;
+    margin-top: 15px;
+    margin-left: 0px;
+}
+
+.statistic-select-all {
+    width: 20%;
+    margin-left: auto;
+}
+
+.statistic-info {
+    width: 34px;
+    padding-top: 8px;
+    padding-left: 9px;
+    cursor: help;
+}
+
+.statistic-select-all > div {
+    overflow: hidden;
+    height: 34px;
+}
+
+.statistic-select-all > div > div:first-child {
+    float: left;
+    padding-top: 8px;
+    padding-left: 16px;
+}
+
+.statistic-select-all > div > div:last-child {
+    float: right;
+    margin-top: 8px;
+    padding-right: 16px;
+
+    color: #BBBBBB;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
 }
 
 .statistic-filter {
-    flex: 0 0 18.666667%;
-    max-width: 18.666667%;
+    flex: 0 0 20.0%;
+    max-width: 20.0%;
+}
+
+.statistic-filter:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .statistic-title {
@@ -1533,4 +1581,28 @@ input:-moz-placeholder { /* Firefox 18- */
     float: right;
     padding-top: 16px;
     padding-right: 16px;
+}
+
+#chartjs-tooltip {
+    transition: 0.5s;
+}
+
+.filter-title {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+}
+
+.filter-list {
+    margin-top: 10px;
+}
+
+.filter-item {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 19px;
+    color: #8D8D8D;
+    margin-top: 6px;
 }

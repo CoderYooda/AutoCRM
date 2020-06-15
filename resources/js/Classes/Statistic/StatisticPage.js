@@ -46,6 +46,78 @@ class statisticPage {
 
     }
 
+    removeFilter(filter_element) {
+        filter_element = filter_element.parentElement;
+
+        let entity_name = filter_element.innerText;
+
+        filter_element.remove();
+
+        let elements = document.getElementsByName('entities[]');
+
+        elements.forEach(element => {
+
+            if(element.value === entity_name) {
+                element.checked = false;
+            }
+        });
+
+        document.getElementById('select_all').checked = false;
+    }
+
+    toggleFilter(element) {
+
+        let input = element.querySelector('input');
+
+        if(!input.checked) {
+            let html = '<div class="filter-item">\n' +
+                '           ' + input.value + '\n' +
+                '           <button type="button" onclick="statistic.removeFilter(this)" class="right-remove pr-10"><i class="fa fa-remove"></i></button>\n' +
+                '       </div>';
+
+            document.getElementsByClassName('filter-list')[0].append(helper.createElementFromHTML(html));
+        }
+        else {
+            let elements = document.getElementsByClassName('filter-item');
+
+            elements.forEach(element => {
+                if(element.innerText === input.value) {
+                    element.remove();
+                }
+            });
+        }
+
+        document.getElementById('select_all').checked = document.getElementsByClassName('filter-item').length === 14;
+
+        input.checked = !input.checked;
+    }
+
+    toggleFilters(current_element) {
+
+        let input = current_element.querySelector('input');
+
+        input.checked = !input.checked;
+
+        let elements = document.getElementsByName('entities[]');
+
+        elements.forEach(element => {
+            element.checked = input.checked;
+        });
+
+        document.getElementsByClassName('filter-list')[0].innerHTML = '';
+
+        if(input.checked) {
+            this.entity_names.forEach(name => {
+                let html = '<div class="filter-item">\n' +
+                    '           ' + name + '\n' +
+                    '           <button type="button" onclick="statistic.removeFilter(this)" class="right-remove pr-10"><i class="fa fa-remove"></i></button>\n' +
+                    '       </div>';
+
+                document.getElementsByClassName('filter-list')[0].append(helper.createElementFromHTML(html));
+            });
+        }
+    }
+
     selectDdsarticle(id){
         var object = this;
         window.axios({

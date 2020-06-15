@@ -35,7 +35,7 @@ class StatisticController extends Controller
     const INCOMING_WARRANT = 5;
     const OUTCOMING_WARRANT = 6;
 
-    public function index(Request $request)
+    public function index(StatisticRequest $request)
     {
         // цель динамической подгрузки
         $target = HC::selectTarget();
@@ -58,8 +58,11 @@ class StatisticController extends Controller
             ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'desc' => 'Описание']
         ];
 
+        $graph_data = $this->getGraphData($request);
+
         //Формирование шаблона
-        $content = view(get_template() . '.statistic.index', compact('request', 'sorts'));
+        $content = view(get_template() . '.statistic.index', compact('request', 'sorts'))
+            ->with('list', $graph_data['list']);
 
         if (class_basename($content) == "JsonResponse") {
             return $content;
@@ -75,6 +78,26 @@ class StatisticController extends Controller
     }
 
     public function show(StatisticRequest $request)
+    {
+        if($request->expectsJson()) {
+
+            $graph_data = $this->getGraphData($request);
+
+            $list = $graph_data['list'];
+
+            $response = [
+                'dates' => $graph_data['global_data'],
+                'list' => view(get_template() . '.statistic.includes.list', compact('list'))->render(),
+                'entities' => $list,
+            ];
+
+            return response($response, 200);
+        }
+
+        return view(get_template() . '.statistic.show', compact('request'));
+    }
+
+    public function getGraphData(Request $request)
     {
         #Названия сортировок
         $sort_name = [
@@ -247,27 +270,27 @@ class StatisticController extends Controller
 
             #Маржа = Приходные минус расходные ордера
             $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
-            $list['Маржа'][$date] = $global_data[$date]['Маржа'];
+            if($global_data[$date]['Маржа'] != 0) $list['Маржа'][$date] = $global_data[$date]['Маржа'];
 
             #Валовая прибыль = Продажи + заказы клиентов - возвраты
             $global_data[$date]['Валовая прибыль'] = ($global_data[$date]['shipment_total'] + $global_data[$date]['clientorder_total']) - $global_data[$date]['refund_total'];
-            $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
+            if($global_data[$date]['Валовая прибыль'] != 0) $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
 
             #Долги поставщикам = Неоплаченные заявки поставщикам
             $global_data[$date]['Долг поставщикам'] = -$global_data[$date]['providerorder_debt'];
-            $list['Долг поставщикам'][$date] = $global_data[$date]['Долг поставщикам'];
+            if($global_data[$date]['Долг поставщикам'] != 0) $list['Долг поставщикам'][$date] = $global_data[$date]['Долг поставщикам'];
 
             #Долги по заказам клиентов = неоплаченные заказы клиентов
-            $global_data[$date]['Долги по заказам клиентов'] = -$global_data[$date]['clientorder_debt'];
-            $list['Долги по заказам клиентов'][$date] = $global_data[$date]['Долги по заказам клиентов'];
+            $global_data[$date]['Недоплаты по заказам клиентов'] = -$global_data[$date]['clientorder_debt'];
+            if($global_data[$date]['Недоплаты по заказам клиентов'] != 0) $list['Недоплаты по заказам клиентов'][$date] = $global_data[$date]['Недоплаты по заказам клиентов'];
 
             #Долги по продажам = неоплаченные продажи клиентов
-            $global_data[$date]['Долги по продажам'] = -$global_data[$date]['shipment_debt'];
-            $list['Долги по продажам'][$date] = $global_data[$date]['Долги по продажам'];
+            $global_data[$date]['Недоплаты по продажам'] = -$global_data[$date]['shipment_debt'];
+            if($global_data[$date]['Недоплаты по продажам'] != 0) $list['Недоплаты по продажам'][$date] = $global_data[$date]['Недоплаты по продажам'];
 
             #ROI = Маржа / 100 * общий расход
             $global_data[$date]['ROI'] = $global_data[$date]['expenses_total'] ? ($global_data[$date]['Маржа'] * 100) / $global_data[$date]['expenses_total'] : 0;
-            $list['ROI'][$date]= $global_data[$date]['ROI'];
+            if($global_data[$date]['ROI'] != 0) $list['ROI'][$date] = $global_data[$date]['ROI'];
 
             #Формирование list.blade.php
 
@@ -283,20 +306,16 @@ class StatisticController extends Controller
                     $list[$entity_name][$date][$entity_id]['manager'] = $attributes['manager'];
                     $list[$entity_name][$date][$entity_id]['dialog_name'] = $attributes['dialog_name'];
                     $list[$entity_name][$date][$entity_id]['dialog_field'] = $attributes['dialog_field'];
+
+                    if(!isset($list[$entity_name]['total'])) $list[$entity_name]['total'] = 0;
+                    $list[$entity_name]['total'] += $attributes['amount'];
                 }
             }
         }
 
-        if($request->expectsJson()) {
-            $response = [
-                'dates' => $global_data,
-                'list' => view(get_template() . '.statistic.includes.list', compact('list'))->render(),
-                'entities' => $list,
-            ];
-
-            return response($response, 200);
-        }
-
-        return view(get_template() . '.statistic.show', compact('request'));
+        return [
+            'global_data' => $global_data,
+            'list' => $list
+        ];
     }
 }
