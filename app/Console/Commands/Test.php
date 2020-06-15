@@ -13,7 +13,7 @@ use App\Events\SystemMessage;
 
 class Test extends Command
 {
-    protected $signature = 'command:test {article}';
+    protected $signature = 'command:test {message}';
 
     protected $description = 'Command description';
 
@@ -24,18 +24,15 @@ class Test extends Command
 
     public function handle()
     {
-        $article = $this->argument('article');
+        $system_message = new SM();
+        $system_message->type = 'test';
+        $system_message->message = $this->argument('message');
+        $system_message->reciever_id = 2;
+        $system_message->save();
 
-        $manufacturers = AnalogController::getManufacturersByArticle($article);
+        dd($system_message);
 
-        $index = 0;
-
-        $part = $manufacturers[$index];
-
-        $this->info('Выбранная деталь ' . $part['m_id'] . ': ' . $part['p_id']);
-
-        $analogues = AnalogController::getAnalogues($article, $manufacturers[$index]['m_id']);
-
-        dd($analogues);
+        event(new SystemMessage($system_message)); // Это для примера. Отправка сообщения всем активным пользователям канала
+        ///broadcast(new SystemMessage($system_message))->toOthers(); // Отправляю сообщение всем, кроме текущего пользователя
     }
 }

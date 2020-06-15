@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\ChatMessage;
+use App\Events\SystemMessage as SM;
+use App\Models\SystemMessage;
 use App\Models\DayOffType;
 use App\Models\Partner;
 use App\Models\Schedule;
@@ -12,7 +14,7 @@ use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Auth;
-use SystemMessage;
+
 
 class ScheduleController extends Controller
 {
@@ -64,17 +66,13 @@ class ScheduleController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть планировщик');
 
-        //SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Расписание сотрудников было обновлено', new Schedule());
-
-        $system_message = new \App\Models\SystemMessage();
+        $system_message = new SystemMessage();
         $system_message->user_id = 1;
-        $system_message->type = 'test';
-        $system_message->message = 'Партнер обновлен';
+        $system_message->reciever_id = 2;
+        $system_message->type = 'success';
+        $system_message->message = 'Расписаие обновлено';
         $system_message->save();
-        event(new \App\Events\SystemMessage($system_message));
-
-        event(new ChatMessage($system_message)); // Это для примера. Отправка сообщения всем активным пользователям канала
-        broadcast(new ChatMessage($system_message))->toOthers(); // Отправляю сообщение всем, кроме текущего пользователя
+        event(new SM($system_message));
 
 
         //broadcast(new \App\Events\SystemMessage($system_message))->toOthers();

@@ -1,22 +1,5 @@
 import Echo from "laravel-echo"
-//window.io = require('socket.io-client');
-//require('dotenv').config();
-//
-// window.echo = new Echo({
-//     broadcaster: 'socket.io',
-//     auth: {
-//         headers: {
-//             Authorization: window.token
-//         }
-//     },
-//     host: 'http://autocrm:6001' // значение должно быть равным authHost из конфига + порт
-// });
-//
-// window.echo
-//     .private('chat.1')
-//     .listen('SystemMessage', function(e){
-//         console.log(e);
-//     });
+window.io = require('socket.io-client');
 
 class Socket{
 
@@ -26,8 +9,36 @@ class Socket{
     }
 
     init(){
+        axios({
+            method: 'get',
+            url: '/whoami'
+        }).then((response) => {
+            console.log('Здравствуйте, ' + response.data.name + '!');
+            this.echo = new Echo({
+                broadcaster: 'socket.io',
+                auth: {
+                    headers: {
+                        Authorization: window.token
+                    }
+                },
+                host: window.socket_host + ':' + window.socket_port
+            });
 
-        //console.log(this.echo);
+            this.echo
+                .private('system_message.' + response.data.id)
+                .listen('SystemMessage', function(e){
+                    let block = helper.createElementFromHTML(e.view);
+                    var sp2 = document.querySelector("#system_messages > div");
+                    var parentDiv = sp2.parentNode;
+                    parentDiv.insertBefore(block, sp2);
+                    window.systemMessages.bellCall();
+                    var audio = new Audio('sounds/system_message.mp3');
+                    audio.play();
+                });
+        });
+
+
+
     }
 }
 export default Socket;

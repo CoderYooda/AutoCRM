@@ -11,9 +11,8 @@
         <script src="{{ asset('js/app.js') }}" defer></script>
 
         <script>
-            window.socket_origins = '{{ env('SOCKET_ORIGINS') }}';
+            window.socket_host = '{{ env('SOCKET_HOST') }}';
             window.socket_port = '{{ env('SOCKET_PORT') }}';
-            window.socket_domain = '{{ env('SOCKET_DOMAIN') }}';
         </script>
 
         <!-- Styles -->

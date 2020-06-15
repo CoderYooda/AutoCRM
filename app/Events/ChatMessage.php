@@ -14,11 +14,11 @@ class ChatMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $comment;
+    protected $sm;
 
-    public function __construct(\App\Models\SystemMessage $comment)
+    public function __construct(\App\Models\SystemMessage $sm)
     {
-        $this->comment = $comment;
+        $this->sm = $sm;
     }
 
     /**
@@ -29,7 +29,7 @@ class ChatMessage implements ShouldBroadcast
     public function broadcastOn()
     {
         return [
-            "chat.1"
+            "chat." . $this->sm->reciever_id
         ];
         //return new PrivateChannel('chat.1');
     }

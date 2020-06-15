@@ -2,6 +2,6 @@
 
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 
-Broadcast::channel('chat.1', function() {
+Broadcast::channel('system_message.{user_id}', function() {
     return true;
 });

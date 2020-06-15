@@ -9,8 +9,11 @@ mix.sass('resources/sass/' + template + '/fonts.scss', 'public/css');
 mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ processCssUrls: false });
     //.sass('resources/sass/template.scss', 'public/css');
 
+mix.sass('resources/sass/' + template + '/auth.scss', 'public/css');
+
 mix.copyDirectory('resources/fonts', 'public/fonts');
 mix.copyDirectory('resources/images', 'public/images');
+mix.copyDirectory('resources/sounds', 'public/sounds');
 mix.copyDirectory('resources/modules/dependencies', 'public/dependencies');
 
 if( !mix.inProduction() ) {
