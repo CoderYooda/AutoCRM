@@ -33,8 +33,6 @@ class statisticPage {
     }
 
     linked() {
-        this.sections = [];
-
         this.init();
     }
 
@@ -46,24 +44,6 @@ class statisticPage {
 
         this.initRangeSelector();
 
-        //Chart result
-
-        this.initSections();
-    }
-
-    initSections() {
-
-        this.sections = [];
-
-        let entities = [
-            'partnerOrder', 'entrance', 'refund', 'shipment', 'clientOrder', 'inWarrant', 'outWarrant',
-            'cashMove', 'margin', 'debtPartnerOrder', 'underpaymentsClientOrder', 'underpaymentsShipment',
-            'cashboxBalance', 'grossProfit'
-        ];
-
-        entities.forEach((entity, index) => {
-            if(document.getElementById(entity).checked){this.sections.push(this.entity_names[index])};
-        });
     }
 
     selectDdsarticle(id){

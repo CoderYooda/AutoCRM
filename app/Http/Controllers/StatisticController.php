@@ -49,6 +49,7 @@ class StatisticController extends Controller
             ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  ', 'desc' => 'Описание'],
             ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED', 'desc' => 'Описание'],
             ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16', 'desc' => 'Описание'],
+
             ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4', 'desc' => 'Описание'],
             ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000', 'desc' => 'Описание'],
             ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8', 'desc' => 'Описание'],
@@ -146,7 +147,7 @@ class StatisticController extends Controller
 
         foreach ($classes as $key => $class) {
 
-            if (!in_array($sort_name[$key], $request->entities)) continue;
+//            if (!in_array($sort_name[$key], $request->entities)) continue;
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
@@ -246,27 +247,35 @@ class StatisticController extends Controller
 
             #Маржа = Приходные минус расходные ордера
             $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
+            $list['Маржа'][$date] = $global_data[$date]['Маржа'];
 
             #Валовая прибыль = Продажи + заказы клиентов - возвраты
             $global_data[$date]['Валовая прибыль'] = ($global_data[$date]['shipment_total'] + $global_data[$date]['clientorder_total']) - $global_data[$date]['refund_total'];
+            $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
 
             #Долги поставщикам = Неоплаченные заявки поставщикам
-            $global_data[$date]['Долг поставщикам'] = $global_data[$date]['providerorder_debt'];
+            $global_data[$date]['Долг поставщикам'] = -$global_data[$date]['providerorder_debt'];
+            $list['Долг поставщикам'][$date] = $global_data[$date]['Долг поставщикам'];
 
             #Долги по заказам клиентов = неоплаченные заказы клиентов
-            $global_data[$date]['Долги по заказам клиентов'] = $global_data[$date]['clientorder_debt'];
+            $global_data[$date]['Долги по заказам клиентов'] = -$global_data[$date]['clientorder_debt'];
+            $list['Долги по заказам клиентов'][$date] = $global_data[$date]['Долги по заказам клиентов'];
 
             #Долги по продажам = неоплаченные продажи клиентов
-            $global_data[$date]['Долги по продажам'] = $global_data[$date]['shipment_debt'];
+            $global_data[$date]['Долги по продажам'] = -$global_data[$date]['shipment_debt'];
+            $list['Долги по продажам'][$date] = $global_data[$date]['Долги по продажам'];
 
             #ROI = Маржа / 100 * общий расход
             $global_data[$date]['ROI'] = $global_data[$date]['expenses_total'] ? ($global_data[$date]['Маржа'] * 100) / $global_data[$date]['expenses_total'] : 0;
+            $list['ROI'][$date]= $global_data[$date]['ROI'];
 
             #Формирование list.blade.php
 
             foreach ($entities as $entity_name => $entity_ids) {
 
                 if ($entity_ids == [] || !in_array($entity_name, $sort_name)) continue;
+
+//                if (in_array($entity_name, $request->entities)) continue;
 
                 foreach ($entity_ids as $entity_id => $attributes) {
 

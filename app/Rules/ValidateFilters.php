@@ -47,9 +47,7 @@ class ValidateFilters implements Rule
             'Валовая прибыль',
         ];
 
-        $entity_name = explode('.', $attribute)[1];
-
-        return in_array($entity_name, $entities);
+        return in_array($value, $entities);
     }
 
     public function message()

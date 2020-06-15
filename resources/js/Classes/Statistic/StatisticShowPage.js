@@ -15,15 +15,19 @@ class statisticshowPage {
             'Заказы клиентов',
             'Приходные ордера',
             'Расходные ордера',
-            'Перемещения'
+            'Перемещения',
+            'Маржа',
+            'Долги поставщикам',
+            'Недоплаты по заказам клиентов',
+            'Недоплаты по продажам',
+            'Ежедневный остаток в кассах',
+            'Валовая прибыль',
         ];
 
         this.init();
     }
 
     linked() {
-        this.sections = [];
-
         this.init();
     }
 
@@ -102,7 +106,6 @@ class statisticshowPage {
 
                             bodyLines.forEach(function(body, i) {
 
-
                                 let number = new Intl.NumberFormat().format(parseInt(body[0].match(/\d+/)[0])) + ' ₽';
                                 let text = body[0].replace(/[0-9]/g, '');
 
@@ -170,18 +173,27 @@ class statisticshowPage {
 
     showResults() {
 
+        let fields = document.querySelectorAll('input');
+
+        let data = {};
+
+        let valid_filters = [];
+
+        fields.forEach(element => {
+            data[element.name] = element.value;
+
+            if(element.name.indexOf('entities') !== -1) valid_filters.push(element.value);
+        });
+
+        data['refer'] = 'statisticshow';
+
         window.axios({
-            method: 'post',
-            url: '/statistic',
-            data: {
-                refer: 'statistic',
-                manager_id: Number(document.querySelector("input[name=manager_id]").value),
-                partner_id: Number(document.querySelector("input[name=partner_id]").value),
-                dds_id: Number(document.querySelector("input[name=dds_id]").value),
-                begin_date: document.querySelector("input[name=begin_date]").value,
-                final_date: document.querySelector("input[name=final_date]").value,
-                entities: this.sections,
-            }
+            method: 'get',
+            url: '/statistic/show',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
         })
         .then(response => {
 
@@ -195,7 +207,7 @@ class statisticshowPage {
             let list = response.data.list;
 
             let list_element = document.getElementById('statistic-list');
-            list_element.innerHTML = list;
+            list_element.outerHTML = list;
 
             this.graph_data = response.data.entities;
 
@@ -214,14 +226,12 @@ class statisticshowPage {
                 'rgb(234, 128, 237)',
                 'rgb(137, 186, 22)',
 
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
-                'rgb(137, 186, 22)',
+                'rgb(68, 199, 244)',
+                'rgb(254, 80, 0)',
+                'rgb(92, 164, 232)',
+                'rgb(255, 213, 65)',
+                'rgb(26, 175, 208)',
+                'rgb(126, 123, 233)'
             ];
 
             //Получаем названия сущностей
@@ -240,23 +250,28 @@ class statisticshowPage {
 
                     let day_amount = 0;
 
-                    Object.keys(ids).map(id => {
-                        day_amount += Number(ids[id].amount);
-                    });
-
+                    if (parseInt(ids) || parseFloat(ids)) {
+                        day_amount = ids;
+                    }
+                    else {
+                        Object.keys(ids).map(id => {
+                            day_amount += Number(ids[id].amount);
+                        });
+                    }
                     datasets[entity].push(day_amount);
                 });
             });
 
             //Выводим информацию
-            Object.keys(datasets).map((name, index) => {
+            Object.keys(datasets).map((name) => {
 
-                let color_index = this.entity_names.indexOf(name);
+                let index = this.entity_names.indexOf(name);
 
-                if(this.sections.indexOf(name) !== -1) {
+                if(valid_filters.indexOf(name) !== -1) {
+
                     this.chart.data.datasets.push({
                         label: name,
-                        backgroundColor: colors[color_index === -1 ? 0 : color_index],
+                        backgroundColor: colors[index],
                         borderColor: 'rgb(0,0,0)',
                         data: datasets[name]
                     });
@@ -273,7 +288,7 @@ class statisticshowPage {
     checkActive(){
         let className = window.location.pathname.substring(1);
         let link = document.getElementById('statistic_link');
-        if(className === 'statistic'){
+        if(className === 'statistic/show'){
             link.classList.add('active');
             this.active = true;
         } else {
