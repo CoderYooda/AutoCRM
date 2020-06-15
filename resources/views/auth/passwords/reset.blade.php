@@ -1,66 +1,57 @@
 @extends(env('DEFAULT_THEME', 'classic') . '.layouts.auth')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
-
-                <div class="card-body">
-                    {{--{{ route('password.update') }}--}}
-                    <form method="POST" action="">
-                        @csrf
-
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+    <div class="auth-block auth-block-login">
+        <div class="auth-form-block">
+            <div class="px-3">
+                <div class="mb-5">
+                    <h5 class="login-text">Восстановление доступа</h5>
+                </div>
+                <form method="POST" action="{{ route('PassResetPost') }}">
+                    @csrf
+                    <input type="hidden" name="hash" id="sms_hash" value="">
+                    <input type="hidden" name="sms_id" id="sms_id" value="">
+                    <div class="text-left">
+                        <div id="phone_input_c" class="form-group  @error('phone') is-invalid @enderror">
+                            <label>Номер телефона</label>
+                            <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
+                            @error('phone')
+                            <span class="invalid-feedback" role="alert">
+                                {{ $message }}
+                            </span>
+                            @enderror
+                        </div>
+                        <div id="sms-box" class="hide">{{--hide--}}
+                            <div class="form-group">
+                                <label>Код смс</label>
+                                <div class="sms-wrap">
+                                    <input id="sms_code" maxlength="5" class="form-control text-center register-number-confirm" type="text">
+                                    <span class="sms-link" >SMS-код придет <br>в течении минуты</span>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                        <div id="sms_pass_input" class="form-group @error('password') is-invalid @enderror hide">
+                            <label>Пароль</label>
+                            <input type="password" name="password" id="password" class="md-input form-control" value="{{ old('password') }}"  required>
+                            @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
+                        <div id="sms_pass_confirmation" class="form-group hide">
+                            <label>Подтверждение</label>
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="md-input form-control" value="{{ old('password_confirmation') }}" required>
                         </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        <button id="send_sms" type="button" onclick="window.passwordreset.sendSMS()" class="button primary login-button">Далее</button>
+                        <button id="recover" type="button" onclick="window.passwordreset.confirmSMS()" class="button primary login-button hide">Подтвердить</button>
+                        <button id="action" type="button" onclick="window.passwordreset.changePass()" class="button primary login-button hide">Восстановить</button>
+                    </div>
+                </form>
+                <div class="create-acc-box">
+                    <a href="{{ route('register') }}" class="">Создать аккаунт</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

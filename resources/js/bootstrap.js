@@ -66,7 +66,6 @@ setInterval(function () {
     if(date.getMinutes().toString().length < 2){minutes = '0' + date.getMinutes();} else {minutes = date.getMinutes();}
     if(date.getSeconds().toString().length < 2){seconds = '0' + date.getSeconds();} else {seconds = date.getSeconds();}
     let time = document.getElementById('current_time');
-    console.log(time);
     if(time !== null){
         document.querySelector('#current_time .h').innerHTML = hours;
         document.querySelector('#current_time .m').innerHTML = minutes;
