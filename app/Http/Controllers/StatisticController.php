@@ -27,13 +27,8 @@ use Illuminate\Support\Facades\DB;
 
 class StatisticController extends Controller
 {
-    const PRODIVERORDER = 0;
-    const ENTRANCE = 1;
     const REFUND = 2;
-    const SHIPMENT = 3;
-    const CLIENTORDER = 4;
     const INCOMING_WARRANT = 5;
-    const OUTCOMING_WARRANT = 6;
 
     public function index(StatisticRequest $request)
     {
@@ -55,14 +50,16 @@ class StatisticController extends Controller
             ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8', 'desc' => 'Описание'],
             ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541', 'desc' => 'Описание'],
             ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0', 'desc' => 'Описание'],
-            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'desc' => 'Описание']
+            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'desc' => 'Описание'],
+            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E', 'desc' => 'Описание'],
         ];
 
         $graph_data = $this->getGraphData($request);
 
         //Формирование шаблона
         $content = view(get_template() . '.statistic.index', compact('request', 'sorts'))
-            ->with('list', $graph_data['list']);
+            ->with('list', $graph_data['list'])
+            ->with('global_data', $graph_data['global_data']);
 
         if (class_basename($content) == "JsonResponse") {
             return $content;
@@ -263,10 +260,20 @@ class StatisticController extends Controller
             }
         }
 
+        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company->id)->get();
+
+        foreach ($cashbox_history as $cashbox) {
+            $global_data[$cashbox->date]['Ежедневный остаток в кассах'] = $cashbox->balance;
+        }
+
         #Пересобираем массив для отображения в list.blade.php
         $list = [];
 
         foreach ($global_data as $date => $entities) {
+
+            #Ежедневный остаток в кассах
+            if(!isset($global_data[$date]['Ежедневный остаток в кассах'])) $global_data[$date]['Ежедневный остаток в кассах'] = 0;
+            if($global_data[$date]['Ежедневный остаток в кассах']) $list['Ежедневный остаток в кассах'][$date] = $global_data[$date]['Ежедневный остаток в кассах'];
 
             #Маржа = Приходные минус расходные ордера
             $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
@@ -277,8 +284,8 @@ class StatisticController extends Controller
             if($global_data[$date]['Валовая прибыль'] != 0) $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
 
             #Долги поставщикам = Неоплаченные заявки поставщикам
-            $global_data[$date]['Долг поставщикам'] = -$global_data[$date]['providerorder_debt'];
-            if($global_data[$date]['Долг поставщикам'] != 0) $list['Долг поставщикам'][$date] = $global_data[$date]['Долг поставщикам'];
+            $global_data[$date]['Долги поставщикам'] = -$global_data[$date]['providerorder_debt'];
+            if($global_data[$date]['Долги поставщикам'] != 0) $list['Долги поставщикам'][$date] = $global_data[$date]['Долги поставщикам'];
 
             #Долги по заказам клиентов = неоплаченные заказы клиентов
             $global_data[$date]['Недоплаты по заказам клиентов'] = -$global_data[$date]['clientorder_debt'];

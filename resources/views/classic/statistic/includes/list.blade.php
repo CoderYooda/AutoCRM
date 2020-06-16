@@ -1,6 +1,8 @@
 
 @forelse($list as $entity => $dates)
 
+    @continue(!in_array($entity, request('entities')))
+
     @foreach($dates as $date => $entity_ids)
 
         @if($loop->first)
@@ -23,7 +25,7 @@
 
                 <ul class="nav w-100 mb-0 mt-0">
                     <li class="item d-flex bold_title w-100">
-                        <div class="flex-1 stat_summ">Сумма</div>
+                        <div class="flex-1 stat_summ">{{ $entity == 'ROI' ? 'Процент' : 'Сумма' }}</div>
                         <div class="flex-1 stat_date">Дата</div>
                     </li>
                 </ul>
@@ -34,7 +36,7 @@
 
         @if(!is_array($entity_ids))
 
-            @continue($entity_ids == 0)
+            @continue($entity_ids == 0 || $date == 'total')
 
             <ul class="nav w-100 mb-0 mt-0">
                 <li class="item d-flex w-100 pointer">

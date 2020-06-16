@@ -62,6 +62,12 @@ class statisticPage {
             }
         });
 
+        console.log(document.getElementsByClassName('filter-item').length);
+
+        if(!document.getElementsByClassName('filter-item').length) {
+            document.getElementsByClassName('filter-list')[0].innerHTML = 'Результатов нет.';
+        }
+
         document.getElementById('select_all').checked = false;
     }
 
@@ -69,13 +75,24 @@ class statisticPage {
 
         let input = element.querySelector('input');
 
-        if(!input.checked) {
+        input.checked = !input.checked;
+
+        let item_count = document.getElementsByClassName('filter-item').length;
+
+        let list_element = document.getElementsByClassName('filter-list')[0];
+
+        if(input.checked) {
+
+            if(!item_count) {
+                list_element.innerHTML = '';
+            }
+
             let html = '<div class="filter-item">\n' +
                 '           ' + input.value + '\n' +
                 '           <button type="button" onclick="statistic.removeFilter(this)" class="right-remove pr-10"><i class="fa fa-remove"></i></button>\n' +
                 '       </div>';
 
-            document.getElementsByClassName('filter-list')[0].append(helper.createElementFromHTML(html));
+            list_element.append(helper.createElementFromHTML(html));
         }
         else {
             let elements = document.getElementsByClassName('filter-item');
@@ -85,11 +102,13 @@ class statisticPage {
                     element.remove();
                 }
             });
+
+            if(item_count - 1 <= 0) {
+                list_element.innerHTML = 'Результатов нет.';
+            }
         }
 
-        document.getElementById('select_all').checked = document.getElementsByClassName('filter-item').length === 14;
-
-        input.checked = !input.checked;
+        document.getElementById('select_all').checked = document.getElementsByClassName('filter-item').length === 15;
     }
 
     toggleFilters(current_element) {
@@ -104,17 +123,23 @@ class statisticPage {
             element.checked = input.checked;
         });
 
-        document.getElementsByClassName('filter-list')[0].innerHTML = '';
+        let list_element = document.getElementsByClassName('filter-list')[0];
 
         if(input.checked) {
+
+            list_element.innerHTML = '';
+
             this.entity_names.forEach(name => {
                 let html = '<div class="filter-item">\n' +
                     '           ' + name + '\n' +
                     '           <button type="button" onclick="statistic.removeFilter(this)" class="right-remove pr-10"><i class="fa fa-remove"></i></button>\n' +
                     '       </div>';
 
-                document.getElementsByClassName('filter-list')[0].append(helper.createElementFromHTML(html));
+                list_element.append(helper.createElementFromHTML(html));
             });
+        }
+        else {
+            list_element.innerHTML = 'Результатов нет.';
         }
     }
 

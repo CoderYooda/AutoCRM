@@ -44,7 +44,20 @@
                                     <div class="statistic-title">{{ $sort['name'] }}</div>
 
                                     @if(isset($list[$sort['name']]))
-                                        <div class="statistic-summ" style="color: {{ $sort['color']}}">{{ collect($list[$sort['name']])->has('amount') ? collect($list[$sort['name']])->sum('amount') : collect($list[$sort['name']])->sum() }} ₽</div>
+                                        <div class="statistic-summ" style="color: {{ $sort['color']}}">
+
+                                            @if($sort['name'] == 'Ежедневный остаток в кассах')
+
+                                                {{ collect($list[$sort['name']])->last() }}
+
+                                            @else
+
+                                            {{ collect($list[$sort['name']])->has('amount') ? collect($list[$sort['name']])->sum('amount') : collect($list[$sort['name']])->sum() }}
+
+                                            @endif
+
+                                            {{ $sort['name'] == 'ROI' ? '%' : '₽' }}
+                                        </div>
                                     @else
                                         <div class="statistic-summ">0 ₽</div>
                                     @endif
@@ -130,13 +143,14 @@
                         </div>
                     </div>
 
-                    <div class="ml-15">
-                        <div class="filter-title">Выбранный результат</div>
-                        <div class="filter-list">
-
+                    <div class="box pt-5 min-vh-100" style="min-height: 60px;">
+                        <div class="ml-15">
+                            <div class="filter-title">Выбранный результат</div>
+                            <div class="filter-list">
+                                Результатов нет.
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </form>

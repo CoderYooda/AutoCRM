@@ -45,6 +45,7 @@ class ValidateFilters implements Rule
             'Недоплаты по продажам',
             'Ежедневный остаток в кассах',
             'Валовая прибыль',
+            'ROI'
         ];
 
         return in_array($value, $entities);

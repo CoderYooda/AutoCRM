@@ -1038,6 +1038,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .pt-0{
     padding-top: 0!important;
 }
+.pt-5{
+    padding-top: 5px !important;
+}
 .pr-8{
     padding-right: 8px!important;
 }
@@ -1584,7 +1587,7 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 #chartjs-tooltip {
-    transition: 0.5s;
+    transition: 0.2s;
 }
 
 .filter-title {
@@ -1604,5 +1607,6 @@ input:-moz-placeholder { /* Firefox 18- */
     font-size: 14px;
     line-height: 19px;
     color: #8D8D8D;
-    margin-top: 6px;
+    margin-top: 5px;
+    padding-bottom: 6px;
 }

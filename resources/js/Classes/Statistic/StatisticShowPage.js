@@ -22,6 +22,7 @@ class statisticshowPage {
             'Недоплаты по продажам',
             'Ежедневный остаток в кассах',
             'Валовая прибыль',
+            'ROI'
         ];
 
         this.init();
@@ -61,89 +62,97 @@ class statisticshowPage {
                     mode: 'index',
                     intersect: false,
                     // Disable the on-canvas tooltip
-                    enabled: true,
+                    enabled: false,
 
-                    // custom: function(tooltipModel) {
-                    //     // Tooltip Element
-                    //     var tooltipEl = document.getElementById('chartjs-tooltip');
-                    //
-                    //     // Create element on first render
-                    //     if (!tooltipEl) {
-                    //         tooltipEl = document.createElement('div');
-                    //         tooltipEl.id = 'chartjs-tooltip';
-                    //         tooltipEl.innerHTML = '<table></table>';
-                    //         document.body.appendChild(tooltipEl);
-                    //     }
-                    //
-                    //     // Hide if no tooltip
-                    //     if (tooltipModel.opacity === 0) {
-                    //         tooltipEl.style.opacity = 0;
-                    //         return;
-                    //     }
-                    //
-                    //     // Set caret Position
-                    //     tooltipEl.classList.remove('above', 'below', 'no-transform');
-                    //     if (tooltipModel.yAlign) {
-                    //         tooltipEl.classList.add(tooltipModel.yAlign);
-                    //     } else {
-                    //         tooltipEl.classList.add('no-transform');
-                    //     }
-                    //
-                    //     function getBody(bodyItem) {
-                    //         return bodyItem.lines;
-                    //     }
-                    //
-                    //     // Set Text
-                    //     if (tooltipModel.body) {
-                    //         var titleLines = tooltipModel.title || [];
-                    //         var bodyLines = tooltipModel.body.map(getBody);
-                    //
-                    //         var innerHtml = '<thead>';
-                    //
-                    //         titleLines.forEach(function(title) {
-                    //             innerHtml += '<tr><th>' + title + '</th></tr>';
-                    //         });
-                    //         innerHtml += '</thead><tbody>';
-                    //
-                    //         bodyLines.forEach(function(body, i) {
-                    //
-                    //             let number = new Intl.NumberFormat().format(parseInt(body[0].match(/\d+/)[0])) + ' ₽';
-                    //             let text = body[0].replace(/[0-9]/g, '');
-                    //
-                    //             var colors = tooltipModel.labelColors[i];
-                    //             var style = 'background:' + colors.backgroundColor;
-                    //             style += '; border-color:' + colors.borderColor;
-                    //             style += '; border-width: 2px';
-                    //             var span = '<span style="' + style + '"></span>';
-                    //
-                    //             innerHtml += '<tr><td>' + span + text + number + '</td></tr>';
-                    //         });
-                    //         innerHtml += '</tbody>';
-                    //
-                    //         var tableRoot = tooltipEl.querySelector('table');
-                    //         tableRoot.innerHTML = innerHtml;
-                    //     }
-                    //
-                    //     // `this` will be the overall tooltip
-                    //     let position = this._chart.canvas.getBoundingClientRect();
-                    //
-                    //     // Display, position, and set styles for font
-                    //     tooltipEl.style.opacity = 1;
-                    //     tooltipEl.style.background = 'rgba(45, 118, 168, 0.69)';
-                    //     tooltipEl.style.borderRadius = '3px';
-                    //     tooltipEl.style.border = '1px solid #2d76a8';
-                    //     tooltipEl.style.color = '#fff';
-                    //     tooltipEl.style.position = 'absolute';
-                    //     tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                    //     tooltipEl.style.top = window.mousey + 'px';
-                    //     tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-                    //     tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-                    //     tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-                    //     tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-                    //     tooltipEl.style.pointerEvents = 'none';
-                    //
-                    //
-                    // }
+                    custom: function(tooltipModel) {
+                        // Tooltip Element
+                        var tooltipEl = document.getElementById('chartjs-tooltip');
+
+                        // Create element on first render
+                        if (!tooltipEl) {
+                            tooltipEl = document.createElement('div');
+                            tooltipEl.id = 'chartjs-tooltip';
+                            tooltipEl.innerHTML = '<table></table>';
+                            document.body.appendChild(tooltipEl);
+                        }
+
+                        // Hide if no tooltip
+                        if (tooltipModel.opacity === 0) {
+                            tooltipEl.style.opacity = 0;
+                            return;
+                        }
+
+                        // Set caret Position
+                        tooltipEl.classList.remove('above', 'below', 'no-transform');
+                        if (tooltipModel.yAlign) {
+                            tooltipEl.classList.add(tooltipModel.yAlign);
+                        } else {
+                            tooltipEl.classList.add('no-transform');
+                        }
+
+                        function getBody(bodyItem) {
+                            return bodyItem.lines;
+                        }
+
+                        // Set Text
+                        if (tooltipModel.body) {
+                            var titleLines = tooltipModel.title || [];
+                            var bodyLines = tooltipModel.body.map(getBody);
+
+                            var innerHtml = '<thead>';
+
+                            titleLines.forEach(function(title) {
+                                innerHtml += '<tr><th>' + title + '</th></tr>';
+                            });
+                            innerHtml += '</thead><tbody>';
+
+                            bodyLines.forEach(function(body, i) {
+
+                                let number = new Intl.NumberFormat().format(parseInt(body[0].match(/\d+/)[0])) + (body[0].indexOf('ROI') !== -1 ? '%' : '₽');
+                                let text = body[0].replace(/[0-9]/g, '');
+
+                                var colors = tooltipModel.labelColors[i];
+                                var style = 'background:' + colors.backgroundColor;
+                                style += '; border-color:' + colors.borderColor;
+                                style += '; border-width: 2px';
+                                var span = '<span style="' + style + '"></span>';
+
+                                innerHtml += '<tr><td>' + span + text + number + '</td></tr>';
+                            });
+                            innerHtml += '</tbody>';
+
+                            var tableRoot = tooltipEl.querySelector('table');
+                            tableRoot.innerHTML = innerHtml;
+                        }
+
+                        // `this` will be the overall tooltip
+                        let canvas = this._chart.canvas.getBoundingClientRect();
+
+                        // Display, position, and set styles for font
+                        tooltipEl.style.opacity = 1;
+                        tooltipEl.style.background = 'rgba(45, 118, 168, 0.69)';
+                        tooltipEl.style.borderRadius = '3px';
+                        tooltipEl.style.border = '1px solid #2d76a8';
+                        tooltipEl.style.color = '#fff';
+                        tooltipEl.style.position = 'absolute';
+
+                        let top = window.mousey;
+
+                        if(mousey + canvas.top + tooltipEl.offsetHeight > window.outerHeight){
+                            top = tooltipModel.caretY;
+                        }
+
+                        tooltipEl.style.left = canvas.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                        tooltipEl.style.top = top + 'px';
+
+                        tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                        tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                        tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                        tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                        tooltipEl.style.pointerEvents = 'none';
+
+
+                    }
                 },
                 responsive: true,
                 scales: {
@@ -231,7 +240,8 @@ class statisticshowPage {
                 'rgb(92, 164, 232)',
                 'rgb(255, 213, 65)',
                 'rgb(26, 175, 208)',
-                'rgb(126, 123, 233)'
+                'rgb(126, 123, 233)',
+                'rgb(34, 182, 110)'
             ];
 
             //Получаем названия сущностей
