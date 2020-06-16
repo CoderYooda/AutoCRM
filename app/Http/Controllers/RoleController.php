@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserActionsController as UA;
 use App\Models\Role as LRole;
 
 class RoleController extends Controller
@@ -85,6 +86,29 @@ class RoleController extends Controller
 			'html' => view(env('DEFAULT_THEME', 'classic') . '.role.dialog.form_role', compact('request', 'role', 'permissions'))->render()
 		]);
 	}
+
+    public function delete($id)
+    {
+        PermissionController::canByPregMatch('Редактировать настройки');
+
+        $role = LRole::owned()->where('id', $id)->first();
+        $this->message = 'Роль удалена';
+        $returnIds = $role->id;
+        if($role->company()->first()->id != Auth::user()->company()->first()->id){
+            $this->message = 'Вам не разрешено удалять контакт';
+            $this->status = 422;
+        }
+        $role->delete();
+        UA::makeUserAction($role, 'delete');
+
+        $this->status = 200;
+
+
+        return response()->json([
+            'id' => $returnIds,
+            'message' => $this->message
+        ], $this->status);
+    }
 	
 	public static function createStartRoles($company)
 	{

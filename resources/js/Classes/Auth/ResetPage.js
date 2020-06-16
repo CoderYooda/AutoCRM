@@ -24,8 +24,14 @@ class resetPage{
         this.sms_pass_confirmation = document.getElementById('sms_pass_confirmation');
         this.sms_action = document.getElementById('action');
         this.sms_code = document.getElementById('sms_code');
+        this.phone_input = document.getElementById('phone_input_c');
+
+        this.login = document.getElementById('back_to_work');
+        this.title = document.getElementById('title');
+        this.create_acc = document.getElementById('create_acc');
 
         this.sms_confirmed = false;
+        this.pass_changed = false;
 
         this.phone = null;
     }
@@ -35,7 +41,6 @@ class resetPage{
     }
 
     sendSMS(){
-
         this.phone = document.querySelector('#phone_input').value;
         window.axios({
             method: 'post',
@@ -48,20 +53,21 @@ class resetPage{
             this.sms_id_input.value = response.data.sms_id;
             this.sms_hash_intput.value = response.data.hash;
             this.checkState();
-        }).catch(function (error) {
-            let messages = {};
-            if(error.response && error.response.data){
-                if(error.response.data.messages){
-                    messages = error.response.data.messages;
-                } else if(error.response.data.errors){
-                    messages = error.response.data.errors;
-                }
-            }
-            for(var error_stack in messages){
-                window.notification.notify( 'error', messages[error_stack][0]);
-            }
-            dd(messages);
+        }).catch(error => {
+            this.showErrors(error);
         });
+    }
+
+    showErrors(error){
+        let messages = {};
+        if(error.response && error.response.data){
+            if(error.response.data.errors){
+                messages = error.response.data.errors;
+            }
+        }
+        for(var error_stack in messages){
+            window.notification.notify( 'error', messages[error_stack][0]);
+        }
     }
 
     confirmSMS(){
@@ -80,8 +86,8 @@ class resetPage{
                 this.sms_confirmed = true;
             }
             this.checkState();
-        }).catch(function (error) {
-            dd(error);
+        }).catch(error => {
+            this.showErrors(error);
         });
     }
 
@@ -100,10 +106,16 @@ class resetPage{
             }
         }).then(response => {
             if(response.data.status == 'success'){
-                this.sms_confirmed = true;
+                this.pass_changed = true;
             }
             this.checkState();
+        }).catch(error =>{
+            this.showErrors(error);
         });
+    }
+
+    gotoLogin(){
+        window.location.href = '/login'
     }
 
     checkState(){
@@ -111,7 +123,7 @@ class resetPage{
             this.sms_box.classList.remove('hide');
             this.recover_b.classList.remove('hide');
             this.send_sms_b.classList.add('hide');
-            document.querySelector('#phone_input_c').classList.add('hide');
+            this.phone_input.classList.add('hide');
             this.sms_box.querySelector('input').focus();
         } else {
             this.sms_box.classList.add('hide');
@@ -125,12 +137,30 @@ class resetPage{
             this.sms_pass_confirmation.classList.remove('hide');
             this.sms_action.classList.remove('hide');
             this.recover_b.classList.add('hide');
+            this.phone_input.classList.add('hide');
             this.send_sms_b.classList.add('hide');
         } else {
             this.sms_pass_input.classList.add('hide');
             this.sms_pass_confirmation.classList.add('hide');
             this.sms_action.classList.add('hide');
             this.send_sms_b.classList.add('hide');
+        }
+
+        if(this.pass_changed){
+            this.phone_input.classList.add('hide');
+            this.sms_box.classList.add('hide');
+            this.sms_pass_input.classList.add('hide');
+            this.sms_pass_confirmation.classList.add('hide');
+            this.sms_action.classList.add('hide');
+            this.recover_b.classList.add('hide');
+            this.send_sms_b.classList.add('hide');
+            this.login.classList.remove('hide');
+            this.title.classList.add('hide');
+            this.create_acc.classList.add('hide');
+        } else {
+            this.login.classList.add('hide');
+            this.title.classList.remove('hide');
+            this.create_acc.classList.remove('hide');
         }
     }
 

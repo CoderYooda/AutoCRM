@@ -5,13 +5,17 @@ class Modal{
         this.root_dialog = dialog;
         this.current_dialog = dialog; //alias to root_dialog
         let object = this;
-        this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
-            if(e.target.classList.contains('search')){
+        let form = this.current_dialog.getElementsByTagName('form')[0];
+        if(form){
+            form.addEventListener('keydown',  function(e){
+                if(e.target.classList.contains('search')){
 
-            } else {
-                object.touch();
-            }
-        });
+                } else {
+                    object.touch();
+                }
+            });
+        }
+
     }
 
     touch(){

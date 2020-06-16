@@ -14,10 +14,6 @@ Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('Pass
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
 
-//Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-//Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
-//Route::post('password/reset', 'Auth\ResetPasswordController@reset');
-
 #СМС
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 
@@ -28,15 +24,6 @@ Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('Che
 //Route::multilingual('/', 'DashboardController@index');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
-
-//    Route::get('/password/reset/email', 'Auth\PasswordController@getEmail');
-//    Route::post('/password/reset/email', 'Auth\PasswordController@postEmail');
-//
-//    Route::get('/password/email', 'Auth\PasswordController@sendResetLinkEmail');
-//
-//    Route::get('/password/reset/{token}', 'Auth\PasswordController@showResetForm');
-//    Route::post('/password/reset', 'Auth\PasswordController@reset');
-
 
     Route::get('/', function (){
         $redir = Auth::user()->hasRole('Суперадмин') ? route('AdminDashboard') : route('StoreIndex');
@@ -227,6 +214,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/roles/get', 'RoleController@getRoles')->name('GetRolesList');
     Route::post('/roles/store', 'RoleController@store')->name('StoreRole');
     Route::post('/roles/assign', 'RoleController@assignRoleToUser')->name('RoleToUser');
+    Route::post('/role/{id}/delete', 'RoleController@delete')->name('DeleteRole');
 
     #Контрагенты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название

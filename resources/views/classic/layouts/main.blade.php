@@ -251,7 +251,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="version">ver {{ config('version') }}</div>
+                        <div class="version">version <br>{{ env('VERSION', '0.0.0') }}</div>
                     </div>
                 </div>
                 <div id="ajax-content">

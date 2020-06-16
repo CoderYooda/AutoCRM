@@ -95,10 +95,15 @@ h2{
 .faq_4{border-left: 22px solid #278a51}
 
 .bb_faq{
-    margin: 10px;
     padding-left: 10px;
 }
-
+.version{
+    color: #2d76a8;
+    text-align: center;
+    font-size: 10px;
+    padding: 10px;
+    padding-top: 0;
+}
 .storage_store:not(:first-child) {
     border-left: none;
 }

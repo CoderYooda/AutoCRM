@@ -4,7 +4,7 @@
     <div class="auth-block auth-block-login">
         <div class="auth-form-block">
             <div class="px-3">
-                <div class="mb-5">
+                <div id="title" class="mb-5">
                     <h5 class="login-text">Восстановление доступа</h5>
                 </div>
                 <form method="POST" action="{{ route('PassResetPost') }}">
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div id="sms_pass_input" class="form-group @error('password') is-invalid @enderror hide">
-                            <label>Пароль</label>
+                            <label>Новый пароль</label>
                             <input type="password" name="password" id="password" class="md-input form-control" value="{{ old('password') }}"  required>
                             @error('password')
                             <span class="invalid-feedback" role="alert">
@@ -43,12 +43,16 @@
                             <label>Подтверждение</label>
                             <input type="password" id="password_confirmation" name="password_confirmation" class="md-input form-control" value="{{ old('password_confirmation') }}" required>
                         </div>
+                        <div id="back_to_work" class="form-group hide" style="text-align: center">
+                            <div class="mb-10">Пароль обновлён, можно</div>
+                            <button type="button" onclick="window.passwordreset.gotoLogin()" class="button primary login-button">Приступить к работе</button>
+                        </div>
                         <button id="send_sms" type="button" onclick="window.passwordreset.sendSMS()" class="button primary login-button">Далее</button>
                         <button id="recover" type="button" onclick="window.passwordreset.confirmSMS()" class="button primary login-button hide">Подтвердить</button>
                         <button id="action" type="button" onclick="window.passwordreset.changePass()" class="button primary login-button hide">Восстановить</button>
                     </div>
                 </form>
-                <div class="create-acc-box">
+                <div id="create_acc" class="create-acc-box">
                     <a href="{{ route('register') }}" class="">Создать аккаунт</a>
                 </div>
             </div>

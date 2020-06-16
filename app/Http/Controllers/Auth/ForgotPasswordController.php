@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller
         $request['phone'] = self::preparePhone($request);
 
         $validator = $request->validate([
-            'phone' => 'required|digits:11|integer',
+            'phone' => 'exists:users|required|digits:11|integer',
         ]);
         
 
@@ -52,9 +52,17 @@ class ForgotPasswordController extends Controller
             $status = 'success';
         }
 
-        return response()->json([
-            'status' => $status,
-        ]);
+        if($status == 'success'){
+            return response()->json([
+                'status' => $status,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Код подтверждения не корректен',
+                'errors' => ['sms' => ['Код подтверждения не корректен']],
+            ], 422);
+        }
+
     }
 
     public function resetForm(){
