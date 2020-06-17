@@ -61,11 +61,12 @@ class AnalogController extends Controller
                 'm_id' => $manufacturer->dbi,
                 'm_name' => $manufacturer->da,
                 'p_id' => $part->dbi,
-                'p_name' => $part->d
+                'p_name' => $part->d,
+                'p_article' => $part->ns
             ];
         }
 
-        return $manufacturers;
+        return response()->json($manufacturers);
     }
 
     public static function makeRequest(string $method, array $params = [])

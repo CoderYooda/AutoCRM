@@ -35,6 +35,11 @@ class statisticshowPage {
     init() {
         //Chart.js
 
+        this.preloader_element = document.getElementsByClassName('statistic-preloader')[0];
+        this.preloader_timer = null;
+
+        this.prelaoderStart();
+
         this.checkActive();
 
         this.initChart();
@@ -181,8 +186,24 @@ class statisticshowPage {
                 }
             }
         });
+    }
 
+    prelaoderStart() {
+        this.preloader_element.style.opacity = 1;
+    }
 
+    prelaoderStop() {
+        clearInterval(this.preloader_timer);
+
+        let el = this.preloader_element;
+
+        this.preloader_timer = setInterval(() => {
+            el.style.opacity = el.style.opacity - 0.05;
+            if (el.style.opacity <= 0.05) {
+                clearInterval(this.preloader_timer);
+                this.preloader_element.style.display = 'none';
+            }
+        }, 16);
     }
 
     showResults() {
@@ -296,6 +317,9 @@ class statisticshowPage {
         })
         .catch(response => {
             console.log(response);
+        })
+        .then(() => {
+            this.prelaoderStop();
         });
     }
 

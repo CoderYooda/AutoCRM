@@ -25,7 +25,7 @@ class Article extends Model
         'barcode_local',
         'barcode',
         'name',
-        'blockedCount',
+        'blockedCount'
     ];
 
     protected $guarded = [];

@@ -22,7 +22,7 @@ class ProductDialog extends Modal{
             focused.select();
         }
         helper.initTabs('product_tabs');
-        var fn = window.helper.debounce(function(e) {object.trinitySearch();}, 800);
+        var fn = window.helper.debounce(function(e) {object.fapiSearch();}, 800);
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
@@ -45,34 +45,41 @@ class ProductDialog extends Modal{
         });
     }
 
-    trinitySearch(){
-
-        let object = this;
+    fapiSearch(){
 
         document.getElementById('trin_preload').classList.remove('hide');
-        let data = {};
-        data.search = this.article_input.value;
         window.axios({
-            method: 'post',
-            url: '/providers/trinity/search_brands',
-            data: data
-        }).then(function (resp) {
-            if(data.search.length > 0){
-                object.provider_search_container.classList.add('show');
+            method: 'get',
+            url: '/api/manufacturers/' + this.article_input.value,
+        }).then(response => {
+
+            console.log(response);
+
+            let data = response.data;
+
+            if(data.length) {
+                this.provider_search_container.classList.add('show');
             } else {
-                object.provider_search_container.classList.remove('show');
+                this.provider_search_container.classList.remove('show');
             }
 
             let html = '';
-            for (let [key, value] of Object.entries(resp.data.brands.data)) {
-                html += '<div class="tr_result" data-ident="' + value.ident + '" data-article="' + value.article + '" data-producer="' + value.producer + '" onclick="window.productDialog.appendArticle(this)">' +
-                    '<span class="article">' + value.ident + '</span>' +
-                    '<span class="article">Артикул: ' + value.article + '</span>' +
-                    '<span class="article">Производитель: ' + value.producer + '</span>' +
+
+            Object.keys(data).forEach(key => {
+               let m_name = data[key].m_name;
+               let m_id = data[key].m_id;
+               let p_article = data[key].p_article;
+               let p_name = data[key].p_name;
+
+                html += '<div class="tr_result" data-ident="' + p_name + '" data-article="' + p_article + '" data-producer="' + m_name + '" onclick="window.productDialog.appendArticle(this)">' +
+                    '<span class="article">' + p_name + '</span>' +
+                    '<span class="article">Артикул: ' + p_article + '</span>' +
+                    '<span class="article">Производитель: ' + m_name + '</span>' +
                     '</div>'
-            }
-            object.provider_search_cont.innerHTML = html;
-            document.getElementById('trin_preload').classList.add('hide');
+            });
+
+            this.provider_search_cont.innerHTML = html;
+
             // var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
             // let providertab = document.querySelector('#provider-tab .nav-badge');
             // if(providertab){
@@ -86,11 +93,22 @@ class ProductDialog extends Modal{
         });
     }
 
+    selectArticle(input)
+    {
+        if(input.value.length) {
+            this.root_dialog.querySelector('#provider_search_container').classList.add('show');
+        }
+    }
+
     appendArticle(elem){
         this.root_dialog.querySelector('input[name=article]').value = elem.dataset.article;
         this.root_dialog.querySelector('input[name=name]').value = elem.dataset.ident;
         this.root_dialog.querySelector('input[name=new_supplier_name]').value = elem.dataset.producer;
         this.root_dialog.querySelector('button[name=supplier_id]').innerHTML = elem.dataset.producer;
+
+        console.log(this.root_dialog.querySelector('#provider_search_container'));
+
+        this.root_dialog.querySelector('#provider_search_container').classList.remove('show');
     }
 
     openSelectCategoryDialog(category_selected = null, root_category = null){

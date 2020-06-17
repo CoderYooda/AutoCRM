@@ -10,8 +10,23 @@
     <div class="search-panel box">
         <div class="search-field-container w-100">
             <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+            <div class="dropdown_container" style="display: block !important;">
+                <div class="store-title">
+                    Список производителей
+                </div>
+                <div class="store-list">
+                    <div class="store-list-item pointer">OPEL</div>
+                    <div class="store-list-item pointer">CHEVROLET</div>
+                </div>
+            </div>
         </div>
-        <div class="actions">
+
+        <div class="actions d-flex">
+
+            <select name="manufacture" class="form-control input-c ml-15">
+
+            </select>
+
             @can('Создавать категории')
                 <button onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
             @endcan

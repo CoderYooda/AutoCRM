@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Requests\ProductRequest;
 use App\Model\Catalog\Product;
@@ -241,6 +242,9 @@ class ProductController extends Controller
             $article->company_id = Auth::user()->company()->first()->id;
             $this->message = 'Товар сохранён';
         }
+
+        #Кроссы
+        $article->fapi_id = $supplier->fapi_id;
         $article->fill($request->only($article->fields));
 
         $prepared_article = mb_strtolower(str_replace(' ', '', $request['article']));
@@ -315,13 +319,9 @@ class ProductController extends Controller
         }
     }
 
-    public static function getArticles($request)
+    public static function getArticles(Request $request)
     {
-
-        $size = 30;
-        if (isset($request['size'])) {
-            $size = (int)$request['size'];
-        }
+        $size = (int)$request['size'] ?? 30;
 
         $field = null;
         $dir = null;

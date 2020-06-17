@@ -30,8 +30,15 @@ class StatisticController extends Controller
     const REFUND = 2;
     const INCOMING_WARRANT = 5;
 
+    public function boot()
+    {
+
+    }
+
     public function index(StatisticRequest $request)
     {
+        PermissionController::canByPregMatch('Смотреть статистику');
+
         // цель динамической подгрузки
         $target = HC::selectTarget();
 
@@ -76,6 +83,8 @@ class StatisticController extends Controller
 
     public function show(StatisticRequest $request)
     {
+        PermissionController::canByPregMatch('Смотреть статистику');
+
         if($request->expectsJson()) {
 
             $graph_data = $this->getGraphData($request);
@@ -280,7 +289,7 @@ class StatisticController extends Controller
             if($global_data[$date]['Маржа'] != 0) $list['Маржа'][$date] = $global_data[$date]['Маржа'];
 
             #Валовая прибыль = Продажи + заказы клиентов - возвраты
-            $global_data[$date]['Валовая прибыль'] = ($global_data[$date]['shipment_total'] + $global_data[$date]['clientorder_total']) - $global_data[$date]['refund_total'];
+            $global_data[$date]['Валовая прибыль'] = $global_data[$date]['profit_total']; // - $global_data[$date]['refund_total'];
             if($global_data[$date]['Валовая прибыль'] != 0) $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
 
             #Долги поставщикам = Неоплаченные заявки поставщикам

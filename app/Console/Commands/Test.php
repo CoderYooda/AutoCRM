@@ -13,7 +13,7 @@ use App\Events\SystemMessage;
 
 class Test extends Command
 {
-    protected $signature = 'command:test {message}';
+    protected $signature = 'command:test';
 
     protected $description = 'Command description';
 
@@ -24,15 +24,40 @@ class Test extends Command
 
     public function handle()
     {
-        $system_message = new SM();
-        $system_message->type = 'test';
-        $system_message->message = $this->argument('message');
-        $system_message->reciever_id = 2;
-        $system_message->save();
+        $article = 'k1279';
 
-        dd($system_message);
+        $attributes = [
+            'n' => $article,
+//            'mfi' => $m_id,
+        ];
 
-        event(new SystemMessage($system_message)); // Это для примера. Отправка сообщения всем активным пользователям канала
-        ///broadcast(new SystemMessage($system_message))->toOthers(); // Отправляю сообщение всем, кроме текущего пользователя
+        $response = self::makeRequest('analogList', $attributes);
+
+        dd($response);
+    }
+
+    public static function makeRequest(string $method, array $params = [])
+    {
+        $url = 'https://fapi.iisis.ru/fapi/v2/' . $method . '?';
+
+        $params['ui'] = '73fe9d3a-6b61-40f5-a44f-6d1e0183917a';
+
+        $url .= http_build_query($params);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = [
+            'Content-Type: application/json;',
+        ];
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        return json_decode($response);
     }
 }

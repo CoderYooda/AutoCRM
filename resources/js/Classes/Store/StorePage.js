@@ -75,7 +75,7 @@ class storePage{
             window.notification.notify( 'success', 'Поле очищено');
         }
 
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable ());
     }
 
     clearList(type, container){
@@ -171,6 +171,7 @@ class storePage{
         data.category_id = category_id;
         data.search = object.search;
         data.class = 'store';
+
         window.axios({
             method: 'post',
             url: '/category/loadview',
@@ -446,7 +447,18 @@ class storePage{
             ajaxResponse:function(url, params, response){
                 window.isXHRloading = false;
                 document.body.classList.remove('loading');
-                return response;
+
+                let manufacturers = response.manufacturers
+
+                if(manufacturers != null) {
+                    Object.keys(manufacturers).forEach(key => {
+                       let store_list = document.getElementsByClassName('store-list')[0];
+
+                       let html = '<div class="store-list-item" id="manufacture_' + manufacturers[key].id + '">OPEL</div>';
+                    });
+                }
+
+                return response.data;
             },
             ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
             paginationSize:Math.floor(elements),
@@ -517,6 +529,7 @@ class storePage{
         if(object.category_id !== null){data.category_id = object.category_id.toString();}
 
         if(object.accountable !== null){data.accountable = object.accountable;}
+        if(object.manufacture !== null){data.manufacture = object.manufacture;}
         if(object.client !== null){data.client = object.client;}
         if(object.pay_status !== null){data.pay_status = object.pay_status;}
         if(object.entrance_status !== null){data.entrance_status = object.entrance_status;}
@@ -577,6 +590,8 @@ class storePage{
                 object.loadCategory(object.category_id, true, false);
             }
         });
+
+        this.manufacture = null;
     }
 
     load(){
