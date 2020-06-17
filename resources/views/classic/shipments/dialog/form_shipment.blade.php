@@ -25,16 +25,6 @@
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
 
     <div class="modal-header" style="justify-content: normal;">
-        {{--<div class="b-r pr-3 mr-3">--}}
-            {{--<span class="item-title _500">Поступление</span>--}}
-            {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}
-                {{--@if(isset($shipment) && $shipment->id != NULL)--}}
-                    {{--№{{ $shipment->id }}--}}
-                {{--@else--}}
-                    {{--Новое--}}
-                {{--@endif--}}
-            {{--</div>--}}
-        {{--</div>--}}
         <div class="modal-alt-header">
             <span class="item-title _500">Магазин</span>
             <div class="item-except font-weight-bolder h-1x">
@@ -194,12 +184,13 @@
 
         </div>
         <div class="modal-footer" style="white-space: nowrap">
+
             @if(!isset($shipment))
             <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button mr-15 uppercase-btn"><i class="fa fa-plus"></i> Добавить товар</button>
             @endif
 
             <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            {{--<button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>--}}
             <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">

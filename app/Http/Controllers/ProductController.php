@@ -32,6 +32,21 @@ class ProductController extends Controller
         $message = 'Внутренняя ошибка сервера';
     }
 
+    public function getByUpc(Request $request)
+    {
+        $product =  Article::owned()->where('barcode', $request['upc'])->first();
+        if($product){
+            return response()->json([
+                'id' => $product->id,
+            ], 200);
+        } else {
+            return response()->json([
+                'id' => null,
+            ], 200);
+        }
+
+    }
+
     public function delete($id, Request $request)
     {
         PermissionController::canByPregMatch('Удалять товары');

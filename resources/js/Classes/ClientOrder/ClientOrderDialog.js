@@ -111,9 +111,17 @@ class clientorderDialog extends Modal{
         }
     }
 
-    scanOperation(UPC){
-        console.log(UPC);
+    scanOperation(product_id){
+        this.addProduct(product_id);
     }
+
+    addProduct(elem_or_id, refer = null){
+        let object = this;
+        window.entity.addProductToList(elem_or_id, this, 'clientOrder');
+        if(refer != null){
+            object.refer = refer;
+        }
+    };
 
     freshContent(id, callback = null){
         let object = this;
@@ -334,9 +342,9 @@ class clientorderDialog extends Modal{
         object.recalculate();
     }
 
-    addProduct(elem){
-        window.entity.addProductToList(elem, this, 'clientOrder');
-    };
+    // addProduct(elem){
+    //     window.entity.addProductToList(elem, this, 'clientOrder');
+    // };
 
     addQuickProduct(){
         var object = this;

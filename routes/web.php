@@ -64,6 +64,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
     Route::post('/product/dialog/search', 'ProductController@dialogSearch')->name('ProductDialogSearch');
     Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
+    Route::post('/product/getByUpc', 'ProductController@getByUpc')->name('GetProductByUpc');
 
     #Поступления товаров
     Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название

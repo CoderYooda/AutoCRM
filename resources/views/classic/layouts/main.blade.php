@@ -13,6 +13,7 @@
         <script>
             window.socket_host = '{{ env('SOCKET_HOST') }}';
             window.socket_port = '{{ env('SOCKET_PORT') }}';
+            window.store_id = '{{ session('store_id') }}';
         </script>
 
         <!-- Styles -->
@@ -21,6 +22,7 @@
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     </head>
     <body>
+    <input type="hidden" name="barcode_temp" id="barcode_temp">
         <div id="printed"></div>
         <div id="unprinted" class="app">
             <header class="app-header">
