@@ -5,7 +5,7 @@
         @endforeach
         <li id="vehicle_item_create">
             <div class="box pointer">
-                <i onclick="openDialog('vehicleDialog', '&refer={{ $class }}')" class="fa fa-plus-square add-icon"></i>
+                <i onclick="openDialog('vehicleDialog', '&refer={{ $class }}&partner_id={{ $request->partner_id }}')" class="fa fa-plus-square add-icon"></i>
             </div>
         </li>
     </ul>

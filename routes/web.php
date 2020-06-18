@@ -1,6 +1,5 @@
 <?php
 
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
@@ -55,7 +54,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Статистика
     Route::get('/statistic', 'StatisticController@index')->name('StatisticIndex');
-    Route::post('/statistic', 'StatisticController@show')->name('StatisticShow');
+    Route::get('/statistic/show', 'StatisticController@show')->name('StatisticShow');
 
     #Продукты
     Route::get('/store/test', 'ProductController@test')->name('test');

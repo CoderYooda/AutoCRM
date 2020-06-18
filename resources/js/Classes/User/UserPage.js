@@ -29,6 +29,18 @@ class userPage{
         // }, 1000)
     }
 
+    removeVehicle(vehicle_id) {
+        window.axios({
+            method: 'post',
+            url: '/vehicles/'+ vehicle_id,
+            data: {
+                _method: 'DELETE'
+            }
+        }).then(response => {
+            document.getElementById('vehicle_' + vehicle_id).remove();
+        });
+    }
+
     getPayment(tariff_id){
         let data = {tariff_id: tariff_id};
         axios({
@@ -134,8 +146,33 @@ class userPage{
         document.getElementById('file_upload').click();
     }
 
-    freshVehicles(){
-        dd('TADA');
+    freshVehicles(e){
+
+        let data = e.detail.data;
+        let vehicle = data.vehicle;
+
+        let list_element = document.getElementById('vehicle-list');
+
+        let vehicle_element =  document.querySelector('#vehicle_' + data.vehicle.id);
+
+        let html = '<div id="vehicle_' + vehicle.id + '" class="col-sm-4 pr-75 py-3">\n' +
+            '    <div onclick="openDialog(\'vehicleDialog\', \'&vehicle_id=' + vehicle.id + '\')" class="box pointer">\n' +
+            '        <div class="box-body r-t mb-10 d-flex">\n' +
+            '            <div class="vehicle-info">\n' +
+            'Марка ' + vehicle.mark.name + '\n' +
+            'Модель ' + vehicle.model.name + '\n' +
+            'Модификация ' + vehicle.modify.name + '\n' +
+            '            </div>\n' +
+            '\n' +
+            '            <div class="vehicle-image">\n' +
+            '<img src="http://via.placeholder.com/160" alt="{{ $vehicle->full_name }}" />\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '</div>';
+
+        if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = html;
+        else list_element.append(helper.createElementFromHTML(html));
     }
 
     cropImage(cropdata){

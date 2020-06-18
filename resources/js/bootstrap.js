@@ -146,6 +146,13 @@ window.addEventListener('resize', function(){
     window.ih =  window.innerHeight;
     window.iw =  window.innerWidth;
 });
+
+window.addEventListener('mousemove', function(e){
+    // console.warn('Мышка двигае');
+    window.mousex =  e.clientX;
+    window.mousey =  e.clientY;
+});
+
 document.addEventListener('click', function (e){
     var divs = document.getElementsByClassName('dropdown_container');
     [].forEach.call(divs, function(div){

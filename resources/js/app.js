@@ -3,7 +3,7 @@ require('./variables');                                             // Стар�
 require('./bootstrap');                                             // Стартовая инициализация
 require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
 require('./navigation');                                            // Навигация XHR
-
+require('./vue');
 
 window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');

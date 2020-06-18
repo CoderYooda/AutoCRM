@@ -42,12 +42,14 @@
                     Мои услуги
                 </a>
             </li>
-            <li id="vehicles-tab" data-tab="vehicles" class="@if($request['active_tab'] == 'vehicles') active @endif nav-item tab">
-                <a href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles', 'target' => 'ajax-tab-content']) }}"
-                   class="nav-link ajax-nav update_url">
-                   Гараж
-                </a>
-            </li>
+            @if(auth()->user()->partner->category_id == 7)
+                <li id="vehicles-tab" data-tab="vehicles" class="@if($request['active_tab'] == 'vehicles') active @endif nav-item tab">
+                    <a href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles', 'target' => 'ajax-tab-content']) }}"
+                       class="nav-link ajax-nav update_url">
+                       Гараж
+                    </a>
+                </li>
+            @endif
             {{--<li id="setting-cashbox-tab" data-tab="ddsarticle" class="@if($request['active_tab'] == 'ddsarticle') active @endif tab">--}}
             {{--<a href="{{ route('SettingsIndex', ['active_tab' => 'ddsarticle', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">--}}
             {{--<span class="nav-text">Статьи ДДС</span>--}}
@@ -73,7 +75,7 @@
                         <button  onclick="document.getElementById('file_upload').click()" class="button primary w-100">Обновить фото</button>
                         <input style="display: none" id="file_upload" type="file" name="file" class="form-control" onchange="user.uploadImage(this)">
 
-                        <div class="links-block mt-15">
+                        <div class="links-block mt-15 text-center">
                             <a href="{{ route('UserPassChange', ['target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">Сменить пароль</a>
                         </div>
                     </div>

@@ -17,33 +17,36 @@ class vehicleDialog extends Modal {
 
     init() {
 
-        let config = {
+        this.config = {
             loadingText: 'Загрузка...',
             noResultsText: 'Совпадений не найдено',
             noChoicesText: 'Нет вариантов для выбора',
             itemSelectText: 'Нажмите для выбора',
+            placeholder: true,
         };
 
-        //TODO rewrite document to current_dialog
         let mark_element = this.current_dialog.querySelector('#mark');
-        this.mark_choices = new window.choices(mark_element, config);
+        this.mark_choices = new window.choices(mark_element, this.config);
 
-        let model_element = document.getElementById('model');
-        this.model_choices = new window.choices(model_element, config);
+        let model_element = this.current_dialog.querySelector('#model');
+        this.model_choices = new window.choices(model_element, this.config);
 
-        let modify_element = document.getElementById('modify');
-        this.modify_choices = new window.choices(modify_element, config);
+        let modify_element = this.current_dialog.querySelector('#modify');
+        this.modify_choices = new window.choices(modify_element, this.config);
 
-        let vin_element = document.getElementById('vin_code');
+        let vin_element = this.current_dialog.querySelector('#vin_code');
 
         IMask(vin_element, {
             mask: '*****************',
             maxLength: 17,
-            lazy: false,
-            placeholderChar: '_'
+            prepare: function (str) {
+                return str.toUpperCase();
+            },
+            // lazy: true,
+            // placeholderChar: '_'
         });
 
-        let year_element = document.getElementById('year');
+        let year_element = this.current_dialog.querySelector('#year');
 
         IMask(year_element, {
             mask: Number,
@@ -51,33 +54,34 @@ class vehicleDialog extends Modal {
             max: 2030,
         });
 
-        let numberplate_element = document.getElementById('numberplate');
-
-        IMask(numberplate_element, {
-            mask: 'a000aa00[0]',
-            maxLength: 9,
-            lazy: false,
-            placeholderChar: '_'
-        });
-
-        //^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$
+        // let numberplate_element = this.current_dialog.querySelector('#numberplate');
+        //
+        // IMask(numberplate_element, {
+        //     mask: 'a000aa00[0]',
+        //     maxLength: 9,
+        //     lazy: true,
+        //     placeholderChar: '_'
+        // });
     }
 
-    parserVinCode() {
-        let vin_code = document.getElementById('vin_code').value;
+    copy() {
+        event.preventDefault();
 
-
+        let vin_element = this.current_dialog.querySelector('#vin_code');
+        vin_element.select();
+        document.execCommand("copy");
     }
 
     changeMark() {
 
-        let mark_element = document.getElementById('mark');
-        let model_element = document.getElementById('model');
+        let mark_element = this.current_dialog.querySelector('#mark');
 
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
-        let model_id = model_element.options[model_element.selectedIndex].value;
 
-        document.getElementsByName('mark_id')[0].value = mark_id;
+        this.current_dialog.querySelector('#mark_id').value = mark_id;
+
+        this.clearModel();
+        this.clearModify();
 
         //Список моделей
         window.axios({
@@ -85,76 +89,60 @@ class vehicleDialog extends Modal {
             url: '/models/' + mark_id + '/list',
         })
             .then(response => {
-
-                let data = response.data;
-
-                this.model_choices.clearChoices();
-                this.model_choices.setChoices(data);
-
-                model_id = data[0].value;
-
-                this.model_choices.setChoiceByValue(model_id);
-                this.changeModel();
+                this.model_choices.setChoices(response.data);
             });
     }
 
-    changeModel(model_id = null) {
-        let model_element = document.getElementById('model');
+    clearModel() {
 
-        if(model_id == null) {
-            model_id = model_element.options[model_element.selectedIndex].value;
-        }
+        this.model_choices.destroy();
 
-        document.getElementsByName('model_id')[0].value = model_id;
+        let model_element = this.current_dialog.querySelector('#model');
+        this.model_choices = new window.choices(model_element, this.config);
+    }
 
-        //Обновление списка модификаций
+    changeModel() {
 
-        let mark_element = document.getElementById('mark');
+        let mark_element = this.current_dialog.querySelector('#mark');
         let mark_id = mark_element.options[mark_element.selectedIndex].value;
 
-        //Список модификаций
+        let model_element = this.current_dialog.querySelector('#model');
+        let model_id = model_element.options[model_element.selectedIndex].value;
+
+        this.current_dialog.querySelector('#model_id').value = model_id;
+
+        this.clearModify();
+
         window.axios({
             method: 'get',
             url: '/modifies/' + mark_id + '/' + model_id + '/list',
         })
             .then(response => {
-
-                let data = response.data;
-
-                this.modify_choices.clearChoices();
-                this.modify_choices.setChoices(data);
-
-                let modify_id = data[0].value;
-
-                this.modify_choices.setChoiceByValue(modify_id);
-
-                this.changeModify();
+                this.modify_choices.setChoices(response.data);
             });
     }
 
-    changeModify(modify_id = null) {
-        let modify_element = document.getElementById('modify');
+    clearModify() {
+        this.modify_choices.destroy();
 
-        if(modify_id == null) {
-            modify_id = modify_element.options[modify_element.selectedIndex].value;
-        }
+        let modify_element = this.current_dialog.querySelector('#modify');
+        this.modify_choices = new window.choices(modify_element, this.config);
+    }
 
-        document.getElementsByName('modify_id')[0].value = modify_id;
+    changeModify() {
+        let modify_element = this.current_dialog.querySelector('#modify');
+        let modify_id = modify_element.options[modify_element.selectedIndex].value;
+
+        this.current_dialog.querySelector('#modify_id').value = modify_id;
     }
 
     save(elem){
 
         event.preventDefault();
 
-        if(!window.isXHRloading){
-
-            window.axform.send(elem, response => {
-                let data = response.data;
+        if(!window.isXHRloading) {
+            window.axform.send(elem, event => {
                 this.finitaLaComedia(true);
-
-                let vehicle_element =  document.getElementById('vehicle_item_' + data.vehicle.id);
-                if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
-                else document.getElementById('vehicle_item_create').before(helper.createElementFromHTML(data.html));
             });
         }
     }

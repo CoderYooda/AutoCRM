@@ -11,4 +11,9 @@ trait PayableTrait
     {
         return $this->morphMany(Warrant::class, 'payable');
     }
+
+    public function getPaidAmount()
+    {
+        return $this->warrants->sum('summ');
+    }
 }

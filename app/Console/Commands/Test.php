@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\API\DecoderController;
+use App\Models\Shipment;
+use App\Models\Warrant;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Models\SystemMessage as SM;
@@ -10,7 +13,7 @@ use App\Events\SystemMessage;
 
 class Test extends Command
 {
-    protected $signature = 'system:message {message}';
+    protected $signature = 'command:test {message}';
 
     protected $description = 'Command description';
 
@@ -21,8 +24,6 @@ class Test extends Command
 
     public function handle()
     {
-        dd(1);
-
         $system_message = new SM();
         $system_message->type = 'test';
         $system_message->message = $this->argument('message');

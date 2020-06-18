@@ -71,7 +71,7 @@ class Warrant extends Model
 
     public function shipment()
     {
-        return $this->morphTo(Shipment::class );
+        return $this->payable();
     }
 
 }
