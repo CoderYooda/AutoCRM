@@ -190,6 +190,7 @@ h2{
     font-size: 0px;
     background-size: 32px;
     min-width: 80px;
+    background-color: #1e3c5f;
 }
 .app-top-menu{
     list-style: none;
@@ -205,6 +206,13 @@ h2{
     line-height: 52px;
     height: 52px;
 }
+
+.app-top-menu li.active{
+    background: #1e3c5f;
+    box-shadow: inset -2px 2px 4px 0px #1b324d;
+}
+
+
 
 .app-top-menu .header-tab {
     text-decoration: none;
@@ -692,7 +700,7 @@ input:-moz-placeholder { /* Firefox 18- */
 
 .aside{
     width: 80px;
-    background: #042E4C;
+    background: #1e3c5f;
     min-width: 80px;
     pointer-events: inherit;
     display: -ms-flexbox;
@@ -738,7 +746,50 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .side-menu{
     background: linear-gradient(180deg, #1874B2 0%, #185C8B 100%), #185C8B;
+    transition: all 0.3s ease-in-out;
+    width: 180px;
+    position: relative;
 }
+
+.side-menu .toggle{
+    position: absolute;
+    font-size: 12px;
+    line-height: 21px;
+    padding-left: 5px;
+    width: 24px;
+    height: 24px;
+    background: #ffffff;
+    border: 2px solid #1869a0;
+    top: calc(50% - 12px);
+    border-radius: 100%;
+    right: -12px;
+    z-index: 9982;
+    color: #186aa1;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.side-menu.closed .toggle{
+    transform: rotateZ(180deg);
+    border: 2px solid #1e3c5f;
+    color: #1e3c5f;
+}
+//
+//.side-menu:hover:after{
+//    font-size: 14px;
+//    line-height: 23px;
+//    padding-left: 5px;
+//    width: 26px;
+//    height: 26px;
+//    top: calc(50% - 13px);;
+//    right: -13px;
+//}
+
+.side-menu.closed{
+    width: 0px;
+}
+
+
 .side-menu .nav{
     padding-left: 0;
     padding-right: 0;
@@ -758,7 +809,7 @@ input:-moz-placeholder { /* Firefox 18- */
     background: #1669a3;
 }
 .side-menu .nav li.active > a {
-    background: #042e4c;
+    background: #1e3c5f;
 }
 .category-back-button{
     position: relative;
@@ -800,7 +851,9 @@ input:-moz-placeholder { /* Firefox 18- */
     display: flex;
     flex-direction: column;
     flex: 1;
-    max-width: calc(100vw - 260px);
+    background-color: #edeef0;
+    z-index: 10;
+    //max-width: calc(100vw - 260px);
 }
 .content-menu{
     margin: 15px 0px 15px 15px;

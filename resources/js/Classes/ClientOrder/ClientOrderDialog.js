@@ -105,10 +105,10 @@ class clientorderDialog extends Modal{
 
         this.loadItemsIfExists();
 
-        let focused = document.getElementById('clientorder_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
+        // let focused = document.getElementById('clientorder_dialog_focused');
+        // if(focused){
+        //     focused.focus();
+        // }
     }
 
     scanOperation(product_id){

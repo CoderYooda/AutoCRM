@@ -87,19 +87,38 @@ class Entity{
                 count:count,
             }
         }).then(function (resp) {
-            var isset = object.items.map(function(e){
+            let isset = object.items.map(function(e){
                 return e.id;
             }).indexOf(resp.data.product.id);
-            if(isset < 0){
-                object.addItem({
-                    id:resp.data.product.id,
-                    html:resp.data.html
-                }, resp.data.product.id);
-                if(focus){
-                    object.root_dialog.querySelector('.price_elem:last-child').focus();
+            if(Number.isInteger(elem_or_id)){
+                if(isset < 0){
+                    object.addItem({
+                        id:resp.data.product.id,
+                        html:resp.data.html
+                    }, resp.data.product.id);
+                    if(focus){
+                        object.root_dialog.querySelector('.price_elem:last-child').focus();
+                    }
+                } else {
+                    let item = object.items.map(function(e){
+                        return e.id;
+                    }).indexOf(resp.data.product.id);
+                    object.items[item].count ++;
+                    object.root_dialog.querySelector('#product_selected_' + object.items[item].id).querySelector('.count_elem').value = object.items[item].count;
+                    object.recalculate();
                 }
             } else {
-                window.notification.notify('error', 'Товар уже в списке');
+                if(isset < 0){
+                    object.addItem({
+                        id:resp.data.product.id,
+                        html:resp.data.html
+                    }, resp.data.product.id);
+                    if(focus){
+                        object.root_dialog.querySelector('.price_elem:last-child').focus();
+                    }
+                } else {
+                    window.notification.notify('error', 'Товар уже в списке');
+                }
             }
         }).catch(function (error) {
             console.log(error);

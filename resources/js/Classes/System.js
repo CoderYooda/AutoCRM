@@ -5,17 +5,10 @@ class System{
     }
 
     init(){
-        // let object = this;
-        // window.axios({
-        //     method: 'post',
-        //     url: '/user/get_channel',
-        // }).then(function (resp) {
-        //     object.ownChannel = resp.data.channels;
-        // }).catch(function (error) {
-        //     console.log(error);
-        // }).finally(function () {
-        //     object.connect();
-        // });
+    }
+
+    toggleMenu(){
+        document.getElementById('left_menu_draggable').classList.contains('closed') ? document.getElementById('left_menu_draggable').classList.remove('closed') : document.getElementById('left_menu_draggable').classList.add('closed');
     }
 
     authByUser(id){
