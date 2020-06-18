@@ -9,7 +9,7 @@ class EditDefaultAutopartTable extends Migration
     public function up()
     {
         Schema::table('default_autopart_manufactures', function (Blueprint $table) {
-            $table->removeColumn('id');
+            $table->dropColumn('id');
         });
     }
 

@@ -16,8 +16,6 @@ class ForeignKeys extends Migration
         Schema::table('partner_phone', function (Blueprint $table) {
             $table->foreign('phone_id')->references('id')->on('phones')->onDelete('cascade');
         });
-
-
     }
 
     /**

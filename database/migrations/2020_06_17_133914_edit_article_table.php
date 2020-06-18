@@ -18,7 +18,7 @@ class EditArticleTable extends Migration
     public function down()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->removeColumn('manufacture_id');
+            $table->dropColumn('manufacture_id');
         });
     }
 }

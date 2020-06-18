@@ -16,7 +16,7 @@ class EditSupplierTable extends Migration
     public function down()
     {
         Schema::table('suppliers', function (Blueprint $table) {
-            $table->removeColumn('fapi_id');
+            $table->dropColumn('fapi_id');
         });
     }
 }
