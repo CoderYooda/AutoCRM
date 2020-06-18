@@ -43,22 +43,22 @@ class StatisticController extends Controller
         $target = HC::selectTarget();
 
         $sorts = [
-            ['name' => 'Заявки поставщикам', 'field_name' => 'partnerOrder', 'color' => '#00A78E', 'desc' => 'Описание'],
-            ['name' => 'Поступления', 'field_name' => 'entrance', 'color' => '#2C9F45', 'desc' => 'Описание'],
-            ['name' => 'Возвраты', 'field_name' => 'refund', 'color' => '#FF4F81', 'desc' => 'Описание'],
-            ['name' => 'Продажи', 'field_name' => 'shipment', 'color' => '#FBB034', 'desc' => 'Описание'],
-            ['name' => 'Заказы клиентов', 'field_name' => 'clientOrder', 'color' => '#B84592', 'desc' => 'Описание'],
-            ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  ', 'desc' => 'Описание'],
-            ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED', 'desc' => 'Описание'],
-            ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16', 'desc' => 'Описание'],
+            ['name' => 'Заявки поставщикам', 'field_name' => 'partnerOrder', 'color' => '#00A78E'],
+            ['name' => 'Поступления', 'field_name' => 'entrance', 'color' => '#2C9F45'],
+            ['name' => 'Возвраты', 'field_name' => 'refund', 'color' => '#FF4F81'],
+            ['name' => 'Продажи', 'field_name' => 'shipment', 'color' => '#FBB034'],
+            ['name' => 'Заказы клиентов', 'field_name' => 'clientOrder', 'color' => '#B84592'],
+            ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  '],
+            ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED'],
+            ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16'],
 
-            ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4', 'desc' => 'Описание'],
-            ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000', 'desc' => 'Описание'],
-            ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8', 'desc' => 'Описание'],
-            ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541', 'desc' => 'Описание'],
-            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0', 'desc' => 'Описание'],
-            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'desc' => 'Описание'],
-            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E', 'desc' => 'Описание'],
+            ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4'],
+            ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000'],
+            ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8'],
+            ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541'],
+            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0'],
+            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9'],
+            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E'],
         ];
 
         $graph_data = $this->getGraphData($request);

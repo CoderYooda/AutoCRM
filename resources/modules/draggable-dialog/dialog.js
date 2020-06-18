@@ -62,7 +62,7 @@ window.openDialog = function(tag, params = null, reload = false) {
     //
     window.axios({
         method: 'get',
-        url: 'dialog_' + tag + '_open' + params
+        url: '/dialog_' + tag + '_open' + params
     }).then(function (resp) {
         if(!alreadyOpened(resp.data.tag) || reload){
             closeDialog(null, resp.data.tag);
@@ -101,6 +101,7 @@ window.closeDialog = function(event, id = null){
 function appendDialog(resp, tag){
 	window.dialogs[tag] = [];
 	window.dialogs[tag].tag = tag;
+	dd(resp.html);
 	var node = helper.createElementFromHTML(resp.html);
 	document.getElementById(containerId).appendChild(node);
 	var position = dialogPosition(tag);

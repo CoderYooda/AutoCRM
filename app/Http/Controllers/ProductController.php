@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use phpDocumentor\Reflection\Types\Collection;
 use sngrl\SphinxSearch\SphinxSearch;
 use App\Http\Controllers\Providers\TrinityController;
 use Illuminate\Support\Facades\Gate;
@@ -319,7 +320,7 @@ class ProductController extends Controller
         }
     }
 
-    public static function getArticles(Request $request)
+    public static function getArticles(Request $request, $analogues = null)
     {
         $size = (int)$request['size'] ?? 30;
 
@@ -345,7 +346,7 @@ class ProductController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        return Article::where('articles.company_id', Auth::user()->company()->first()->id)
+        $query = Article::where('articles.company_id', Auth::user()->company()->first()->id)
             ->where(function ($q) use ($request) {
                 if (isset($request->search) && $request->search != "") {
                     $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
@@ -356,8 +357,13 @@ class ProductController extends Controller
                     $q->where('articles.category_id', (int)$request['category_id']);
                 }
             })
-            ->orderBy($field, $dir)
-            ->paginate($size);
+            ->orderBy($field, $dir);
+
+        if(count($analogues)) {
+            $query = $query->orWhereIn('article', $analogues);
+        }
+
+        return $query->paginate($size);
 
     }
 

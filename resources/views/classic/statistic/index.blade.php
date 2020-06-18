@@ -62,6 +62,8 @@
                                         <div class="statistic-summ">0 ₽</div>
                                     @endif
 
+                                    <div class="statistic-period">{{ $sort['name'] == 'Ежедневный остаток в кассах' ? 'За сегодня' : 'За месяц' }}</div>
+
                                     <div class="statistic-checkbox">
                                             <span class="float-right ml-2" style="line-height: 0;">
                                                 <label style="background: {{ $sort['color'] }}" class="ui-switch orange mt-1">
@@ -71,7 +73,7 @@
                                     </div>
 
                                     <div class="statistic-question">
-                                        <img title="{{ $sort['desc'] }}" src="{{ asset('images/icons/statistic-question.svg') }}"  alt=""/>
+                                        <img src="{{ asset('images/icons/statistic-question.svg') }}"  alt=""/>
                                     </div>
 
                                 </div>
@@ -143,10 +145,10 @@
                         </div>
                     </div>
 
-                    <div data-simplebar="init" class="box pt-5 min-vh-100" style="max-height: calc(100vh - 525px);">
-                        <div class="ml-15">
+                    <div data-simplebar="init" class="box min-vh-100" style="max-height: calc(100vh - 525px);">
+                        <div class="p-15">
                             <div class="filter-title">Выбранный результат</div>
-                            <div class="filter-list mb-10">
+                            <div class="filter-list">
                                 Результатов нет.
                             </div>
                         </div>

@@ -9,14 +9,13 @@
 <div class="top-container">
     <div class="search-panel box">
         <div class="search-field-container w-100">
-            <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
-            <div class="dropdown_container" style="display: block !important;">
+            <input onclick="store.showBrands()" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+            <div class="box">
                 <div class="store-title">
-                    Список производителей
+                    Выберите производителя:
                 </div>
-                <div class="store-list">
-                    <div class="store-list-item pointer">OPEL</div>
-                    <div class="store-list-item pointer">CHEVROLET</div>
+                <div id="store-list" class="store-list">
+
                 </div>
             </div>
         </div>

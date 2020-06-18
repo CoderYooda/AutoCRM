@@ -42,7 +42,7 @@ class EntranceController extends Controller
         foreach($entrances as $entrance){
             $entrance->date = $entrance->created_at->format('Y.m.d/H:i');
         }
-        return response()->json($entrances);
+        return response()->json(['data' => $entrances]);
     }
 
     public function getEntranceProducts($id){

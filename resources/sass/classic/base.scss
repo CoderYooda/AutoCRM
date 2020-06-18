@@ -631,6 +631,11 @@ input:-moz-placeholder { /* Firefox 18- */
     line-height: 27px;
 }
 
+#statistic-list .nav:hover {
+    background: #EAF6FF;
+    border: 1px solid #D1E2EF;
+}
+
 /*Main content*/
 
 #ajax-content{
@@ -1575,15 +1580,17 @@ input:-moz-placeholder { /* Firefox 18- */
 
 .statistic-checkbox {
     float: left;
-    padding-top: 15px;
     padding-left: 16px;
 }
 
 .statistic-question {
-    cursor: help;
     float: right;
-    padding-top: 16px;
     padding-right: 16px;
+}
+
+.tippy-box[data-theme~='tomato'] {
+    background-color: tomato;
+    color: yellow;
 }
 
 #chartjs-tooltip {
@@ -1635,14 +1642,73 @@ input:-moz-placeholder { /* Firefox 18- */
     }
 }
 
+.search-field-container .box {
+    display: none;
+    position: absolute;
+    width: 453px;
+    min-height: 50px;
+    z-index: 9999;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .store-title {
-    font-weight: bold;
+    margin-top: 10px; 
+    padding-left: 15px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    margin-bottom: 10px;
+}
+
+.store-list-item {
+    margin-bottom: 10px;
+    margin-left: 15px;
     font-size: 12px;
     line-height: 16px;
 }
 
-.search-field-container .dropdown_container {
-    display: block !important;
-    right: unset !important;
-    padding: 5px;
+.statistic-period {
+    text-align: center;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    color: #C6C6C6;
+}
+
+.tippy-tooltip.light-theme {
+    color:#26323d;
+    box-shadow:0 0 20px 4px rgba(154,161,177,.15),0 4px 80px -8px rgba(36,40,47,.25),0 4px 4px -2px rgba(91,94,105,.15);
+    background-color:#fff;
+}
+
+.tippy-tooltip.light-theme[data-placement^=top]>.tippy-arrow {
+    border-width:8px 8px 0;
+    border-top-color:#fff;
+}
+
+.tippy-tooltip.light-theme[data-placement^=bottom]>.tippy-arrow {
+    border-width:0 8px 8px;
+    border-bottom-color:#fff;
+}
+
+.tippy-tooltip.light-theme[data-placement^=left]>.tippy-arrow {
+    border-width:8px 0 8px 8px;
+    border-left-color:#fff;
+}
+
+.tippy-tooltip.light-theme[data-placement^=right]>.tippy-arrow {
+    border-width:8px 8px 8px 0;
+    border-right-color:#fff;
+}
+
+.tippy-tooltip.light-theme>.tippy-backdrop {
+    background-color:#fff;
+    border: 1px solid #D7D8DB;
+    box-sizing: border-box;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tippy-tooltip.light-theme>.tippy-svg-arrow {
+    fill:#fff;
 }

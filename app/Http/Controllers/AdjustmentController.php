@@ -39,7 +39,7 @@ class AdjustmentController extends Controller
         foreach($adjustments as $adjustment){
             $adjustment->date = $adjustment->created_at->format('Y.m.d/H:i');
         }
-        return response()->json($adjustments);
+        return response()->json(['data' => $adjustments]);
     }
 
     public function store(AdjustmentRequest $request)

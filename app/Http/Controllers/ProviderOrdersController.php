@@ -41,7 +41,7 @@ class ProviderOrdersController extends Controller
         foreach($providerorders as $providerorder){
             $providerorder->date = $providerorder->created_at->format('Y.m.d/H:i');
         }
-        return response()->json($providerorders);
+        return response()->json(['data' => $providerorders]);
     }
 
     public static function selectProviderOrderDialog($request)
