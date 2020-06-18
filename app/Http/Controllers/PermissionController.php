@@ -29,6 +29,7 @@ class PermissionController extends Controller
 			'History' => 'История',
 			'Refund' => 'Возврат',
 			'Payment' => 'Оплата',
+            'Statistic' => 'Статистика'
 		];
 		if(isset($role) && $role != null){
 			$role_permissions = $role->permissions;
@@ -53,7 +54,9 @@ class PermissionController extends Controller
     {
         if(!Gate::allows($string)){
             throw new HttpResponseException(
-                request()->expectsJson() ? self::closedResponse('Вам запрещено ' . mb_strtolower($string) . '.') : abort(403, 'Вам запрещено ' . mb_strtolower($string) . '.')
+                request()->expectsJson() ?
+                    self::closedResponse('Вам запрещено ' . mb_strtolower($string) . '.') :
+                    abort(403, 'Вам запрещено ' . mb_strtolower($string) . '.')
             );
         }
     }

@@ -9,6 +9,10 @@ class AnalogController extends Controller
 {
     public static function getAnalogues($article, $m_id)
     {
+        if(!strlen($article)) {
+            return [];
+        }
+
         $attributes = [
             'n' => $article,
             'mfi' => $m_id,
@@ -45,6 +49,10 @@ class AnalogController extends Controller
     {
         $response = self::makeRequest('productList', [ 'n' => $article ]);
 
+        if(!strlen($article)) {
+            return [];
+        }
+
         #Фильтр запроса
 
         $manufacturers = [];
@@ -61,7 +69,8 @@ class AnalogController extends Controller
                 'm_id' => $manufacturer->dbi,
                 'm_name' => $manufacturer->da,
                 'p_id' => $part->dbi,
-                'p_name' => $part->d
+                'p_name' => $part->d,
+                'p_article' => $part->ns
             ];
         }
 

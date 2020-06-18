@@ -7,7 +7,7 @@
 @section('content')
     @php $class = 'statistic' @endphp
 
-    <div id="ajax-table-statistic" class="bottom-container d-flex">
+    <div class="bottom-container d-flex">
         <form method="GET" action="{{ route('StatisticShow') }}">
             <div class="bottom-container">
                 <div class="box-lister">
@@ -62,6 +62,8 @@
                                         <div class="statistic-summ">0 ₽</div>
                                     @endif
 
+                                    <div class="statistic-period">{{ $sort['name'] == 'Ежедневный остаток в кассах' ? 'За сегодня' : 'За месяц' }}</div>
+
                                     <div class="statistic-checkbox">
                                             <span class="float-right ml-2" style="line-height: 0;">
                                                 <label style="background: {{ $sort['color'] }}" class="ui-switch orange mt-1">
@@ -71,7 +73,7 @@
                                     </div>
 
                                     <div class="statistic-question">
-                                        <img title="{{ $sort['desc'] }}" src="{{ asset('images/icons/statistic-question.svg') }}"  alt=""/>
+                                        <img src="{{ asset('images/icons/statistic-question.svg') }}"  alt=""/>
                                     </div>
 
                                 </div>
@@ -130,7 +132,7 @@
                                     </button>
                                 </div>
 
-                                <div class="form-group w-100 mb-10 pr-15 mb-0">
+                                <div class="form-group w-100 mb-0 pr-15">
                                     <button class="button primary mt-5">Показать</button>
                                     {{--                                <button class=" button primary mt-30" onclick="statistic.print()">Печать</button>--}}
                                 </div>
@@ -143,8 +145,8 @@
                         </div>
                     </div>
 
-                    <div class="box pt-5 min-vh-100" style="min-height: 60px;">
-                        <div class="ml-15">
+                    <div data-simplebar="init" class="box min-vh-100" style="max-height: calc(100vh - 525px);">
+                        <div class="p-15">
                             <div class="filter-title">Выбранный результат</div>
                             <div class="filter-list">
                                 Результатов нет.

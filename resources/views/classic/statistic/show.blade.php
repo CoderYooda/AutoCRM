@@ -7,7 +7,8 @@
 @section('content')
     @php $class = 'statisticshow' @endphp
 
-    <div id="ajax-table-statistic" class="bottom-container d-flex">
+    <div class="bottom-container d-flex">
+        <div class="statistic-preloader"></div>
         <div class="flex-1">
             <div class="d-flex">
 

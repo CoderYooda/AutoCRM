@@ -20,10 +20,12 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/base.css') }}" rel="stylesheet">
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
+
     </head>
     <body>
     <input type="hidden" name="barcode_temp" id="barcode_temp">
         <div id="printed"></div>
+        <div id="preloader"></div>
         <div id="unprinted" class="app">
             <header class="app-header">
                 <div class="app-logo">
@@ -91,11 +93,13 @@
                             </a>
                         </li>
                         @endcanany
+                        @canany(['Смотреть статистику'])
                         <li id="statistic_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('StatisticIndex') }}">
                                 Статистика
                             </a>
                         </li>
+                        @endcanany
                         @endcan
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>

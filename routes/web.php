@@ -75,8 +75,13 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
 
     #Поставщики (внешние)
-    Route::post('/providers/trinity/search_brands', 'Providers\TrinityApiController@searchBrands')->name('searchTrinityBrands');
+
+    Route::namespace('API')->group(function () {
+        Route::get('/api/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
+    });
+
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
+
 
     #Продажи
     Route::get('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
@@ -272,8 +277,6 @@ Route::get('/whoami', 'UserController@whoami');
 
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
 Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUser');
-
-
 
 #Коморка разработчиков
 Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth', 'superAdmin']], function () {

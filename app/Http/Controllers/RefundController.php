@@ -38,7 +38,7 @@ class RefundController extends Controller
             $refund->date = $refund->created_at->format('d.m.Y/H:i');
         }
 
-        return response()->json($refunds);
+        return response()->json(['data' => $refunds]);
     }
 
     public function fresh(Refund $refund, Request $request)

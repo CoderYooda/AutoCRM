@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SupplierAlreadyExists;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierRequest extends FormRequest
 {
@@ -16,7 +18,7 @@ class SupplierRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'min:3', 'string', 'max:120'],
+            'name' => ['required', 'min:3', 'string', 'max:120', new SupplierAlreadyExists],
         ];
     }
 

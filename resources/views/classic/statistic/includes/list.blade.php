@@ -39,7 +39,7 @@
             @continue($entity_ids == 0 || $date == 'total')
 
             <ul class="nav w-100 mb-0 mt-0">
-                <li class="item d-flex w-100 pointer">
+                <li class="item d-flex w-100">
                     {{--<div class="flex-1 stat_name">{{ $attributes['partner'] }}</div>--}}
                     <div class="flex-1 stat_summ">{{ number_format($entity_ids, 2, ',', ' ')  }}</div>
                     <div class="flex-1 stat_date">{{ $date }}</div>
@@ -53,7 +53,7 @@
                 @break($loop->index == 10)
 
                 <ul class="nav w-100 mb-0 mt-0">
-                    <li  onclick="openDialog('{{ $attributes['dialog_name'] }}Dialog', '&{{ $attributes['dialog_field'] . '=' . $entity_id }}')" class="item d-flex w-100 pointer">
+                    <li onclick="window.openDialog('{{ $attributes['dialog_name'] }}Dialog', '&{{ $attributes['dialog_field'] . '=' . $entity_id }}')" class="item d-flex w-100 pointer">
                         <div class="flex-1 stat_id">{{ $entity_id }}</div>
                         {{--<div class="flex-1 stat_name">{{ $attributes['partner'] }}</div>--}}
                         <div class="flex-1 stat_name">{{ $attributes['manager'] }}</div>

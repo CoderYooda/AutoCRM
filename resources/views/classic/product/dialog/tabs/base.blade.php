@@ -5,7 +5,7 @@
     </div>
     <div class="form-group">
         <label>Артикул <i id="trin_preload" class="fa fa-spinner fa-spin hide"></i></label>
-        <input  type="text" name="article" id="product_dialog_focused"
+        <input  type="text" name="article" id="product_dialog_focused" onclick="{{ $class }}.selectArticle(this)"
                @if(isset($product))value="{{ $product->article }}"@endif
                @if(isset($request) && $request['article'] != NULL)value="{{ $request['article'] }}"@endif
                class="form-control" placeholder="Артикул детали (не более 64 символов)">

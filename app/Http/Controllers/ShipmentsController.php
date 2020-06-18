@@ -141,7 +141,7 @@ class ShipmentsController extends Controller
         foreach($shipments as $shipment){
             $shipment->date = $shipment->created_at->format('d.m.Y/H:i');
         }
-        return response()->json($shipments);
+        return response()->json(['data' => $shipments]);
     }
 
     public function delete($id, Request $request)

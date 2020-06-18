@@ -65,7 +65,7 @@ class ClientOrdersController extends Controller
             $client_order->date = $client_order->created_at->format('Y.m.d/H:i');
         }
 
-        return response()->json($client_orders);
+        return response()->json(['data' => $client_orders]);
     }
 
     public function delete($id, Request $request)

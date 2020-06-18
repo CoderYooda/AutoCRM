@@ -29,6 +29,34 @@ class statisticPage {
             'Валовая прибыль'
         ];
 
+        let tippy_descriptions = [
+            'Заявки поставщикам',
+            'Поступления',
+            'Возвраты',
+            'Продажи',
+            'Заказы клиентов',
+            'Приходные ордера',
+            'Расходные ордера',
+            'Перемещения',
+            'Маржа',
+            'Долги поставщикам',
+            'Недоплаты по заказам клиентов',
+            'Недоплаты по продажам',
+            'Ежедневный остаток в кассах',
+            'Валовая прибыль',
+            'ROI'
+        ];
+
+        let elements = document.getElementsByClassName('statistic-question');
+
+        elements.forEach((element, index) => {
+            tippy(element.firstChild, {
+                content: tippy_descriptions[index],
+                placement: 'bottom',
+                theme: 'light'
+            });
+        });
+
         this.init();
     }
 
