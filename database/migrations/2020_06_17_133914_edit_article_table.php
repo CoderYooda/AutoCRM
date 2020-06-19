@@ -10,7 +10,7 @@ class EditArticleTable extends Migration
     {
         Schema::table('articles', function (Blueprint $table) {
 
-            $table->unsignedBigInteger('manufacture_id')->nullable();
+            $table->unsignedBigInteger('fapi_id')->nullable();
 //            $table->foreign('manufacture_id')->on('default_autopart_manufactures')->references('id')->onDelete('cascade');
         });
     }
@@ -18,7 +18,7 @@ class EditArticleTable extends Migration
     public function down()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->removeColumn('manufacture_id');
+            $table->dropColumn('fapi_id');
         });
     }
 }

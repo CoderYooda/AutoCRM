@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ForeignKeys extends Migration
+class AddTypeToSMS extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class ForeignKeys extends Migration
      */
     public function up()
     {
-        Schema::table('partner_phone', function (Blueprint $table) {
-            $table->foreign('phone_id')->references('id')->on('phones')->onDelete('cascade');
+        Schema::table('sms_confirmation', function (Blueprint $table) {
+            $table->string('type');
         });
     }
 
@@ -25,6 +25,8 @@ class ForeignKeys extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('sms_confirmation', function (Blueprint $table) {
+            $table->dropColumn('type');
+        });
     }
 }

@@ -3,7 +3,7 @@
 @section('title', $page ?? 'Настройки')
 
 @section('content')
-    <div class="side-menu w-180">
+    <div id="left_menu_draggable" class="side-menu">
         <ul class="nav">
             <li id="setting-index-tab" data-tab="index" data-default="true" class="@if($request['active_tab'] == 'index' || $request['active_tab'] == null) active @endif tab">
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'index', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
@@ -31,6 +31,7 @@
                 {{--</a>--}}
             {{--</li>--}}
         </ul>
+        <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
     </div>
     <div id="ajax-tab-content" class="main-content">
         @yield('tab')

@@ -29,6 +29,26 @@ class statisticPage {
             'Валовая прибыль'
         ];
 
+        this.init();
+    }
+
+    linked() {
+        this.init();
+    }
+
+    init() {
+
+        this.checkActive();
+
+        //Date selector
+
+        this.initRangeSelector();
+
+        this.initTippies();
+
+    }
+
+    initTippies() {
         let tippy_descriptions = [
             'Заявки поставщикам',
             'Поступления',
@@ -50,28 +70,12 @@ class statisticPage {
         let elements = document.getElementsByClassName('statistic-question');
 
         elements.forEach((element, index) => {
-            tippy(element.firstChild, {
+            tippy(element.firstElementChild, {
                 content: tippy_descriptions[index],
                 placement: 'bottom',
                 theme: 'light'
             });
         });
-
-        this.init();
-    }
-
-    linked() {
-        this.init();
-    }
-
-    init() {
-
-        this.checkActive();
-
-        //Date selector
-
-        this.initRangeSelector();
-
     }
 
     removeFilter(filter_element) {

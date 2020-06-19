@@ -65,7 +65,7 @@ setInterval(function () {
     if(date.getHours().toString().length < 2){hours = '0' + date.getHours();} else {hours = date.getHours();}
     if(date.getMinutes().toString().length < 2){minutes = '0' + date.getMinutes();} else {minutes = date.getMinutes();}
     if(date.getSeconds().toString().length < 2){seconds = '0' + date.getSeconds();} else {seconds = date.getSeconds();}
-    let time = document.getElementById('#current_time');
+    let time = document.getElementById('current_time');
     if(time !== null){
         document.querySelector('#current_time .h').innerHTML = hours;
         document.querySelector('#current_time .m').innerHTML = minutes;

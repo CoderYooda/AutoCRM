@@ -392,10 +392,6 @@ class storePage{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-    generateContexes(){
-
-    }
-
     initTableData(){
         let object = this;
         let table_container = document.getElementById('table-container');
@@ -639,8 +635,6 @@ class storePage{
         this.date_start = 'null';
         this.date_end = 'null';
         window.helper.debugBar(this);
-
-
         let addsCard = document.getElementById('adds-card');
         if(addsCard){
             addsCard.classList.add('hide');

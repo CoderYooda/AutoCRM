@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="side-menu w-180">
+<div id="left_menu_draggable" class="side-menu">
     <ul class="nav">
         @can('Смотреть товары')
             <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif">
@@ -42,6 +42,7 @@
             </li>
         @endcan
     </ul>
+    <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 </div>
 <div id="ajax-tab-content" class="main-content">
     @yield('tab')

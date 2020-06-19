@@ -31,7 +31,7 @@
         <div class="box-title">Роли</div>
         <div id="roles_container">
             @foreach($roles as $role)
-                <div class="form-group d-flex mb-10">
+                <div id="role_{{ $role->id }}" class="form-group d-flex mb-10">
                     <div class="flex-1">{{ $role->name }}</div>
                     <button type="button" onclick="openDialog('roleDialog', '&role_id={{ $role->id }}')" class="right-remove"><i class="fa fa-pencil"></i></button>
                     <button type="button" onclick="entity.remove('role', {{ $role->id }})" class="right-remove"><i class="fa fa-remove"></i></button>

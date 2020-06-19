@@ -42,6 +42,7 @@ import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
 import loginPage from "./Auth/LoginPage";
+import passwordresetPage from "./Auth/ResetPage";
 import statisticPage from "./Statistic/StatisticPage";
 import statisticshowPage from "./Statistic/StatisticShowPage";
 import admindashboardPage from "./Admin/AdminDashboard";
@@ -93,6 +94,7 @@ const pages = {
     actionsPage,
     registerPage,
     loginPage,
+    passwordresetPage,
     statisticPage,
     statisticshowPage,
     admindashboardPage

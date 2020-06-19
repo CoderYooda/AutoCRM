@@ -13,6 +13,7 @@
         <script>
             window.socket_host = '{{ env('SOCKET_HOST') }}';
             window.socket_port = '{{ env('SOCKET_PORT') }}';
+            window.store_id = '{{ session('store_id') }}';
         </script>
 
         <!-- Styles -->
@@ -22,6 +23,7 @@
 
     </head>
     <body>
+    <input type="hidden" name="barcode_temp" id="barcode_temp">
         <div id="printed"></div>
         <div id="preloader"></div>
         <div id="unprinted" class="app">
@@ -258,7 +260,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="version">ver {{ config('version') }}</div>
+                        <div class="version">version <br>{{ env('VERSION', '0.0.0') }}</div>
                     </div>
                 </div>
                 <div id="ajax-content">
