@@ -346,7 +346,9 @@ class ProductController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        $query = Article::where('articles.company_id', Auth::user()->company()->first()->id)
+        $company_id = Auth::user()->company()->first()->id;
+
+        $query = Article::where('company_id', $company_id)
             ->where(function ($q) use ($request) {
                 if (isset($request->search) && $request->search != "") {
                     $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
@@ -360,7 +362,7 @@ class ProductController extends Controller
             ->orderBy($field, $dir);
 
         if(count($analogues)) {
-            $query = $query->orWhereIn('article', $analogues);
+            $query = $query->orWhereIn('article', $analogues)->where('company_id', $company_id);
         }
 
         return $query->paginate($size);
