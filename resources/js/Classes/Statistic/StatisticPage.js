@@ -3,8 +3,6 @@ class statisticPage {
     constructor() {
         console.log('страница статистики инициализировано');
 
-        this.chart = null;
-
         this.graph_data = null;
 
         this.start_date = new Date();
@@ -46,6 +44,11 @@ class statisticPage {
 
         this.initTippies();
 
+        //Включаем фильтры по дефолту\
+
+        let element = document.querySelector('.statistic-select-all');
+
+        this.toggleFilters(element);
     }
 
     initTippies() {
@@ -93,8 +96,6 @@ class statisticPage {
                 element.checked = false;
             }
         });
-
-        console.log(document.getElementsByClassName('filter-item').length);
 
         if(!document.getElementsByClassName('filter-item').length) {
             document.getElementsByClassName('filter-list')[0].innerHTML = 'Результатов нет.';
@@ -176,12 +177,11 @@ class statisticPage {
     }
 
     selectDdsarticle(id){
-        var object = this;
         window.axios({
             method: 'post',
             url: 'ddsarticle/'+ id +'/select',
             data: {refer: 'statistic'}
-        }).then(function (resp) {
+        }).then((resp) => {
 
             document.querySelector('input[name=dds_id]').value = resp.data.id;
             document.getElementById('dds_name').innerHTML = resp.data.name;
@@ -269,29 +269,28 @@ class statisticPage {
     }
 
     initRangeSelector(){
-        let object = this;
         let start_date = document.querySelector('input[name=begin_date]');
         let end_date = document.querySelector('input[name=final_date]');
         start_date.value = this.start_date.getDate() + '.' + (this.start_date.getMonth() + 1) + '.' + this.start_date.getFullYear();
         end_date.value = this.end_date.getDate() + '.' + ( this.end_date.getMonth() + 1 ) + '.' + this.end_date.getFullYear();
 
-        object.start_date_flatpkr = window.flatpickr("input[name=begin_date]", {
+        this.start_date_flatpkr = window.flatpickr("input[name=begin_date]", {
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        object.end_date_flatpkr = window.flatpickr("input[name=final_date]", {
+        this.end_date_flatpkr = window.flatpickr("input[name=final_date]", {
             allowInput: true,
             dateFormat: "d.m.Y",
         });
 
-        object.start_date_mask = window.IMask(start_date, {
+        this.start_date_mask = window.IMask(start_date, {
                 mask: Date,
                 min: new Date(1990, 0, 1),
                 max: new Date(2030, 0, 1),
                 lazy: false
             }
         );
-        object.end_date_mask = window.IMask(end_date, {
+        this.end_date_mask = window.IMask(end_date, {
                 mask: Date,
                 min: new Date(1990, 0, 1),
                 max: new Date(2030, 0, 1),
@@ -307,6 +306,34 @@ class statisticPage {
         this.graph_data.image = element.toDataURL('image/png');
 
         window.helper.printDocument('statistic-result', null, JSON.stringify(this.graph_data));
+    }
+
+    showResults(form_element) {
+        event.preventDefault();
+
+        let formData = new FormData(form_element);
+
+        let count_checked = 0;
+
+        //fix checkboxes
+        let checkboxes = document.getElementsByName('entities[]');
+        checkboxes.forEach(element => {
+            if(element.checked) {
+                formData.append('entities[]', element.value);
+                count_checked++;
+            }
+        });
+
+        if(!count_checked) {
+            document.querySelector('.statistic-select-all > .box').style.borderColor = 'red';
+            return;
+        }
+
+        let query_string = new URLSearchParams(formData).toString();
+
+        query_string += '&view_as=json';
+
+        window.goto('/statistic/show?' + query_string);
     }
 }
 

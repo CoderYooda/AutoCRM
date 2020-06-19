@@ -20,6 +20,7 @@ class partnerDialog extends Modal{
         this.initDatePicker();
         this.addPhoneMask();
         this.addPassportMask();
+        this.addNumberMasks();
 
         let category_type = this.root_dialog.querySelector('#category_type');
 
@@ -233,7 +234,6 @@ class partnerDialog extends Modal{
 
     activateTab(tag, elem){
         let object = this;
-        console.log(1);
 
         var container = this.current_dialog.querySelector('#fl_ul_tabs');
 
@@ -295,6 +295,14 @@ class partnerDialog extends Modal{
         //helper.initTabs('partner_tabs');
     }
 
+    addEmail(element) {
+        let input = this.current_dialog.querySelector('input[name=email]');
+
+        input.style.display = 'block';
+
+        element.style.display = 'none';
+    }
+
     addPhone(element){
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
@@ -320,6 +328,30 @@ class partnerDialog extends Modal{
             div.appendChild(node);
         }
         this.addPhoneMask();
+    }
+
+    addNumberMasks() {
+
+        let inputs = {
+            cs: [0, 99999999999999999999],
+            rs: [0, 99999999999999999999],
+            bik: [0, 999999999],
+
+            inn: [0, 9999999999999],
+            ogrn: [0, 9999999999999],
+            kpp: [0, 999999999]
+        };
+
+        Object.keys(inputs).forEach(name => {
+
+            let element = document.getElementsByName(name)[0];
+
+            window.IMask(element, {
+                mask: Number,
+                min: inputs[name][0],
+                max: inputs[name][1]
+            });
+        });
     }
 
     toggleAccess(elem){

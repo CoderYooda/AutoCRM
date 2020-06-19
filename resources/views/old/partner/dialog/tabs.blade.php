@@ -26,6 +26,7 @@
                         </span>
                     </a>
                 </li>
+
                 <li class="nav-item fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif">
                     <a class="nav-link block" href="#tab_passport{{ $class }}" data-toggle="tab" data-target="#tab_passport{{ $class }}">
                         Паспорт

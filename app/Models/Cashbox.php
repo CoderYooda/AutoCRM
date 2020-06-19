@@ -46,7 +46,7 @@ class Cashbox extends Model
 
     public function subtraction($sum)
     {
-        $this->update(['balance', $this->balance - $sum ]);
+        $this->update(['balance' => $this->balance - $sum ]);
 
         return $this;
     }

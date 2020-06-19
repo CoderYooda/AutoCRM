@@ -38,6 +38,8 @@ class Partner extends Model
         'bank',
         'bik',
         'kpp',
+        'cs',
+        'rs'
     ];
 
     public function vehicles()
