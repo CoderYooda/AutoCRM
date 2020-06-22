@@ -138,7 +138,7 @@ class StatisticController extends Controller
             ['dialog' => 'entrance', 'field' => 'entrance_id'],
             ['dialog' => 'refund', 'field' => 'refund_id'],
             ['dialog' => 'shipment', 'field' => 'shipment_id'],
-            ['dialog' => 'clientorder', 'field' => 'clientorder_id'],
+            ['dialog' => 'clientorder', 'field' => 'client_order_id'],
             ['dialog' => 'warrant', 'field' => 'warrant_id'],
             ['dialog' => 'warrant', 'field' => 'warrant_id'],
             ['dialog' => 'moneymove', 'field' => 'moneymove_id']
@@ -309,7 +309,7 @@ class StatisticController extends Controller
             if($global_data[$date]['Валовая прибыль'] != 0) $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
 
             #Долги поставщикам = Неоплаченные заявки поставщикам
-            $global_data[$date]['Долги поставщикам'] = -$global_data[$date]['providerorder_debt'];
+            $global_data[$date]['Долги поставщикам'] = $global_data[$date]['providerorder_debt'];
             if($global_data[$date]['Долги поставщикам'] != 0) $list['Долги поставщикам'][$date] = $global_data[$date]['Долги поставщикам'];
 
             #Долги по заказам клиентов = неоплаченные заказы клиентов

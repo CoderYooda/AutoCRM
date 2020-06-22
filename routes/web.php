@@ -76,8 +76,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Поставщики (внешние)
 
-    Route::namespace('API')->group(function () {
-        Route::get('/api/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
+    Route::namespace('API')->prefix('api')->group(function () {
+        Route::get('/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
+        Route::get('/bik/{bik}', 'BikController@getInfo')->name('getBikInfo');
     });
 
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');

@@ -1,6 +1,7 @@
 <div class="form-group ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif">
     <label>БИК</label>
     <input type="text" name="bik"
+           onchange="{{ $class }}.wroteBik(this)"
            @if(isset($partner)) value="{{ $partner->bik }}" @endif
            class="form-control entrance" placeholder="БИК" @if(isset($partner) && $partner['isfl']) disabled @endif>
 </div>

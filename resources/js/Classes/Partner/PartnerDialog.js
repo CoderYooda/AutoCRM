@@ -333,13 +333,12 @@ class partnerDialog extends Modal{
     addNumberMasks() {
 
         let inputs = {
-            cs: [0, 99999999999999999999],
-            rs: [0, 99999999999999999999],
-            bik: [0, 999999999],
-
-            inn: [0, 9999999999999],
-            ogrn: [0, 9999999999999],
-            kpp: [0, 999999999]
+            cs: '00000000000000000000',
+            rs: '00000000000000000000',
+            bik: '000000000',
+            inn: '0000000000000',
+            ogrn: '0000000000000',
+            kpp: '000000000'
         };
 
         Object.keys(inputs).forEach(name => {
@@ -347,10 +346,29 @@ class partnerDialog extends Modal{
             let element = document.getElementsByName(name)[0];
 
             window.IMask(element, {
-                mask: Number,
-                min: inputs[name][0],
-                max: inputs[name][1]
+                mask: inputs[name],
+                lazy: true
             });
+        });
+    }
+
+    wroteBik(element) {
+        if(element.value.length !== 9) return;
+
+        window.axios({
+            method: 'get',
+            url: '/api/bik/' + element.value,
+        }).then(response => {
+
+            console.log(response);
+
+            let data = response.data;
+
+            if(!data.length) return ;
+
+            this.current_dialog.querySelector('input[name=cs]').value = data.ks;
+            this.current_dialog.querySelector('input[name=ur_address]').value = data.city + ', ' + data.address;
+            this.current_dialog.querySelector('input[name=bank]').value = data.name.split('&quot;').join('"');
         });
     }
 
