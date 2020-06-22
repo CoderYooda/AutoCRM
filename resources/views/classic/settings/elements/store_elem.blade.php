@@ -4,8 +4,9 @@
         <div class="">Товаров в наличии: <br><b>*</b></div>
         <div class="box-footer">
             @can('Редактировать настройки')
-            <button class="button primary mt-10" onclick="openDialog('storeDialog', '&store_id={{ $store->id }}')">Редактировать</button>
-            <button class="button primary mt-10" onclick="entity.remove('store', {{ $store->id }})">Удалить</button>
+                <button class="button primary mt-10" onclick="openDialog('storeDialog', '&store_id={{ $store->id }}')">Редактировать</button>
+                <button class="button primary mt-10" onclick="openDialog('storeImportDialog', '&store_id={{ $store->id }}')">Импорт товаров</button>
+                <button class="button primary mt-10" onclick="entity.remove('store', {{ $store->id }})">Удалить</button>
             @endcan
         </div>
     </div>

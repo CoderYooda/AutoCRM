@@ -3,14 +3,7 @@
     <div class="form-group">
         <label for="category_id">В категорию</label>
         <div class="input-group mb-3">
-            <button onclick="{{ $class }}.openSelectCategoryDialog({{ $category->id }})"
-                type="button" name="category_id" class="category_select form-control text-left button_select">
-                @if($category->id == 3)
-                    Корневая директория
-                @elseif(isset($category))
-                    {{ $category->name }}
-                @endif
-            </button>
+            <button onclick="{{ $class }}.openSelectCategoryDialog({{ $category->id }})" type="button" name="category_id" class="category_select form-control text-left button_select">{{ $category->name }}</button>
         </div>
     </div>
 @endif

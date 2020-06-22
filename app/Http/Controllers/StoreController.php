@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Controllers\Providers\TrinityController;
 use App\Http\Requests\StoreGetRequest;
+use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
 use App\Models\Article;
 use App\Models\Store;
@@ -182,15 +183,29 @@ class StoreController extends Controller
         $pivot->{$param} = $value;
     }
 
+    public function import(StoreImportRequest $request)
+    {
+        dd($request->file);
+    }
+
+    public static function storeImportDialog(Request $request)
+    {
+        $store = Store::find($request->store_id);
+
+        $class = 'storeImportDialog' . ($store->id ?? '');
+
+        return response()->json([
+            'tag' => $class,
+            'html' => view(get_template() . '.store.dialog.form_import_store', compact('store', 'request', 'class'))->render()
+        ]);
+    }
+
     public static function storeDialog($request)
     {
-        $tag = 'storeDialog';
-        if($request['store_id']){
-            $tag .= $request['store_id'];
-            $store = Store::where('id', (int)$request['store_id'])->first();
-        } else {
-            $store = null;
-        }
+        $store = Store::find($request['store_id']);
+
+        $tag = 'storeDialog' . ($store->id ?? '');
+
         return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.store.dialog.form_store', compact('store', 'request'))->render()]);
     }
 
