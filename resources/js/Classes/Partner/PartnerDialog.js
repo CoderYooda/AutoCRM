@@ -295,14 +295,6 @@ class partnerDialog extends Modal{
         //helper.initTabs('partner_tabs');
     }
 
-    addEmail(element) {
-        let input = this.current_dialog.querySelector('input[name=email]');
-
-        input.style.display = 'block';
-
-        element.style.display = 'none';
-    }
-
     addPhone(element){
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
@@ -352,6 +344,17 @@ class partnerDialog extends Modal{
         });
     }
 
+    showField(element, input_name) {
+
+        element.style.display = 'none';
+
+        let input = this.current_dialog.querySelector('[name=' + input_name + ']');
+
+        input.style.display = 'block';
+
+        input.parentElement.removeAttribute('style');
+    }
+
     wroteBik(element) {
         if(element.value.length !== 9) return;
 
@@ -364,7 +367,7 @@ class partnerDialog extends Modal{
 
             let data = response.data;
 
-            if(!data.length) return ;
+            if(!Object.keys(data).length) return ;
 
             this.current_dialog.querySelector('input[name=cs]').value = data.ks;
             this.current_dialog.querySelector('input[name=ur_address]').value = data.city + ', ' + data.address;
