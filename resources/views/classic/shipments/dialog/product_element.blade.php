@@ -8,7 +8,7 @@
     <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
 
-    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
+    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem"
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}" @else value="0" @endif
                type="number"  min="0" step="1"></td>
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"

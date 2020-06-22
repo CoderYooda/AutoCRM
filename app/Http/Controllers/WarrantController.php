@@ -75,9 +75,6 @@ class WarrantController extends Controller
 
         $data->cashbox = $cashbox;
 
-
-
-
         return response()->json([
             'tag' => $tag,
             'html' => view(env('DEFAULT_THEME', 'classic') . '.warrant.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
@@ -89,14 +86,15 @@ class WarrantController extends Controller
         $warrant = Warrant::owned()->where('id', $request['id'])->first();
         $partner = $warrant->partner()->first();
         $comment = $warrant->comment;
+
         if($request->expectsJson()){
             return response()->json([
                 'info' => view(env('DEFAULT_THEME', 'classic') . '.warrant.contact-card', compact( 'partner','request', 'warrant'))->render(),
                 'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
-        } else {
-            return redirect()->back();
         }
+
+        return redirect()->back();
     }
 
     public function tableData(Request $request)

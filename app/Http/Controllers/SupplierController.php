@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 
@@ -51,10 +52,16 @@ class SupplierController extends Controller
 
     public function store(SupplierRequest $request)
     {
-        $supplier = Supplier::firstOrNew(['id' => (int)$request['id']]);
-        $supplier->fill($request->all());
-        $supplier->company_id = Auth::user()->company()->first()->id;
-        $supplier->save();
+        $supplier_name = strtoupper($request['name']); //В верхний регистр
+        $supplier_name = str_replace(' ', '', $supplier_name); //Удаляем пробелы
+
+        $manufacturer = DB::table('default_autopart_manufactures')->where('name', $supplier_name)->first();
+
+        Supplier::firstOrCreate(['id' => (int)$request['id']], [
+            'name' => $supplier_name,
+            'company_id' => Auth::user()->company()->first()->id,
+            'fapi_id' => $manufacturer->fapi_id ?? null
+        ]);
 
         if($request->expectsJson()){
             return response()->json([
@@ -80,12 +87,19 @@ class SupplierController extends Controller
         ], 200);
     }
 
-    public static function silent_store($request)// Сохранение в автоматическом режиме, входные данные должны быть 100% достоверными
+    public static function silent_store(Request $request)// Сохранение в автоматическом режиме, входные данные должны быть 100% достоверными
     {
-        $supplier = Supplier::firstOrNew(['name' => $request['new_supplier_name'], 'company_id' => Auth::user()->company()->first()->id]);
-        $supplier->name = $request['new_supplier_name'];
-        $supplier->company_id = Auth::user()->company()->first()->id;
-        $supplier->save();
+        $supplier_name = strtoupper($request['new_supplier_name']); //В верхний регистр
+        $supplier_name = str_replace(' ', '', $supplier_name); //Удаляем пробелы
+
+        $manufacturer = DB::table('default_autopart_manufactures')->where('name', $supplier_name)->first();
+
+        $supplier = Supplier::firstOrCreate([
+            'name' => $supplier_name,
+            'company_id' => Auth::user()->company()->first()->id,
+            'fapi_id' => $manufacturer->fapi_id ?? null
+        ]);
+
         return $supplier;
     }
 }

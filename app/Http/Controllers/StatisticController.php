@@ -27,13 +27,46 @@ use Illuminate\Support\Facades\DB;
 
 class StatisticController extends Controller
 {
-    public function index(Request $request)
+    const REFUND = 2;
+    const INCOMING_WARRANT = 5;
+
+    public function boot()
     {
+
+    }
+
+    public function index(StatisticRequest $request)
+    {
+        PermissionController::canByPregMatch('Смотреть статистику');
+
         // цель динамической подгрузки
         $target = HC::selectTarget();
 
+        $sorts = [
+            ['name' => 'Заявки поставщикам', 'field_name' => 'partnerOrder', 'color' => '#00A78E'],
+            ['name' => 'Поступления', 'field_name' => 'entrance', 'color' => '#2C9F45'],
+            ['name' => 'Возвраты', 'field_name' => 'refund', 'color' => '#FF4F81'],
+            ['name' => 'Продажи', 'field_name' => 'shipment', 'color' => '#FBB034'],
+            ['name' => 'Заказы клиентов', 'field_name' => 'clientOrder', 'color' => '#B84592'],
+            ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  '],
+            ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED'],
+            ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16'],
+
+            ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4'],
+            ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000'],
+            ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8'],
+            ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541'],
+            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0'],
+            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9'],
+            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E'],
+        ];
+
+        $graph_data = $this->getGraphData($request);
+
         //Формирование шаблона
-        $content = view(get_template() . '.statistic.index', compact('request'));
+        $content = view(get_template() . '.statistic.index', compact('request', 'sorts'))
+            ->with('list', $graph_data['list'])
+            ->with('global_data', $graph_data['global_data']);
 
         if (class_basename($content) == "JsonResponse") {
             return $content;
@@ -49,6 +82,28 @@ class StatisticController extends Controller
     }
 
     public function show(StatisticRequest $request)
+    {
+        PermissionController::canByPregMatch('Смотреть статистику');
+
+        if($request->expectsJson()) {
+
+            $graph_data = $this->getGraphData($request);
+
+            $list = $graph_data['list'];
+
+            $response = [
+                'dates' => $graph_data['global_data'],
+                'list' => view(get_template() . '.statistic.includes.list', compact('list'))->render(),
+                'entities' => $list,
+            ];
+
+            return response($response, 200);
+        }
+
+        return view(get_template() . '.statistic.show', compact('request'));
+    }
+
+    public function getGraphData(Request $request)
     {
         #Названия сортировок
         $sort_name = [
@@ -86,6 +141,8 @@ class StatisticController extends Controller
 
         $global_data = [];
 
+        $queries = [];
+
         $company = Auth::user()->company()->first();
 
         #Формарование дат
@@ -94,44 +151,70 @@ class StatisticController extends Controller
 
             foreach ($sort_name as $sort) {
                 $global_data[$date][$sort] = [];
+
+                $global_data[$date]['providerorder_total'] = 0;
+                $global_data[$date]['providerorder_payed'] = 0;
+                $global_data[$date]['providerorder_debt'] = 0;
+
+                $global_data[$date]['shipment_total'] = 0;
+                $global_data[$date]['shipment_payed'] = 0;
+                $global_data[$date]['shipment_debt'] = 0;
+
+                $global_data[$date]['clientorder_total'] = 0;
+                $global_data[$date]['clientorder_payed'] = 0;
+                $global_data[$date]['clientorder_debt'] = 0;
+
+                $global_data[$date]['refund_total'] = 0;
+                $global_data[$date]['refund_payed'] = 0;
+
+                $global_data[$date]['expenses_total'] = 0;
+                $global_data[$date]['profit_total'] = 0;
             }
         }
 
-        $partner = isset($request->partner_id) ? Partner::find($request->partner_id) : null;
-        $manager = isset($request->manager_id) ? Partner::find($request->manager_id) : null;
-
-        #Запрос по запрошенным разделам
+        #Запросы по запрошенным разделам
 
         foreach ($classes as $key => $class) {
 
-            if (!in_array($key, $request->entity)) continue;
+//            if (!in_array($sort_name[$key], $request->entities)) continue;
 
             $query = $classes[$key]::latest()
                 ->where('company_id', $company->id)
                 ->where('created_at', '>=', DateTime::createFromFormat('d.m.Y', $request->begin_date))
                 ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date));
-                //->limit(10);
+
+            $class_fields = (new $classes[$key])->fields;
+
+            if (isset($request->dds_id) && in_array('dds_articleid', $class_fields)) {
+                $query = $query->where('ddsarticle_id', $request->dds_id);
+            }
 
             if ($class != Entrance::class) {
-                $query = $query->selectRaw('id, summ as amount, created_at, manager_id')->with('manager');
+                $query = $query->selectRaw('*, summ as amount')->with('manager');
             } else {
                 $query = $query->select('*')->with('manager', 'providerorder');
             }
 
+            if ($classes[$key] == Shipment::class) {
+                $query = $query->with('warrants');
+            }
+
             #Сортировка по входящим и исходящим ордерам
             if ($classes[$key] == Warrant::class) {
-                $query = $query->where('isIncoming', $key == 5 ? 1 : 0);
+                $query = $query->where('isIncoming', $key == self::INCOMING_WARRANT ? 1 : 0);
             }
 
             if (isset($request->manager_id)) {
                 $query = $query->where('manager_id', $request->manager_id);
             }
 
-            if ($classes[$key] != MoneyMoves::class && isset($request->partner_id)) {
+            if (isset($request->partner_id) && in_array('partner_id', $class_fields)) {
                 $query = $query->where('partner_id', $request->partner_id);
             }
 
-            $entities = $query->get();
+            $queries[$key] = $query->get();
+
+            $entities = $queries[$key];
 
             #Добавлене в Entrance свойства 'amount' из связи, т.к в модели его нет
             if ($class == Entrance::class) {
@@ -142,40 +225,113 @@ class StatisticController extends Controller
 
             #Заполнение массива данными из базы
             foreach ($entities as $entity) {
+
                 $date = $entity->created_at->format('d.m.Y');
                 $global_data[$date][$sort_name[$key]][$entity->id]['amount'] = $entity->amount;
                 $global_data[$date][$sort_name[$key]][$entity->id]['manager'] = $entity->manager->cut_surname;
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_name'] = $dialogs[$key]['dialog'];
                 $global_data[$date][$sort_name[$key]][$entity->id]['dialog_field'] = $dialogs[$key]['field'];
+
+                if (get_class($entity) == Refund::class) {
+                    $refund_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['refund_total'] += $entity->amount;
+                    $global_data[$date]['refund_payed'] += $refund_payed;
+                }
+
+                if (get_class($entity) == ClientOrder::class) {
+                    $clientorder_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['clientorder_total'] += $entity->amount;
+                    $global_data[$date]['clientorder_payed'] += $clientorder_payed;
+                    $global_data[$date]['clientorder_debt'] += ($entity->amount - $clientorder_payed);
+                }
+
+                if (get_class($entity) == ProviderOrder::class) {
+                    $providerorder_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['providerorder_total'] += $entity->amount;
+                    $global_data[$date]['providerorder_payed'] += $providerorder_payed;
+                    $global_data[$date]['providerorder_debt'] += ($entity->amount - $providerorder_payed);
+                }
+
+                if (get_class($entity) == Shipment::class) {
+                    $shipment_payed = $entity->getPaidAmount();
+
+                    $global_data[$date]['shipment_total'] += $entity->amount;
+                    $global_data[$date]['shipment_payed'] += $shipment_payed;
+                    $global_data[$date]['shipment_debt'] += ($entity->amount - $shipment_payed);
+                }
+
+                if (get_class($entity) == Warrant::class) {
+                    $global_data[$date][$entity->isIncoming ? 'profit_total' : 'expenses_total'] += $entity->amount;
+                }
             }
+        }
+
+        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company->id)->get();
+
+        foreach ($cashbox_history as $cashbox) {
+            $global_data[$cashbox->date]['Ежедневный остаток в кассах'] = $cashbox->balance;
         }
 
         #Пересобираем массив для отображения в list.blade.php
         $list = [];
 
         foreach ($global_data as $date => $entities) {
-            foreach ($entities as $entity_name => $entities) {
 
-                if ($entities == []) continue;
+            #Ежедневный остаток в кассах
+            if(!isset($global_data[$date]['Ежедневный остаток в кассах'])) $global_data[$date]['Ежедневный остаток в кассах'] = 0;
+            if($global_data[$date]['Ежедневный остаток в кассах']) $list['Ежедневный остаток в кассах'][$date] = $global_data[$date]['Ежедневный остаток в кассах'];
 
-                foreach ($entities as $entity_id => $attributes) {
+            #Маржа = Приходные минус расходные ордера
+            $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
+            if($global_data[$date]['Маржа'] != 0) $list['Маржа'][$date] = $global_data[$date]['Маржа'];
 
-                    if ($attributes == []) continue;
+            #Валовая прибыль = Продажи + заказы клиентов - возвраты
+            $global_data[$date]['Валовая прибыль'] = $global_data[$date]['profit_total']; // - $global_data[$date]['refund_total'];
+            if($global_data[$date]['Валовая прибыль'] != 0) $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
+
+            #Долги поставщикам = Неоплаченные заявки поставщикам
+            $global_data[$date]['Долги поставщикам'] = -$global_data[$date]['providerorder_debt'];
+            if($global_data[$date]['Долги поставщикам'] != 0) $list['Долги поставщикам'][$date] = $global_data[$date]['Долги поставщикам'];
+
+            #Долги по заказам клиентов = неоплаченные заказы клиентов
+            $global_data[$date]['Недоплаты по заказам клиентов'] = -$global_data[$date]['clientorder_debt'];
+            if($global_data[$date]['Недоплаты по заказам клиентов'] != 0) $list['Недоплаты по заказам клиентов'][$date] = $global_data[$date]['Недоплаты по заказам клиентов'];
+
+            #Долги по продажам = неоплаченные продажи клиентов
+            $global_data[$date]['Недоплаты по продажам'] = -$global_data[$date]['shipment_debt'];
+            if($global_data[$date]['Недоплаты по продажам'] != 0) $list['Недоплаты по продажам'][$date] = $global_data[$date]['Недоплаты по продажам'];
+
+            #ROI = Маржа / 100 * общий расход
+            $global_data[$date]['ROI'] = $global_data[$date]['expenses_total'] ? ($global_data[$date]['Маржа'] * 100) / $global_data[$date]['expenses_total'] : 0;
+            if($global_data[$date]['ROI'] != 0) $list['ROI'][$date] = $global_data[$date]['ROI'];
+
+            #Формирование list.blade.php
+
+            foreach ($entities as $entity_name => $entity_ids) {
+
+                if ($entity_ids == [] || !in_array($entity_name, $sort_name)) continue;
+
+//                if (in_array($entity_name, $request->entities)) continue;
+
+                foreach ($entity_ids as $entity_id => $attributes) {
 
                     $list[$entity_name][$date][$entity_id]['amount'] = $attributes['amount'];
                     $list[$entity_name][$date][$entity_id]['manager'] = $attributes['manager'];
                     $list[$entity_name][$date][$entity_id]['dialog_name'] = $attributes['dialog_name'];
                     $list[$entity_name][$date][$entity_id]['dialog_field'] = $attributes['dialog_field'];
+
+                    if(!isset($list[$entity_name]['total'])) $list[$entity_name]['total'] = 0;
+                    $list[$entity_name]['total'] += $attributes['amount'];
                 }
             }
         }
 
-        $response = [
-            'dates' => $global_data,
-            'list' => view(get_template() . '.statistic.list', compact('list'))->render(),
-            'entities' => $list
+        return [
+            'global_data' => $global_data,
+            'list' => $list
         ];
-
-        return response($response, 200);
     }
 }

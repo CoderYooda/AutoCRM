@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Controllers\Providers\TrinityController;
 use App\Http\Requests\StoreGetRequest;
@@ -70,8 +71,25 @@ class StoreController extends Controller
 
     public function tableData(StoreGetRequest $request)
     {
-        $products = ProductController::getArticles($request);
-        return response()->json($products);
+        $analogues = [];
+
+        if($request->manufacture_id) {
+            $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
+        }
+
+        $manufactures = AnalogController::getManufacturersByArticle($request->search);
+
+        $analog_articles = collect($analogues)->pluck('nsa');
+
+        $products = ProductController::getArticles($request, $analog_articles);
+
+        $response = [
+            'data' => $products,
+            'manufacturers' => $manufactures,
+            'analogues' => $analogues,
+        ];
+
+        return response()->json($response);
     }
 
     public static function storeTab($request)

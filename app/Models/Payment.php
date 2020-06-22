@@ -26,10 +26,7 @@ class Payment extends Model
     ];
 
     public function freshStatus(){
-
-
         $previous_status = $this->status;
-
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
 
@@ -45,7 +42,7 @@ class Payment extends Model
             $this->save();
         }
 
-        $new_status = $this->status;
+        $new_status = $this->status; //DEADLINE_EXPIRED
 
         if($previous_status !== $new_status){
             $company = $this->company;
@@ -86,6 +83,8 @@ class Payment extends Model
             case 'CONFIRMED': return 'Подтверждено'; break;
             case 'REJECTED': return 'Отменен'; break;
             case 'REFUNDED': return 'Возвращен'; break;
+            case 'DEADLINE_EXPIRED': return 'Просрочен'; break;
+            case '3DS_CHECKING': return 'Проверяется по протоколу 3-D Secure'; break;
         }
 
         return $this->status;

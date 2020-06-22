@@ -37,5 +37,6 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Warrant::observe(\App\Observers\WarrantObserver::class);
         \App\Models\Article::observe(\App\Observers\ArticleObserver::class);
         \App\Models\Entrance::observe(\App\Observers\EntranceObserver::class);
+        \App\Models\Cashbox::observe(\App\Observers\CashboxObserver::class);
     }
 }

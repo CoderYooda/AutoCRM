@@ -1,4 +1,4 @@
-import { Contextual , ContextualItem } from "../Contentual";
+import {Contextual, ContextualItem} from "../Contentual";
 
 class storePage{
 
@@ -20,7 +20,7 @@ class storePage{
         this.categoryContextual = null;
         this.table = null;
         this.dates = null;
-        //filter parametrs
+        //  filter parametrs
         this.pay_status = null;
         this.entrance_status = null;
         this.clientorder_status = null;
@@ -32,6 +32,9 @@ class storePage{
         this.tabledata = {};
         this.contextDop = null;
         this.parametr = null;
+
+        this.manufacture_id = null;
+        this.manufacture_show = true;
     }
 
     openSelectPartnerModal(target){
@@ -75,7 +78,7 @@ class storePage{
             window.notification.notify( 'success', 'Поле очищено');
         }
 
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable ());
     }
 
     clearList(type, container){
@@ -171,6 +174,7 @@ class storePage{
         data.category_id = category_id;
         data.search = object.search;
         data.class = 'store';
+
         window.axios({
             method: 'post',
             url: '/category/loadview',
@@ -388,10 +392,6 @@ class storePage{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-    generateContexes(){
-
-    }
-
     initTableData(){
         let object = this;
         let table_container = document.getElementById('table-container');
@@ -443,10 +443,34 @@ class storePage{
                 window.isXHRloading = true;
                 document.body.classList.add('loading');
             },
-            ajaxResponse:function(url, params, response){
+            ajaxResponse: (url, params, response) => {
                 window.isXHRloading = false;
                 document.body.classList.remove('loading');
-                return response;
+
+                let manufacturers = response.manufacturers;
+
+                if(object.active_tab === 'store' && manufacturers.length) {
+
+                    this.manufacture_id = null;
+
+                    let store_list = document.getElementById('store-list');
+
+                    store_list.innerHTML = '';
+
+                    Object.keys(manufacturers).forEach(key => {
+
+                        let html = '<div onclick="store.selectManufacture(this)" class="store-list-item pointer" id="manufacture_' + manufacturers[key].m_id + '">' + manufacturers[key].m_name + '</div>';
+
+                        store_list.append(helper.createElementFromHTML(html));
+                    });
+
+                    if(this.manufacture_show === true) {
+                        document.querySelector('.search-field-container > .box').style.display = 'block';
+                        this.manufacture_show = false;
+                    }
+                }
+
+                return response.data;
             },
             ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
             paginationSize:Math.floor(elements),
@@ -507,6 +531,13 @@ class storePage{
         });
     }
 
+    selectManufacture(element) {
+        this.manufacture_id = element.getAttribute('id').match(/\d+/)[0];
+        this.reload();
+
+        document.querySelector('.search-field-container > .box').style.display = 'none';
+    }
+
     prepareDataForTable(){
         let object = this;
         let data = {};
@@ -517,6 +548,7 @@ class storePage{
         if(object.category_id !== null){data.category_id = object.category_id.toString();}
 
         if(object.accountable !== null){data.accountable = object.accountable;}
+        if(object.manufacture_id !== null){data.manufacture_id = object.manufacture_id;}
         if(object.client !== null){data.client = object.client;}
         if(object.pay_status !== null){data.pay_status = object.pay_status;}
         if(object.entrance_status !== null){data.entrance_status = object.entrance_status;}
@@ -603,8 +635,6 @@ class storePage{
         this.date_start = 'null';
         this.date_end = 'null';
         window.helper.debugBar(this);
-
-
         let addsCard = document.getElementById('adds-card');
         if(addsCard){
             addsCard.classList.add('hide');
@@ -649,13 +679,21 @@ class storePage{
         }
     }
 
+    showBrands() {
+        if(this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
+    }
+
     searchInit(){
         var object = this;
         var search;
         var searchFn;
         if(document.getElementById("search")){
             search = document.getElementById("search");
-            searchFn = window.helper.debounce(function(e) {
+            searchFn = window.helper.debounce((e) => {
+
+                this.manufacture_show = true;
+                document.querySelector('.search-field-container > .box').style.display = 'none';
+
                 object.search = search.value;
                 window.helper.insertParamUrl('search', search.value);
                 object.category_id = null;
@@ -741,15 +779,14 @@ class storePage{
                 } else {
                     object.dates_range = null;
                 }
-                //object.reload();
+                // object.reload();
                 object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }
         });
     }
 
     reload(){
-        let object = this;
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
 }

@@ -14,10 +14,16 @@ class VehicleController extends Controller
 {
     public function store(VehicleRequest $request)
     {
-        $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $request->except('id', '_token', 'refer'));
+        $attributes = $request->except('id', '_token', 'refer');
+
+//        if(isset($request['partner_id'])) {
+//            $attributes['partner_id'] = $request['partner_id'];
+//        }
+
+        $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $attributes);
 
         return response()->json([
-            'vehicle' => $vehicle,
+            'vehicle' => $vehicle->load('mark','model','modify'),
             'message' => 'Транспорт был сохранён.',
             'event' => 'VehicleStored',
             'html' => view(get_template() . '.partner.dialog.tabs.includes.list-item', compact('vehicle'))
@@ -72,14 +78,22 @@ class VehicleController extends Controller
 
         $tag = 'vehicleDialog' . ($vehicle->id ?? '');
 
-        $mark_id = $vehicle ? $vehicle->mark_id : VehicleMark::first()->id;
-        $model_id = $vehicle ? $vehicle->model_id : VehicleModel::where('mark_id', $mark_id)->first()->id;
+        $mark_id = $vehicle ? $vehicle->mark_id : null;
+        $model_id = $vehicle ? $vehicle->model_id : null;
+        $modify_id = $vehicle ? $vehicle->modify_id : null;
 
-        $models = VehicleModel::where('mark_id', $mark_id)->get();
-        $modifies = VehicleModify::where(['model_id' => $model_id])->get();
+        $models = $mark_id ? VehicleModel::where('mark_id', $mark_id)->get() : [];
+        $modifies = $models ? VehicleModify::where(['model_id' => $model_id])->get() : [];
 
-        $view = view(get_template() . '.vehicles.dialog.form_vehicle', compact('request', 'vehicle', 'tag', 'models', 'modifies'))
+        $default_vehicle = [
+            'mark_id' => $mark_id,
+            'model_id' => $model_id,
+            'modify_id' =>$modify_id
+        ];
+
+        $view = view(get_template() . '.vehicles.dialog.form_vehicle', compact('request','vehicle', 'default_vehicle', 'tag', 'models', 'modifies'))
             ->with('marks', VehicleMark::all())
+            ->with('partner', Partner::find($request->partner_id))
             ->render();
 
         $response = [

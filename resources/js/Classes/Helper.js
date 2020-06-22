@@ -42,7 +42,9 @@ import calendarPage from "./Calendar/CalendarPage";
 import schedulePage from "./Schedule/SchedulePage";
 import registerPage from "./Auth/RegisterPage";
 import loginPage from "./Auth/LoginPage";
+import passwordresetPage from "./Auth/ResetPage";
 import statisticPage from "./Statistic/StatisticPage";
+import statisticshowPage from "./Statistic/StatisticShowPage";
 import admindashboardPage from "./Admin/AdminDashboard";
 
 const classes = {
@@ -92,7 +94,9 @@ const pages = {
     actionsPage,
     registerPage,
     loginPage,
+    passwordresetPage,
     statisticPage,
+    statisticshowPage,
     admindashboardPage
 };
 
@@ -143,6 +147,7 @@ class Helper{
     initPageMethods(){
         let classNameStr = window.location.pathname.substring(1);
         classNameStr = classNameStr.split('/');
+
         let className = '';
         if(Array.isArray(classNameStr)){
             classNameStr.forEach(function(item, i, arr) {
@@ -151,16 +156,20 @@ class Helper{
         } else {
             className = classNameStr;
         }
+
         if(className !== 'undefined') {
             if(!window[className]) {
-                try {
+                //Теперь ошибки будет показывать, проще ориентироваться
+                // try {
                     window[className] = new pages[className + 'Page']();
-                } catch (err) {
-                    window.helper.log(className + " - Такого конструктора не существует");
-                }
+                // } catch (err) {
+                //     window.helper.log(className + " - Такого конструктора не существует: " + err.name + "(" + err.message + ")");
+                // }
             } else {
                 // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
-                try {window[className].linked();} catch (err) {
+                try {
+                    window[className].linked();
+                } catch (err) {
                     console.warn(err);
                 }
             }

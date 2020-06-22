@@ -9,9 +9,23 @@
 <div class="top-container">
     <div class="search-panel box">
         <div class="search-field-container w-100">
-            <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+            <input onclick="store.showBrands()" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+            <div class="box">
+                <div class="store-title">
+                    Выберите производителя:
+                </div>
+                <div id="store-list" class="store-list">
+
+                </div>
+            </div>
         </div>
-        <div class="actions">
+
+        <div class="actions d-flex">
+
+            <select name="manufacture" class="form-control input-c ml-15">
+
+            </select>
+
             @can('Создавать категории')
                 <button onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
             @endcan

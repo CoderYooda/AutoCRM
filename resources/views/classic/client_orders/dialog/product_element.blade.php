@@ -13,11 +13,11 @@
     @if($product->supplier()->first())
     <td><span class="no-wrap">{{ $product->supplier()->first()->name }}</span></td>
     @endif
-    <td><input onClick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
+    <td><input onClick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem"
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
 
-    <td><input name="products[{{ $product->id }}][shipped]" class="form-control form-control-sm"
+    <td><input name="products[{{ $product->id }}][shipped]" class="form-control form-control-sm "
                @if(isset($client_order)) value="{{ $product->pivot->shipped_count }}" @else value="0" @endif
                type="number" disabled></td>
 

@@ -49,6 +49,7 @@ class partnerPage{
                 object.loadCategory(object.category_id, true, false);
             }
         });
+
         object.linked();
     }
 
@@ -67,7 +68,6 @@ class partnerPage{
         }
         window.openDialog('partnerDialog', '&category_select=' + cat_id);
     }
-
 
     // reloadPage(){
     //     let cat_string;

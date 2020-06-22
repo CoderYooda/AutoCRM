@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\OwnedTrait;
 use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Spatie\Permission\Models\Role as ExtendedRole;
 use Spatie\Permission\Guard;
@@ -10,7 +9,10 @@ use Auth;
 
 class Role extends ExtendedRole
 {
-    use OwnedTrait;
+    public static function owned($company = null){
+        $company_id = $company ? $company->id : Auth::user()->company()->first()->id;
+        return self::where('company_id', $company_id);
+    }
 
 	public static function create(array $attributes = [])
 	{
@@ -22,4 +24,9 @@ class Role extends ExtendedRole
 		
 		return static::query()->create($attributes);
 	}
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 }

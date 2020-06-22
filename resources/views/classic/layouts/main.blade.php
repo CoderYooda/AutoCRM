@@ -13,15 +13,19 @@
         <script>
             window.socket_host = '{{ env('SOCKET_HOST') }}';
             window.socket_port = '{{ env('SOCKET_PORT') }}';
+            window.store_id = '{{ session('store_id') }}';
         </script>
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/base.css') }}" rel="stylesheet">
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
+
     </head>
     <body>
+    <input type="hidden" name="barcode_temp" id="barcode_temp">
         <div id="printed"></div>
+        <div id="preloader"></div>
         <div id="unprinted" class="app">
             <header class="app-header">
                 <div class="app-logo">
@@ -89,11 +93,13 @@
                             </a>
                         </li>
                         @endcanany
+                        @canany(['Смотреть статистику'])
                         <li id="statistic_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('StatisticIndex') }}">
                                 Статистика
                             </a>
                         </li>
+                        @endcanany
                         @endcan
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
@@ -138,8 +144,11 @@
                                 <div class="arrow"></div>
 
                                 <a class="element ajax-nav" href="{{ route('UserIndex') }}">Личный кабинет</a>
-                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}"> Мои услуги</a>
-                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles']) }}"> Гараж</a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}">Мои услуги</a>
+
+                                @if(auth()->user()->partner->category_id == 7)
+                                    <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles']) }}">Гараж</a>
+                                @endif
 
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                     Выход
@@ -251,7 +260,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="version">ver {{ config('version') }}</div>
+                        <div class="version">version <br>{{ env('VERSION', '0.0.0') }}</div>
                     </div>
                 </div>
                 <div id="ajax-content">

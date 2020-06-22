@@ -14,6 +14,18 @@ class shipmentDialog extends Modal{
         this.init();
     }
 
+    scanOperation(product_id){
+        this.addProduct(product_id);
+    }
+
+    addProduct(elem_or_id, refer = null){
+        let object = this;
+        window.entity.addProductToList(elem_or_id, this, 'shipment');
+        if(refer != null){
+            object.refer = refer;
+        }
+    };
+
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
@@ -104,14 +116,14 @@ class shipmentDialog extends Modal{
         ////////////////////////////////////////////////
 
         this.loadItemsIfExists();
-        let focused = document.getElementById('shipment_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
+        // let focused = document.getElementById('shipment_dialog_focused');
+        // if(focused){
+        //     focused.focus();
+        // }
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
                 e.preventDefault();
-                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
 
@@ -159,6 +171,8 @@ class shipmentDialog extends Modal{
                 window.dialogs['shipmentDialog' + resp.data.id] = drag_dialog;
                 drag_dialog.tag = 'shipmentDialog' + resp.data.id;
                 window.helper.initDialogMethods();
+                object.finitaLaComedia(true);
+                object.getPayment();
             });
         });
     }
@@ -167,6 +181,7 @@ class shipmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
+
             object.finitaLaComedia(true);
         });
     }
@@ -323,7 +338,7 @@ class shipmentDialog extends Modal{
         try{
             window.selectProductDialog.markAsAdded();
         }catch (e) {
-            console.log(e);
+            //console.log(e);
         }
 
         product_list.insertAdjacentHTML('afterbegin', elem.html);
@@ -363,13 +378,7 @@ class shipmentDialog extends Modal{
         object.recalculate();
     }
 
-    addProduct(elem){
-        let object = this;
-        window.entity.addProductToList(elem, this, 'shipment');
-        if(refer != null){
-            object.refer = refer;
-        }
-    };
+
 
     selectPartner(id){
         var object = this;

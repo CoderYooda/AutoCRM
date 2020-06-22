@@ -165,6 +165,7 @@ Switch
 .user_ava{
     width: 228px;
     display: block;
+    position: relative;
 }
 .user_ava img{
     width: 100%;
@@ -172,12 +173,13 @@ Switch
     margin-bottom: 15px;
 }
 .user_ava_id{
-    position: absolute;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 5px 9px;
-    color: #fff;
-    text-shadow: 0 0 7px #2d76a8;
+    position: relative;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: 0.0015em;
+    margin: unset;
+    color: #404040;
 }
 h5{
     font-weight: 600;

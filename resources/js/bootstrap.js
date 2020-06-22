@@ -66,7 +66,6 @@ setInterval(function () {
     if(date.getMinutes().toString().length < 2){minutes = '0' + date.getMinutes();} else {minutes = date.getMinutes();}
     if(date.getSeconds().toString().length < 2){seconds = '0' + date.getSeconds();} else {seconds = date.getSeconds();}
     let time = document.getElementById('current_time');
-    console.log(time);
     if(time !== null){
         document.querySelector('#current_time .h').innerHTML = hours;
         document.querySelector('#current_time .m').innerHTML = minutes;
@@ -147,6 +146,13 @@ window.addEventListener('resize', function(){
     window.ih =  window.innerHeight;
     window.iw =  window.innerWidth;
 });
+
+window.addEventListener('mousemove', function(e){
+    // console.warn('Мышка двигае');
+    window.mousex =  e.clientX;
+    window.mousey =  e.clientY;
+});
+
 document.addEventListener('click', function (e){
     var divs = document.getElementsByClassName('dropdown_container');
     [].forEach.call(divs, function(div){
@@ -158,5 +164,3 @@ document.addEventListener('click', function (e){
         }
     });
 });
-
-

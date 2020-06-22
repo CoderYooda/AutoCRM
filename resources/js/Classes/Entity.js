@@ -55,18 +55,27 @@ class Entity{
         });
     };
 
-    addProductToList(elem, object, type){ // Добавление элемента в список
-        let article_id = elem.closest('.list-item').dataset.article_id;
+    addProductToList(elem_or_id, object, type){ // Добавление элемента в список
+        let article_id = null;
+        let focus = true;
+        if(Number.isInteger(elem_or_id)){
+            article_id = elem_or_id;
+            focus = false;
+        } else {
+            article_id = elem_or_id.closest('.list-item').dataset.article_id;
+        }
+
         object.touch();
         let store_id = false;
-        if(elem.closest('.dialog').querySelector('input[name=store_id]') != null){
-            let store_id = elem.closest('.dialog').querySelector('input[name=store_id]').value;
+        if(!Number.isInteger(elem_or_id)) {
+            if (elem_or_id.closest('.dialog').querySelector('input[name=store_id]') != null) {
+                let store_id = elem_or_id.closest('.dialog').querySelector('input[name=store_id]').value;
+            }
+            let count_elem = elem_or_id.closest('.list-item').querySelector('input[name="count"]');
+        } else {
+            store_id = window.store_id;
         }
-        let count_elem = elem.closest('.list-item').querySelector('input[name="count"]');
         let count = 1;
-        if(count_elem && count_elem !== null){
-            count = count_elem.value;
-        }
         window.axios({
             method: 'post',
             url: 'product/addtolist',
@@ -78,17 +87,38 @@ class Entity{
                 count:count,
             }
         }).then(function (resp) {
-            var isset = object.items.map(function(e){
+            let isset = object.items.map(function(e){
                 return e.id;
             }).indexOf(resp.data.product.id);
-            if(isset < 0){
-                object.addItem({
-                    id:resp.data.product.id,
-                    html:resp.data.html
-                }, resp.data.product.id);
-                object.root_dialog.querySelector('.price_elem:last-child').focus();
+            if(Number.isInteger(elem_or_id)){
+                if(isset < 0){
+                    object.addItem({
+                        id:resp.data.product.id,
+                        html:resp.data.html
+                    }, resp.data.product.id);
+                    if(focus){
+                        object.root_dialog.querySelector('.price_elem:last-child').focus();
+                    }
+                } else {
+                    let item = object.items.map(function(e){
+                        return e.id;
+                    }).indexOf(resp.data.product.id);
+                    object.items[item].count ++;
+                    object.root_dialog.querySelector('#product_selected_' + object.items[item].id).querySelector('.count_elem').value = object.items[item].count;
+                    object.recalculate();
+                }
             } else {
-                window.notification.notify('error', 'Товар уже в списке');
+                if(isset < 0){
+                    object.addItem({
+                        id:resp.data.product.id,
+                        html:resp.data.html
+                    }, resp.data.product.id);
+                    if(focus){
+                        object.root_dialog.querySelector('.price_elem:last-child').focus();
+                    }
+                } else {
+                    window.notification.notify('error', 'Товар уже в списке');
+                }
             }
         }).catch(function (error) {
             console.log(error);

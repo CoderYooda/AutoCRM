@@ -30,15 +30,15 @@
     </div>
     <div class="form-group account_data hide">
         <label>Номер телефона</label>
-        <select id="country" class="form-control input-c" name="country" onchange="window.{{$class}}.changeCountry(this)" required>
-            <option value="7">Россия</option>
-            <option value="375">Беларусь</option>
-            <option value="380">Украина</option>
-            <option value="7">Казахстан</option>
-        </select>
-        <input id="phone_login_input" type="text" name="phone" class="form-control mt-15" value="@if(isset($partner)){{ $partner->phone }}@endif" placeholder="Телефон">
+        {{--<select id="country" class="form-control input-c" name="country" onchange="window.{{$class}}.changeCountry(this)" required>--}}
+            {{--<option value="7">Россия</option>--}}
+            {{--<option value="375">Беларусь</option>--}}
+            {{--<option value="380">Украина</option>--}}
+            {{--<option value="7">Казахстан</option>--}}
+        {{--</select>--}}
+        <input id="phone_login_input" type="text" name="phone" class="form-control" value="@if(isset($partner)){{ $partner->phone }}@endif" placeholder="Телефон">
         <div class="primary mt-15 p-15">
-            <b>Внимание!</b> Данному пользователю предоставится доступ к системе. Пароль сгенерируется автоматически и отправится по указаному номеру.
+            Пароль для доступа будет оправлен по SMS
         </div>
     </div>
 </div>

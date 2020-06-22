@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="side-menu w-180">
+<div id="left_menu_draggable" class="side-menu">
     <ul class="nav">
         @can('Смотреть денежные операции')
             <li id="warrant-tab" data-tab="warrant" data-default="true" class="@if($request['active_tab'] == 'warrant' || $request['active_tab'] == null) active @endif">
@@ -17,6 +17,7 @@
             </li>
         @endcan
     </ul>
+    <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 </div>
 <div id="ajax-tab-content" class="main-content">
     @yield('tab')
