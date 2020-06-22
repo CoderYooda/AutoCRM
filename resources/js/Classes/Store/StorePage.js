@@ -434,7 +434,7 @@ class storePage{
             selectable:true,
             selectableRangeMode:"click",
             resizableColumns:false,
-            height:height-15,
+            height:height-55,
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
