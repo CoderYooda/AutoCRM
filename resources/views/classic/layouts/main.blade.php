@@ -122,8 +122,8 @@
                             </div>
                         </li>
 
-                        <li class="top-nav-item">
-                            <a id="bell_badge" class="ico_link bell" data-toggle="modal" data-target="#notifications" data-toggle-class="modal-open-aside">
+                        <li class="top-nav-item" onclick="systemMessages.modal.show()">
+                            <a id="bell_badge" class="ico_link bell">
                                 <span id="stack_bell_count" class="badge-pill"></span>
                             </a>
                         </li>

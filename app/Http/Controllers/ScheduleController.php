@@ -66,9 +66,11 @@ class ScheduleController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть планировщик');
 
+
+
         $system_message = new SystemMessage();
         $system_message->user_id = 1;
-        $system_message->reciever_id = 2;
+        $system_message->reciever_id = 3;
         $system_message->type = 'success';
         $system_message->message = 'Расписаие обновлено';
         $system_message->save();
