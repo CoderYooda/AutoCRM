@@ -6,7 +6,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -23,10 +23,14 @@
                     <h1 class="">Помогаем <br>бизнесу работать</h1>
                     <h5 class="">Эффективное решение <br>для ведения дела</h5>
                 </div>
-                <a href="https://bbcrm.ru/" class="back-site" target="_blank">
-                    <img src="{{ asset('images/icons/arrow-left.svg') }}" alt="icon">
-                    Вернуться на сайт
-                </a>
+
+                <div class="logotype_wrap">
+                    <img src="{{ asset('images/logotype.svg') }}" alt="BBCRM">
+                    <a href="https://bbcrm.ru/" class="back-site" target="_blank">
+                        <img src="{{ asset('images/icons/arrow-left.svg') }}" alt="icon">
+                        Вернуться на сайт
+                    </a>
+                </div>
             </div>
 
             <div class="right-side">
