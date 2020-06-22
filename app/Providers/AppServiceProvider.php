@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -38,5 +39,12 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Article::observe(\App\Observers\ArticleObserver::class);
         \App\Models\Entrance::observe(\App\Observers\EntranceObserver::class);
         \App\Models\Cashbox::observe(\App\Observers\CashboxObserver::class);
+
+        Blade::directive('hide', function ($expression) {
+            return "<?php if($expression) echo (\"style='display: none!important;'\"); ?>";
+        /* return "<?php if($expression) echo 'style='display: none';'; ?>";*/
+        });
+
     }
+
 }

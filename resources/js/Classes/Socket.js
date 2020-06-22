@@ -27,17 +27,16 @@ class Socket{
             this.echo
                 .private('system_message.' + response.data.id)
                 .listen('SystemMessage', function(e){
-                    let block = helper.createElementFromHTML(e.view);
-                    var sp2 = document.querySelector("#system_messages > div");
-                    var parentDiv = sp2.parentNode;
-                    parentDiv.insertBefore(block, sp2);
+                    // let block = helper.createElementFromHTML(e.view);
+                    // var sp2 = document.querySelector("#system_messages > div");
+                    // var parentDiv = sp2.parentNode;
+                    // parentDiv.insertBefore(block, sp2);
+                    window.systemMessages.loadMessages();
                     window.systemMessages.bellCall();
                     var audio = new Audio('sounds/system_message.mp3');
                     audio.play();
                 });
         });
-
-
 
     }
 }

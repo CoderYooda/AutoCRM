@@ -120,6 +120,18 @@ window.axios.interceptors.response.use(function (response) {
 window.ih =  window.innerHeight;
 window.iw =  window.innerWidth;
 
+// let notifications = document.getElementById('new_dialog');
+// let options = {
+//     backdrop: true,
+//     keyboard: true,
+// };
+// window.notifications = new bootstrap.Modal(notifications, options);
+
+
+
+
+
+
 window.fakeCounter = 0;
 
 axios({
