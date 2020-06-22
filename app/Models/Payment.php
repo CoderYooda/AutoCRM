@@ -46,7 +46,7 @@ class Payment extends Model
 
         if($previous_status !== $new_status){
             $company = $this->company;
-            if($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW' && $new_status == 'CONFIRMED'){
+            if(($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW') && $new_status == 'CONFIRMED'){
                 $company->increment('balance', $this->add_balance);
                 $company->increment('payed_days', $this->add_days);
             }
