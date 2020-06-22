@@ -20,6 +20,7 @@ class partnerDialog extends Modal{
         this.initDatePicker();
         this.addPhoneMask();
         this.addPassportMask();
+        this.addNumberMasks();
 
         let category_type = this.root_dialog.querySelector('#category_type');
 
@@ -233,7 +234,6 @@ class partnerDialog extends Modal{
 
     activateTab(tag, elem){
         let object = this;
-        console.log(1);
 
         var container = this.current_dialog.querySelector('#fl_ul_tabs');
 
@@ -295,6 +295,14 @@ class partnerDialog extends Modal{
         //helper.initTabs('partner_tabs');
     }
 
+    addEmail(element) {
+        let input = this.current_dialog.querySelector('input[name=email]');
+
+        input.style.display = 'block';
+
+        element.style.display = 'none';
+    }
+
     addPhone(element){
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
@@ -320,6 +328,48 @@ class partnerDialog extends Modal{
             div.appendChild(node);
         }
         this.addPhoneMask();
+    }
+
+    addNumberMasks() {
+
+        let inputs = {
+            cs: '00000000000000000000',
+            rs: '00000000000000000000',
+            bik: '000000000',
+            inn: '0000000000000',
+            ogrn: '0000000000000',
+            kpp: '000000000'
+        };
+
+        Object.keys(inputs).forEach(name => {
+
+            let element = document.getElementsByName(name)[0];
+
+            window.IMask(element, {
+                mask: inputs[name],
+                lazy: true
+            });
+        });
+    }
+
+    wroteBik(element) {
+        if(element.value.length !== 9) return;
+
+        window.axios({
+            method: 'get',
+            url: '/api/bik/' + element.value,
+        }).then(response => {
+
+            console.log(response);
+
+            let data = response.data;
+
+            if(!data.length) return ;
+
+            this.current_dialog.querySelector('input[name=cs]').value = data.ks;
+            this.current_dialog.querySelector('input[name=ur_address]').value = data.city + ', ' + data.address;
+            this.current_dialog.querySelector('input[name=bank]').value = data.name.split('&quot;').join('"');
+        });
     }
 
     toggleAccess(elem){

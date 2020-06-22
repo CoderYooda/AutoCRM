@@ -43,22 +43,22 @@ class StatisticController extends Controller
         $target = HC::selectTarget();
 
         $sorts = [
-            ['name' => 'Заявки поставщикам', 'field_name' => 'partnerOrder', 'color' => '#00A78E'],
-            ['name' => 'Поступления', 'field_name' => 'entrance', 'color' => '#2C9F45'],
-            ['name' => 'Возвраты', 'field_name' => 'refund', 'color' => '#FF4F81'],
-            ['name' => 'Продажи', 'field_name' => 'shipment', 'color' => '#FBB034'],
-            ['name' => 'Заказы клиентов', 'field_name' => 'clientOrder', 'color' => '#B84592'],
-            ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  '],
-            ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED'],
-            ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16'],
+            ['name' => 'Заявки поставщикам', 'field_name' => 'partnerOrder', 'color' => '#00A78E', 'per' => 'месяц'],
+            ['name' => 'Поступления', 'field_name' => 'entrance', 'color' => '#2C9F45', 'per' => 'месяц'],
+            ['name' => 'Возвраты', 'field_name' => 'refund', 'color' => '#FF4F81', 'per' => 'месяц'],
+            ['name' => 'Продажи', 'field_name' => 'shipment', 'color' => '#FBB034', 'per' => 'месяц'],
+            ['name' => 'Заказы клиентов', 'field_name' => 'clientOrder', 'color' => '#B84592', 'per' => 'месяц'],
+            ['name' => 'Приходные ордера', 'field_name' => 'inWarrant', 'color' => '#01CD74  ', 'per' => 'месяц'],
+            ['name' => 'Расходные ордера', 'field_name' => 'outWarrant', 'color' => '#EA80ED', 'per' => 'месяц'],
+            ['name' => 'Перемещения', 'field_name' => 'cashMove', 'color' => '#89BA16', 'per' => 'месяц'],
 
-            ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4'],
-            ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000'],
-            ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8'],
-            ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541'],
-            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0'],
-            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9'],
-            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E'],
+            ['name' => 'Маржа', 'field_name' => 'margin', 'color' => '#44C7F4', 'per' => 'месяц'],
+            ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000', 'per' => 'месяц'],
+            ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8', 'per' => 'месяц'],
+            ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541', 'per' => 'месяц'],
+            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0', 'per' => 'сутки'],
+            ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'per' => 'месяц'],
+            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E', 'per' => 'сутки'],
         ];
 
         $graph_data = $this->getGraphData($request);
@@ -66,7 +66,8 @@ class StatisticController extends Controller
         //Формирование шаблона
         $content = view(get_template() . '.statistic.index', compact('request', 'sorts'))
             ->with('list', $graph_data['list'])
-            ->with('global_data', $graph_data['global_data']);
+            ->with('global_data', $graph_data['global_data'])
+            ->with('current_date', Carbon::now()->format('d.m.Y'));
 
         if (class_basename($content) == "JsonResponse") {
             return $content;
@@ -85,22 +86,37 @@ class StatisticController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть статистику');
 
+        $graph_data = $this->getGraphData($request);
+
+        $list = $graph_data['list'];
+        $global_data = $graph_data['global_data'];
+
+        $content = view(get_template() . '.statistic.show', compact('request'))
+            ->with('dates', $graph_data['global_data'])
+            ->with('list', view(get_template() . '.statistic.includes.list', compact('list', 'request'))->render())
+            ->with('entities', $list)
+            ->with('filter_params', [
+                'manager' => Partner::find($request->manager_id),
+                'partner' => Partner::find($request->partner_id),
+                'ddsarticle' => DdsArticle::find($request->dds_id),
+            ]);
+
         if($request->expectsJson()) {
-
-            $graph_data = $this->getGraphData($request);
-
-            $list = $graph_data['list'];
-
-            $response = [
-                'dates' => $graph_data['global_data'],
-                'list' => view(get_template() . '.statistic.includes.list', compact('list'))->render(),
-                'entities' => $list,
-            ];
-
-            return response($response, 200);
+            return response()->json([
+                'target' => 'ajax-content',
+                'page' => 'Результаты статистики',
+                'html' => $content->render(),
+                'dates' => $global_data,
+                'list_html' => view(get_template() . '.statistic.includes.list', compact('list', 'request'))->render(),
+                'filter_params' => [
+                    'manager' => Partner::find($request->manager_id),
+                    'partner' => Partner::find($request->partner_id),
+                    'ddsarticle' => DdsArticle::find($request->dds_id),
+                ]
+            ]);
         }
 
-        return view(get_template() . '.statistic.show', compact('request'));
+        return $content;
     }
 
     public function getGraphData(Request $request)
@@ -122,7 +138,7 @@ class StatisticController extends Controller
             ['dialog' => 'entrance', 'field' => 'entrance_id'],
             ['dialog' => 'refund', 'field' => 'refund_id'],
             ['dialog' => 'shipment', 'field' => 'shipment_id'],
-            ['dialog' => 'clientorder', 'field' => 'clientorder_id'],
+            ['dialog' => 'clientorder', 'field' => 'client_order_id'],
             ['dialog' => 'warrant', 'field' => 'warrant_id'],
             ['dialog' => 'warrant', 'field' => 'warrant_id'],
             ['dialog' => 'moneymove', 'field' => 'moneymove_id']
@@ -293,7 +309,7 @@ class StatisticController extends Controller
             if($global_data[$date]['Валовая прибыль'] != 0) $list['Валовая прибыль'][$date] = $global_data[$date]['Валовая прибыль'];
 
             #Долги поставщикам = Неоплаченные заявки поставщикам
-            $global_data[$date]['Долги поставщикам'] = -$global_data[$date]['providerorder_debt'];
+            $global_data[$date]['Долги поставщикам'] = $global_data[$date]['providerorder_debt'];
             if($global_data[$date]['Долги поставщикам'] != 0) $list['Долги поставщикам'][$date] = $global_data[$date]['Долги поставщикам'];
 
             #Долги по заказам клиентов = неоплаченные заказы клиентов

@@ -1,6 +1,6 @@
 {{--@extends('product.layout.tabs')--}}
 
-@extends(request()->view_as == 'json' && request()->target == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.store.layout.tabs')
+@extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') . '.layouts.XHR' : 'classic.layouts.main')
 
 @section('title', $page ?? 'Статистика')
 
@@ -8,7 +8,7 @@
     @php $class = 'statistic' @endphp
 
     <div class="bottom-container d-flex">
-        <form method="GET" action="{{ route('StatisticShow') }}">
+        <form onsubmit="{{ $class }}.showResults(this)">
             <div class="bottom-container">
                 <div class="box-lister">
 
@@ -23,7 +23,7 @@
                         <div onclick="{{ $class }}.toggleFilters(this)" class="statistic-select-all pointer">
                             <div class="box mr-15">
                             <div>
-                                <label class="ui-switch orange mt-1">
+                                <label class="ui-switch orange mt-1" style="background-color: #5C5C5C;">
                                     <input id="select_all" type="checkbox" value="off"><i></i>
                                 </label>
                             </div>
@@ -43,26 +43,19 @@
 
                                     <div class="statistic-title">{{ $sort['name'] }}</div>
 
-                                    @if(isset($list[$sort['name']]))
-                                        <div class="statistic-summ" style="color: {{ $sort['color']}}">
+                                    <div class="statistic-summ" style="color: {{ $sort['color'] }}">
 
-                                            @if($sort['name'] == 'Ежедневный остаток в кассах')
+                                        @if(isset($list[$sort['name']]) && is_array($list[$sort['name']]))
+                                            {{ array_sum($list[$sort['name']]) }}
+                                        @else
+                                            {{ $list[$sort['name']][$current_date] ?? 0 }}
+                                        @endif
 
-                                                {{ collect($list[$sort['name']])->last() }}
+                                        {{ $sort['name'] == 'ROI' ? '%' : '₽' }}
 
-                                            @else
+                                    </div>
 
-                                            {{ collect($list[$sort['name']])->has('amount') ? collect($list[$sort['name']])->sum('amount') : collect($list[$sort['name']])->sum() }}
-
-                                            @endif
-
-                                            {{ $sort['name'] == 'ROI' ? '%' : '₽' }}
-                                        </div>
-                                    @else
-                                        <div class="statistic-summ">0 ₽</div>
-                                    @endif
-
-                                    <div class="statistic-period">{{ $sort['name'] == 'Ежедневный остаток в кассах' ? 'За сегодня' : 'За месяц' }}</div>
+                                    <div class="statistic-period">За {{ $sort['per'] }}</div>
 
                                     <div class="statistic-checkbox">
                                             <span class="float-right ml-2" style="line-height: 0;">

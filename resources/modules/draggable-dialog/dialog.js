@@ -101,7 +101,6 @@ window.closeDialog = function(event, id = null){
 function appendDialog(resp, tag){
 	window.dialogs[tag] = [];
 	window.dialogs[tag].tag = tag;
-	dd(resp.html);
 	var node = helper.createElementFromHTML(resp.html);
 	document.getElementById(containerId).appendChild(node);
 	var position = dialogPosition(tag);

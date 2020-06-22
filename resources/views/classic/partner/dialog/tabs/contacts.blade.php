@@ -51,9 +51,15 @@
            class="form-control entrance" placeholder="Адрес проживания" @if(isset($partner) && !$partner['isfl']) disabled @endif>
 </div>
 <div class="form-group">
-    <label>Email</label>
+    <label>
+        Email
+        @if(!isset($partner) || $partner->email == null)
+            <span onclick="window.{{ $class }}.addEmail(this)" class="input_as_link pointer">добавить</span>
+        @endif
+    </label>
     <input type="email" name="email"
            @if(isset($partner)) value="{{ $partner->email }}" @endif
+           @if(!isset($partner) || $partner->email == null) style="display: none;" @endif
            class="form-control" placeholder="Электронная почта">
 </div>
 

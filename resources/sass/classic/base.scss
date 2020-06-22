@@ -1113,8 +1113,13 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 .pb-0{
-    padding-bottom: 0px!important;
+    padding-bottom: 0 !important;
 }
+
+.pb-5{
+    padding-bottom: 5px !important;
+}
+
 .p-15{
     padding: 15px;
 }
@@ -1170,6 +1175,9 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .ml-12{
     margin-left: 12px!important;
+}
+.ml-5{
+    margin-left: 5px!important;
 }
 .ml-10{
     margin-left: 10px!important;
@@ -1584,6 +1592,11 @@ input:-moz-placeholder { /* Firefox 18- */
     cursor: help;
 }
 
+.statistic-select-all > .box {
+    background: #ECECEC;
+    border: 1px solid #E4E4E4;
+}
+
 .statistic-select-all > div {
     overflow: hidden;
     height: 34px;
@@ -1597,14 +1610,10 @@ input:-moz-placeholder { /* Firefox 18- */
 
 .statistic-select-all > div > div:last-child {
     float: right;
-    margin-top: 8px;
+    margin-top: 5px;
     padding-right: 16px;
-
-    color: #BBBBBB;
     font-style: normal;
     font-weight: normal;
-    font-size: 12px;
-    line-height: 16px;
 }
 
 .statistic-filter {
@@ -1778,4 +1787,17 @@ input:-moz-placeholder { /* Firefox 18- */
 
 .tippy-tooltip.light-theme>.tippy-svg-arrow {
     fill:#fff;
+}
+
+.filter-result-title {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: black;
+}
+
+.filter-result-desc {
+    font-size: 12px;
+    line-height: 16px;
+    color: #ACACAC;
 }

@@ -46,9 +46,9 @@
                    @endif
                @endif
                style="display: none;">
-        <input class="category_select" type="hidden" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@elseif(isset($category)){{ $category->id }}@else 3 @endif">
+        <input type="hidden" class="category_select" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@elseif(isset($category)){{ $category->id }}@else 3 @endif">
 
-        <input id="category_type" class="category_type" type="hidden" name="category_type" value="@if(!isset($partner)){{ $category->type }}@endif">
+        <input type="hidden" id="category_type" class="category_type" name="category_type" value="@if(!isset($partner)){{ $category->type }}@endif">
 
         <input type="hidden" name="page" value="@if(isset($request) && isset($request['page'])){{ $request['page'] }}@else 1 @endif">
         <input type="hidden" name="search" value="@if(isset($request) && isset($request['search'])){{ $request['search'] }}@else @endif">

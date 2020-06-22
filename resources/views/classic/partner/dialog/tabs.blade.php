@@ -13,15 +13,7 @@
                 </li>
                 <li class="nav-item ul_only @if(isset($partner) && $partner['isfl']) d-none-f @elseif(!isset($partner)) d-none-f @endif">
                     <a id="tab_company{{ $class }}-tab" href="#tab_company{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_company{{ $class }}" aria-selected="false" role="tab" class="nav-link">
-                        Организация
-                        <span class="float-right helper_danger d-none-f">
-                            <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
-                        </span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a id="tab_contacts{{ $class }}-tab" href="#tab_contacts{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_contacts{{ $class }}" aria-selected="false" role="tab" class="nav-link">
-                        Контакты
+                        Реквизиты
                         <span class="float-right helper_danger d-none-f">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                         </span>
@@ -44,6 +36,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a id="tab_barcodes{{ $class }}-tab" href="#tab_barcodes{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_access{{ $class }}" aria-selected="false" role="tab" class="nav-link">
+                        Штрих-коды
+                        <span class="float-right helper_danger d-none-f">
+                            <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a id="tab_access{{ $class }}-tab" href="#tab_access{{ $class }}" data-toggle="tab" data-height="false" aria-controls="tab_access{{ $class }}" aria-selected="false" role="tab" class="nav-link">
                         Доступ в систему
                         <span class="float-right helper_danger d-none-f">
@@ -59,10 +59,7 @@
                 <div role="tabpanel" class="tab-pane active main_tab animate text-muted" aria-labelledby="tab_base{{ $class }}-tab"  id="tab_base{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.base')
                 </div>
-                <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_contacts{{ $class }}-tab" id="tab_contacts{{ $class }}">
-                    @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.contacts')
-                </div>
-                <div role="tabpanel" class="tab-pane animate text-muted ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif" aria-labelledby="tab_company{{ $class }}-tab" id="tab_company{{ $class }}">
+                <div data-simplebar role="tabpanel" class="tab-pane animate text-muted ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif" aria-labelledby="tab_company{{ $class }}-tab" id="tab_company{{ $class }}" style="max-height: 500px;">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.company')
                 </div>
                 <div role="tabpanel" class="tab-pane animate text-muted fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif" aria-labelledby="tab_passport{{ $class }}-tab" id="tab_passport{{ $class }}">
@@ -70,6 +67,9 @@
                 </div>
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_vehicles{{ $class }}-tab" id="tab_vehicles{{ $class }}">
                     @include(get_template() . '.partner.dialog.tabs.vehicles')
+                </div>
+                <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_barcodes{{ $class }}-tab" id="tab_barcodes{{ $class }}">
+                    @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.bar_codes')
                 </div>
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_access{{ $class }}-tab" id="tab_access{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.access')

@@ -4,26 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\PartnerRequest;
-use App\Models\Article;
 use App\Models\Category;
 use App\Models\Partner;
-use App\Http\Controllers\CategoryController;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
-use http\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\Paginator;
-use Milon\Barcode\DNS1D;
 use App\Models\Store;
 use Auth;
 use SystemMessage;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Controllers\SmsController;
 use App\Models\Role;
-
 
 class PartnerController extends Controller
 {
@@ -88,9 +81,8 @@ class PartnerController extends Controller
 
         $stores = Store::owned()->get();
 
-        $category = Category::findOrFail($request['category_select'] ?: 3);
-
-
+        //Если указан партнер, то его категорию, если нет, то категорию в которой находимся, если нет, то стандартную
+        $category = Category::findOrFail($partner == null ? ($request['category_select'] ?: 3) : $partner->category->id);
 
         $view = view(get_template() . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
             ->with('vehicles', $partner->vehicles ?? [])

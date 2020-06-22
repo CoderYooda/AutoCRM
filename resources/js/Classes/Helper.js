@@ -137,11 +137,18 @@ class Helper{
                         window[elem.id] = new classes[classname](elem);
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
+                        console.error(err);
                     }
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }
             });
         }
+    }
+
+    decodeHtml(html) {
+        let txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
     }
 
     initPageMethods(){

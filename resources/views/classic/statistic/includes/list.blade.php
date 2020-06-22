@@ -1,7 +1,6 @@
-
 @forelse($list as $entity => $dates)
 
-    @continue(!in_array($entity, request('entities')))
+    @continue(!in_array($entity, $request->entities))
 
     @foreach($dates as $date => $entity_ids)
 

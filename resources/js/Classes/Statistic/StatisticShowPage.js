@@ -218,6 +218,8 @@ class statisticshowPage {
             if(element.name === 'entities[]') valid_filters.push(element.value);
         });
 
+        queryString += '&view_as=json';
+
         window.axios({
             method: 'get',
             url: '/statistic/show?' + queryString,
@@ -234,10 +236,10 @@ class statisticshowPage {
             this.chart.data.labels.length = 0;
 
             let dates = response.data.dates;
-            let list = response.data.list;
+            let list_html = response.data.list_html;
 
             let list_element = document.getElementById('statistic-list');
-            list_element.innerHTML = list;
+            list_element.innerHTML = list_html;
 
             this.graph_data = response.data.entities;
 
@@ -293,14 +295,10 @@ class statisticshowPage {
                 });
             });
 
-            console.log('datasets', datasets);
-
             //Выводим информацию
             Object.keys(datasets).map((name) => {
 
                 let index = this.entity_names.indexOf(name);
-
-                console.log('name', name, valid_filters.indexOf(name));
 
                 if(valid_filters.indexOf(name) !== -1) {
 
@@ -325,8 +323,6 @@ class statisticshowPage {
 
     checkActive(){
         let className = window.location.pathname.substring(1);
-
-        console.log(className);
 
         let link = document.getElementById('statistic_link');
         if(className === 'statistic/show'){
