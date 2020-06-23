@@ -195,67 +195,58 @@ class StoreController extends Controller
     {
         $file = $request->file('file');
 
-        $imported_products = [];
+        $results = [];
 
-        try {
+        if ($file->getClientOriginalExtension() == 'xml') {
 
-            if ($file->getClientOriginalExtension() == 'xml') {
+            $xml_string = file_get_contents($file->path());
+            $products = simplexml_load_string($xml_string);
 
-                $xml_string = file_get_contents($file->path());
-                $products = simplexml_load_string($xml_string);
+            foreach ($products as $product) {
 
-                foreach ($products as $product) {
+                $attributes = [
+                    'name' => (string)$product->name,
+                    'manufacturer' => (string)$product->manufacturer,
+                    'article' => (string)$product->article,
+                    'categories' => (array)$product->categories->category,
+                    'warehouse' => array_values((array)$product->warehouse),
+                    'count' => (int)$product->count,
+                    'midprice' => (float)$product->midprice,
+                    'barcode_manufacturer' => (string)$product->barcode_manufacturer,
+                    'barcode_warehouse' => (string)$product->barcode_warehouse
+                ];
 
-                    $attributes = [
-                        'name' => (string)$product->name,
-                        'manufacturer' => (string)$product->manufacturer,
-                        'article' => (string)$product->article,
-                        'categories' => (array)$product->categories->category,
-                        'warehouse' => array_values((array)$product->warehouse),
-                        'count' => (int)$product->count,
-                        'midprice' => (float)$product->midprice,
-                        'barcode_manufacturer' => (string)$product->barcode_manufacturer,
-                        'barcode_warehouse' => (string)$product->barcode_warehouse
-                    ];
+                $article = $this->importProduct($request, $attributes);
 
-                    $article = $this->importProduct($request, $attributes);
-
-                    $imported_products[] = $article->id;
-                }
-            }
-            else {
-                $handle = fopen($file->path(), "r");
-
-                while (($attributes = fgetcsv($handle, 1000, ";")) !== false) {
-
-                    $attributes = [
-                        'name' => $attributes[0],
-                        'manufacturer' => $attributes[1],
-                        'article' => $attributes[2],
-                        'categories' => explode(',', $attributes[3]),
-                        'warehouse' => explode(',', $attributes[4]),
-                        'count' => (int)$attributes[5],
-                        'midprice' => (float)$attributes[6],
-                        'barcode_manufacturer' => $attributes[7],
-                        'barcode_warehouse' => $attributes[8]
-                    ];
-
-                    $article = $this->importProduct($request, $attributes);
-
-                    $imported_products[] = $article->id;
-                }
-
-                fclose($handle);
+                $results[] = $article->id;
             }
         }
-        catch (Exception $exception) {
-            DB::table('article_store')->whereIn('article_id', $imported_products)->delete();
-            Article::whereIn('id', $imported_products)->delete();
+        else {
+            $handle = fopen($file->path(), "r");
 
-            dd($exception);
+            while (($attributes = fgetcsv($handle, 1000, ";")) !== false) {
+
+                $attributes = [
+                    'name' => $attributes[0],
+                    'manufacturer' => $attributes[1],
+                    'article' => $attributes[2],
+                    'categories' => explode(',', $attributes[3]),
+                    'warehouse' => explode(',', $attributes[4]),
+                    'count' => (int)$attributes[5],
+                    'midprice' => (float)$attributes[6],
+                    'barcode_manufacturer' => $attributes[7],
+                    'barcode_warehouse' => $attributes[8]
+                ];
+
+                $article = $this->importProduct($request, $attributes);
+
+                $results[] = $article->id;
+            }
+
+            fclose($handle);
         }
 
-        return response()->json(['imported_count' => count($imported_products)]);
+        return response()->json(['imported_count' => count($results)]);
     }
 
     public function importProduct(Request $request, array $attributes)
@@ -279,8 +270,8 @@ class StoreController extends Controller
             'barcode_warehouse' => ['string']
         ]);
 
-        if($validator->fails()) {
-            exception(422, ['errors' => $validator->errors()]);
+        if ($validator->fails()) {
+            return 'error';
         }
 
         $attributes = $validator->validated();
