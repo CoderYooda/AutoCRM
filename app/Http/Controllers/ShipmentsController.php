@@ -160,7 +160,7 @@ class ShipmentsController extends Controller
                         $store = $shipment->store()->first();
                         $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
                     }
-                    #Добавляем к балансу контрагента
+                    #Добавляем к балансу контакта
                     $shipment->partner()->first()->subtraction($shipment->itogo);
                     if($shipment->clientOrder){
                         foreach($shipment->articles as $article){
@@ -181,7 +181,7 @@ class ShipmentsController extends Controller
                 $store = $shipment->store()->first();
                 $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
             }
-            #Добавляем к балансу контрагента
+            #Добавляем к балансу контакта
             $shipment->partner()->first()->subtraction($shipment->itogo);
             if($shipment->clientOrder){
                 foreach($shipment->articles as $article){
@@ -241,7 +241,7 @@ class ShipmentsController extends Controller
         if($shipment->exists){
             $shipmentWasExisted = true;
             $this->message = 'Продажа обновлена';
-            #Отнимаем с баланса контрагента
+            #Отнимаем с баланса контакта
             $shipment->partner()->first()->addition($shipment->itogo);
             $wasExisted = true;
         } else {
@@ -339,7 +339,7 @@ class ShipmentsController extends Controller
             $shipment->itogo = $shipment->summ - $request['discount'];
         }
 
-        #Добавляем к балансу контрагента
+        #Добавляем к балансу контакта
         $shipment->partner()->first()->subtraction($shipment->itogo);
 
 

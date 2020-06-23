@@ -57,7 +57,7 @@
                         </li>
                         <li id="partner_link" class="nav-item">
                             <a href="{{ route('PartnerIndex') }}" class="nav-link ajax-nav">
-                                Контрагенты
+                                Контакты
                                 <div class="pr"><div class="pr_bt"></div><div class="pr_bt"></div><div class="pr_bt"></div></div>
                             </a>
 

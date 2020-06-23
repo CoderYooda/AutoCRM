@@ -37,12 +37,12 @@
                 <div class="navbar white no-radius box-shadow pos-rlt">
                     <form class="flex">
                         <div class="input-group">
-                            <input id="partner_search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поск контрагента" required>
+                            <input id="partner_search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поск контакта" required>
                         </div>
                     </form>
                     <span class="m-b btn-groups pl-1">
                         <button onclick="openDialog('categoryDialog', '&category_select=3')" class="btn btn-sm white mb-0">Новая категория</button>
-                        <button onclick="openDialog('partnerDialog')" class="btn btn-sm white mb-0">Новый контрагент</button>
+                        <button onclick="openDialog('partnerDialog')" class="btn btn-sm white mb-0">Новый контакт</button>
                     </span>
                 </div>
                 <div class="d-flex flex scroll-y">

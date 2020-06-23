@@ -108,7 +108,7 @@
                                 </div>
 
                                 <div class="form-group w-100 mb-10 pr-15">
-                                    <label>Контрагент</label>
+                                    <label>Контакт</label>
                                     <button type="button" onclick="{{ $class }}.clearPartner()" class="right-remove"><i class="fa fa-remove"></i></button>
                                     <button onclick="{{ $class }}.openSelectPartnerModal()" type="button"
                                             class="partner_select form-control text-left button_select">

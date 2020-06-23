@@ -135,7 +135,7 @@
                     <div class="col-sm-6">
 
                         <div class="form-group row">
-                            <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контрагент</label>
+                            <label for="partner_id" class="col-sm-3 no-pr col-form-label">Контакт</label>
                             <div class="col-sm-9">
                                 <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
                                     @if(isset($client_order) && $client_order->partner()->first() != null)
@@ -169,7 +169,7 @@
                                 <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>
 
                                 <div class="input-group-append">
-                                    <button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контрагента</button>
+                                    <button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контакта</button>
                                     <div id="phones-list" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(619px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">
                                         @if(isset($client_order))
                                             @forelse($client_order->partner()->first()->phones()->get() as $phone)
@@ -184,7 +184,7 @@
                                         @else
                                             <div class="no-result">
                                                 <div class="text-center">
-                                                    Выберите контрагента
+                                                    Выберите контакт
                                                 </div>
                                             </div>
                                         @endif

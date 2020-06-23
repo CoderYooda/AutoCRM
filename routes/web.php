@@ -222,7 +222,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/roles/assign', 'RoleController@assignRoleToUser')->name('RoleToUser');
     Route::post('/role/{id}/delete', 'RoleController@delete')->name('DeleteRole');
 
-    #Контрагенты
+    #Контакты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
     Route::post('/partner/search', 'PartnerController@search')->name('PartnerPageSearch');
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');

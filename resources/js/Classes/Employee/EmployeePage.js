@@ -148,7 +148,7 @@ class employeePage{
             {title:"ID", field:"id", width:80},
             {title:"Дата", field:"date", width:150},
             {title:"Тип", field:"type", width:150, align:"left"},
-            {title:"Контрагент", field:"partner", align:"left"},
+            {title:"Контакт", field:"partner", align:"left"},
             {title:"Статья", field:"dds", width:130, align:"left"},
             {title:"Касса", field:"cashbox", width:130, align:"left"},
             {title:"Сумма", field:"summ", width:130, align:"left"},

@@ -34,15 +34,15 @@
 @elseif($request && $request['string'] != null)
     <div class="padding text-center">
         <div>
-            Контрагентов по запросу "{{ $request['string'] }}" не найдено
+            Контактов по запросу "{{ $request['string'] }}" не найдено
         </div>
-        <button onclick="openDialog('addPartner')" class="btn m-3 btn-sm success mb-0">Новый контрагент</button>
+        <button onclick="openDialog('addPartner')" class="btn m-3 btn-sm success mb-0">Новый контакт</button>
     </div>
 @else
     <div class="padding text-center">
         <div>
-            Контрагентов нет
+            Контактов нет
         </div>
-        <button onclick="openDialog('addPartner')" class="btn m-3 btn-sm success mb-0">Новый контрагент</button>
+        <button onclick="openDialog('addPartner')" class="btn m-3 btn-sm success mb-0">Новый контакт</button>
     </div>
 @endif

@@ -6,7 +6,7 @@
             <div id="t2able-container" class="box-content">
                 <div class="search-panel">
                     <div class="w-100 box box-search">
-                        <input id="actions_search" name="search" placeholder="Поиск по контрагентам" class="input w-100" value="" type="text">
+                        <input id="actions_search" name="search" placeholder="Поиск по контактам" class="input w-100" value="" type="text">
                         <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
                             <button class="btn_clean" onclick="window.actions.cleanSearch()"></button>
                         </span>
@@ -51,7 +51,7 @@
                             <span onclick="actions.setField('type', 'Adjustment', 'Корректировки', this)" class="element">Корректировки</span>
                             <span onclick="actions.setField('type', 'Warrant', 'Ордера', this)" class="element">Ордера</span>
                             <span onclick="actions.setField('type', 'MoneyMove', 'Перемещения', this)" class="element">Перемещения</span>
-                            <span onclick="actions.setField('type', 'Partner', 'Контрагенты', this)" class="element">Контрагенты</span>
+                            <span onclick="actions.setField('type', 'Partner', 'Контакты', this)" class="element">Контакты</span>
                         </div>
                     </div>
                     <button type="button" onclick="actions.setField('type', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>

@@ -54,7 +54,7 @@ class warrantDialog extends Modal{
             balance.innerHTML = resp.data.balance + ' р.';
             //select.innerHTML = str;
             selector.innerHTML = partner_name;
-            window.notification.notify( 'success', 'Контрагент выбран');
+            window.notification.notify( 'success', 'Контактт выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
             //closeDialog(event);

@@ -10,7 +10,7 @@
     @if(isset($partner) && $partner->id != NULL)
         <div class="titlebar">{{ $partner->fio }}</div>
     @else
-        <div class="titlebar">Создание нового контрагента</div>
+        <div class="titlebar">Создание нового контакта</div>
     @endif
 
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>

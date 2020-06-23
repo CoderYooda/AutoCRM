@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\SettingsController;
+use App\Models\Cashbox;
 use App\Models\Partner;
 use App\Models\Setting;
 use App\Models\Store;
@@ -121,9 +122,9 @@ class RegisterController extends Controller
         $user->company()->associate($company);
         $user->save();
 
-        $role = RoleController::createStartRoles($company);
-	    $user->assignRole($role);
-        SettingsController::createCompanySettingsPack($company, $role);
+        $roles = RoleController::createStartRoles($company);
+	    $user->assignRole($roles['main']);
+        SettingsController::createCompanySettingsPack($company, $roles['default']);
 	    
         $store = new Store();
         $store->company_id = $company->id;
@@ -131,6 +132,13 @@ class RegisterController extends Controller
         $store->locked = 0;
         $store->name = 'Мой магазин';
         $store->save();
+
+        $cashbox = new Cashbox();
+        $cashbox->company_id = $company->id;
+        $cashbox->manager_id = $user->id;
+        $cashbox->name = 'Основная касса';
+        $cashbox->balance = 0.00;
+        $cashbox->save();
 
         $partner = new Partner();
         $partner->isfl = true;
