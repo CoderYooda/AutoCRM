@@ -14,8 +14,8 @@ class StoreImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'store_id' => ['required', 'exists:stores'],
-            'file' => ['required', 'file', 'mimes:csv,xml', 'max:2048']
+            'id' => ['required', 'exists:stores,id'],
+            'file' => ['required', 'file', 'mimes:csv,txt,xml', 'max:2048']
         ];
     }
 }
