@@ -56,6 +56,13 @@ class Article extends Model
             ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
+    public static function makeCorrectArticle(string $article)
+    {
+        $chars = ["-","!","?",".",""," "];
+
+        return str_replace($chars, '', $article);
+    }
+
     public static function makeFoundString(string $string)
     {
         $chars = ["-","!","?",".",""," "];

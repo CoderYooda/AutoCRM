@@ -196,6 +196,7 @@ class StoreController extends Controller
         $file = $request->file('file');
 
         $results = [];
+        $errors = [];
 
         if ($file->getClientOriginalExtension() == 'xml') {
 
@@ -240,11 +241,14 @@ class StoreController extends Controller
 
                 $article = $this->importProduct($request, $attributes);
 
-                $results[] = $article->id;
+                if($article === 'error') $errors[] = $attributes;
+                else $results[] = $article->id;
             }
 
             fclose($handle);
         }
+
+        dd($results, $errors);
 
         return response()->json(['imported_count' => count($results)]);
     }
@@ -276,14 +280,21 @@ class StoreController extends Controller
 
         $attributes = $validator->validated();
 
-        $fapi_id = VehicleMark::where('name', 'like', "%{$attributes['manufacturer']}%")->first()->id ?? null;
-        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $attributes['manufacturer'], 'fapi_id' => $fapi_id]);
+        $search_manufacturer_name = mb_strtoupper($attributes['manufacturer']);
+
+        $fapi_id = VehicleMark::where('name', 'like', "%{$search_manufacturer_name}%")->first()->id ?? null;
+        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name, 'fapi_id' => $fapi_id]);
 
         #Создание категорий по товару
         $category = Category::find((count($attributes['categories']) != 0 ? 2 : 10));
 
         foreach ($attributes['categories'] as $category_name) {
-            $category = Category::firstOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store'], [
+
+            if(strlen($category_name) < 2) continue;
+
+            $category_name = trim($category_name, ' ');
+
+            $category = Category::firstOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store', 'category_id' => $category->id], [
                 'name' => $category_name,
                 'company_id' => $company_id,
                 'creator_id' => $user_id,
@@ -292,7 +303,7 @@ class StoreController extends Controller
             ]);
         }
 
-        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => $attributes['article'], 'supplier' => $supplier->name], [
+        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier' => $supplier->name], [
             'fapi_id' => $fapi_id,
             'name' => $attributes['name'],
             'creator_id' => $user_id,
