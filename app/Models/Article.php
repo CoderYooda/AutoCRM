@@ -56,6 +56,13 @@ class Article extends Model
             ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
+    public static function makeFoundString(string $string)
+    {
+        $chars = ["-","!","?",".",""," "];
+
+        return str_replace($chars, '', $string);
+    }
+
     public function shipment()
     {
         return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'article_id', 'shipment_id')
@@ -107,7 +114,7 @@ class Article extends Model
         }
 
         $retail = $midprice + ( $midprice / 100 * $markup );
-        
+
         if( $retail === 0){
             if($isInteger){
                 return 0;

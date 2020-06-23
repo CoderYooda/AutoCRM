@@ -13,10 +13,13 @@ use App\Models\Category;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\VehicleMark;
+use Exception;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class StoreController extends Controller
 {
@@ -190,76 +193,139 @@ class StoreController extends Controller
 
     public function import(StoreImportRequest $request)
     {
-        $store = Store::find($request->id);
         $file = $request->file('file');
-
-        $user_id = Auth::id();
-        $company_id = Auth::user()->company->id;
 
         $imported_products = [];
 
-        if ($file->getClientOriginalExtension() == 'csv') {
-            $content = file_get_contents($file->path());
-            $products = str_getcsv($content, ';');
+        try {
 
-            foreach ($products as $product) {
+            if ($file->getClientOriginalExtension() == 'xml') {
 
-                $attributes = explode('|', $product);
+                $xml_string = file_get_contents($file->path());
+                $products = simplexml_load_string($xml_string);
 
-                $name = $attributes[0];
-                $fapi_id = VehicleMark::where('name', 'like', "%{$attributes[1]}%")->first()->id ?? null;
-                $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $attributes[1], 'fapi_id' => $fapi_id]);
-                $article = $attributes[2];
-                $count = $attributes[5];
-                $midprice = $attributes[6];
-                $barcode_manufacturer = $attributes[7];
-                $barcode_warehouse = $attributes[8];
+                foreach ($products as $product) {
 
-                #Создание категорий по товару
-                $categories = json_decode($attributes[3]);
-                $category = Category::where('type', 'store')->first();
+                    $attributes = [
+                        'name' => (string)$product->name,
+                        'manufacturer' => (string)$product->manufacturer,
+                        'article' => (string)$product->article,
+                        'categories' => (array)$product->categories->category,
+                        'warehouse' => array_values((array)$product->warehouse),
+                        'count' => (int)$product->count,
+                        'midprice' => (float)$product->midprice,
+                        'barcode_manufacturer' => (string)$product->barcode_manufacturer,
+                        'barcode_warehouse' => (string)$product->barcode_warehouse
+                    ];
 
-                foreach ($categories as $category_name) {
-                    $category = Category::firstOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store'], [
-                        'name' => $category_name,
-                        'company_id' => $company_id,
-                        'creator_id' => $user_id,
-                        'category_id' => $category->id,
-                        'type' => 'store',
-                        'barcode' => $barcode_manufacturer,
-                        'barcode_local' => $barcode_warehouse,
-                    ]);
+                    $article = $this->importProduct($request, $attributes);
+
+                    $imported_products[] = $article->id;
+                }
+            }
+            else {
+                $handle = fopen($file->path(), "r");
+
+                while (($attributes = fgetcsv($handle, 1000, ";")) !== false) {
+
+                    $attributes = [
+                        'name' => $attributes[0],
+                        'manufacturer' => $attributes[1],
+                        'article' => $attributes[2],
+                        'categories' => explode(',', $attributes[3]),
+                        'warehouse' => explode(',', $attributes[4]),
+                        'count' => (int)$attributes[5],
+                        'midprice' => (float)$attributes[6],
+                        'barcode_manufacturer' => $attributes[7],
+                        'barcode_warehouse' => $attributes[8]
+                    ];
+
+                    $article = $this->importProduct($request, $attributes);
+
+                    $imported_products[] = $article->id;
                 }
 
-                $article = Article::create([
-                    'name' => $name,
-                    'fapi_id' => $fapi_id,
-                    'company_id' => $company_id,
-                    'article' => $article,
-                    'creator_id' => $user_id,
-                    'supplier_id' => $supplier->id
-                ]);
-
-                #Запись склада по товару
-                $warehouse_params = json_decode($attributes[4]);
-
-                $article->stores()->create([
-                    'store_id' => $store->id,
-                    'count' => $count,
-                    'midprice' => $midprice,
-                    'storage_zone' => $warehouse_params[0],
-                    'storage_rack' => $warehouse_params[1],
-                    'storage_vertical' => $warehouse_params[2],
-                    'storage_horizontal' => $warehouse_params[3],
-                ]);
-
-                $imported_products[] = $article->id;
+                fclose($handle);
             }
         }
+        catch (Exception $exception) {
+            DB::table('article_store')->whereIn('article_id', $imported_products)->delete();
+            Article::whereIn('id', $imported_products)->delete();
 
-        dd($imported_products);
+            dd($exception);
+        }
+
+        return response()->json(['imported_count' => count($imported_products)]);
     }
 
+    public function importProduct(Request $request, array $attributes)
+    {
+        $store = Store::find($request->id);
+        $user_id = Auth::id();
+        $company_id = Auth::user()->company->id;
+
+        #Проверка массива на правильность вхождения данных
+        $validator = Validator::make($attributes, [
+            'name' => ['string', 'max:255'],
+            'manufacturer' => ['required', 'string', 'max:255'],
+            'article' => ['required', 'string', 'max:64'],
+            'categories' => ['array'],
+            'categories.*' => ['string', 'max:200'],
+            'warehouse' => ['array'],
+            'warehouse.*' => ['string', 'max:2'],
+            'count' => ['integer', 'between:0,1000000'],
+            'midprice' => ['numeric', 'between::0,1000000'],
+            'barcode_manufacturer' => ['string'],
+            'barcode_warehouse' => ['string']
+        ]);
+
+        if($validator->fails()) {
+            exception(422, ['errors' => $validator->errors()]);
+        }
+
+        $attributes = $validator->validated();
+
+        $fapi_id = VehicleMark::where('name', 'like', "%{$attributes['manufacturer']}%")->first()->id ?? null;
+        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $attributes['manufacturer'], 'fapi_id' => $fapi_id]);
+
+        #Создание категорий по товару
+        $category = Category::find((count($attributes['categories']) != 0 ? 2 : 10));
+
+        foreach ($attributes['categories'] as $category_name) {
+            $category = Category::firstOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store'], [
+                'name' => $category_name,
+                'company_id' => $company_id,
+                'creator_id' => $user_id,
+                'category_id' => $category->id,
+                'type' => 'store'
+            ]);
+        }
+
+        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => $attributes['article'], 'supplier' => $supplier->name], [
+            'fapi_id' => $fapi_id,
+            'name' => $attributes['name'],
+            'creator_id' => $user_id,
+            'supplier_id' => $supplier->id,
+            'barcode' => $attributes['barcode_manufacturer'],
+            'barcode_local' => $attributes['barcode_warehouse'],
+            'category_id' => $category->id,
+            'foundstring' => Article::makeFoundString($attributes['name'] . $attributes['article'] . $attributes['manufacturer'] . $attributes['barcode_manufacturer']),
+        ]);
+
+        #Запись склада по товару
+        $store->articles()->syncWithoutDetaching($article->id);
+
+        $article->stores()->updateExistingPivot($store->id, [
+            'count' => $attributes['count'],
+            'midprice' => $attributes['midprice'],
+            'storage_zone' => $attributes['warehouse'][0] ?? '',
+            'storage_rack' => $attributes['warehouse'][1] ?? '',
+            'storage_vertical' => $attributes['warehouse'][2] ?? '',
+            'storage_horizontal' => $attributes['warehouse'][3] ?? '',
+        ]);
+
+        return $article;
+    }
 
     public static function storeImportDialog(Request $request)
     {
