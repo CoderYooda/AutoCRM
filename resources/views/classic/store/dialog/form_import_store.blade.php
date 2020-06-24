@@ -6,34 +6,42 @@
     <form id="form-import">
 
         <input type="hidden" name="id" value="">
-        <input type="file" name="file" style="display: none;" />
+        <input type="file" onchange="{{ $class }}.changeFile(this)" name="file" style="display: none;" />
 
         <div data-simplebar class="modal-body" style="max-height: 400px;">
             <div class="box-body pb-0 mb-15">
                 <div class="no-gutters align-items-stretch">
 
-                    <div class="form-group">
-                        <label>Выбор файла</label>
-                        <div class="input-group mb-15">
-                            <input type="text" class="form-control phone_input" placeholder="Название файла">
-                            <button class="button primary ml-15">Обзор...</button>
+                    <div id="hide-inputs">
+
+                        <div class="form-groupinactiveProgress">
+                            <label>Выбор файла</label>
+                            <div class="input-group mb-15">
+                                <input type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="form-control pointer phone_input" placeholder="Название файла" disabled>
+                                <button onclick="{{ $class }}.openFileSelector()" class="button primary ml-15">Обзор...</button>
+                            </div>
                         </div>
+
+                        <div class="form-group">
+                            <label>Выбор магазина</label>
+                            <div class="input-group mb-15">
+                                <div style="z-index: 9999;" class="dropdown w-100" onclick="window.helper.openModal(this, event)">
+                                    <input id="store-name" onclick="event.preventDefault()" placeholder="Выберите магазин" class="form-control pointer text-left button_select" disabled>
+                                    <div class="dropdown_container">
+                                        <div class="arrow"></div>
+                                        @foreach($stores as $store)
+                                            <span onclick="{{ $class }}.selectStore(this, {{ $store->id }})" class="element">{{ $store->name }}</span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label>Выбор магазина</label>
-                        <div class="input-group mb-15">
-                            <button type="button" class="category_select form-control text-left button_select">Название магазина</button>
-                        </div>
-                    </div>
-
-                    <div id="page" class="page">
-                        <div class="progress-bar">
-                            <canvas id="inactiveProgress" class="progress-inactive" height="275px" width="275px"></canvas>
-                            <canvas id="activeProgress" class="progress-active"  height="275px" width="275px"></canvas>
-                            <p>0%</p>
-                        </div>
-                    </div>
+                    <progress id="progressbar" max="100" value="0" style="width: 100%; height: 30px; display: none;">
+                        Загружено на <span id="value">25</span>%
+                    </progress>
 
                 </div>
             </div>

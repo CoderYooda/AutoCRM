@@ -9,79 +9,73 @@ class storeImportDialog extends Modal{
     }
 
     init() {
-            var pCaption = $('.progress-bar p');
-            var iProgress = document.getElementById('inactiveProgress');
-            var aProgress = document.getElementById('activeProgress');
-            var iProgressCTX = iProgress.getContext('2d');
 
-            this.drawInactive(iProgressCTX);
+    }
 
-            var percentage = 100;
-            this.drawProgress(aProgress, percentage, pCaption);
+    openFileSelector() {
+
+        event.preventDefault();
+
+        let file_input = this.current_dialog.querySelector('[name=file]');
+        let name_input = this.current_dialog.querySelector('#file-name');
+
+        file_input.click();
+        name_input.value = '';
+    }
+
+    changeFile(element) {
+
+        let input = this.current_dialog.querySelector('#file-name');
+
+        input.value = element.files[0].name;
+    }
+
+    selectStore(element, store_id) {
+        let input_id = this.current_dialog.querySelector('[name=id]');
+
+        input_id.value = store_id;
+
+        let button_name = this.current_dialog.querySelector('#store-name');
+        button_name.value = element.innerText;
     }
 
     save() {
 
-        let element = this.current_dialog.querySelector('#form-import');
-
-        console.log(element);
-
         event.preventDefault();
+
+        let element = this.current_dialog.querySelector('#form-import');
 
         let formData = new FormData(element);
 
-        axios({
-            url: '/store/import',
-            method: 'post',
-            data: formData
+        const config = {
+            onUploadProgress: progressEvent => this.uploadProgress(progressEvent)
+        };
+
+        let elements = this.current_dialog.querySelector('#hide-inputs');
+        elements.style.display = 'none';
+
+        let progressbar_element = this.current_dialog.querySelector('#progressbar');
+        progressbar_element.style.display = 'inline-block';
+
+        axios.post( '/store/import', formData, config)
+        .then(response => {
+
         })
-            .then(response => {
-                console.log(response);
-            });
+        .catch(response => {
+            elements.style.display = 'block';
+        })
+        .then(() => {
+            progressbar_element.style.display = 'none';
+        });
     }
 
-    drawInactive(iProgressCTX){
-        iProgressCTX.lineCap = 'square';
+    uploadProgress(event) {
 
-        //outer ring
-        iProgressCTX.beginPath();
-        iProgressCTX.lineWidth = 15;
-        iProgressCTX.strokeStyle = '#e1e1e1';
-        iProgressCTX.arc(137.5,137.5,129,0,2*Math.PI);
-        iProgressCTX.stroke();
+        let percent = (event.total / event.loaded) * 100;
 
-        //progress bar
-        iProgressCTX.beginPath();
-        iProgressCTX.lineWidth = 0;
-        iProgressCTX.fillStyle = '#e6e6e6';
-        iProgressCTX.arc(137.5,137.5,121,0,2*Math.PI);
-        iProgressCTX.fill();
+        let element = this.current_dialog.querySelector('#progressbar');
 
-        //progressbar caption
-        iProgressCTX.beginPath();
-        iProgressCTX.lineWidth = 0;
-        iProgressCTX.fillStyle = '#fff';
-        iProgressCTX.arc(137.5,137.5,100,0,2*Math.PI);
-        iProgressCTX.fill();
-
-    }
-
-    drawProgress(bar, percentage, pCaption){
-        var barCTX = bar.getContext("2d");
-        var quarterTurn = Math.PI / 2;
-        var endingAngle = ((2*percentage) * Math.PI) - quarterTurn;
-        var startingAngle = 0 - quarterTurn;
-
-        bar.width = bar.width;
-        barCTX.lineCap = 'square';
-
-        barCTX.beginPath();
-        barCTX.lineWidth = 20;
-        barCTX.strokeStyle = '#00B4FF';
-        barCTX.arc(137.5,137.5,111,startingAngle, endingAngle);
-        barCTX.stroke();
-
-        pCaption.text( (parseInt(percentage * 100, 10)) + '%');
+        element.value = percent;
     }
 }
 export default storeImportDialog;

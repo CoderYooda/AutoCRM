@@ -1,5 +1,5 @@
 {
-	"authHost": "http://autocrm/",
+	"authHost": "http://bbcrm/",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{

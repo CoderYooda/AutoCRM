@@ -235,6 +235,8 @@ class StoreController extends Controller
 
             while (($attributes = fgetcsv($handle, 1000, ";")) !== false) {
 
+                if(count($attributes) < 9) continue;
+
                 $attributes = [
                     'name' => $attributes[0],
                     'manufacturer' => $attributes[1],
@@ -339,11 +341,13 @@ class StoreController extends Controller
 
     public static function storeImportDialog(Request $request)
     {
+        $stores = Store::where('company_id', Auth::user()->company->id)->get();
+
         $class = 'storeImportDialog';
 
         return response()->json([
             'tag' => $class,
-            'html' => view(get_template() . '.store.dialog.form_import_store', compact('store', 'request', 'class'))->render()
+            'html' => view(get_template() . '.store.dialog.form_import_store', compact('stores', 'request', 'class'))->render()
         ]);
     }
 
