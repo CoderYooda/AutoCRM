@@ -13,7 +13,7 @@ class settingsPage{
         document.addEventListener('ajaxLoaded', function(e){
             object.checkActive();
         });
-        object.checkActive();
+        //object.checkActive();
         let form = null;
         try {
             let form = object.root.getElementsByTagName('form');

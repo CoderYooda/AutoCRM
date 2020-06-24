@@ -25,6 +25,11 @@
                     <span class="nav-text">Роли</span>
                 </a>
             </li>
+            <li id="setting-role-tab" data-tab="role" class="@if($request['active_tab'] == 'sms') active @endif tab">
+                <a href="{{ route('SettingsIndex', ['active_tab' => 'sms', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
+                    <span class="nav-text">Смс</span>
+                </a>
+            </li>
             {{--<li id="setting-cashbox-tab" data-tab="ddsarticle" class="@if($request['active_tab'] == 'ddsarticle') active @endif tab">--}}
                 {{--<a href="{{ route('SettingsIndex', ['active_tab' => 'ddsarticle', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">--}}
                     {{--<span class="nav-text">Статьи ДДС</span>--}}

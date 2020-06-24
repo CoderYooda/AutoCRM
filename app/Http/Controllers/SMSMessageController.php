@@ -15,7 +15,7 @@ class SMSMessageController extends Controller
         //dd($request);
         if($request['type'] == 'clientOrder'){
             $smsMessage = new SMSMessages();
-
+            $request['phone'] =
             $smsru = new SMS(env('SMS_RU_CODE'));
             $data = new stdClass();
             $data->to = $request['phone'];

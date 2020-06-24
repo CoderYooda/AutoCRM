@@ -85,6 +85,16 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','users', 'request'));
     }
 
+    public static function smsTab($request)
+    {
+        $smses = SmsController::getSmsByCompany(Auth::user()->company->id);
+        $users = User::owned()->get();
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request'));
+        }
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.sms', compact('smses','users', 'request'));
+    }
+
 
     public static function DdsarticleTab($request)
     {

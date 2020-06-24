@@ -40,6 +40,9 @@ class SmsController extends Controller
         }
     }
 
+    public static function getSmsByCompany($company_id){
+
+    }
 
     public function confirm(SmsRequest $request)
     {
