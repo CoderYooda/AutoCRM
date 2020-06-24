@@ -64,12 +64,13 @@ class CategoryController extends Controller
     }
 
     public function loadBreadcrumbs(Request $request){
+
         self::$breadcrumbs = collect();
 
         if($request['search'] != '' ){
             $html = '<ol class="breadcrumb nav m-0"><li>Поиск по складу</li></ol>';
             return response()->json([
-                'html' => $html
+                'html' => $html,
             ]);
         }
 
@@ -367,7 +368,7 @@ class CategoryController extends Controller
         $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
         $categories['parent'] = $parent;
         $categories['parent_root'] = $parent->id == $root_category ? true : false;
-	    
+
         return $categories;
     }
 

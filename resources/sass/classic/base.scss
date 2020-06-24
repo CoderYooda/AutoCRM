@@ -892,7 +892,7 @@ input:-moz-placeholder { /* Firefox 18- */
 .box{
     position: relative;
     background: #fff;
-    border-radius: 4px; 
+    border-radius: 4px;
     box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
 }
 .box .box-header{
@@ -1800,4 +1800,44 @@ input:-moz-placeholder { /* Firefox 18- */
     font-size: 12px;
     line-height: 16px;
     color: #ACACAC;
+}
+
+//Прогресс бар
+
+.page {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 275px;
+    margin: 20px auto;
+}
+
+.progress-bar {
+    display: inline-block;
+    width: 275px;
+    height: 275px;
+    margin: 7px;
+    padding: 0;
+}
+
+.progress-bar .progress-active {
+    position: relative;
+    top: -279px;
+}
+
+.progress-bar p {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 275px;
+    top: -460px;
+    font-size: 54px;
+    font-weight: 900;
+    text-align: center;
+}
+
+#progressControllerContainer {
+    position: absolute;
+    top: 320px;
+    padding: 10px 80px;
 }

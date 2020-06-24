@@ -92,10 +92,18 @@ class StoreController extends Controller
 
         $products = ProductController::getArticles($request, $analog_articles);
 
+        $is_exists_searchable = $products->contains('article', $request->search);
+
+        $analog_pluck = $products->where('article', '!=', $request->search)->pluck('article');
+
+        $info = '"' . $request->search . '" ' . ($is_exists_searchable ? 'найден' : 'не найден') . '. ';
+        $info .= 'Список доступных аналогов на складе: ' . trim($analog_pluck, '[]');
+
         $response = [
             'data' => $products,
             'manufacturers' => $manufactures,
             'analogues' => $analogues,
+            'info' => $info
         ];
 
         return response()->json($response);
@@ -331,9 +339,7 @@ class StoreController extends Controller
 
     public static function storeImportDialog(Request $request)
     {
-        $store = Store::find($request->store_id);
-
-        $class = 'storeImportDialog' . ($store->id ?? '');
+        $class = 'storeImportDialog';
 
         return response()->json([
             'tag' => $class,
