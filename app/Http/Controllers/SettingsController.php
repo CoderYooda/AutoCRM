@@ -6,6 +6,8 @@ use App\Http\Controllers\HelpController as HC;
 use App\Models\Cashbox;
 use App\Models\Company;
 use App\Models\DdsArticle;
+use App\Models\Partner;
+use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -89,6 +91,13 @@ class SettingsController extends Controller
     {
         $smses = SmsController::getCompanySms();
         $users = User::owned()->get();
+
+        $payments = Payment::owned()->orderBy('id', 'DESC')->get();
+
+        foreach ($payments as $payment){
+            $payment->freshStatus();
+        }
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request'));
         }

@@ -185,8 +185,7 @@ class UserController extends Controller
 
     public static function serviceTab($request)
     {
-
-        $payments = Payment::owned()->orderBy('id', 'DESC')->get();
+        $payments = Payment::owned()->where('type', 'pay_to_store')->orderBy('id', 'DESC')->get();
 
         foreach ($payments as $payment){
             $payment->freshStatus();

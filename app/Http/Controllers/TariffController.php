@@ -81,14 +81,17 @@ class TariffController extends Controller
         if($request['tariff_id'] !== null){
             switch($request['tariff_id']){
                 case 30:
+                    $type = 'pay_to_store';
                     $amount = 2500;
                     $days = 30;
                     break;
                 case 180:
+                    $type = 'pay_to_store';
                     $amount = 14400;
                     $days = 180;
                     break;
                 case 360:
+                    $type = 'pay_to_store';
                     $amount = 27600;
                     $days = 360;
                     break;
@@ -185,7 +188,7 @@ class TariffController extends Controller
 
     public static function checkSmsPayment(Request $request){
 
-        $payments = Payment::owned()->where('type', 'pay_to_sms')->whereNotIn('status', ['CONFIRMED', 'CANCELLED'])->get();
+        $payments = Payment::owned()->where('type', 'pay_to_sms')->get();
 
         foreach($payments as $payment){
             $payment->freshStatus();
