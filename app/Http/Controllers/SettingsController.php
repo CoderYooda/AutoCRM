@@ -87,7 +87,7 @@ class SettingsController extends Controller
 
     public static function smsTab($request)
     {
-        $smses = SmsController::getSmsByCompany(Auth::user()->company->id);
+        $smses = SmsController::getCompanySms();
         $users = User::owned()->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request'));

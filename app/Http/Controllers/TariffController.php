@@ -73,12 +73,10 @@ class TariffController extends Controller
 
         $enabledTaxation = true;
 
-        $amount = 0;
+        $amount = $request['amount'];
         $days = 0;
-//        return response()->json([
-//            'message' => 'Выбраный тариф не существует или не актуален',
-//            'type' => 'danger',
-//        ], 422);
+        $type = null;
+
         $error = false;
         if($request['tariff_id'] !== null){
             switch($request['tariff_id']){
@@ -93,6 +91,9 @@ class TariffController extends Controller
                 case 360:
                     $amount = 27600;
                     $days = 360;
+                    break;
+                case 1:
+                    $type = 'pay_to_sms';
                     break;
                 default:
                     $error = true;
@@ -132,6 +133,7 @@ class TariffController extends Controller
 
         $payment = new Payment();
         $payment->add_days = $days;
+        $payment->type = $type;
         $payment->add_balance = $amount / 100;
         $payment->save();
         $payment->OrderId = $payment->id . date("_md_s");
@@ -144,12 +146,6 @@ class TariffController extends Controller
                 'Connection_type' => 'example'
             ],
         ];
-
-        //dd($params);
-
-
-
-
 
         if ($enabledTaxation) {
             $params['Receipt'] = $receipt;
@@ -187,6 +183,22 @@ class TariffController extends Controller
         }
     }
 
+    public static function checkSmsPayment(Request $request){
+
+        $payments = Payment::owned()->where('type', 'pay_to_sms')->whereNotIn('status', ['CONFIRMED', 'CANCELLED'])->get();
+
+        foreach($payments as $payment){
+            $payment->freshStatus();
+        }
+
+        if($request->expectsJson()){
+            return response()->json([
+                'sms_balance' => Auth::user()->company->getSmsBalance()
+            ]);
+        }
+    }
+
+
     public static function checkPayment(Request $request){
 
         $payment = Payment::owned()->where('OrderId', $request['order_id'])->first();
@@ -203,8 +215,6 @@ class TariffController extends Controller
         } else {
             return $payment_htnl;
         }
-
-
     }
 
     private static function balanceAmount($isShipping, $items, $amount)

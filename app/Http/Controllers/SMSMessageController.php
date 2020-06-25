@@ -15,7 +15,7 @@ class SMSMessageController extends Controller
         //dd($request);
         if($request['type'] == 'clientOrder'){
             $smsMessage = new SMSMessages();
-            $request['phone'] =
+            $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
             $smsru = new SMS(env('SMS_RU_CODE'));
             $data = new stdClass();
             $data->to = $request['phone'];
@@ -49,7 +49,7 @@ class SMSMessageController extends Controller
                 }
             } else {
                 return response()->json([
-                    'message' => 'SMS отправить не удалось'], 500);
+                    'message' => 'SMS отправить не удалось', 'sms' => $sms], 500);
             }
         }
     }

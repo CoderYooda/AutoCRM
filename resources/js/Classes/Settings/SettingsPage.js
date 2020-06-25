@@ -10,9 +10,9 @@ class settingsPage{
 
     init(){
         let object = this;
-        document.addEventListener('ajaxLoaded', function(e){
-            object.checkActive();
-        });
+        // document.addEventListener('ajaxLoaded', function(e){
+        //     object.checkActive();
+        // });
         //object.checkActive();
         let form = null;
         try {
@@ -45,6 +45,46 @@ class settingsPage{
                 }
             });
         }
+    }
+
+    getSmsPayment(){
+        let amount_input = document.getElementById('amount');
+        let amount = 0;
+        if(amount_input){
+            amount = amount_input.value;
+        }
+
+        let data = {tariff_id: 1, amount:amount};
+        axios({
+            method: 'POST',
+            url: '/tariff/get_payment',
+            data: data
+        }).then(function (response){
+            if(response.data.redirect){
+                window.location.href = response.data.redirect;
+            }
+        }).catch(function(response){
+
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    }
+
+    checkSmsPayments(){
+        axios({
+            method: 'POST',
+            url: '/tariff/check_sms_payment',
+        }).then(function (response){
+            let sms_balance_inner = document.getElementById('sms_balance');
+            if(sms_balance_inner){
+                sms_balance_inner.value = response.data.sms_balance;
+            }
+
+        }).catch(function(response){
+            dd(response);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 
     getUrlString(){

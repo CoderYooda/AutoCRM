@@ -19,6 +19,7 @@ Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 #Тариф
 Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePayment');
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
+Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
 //Route::multilingual('/', 'DashboardController@index');
 
