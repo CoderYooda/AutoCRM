@@ -12,6 +12,59 @@ class storeImportDialog extends Modal{
 
     }
 
+    incrementImportPercent(percent) {
+        console.log('percent', percent);
+
+        let element_text = this.current_dialog.querySelector('#info-text');
+        element_text.innerText = 'Обработано на ' + percent + '%';
+
+        let progressbar_element = this.current_dialog.querySelector('#progressbar');
+        progressbar_element.value = percent;
+    }
+
+    finishUpload(info) {
+        console.log('info', info);
+
+        let progressbar_element = this.current_dialog.querySelector('#progressbar');
+        progressbar_element.parentElement.classList.add('d-none');
+
+        let result_element = this.current_dialog.querySelector('#result-inputs');
+        result_element.classList.remove('d-none');
+
+        //Дубликаты
+        let html = '';
+
+        info.duplicates.forEach(item => {
+            html += '<div class="d-flex">';
+            html += '   <div style="width: 100px;">' + item.line + '</div>';
+            html += '   <div class="ml-15">' + item.article + '</div>';
+            html += '</div>';
+        });
+
+        console.log(html);
+
+        let duplicate_list = this.current_dialog.querySelector('#duplicate-list');
+
+        duplicate_list.innerHTML = html;
+
+        //Ошибки
+
+        html = '';
+
+        info.errors.forEach(item => {
+            html += '<div class="d-flex">';
+            html += '   <div style="width: 100px;">' + item.line + '</div>';
+            html += '   <div class="ml-15">' + item.article + '</div>';
+            html += '</div>';
+        });
+
+        console.log(html);
+
+        let error_list = this.current_dialog.querySelector('#error-list');
+
+        error_list.innerHTML = html;
+    }
+
     openFileSelector() {
 
         event.preventDefault();
@@ -39,9 +92,11 @@ class storeImportDialog extends Modal{
         button_name.value = element.innerText;
     }
 
-    save() {
+    save(save_element) {
 
         event.preventDefault();
+
+        save_element.disabled = true;
 
         let element = this.current_dialog.querySelector('#form-import');
 
@@ -51,21 +106,22 @@ class storeImportDialog extends Modal{
             onUploadProgress: progressEvent => this.uploadProgress(progressEvent)
         };
 
-        let elements = this.current_dialog.querySelector('#hide-inputs');
-        elements.style.display = 'none';
+        let elements = this.current_dialog.querySelector('#post-inputs');
+        elements.classList.add('d-none');
 
         let progressbar_element = this.current_dialog.querySelector('#progressbar');
-        progressbar_element.style.display = 'inline-block';
+        progressbar_element.parentElement.classList.remove('d-none');
 
         axios.post( '/store/import', formData, config)
         .then(response => {
-
+            console.log('file upload success');
         })
         .catch(response => {
-            elements.style.display = 'block';
+            elements.classList.remove('d-none');
+            save_element.disabled = false;
         })
         .then(() => {
-            progressbar_element.style.display = 'none';
+
         });
     }
 
@@ -73,9 +129,22 @@ class storeImportDialog extends Modal{
 
         let percent = (event.total / event.loaded) * 100;
 
-        let element = this.current_dialog.querySelector('#progressbar');
+        console.log('upload', percent);
 
+        let element = this.current_dialog.querySelector('#progressbar');
         element.value = percent;
+
+        let element_text = this.current_dialog.querySelector('#info-text');
+        element_text.innerText = 'Загружено на ' + percent + '%';
+    }
+
+    showInfoList(element_id) {
+        let element_list = this.current_dialog.querySelector('#' + element_id).parentElement;
+
+        if(element_list.classList.contains('d-none')) {
+            element_list.classList.remove('d-none');
+        }
+        else element_list.classList.add('d-none');
     }
 }
 export default storeImportDialog;

@@ -31,11 +31,30 @@ class Socket{
                     // var sp2 = document.querySelector("#system_messages > div");
                     // var parentDiv = sp2.parentNode;
                     // parentDiv.insertBefore(block, sp2);
+                    console.log(1111);
                     window.systemMessages.loadMessages();
                     window.systemMessages.bellCall();
                     var audio = new Audio('sounds/system_message.mp3');
                     audio.play();
+                })
+                .listen('StoreImportIteration', function(e){
+                     try {
+                         window.storeImportDialog.incrementImportPercent(e.percent);
+                     }
+                     catch (e) {
+                        console.log(e);
+                     }
+                })
+                .listen('StoreImportFinish', function(e){
+                    try {
+                        window.storeImportDialog.finishUpload(e.info);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
                 });
+
+
         });
 
     }

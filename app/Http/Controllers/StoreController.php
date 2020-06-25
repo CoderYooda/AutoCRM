@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Controllers\Providers\TrinityController;
 use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
+use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Models\User;
 use App\Models\VehicleMark;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -201,19 +204,20 @@ class StoreController extends Controller
 
     public function import(StoreImportRequest $request)
     {
+        $products = [];
+
         $file = $request->file('file');
 
-        $results = [];
-        $errors = [];
-
         if ($file->getClientOriginalExtension() == 'xml') {
+
+            #Парсим файл xml формата
 
             $xml_string = file_get_contents($file->path());
             $products = simplexml_load_string($xml_string);
 
             foreach ($products as $product) {
 
-                $attributes = [
+                $products[] = [
                     'name' => (string)$product->name,
                     'manufacturer' => (string)$product->manufacturer,
                     'article' => (string)$product->article,
@@ -224,119 +228,40 @@ class StoreController extends Controller
                     'barcode_manufacturer' => (string)$product->barcode_manufacturer,
                     'barcode_warehouse' => (string)$product->barcode_warehouse
                 ];
-
-                $article = $this->importProduct($request, $attributes);
-
-                $results[] = $article->id;
             }
         }
         else {
-            $handle = fopen($file->path(), "r");
 
-            while (($attributes = fgetcsv($handle, 1000, ";")) !== false) {
+            #Парсим файл txt или csv формата
 
-                if(count($attributes) < 9) continue;
+            if (($handle = fopen($file, 'r')) !== FALSE) {
+                while (($row = fgetcsv($handle, 1000, ';')) !== FALSE) {
+                    $products[] = [
+                        'name' => (string)$row[0] ?? '',
+                        'manufacturer' => (string)$row[1],
+                        'article' => (string)$row[2],
+                        'categories' => explode(',', $row[3] ?? []),
+                        'warehouse' => explode(',', $row[4] ?? []),
+                        'count' => (int)$row[5] ?? 0,
+                        'midprice' => (float)$row[6] ?? 0.0,
+                        'barcode_manufacturer' => (string)$row[7] ?? '',
+                        'barcode_warehouse' => (string)$row[8] ?? ''
+                    ];
+                }
 
-                $attributes = [
-                    'name' => $attributes[0],
-                    'manufacturer' => $attributes[1],
-                    'article' => $attributes[2],
-                    'categories' => explode(',', $attributes[3]),
-                    'warehouse' => explode(',', $attributes[4]),
-                    'count' => (int)$attributes[5],
-                    'midprice' => (float)$attributes[6],
-                    'barcode_manufacturer' => $attributes[7],
-                    'barcode_warehouse' => $attributes[8]
-                ];
-
-                $article = $this->importProduct($request, $attributes);
-
-                if($article === 'error') $errors[] = $attributes;
-                else $results[] = $article->id;
+                fclose($handle);
             }
-
-            fclose($handle);
         }
 
-        dd($results, $errors);
+        $params = [
+            'store' => Store::find($request->id),
+            'user_id' => Auth::id(),
+            'company_id' => Auth::user()->company->id,
+        ];
 
-        return response()->json(['imported_count' => count($results)]);
-    }
+        $this->dispatch(new StoreImportProduct($params, $products));
 
-    public function importProduct(Request $request, array $attributes)
-    {
-        $store = Store::find($request->id);
-        $user_id = Auth::id();
-        $company_id = Auth::user()->company->id;
-
-        #Проверка массива на правильность вхождения данных
-        $validator = Validator::make($attributes, [
-            'name' => ['string', 'max:255'],
-            'manufacturer' => ['required', 'string', 'max:255'],
-            'article' => ['required', 'string', 'max:64'],
-            'categories' => ['array'],
-            'categories.*' => ['string', 'max:200'],
-            'warehouse' => ['array'],
-            'warehouse.*' => ['string', 'max:2'],
-            'count' => ['integer', 'between:0,1000000'],
-            'midprice' => ['numeric', 'between::0,1000000'],
-            'barcode_manufacturer' => ['string'],
-            'barcode_warehouse' => ['string']
-        ]);
-
-        if ($validator->fails()) {
-            return 'error';
-        }
-
-        $attributes = $validator->validated();
-
-        $search_manufacturer_name = mb_strtoupper($attributes['manufacturer']);
-
-        $fapi_id = VehicleMark::where('name', 'like', "%{$search_manufacturer_name}%")->first()->id ?? null;
-        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name, 'fapi_id' => $fapi_id]);
-
-        #Создание категорий по товару
-        $category = Category::find((count($attributes['categories']) != 0 ? 2 : 10));
-
-        foreach ($attributes['categories'] as $category_name) {
-
-            if(strlen($category_name) < 2) continue;
-
-            $category_name = trim($category_name, ' ');
-
-            $category = Category::firstOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store', 'category_id' => $category->id], [
-                'name' => $category_name,
-                'company_id' => $company_id,
-                'creator_id' => $user_id,
-                'category_id' => $category->id,
-                'type' => 'store'
-            ]);
-        }
-
-        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier' => $supplier->name], [
-            'fapi_id' => $fapi_id,
-            'name' => $attributes['name'],
-            'creator_id' => $user_id,
-            'supplier_id' => $supplier->id,
-            'barcode' => $attributes['barcode_manufacturer'],
-            'barcode_local' => $attributes['barcode_warehouse'],
-            'category_id' => $category->id,
-            'foundstring' => Article::makeFoundString($attributes['name'] . $attributes['article'] . $attributes['manufacturer'] . $attributes['barcode_manufacturer']),
-        ]);
-
-        #Запись склада по товару
-        $store->articles()->syncWithoutDetaching($article->id);
-
-        $article->stores()->updateExistingPivot($store->id, [
-            'count' => $attributes['count'],
-            'midprice' => $attributes['midprice'],
-            'storage_zone' => $attributes['warehouse'][0] ?? '',
-            'storage_rack' => $attributes['warehouse'][1] ?? '',
-            'storage_vertical' => $attributes['warehouse'][2] ?? '',
-            'storage_horizontal' => $attributes['warehouse'][3] ?? '',
-        ]);
-
-        return $article;
+        return response()->json(['status' => 'success']);
     }
 
     public static function storeImportDialog(Request $request)
