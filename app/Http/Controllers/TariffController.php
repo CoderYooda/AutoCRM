@@ -82,17 +82,17 @@ class TariffController extends Controller
             switch($request['tariff_id']){
                 case 30:
                     $type = 'pay_to_store';
-                    $amount = 2500;
+                    $amount = 1;
                     $days = 30;
                     break;
                 case 180:
                     $type = 'pay_to_store';
-                    $amount = 14400;
+                    $amount = 2;
                     $days = 180;
                     break;
                 case 360:
                     $type = 'pay_to_store';
-                    $amount = 27600;
+                    $amount = 3;
                     $days = 360;
                     break;
                 case 1:
@@ -105,6 +105,7 @@ class TariffController extends Controller
         } else {
             $error = true;
         }
+
 
         if($error){
             return response()->json([

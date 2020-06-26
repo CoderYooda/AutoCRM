@@ -92,11 +92,11 @@ class SettingsController extends Controller
         $smses = SmsController::getCompanySms();
         $users = User::owned()->get();
 
-        $payments = Payment::owned()->orderBy('id', 'DESC')->get();
-
-        foreach ($payments as $payment){
-            $payment->freshStatus();
-        }
+//        $payments = Payment::owned()->orderBy('id', 'DESC')->get();
+//
+//        foreach ($payments as $payment){
+//            $payment->freshStatus();
+//        }
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request'));
