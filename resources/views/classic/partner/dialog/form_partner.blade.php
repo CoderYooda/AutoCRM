@@ -6,7 +6,7 @@
         id="partnerDialog"
         @php $class = 'partnerDialog' @endphp
     @endif
-    class="dialog" style="width:600px;">
+    class="dialog" style="width:640px;">
 
 
     @if(isset($partner) && $partner->id != NULL)

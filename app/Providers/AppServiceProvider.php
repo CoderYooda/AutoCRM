@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('Суперадмин') ? true : null;
+            return $user->hasRole('Суперадмин');
         });
 
         \App\Models\Shipment::observe(\App\Observers\ShipmentObserver::class);
@@ -42,9 +42,15 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::directive('hide', function ($expression) {
             return "<?php if($expression) echo (\"style='display: none!important;'\"); ?>";
-        /* return "<?php if($expression) echo 'style='display: none';'; ?>";*/
         });
 
+        Blade::directive('done', function ($expression) {
+            return "<?php if($expression) echo (\"d-none-f\"); ?>";
+        });
+
+        Blade::directive('disabled', function ($expression) {
+            return "<?php if($expression) echo (\"disabled\"); ?>";
+        });
     }
 
 }
