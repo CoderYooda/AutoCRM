@@ -35,6 +35,8 @@ class SMSMessageController extends Controller
                 $smsMessage->message = $request['message'];
                 $smsMessage->save();
 
+                Auth::user()->company->decrementSmsBalance($sms->cost);
+
                 $clientOrder = ClientOrder::owned()->where('id', $request['id'])->first();
                 $clientOrder->smsMessages()->attach($smsMessage->id);
 

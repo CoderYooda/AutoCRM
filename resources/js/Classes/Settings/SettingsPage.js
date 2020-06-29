@@ -77,7 +77,7 @@ class settingsPage{
         }).then(function (response){
             let sms_balance_inner = document.getElementById('sms_balance');
             if(sms_balance_inner){
-                sms_balance_inner.value = response.data.sms_balance;
+                sms_balance_inner.innerText = response.data.sms_balance;
             }
 
         }).catch(function(response){
