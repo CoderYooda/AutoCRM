@@ -12,10 +12,12 @@ use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\ImportHistory;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Models\VehicleMark;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
@@ -81,6 +83,32 @@ class StoreController extends Controller
         }
     }
 
+    public function applyImport(ImportHistory $import)
+    {
+        PermissionController::canByPregMatch('Редактировать настройки');
+
+        $ids = explode(',', $import->list);
+
+        Article::whereIn('id', $ids)->delete();
+        DB::table('article_store')->whereIn('article_id', $ids)->delete();
+
+        $import->delete();
+
+        $company_id = Auth::user()->company->id;
+
+        $last_imports = ImportHistory::with('partner', 'store')
+            ->where('company_id', $company_id)
+            ->where('created_at', '>', Carbon::now()->addDays(-14))
+            ->get();
+
+        return response()->json([
+            'target' => 'ajax-table-imports',
+            'html' => view(get_template() . '.settings.elements.import_history', compact('last_imports'))->render(),
+            'message' => 'Откат изменений был успешно выполнен.',
+            'type' => 'success',
+        ]);
+    }
+
     public function tableData(StoreGetRequest $request)
     {
         $analogues = [];
@@ -100,7 +128,7 @@ class StoreController extends Controller
         $analog_pluck = $products->where('article', '!=', $request->search)->pluck('article');
 
         $info = '"' . $request->search . '" ' . ($is_exists_searchable ? 'найден' : 'не найден') . '. ';
-        $info .= 'Список доступных аналогов на складе: ' . trim($analog_pluck, '[]');
+        if(count($analog_pluck)) $info .= 'Список доступных аналогов на складе: ' . trim($analog_pluck, '[]');
 
         $response = [
             'data' => $products,
@@ -282,7 +310,10 @@ class StoreController extends Controller
 
         $tag = 'storeDialog' . ($store->id ?? '');
 
-        return response()->json(['tag' => $tag, 'html' => view(env('DEFAULT_THEME', 'classic') . '.store.dialog.form_store', compact('store', 'request'))->render()]);
+        return response()->json([
+            'tag' => $tag,
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.store.dialog.form_store', compact('store', 'request'))->render()
+        ]);
     }
 
     public function store(StoreRequest $request)

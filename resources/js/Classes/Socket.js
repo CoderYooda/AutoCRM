@@ -47,7 +47,7 @@ class Socket{
                 })
                 .listen('StoreImportFinish', function(e){
                     try {
-                        window.storeImportDialog.finishUpload(e.info);
+                        window.storeImportDialog.finishUpload(e.info, e.html);
                     }
                     catch (e) {
                         console.log(e);

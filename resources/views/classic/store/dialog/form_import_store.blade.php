@@ -15,14 +15,27 @@
                     <div id="post-inputs">
 
                         <div class="form-groupinactiveProgress">
-                            <label>Выбор файла</label>
-                            <div class="input-group mb-15">
+                            <label>
+                                Выбор файла
+                                <img src="{{ asset('images/icons/statistic-question.svg') }}" alt="">
+                            </label>
+                            <div class="input-group mb-5">
                                 <input type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="form-control pointer phone_input" placeholder="Название файла">
                                 <button onclick="{{ $class }}.openFileSelector()" class="button primary ml-15">Обзор...</button>
                             </div>
+                            <div class="ml-15 mt-10">
+                                <div class="file-example-item">
+                                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                    <a style="color: #CCCCCC;" href="{{ asset('demo/example-import.csv') }}" download>Скачать пример формата .csv</a>
+                                </div>
+                                <div class="file-example-item">
+                                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                    <a style="color: #CCCCCC;" href="{{ asset('demo/example-import.xml') }}" download>Скачать пример формата .xml</a>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mt-15">
                             <label>Выбор магазина</label>
                             <div class="input-group mb-15">
                                 <div class="dropdown w-100" onclick="window.helper.openModal(this, event)">

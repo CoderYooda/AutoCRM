@@ -1,0 +1,40 @@
+<products>
+	<product>
+		<name>Тормозные колодки1</name>
+		<manufacturer>NISSAN</manufacturer>
+		<article>k1112</article>
+		<categories>
+			<category>КПП</category>
+			<category>Шестерня</category>
+		</categories>
+		<warehouse>
+			<zone>21</zone>
+			<rack>d3</rack>
+			<vertical>s3</vertical>
+			<horizontal>m3</horizontal>
+		</warehouse>
+		<count>100</count>
+		<midprice>1279.23</midprice>
+		<barcode_manufacturer>12881778382</barcode_manufacturer>
+		<barcode_warehouse>12881778382</barcode_warehouse>
+	</product>
+	<product>
+		<name>Тормозные колодки2</name>
+		<manufacturer>NISSAN</manufacturer>
+		<article>k12123</article>
+		<categories>
+			<category>ДВС</category>
+			<category>Шестерня</category>
+		</categories>
+		<warehouse>
+			<zone>21</zone>
+			<rack>d3</rack>
+			<vertical>s3</vertical>
+			<horizontal>m3</horizontal>
+		</warehouse>
+		<count>100</count>
+		<midprice>1279.23</midprice>
+		<barcode_manufacturer>12881778382</barcode_manufacturer>
+		<barcode_warehouse>123125415212</barcode_warehouse>
+	</product>
+</products>

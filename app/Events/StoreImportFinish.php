@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Models\ImportHistory;
+use Carbon\Carbon;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -28,6 +30,14 @@ class StoreImportFinish implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['info' => $this->info];
+        $last_imports = ImportHistory::with('partner', 'store')
+            ->where('company_id', $this->params['company_id'])
+            ->where('created_at', '>', Carbon::now()->addDays(-14))
+            ->get();
+
+        return [
+            'info' => $this->info,
+            'html' => view(get_template() . '.settings.elements.import_history', compact('last_imports'))->render()
+        ];
     }
 }

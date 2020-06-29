@@ -1834,3 +1834,48 @@ input:-moz-placeholder { /* Firefox 18- */
     z-index: 999;
     position: absolute;
 }
+
+.style_subheader {
+    line-height: 19px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: 0.004em;
+}
+
+.file-example-item {
+    color: #CCCCCC;
+
+    &:hover {
+        color: #1F98E9;
+    }
+
+    & a {
+        color: #CCCCCC;
+
+        &:hover {
+            color: #1F98E9 !important;
+        }
+    }
+}
+
+.categories_list{
+    margin: 0;
+}
+
+.categories_list li:hover .pick_button{
+    display: block;
+}
+
+.select-list-modal li .date{
+    font-weight: 600;
+}
+.select-list-modal li .secondary{
+    font-weight: 400;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.select-list-modal li:hover{
+    background: #badff8;
+}

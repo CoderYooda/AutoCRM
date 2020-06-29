@@ -172,6 +172,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
     Route::post('/store/checkstock', 'StoreController@checkstock')->name('CheckStock');
     Route::post('/store/import', 'StoreController@import')->name('StoreImport');
+    Route::post('/store/imports/{import}', 'StoreController@applyImport')->name('ApplyImport');
 
     #Услуги
     Route::get('/services', 'ServicesController@index')->name('ServicesIndex');

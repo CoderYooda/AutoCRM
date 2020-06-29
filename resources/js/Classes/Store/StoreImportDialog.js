@@ -9,7 +9,24 @@ class storeImportDialog extends Modal{
     }
 
     init() {
+        let element = this.current_dialog.querySelector('img');
 
+        let desc = '1. Название: Строка или пустое поле.<br> \
+            2. Производитель: Строка *.<br>\
+            3. Артикул: Строка *.<br> \
+            4. Категории: Пустота или названия через запятую.<br> \
+            5. Расположение товара на складе(Зона хранения, Номер стеллажа, Номер вертикальной секции \
+            стеллажа, Номер полки): Пустота или через запятую значения с длиной до 2-ух символов.<br>\
+            6. Количество: Пустота или число.<br>\
+            7. Средняя цена: Пустота или число.<br>\
+            8. Штрих-код производителя: Пустота или строка.<br>\
+            9. Штрих-код на складе: Пустота или строка.';
+
+        tippy(element, {
+            content: desc,
+            placement: 'bottom',
+            theme: 'light'
+        });
     }
 
     incrementImportPercent(percent) {
@@ -22,7 +39,8 @@ class storeImportDialog extends Modal{
         progressbar_element.value = percent;
     }
 
-    finishUpload(info) {
+    finishUpload(info, response_html) {
+
         console.log('info', info);
 
         let progressbar_element = this.current_dialog.querySelector('#progressbar');
@@ -63,6 +81,8 @@ class storeImportDialog extends Modal{
         let error_list = this.current_dialog.querySelector('#error-list');
 
         error_list.innerHTML = html;
+
+        document.getElementById('ajax-table-imports').innerHTML = response_html;
     }
 
     openFileSelector() {
@@ -146,5 +166,7 @@ class storeImportDialog extends Modal{
         }
         else element_list.classList.add('d-none');
     }
+
+
 }
 export default storeImportDialog;

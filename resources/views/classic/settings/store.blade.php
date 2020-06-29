@@ -3,7 +3,7 @@
 
     <div class="m-15 box">
 
-        <button onclick="openDialog('storeImportDialog')" class="button primary" style="float: right; margin: 15px;">Импорт товаров</button>
+        <button onclick="openDialog('storeImportDialog')" class="button primary float-right m-15">Импорт товаров</button>
 
         <div class="m-15">
             <h2 class="mt-0 mb-0 style_header">Магазины</h2>
@@ -11,6 +11,10 @@
                 @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container')
             </div>
         </div>
+    </div>
+
+    <div class="m-15 mt-0" id="ajax-table-imports">
+        @include(get_template() . '.settings.elements.import_history', $last_imports)
     </div>
 
 @endsection

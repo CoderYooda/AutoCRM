@@ -142,6 +142,18 @@ class vehicleDialog extends Modal {
 
         if(!window.isXHRloading) {
             window.axform.send(elem, event => {
+
+                let data = event.data;
+
+                if(this.refer === 'userPage') {
+                    document.querySelector('#ajax-user-vehicles').innerHTML = data.html;
+                }
+                else {
+                    let refer_dialog = document.querySelector('#' + this.refer);
+                    // console.log(refer_dialog);
+                    refer_dialog.querySelector('#ajax-partner-vehicles').innerHTML = data.html;
+                }
+
                 this.finitaLaComedia(true);
             });
         }
