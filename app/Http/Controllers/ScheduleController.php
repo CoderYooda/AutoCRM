@@ -66,19 +66,6 @@ class ScheduleController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть планировщик');
 
-
-
-        $system_message = new SystemMessage();
-        $system_message->user_id = 1;
-        $system_message->reciever_id = 3;
-        $system_message->type = 'success';
-        $system_message->message = 'Расписаие обновлено';
-        $system_message->save();
-        event(new SM($system_message));
-
-
-        //broadcast(new \App\Events\SystemMessage($system_message))->toOthers();
-
         DB::transaction(function() use ($request) {
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
             $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
@@ -102,6 +89,7 @@ class ScheduleController extends Controller
                     }
                 }
             }
+            SystemMessageController::sendToOwnCompanyOthers('success', 'Расписание обновлено');
         });
         return response()->json([
             'status' => 'success',
