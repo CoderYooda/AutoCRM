@@ -209,7 +209,7 @@ class createEntrance extends Modal{
             let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
             input.value = resp.data.id;
             select.innerHTML = str;
-            window.notification.notify( 'success', 'Контрагент выбран');
+            window.notification.notify( 'success', 'Контакт выбран');
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
             //closeDialog(event);

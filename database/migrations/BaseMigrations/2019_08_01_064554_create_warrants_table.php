@@ -17,7 +17,7 @@ class CreateWarrantsTable extends Migration
             $table->bigIncrements('id');
             $table->dateTime('do_date')->comment('Дата исполнения');
             $table->bigInteger('cashbox_id')->unsigned()->comment('Привязка к кассовому аппарату');
-            $table->bigInteger('partner_id')->unsigned()->comment('Привязка к контрагенту');
+            $table->bigInteger('partner_id')->unsigned()->comment('Привязка к контакту');
             $table->bigInteger('manager_id')->unsigned()->comment('Привязка к менеджеру');
             $table->bigInteger('ddsarticle_id')->unsigned()->comment('Привязка к кассовому аппарату');
             $table->bigInteger('company_id')->unsigned()->comment('Привязка к компании');

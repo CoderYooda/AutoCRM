@@ -66,7 +66,7 @@ class roleDialog extends Modal{
                     '');
                 stack.appendChild(node);
                 object.setEmpty(target, 'users_stack');
-                window.notification.notify( 'success', 'Контрагент выбран');
+                window.notification.notify( 'success', 'Контакт выбран');
             }
 
         }).catch(function (error) {

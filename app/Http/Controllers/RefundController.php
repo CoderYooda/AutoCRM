@@ -68,7 +68,7 @@ class RefundController extends Controller
         if($refund->exists){
             $refundWasExisted = true;
             $this->message = 'Возврат обновлен';
-            #Добавляем к балансу контрагента
+            #Добавляем к балансу контакта
             $refund->partner()->first()->subtraction($refund->summ);
         } else {
             $refundWasExisted = false;
@@ -133,7 +133,7 @@ class RefundController extends Controller
         #Удаление всех отношений и запись новых (кастомный sync)
         $refund->syncArticles($refund->id, $refund_data);
 
-        #Добавляем к балансу контрагента
+        #Добавляем к балансу контакта
         $refund->partner->addition($refund->summ);
 
         foreach($refund->articles as $article){
@@ -173,7 +173,7 @@ class RefundController extends Controller
 //                        $store = $refund->store()->first();
 //                        $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
 //                    }
-//                    #Добавляем к балансу контрагента
+//                    #Добавляем к балансу контакта
 //                    $refund->partner()->first()->addition($refund->summ);
 //                    $refund->articles()->sync(null);
 //                    UA::makeUserAction($refund, 'delete');
@@ -186,7 +186,7 @@ class RefundController extends Controller
 //                $store = $refund->store()->first();
 //                $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
 //            }
-//            #Добавляем к балансу контрагента
+//            #Добавляем к балансу контакта
 //            $refund->partner()->first()->addition($refund->summ);
 //            $refund->articles()->sync(null);
 //            $refund->delete();

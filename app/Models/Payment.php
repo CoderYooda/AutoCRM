@@ -44,16 +44,29 @@ class Payment extends Model
 
         $new_status = $this->status; //DEADLINE_EXPIRED
 
+
+
+
         if($previous_status !== $new_status){
             $company = $this->company;
             if(($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW') && $new_status == 'CONFIRMED'){
-                $company->increment('balance', $this->add_balance);
-                $company->increment('payed_days', $this->add_days);
+                if($this->type === 'pay_to_sms'){
+                    $company->sms_balance += $this->add_balance;
+                } else {
+                    $company->increment('balance', $this->add_balance);
+                    $company->increment('payed_days', $this->add_days);
+                }
+
             }
             if($previous_status == 'CONFIRMED' && $new_status == 'REFUNDED'){
-                $company->decrement('balance', $this->add_balance);
-                $company->decrement('payed_days', $this->add_days);
+                if($this->type == 'pay_to_sms'){
+                    $company->decrement('sms_balance', $this->add_balance);
+                } else {
+                    $company->decrement('balance', $this->add_balance);
+                    $company->decrement('payed_days', $this->add_days);
+                }
             }
+            $company->save();
         }
 
 

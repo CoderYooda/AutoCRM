@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class SMSMessages extends Model
 {
+    use OwnedTrait;
+
     public $fields = [
         'partner_id',
         'company_id',

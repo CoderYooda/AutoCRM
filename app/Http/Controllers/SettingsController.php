@@ -6,6 +6,8 @@ use App\Http\Controllers\HelpController as HC;
 use App\Models\Cashbox;
 use App\Models\Company;
 use App\Models\DdsArticle;
+use App\Models\Partner;
+use App\Models\Payment;
 use App\Models\ImportHistory;
 use App\Models\Setting;
 use App\Models\Store;
@@ -94,6 +96,22 @@ class SettingsController extends Controller
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.role_container', compact( 'roles','users', 'request'));
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','users', 'request'));
+    }
+
+    public static function smsTab($request)
+    {
+        $smses = SmsController::getCompanySms();
+        $users = User::owned()->get();
+        $payments = Payment::owned()->where('type', 'pay_to_sms')->orderBy('id', 'DESC')->get();
+
+//        foreach ($payments as $payment){
+//            $payment->freshStatus();
+//        }
+
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request', 'payments'));
+        }
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.sms', compact('smses','users', 'request', 'payments'));
     }
 
 

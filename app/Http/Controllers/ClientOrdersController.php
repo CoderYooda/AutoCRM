@@ -242,7 +242,10 @@ class ClientOrdersController extends Controller
                 $vprice = (double)$product['price'];
                 $vtotal = $vprice * $vcount;
                 $client_order->summ += $vtotal;
-                $supplier = SupplierController::silent_store($product);
+
+                $supplier_request = new Request(['new_supplier_name' => $product['new_supplier_name']]);
+
+                $supplier = SupplierController::silent_store($supplier_request);
                 //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
                 $actor_product = Article::firstOrNew([
                     'article' => $product['article'],

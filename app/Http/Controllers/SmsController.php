@@ -40,6 +40,10 @@ class SmsController extends Controller
         }
     }
 
+    public static function getCompanySms()
+    {
+        return SMSMessages::owned()->paginate(25);
+    }
 
     public function confirm(SmsRequest $request)
     {

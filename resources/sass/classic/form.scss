@@ -136,6 +136,33 @@ Switch
     border-left: 1px solid;
     border-right: 1px solid;
 }
+
+.table .simple-row{
+    padding: 8px 0px;
+    height: 35px;
+}
+
+.number_val{
+    line-height: 32px;
+    font-size: 12px;
+    padding-right: 10px;
+}
+
+.sms-balance{
+    font-size: 16px;
+    font-weight: bold;
+}
+.sms-stat-block{
+    position: relative;
+}
+
+.sms-stat-block a{
+    position: absolute;
+    top: 22px;
+    right: 0px;
+    font-size: 14px;
+}
+
 .list-item {
     display: -ms-flexbox;
     display: flex;

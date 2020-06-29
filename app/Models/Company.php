@@ -38,6 +38,15 @@ class Company extends Model
         return $this->members()->first();
     }
 
+    public function getSmsBalance(){
+        return $this->sms_balance == null ? 0 : $this->sms_balance;
+    }
+
+    public function decrementSmsBalance($amount)
+    {
+        return $this->decrement('sms_balance', $amount);
+    }
+
     public function inviteUser($user)
     {
         //TODO check

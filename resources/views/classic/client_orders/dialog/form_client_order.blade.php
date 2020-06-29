@@ -175,7 +175,7 @@
                             <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>
                             <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                                    <div class="drop-butt"><span>Номера контрагента</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
+                                    <div class="drop-butt"><span>Номера контакта</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
                                     <div class="dropdown_container">
                                         <div class="arrow"></div>
                                         <div id="phones-list">
@@ -192,7 +192,7 @@
                                                 @else
                                                  <div class="no-result">
                                                     <div class="text-center">
-                                                        Выберите контрагента
+                                                        Выберите контакт
                                                     </div>
                                                  </div>
                                             @endif
@@ -201,7 +201,7 @@
                                 </div>
                             </span>
                             {{--<div class="input-group-append">--}}
-                                {{--<button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контрагента</button>--}}
+                                {{--<button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контактов</button>--}}
                                 {{--<div id="phones-list" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(619px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">--}}
                                     {{--@if(isset($client_order))--}}
                                         {{--@forelse($client_order->partner()->first()->phones()->get() as $phone)--}}
@@ -216,7 +216,7 @@
                                     {{--@else--}}
                                         {{--<div class="no-result">--}}
                                             {{--<div class="text-center">--}}
-                                                {{--Выберите контрагента--}}
+                                                {{--Выберите контакт--}}
                                             {{--</div>--}}
                                         {{--</div>--}}
                                     {{--@endif--}}

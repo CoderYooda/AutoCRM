@@ -72,13 +72,6 @@
                             </a>
                         </li>
                         @endcanany
-                        @canany(['Смотреть настройки'])
-                        <li id="settings_link" class="top-nav-item" >
-                            <a class="header-tab ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
-                                Настройки
-                            </a>
-                        </li>
-                        @endcanany
                         @canany(['Смотреть планировщик'])
                         <li id="sсhedule_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('ScheduleIndex') }}">
@@ -145,6 +138,12 @@
 
                                 <a class="element ajax-nav" href="{{ route('UserIndex') }}">Личный кабинет</a>
                                 <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}">Мои услуги</a>
+
+                                @canany(['Смотреть настройки'])
+                                    <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
+                                        Настройки
+                                    </a>
+                                @endcanany
 
                                 @if(auth()->user()->partner->category_id == 7)
                                     <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles']) }}">Гараж</a>

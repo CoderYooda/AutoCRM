@@ -32,7 +32,7 @@
             </div>
             <div class="filter_field mb-10">
                 <div class="form-group d-flex mb-10">
-                    <label class="no-wrap" for="provider">Контрагент</label>
+                    <label class="no-wrap" for="provider">Контакт</label>
                     <input readonly onclick="window.cash.openSelectPartnerModal('partner')" id="partner" type="text" name="partner" value="{{ request('partner') }}" class="form-control partner input_as_link" placeholder="выбрать">
                     <button type="button" onclick="window.cash.clearList('partner', 'partner_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
                 </div>
