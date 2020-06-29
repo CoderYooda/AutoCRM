@@ -26,6 +26,7 @@ import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
 import supplierDialog from "./Supplier/SupplierDialog";
 import roleDialog from "./Role/RoleDialog";
 import vehicleDialog from "./Vehicle/VehicleDialog";
+import storeImportDialog from "./Store/StoreImportDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -75,7 +76,8 @@ const classes = {
     categoryDialog,
     selectSupplierDialog,
     supplierDialog,
-    vehicleDialog
+    vehicleDialog,
+    storeImportDialog
 };
 
 const pages = {

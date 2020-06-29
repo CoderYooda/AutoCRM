@@ -32,28 +32,42 @@ class Article extends Model
 
     public function canUserTake()
     {
-        return $this->company_id == Auth::user()->company()->first()->id;
+        return $this->company_id == Auth::user()->company->id;
     }
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function supplier()
     {
-        return $this->belongsTo('App\Models\Supplier', 'supplier_id');
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
     public function category()
     {
-        return $this->belongsTo('App\Models\Category', 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function stores()
     {
-        return $this->belongsToMany('App\Models\Store', 'article_store', 'article_id', 'store_id')
+        return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
             ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
+    }
+
+    public static function makeCorrectArticle(string $article)
+    {
+        $chars = ["-","!","?",".",""," "];
+
+        return str_replace($chars, '', $article);
+    }
+
+    public static function makeFoundString(string $string)
+    {
+        $chars = ["-","!","?",".",""," "];
+
+        return str_replace($chars, '', $string);
     }
 
     public function shipment()
@@ -107,7 +121,7 @@ class Article extends Model
         }
 
         $retail = $midprice + ( $midprice / 100 * $markup );
-        
+
         if( $retail === 0){
             if($isInteger){
                 return 0;

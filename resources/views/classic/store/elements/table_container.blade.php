@@ -11,7 +11,6 @@
     </div>
 @endcan
 
-
 <div class="box-lister" style="width: 1px!important;">
 
     <div class="search-panel box mb-15">
@@ -29,24 +28,21 @@
 
         <div class="actions">
 
-            <select name="manufacture" class="form-control input-c ml-15">
-
-            </select>
-
             @can('Создавать категории')
                 <button onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
             @endcan
+
             @can('Создавать товары')
                 <button onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
             @endcan
+
         </div>
     </div>
 
     <div class="box h-100">
-        <div class="box-header" id="breadcrumbs-nav">
-        </div>
+        <div class="box-header" id="breadcrumbs-nav"></div>
         <div id="table-container" class="box-content h-100">
-            <div id="store-table" ></div>
+            <div id="store-table"></div>
         </div>
     </div>
 </div>

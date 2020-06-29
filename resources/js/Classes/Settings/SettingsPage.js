@@ -196,5 +196,22 @@ class settingsPage{
         });
     }
 
+    backImportChanges(id) {
+
+        axios({
+            url: '/store/imports/' + id,
+            method: 'post'
+        })
+            .then(response => {
+                let data = response.data;
+
+                document.getElementById('ajax-table-imports').innerHTML = data.html;
+
+                notification.notify( 'success', 'Откат изменений был успешно выполнен.');
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
 }
 export default settingsPage;

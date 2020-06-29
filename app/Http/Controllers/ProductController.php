@@ -262,13 +262,7 @@ class ProductController extends Controller
         #Кроссы
         $article->fapi_id = $supplier->fapi_id;
         $article->fill($request->only($article->fields));
-
-        $prepared_article = mb_strtolower(str_replace(' ', '', $request['article']));
-        $prepared_supplier = mb_strtolower(str_replace(' ', '', $supplier->name));
-        $prepared_name = mb_strtolower(str_replace(' ', '', $request['name']));
-        $prepared_barcode = mb_strtolower(str_replace(' ', '', $request['barcode']));
-
-        $article->foundstring = str_replace(["-","!","?",".", ""],  "", trim($prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name));
+        $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
 
         $article->save();
         $this->status = 200;
@@ -303,7 +297,6 @@ class ProductController extends Controller
                 }
                 if (isset($store_elem['isset']) && $store_elem['isset'] == true) {
                     $store->articles()->syncWithoutDetaching($article->id);
-
 
                     $article->stores()->updateExistingPivot($id, ['location' => $store_elem['location']]);
                     $article->stores()->updateExistingPivot($id, ['isset' => $store_elem['isset']]);

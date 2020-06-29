@@ -47,18 +47,6 @@ class partnerDialog extends Modal{
                 object.save(object.current_dialog.getElementsByTagName('form')[0]);
             }
         });
-
-        document.addEventListener('VehicleStored', (e => this.freshVehicles(e)));
-    }
-
-    freshVehicles(event) {
-        let data = event.detail.data;
-        let vehicle = data.vehicle;
-
-        let vehicle_element =  this.current_dialog.querySelector('#vehicle_item_' + vehicle.id);
-
-        if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
-        else this.current_dialog.querySelector('#vehicle_item_create').before(helper.createElementFromHTML(data.html));
     }
 
     initDatePicker() {

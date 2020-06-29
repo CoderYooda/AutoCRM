@@ -9,37 +9,43 @@ use App\Models\VehicleMark;
 use App\Models\VehicleModel;
 use App\Models\VehicleModify;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
     public function store(VehicleRequest $request)
     {
-        $attributes = $request->except('id', '_token', 'refer');
+//        dd($request->all());
 
-//        if(isset($request['partner_id'])) {
-//            $attributes['partner_id'] = $request['partner_id'];
-//        }
+        $attributes = $request->except('id', '_token', 'refer', 'target');
 
-        $vehicle = Vehicle::updateOrCreate(['id' => $request->id], $attributes);
+        Vehicle::updateOrCreate(['id' => $request->id], $attributes);
+
+        $vehicles = Vehicle::where('partner_id', $request->partner_id)->get();
+
+        $class = $request->refer;
+
+        $html = $request->refer == 'userPage' ?
+            view(get_template() . '.user.tabs.includes.vehicle-list', compact('vehicles', 'request'))->render()
+            : view(get_template() . '.partner.dialog.tabs.vehicles', compact('vehicles', 'class', 'request'))->render();
 
         return response()->json([
-            'vehicle' => $vehicle->load('mark','model','modify'),
             'message' => 'Транспорт был сохранён.',
-            'event' => 'VehicleStored',
-            'html' => view(get_template() . '.partner.dialog.tabs.includes.list-item', compact('vehicle'))
-                ->with('class', $request->refer)
-                ->render()
+            'type' => 'success',
+            'html' => $html
         ], 200);
     }
 
-    public function destroy(Vehicle $vehicle)
+    public function destroy(Vehicle $vehicle, Request $request)
     {
         $vehicle->delete();
 
-        return response()->json([
-            'vehicle' => $vehicle,
-            'message' => 'Транспорт был успешно удалён.',
-        ], 200);
+        $response = [
+            'message' => 'Транспорт был удалён.',
+            'type' => 'success',
+        ];
+
+        return response()->json($response, 200);
     }
 
     public function modelList(VehicleMark $mark)
