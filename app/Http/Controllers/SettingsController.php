@@ -71,6 +71,11 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes','request'));
     }
 
+    public static function requisitesTab(Request $request)
+    {
+        return view(get_template() . '.settings.requisites', compact('request'));
+    }
+
     public static function storeTab($request)
     {
         $stores = Store::owned()->orderBy('created_at', 'DESC')->get();

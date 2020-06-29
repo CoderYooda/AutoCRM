@@ -21,7 +21,7 @@
 <div class="form-group ul_only @done(isset($partner) && $partner['isfl'])">
     <label>
         Юридический адрес
-        <span onclick="{{ $class }}.showField(this, 'ur_address')" class="input_as_link pointer" @hide($partner && $partner->fact_address)>Не совпадает с фактическим?</span>
+        <span onclick="{{ $class }}.showField(this, 'fact_address')" class="input_as_link pointer" @hide($partner && $partner->fact_address)>Не совпадает с фактическим?</span>
     </label>
     <input type="text" name="ur_address" value="{{ $partner->ur_address ?? '' }}" class="form-control entrance" placeholder="Юридический адрес" @disabled(isset($partner) && $partner['isfl'])>
 </div>

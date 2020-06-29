@@ -26,6 +26,22 @@ class shipmentDialog extends Modal{
         }
     };
 
+    printScore() {
+        axios.post('/documents/invoice-for-payment', {
+
+        })
+        .then(response => {
+
+        })
+        .catch(response => {
+
+        });
+    }
+
+    printUdp() {
+
+    }
+
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
