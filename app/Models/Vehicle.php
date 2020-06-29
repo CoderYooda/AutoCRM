@@ -37,16 +37,26 @@ class Vehicle extends Model
 
         $directory = public_path('images/images_carmodels/' . $mark_name);
 
+        if(!File::isDirectory($directory)) {
+            return asset('images/images_carmodels/default.jpg');
+        }
+
         $image_vehicles = File::files($directory, false);
 
         $names = [];
 
         foreach ($image_vehicles as $vehicle) {
-//            dd($vehicle->getFilename());
-            $names[$vehicle->getFilenameWithoutExtension()] = [
-                'length' => similar_text($vehicle->getFilenameWithoutExtension(), $this->model->name),
+
+            $vehicle_name = $vehicle->getFilenameWithoutExtension();
+
+            $names[$vehicle_name] = [
+                'length' => similar_text($vehicle_name, $this->model->name),
                 'file' => $vehicle
             ];
+        }
+
+        if(!count($names)) {
+            return asset('images/images_carmodels/default.jpg');
         }
 
         $file = collect($names)->sortByDesc('length')->first()['file'];
