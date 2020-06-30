@@ -31,7 +31,7 @@ class shipmentDialog extends Modal{
     }
 
     printUpd() {
-        window.helper.printDocument('shipment-upd');
+        window.helper.printDocument('shipment-upd', null, null, true);
     }
 
     getPayment(){
@@ -385,8 +385,6 @@ class shipmentDialog extends Modal{
         object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
         object.recalculate();
     }
-
-
 
     selectPartner(id){
         var object = this;

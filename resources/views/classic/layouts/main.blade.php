@@ -20,7 +20,6 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/base.css') }}" rel="stylesheet">
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
-
     </head>
     <body>
     <input type="hidden" name="barcode_temp" id="barcode_temp">
