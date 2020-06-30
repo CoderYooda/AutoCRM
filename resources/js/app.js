@@ -35,6 +35,7 @@ import Entity from './Classes/Entity.js';
 import Scanner from './Classes/Scanner.js';
 import Auth from './Classes/Auth.js';
 import Tabs from './Classes/Tabs.js';
+import SettingMaster from './Classes/SettingMaster.js';
 
 window.helper = new Helper();
 window.socket = new Socket();
@@ -49,6 +50,7 @@ window.scanner = new Scanner();
 window.auth = new Auth();
 window.tabs = new Tabs();
 window.tippy = tippy;
+window.setting_mater = new SettingMaster();
 
 //window.modal = new Modal();
 

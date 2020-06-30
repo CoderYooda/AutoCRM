@@ -53,7 +53,6 @@ class SettingsController extends Controller
 
     public static function indexTab($request)
     {
-
         $company = Auth::user()->company()->first();
         $settings = Setting::owned()->get();
         $roles = Role::where('company_id', Auth::user()->company->id)->get();

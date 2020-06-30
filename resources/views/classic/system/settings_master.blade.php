@@ -6,17 +6,21 @@
                     <h2 class="">Мастер настройки BBCRM</h2>
 
                     <div id="step_1">
-                        <h3 class="mb-5">Данные вашей компании</h3>
-
-                        <div class="form-group">
-                            <label>Название компании</label>
-                            <input type="text" name="name" class="form-control" placeholder="Название компании (не более 255 символов)" autofocus>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Стандартная наценка (%)</label>
-                            <input name="markup" type="number" class="form-control" value="30">
-                        </div>
+                        <formm method="POST" style="width: 700px;" onsubmit="">
+                            <h3 class="mb-10">Данные вашей компании</h3>
+                            <div class="form-group">
+                                <label>Название компании</label>
+                                <input type="text" name="name" class="form-control" placeholder="Название компании (не более 255 символов)" autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label>Стандартная наценка (%)</label>
+                                <input name="markup" type="number" class="form-control" value="30">
+                            </div>
+                            <div class="d-flex">
+                                <button style="width: 50%;" onclick="settings.activeTab(this, 'fl')" class="button primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
+                                <button style="width: 50%;" onclick="settings.activeTab(this, 'ul')" class="ml-15 button primary @if($company->is_company) active @endif">Юридическое лицо</button>
+                            </div>
+                        </formm>
                     </div>
                 </div>
                 <div class="right-s p-15">

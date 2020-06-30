@@ -179,11 +179,22 @@ Switch
     color: #00ff4d;
 }
 
+#settings_master .form-group label{
+    padding-right: 15px;
+    margin-bottom: 0 !important;
+    line-height: 32px;
+    width: 400px;
+}
+
+#settings_master .form-group{
+    display: flex;
+}
+
 #settings_master .right-s{
-    flex: 1.5;
     background: #2D76A8;
     color: #fff;
     line-height: 18px;
+    min-width: 220px;
 }
 #settings_master .info{
     border-bottom: 1px solid #5897c1;
