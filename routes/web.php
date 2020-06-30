@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/settings/base/store', 'SettingsController@baseStore')->name('BaseSettingsStore');
     Route::post('/settings/base/fresh', 'SettingsController@freshBaseStore')->name('FreshBaseStore');
+    Route::post('/settings/company/save', 'SettingsController@saveCompanySettings')->name('SaveCompanySettings');
 
     #Категории
     Route::post('/category/loadview', 'CategoryController@loadAside')->name('LoadAsideCategory');

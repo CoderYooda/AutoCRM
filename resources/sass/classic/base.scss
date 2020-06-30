@@ -1888,3 +1888,14 @@ input:-moz-placeholder { /* Firefox 18- */
 .p_rel {
     position: relative;
 }
+
+#ajax-table-role {
+
+    .tab {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+}

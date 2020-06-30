@@ -358,7 +358,7 @@ class partnerDialog extends Modal{
             if(!Object.keys(data).length) return ;
 
             this.current_dialog.querySelector('input[name=cs]').value = data.ks;
-            this.current_dialog.querySelector('input[name=ur_address]').value = data.city + ', ' + data.address;
+            // this.current_dialog.querySelector('input[name=ur_address]').value = data.city + ', ' + data.address; Это адрес банка
             this.current_dialog.querySelector('input[name=bank]').value = data.name.split('&quot;').join('"');
         });
     }
