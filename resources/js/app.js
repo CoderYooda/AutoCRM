@@ -50,7 +50,7 @@ window.scanner = new Scanner();
 window.auth = new Auth();
 window.tabs = new Tabs();
 window.tippy = tippy;
-window.setting_mater = new SettingMaster();
+window.setting_master = new SettingMaster();
 
 //window.modal = new Modal();
 

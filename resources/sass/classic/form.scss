@@ -201,7 +201,12 @@ Switch
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
-
+.fl-ul-tab .tab{
+    display: none;
+}
+.fl-ul-tab .tab.active{
+    display: block;
+}
 .list-item {
     display: -ms-flexbox;
     display: flex;
@@ -211,6 +216,11 @@ Switch
     align-items: stretch;
     padding: 0.75rem 0.5rem;
     position: relative;
+}
+
+#settings_master input:disabled {
+    background-color: #F5F5F5;
+    border-color: #CDCDCD;
 }
 
 .tariff-container h3{
