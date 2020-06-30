@@ -27,19 +27,11 @@ class shipmentDialog extends Modal{
     };
 
     printScore() {
-        axios.post('/documents/invoice-for-payment', {
-
-        })
-        .then(response => {
-
-        })
-        .catch(response => {
-
-        });
+        window.helper.printDocument('shipment-score');
     }
 
-    printUdp() {
-
+    printUpd() {
+        window.helper.printDocument('shipment-upd');
     }
 
     getPayment(){

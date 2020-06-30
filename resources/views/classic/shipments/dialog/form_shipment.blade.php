@@ -197,7 +197,7 @@
                     <div class="dropdown_container">
                         <div class="arrow"></div>
                         <span onclick="{{ $class }}.printScore()" class="element">Счёт</span>
-                        <span onclick="{{ $class }}.printUdp()" class="element">УДП</span>
+                        <span onclick="{{ $class }}.printUpd()" class="element">УПД</span>
                     </div>
                 </button>
 
