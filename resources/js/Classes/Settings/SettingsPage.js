@@ -240,10 +240,6 @@ class settingsPage{
 
             if(element.parentElement.tagName === 'FORM') return;
 
-            if(type === 'ul' && element.name === 'actual_address') {
-                
-            }
-
             element.disabled = true;
         });
 
@@ -253,12 +249,14 @@ class settingsPage{
 
         valid_inputs.forEach(element => {
             element.disabled = false;
+
+            if(type === 'ul' && element.name === 'actual_address') {
+                element.disabled = document.querySelector('[type=checkbox]').checked;
+            }
         })
     }
 
     saveRequisites(form_element) {
-
-        console.log('saveRequisites');
 
         event.preventDefault();
 
