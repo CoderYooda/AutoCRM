@@ -13,6 +13,8 @@ class CreateImportHistoryTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('import_history');
+
         Schema::create('import_history', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('partner_id');

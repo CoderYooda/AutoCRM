@@ -191,6 +191,16 @@
 
             <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             {{--<button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>--}}
+
+                <button class="dropdown pull-right button" onclick="event.preventDefault(); window.helper.openModal(this, event)">
+                    Печать
+                    <div class="dropdown_container">
+                        <div class="arrow"></div>
+                        <span onclick="{{ $class }}.printScore()" class="element">Счёт</span>
+                        <span onclick="{{ $class }}.printUdp()" class="element">УДП</span>
+                    </div>
+                </button>
+
             <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">

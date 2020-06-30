@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\SaveCompanySettingsRequest;
 use App\Models\Cashbox;
 use App\Models\Company;
 use App\Models\DdsArticle;
@@ -69,6 +70,23 @@ class SettingsController extends Controller
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.cashbox_container', compact('cashboxes', 'request'));
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes','request'));
+    }
+
+    public static function requisitesTab(Request $request)
+    {
+        $company = Auth::user()->company;
+
+        return view(get_template() . '.settings.requisites', compact('request', 'company'));
+    }
+
+    public function saveCompanySettings(SaveCompanySettingsRequest $request)
+    {
+        Company::find($request->company_id)->update($request->validated());
+
+        return response()->json([
+            'message' => 'Настройки успешно сохранены.',
+            'type' => 'success'
+        ]);
     }
 
     public static function storeTab($request)

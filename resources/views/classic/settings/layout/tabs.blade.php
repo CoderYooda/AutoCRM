@@ -10,6 +10,11 @@
                     <span class="nav-text">Основное</span>
                 </a>
             </li>
+            <li id="setting-index-tab" data-tab="requisites" data-default="true" class="@if($request['active_tab'] == 'requisites' || $request['active_tab'] == null) active @endif tab">
+                <a href="{{ route('SettingsIndex', ['active_tab' => 'requisites', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
+                    <span class="nav-text">Реквизиты</span>
+                </a>
+            </li>
             <li id="setting-cashbox-tab" data-tab="cashbox" class="@if($request['active_tab'] == 'cashbox') active @endif tab">
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'cashbox', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                     <span class="nav-text">Кассы</span>

@@ -1,0 +1,131 @@
+{{--@extends('product.layout.tabs')--}}
+
+@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.settings.layout.tabs')
+
+@section('tab')
+
+    <div id="ajax-table-role" class="box d-flex p-15 m-15">
+
+        <form style="width: 700px;" onsubmit="settings.saveRequisites(this)">
+
+            @csrf
+            <input type="hidden" name="company_id" value="{{ auth()->user()->company->id }}">
+
+            <div class="d-flex">
+                <button style="width: 50%;" onclick="settings.activeTab(this, 'fl')" class="button primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
+                <button style="width: 50%;" onclick="settings.activeTab(this, 'ul')" class="ml-15 button primary @if($company->is_company) active @endif">Юридическое лицо</button>
+            </div>
+
+            <div class="tab fl @if(!$company->is_company) active @endif">
+
+                <div class="form-group mt-15">
+                    <label>ФИО (полностью)</label>
+                    <input name="name" type="text" class="form-control" placeholder="ФИО" value="{{ !$company->is_company ? $company->name : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>ИНН</label>
+                    <input name="inn" type="text" class="form-control" placeholder="Ваш ИНН" value="{{ !$company->is_company ? $company->inn : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>ОГРНИП</label>
+                    <input name="ogrn" type="text" class="form-control" placeholder="Ваш ОГРНИП" value="{{ !$company->is_company ? $company->ogrn : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>БИК</label>
+                    <input name="bik" type="text" onchange="settings.wroteBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ !$company->is_company ? $company->bik : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>Банк</label>
+                    <input name="bank" type="text" class="form-control" placeholder="Ваш банк" value="{{ !$company->is_company ? $company->bank : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>Корреспондентский счет</label>
+                    <input name="cs" type="text" class="form-control" placeholder="Ваш корреспондентский счет" value="{{ !$company->is_company ? $company->cs : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>Расчетный счет</label>
+                    <input name="rs" type="text" class="form-control" placeholder="Ваш расчетный счет" value="{{ !$company->is_company ? $company->rs: '' }}">
+                </div>
+
+            </div>
+
+            <div class="tab ul @if($company->is_company) active @endif">
+
+                <div class="form-group mt-15">
+                    <label>Наименование организации</label>
+                    <input name="name" type="text" class="form-control" placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" value="{{ $company->is_company ? $company->name : '' }}">
+                </div>
+
+                <div class="form-group ">
+                    <label>ИНН</label>
+                    <input name="inn" type="text" class="form-control" placeholder="Ваш ИНН" value="{{ $company->is_company ? $company->inn : '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>ОГРН</label>
+                    <input name="name" type="text" class="form-control" placeholder="Ваш ОГРН" value="{{ $company->is_company ? $company->ogrn : '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>КПП</label>
+                    <input name="kpp" type="text" class="form-control" placeholder="Ваш КПП" value="{{ $company->is_company ? $company->kpp : '' }}">
+                </div>
+
+                <div class="d-flex">
+
+                    <div class="form-group w-350">
+                        <label>Юридический адрес</label>
+                        <input name="legal_address" type="text" class="form-control" placeholder="Ваш юридический адрес" value="{{ $company->legal_address }}">
+                    </div>
+
+                    <div class="form-group ml-15 w-350 p_rel">
+                        <label>Фактический адрес</label>
+                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ $company->actual_address }}">
+
+                        <div class="form_checkbox">
+                            <input name="similar_address" type="checkbox" onchange="settings.similarCompanyAddress(this)" @if(strlen($company->actual_address)) checked @endif>
+                            <label>Совпадает с юридическим</label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label>БИК</label>
+                    <input name="bik" type="text" onchange="settings.wroteBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ $company->is_company ? $company->bik : '' }}">
+                </div>
+
+                <div class="form-group ">
+                    <label>Банк</label>
+                    <input name="bank" type="text" class="form-control" placeholder="Наименование банка" value="{{ $company->is_company ? $company->bank : '' }}">
+                </div>
+
+                <div class="d-flex">
+
+                    <div class="form-group w-350 ">
+                        <label>Корреспондентский счет</label>
+                        <input name="cs" type="text" class="form-control" placeholder="Ваш корреспондентский счет" value="{{$company->is_company ? $company->cs : '' }}">
+                    </div>
+
+                    <div class="ml-15 form-group w-350 ">
+                        <label>Расчетный счет</label>
+                        <input name="rs" type="text" class="form-control" placeholder="Ваш расчетный счет" value="{{ $company->is_company ? $company->rs : '' }}">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button class="button primary">Сохранить</button>
+
+        </form>
+
+    </div>
+@endsection
