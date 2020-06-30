@@ -289,8 +289,6 @@ class Helper{
         }).then(function (response) {
             var printContents = response.data;
 
-
-
             var css = '@page { size: landscape; }',
                 head = document.head || document.getElementsByTagName('head')[0],
                 style = document.createElement('style');
@@ -312,8 +310,6 @@ class Helper{
             let unprinted = document.getElementById('unprinted');
             let printed = document.getElementById('printed');
             printed.innerHTML = printContents;
-
-
 
             setTimeout(()=> {
                 window.print();

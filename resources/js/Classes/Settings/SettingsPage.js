@@ -221,6 +221,8 @@ class settingsPage{
 
         event.preventDefault();
 
+        document.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
+
         let button_elements = document.querySelectorAll('.d-flex > button');
         button_elements.forEach(element => {
             element.classList.remove('active');

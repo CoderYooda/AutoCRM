@@ -31,7 +31,10 @@ class shipmentDialog extends Modal{
     }
 
     printUpd() {
-        window.helper.printDocument('shipment-upd', null, null, true);
+
+        let data = JSON.stringify(this.items);
+
+        window.helper.printDocument('shipment-upd', null, data, true);
     }
 
     getPayment(){

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentsController extends Controller
 {
@@ -17,6 +20,15 @@ class DocumentsController extends Controller
             'shipment-upd' => 'documents.upd'
         ];
 
-        return view($names[$request->doc], compact('request'));
+        $view = view($names[$request->doc], compact('request'));
+
+        if($request->doc == 'shipment-upd') {
+            $ids = collect(json_decode($request->data))->pluck('id');
+
+            $view->with('company', Auth::user()->company);
+            $view->with('products', Article::whereIn('id', $ids)->get());
+        }
+
+        return $view;
     }
 }

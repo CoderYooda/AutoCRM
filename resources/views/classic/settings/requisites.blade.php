@@ -10,6 +10,7 @@
 
             @csrf
             <input type="hidden" name="company_id" value="{{ auth()->user()->company->id }}">
+            <input type="hidden" name="is_company" value="{{ $company->is_company }}">
 
             <div class="d-flex">
                 <button onclick="settings.activeTab(this, 'fl')" class="button flex-1 primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
@@ -69,7 +70,7 @@
 
                 <div class="form-group">
                     <label>ОГРН</label>
-                    <input name="name" type="text" class="form-control" placeholder="Ваш ОГРН" value="{{ $company->is_company ? $company->ogrn : '' }}">
+                    <input name="ogrn" type="text" class="form-control" placeholder="Ваш ОГРН" value="{{ $company->is_company ? $company->ogrn : '' }}">
                 </div>
 
                 <div class="form-group">
@@ -86,7 +87,7 @@
 
                     <div class="form-group ml-15 w-350 p_rel">
                         <label>Фактический адрес</label>
-                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ $company->actual_address }}" @if($company->similar_address) disabled @endif>
+                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ !$company->similar_address ? $company->actual_address : '' }}" @if($company->similar_address) disabled @endif>
 
                         <div class="form_checkbox">
                             <input name="similar_address" type="checkbox" onchange="settings.similarCompanyAddress(this)" @if($company->similar_address) checked @endif>
