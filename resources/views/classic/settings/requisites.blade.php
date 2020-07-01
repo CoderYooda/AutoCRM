@@ -122,6 +122,20 @@
 
                 </div>
 
+                <div class="d-flex">
+
+                    <div class="form-group w-350">
+                        <label>Руководитель компании</label>
+                        <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя компании" value="{{ $company->owner }}">
+                    </div>
+
+                    <div class="form-group ml-15 w-350 p_rel">
+                        <label>Главный бухгалтер</label>
+                        <input name="auditor" type="text" class="form-control" placeholder="ФИО главного руководителя" value="{{ $company->auditor  }}">
+                    </div>
+
+                </div>
+
             </div>
 
             <button class="button primary">Сохранить</button>

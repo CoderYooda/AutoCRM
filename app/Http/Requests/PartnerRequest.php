@@ -34,7 +34,7 @@ class PartnerRequest extends FormRequest
     {
         $rules = null;
 
-        if($this->isfl){
+        if($this->type == 0){
             $rules = [
                 'fio' => ['required', 'min:4', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id']
@@ -50,7 +50,7 @@ class PartnerRequest extends FormRequest
             if($this->issued_date){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:d.m.Y'];}
             if($this->issued_place){$rules['issued_place'] = ['min:0', 'max:250'];}
 
-        } elseif(!$this->isfl) {
+        } elseif($this->type != 0) {
             $rules = [
                 'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
                 'companyName' => ['required', 'min:4', 'string', 'max:255'],

@@ -86,23 +86,16 @@ class PartnerController extends Controller
 
         $view = view(get_template() . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
             ->with('vehicles', $partner->vehicles ?? [])
+            ->with('class', $tag)
             ->render();
 
         $response = [
             'tag' => $tag,
-            'html' => $view,
+            'html' => $view
         ];
 
         return response()->json($response);
     }
-
-//    public static function partnerDialog($request)
-//    {
-//        $tag = 'editPartner';
-
-//
-//        return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner'))->render()]);
-//    }
 
     public function store(PartnerRequest $request)
     {
@@ -408,7 +401,7 @@ class PartnerController extends Controller
 //            ->when($request['dates_range'] != null, function($query) use ($request) {
 //                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
 //            })
-            
+
             ->groupBy('partners.id')
 
             ->orderBy($field, $dir)

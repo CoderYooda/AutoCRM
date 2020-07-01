@@ -26,7 +26,7 @@ class CreateBasePartners extends Seeder
 
             if($i < 12){
                 Partner::create([
-                    'isfl' => 1,
+                    'type' => 0,
                     'category_id' => 5,
                     'fio' => $user['lname'] . ' ' . $user['fname'] . ' ' . $user['patronymic'],
                     'companyName' => '',
@@ -45,7 +45,7 @@ class CreateBasePartners extends Seeder
             }
 
             Partner::create([
-                'isfl' => $fl,
+                'type' => $fl,
                 'category_id' => rand(6, 7),
                 'fio' => $user['lname'] . ' ' . $user['fname'] . ' ' . $user['patronymic'],
                 'companyName' => $companyName,

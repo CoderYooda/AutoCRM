@@ -1,5 +1,5 @@
 
-<div class="form-group">
+<div class="form-group fl ip ul">
     <label>Доступ в систему</label>
     <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
         @if(isset($partner) && $partner->user()->first() != null)

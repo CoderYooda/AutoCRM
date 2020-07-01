@@ -236,9 +236,9 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
 передаточный документ</span></a></td>
         <td colspan=9 class=xl111 style='border-left:none'>Счет-фактура N<span
                 style='mso-spacerun:yes'> </span></td>
-        <td colspan=7 class=xl112>&nbsp;</td>
+        <td colspan=7 class=xl112>{{ $shipment->id ?? 'Не указан' }}</td>
         <td colspan=2 class=xl113>от</td>
-        <td colspan=10 class=xl112>&nbsp;</td>
+        <td colspan=10 class=xl112>{{ $shipment->created_at->format('d.m.Y') ?? 'Не указан' }}</td>
         <td colspan=4 class=xl65>(1)</td>
         <td colspan=45 rowspan=3 class=xl114 width=540 style='width:405pt'>Приложение
             N 1 к постановлению Правительства Российской Федерации от 26 декабря 2011
@@ -250,9 +250,9 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
     <tr height=17 style='height:12.75pt'>
         <td colspan=9 height=17 class=xl111 style='height:12.75pt;border-left:none'>Исправление
             N</td>
-        <td colspan=7 class=xl115>&nbsp;</td>
+        <td colspan=7 class=xl115>---</td>
         <td colspan=2 class=xl113>от</td>
-        <td colspan=10 class=xl115>&nbsp;</td>
+        <td colspan=10 class=xl115>---</td>
         <td colspan=4 class=xl65>(1а)</td>
     </tr>
     <tr height=7 style='mso-height-source:userset;height:5.25pt'>
@@ -260,16 +260,23 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Продавец</td>
-        <td colspan=58 class=xl75>&nbsp;</td>
+        <td colspan=58 class=xl75>
+
+            @if($company->is_company)
+                {{ $company->name ?? 'Не указан' }}
+            @else
+                ИП {{ $company->name }}
+            @endif
+        </td>
         <td colspan=3 class=xl67>(2)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=4 height=15 class=xl65 style='height:11.25pt'>Статус:<span
                 style='mso-spacerun:yes'> </span></td>
-        <td colspan=2 class=xl104>&nbsp;</td>
-        <td colspan=2 class=xl105 style='border-left:none'>&nbsp;</td>
+        <td colspan=2 class=xl104>1</td>
+        <td colspan=2 class=xl105 style='border-left:none'> </td>
         <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>{{ $company->legal_address ?? 'Не указан' }}</td>
         <td colspan=3 class=xl67>(2а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -278,57 +285,57 @@ width:72pt'><br>
             1 - счет-фактура и передаточный документ (акт) <br>
             2 - передаточный документ (акт)</td>
         <td colspan=16 class=xl102 style='border-left:none'>ИНН/КПП продавца</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>{{ $company->inn ?? 'Не указан' }} / {{ $company->kpp ?? 'Не указан' }}</td>
         <td colspan=3 class=xl67>(2б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Грузоотправитель
             и его адрес</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>---</td>
         <td colspan=3 class=xl67>(3)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Грузополучатель
             и его адрес</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>---</td>
         <td colspan=3 class=xl67>(4)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>К
             платежно-расчетному документу</td>
         <td colspan=2 class=xl107>N<span style='mso-spacerun:yes'> </span></td>
-        <td colspan=8 class=xl79>&nbsp;</td>
+        <td colspan=8 class=xl79> </td>
         <td colspan=2 class=xl67>от</td>
-        <td colspan=46 class=xl103>&nbsp;</td>
+        <td colspan=46 class=xl103> </td>
         <td colspan=3 class=xl67>(5)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Покупатель</td>
-        <td colspan=58 class=xl75>&nbsp;</td>
+        <td colspan=58 class=xl75>{{ $shipment->partner->isfl ? $shipment->partner->fio : $shipment->partner->companyName }}</td>
         <td colspan=3 class=xl67>(6)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>{{ $shipment->partner->isfl ? $shipment->partner->address : $shipment->partner->ur_address }}</td>
         <td colspan=3 class=xl67>(6а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>ИНН/КПП
             покупателя</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>{{ $shipment->partner->inn ?? '---' }} / {{ $shipment->partner->kpp ?? '---' }}</td>
         <td colspan=3 class=xl67>(6б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Валюта:
             наименование, код</td>
-        <td colspan=58 class=xl103>&nbsp;</td>
+        <td colspan=58 class=xl103>Российский рубль, 643</td>
         <td colspan=3 class=xl67>(7)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=37 height=15 class=xl99 width=444 style='height:11.25pt;
 border-left:none;width:333pt'>Идентификатор государственного контракта,
             договора (соглашения) (при наличии)</td>
-        <td colspan=37 class=xl100 width=444 style='width:333pt'>&nbsp;</td>
+        <td colspan=37 class=xl100 width=444 style='width:333pt'>---</td>
         <td colspan=3 class=xl67>(8)</td>
     </tr>
     <tr height=6 style='mso-height-source:userset;height:4.5pt'>
@@ -437,18 +444,19 @@ none;width:18pt'>код</td>
         <td colspan=8 height=30 class=xl81 width=96 style='height:22.5pt;width:72pt'>Документ
             составлен на<span style='mso-spacerun:yes'> </span></td>
         <td class=xl66>&nbsp;</td>
-        <td colspan=16 class=xl81 width=192 style='width:144pt'>Руководитель
+        <td colspan="16" class="xl81" width="192" style="width:144pt">Руководитель
             организации <br>
-            или иное уполномоченное лицо</td>
+            или иное уполномоченное лицо
+        </td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>&nbsp;</td>
-        <td colspan=16 class=xl81 width=192 style='width:144pt'>Главный бухгалтер
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '---' }}</td>
+        <td colspan="16" class="xl81" width="192" style="width:144pt">Главный бухгалтер
             <br>
             или иное уполномоченное лицо</td>
-        <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
-        <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>&nbsp;</td>
+        <td colspan="6" class="xl88" width="72" style="width:54pt">&nbsp;</td>
+        <td class="xl68" width="12" style="width:9pt"></td>
+        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '---' }}</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=3 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
@@ -458,10 +466,10 @@ none;width:18pt'>код</td>
         <td colspan=6 class=xl69 width=72 style='width:54pt'>(подпись)</td>
         <td class=xl69 width=12 style='width:9pt'></td>
         <td colspan=15 class=xl69 width=180 style='width:135pt'>(ф.и.о.)</td>
-        <td colspan=16 class=xl87 width=192 style='width:144pt'></td>
-        <td colspan=6 class=xl69 width=72 style='width:54pt'>(подпись)</td>
-        <td class=xl69 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl69 width=180 style='width:135pt'>(ф.и.о.)</td>
+        <td colspan="16" class="xl87" width="192" style="width:144pt"></td>
+        <td colspan="6" class="xl69" width="72" style="width:54pt">(подпись)</td>
+        <td class="xl69" width="12" style="width:9pt"></td>
+        <td colspan="15" class="xl69" width="180" style="width:135pt">(ф.и.о.)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=8 height=15 class=xl80 style='height:11.25pt'>&nbsp;</td>
@@ -470,7 +478,7 @@ none;width:18pt'>код</td>
             предприниматель</td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>&nbsp;</td>
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>
         <td colspan=3 class=xl81 width=36 style='width:27pt'></td>
         <td colspan=35 class=xl83 width=420 style='width:315pt'>&nbsp;</td>
     </tr>
@@ -492,7 +500,7 @@ none;width:18pt'>код</td>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=22 height=15 class=xl65 style='height:11.25pt'>Основание передачи
             (сдачи) / получения (приемки)</td>
-        <td colspan=60 class=xl83 width=720 style='width:540pt'>&nbsp;</td>
+        <td colspan=60 class=xl83 width=720 style='width:540pt'>Счёт №{{ $shipment->id ?? 'Не указано' }}</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[8]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -528,14 +536,14 @@ none;width:18pt'>код</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>&nbsp;</td>
+        <td colspan=14 class=xl75>{{ auth()->user()->partner->cut_surname }}</td>
         <td colspan=3 class=xl76>[10]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=13 class=xl79>&nbsp;</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>&nbsp;</td>
+        <td colspan=14 class=xl75>{{ $shipment->partner->isfl ? $shipment->partner->cut_surname : $shipment->partner->ur_fio }}</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[15]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -614,14 +622,14 @@ none;width:18pt'>код</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>&nbsp;</td>
+        <td colspan=14 class=xl75></td>
         <td colspan=3 class=xl76>[13]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=13 class=xl79>&nbsp;</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>&nbsp;</td>
+        <td colspan=14 class=xl75>---</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[18]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -650,10 +658,26 @@ none;width:18pt'>код</td>
         <td colspan=3 class=xl67></td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl75 style='height:11.25pt'>&nbsp;</td>
+        <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
+
+            @if($company->is_company)
+                {{ $company->name }}, ИНН {{ $company->inn ?? 'Не указан' }}, КПП {{ $company->kpp ?? 'Не указан' }}
+            @else
+                ИП {{ $company->name ?? 'Не указан' }}
+            @endif
+
+        </td>
         <td colspan=3 class=xl76>[14]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl75>&nbsp;</td>
+        <td colspan=39 class=xl75>
+
+            @if(!$shipment->partner->isfl)
+                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? 'Не указан' }}, КПП {{ $shipment->partner->kpp ?? 'Не указан' }}
+            @else
+                Частное лицо
+            @endif
+
+        </td>
         <td colspan=3 class=xl67>[19]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>

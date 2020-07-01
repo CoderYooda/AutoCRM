@@ -9,7 +9,7 @@ use App\Models\Partner;
 $factory->define(Partner::class, function (Faker $faker) {
     return [
         'category_id' =>  rand(5,7),
-        'isfl' => rand(0,1),
+        'type' => rand(0,2),
         'balance' => 0,
         'fio' => $faker->name,
         'birthday' => $faker->dateTimeBetween($startDate = '-80 years', $endDate = '-30 years'),

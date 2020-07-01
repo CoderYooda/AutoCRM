@@ -42,6 +42,11 @@ class Shipment extends Model
         }
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')

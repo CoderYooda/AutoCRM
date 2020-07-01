@@ -32,6 +32,9 @@ class SaveCompanySettingsRequest extends FormRequest
             'bank' => ['nullable', 'string', 'max:255'],
             'cs' => ['nullable', 'string', 'max:255'],
             'rs' => ['nullable', 'string', 'max:255'],
+            'owner' => ['nullable', 'string', 'max:255'],
+            'auditor' => ['nullable', 'string', 'max:255'],
+            'is_company' => ['required', 'between:0,1'],
             'similar_address' => ['boolean']
         ];
     }

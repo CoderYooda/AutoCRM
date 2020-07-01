@@ -7,7 +7,7 @@
                     <h2 class="">Мастер настройки #bbcrm</h2>
 
                     <div id="step_1">
-                        <formm class="fl-ul-tab" method="POST" style="width: 700px;" onsubmit="">
+                        <form class="fl-ul-tab" method="POST" style="width: 700px;" onsubmit="">
                             <h3 class="mb-10">Данные вашей компании</h3>
                             <div class="form-group">
                                 <label>Название компании</label>
@@ -114,7 +114,7 @@
                                 </div>
                             </div>
 
-                        </formm>
+                        </form>
                     </div>
                 </div>
                 <div class="right-s p-15">

@@ -26,7 +26,7 @@
                 <div class="p-15">
                     <h2 class="user_h2">
                         @if(isset($editmode) && $editmode)
-                            @if($user->isfl)
+                            @if($user->type == 0)
                                 <input class="name_edit" type="text" name="fio" value="{{ $user->fio }}">
                             @else
                                 <input class="name_edit" type="text" name="companyName"

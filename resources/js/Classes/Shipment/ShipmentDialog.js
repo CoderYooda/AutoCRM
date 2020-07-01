@@ -33,8 +33,9 @@ class shipmentDialog extends Modal{
     printUpd() {
 
         let data = JSON.stringify(this.items);
+        let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        window.helper.printDocument('shipment-upd', null, data, true);
+        window.helper.printDocument('shipment-upd', id, data, true);
     }
 
     getPayment(){
@@ -214,7 +215,6 @@ class shipmentDialog extends Modal{
             data: data,
         }).then(function (resp) {
             document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            console.log('Вставили html');
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
