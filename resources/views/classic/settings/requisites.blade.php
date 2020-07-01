@@ -4,7 +4,7 @@
 
 @section('tab')
 
-    <div id="ajax-table-role" class="box d-flex p-15 m-15">
+    <div id="ajax-table-requisites" class="box d-flex p-15 m-15">
 
         <form style="width: 700px;" action="{{ route('SaveCompanySettings') }}" method="POST" onsubmit="settings.saveRequisites(this)">
 

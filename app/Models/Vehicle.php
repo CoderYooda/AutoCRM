@@ -27,7 +27,7 @@ class Vehicle extends Model
 
     public function getFullNameAttribute()
     {
-        return $this->mark->name . ' ' . $this->model->name;
+        return $this->mark->name . ' ' . ($this->model->name ?? '');
     }
 
     public function getImageAttribute()

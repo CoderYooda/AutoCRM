@@ -23,10 +23,27 @@ class DocumentsController extends Controller
         $view = view($names[$request->doc], compact('request'));
 
         if($request->doc == 'shipment-upd') {
-            $ids = collect(json_decode($request->data))->pluck('id');
+
+            $selected_products = json_decode($request->data);
+
+            $sorted_products = [
+                'total_price' => 0,
+                'total_nds' => 0,
+            ];
+
+            foreach($selected_products as $product) {
+                $sorted_products[$product->id] = [
+                    'count' => $product->count,
+                    'price' => $product->price
+                ];
+
+                $sorted_products['total_price'] += $product->price * $product->count;
+                $sorted_products['total_nds'] += ($product->price * $product->count) / 100 * 20;
+            }
 
             $view->with('company', Auth::user()->company);
-            $view->with('products', Article::whereIn('id', $ids)->get());
+            $view->with('products', Article::whereIn('id', array_keys($sorted_products))->get());
+            $view->with('sorted_products', $sorted_products);
         }
 
         return $view;

@@ -11,10 +11,10 @@
                 <div class="user-page-vehicle-desc">{{ $vehicle->mark->name }}</div>
 
                 <div class="user-page-vehicle-title">Модель</div>
-                <div class="user-page-vehicle-desc">{{ $vehicle->model->name }}</div>
+                <div class="user-page-vehicle-desc">{{ $vehicle->model->name ?? 'Не указано' }}</div>
 
                 <div class="user-page-vehicle-title">Модификация</div>
-                <div class="user-page-vehicle-desc">{{ $vehicle->modify->name }}</div>
+                <div class="user-page-vehicle-desc">{{ $vehicle->modify->name ?? 'Не указано' }}</div>
             </div>
 
             <div class="vehicle-buttons d-flex">

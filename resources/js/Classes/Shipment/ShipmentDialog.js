@@ -182,7 +182,7 @@ class shipmentDialog extends Modal{
                 window.dialogs['shipmentDialog' + resp.data.id] = drag_dialog;
                 drag_dialog.tag = 'shipmentDialog' + resp.data.id;
                 window.helper.initDialogMethods();
-                object.finitaLaComedia(true);
+                // object.finitaLaComedia(true);
                 object.getPayment();
             });
         });
