@@ -49,6 +49,9 @@ class DialogController extends Controller
             case 'storeDialog':
                 $dialog = StoreController::storeDialog($request);  //////
                 break;
+            case 'storeImportDialog':
+                $dialog = StoreController::storeImportDialog($request);  //////
+                break;
             case 'ddsarticleDialog':
                 $dialog = DdsarticleController::ddsarticleDialog($request); #
                 break;

@@ -47,18 +47,6 @@ class partnerDialog extends Modal{
                 object.save(object.current_dialog.getElementsByTagName('form')[0]);
             }
         });
-
-        document.addEventListener('VehicleStored', (e => this.freshVehicles(e)));
-    }
-
-    freshVehicles(event) {
-        let data = event.detail.data;
-        let vehicle = data.vehicle;
-
-        let vehicle_element =  this.current_dialog.querySelector('#vehicle_item_' + vehicle.id);
-
-        if (typeof(vehicle_element) != 'undefined' && vehicle_element != null) vehicle_element.outerHTML = data.html;
-        else this.current_dialog.querySelector('#vehicle_item_create').before(helper.createElementFromHTML(data.html));
     }
 
     initDatePicker() {
@@ -295,14 +283,6 @@ class partnerDialog extends Modal{
         //helper.initTabs('partner_tabs');
     }
 
-    addEmail(element) {
-        let input = this.current_dialog.querySelector('input[name=email]');
-
-        input.style.display = 'block';
-
-        element.style.display = 'none';
-    }
-
     addPhone(element){
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
@@ -333,13 +313,12 @@ class partnerDialog extends Modal{
     addNumberMasks() {
 
         let inputs = {
-            cs: [0, 99999999999999999999],
-            rs: [0, 99999999999999999999],
-            bik: [0, 999999999],
-
-            inn: [0, 9999999999999],
-            ogrn: [0, 9999999999999],
-            kpp: [0, 999999999]
+            cs: '00000000000000000000',
+            rs: '00000000000000000000',
+            bik: '000000000',
+            inn: '0000000000000',
+            ogrn: '0000000000000',
+            kpp: '000000000'
         };
 
         Object.keys(inputs).forEach(name => {
@@ -347,10 +326,40 @@ class partnerDialog extends Modal{
             let element = document.getElementsByName(name)[0];
 
             window.IMask(element, {
-                mask: Number,
-                min: inputs[name][0],
-                max: inputs[name][1]
+                mask: inputs[name],
+                lazy: true
             });
+        });
+    }
+
+    showField(element, input_name) {
+
+        element.style.display = 'none';
+
+        let input = this.current_dialog.querySelector('[name=' + input_name + ']');
+
+        input.style.display = 'block';
+
+        input.parentElement.removeAttribute('style');
+    }
+
+    wroteBik(element) {
+        if(element.value.length !== 9) return;
+
+        window.axios({
+            method: 'get',
+            url: '/api/bik/' + element.value,
+        }).then(response => {
+
+            console.log(response);
+
+            let data = response.data;
+
+            if(!Object.keys(data).length) return ;
+
+            this.current_dialog.querySelector('input[name=cs]').value = data.ks;
+            // this.current_dialog.querySelector('input[name=ur_address]').value = data.city + ', ' + data.address; Это адрес банка
+            this.current_dialog.querySelector('input[name=bank]').value = data.name.split('&quot;').join('"');
         });
     }
 

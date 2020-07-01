@@ -5,7 +5,7 @@
         {{--<div class="navbar white no-radius box-shadow pos-rlt">--}}
             {{--<div class="d-flex flex-row flex">--}}
                 {{--<div class="input-group mr-2"  style="width: 200px;">--}}
-                    {{--<input id="search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поиск по контрагенту">--}}
+                    {{--<input id="search" type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm search" placeholder="Поиск по контакту">--}}
                     {{--<div class="input-group-append">--}}
                         {{--<button type="button" onclick="window.store.resetSearch()" class="btn btn-sm white"><i class="fa fa-remove"></i></button>--}}
                     {{--</div>--}}
@@ -38,7 +38,7 @@
                         <button type="button" onclick="window.store.resetDate()" class="btn btn-sm white"><i class="fa fa-remove"></i></button>
                     </div>
                 </div>
-                <input id="search" name="search" placeholder="Поиск по контрагенту" class="input w-100" value="{{ request('search') }}" type="text">
+                <input id="search" name="search" placeholder="Поиск по контакту" class="input w-100" value="{{ request('search') }}" type="text">
             </div>
             <div class="actions">
                 <button onclick="openDialog('shipmentDialog')" class="button primary">Новая продажа</button>

@@ -114,9 +114,12 @@ class RoleController extends Controller
 	{
 		$role = LRole::create(['name' => 'Руководитель', 'company_id' => $company->id]);
 		$role2 = LRole::create(['name' => 'Менеджер', 'company_id' => $company->id]);
-		$role3 = LRole::create(['name' => 'Стажер', 'company_id' => $company->id]);
+        $role2->givePermissionTo(Permission::whereIn('id' , [2,3, 6,7,14,15,18,19,22,23,26,29,36,37,39,40,41,44,48])->get());
+        $roles['main'] = $role;
+        $roles['default'] = $role2;
 		$permissions = Permission::all()->pluck('id');
 		$role->givePermissionTo($permissions);
-		return $role;
+
+		return $roles;
 	}
 }

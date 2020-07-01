@@ -19,6 +19,7 @@ Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 #Тариф
 Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePayment');
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
+Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
 //Route::multilingual('/', 'DashboardController@index');
 
@@ -39,6 +40,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/settings/base/store', 'SettingsController@baseStore')->name('BaseSettingsStore');
     Route::post('/settings/base/fresh', 'SettingsController@freshBaseStore')->name('FreshBaseStore');
+    Route::post('/settings/company/save', 'SettingsController@saveCompanySettings')->name('SaveCompanySettings');
 
     #Категории
     Route::post('/category/loadview', 'CategoryController@loadAside')->name('LoadAsideCategory');
@@ -76,8 +78,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Поставщики (внешние)
 
-    Route::namespace('API')->group(function () {
-        Route::get('/api/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
+    Route::namespace('API')->prefix('api')->group(function () {
+        Route::get('/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
+        Route::get('/bik/{bik}', 'BikController@getInfo')->name('getBikInfo');
     });
 
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
@@ -170,6 +173,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/store/new', 'StoreController@store')->name('StoreStore');
     Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
     Route::post('/store/checkstock', 'StoreController@checkstock')->name('CheckStock');
+    Route::post('/store/import', 'StoreController@import')->name('StoreImport');
+    Route::post('/store/imports/{import}', 'StoreController@applyImport')->name('ApplyImport');
 
     #Услуги
     Route::get('/services', 'ServicesController@index')->name('ServicesIndex');
@@ -221,7 +226,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/roles/assign', 'RoleController@assignRoleToUser')->name('RoleToUser');
     Route::post('/role/{id}/delete', 'RoleController@delete')->name('DeleteRole');
 
-    #Контрагенты
+    #Контакты
     Route::get('/partner', 'PartnerController@index')->name('PartnerIndex');// Строгое название
     Route::post('/partner/search', 'PartnerController@search')->name('PartnerPageSearch');
     Route::post('/partner/store', 'PartnerController@store')->name('StorePartner');

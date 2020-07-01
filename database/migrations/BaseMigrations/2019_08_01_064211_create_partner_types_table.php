@@ -15,9 +15,9 @@ class CreatePartnerTypesTable extends Migration
     {
         Schema::create('partner_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->char('name')->comment('Наименование типа контрагента');
+            $table->char('name')->comment('Наименование типа контакта');
             $table->integer('partner_type_id')->comment('Рекурсия к себе');
-            $table->char('type')->comment('Тип контрагента');
+            $table->char('type')->comment('Тип контакта');
             $table->boolean('locked')->comment('Заблокировано от удаления');
             $table->timestamps();
         });

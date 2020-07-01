@@ -148,8 +148,10 @@ class storePage{
             method: 'post',
             url: '/category/breadcrumbs',
             data: data
-        }).then(function (resp) {
-            document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
+        }).then((resp) => {
+            if(this.search != null) {
+                document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
+            }
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
@@ -434,7 +436,7 @@ class storePage{
             selectable:true,
             selectableRangeMode:"click",
             resizableColumns:false,
-            height:height-15,
+            height:height-55,
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
@@ -449,24 +451,30 @@ class storePage{
 
                 let manufacturers = response.manufacturers;
 
-                if(object.active_tab === 'store' && manufacturers.length) {
+                if(object.active_tab === 'store') {
 
-                    this.manufacture_id = null;
+                    if(this.search && this.search.length) {
+                        document.getElementById('breadcrumbs-nav').innerHTML = response.info;
+                    }
 
-                    let store_list = document.getElementById('store-list');
+                    if(manufacturers.length) {
+                        this.manufacture_id = null;
 
-                    store_list.innerHTML = '';
+                        let store_list = document.getElementById('store-list');
 
-                    Object.keys(manufacturers).forEach(key => {
+                        store_list.innerHTML = '';
 
-                        let html = '<div onclick="store.selectManufacture(this)" class="store-list-item pointer" id="manufacture_' + manufacturers[key].m_id + '">' + manufacturers[key].m_name + '</div>';
+                        Object.keys(manufacturers).forEach(key => {
 
-                        store_list.append(helper.createElementFromHTML(html));
-                    });
+                            let html = '<div onclick="store.selectManufacture(this)" class="store-list-item pointer" id="manufacture_' + manufacturers[key].m_id + '">' + manufacturers[key].m_name + '</div>';
 
-                    if(this.manufacture_show === true) {
-                        document.querySelector('.search-field-container > .box').style.display = 'block';
-                        this.manufacture_show = false;
+                            store_list.append(helper.createElementFromHTML(html));
+                        });
+
+                        if(this.manufacture_show === true) {
+                            document.querySelector('.search-field-container > .box').style.display = 'block';
+                            this.manufacture_show = false;
+                        }
                     }
                 }
 

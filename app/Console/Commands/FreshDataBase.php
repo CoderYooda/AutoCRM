@@ -18,7 +18,8 @@ class FreshDataBase extends Command
 
     public function handle()
     {
-        Artisan::call('migrate:fresh --path=/database/migrations/BaseMigrations --seed');
+        Artisan::call('migrate:fresh --path=/database/migrations/BaseMigrations');
         Artisan::call('migrate');
+        Artisan::call('db:seed');
     }
 }

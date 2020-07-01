@@ -26,10 +26,7 @@ class Payment extends Model
     ];
 
     public function freshStatus(){
-
-
         $previous_status = $this->status;
-
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
 
@@ -45,18 +42,31 @@ class Payment extends Model
             $this->save();
         }
 
-        $new_status = $this->status;
+        $new_status = $this->status; //DEADLINE_EXPIRED
+
+
+
 
         if($previous_status !== $new_status){
             $company = $this->company;
-            if($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW' && $new_status == 'CONFIRMED'){
-                $company->increment('balance', $this->add_balance);
-                $company->increment('payed_days', $this->add_days);
+            if(($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW') && $new_status == 'CONFIRMED'){
+                if($this->type === 'pay_to_sms'){
+                    $company->sms_balance += $this->add_balance;
+                } else {
+                    $company->increment('balance', $this->add_balance);
+                    $company->increment('payed_days', $this->add_days);
+                }
+
             }
             if($previous_status == 'CONFIRMED' && $new_status == 'REFUNDED'){
-                $company->decrement('balance', $this->add_balance);
-                $company->decrement('payed_days', $this->add_days);
+                if($this->type == 'pay_to_sms'){
+                    $company->decrement('sms_balance', $this->add_balance);
+                } else {
+                    $company->decrement('balance', $this->add_balance);
+                    $company->decrement('payed_days', $this->add_days);
+                }
             }
+            $company->save();
         }
 
 
@@ -86,6 +96,8 @@ class Payment extends Model
             case 'CONFIRMED': return 'Подтверждено'; break;
             case 'REJECTED': return 'Отменен'; break;
             case 'REFUNDED': return 'Возвращен'; break;
+            case 'DEADLINE_EXPIRED': return 'Просрочен'; break;
+            case '3DS_CHECKING': return 'Проверяется по протоколу 3-D Secure'; break;
         }
 
         return $this->status;

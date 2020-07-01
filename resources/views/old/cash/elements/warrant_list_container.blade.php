@@ -13,7 +13,7 @@
                             </th>
                             <th>Дата</th>
                             <th>Тип</th>
-                            <th>Контрагент</th>
+                            <th>Контакт</th>
                             <th>Статья</th>
                             <th style="text-align: right;">Касса</th>
                             <th>Сумма</th>

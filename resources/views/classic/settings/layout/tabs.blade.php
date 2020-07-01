@@ -10,6 +10,11 @@
                     <span class="nav-text">Основное</span>
                 </a>
             </li>
+            <li id="setting-index-tab" data-tab="requisites" data-default="true" class="@if($request['active_tab'] == 'requisites' || $request['active_tab'] == null) active @endif tab">
+                <a href="{{ route('SettingsIndex', ['active_tab' => 'requisites', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
+                    <span class="nav-text">Реквизиты</span>
+                </a>
+            </li>
             <li id="setting-cashbox-tab" data-tab="cashbox" class="@if($request['active_tab'] == 'cashbox') active @endif tab">
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'cashbox', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                     <span class="nav-text">Кассы</span>
@@ -25,11 +30,11 @@
                     <span class="nav-text">Роли</span>
                 </a>
             </li>
-            {{--<li id="setting-cashbox-tab" data-tab="ddsarticle" class="@if($request['active_tab'] == 'ddsarticle') active @endif tab">--}}
-                {{--<a href="{{ route('SettingsIndex', ['active_tab' => 'ddsarticle', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">--}}
-                    {{--<span class="nav-text">Статьи ДДС</span>--}}
-                {{--</a>--}}
-            {{--</li>--}}
+            <li id="setting-sms-tab" data-tab="sms" class="@if($request['active_tab'] == 'sms') active @endif tab">
+                <a href="{{ route('SettingsIndex', ['active_tab' => 'sms', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
+                    <span class="nav-text">Смс</span>
+                </a>
+            </li>
         </ul>
         <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
     </div>

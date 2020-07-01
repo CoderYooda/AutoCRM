@@ -15,7 +15,7 @@ class CreateSalariesTable extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('partner_id')->unsigned()->comment('Привязка к контрагенту');
+            $table->bigInteger('partner_id')->unsigned()->comment('Привязка к контакту');
             $table->integer('percent')->unsigned()->comment('Процент с продаж');
             $table->timestamps();
         });

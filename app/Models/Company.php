@@ -8,27 +8,33 @@ class Company extends Model
 {
     protected $guarded = [];
 
-    public function members(){
+    public function members()
+    {
         return $this->hasMany(User::class, 'company_id');
     }
 
-    public function partners(){
+    public function partners()
+    {
         return $this->hasMany(Partner::class, 'company_id');
     }
 
-    public function stores(){
+    public function stores()
+    {
         return $this->hasMany(Store::class, 'company_id');
     }
 
-    public function cashboxes(){
+    public function cashboxes()
+    {
         return $this->hasMany(Cashbox::class, 'company_id');
     }
 
-    public function settings(){
+    public function settings()
+    {
         return $this->hasMany(Setting::class, 'company_id');
     }
 
-    public function checkAccessToStore($store){
+    public function checkAccessToStore($store)
+    {
         //TODO check
         return ($store == null || $this->stores()->where('id', $store->id)->first() == NULL);
     }
@@ -36,6 +42,16 @@ class Company extends Model
     public function getFirstCompanyMember() // TODO получать лидера компании
     {
         return $this->members()->first();
+    }
+
+    public function getSmsBalance()
+    {
+        return $this->sms_balance == null ? 0 : $this->sms_balance;
+    }
+
+    public function decrementSmsBalance($amount)
+    {
+        return $this->decrement('sms_balance', $amount);
     }
 
     public function inviteUser($user)

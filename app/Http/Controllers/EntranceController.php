@@ -180,7 +180,7 @@ class EntranceController extends Controller
                 $store->recalculateMidprice($article->id);
             }
 
-        #Добавляем к балансу контрагента
+        #Добавляем к балансу контакта
         $entrance->providerorder()->first()->partner()->first()
             ->addition($entrance->totalPrice);
 

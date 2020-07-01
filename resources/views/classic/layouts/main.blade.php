@@ -20,7 +20,6 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/base.css') }}" rel="stylesheet">
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
-
     </head>
     <body>
     <input type="hidden" name="barcode_temp" id="barcode_temp">
@@ -32,10 +31,10 @@
                     {{ config('app.name', 'Laravel') }}
                     <svg class="preloader" version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                          viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
-                    <circle fill="#fff" stroke="none" cx="6" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"/></circle>
+                        <circle fill="#fff" stroke="none" cx="6" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"/></circle>
                         <circle fill="#fff" stroke="none" cx="26" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2"/></circle>
                         <circle fill="#fff" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.3"/></circle>
-                </svg>
+                    </svg>
                 </div>
                 <div class="top-navs">
                     <ul class="nav top-nav-bar app-top-menu">
@@ -69,13 +68,6 @@
                         <li id="partner_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('PartnerIndex') }}">
                                 Контакты
-                            </a>
-                        </li>
-                        @endcanany
-                        @canany(['Смотреть настройки'])
-                        <li id="settings_link" class="top-nav-item" >
-                            <a class="header-tab ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
-                                Настройки
                             </a>
                         </li>
                         @endcanany
@@ -122,8 +114,8 @@
                             </div>
                         </li>
 
-                        <li class="top-nav-item">
-                            <a id="bell_badge" class="ico_link bell" data-toggle="modal" data-target="#notifications" data-toggle-class="modal-open-aside">
+                        <li class="top-nav-item" onclick="systemMessages.modal.show()">
+                            <a id="bell_badge" class="ico_link bell">
                                 <span id="stack_bell_count" class="badge-pill"></span>
                             </a>
                         </li>
@@ -145,6 +137,12 @@
 
                                 <a class="element ajax-nav" href="{{ route('UserIndex') }}">Личный кабинет</a>
                                 <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}">Мои услуги</a>
+
+                                @canany(['Смотреть настройки'])
+                                    <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
+                                        Настройки
+                                    </a>
+                                @endcanany
 
                                 @if(auth()->user()->partner->category_id == 7)
                                     <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles']) }}">Гараж</a>
@@ -270,6 +268,7 @@
                 @include(env('DEFAULT_THEME', 'classic') . '.system.aside_messages')
                 @include(env('DEFAULT_THEME', 'classic') . '.system.system_dialog')
                 @include(env('DEFAULT_THEME', 'classic') . '.system.croppr_dialog')
+                @include(env('DEFAULT_THEME', 'classic') . '.system.settings_master')
             </div>
 
         </div>

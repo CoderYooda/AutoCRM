@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Auth\Authenticatable as SystemAuth;
 use Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -185,8 +186,7 @@ class UserController extends Controller
 
     public static function serviceTab($request)
     {
-
-        $payments = Payment::owned()->orderBy('id', 'DESC')->get();
+        $payments = Payment::owned()->where('type', 'pay_to_store')->orderBy('id', 'DESC')->get();
 
         foreach ($payments as $payment){
             $payment->freshStatus();
@@ -256,5 +256,8 @@ class UserController extends Controller
     public function authByUser(Request $request){
         $user = User::where('id', $request->id)->first();
         Auth::loginUsingId($user->id, TRUE);
+        Session::flush();
+        Session::put('store_id', $user->getStoreFirst()->id);
+
     }
 }

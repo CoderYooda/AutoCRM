@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Http\Request;
+use App\Models\Payment;
 
 class ServicesController extends Controller
 {

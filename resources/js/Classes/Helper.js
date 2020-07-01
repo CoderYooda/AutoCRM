@@ -26,6 +26,7 @@ import selectSupplierDialog from "./Supplier/SelectSupplierDialog";
 import supplierDialog from "./Supplier/SupplierDialog";
 import roleDialog from "./Role/RoleDialog";
 import vehicleDialog from "./Vehicle/VehicleDialog";
+import storeImportDialog from "./Store/StoreImportDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -75,7 +76,8 @@ const classes = {
     categoryDialog,
     selectSupplierDialog,
     supplierDialog,
-    vehicleDialog
+    vehicleDialog,
+    storeImportDialog
 };
 
 const pages = {
@@ -137,11 +139,18 @@ class Helper{
                         window[elem.id] = new classes[classname](elem);
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
+                        console.error(err);
                     }
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }
             });
         }
+    }
+
+    decodeHtml(html) {
+        let txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
     }
 
     initPageMethods(){
@@ -268,7 +277,7 @@ class Helper{
         }
     }
 
-    printDocument(doc, id, data = null){
+    printDocument(doc, id, data = null, landscape = false){
         axios({
             method: 'POST',
             url: '/document',
@@ -280,6 +289,24 @@ class Helper{
         }).then(function (response) {
             var printContents = response.data;
 
+            var css = '@page { size: landscape; }',
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.type = 'text/css';
+            style.media = 'print';
+
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+
+            if(landscape === true) {
+                head.appendChild(style);
+                console.log(style);
+            }
+
             let unprinted = document.getElementById('unprinted');
             let printed = document.getElementById('printed');
             printed.innerHTML = printContents;
@@ -288,6 +315,10 @@ class Helper{
                 window.print();
                 unprinted.classList.remove('hide');
                 printed.innerHTML = '';
+                let print_style = document.querySelector('style[media="print"]');
+                if(print_style){
+                    print_style.remove();
+                }
             }, 700);
 
         }).then(function (error) {
@@ -397,23 +428,6 @@ class Helper{
         return serialized.join('&');
     };
 
-    // checkAuth(){
-    //     axios({
-    //         method: 'GET',
-    //         url: 'check-auth'
-    //     }).then(function (resp) {
-    //
-    //         console.log(resp);
-    //         if(resp.data.auth == 'false'){
-    //             window.isLogged = false;
-    //             return false;
-    //         } else {
-    //             window.isLogged = true;
-    //             return true;
-    //         }
-    //     });
-    //
-    // }
 
 }
 export default Helper;

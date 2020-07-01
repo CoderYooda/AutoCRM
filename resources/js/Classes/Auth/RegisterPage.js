@@ -84,6 +84,7 @@ class registerPage{
             if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'OK') {
 
                 object.smsBox.classList.remove('hide');
+                object.smsBox.querySelector('input').focus();
 
             } else  if(resp.data && resp.data.sms !== 'undefined' && resp.data.sms.status === 'ERROR'){
 

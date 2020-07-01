@@ -10,10 +10,10 @@ class settingsPage{
 
     init(){
         let object = this;
-        document.addEventListener('ajaxLoaded', function(e){
-            object.checkActive();
-        });
-        object.checkActive();
+        // document.addEventListener('ajaxLoaded', function(e){
+        //     object.checkActive();
+        // });
+        //object.checkActive();
         let form = null;
         try {
             let form = object.root.getElementsByTagName('form');
@@ -45,6 +45,48 @@ class settingsPage{
                 }
             });
         }
+
+        this.addNumberMasks();
+    }
+
+    getSmsPayment(){
+        let amount_input = document.getElementById('amount');
+        let amount = 0;
+        if(amount_input){
+            amount = amount_input.value;
+        }
+
+        let data = {tariff_id: 1, amount:amount};
+        axios({
+            method: 'POST',
+            url: '/tariff/get_payment',
+            data: data
+        }).then(function (response){
+            if(response.data.redirect){
+                window.location.href = response.data.redirect;
+            }
+        }).catch(function(response){
+
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    }
+
+    checkSmsPayments(){
+        axios({
+            method: 'POST',
+            url: '/tariff/check_sms_payment',
+        }).then(function (response){
+            let sms_balance_inner = document.getElementById('sms_balance');
+            if(sms_balance_inner){
+                sms_balance_inner.innerText = response.data.sms_balance;
+            }
+
+        }).catch(function(response){
+            dd(response);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 
     getUrlString(){
@@ -91,6 +133,7 @@ class settingsPage{
     checkActive(){
         let className = window.location.pathname.substring(1);
         let link = document.getElementById('settings_link');
+
         if(className === 'settings'){
             link.classList.add('active');
             this.active = true;
@@ -156,5 +199,119 @@ class settingsPage{
         });
     }
 
+    backImportChanges(id) {
+
+        axios({
+            url: '/store/imports/' + id,
+            method: 'post'
+        })
+            .then(response => {
+                let data = response.data;
+
+                document.getElementById('ajax-table-imports').innerHTML = data.html;
+
+                notification.notify( 'success', 'Откат изменений был успешно выполнен.');
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
+
+    activeTab(button_element, type) {
+
+        event.preventDefault();
+
+        document.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
+
+        let button_elements = document.querySelectorAll('.d-flex > button');
+        button_elements.forEach(element => {
+            element.classList.remove('active');
+        });
+
+        button_element.classList.add('active');
+
+        let tab_elements = document.querySelectorAll('form .tab');
+
+        tab_elements.forEach(element => {
+            element.classList.remove('active');
+        });
+
+        let input_elements = document.querySelectorAll('input');
+
+        input_elements.forEach(element => {
+
+            if(element.parentElement.tagName === 'FORM') return;
+
+            element.disabled = true;
+        });
+
+        document.querySelector('div.tab.' + type).classList.add('active');
+
+        let valid_inputs = document.querySelectorAll('div.tab.' + type + '.active input');
+
+        valid_inputs.forEach(element => {
+            element.disabled = false;
+
+            if(type === 'ul' && element.name === 'actual_address') {
+                element.disabled = document.querySelector('[type=checkbox]').checked;
+            }
+        })
+    }
+
+    saveRequisites(form_element) {
+
+        event.preventDefault();
+
+        window.axform.send(form_element, function(e){
+            // object.finitaLaComedia(true);
+        });
+    }
+
+    wroteBik(element) {
+        if(element.value.length !== 9) return;
+
+        window.axios({
+            method: 'get',
+            url: '/api/bik/' + element.value,
+        }).then(response => {
+
+            console.log(response);
+
+            let data = response.data;
+
+            if(!Object.keys(data).length) return ;
+
+            document.querySelector('.active input[name=cs]').value = data.ks;
+            document.querySelector('.active input[name=bank]').value = data.name.split('&quot;').join('"');
+        });
+    }
+
+    addNumberMasks() {
+
+        let inputs = {
+            cs: '00000000000000000000',
+            rs: '00000000000000000000',
+            bik: '000000000',
+            inn: '0000000000000',
+            ogrn: '0000000000000',
+            kpp: '000000000'
+        };
+
+        Object.keys(inputs).forEach(name => {
+
+            let element = document.getElementsByName(name)[0];
+
+            window.IMask(element, {
+                mask: inputs[name],
+                lazy: true
+            });
+        });
+    }
+
+    similarCompanyAddress(checkbox_element) {
+        let input_address = document.querySelector('[name=actual_address]');
+
+        input_address.disabled = checkbox_element.checked;
+    }
 }
 export default settingsPage;

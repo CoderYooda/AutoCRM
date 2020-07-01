@@ -1,6 +1,6 @@
 @extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') . '.layouts.XHR' : env('DEFAULT_THEME', 'classic') . '.layouts.main')
 
-@section('title', $page ?? 'Контрагенты')
+@section('title', $page ?? 'Контакты')
 
 @section('content')
     @php $class = 'partner' @endphp
@@ -10,7 +10,7 @@
         </div>
         <div class="box-lister">
             <div class="w-100 box box-search mb-15">
-                <input id="search" name="search" placeholder="Поиск по контрагентам" class="input w-100" value="{{ request('search') }}" type="text">
+                <input id="search" name="search" placeholder="Поиск по контактам" class="input w-100" value="{{ request('search') }}" type="text">
                 <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
                     <button class="btn_clean" onclick="window.{{$class}}.cleanSearch()"></button>
                 </span>

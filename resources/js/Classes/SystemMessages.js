@@ -9,6 +9,16 @@ class SystemMessages{
         document.addEventListener("AuthorizedEvent", function(){
             object.loadMessages();
         });
+
+
+        let modal_html = document.getElementById('notifications');
+        let options = {
+            backdrop: true,
+            keyboard: true,
+        };
+
+        this.modal = new bootstrap.Modal(modal_html, options);
+
     }
 
     loadMessages(){
@@ -37,7 +47,6 @@ class SystemMessages{
 
         setTimeout(() => {
             this.bell.classList.remove('add');
-
         }, 200);
 
     }

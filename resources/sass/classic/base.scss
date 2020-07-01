@@ -188,7 +188,7 @@ h2{
     width: 80px;
     height: 52px;
     font-size: 0px;
-    background-size: 32px;
+    background-size: 18px;
     min-width: 80px;
     background-color: #1e3c5f;
 }
@@ -892,7 +892,7 @@ input:-moz-placeholder { /* Firefox 18- */
 .box{
     position: relative;
     background: #fff;
-    border-radius: 4px; 
+    border-radius: 4px;
     box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
 }
 .box .box-header{
@@ -1119,7 +1119,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .pb-5{
     padding-bottom: 5px !important;
 }
-
+.brad-3{
+    border-radius: 3px !important;
+}
 .p-15{
     padding: 15px;
 }
@@ -1178,6 +1180,9 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .ml-5{
     margin-left: 5px!important;
+}
+.mr-5{
+    margin-right: 5px!important;
 }
 .ml-10{
     margin-left: 10px!important;
@@ -1800,4 +1805,97 @@ input:-moz-placeholder { /* Firefox 18- */
     font-size: 12px;
     line-height: 16px;
     color: #ACACAC;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.button-list {
+    text-align: left;
+    padding-right: 10px !important;
+
+    > i {
+        float: right;
+        text-align: right;
+        margin-top: 3px;
+    }
+}
+
+#result-inputs .box {
+    width: 92.5%;
+    position: absolute;
+    z-index: 999;
+    height: 200px;
+    margin-top: 1px;
+}
+
+.button-list-title {
+    font-weight: bold;
+    color: #404040;
+}
+
+#duplicate-list, #error-list {
+    z-index: 999;
+    position: absolute;
+}
+
+.style_subheader {
+    line-height: 19px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: 0.004em;
+}
+
+.file-example-item {
+    color: #CCCCCC;
+
+    &:hover {
+        color: #1F98E9;
+    }
+
+    & a {
+        color: #CCCCCC;
+
+        &:hover {
+            color: #1F98E9 !important;
+        }
+    }
+}
+
+.categories_list{
+    margin: 0;
+}
+
+.categories_list li:hover .pick_button{
+    display: block;
+}
+
+.select-list-modal li .date{
+    font-weight: 600;
+}
+.select-list-modal li .secondary{
+    font-weight: 400;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.select-list-modal li:hover{
+    background: #badff8;
+}
+
+.p_rel {
+    position: relative;
+}
+
+#ajax-table-requisites {
+
+    .tab {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
 }

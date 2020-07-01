@@ -24,6 +24,25 @@ class SystemMessageController extends Controller
         return $messages;
     }
 
+    public static function sendToOwnCompanyOthers($type, $message)
+    {
+        $initiator = Auth::user();
+        $users = User::owned()
+            ->where('id', '!=', $initiator->id)->get();
+
+        foreach($users as $user){
+            $system_message = new SM();
+            $system_message->user_id = 1;
+            $system_message->reciever_id = $user->id;
+            $system_message->type = $type;
+            $system_message->message = $message;
+            $system_message->save();
+            event(
+                new SystemMessage($system_message)
+            );
+        }
+    }
+
     public static function sendToAllButOne()
     {
         $initiator = Auth::user();

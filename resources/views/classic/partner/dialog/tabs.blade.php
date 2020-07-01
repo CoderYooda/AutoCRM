@@ -59,7 +59,7 @@
                 <div role="tabpanel" class="tab-pane active main_tab animate text-muted" aria-labelledby="tab_base{{ $class }}-tab"  id="tab_base{{ $class }}">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.base')
                 </div>
-                <div role="tabpanel" class="tab-pane animate text-muted ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif" aria-labelledby="tab_company{{ $class }}-tab" id="tab_company{{ $class }}">
+                <div data-simplebar role="tabpanel" class="tab-pane animate text-muted ul_only @if(isset($partner) && $partner['isfl']) d-none-f @endif" aria-labelledby="tab_company{{ $class }}-tab" id="tab_company{{ $class }}" style="max-height: 500px;">
                     @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.tabs.company')
                 </div>
                 <div role="tabpanel" class="tab-pane animate text-muted fl_only @if(isset($partner) && !$partner['isfl']) d-none-f @endif" aria-labelledby="tab_passport{{ $class }}-tab" id="tab_passport{{ $class }}">

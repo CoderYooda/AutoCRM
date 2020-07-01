@@ -142,7 +142,7 @@ class ProviderOrdersController extends Controller
                     ], 200);
                 } else {
                     if($provider_order->delete()){
-                        #Отнимаем с баланса контрагента
+                        #Отнимаем с баланса контакта
                         $provider_order->partner()->first()->subtraction($provider_order->itogo);
                         UA::makeUserAction($provider_order, 'delete');
                     }
@@ -159,7 +159,7 @@ class ProviderOrdersController extends Controller
                 ], 200);
             } else{
                 if($provider_order->delete()){
-                    #Отнимаем с баланса контрагента
+                    #Отнимаем с баланса контакта
                     $provider_order->partner()->first()->subtraction($provider_order->itogo);
                     UA::makeUserAction($provider_order, 'delete');
                 }
@@ -223,7 +223,7 @@ class ProviderOrdersController extends Controller
                 }
             }
 
-            #Отнимаем с баланса контрагента
+            #Отнимаем с баланса контакта
             $provider_order->partner()->first()->subtraction($provider_order->itogo);
 
             $this->message = 'Заказ поставщику обновлен';
@@ -316,7 +316,7 @@ class ProviderOrdersController extends Controller
             $provider_order->itogo = $provider_order->summ - $request['discount'];
         }
 
-        #Добавляем к балансу контрагента
+        #Добавляем к балансу контакта
         $provider_order->partner()->first()->addition($provider_order->itogo);
 
         $provider_order->summ = $provider_order->articles()->sum('total');

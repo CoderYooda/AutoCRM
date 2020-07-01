@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\SaveCompanySettingsRequest;
 use App\Models\Cashbox;
 use App\Models\Company;
 use App\Models\DdsArticle;
+use App\Models\Partner;
+use App\Models\Payment;
+use App\Models\ImportHistory;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Auth;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
@@ -47,7 +53,6 @@ class SettingsController extends Controller
 
     public static function indexTab($request)
     {
-
         $company = Auth::user()->company()->first();
         $settings = Setting::owned()->get();
         $roles = Role::where('company_id', Auth::user()->company->id)->get();
@@ -66,13 +71,40 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes','request'));
     }
 
+    public static function requisitesTab(Request $request)
+    {
+        $company = Auth::user()->company;
+
+        return view(get_template() . '.settings.requisites', compact('request', 'company'));
+    }
+
+    public function saveCompanySettings(SaveCompanySettingsRequest $request)
+    {
+//        dd($request->validated());
+
+        Company::where('id', $request->company_id)->update($request->validated());
+
+        return response()->json([
+            'message' => 'Настройки успешно сохранены.',
+            'type' => 'success'
+        ]);
+    }
+
     public static function storeTab($request)
     {
         $stores = Store::owned()->orderBy('created_at', 'DESC')->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container', compact('stores', 'request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request'));
+
+        $company_id = Auth::user()->company->id;
+
+        $last_imports = ImportHistory::with('partner', 'store')
+            ->where('company_id', $company_id)
+            ->where('created_at', '>', Carbon::now()->addDays(-14))
+            ->get();
+
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request', 'last_imports'));
     }
 
     public static function roleTab($request)
@@ -83,6 +115,22 @@ class SettingsController extends Controller
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.role_container', compact( 'roles','users', 'request'));
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','users', 'request'));
+    }
+
+    public static function smsTab($request)
+    {
+        $smses = SmsController::getCompanySms();
+        $users = User::owned()->get();
+        $payments = Payment::owned()->where('type', 'pay_to_sms')->orderBy('id', 'DESC')->get();
+
+//        foreach ($payments as $payment){
+//            $payment->freshStatus();
+//        }
+
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
+            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request', 'payments'));
+        }
+        return view(env('DEFAULT_THEME', 'classic') . '.settings.sms', compact('smses','users', 'request', 'payments'));
     }
 
 

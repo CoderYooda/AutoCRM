@@ -1,6 +1,6 @@
 @php $class = 'selectPartnerDialog' @endphp
 <div id="selectPartnerDialog" class="dialog" style="width:580px;">
-    <div class="titlebar">Выбор контрагента</div>
+    <div class="titlebar">Выбор контакта</div>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
     <div class="navbar dark no-radius box-shadow pos-rlt">
         <form class="flex">
@@ -8,9 +8,9 @@
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
             <div class="input-group">
-                <input id="partner_search" type="text" class="form-control form-control-sm search" placeholder="Поиск контрагентов" required="">
+                <input id="partner_search" type="text" class="form-control form-control-sm search" placeholder="Поиск контактов" required="">
                 <span class="input-group-append">
-                    <button onclick="openDialog('partnerDialog')" class="btn white btn-sm no-shadow" type="button">Новый контрагент</button>
+                    <button onclick="openDialog('partnerDialog')" class="btn white btn-sm no-shadow" type="button">Новый контакт</button>
                 </span>
             </div>
         </form>
