@@ -1,4 +1,5 @@
-<div id="settings_master" class="modal" data-backdrop="false" style="display: block; background: rgba(0, 0, 0, 0.15);">
+<div id="settings_master" class="modal" data-backdrop="false" style="display: none; background: rgba(0, 0, 0, 0.15);">
+{{-- TODO display block   --}}
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="d-flex">
