@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Auth\Authenticatable as SystemAuth;
 use Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -255,5 +256,8 @@ class UserController extends Controller
     public function authByUser(Request $request){
         $user = User::where('id', $request->id)->first();
         Auth::loginUsingId($user->id, TRUE);
+        Session::flush();
+        Session::put('store_id', $user->getStoreFirst()->id);
+
     }
 }

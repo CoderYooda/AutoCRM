@@ -275,14 +275,15 @@ class ProductController extends Controller
                     return response()->json(['message' => $this->message], $this->status);
                 }
                 $store->articles()->syncWithoutDetaching($article->id);
-                $article->stores()->updateExistingPivot($store_id,[
+                $pivot_data = [
                     'storage_zone' => $storage['storage_zone'],
                     'storage_rack' => $storage['storage_rack'],
                     'storage_vertical' => $storage['storage_vertical'],
-                    'storage_horizontal' => $storage['storage_horizontal'],
-                    'midprice' => (double)$storage['midprice'],
-                    'count' => (int)$storage['count'],
-                ]);
+                    'storage_horizontal' => $storage['storage_horizontal']
+                ];
+                if(isset($storage['midprice'])){$pivot_data['midprice'] = (double)$storage['midprice'];}
+                if(isset($storage['count'])){$pivot_data['count'] = (int)$storage['count'];}
+                $article->stores()->updateExistingPivot($store_id,$pivot_data);
             }
         }
 

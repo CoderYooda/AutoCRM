@@ -453,7 +453,7 @@ class storePage{
 
                 if(object.active_tab === 'store') {
 
-                    if(this.search.length) {
+                    if(this.search && this.search.length) {
                         document.getElementById('breadcrumbs-nav').innerHTML = response.info;
                     }
 
