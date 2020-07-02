@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Partner;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -21,6 +22,7 @@ class PartnerRequest extends FormRequest
         if($this->access && $this['phone'] != null){
             $this['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $this['phone']);
         }
+
         if($this['issued_date'] == '__.__.____'){
             $this['issued_date'] = null;
         }
@@ -58,8 +60,13 @@ class PartnerRequest extends FormRequest
             ];
         }
         if($this->email){$rules['email'] = ['min:3', 'email'];}
-        if($this->phone != null){
-            $rules['phone'] = ['unique:users'];
+        if($this->access && $this->phone != null){
+
+            $partner = Partner::find($this->id);
+
+            if($partner == null || $partner && !$partner->user) {
+                $rules['phone'] = ['unique:users'];
+            }
         }
 
         $rules['vehicle_ids'] = ['nullable', 'array'];

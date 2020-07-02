@@ -330,20 +330,17 @@ class partnerDialog extends Modal{
     }
 
     toggleAccess(elem){
-        let object = this;
-        var account_datas = object.current_dialog.querySelectorAll('.account_data');;
-        if(account_datas){
-            if(elem.value == 1){
-                [].forEach.call(account_datas, function(elem){
-                    elem.classList.remove('hide');
-                });
-            } else {
-                [].forEach.call(account_datas, function(elem){
-                    elem.classList.add('hide');
-                });
-            }
+        let account_data = this.current_dialog.querySelector('.account_data');
+
+        if(account_data) {
+            account_data.classList.toggle('hide');
         }
 
+        let elements = this.current_dialog.querySelectorAll('.account_data > div');
+
+        elements.forEach(element => {
+            element.classList.remove('d-none');
+        });
     }
 
     canAddMorePhone(div){

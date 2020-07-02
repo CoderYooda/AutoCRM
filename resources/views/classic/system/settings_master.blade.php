@@ -1,14 +1,13 @@
 <div id="settings_master" class="modal" data-backdrop="false" style="display: none; background: rgba(0, 0, 0, 0.15);">
 {{-- TODO display block   --}}
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content ov-hidden">
             <div class="d-flex">
-                <div class="left-s p-15">
-                    <h2 class="">Мастер настройки #bbcrm</h2>
-
-                    <div id="step_1">
+                <div class="left-s">
+                    <h2 class="p-15">Мастер настройки #bbcrm</h2>
+                    <div id="step_1" class="p-15 pt-0 mb-15" data-simplebar style="max-height: 400px;">
                         <form class="fl-ul-tab" method="POST" style="width: 700px;" onsubmit="">
-                            <h3 class="mb-10">Данные вашей компании</h3>
+                            <h3 class="mb-10 mt-0">Данные вашей компании</h3>
                             <div class="form-group">
                                 <label>Название компании</label>
                                 <input type="text" name="name" class="form-control" placeholder="Название компании (не более 255 символов)" autofocus>
@@ -123,8 +122,8 @@
                     </div>
                     <a class="skip">закрыть</a>
 
-                    <div class="mt-15">
-                        <button class="button primary">Далее</button>
+                    <div class="mt-15 mt-auto">
+                        <button class="button white">Далее</button>
                     </div>
                 </div>
             </div>

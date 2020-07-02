@@ -12,31 +12,25 @@
     </select>
 </div>
 
-@if(isset($partner) && $partner->user()->first() != null)
-    @if($partner->user()->first()->banned_at != null)
-        <span> Пользователь был заблокирован {{ $partner->user()->first()->banned_at }}</span>
+@if(isset($partner) && $partner->user != null)
+    @if($partner->user->banned_at != null)
+        <span> Пользователь был заблокирован {{ $partner->user->banned_at }}</span>
     @else
-        <span> Пользователь был создан {{ $partner->user()->first()->created_at }}</span>
+        <span> Пользователь был создан {{ $partner->user->created_at }}</span>
     @endif
 @endif
-<div @if(isset($partner) && $partner->user()->first() != null ) style="display: none" @endif>
-    <div class="form-group account_data hide ">
+<div class="account_data hide">
+    <div class="form-group">
         <label>Привязать к магазину</label>
         <select name="store_id" class="form-control input-c">
             @foreach($stores as $store)
-                <option value="{{ $store->id }}" @if(isset($partner) && $partner->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
+                <option value="{{ $store->id }}" @if(isset($partner) && $partner->store_id == $store->id) selected @elseif(Auth::user()->partner->store_id == $store->id) selected @endif>{{ $store->name }}</option>
             @endforeach
         </select>
     </div>
-    <div class="form-group account_data hide">
+    <div class="form-group">
         <label>Номер телефона</label>
-        {{--<select id="country" class="form-control input-c" name="country" onchange="window.{{$class}}.changeCountry(this)" required>--}}
-            {{--<option value="7">Россия</option>--}}
-            {{--<option value="375">Беларусь</option>--}}
-            {{--<option value="380">Украина</option>--}}
-            {{--<option value="7">Казахстан</option>--}}
-        {{--</select>--}}
-        <input id="phone_login_input" type="text" name="phone" class="form-control" value="@if(isset($partner)){{ $partner->phone }}@endif" placeholder="Телефон">
+        <input id="phone_login_input" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
         <div class="primary mt-15 p-15">
             Пароль для доступа будет оправлен по SMS
         </div>
