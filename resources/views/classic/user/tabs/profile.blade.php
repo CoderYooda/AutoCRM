@@ -9,10 +9,13 @@
 
                 <input id="isfl" type="radio" name="isfl" value="1" @if(isset($user) && $user['isfl']) checked
                        @elseif(!isset($user)) checked @endif style="display: none;">
+
                 <input id="isul" type="radio" name="isfl" value="0" @if(isset($user) && !$user['isfl'])checked
                        @endif style="display: none;">
+
                 <input class="category_select" type="hidden" name="category_id"
                        value="{{ $user->category()->first()->id}}">
+
                 @if(isset($user) && $user->user()->first() != null)
                     @if(isset($user) && $user->user()->first()->banned_at == null)
                         <input type="hidden" name="access" value="1">

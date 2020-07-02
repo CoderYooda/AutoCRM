@@ -24,6 +24,7 @@
 
         <input id="isfl" type="radio" name="isfl" value="1" @if(isset($partner) && $partner['isfl']) checked @elseif(!isset($partner)) checked @endif style="display: none;">
         <input id="isul" type="radio" name="isfl" value="0" @if(isset($partner) && !$partner['isfl'])checked @endif style="display: none;">
+
         <input class="category_select" type="hidden" name="category_id" value="@if(isset($partner)){{ $partner->category()->first()->id }}@else 3 @endif">
 
         <input type="hidden" name="page" value="@if(isset($request) && isset($request['page'])){{ $request['page'] }}@else 1 @endif">
