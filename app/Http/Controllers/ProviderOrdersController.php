@@ -388,7 +388,7 @@ class ProviderOrdersController extends Controller
 
         $provider_orders =
         ProviderOrder::select(DB::raw('
-            provider_orders.*, provider_orders.created_at as date, IF(partner.type = 0, partner.fio,partner.companyName) as partner, IF(manager.type = 0, manager.fio,manager.companyName) as manager
+            provider_orders.*, provider_orders.created_at as date, IF(partner.type != 2, partner.fio,partner.companyName) as partner, IF(manager.type != 2, manager.fio,manager.companyName) as manager
         '))
             ->leftJoin('partners as partner',  'partner.id', '=', 'provider_orders.partner_id')
             ->leftJoin('partners as manager',  'manager.id', '=', 'provider_orders.manager_id')
@@ -448,7 +448,7 @@ class ProviderOrdersController extends Controller
 //        where('provider_orders.company_id', Auth::user()->company()->first()->id)
 //            ->where('provider_orders.deleted_at', null)
 //            ->join('partners','partners.id','=','provider_orders.partner_id')
-//            ->select(DB::raw('provider_orders.*,  provider_orders.created_at as date, IF(partners.type = 0, partners.fio,partners.companyName) as name'))
+//            ->select(DB::raw('provider_orders.*,  provider_orders.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as name'))
 //
 //            ->orderBy($field, $dir)
 //            //->toSql();

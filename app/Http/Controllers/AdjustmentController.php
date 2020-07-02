@@ -187,7 +187,7 @@ class AdjustmentController extends Controller
 
         $adjustments =
             Adjustment::select(DB::raw('
-                adjustments.*, adjustments.created_at as date, IF(partners.type = 0, partners.fio,partners.companyName) as partner, stores.name as store
+                adjustments.*, adjustments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, stores.name as store
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'adjustments.manager_id')
                 ->leftJoin('stores',  'stores.id', '=', 'adjustments.store_id')
@@ -204,7 +204,7 @@ class AdjustmentController extends Controller
                 ->orderBy($field, $dir)
                 ->paginate($size);
 
-//        select shipments.id, shipments.created_at, IF(partners.type = 0, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
+//        select shipments.id, shipments.created_at, IF(partners.type != 2, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
 //        from shipments
 //        left join `partners` on `partners`.`id` = `shipments`.`partner_id`
 //        and `shipments`.`company_id` = 2

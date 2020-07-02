@@ -237,7 +237,7 @@ class RefundController extends Controller
         }
 
         $refunds = Refund::select(DB::raw('
-            refund.*, refund.created_at as date, refund.id as rid, IF(managers.type = 0, managers.fio,managers.companyName) as manager, IF(partners.type = 0, partners.fio,partners.companyName) as partner, refund.summ as price
+            refund.*, refund.created_at as date, refund.id as rid, IF(managers.type != 2, managers.fio,managers.companyName) as manager, IF(partners.type != 2, partners.fio,partners.companyName) as partner, refund.summ as price
         '))
             ->leftJoin('partners as managers',  'managers.id', '=', 'refund.manager_id')
             ->leftJoin('partners',  'partners.id', '=', 'refund.partner_id')

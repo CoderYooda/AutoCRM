@@ -7,7 +7,7 @@
                 @csrf
                 <input type="hidden" name="id" value="{{ $user->id }}">
 
-                <input id="type" type="hidden" name="isfl" value="{{ $partner['type'] ?? 0 }}">
+                <input id="type" type="hidden" name="type" value="{{ $user['type'] ?? 0 }}">
                 <input class="category_select" type="hidden" name="category_id" value="{{ $user->category()->first()->id}}">
 
                     @if(isset($user) && $user->user()->first() != null)
@@ -71,7 +71,7 @@
                                 <div class="col-sm-4">Участник системы с:</div>
                                 <div class="col-sm-8"><b>{{ $user->getDateMembership() }}</b></div>
                             </div>
-                            @if($user->type != 0)
+                            @if($user->type == 2)
                                 <div class="row row-sm mb-10">
                                     <div class="col-sm-4">Ответственное лицо</div>
                                     <div class="col-sm-8">
