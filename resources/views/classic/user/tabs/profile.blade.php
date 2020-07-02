@@ -7,26 +7,24 @@
                 @csrf
                 <input type="hidden" name="id" value="{{ $user->id }}">
 
-                <input id="isfl" type="radio" name="isfl" value="1" @if(isset($user) && $user['isfl']) checked
-                       @elseif(!isset($user)) checked @endif style="display: none;">
-                <input id="isul" type="radio" name="isfl" value="0" @if(isset($user) && !$user['isfl'])checked
-                       @endif style="display: none;">
-                <input class="category_select" type="hidden" name="category_id"
-                       value="{{ $user->category()->first()->id}}">
-                @if(isset($user) && $user->user()->first() != null)
-                    @if(isset($user) && $user->user()->first()->banned_at == null)
-                        <input type="hidden" name="access" value="1">
+                <input id="type" type="hidden" name="isfl" value="{{ $partner['type'] ?? 0 }}">
+                <input class="category_select" type="hidden" name="category_id" value="{{ $user->category()->first()->id}}">
+
+                    @if(isset($user) && $user->user()->first() != null)
+                        @if(isset($user) && $user->user()->first()->banned_at == null)
+                            <input type="hidden" name="access" value="1">
+                        @else
+                            <input type="hidden" name="access" value="0">
+                        @endif
                     @else
                         <input type="hidden" name="access" value="0">
                     @endif
-                @else
-                    <input type="hidden" name="access" value="0">
-                @endif
+
                 @endif
                 <div class="p-15">
                     <h2 class="user_h2">
                         @if(isset($editmode) && $editmode)
-                            @if($user->type == 0)
+                            @if($user->type != 2)
                                 <input class="name_edit" type="text" name="fio" value="{{ $user->fio }}">
                             @else
                                 <input class="name_edit" type="text" name="companyName"
@@ -73,7 +71,7 @@
                                 <div class="col-sm-4">Участник системы с:</div>
                                 <div class="col-sm-8"><b>{{ $user->getDateMembership() }}</b></div>
                             </div>
-                            @if(!$user->isfl)
+                            @if($user->type != 0)
                                 <div class="row row-sm mb-10">
                                     <div class="col-sm-4">Ответственное лицо</div>
                                     <div class="col-sm-8">
@@ -106,7 +104,7 @@
                                         <input onclick="this.select();" type="text" name="birthday"
                                                @if(isset($user)) value="{{ $user->getBirthday() }}" @endif
                                                class="form-control slim" placeholder="Выберите дату"
-                                               @if(isset($user) && !$user['isfl']) disabled @endif>
+                                               @if(isset($user) && $user->type != 0) disabled @endif>
                                     @else
                                         <b>{{ $user->getBirthday() }}</b>
                                     @endif

@@ -118,7 +118,7 @@ class PartnerController extends Controller
         }
 
         $partner->fill($request->only($partner->fields));
-        if(!$request['isfl']){
+        if($request['type'] != 0){
             $partner->fio = $request['ur_fio'];
         }
         $phones = PhoneController::upsertPhones($request);
@@ -356,7 +356,7 @@ class PartnerController extends Controller
         }
 
         $partners = Partner::select(DB::raw('
-            partners.id, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.isfl = 1, partners.fio, partners.companyName) as name
+            partners.id, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.type = 0, partners.fio, partners.companyName) as name
         '))
             ->from(DB::raw('
                 partners

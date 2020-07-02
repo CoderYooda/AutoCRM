@@ -36,7 +36,7 @@
 
                 <div class="form-group mt-15">
                     <label>БИК</label>
-                    <input name="bik" type="text" onchange="settings.wroteBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ !$company->is_company ? $company->bik : '' }}">
+                    <input name="bik" type="text" onchange="settings.writingBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ !$company->is_company ? $company->bik : '' }}">
                 </div>
 
                 <div class="form-group mt-15">
@@ -100,7 +100,7 @@
 
                 <div class="form-group">
                     <label>БИК</label>
-                    <input name="bik" type="text" onchange="settings.wroteBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ $company->is_company ? $company->bik : '' }}">
+                    <input name="bik" type="text" onchange="settings.writingBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ $company->is_company ? $company->bik : '' }}">
                 </div>
 
                 <div class="form-group ">

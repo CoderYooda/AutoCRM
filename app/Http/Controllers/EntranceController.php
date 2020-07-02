@@ -166,7 +166,7 @@ class EntranceController extends Controller
         #Сохраняем поступление
             $entrance->fill($request->only($entrance->fields));
             //$entrance->totalPrice = $entrance->articles()->sum('total');
-            $entrance->save(); 
+            $entrance->save();
 
         #Если указана дата - сохраняем
             if($request['do_date'] != NULL){
@@ -267,10 +267,10 @@ class EntranceController extends Controller
         }
 
         $entrances = Entrance::select(DB::raw('
-            entrances.*, entrances.created_at as date, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, provider_orders.id as ordid
+            entrances.*, entrances.created_at as date, IF(partners.type = 0, partners.fio, partners.companyName) as partner, provider_orders.id as ordid
         '))
             ->from(DB::raw('(
-            SELECT entrances.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as manager
+            SELECT entrances.*, IF(partners.type = 0, partners.fio, partners.companyName) as manager
             FROM entrances
             left join partners on partners.id = entrances.partner_id
             GROUP BY entrances.id)

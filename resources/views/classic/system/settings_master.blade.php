@@ -41,7 +41,7 @@
 
                                 <div class="form-group mt-15">
                                     <label>БИК</label>
-                                    <input name="bik" type="text" onpaste="setting_master.wroteBik(this)" onchange="setting_master.wroteBik(this)" class="form-control" placeholder="Ваш БИК" >
+                                    <input name="bik" type="text" onpaste="setting_master.writingBik(this)" onchange="setting_master.writingBik(this)" class="form-control" placeholder="Ваш БИК" >
                                 </div>
 
                                 <div class="form-group mt-15">
@@ -95,7 +95,7 @@
 
                                 <div class="form-group">
                                     <label>БИК</label>
-                                    <input name="bik" type="text" onchange="setting_master.wroteBik(this)" class="form-control" placeholder="Ваш БИК" >
+                                    <input name="bik" type="text" onchange="setting_master.writingBik(this)" class="form-control" placeholder="Ваш БИК" >
                                 </div>
 
                                 <div class="form-group ">

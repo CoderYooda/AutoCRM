@@ -402,7 +402,7 @@ class ClientOrdersController extends Controller
             client_orders.*, client_orders.created_at as date, client_orders.id as coid
         '))
             ->from(DB::raw('(
-            SELECT client_orders.*, IF(partners.isfl = 1, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' ₽\')) as discount_formatted,
+            SELECT client_orders.*, IF(partners.type = 0, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' ₽\')) as discount_formatted,
             (CASE
                 WHEN client_orders.status = "active" THEN "Активен"
                 WHEN client_orders.status = "canceled" THEN "Отменен"

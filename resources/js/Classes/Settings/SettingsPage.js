@@ -267,7 +267,7 @@ class settingsPage{
         });
     }
 
-    wroteBik(element) {
+    writingBik(element) {
         if(element.value.length !== 9) return;
 
         window.axios({
