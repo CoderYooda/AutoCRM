@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Models\Exceptions;
+use Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -34,7 +36,17 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        $user = Auth::user();
+
+        $exc = new Exceptions();
+        $exc->message = $exception->getMessage();
+        $exc->session = serialize(session()->all());
+        $exc->company_id = $user ?? $user->id;
+        $exc->user_id = $user ?? $user->company->id;
+        $exc->save();
+        //Exception::create(['message' => $exception->getMessage()]);
         parent::report($exception);
+
     }
 
     /**
