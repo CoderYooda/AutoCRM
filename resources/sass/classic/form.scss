@@ -73,6 +73,16 @@ Switch
 .add{
     animation: add 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
+.add_more_container{
+    text-align: center;
+    margin: 15px;
+}
+.unit_elem{
+    border: 1px solid #2d76a8;
+    border-left: 5px solid #2d76a8;
+    border-radius: 0;
+}
+
 .no-windows{
     width: 100%;
     text-align: center;
@@ -200,6 +210,49 @@ Switch
     flex-direction: column;
     min-width: 220px;
     flex: 1.3;
+}
+
+.steps{
+    display: flex;
+    margin: 0px auto;
+    width: fit-content;
+    margin-bottom: 15px;
+}
+
+.steps > div{
+    background: #2d76a8;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.steps > div.active .letter{
+    background: #05f057;
+}
+.steps > div.active .letter{
+    background: #de6060;
+    color: #fff;
+}
+
+.steps > div:not(:last-child){
+    margin-right: 30px;
+}
+
+.steps .current .letter{
+    background: #1D87CF;
+    color: #fff;
+}
+
+.steps > div .letter{
+    width: 34px;
+    height: 34px;
+    background: #fff;
+    border-radius: 50%;
+    margin: 3px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
 }
 
 .ov-hidden{

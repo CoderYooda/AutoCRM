@@ -1,12 +1,11 @@
-<div id="settings_master" class="modal" data-backdrop="false" style="display: none; background: rgba(0, 0, 0, 0.15);">
-{{-- TODO display block   --}}
+<div id="settings_master" class="modal" data-backdrop="false" style="display: block; background: rgba(0, 0, 0, 0.15);">
     <div class="modal-dialog">
         <div class="modal-content ov-hidden">
             <div class="d-flex">
                 <div class="left-s">
                     <h2 class="p-15">Мастер настройки #bbcrm</h2>
-                    <div id="step_1" class="p-15 pt-0 mb-15" data-simplebar style="max-height: 400px;">
-                        <form class="fl-ul-tab" method="POST" style="width: 700px;" onsubmit="">
+                    <div id="step_1" class="m_step p-15 pt-0 mb-15 active " data-simplebar style="max-height: calc(100vh - 350px);">
+                        <div class="fl-ul-tab">
                             <h3 class="mb-10 mt-0">Данные вашей компании</h3>
                             <div class="form-group">
                                 <label>Название компании</label>
@@ -113,17 +112,82 @@
                                 </div>
                             </div>
 
-                        </form>
+                        </div>
+                    </div>
+                    <div id="step_2" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
+                        <div class="fl-ul-tab">
+                            <h3 class="mb-10 mt-0">Добавьте сотрудников</h3>
+                            <div id="employees">
+                                <div class="unit_elem mb-10 p-15">
+                                    <div class="form-group">
+                                        <label>ФИО</label>
+                                        <input type="text" name="employees[1][fio]" id="fl_dialog_focused" value="" class="form-control entrance" placeholder="ФИО">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Номер телефона</label>
+                                        <input id="phone_login_input" type="text" name="employees[1][phone]" class="form-control phone_input" value="" placeholder="Телефон">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Доступ к системе</label>
+                                        <select name="employees[1][access]" class="form-control input-c">
+                                            <option value="1">Разрешен</option>
+                                            <option value="0" selected="">Запрещен</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="add_more_container">
+                                <button type="button" onclick="setting_master.insertEmployee();" class="button primary">Добавить еще</button>
+                                <button  onclick="setting_master.nextStep()" class="button white">Нет сотрудников</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step_3" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
+                        <div class="fl-ul-tab">
+                            <h3 class="mb-10 mt-0">Добавьте поставщиков</h3>
+                            <div id="partners">
+                                <div class="unit_elem mb-10 p-15">
+                                    <div class="form-group">
+                                        <label>Названия организации</label>
+                                        <input type="text" name="partners[1][companyName]" value="" class="form-control" placeholder="Названия организации">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Контактное лицо</label>
+                                        <input type="text" name="partners[1][fio]" value="" class="form-control" placeholder="Контактное лицо">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Номер телефона</label>
+                                        <input type="text" name="partners[1][phone]" class="form-control phone_input" value="" placeholder="Телефон">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="add_more_container">
+                                <button type="button" onclick="setting_master.insertPartner();" class="button primary">Добавить еще</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="steps">
+                        <div id="stepb_1" class="current">
+                            <div class="letter">1</div>
+                        </div>
+                        <div id="stepb_2" class="wait">
+                            <div class="letter">1</div>
+                        </div>
+                        <div id="stepb_3" class="wait">
+                            <div class="letter">1</div>
+                        </div>
                     </div>
                 </div>
                 <div class="right-s p-15">
                     <div class="info">
                         Мастер настройки - это удобный инструмент для ввода первоначальной информации в CRM. После заполнения полей можно смело приступать к работе.
                     </div>
-                    <a class="skip">закрыть</a>
+                    <a onclick="setting_master.close()" class="skip">закрыть</a>
 
                     <div class="mt-15 mt-auto">
-                        <button class="button white">Далее</button>
+                        <button onclick="setting_master.backStep()" class="button white">Назад</button>
+                        <button id="next_b" onclick="setting_master.nextStep()" class="button white">Далее</button>
+                        <button id="finish_b" onclick="setting_master.save()" class="button hide yellow">Завершить</button>
                     </div>
                 </div>
             </div>

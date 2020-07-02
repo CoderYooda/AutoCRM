@@ -28,7 +28,7 @@
                     <div class="mx-auto  animate fadeIn text-left" >
                         <div class="form-group @error('fio') is-invalid @enderror">
                             <label>Фамилия Имя Отчество</label>
-                            <input class="md-input form-control" name="fio" value="{{ old('fio') }}" onkeyup="this.setAttribute('value', this.value);" required>
+                            <input class="md-input form-control" name="fio" value="{{ old('fio') }}" onkeyup="this.setAttribute('value', this.value);" autofocus required>
                             @error('fio')
                             <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

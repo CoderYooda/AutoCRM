@@ -15,7 +15,7 @@
                     <div class="text-left">
                         <div class="form-group  @error('phone') is-invalid @enderror">
                             <label>Номер телефона</label>
-                            <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" required>
+                            <input id="phone_input" class="form-control" name="phone" value="{{ old('phone') }}" onkeyup="this.setAttribute('value', this.value);" autofocus required>
                             @error('phone')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
