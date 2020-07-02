@@ -41,8 +41,10 @@ class Handler extends ExceptionHandler
         $exc = new Exceptions();
         $exc->message = $exception->getMessage();
         $exc->session = serialize(session()->all());
-        $exc->company_id = $user ?? $user->id;
-        $exc->user_id = $user ?? $user->company->id;
+        if($user && $user !== null){
+            $exc->company_id = $user->id;
+            $exc->user_id = $user->company->id;
+        }
         $exc->save();
         //Exception::create(['message' => $exception->getMessage()]);
         parent::report($exception);
