@@ -7,6 +7,9 @@ mix.js('resources/js/app.js', 'public/js');
 mix.sass('resources/sass/' + template + '/app.scss', 'public/css').options({ processCssUrls: false });
 mix.sass('resources/sass/' + template + '/fonts.scss', 'public/css');
 mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ processCssUrls: false });
+
+//Тут документы
+mix.sass('resources/sass/' + template + '/documents/upd.scss', 'public/css/documents').options({ processCssUrls: false });
     //.sass('resources/sass/template.scss', 'public/css');
 
 mix.sass('resources/sass/' + template + '/auth.scss', 'public/css');

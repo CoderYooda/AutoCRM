@@ -86,23 +86,16 @@ class PartnerController extends Controller
 
         $view = view(get_template() . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
             ->with('vehicles', $partner->vehicles ?? [])
+            ->with('class', $tag)
             ->render();
 
         $response = [
             'tag' => $tag,
-            'html' => $view,
+            'html' => $view
         ];
 
         return response()->json($response);
     }
-
-//    public static function partnerDialog($request)
-//    {
-//        $tag = 'editPartner';
-
-//
-//        return response()->json(['tag' => $tag, 'html' => view('partner.dialog.form_partner', compact('partner'))->render()]);
-//    }
 
     public function store(PartnerRequest $request)
     {
@@ -125,7 +118,7 @@ class PartnerController extends Controller
         }
 
         $partner->fill($request->only($partner->fields));
-        if(!$request['isfl']){
+        if($request['type'] == 2){
             $partner->fio = $request['ur_fio'];
         }
         $phones = PhoneController::upsertPhones($request);
@@ -363,7 +356,7 @@ class PartnerController extends Controller
         }
 
         $partners = Partner::select(DB::raw('
-            partners.id, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.isfl = 1, partners.fio, partners.companyName) as name
+            partners.id, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.type != 2, partners.fio, partners.companyName) as name
         '))
             ->from(DB::raw('
                 partners
@@ -408,7 +401,7 @@ class PartnerController extends Controller
 //            ->when($request['dates_range'] != null, function($query) use ($request) {
 //                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
 //            })
-            
+
             ->groupBy('partners.id')
 
             ->orderBy($field, $dir)

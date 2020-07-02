@@ -42,7 +42,7 @@ class StatisticTest extends TestCase
         ]);
 
         $partner = Partner::create([
-            'isfl' => true,
+            'type' => 0,
             'user_id' => $user->id,
             'category_id' => 5,
             'store_id' => $company->stores()->first()->id,

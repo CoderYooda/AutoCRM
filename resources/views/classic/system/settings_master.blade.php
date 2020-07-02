@@ -1,12 +1,12 @@
-<div id="settings_master" class="modal" data-backdrop="false" style="display: block; background: rgba(0, 0, 0, 0.15);">
+<div id="settings_master" class="modal" data-backdrop="false" style="display: none; background: rgba(0, 0, 0, 0.15);">
+{{-- TODO display block   --}}
     <div class="modal-dialog">
         <div class="modal-content ov-hidden">
             <div class="d-flex">
                 <div class="left-s">
                     <h2 class="p-15">Мастер настройки #bbcrm</h2>
-
                     <div id="step_1" class="p-15 pt-0 mb-15" data-simplebar style="max-height: 400px;">
-                        <formm class="fl-ul-tab" method="POST" style="width: 700px;" onsubmit="">
+                        <form class="fl-ul-tab" method="POST" style="width: 700px;" onsubmit="">
                             <h3 class="mb-10 mt-0">Данные вашей компании</h3>
                             <div class="form-group">
                                 <label>Название компании</label>
@@ -40,7 +40,7 @@
 
                                 <div class="form-group mt-15">
                                     <label>БИК</label>
-                                    <input name="bik" type="text" onpaste="setting_master.wroteBik(this)" onchange="setting_master.wroteBik(this)" class="form-control" placeholder="Ваш БИК" >
+                                    <input name="bik" type="text" onpaste="setting_master.writingBik(this)" onchange="setting_master.writingBik(this)" class="form-control" placeholder="Ваш БИК" >
                                 </div>
 
                                 <div class="form-group mt-15">
@@ -94,7 +94,7 @@
 
                                 <div class="form-group">
                                     <label>БИК</label>
-                                    <input name="bik" type="text" onchange="setting_master.wroteBik(this)" class="form-control" placeholder="Ваш БИК" >
+                                    <input name="bik" type="text" onchange="setting_master.writingBik(this)" class="form-control" placeholder="Ваш БИК" >
                                 </div>
 
                                 <div class="form-group ">
@@ -113,7 +113,7 @@
                                 </div>
                             </div>
 
-                        </formm>
+                        </form>
                     </div>
                 </div>
                 <div class="right-s p-15">

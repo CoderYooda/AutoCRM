@@ -23,7 +23,7 @@ class Partner extends Model
         'store_id',
         'foundstring',
         'basePhone',
-        'isfl',
+        'type',
         'fio',
         'birthday',
         'address',
@@ -132,7 +132,7 @@ class Partner extends Model
 
     public function outputName() //Вывод имени или наименования компании
     {
-        return $this->isfl ? $this->fio : $this->companyName;
+        return $this->type == 2 ? $this->companyName : $this->fio;
     }
 
     public function outputEmail()
@@ -146,7 +146,7 @@ class Partner extends Model
     }
 
     public function isflText(){
-        return $this->isfl ? 'Физическое лицо' : 'Юридическое лицо';
+        return ['Физическое лицо', 'Индивидуальный предприниматель', 'Юридическое лицо'][$this->type];
     }
 
     public function user(){

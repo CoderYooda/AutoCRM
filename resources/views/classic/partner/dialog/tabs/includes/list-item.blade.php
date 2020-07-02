@@ -6,7 +6,7 @@
 
     <div class="list-title mt-10 text-center">
         {{ $vehicle->mark->name }}
-        <div>{{ $vehicle->model->name }}</div>
+        <div>{{ $vehicle->model->name ?? 'Не указано' }}</div>
     </div>
 
     <div class="mt-15">

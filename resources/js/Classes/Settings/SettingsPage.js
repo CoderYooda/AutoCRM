@@ -221,6 +221,8 @@ class settingsPage{
 
         event.preventDefault();
 
+        document.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
+
         let button_elements = document.querySelectorAll('.d-flex > button');
         button_elements.forEach(element => {
             element.classList.remove('active');
@@ -240,10 +242,6 @@ class settingsPage{
 
             if(element.parentElement.tagName === 'FORM') return;
 
-            if(type === 'ul' && element.name === 'actual_address') {
-                
-            }
-
             element.disabled = true;
         });
 
@@ -253,12 +251,14 @@ class settingsPage{
 
         valid_inputs.forEach(element => {
             element.disabled = false;
+
+            if(type === 'ul' && element.name === 'actual_address') {
+                element.disabled = document.querySelector('[type=checkbox]').checked;
+            }
         })
     }
 
     saveRequisites(form_element) {
-
-        console.log('saveRequisites');
 
         event.preventDefault();
 
@@ -267,7 +267,7 @@ class settingsPage{
         });
     }
 
-    wroteBik(element) {
+    writingBik(element) {
         if(element.value.length !== 9) return;
 
         window.axios({

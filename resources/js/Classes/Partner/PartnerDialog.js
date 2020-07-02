@@ -4,49 +4,37 @@ class partnerDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Диалог партнёра инициализирован');
         this.root_category = 3;
         this.active = true;
         this.bithdayFlatpkr = null;
         this.issuedDateFlatpkr = null;
-        this.bithdayMask = null;
         this.phoneLoginMask = null;
-        this.issuedDateMask = null;
         this.init();
     }
 
     init(){
-        let object = this;
         this.initDatePicker();
         this.addPhoneMask();
         this.addPassportMask();
         this.addNumberMasks();
-
-        let category_type = this.root_dialog.querySelector('#category_type');
-
-        let fl_but = this.root_dialog.querySelector('#fl_butt');
-        let ul_but = this.root_dialog.querySelector('#ul_butt');
-        let focused = document.getElementById('fl_dialog_focused');
-
-        if(category_type && category_type.value == 'partner'){
-            this.activateTab('ul', ul_but);
-            focused = document.getElementById('ul_dialog_focused');
-        }
-
-        if(focused){
-            focused.focus();
-        }
-
-        helper.initTabs('partner_tabs');
         this.addLoginPhoneMask();
-        object.current_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
-            if (e.which == 13) {
-                object.bithdayFlatpkr.close();
-                object.issuedDateFlatpkr.close();
+
+        this.current_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  (e) => {
+            if (e.which === 13) {
+                this.bithdayFlatpkr.close();
+                this.issuedDateFlatpkr.close();
                 e.preventDefault();
-                object.save(object.current_dialog.getElementsByTagName('form')[0]);
+                this.save(object.current_dialog.getElementsByTagName('form')[0]);
             }
         });
+
+        helper.initTabs('partner_tabs');
+
+        setTimeout(() => {
+            let type = this.current_dialog.querySelector('[name="type"]').value;
+            this.current_dialog.querySelectorAll('.nav-item a')[type].click();
+        }, 300);
     }
 
     initDatePicker() {
@@ -57,7 +45,8 @@ class partnerDialog extends Modal{
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        this.bithdayMask = window.IMask(birthday_input, {
+
+        window.IMask(birthday_input, {
                 mask: Date,
                 min: new Date(1910, 0, 1),
                 max: new Date(2090, 0, 1),
@@ -70,7 +59,8 @@ class partnerDialog extends Modal{
             allowInput: true,
             dateFormat: "d.m.Y",
         });
-        this.issuedDateMask = window.IMask(issued_input, {
+
+        window.IMask(issued_input, {
                 mask: Date,
                 //pattern: 'd-m-Y',
                 min: new Date(1910, 0, 1),
@@ -127,7 +117,12 @@ class partnerDialog extends Modal{
             select.innerHTML = str;
 
             //Показываем вкладку с транспортом
-            this.current_dialog.querySelector('#vehicle_tab').style.display =  resp.data.id === 7 ? 'block' : 'none';
+            if(resp.data.id === 7) {
+                this.current_dialog.querySelector('#vehicle_tab').classList.remove('d-none');
+            }
+            else {
+                this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
+            }
 
             window.notification.notify( 'success', 'Категория выбрана');
             document.dispatchEvent(new Event('CategorySelected', {bubbles: true}));
@@ -220,67 +215,39 @@ class partnerDialog extends Modal{
         });
     }
 
-    activateTab(tag, elem){
-        let object = this;
+    activateTab(elem, type) {
 
-        var container = this.current_dialog.querySelector('#fl_ul_tabs');
+        let ids = {'fl': 0, 'ip': 1, 'ul': 2 };
 
-        var links = container.querySelectorAll('.nav-item a');
+        this.current_dialog.querySelector('[name="type"]').value = ids[type];
 
-        [].forEach.call(links, function(elem){
-            elem.classList.remove('active');
+        let button_elements = this.current_dialog.querySelectorAll('.header_selects_navs a');
+
+        button_elements.forEach(element => element.classList.remove('active'));
+        elem.classList.add('active');
+
+        let tab_elements = this.current_dialog.querySelectorAll('[role="tab"]');
+
+        tab_elements.forEach(element => {
+            element.classList.add('d-none');
+
+            if(element.classList.contains(type)) {
+                element.classList.remove('d-none');
+            }
         });
-        elem.querySelector('a').classList.add('active');
 
+        let category_id = this.current_dialog.querySelector('[name="category_id"]').value;
+        if(category_id != 7) this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
 
-        // var container = this.current_dialog.querySelector('#act_form_partner');
-        //
-        // var links = container.getElementsByClassName('nav-item');
-        //
-        // [].forEach.call(links, function(elem){
-        //     if(elem.classList.contains('main_tab')){
-        //         elem.classList.remove('active');
-        //         elem.classList.add('active');
-        //     } else {
-        //         elem.classList.remove('active');
-        //     }
-        // });
-        // var tabs = container.getElementsByClassName('tab-pane');
-        //
-        // [].forEach.call(tabs, function(elem){
-        //     if(elem.classList.contains('main_tab')){
-        //         elem.classList.remove('active');
-        //         elem.classList.add('active');
-        //     } else {
-        //         elem.classList.remove('active');
-        //     }
-        // });
+        let field_elements = this.current_dialog.querySelectorAll('.tab-content .form-group');
 
-        var activate;
-        var deactivate;
+        field_elements.forEach(element => {
+            element.classList.add('d-none');
 
-        if(tag === 'fl'){
-            object.current_dialog.querySelector('#isfl').click();
-            activate = object.current_dialog.querySelectorAll('.fl_only');
-            deactivate = object.current_dialog.querySelectorAll('.ul_only');
-        }else if(tag === 'ul'){
-            this.current_dialog.querySelector('#isul').click();
-            deactivate = object.current_dialog.querySelectorAll('.fl_only');
-            activate = object.current_dialog.querySelectorAll('.ul_only');
-        }
-        [].forEach.call(activate, function(elem){
-            elem.classList.remove('d-none-f');
-            [].forEach.call(elem.getElementsByClassName('entrance'), function(elem){
-                elem.disabled = false;
-            });
+            if(element.classList.contains(type)) {
+                element.classList.remove('d-none');
+            }
         });
-        [].forEach.call(deactivate, function(elem){
-            elem.classList.add('d-none-f');
-            [].forEach.call(elem.getElementsByClassName('entrance'), function(elem){
-                elem.disabled = true;
-            });
-        });
-        //helper.initTabs('partner_tabs');
     }
 
     addPhone(element){
@@ -343,7 +310,7 @@ class partnerDialog extends Modal{
         input.parentElement.removeAttribute('style');
     }
 
-    wroteBik(element) {
+    writingBik(element) {
         if(element.value.length !== 9) return;
 
         window.axios({
@@ -364,20 +331,17 @@ class partnerDialog extends Modal{
     }
 
     toggleAccess(elem){
-        let object = this;
-        var account_datas = object.current_dialog.querySelectorAll('.account_data');;
-        if(account_datas){
-            if(elem.value == 1){
-                [].forEach.call(account_datas, function(elem){
-                    elem.classList.remove('hide');
-                });
-            } else {
-                [].forEach.call(account_datas, function(elem){
-                    elem.classList.add('hide');
-                });
-            }
+        let account_data = this.current_dialog.querySelector('.account_data');
+
+        if(account_data) {
+            account_data.classList.toggle('hide');
         }
 
+        let elements = this.current_dialog.querySelectorAll('.account_data > div');
+
+        elements.forEach(element => {
+            element.classList.remove('d-none');
+        });
     }
 
     canAddMorePhone(div){

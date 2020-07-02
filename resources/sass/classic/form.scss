@@ -608,6 +608,12 @@ label.label-sm{
     font-weight: bolder!important;
 }
 
+#ajax-table-requisites input:disabled {
+    color: #545454;
+    cursor: default;
+    background-color: #ebebe4;
+}
+
 .box-title{
     color: #2D76A8;
     font-weight: 600;

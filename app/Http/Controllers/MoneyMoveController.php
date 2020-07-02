@@ -167,7 +167,7 @@ class MoneyMoveController extends Controller
             $request['any'] = [];
         }
 
-        $moneymoves = MoneyMoves::select(DB::raw('money_move.*, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.isfl = 1, manager.fio, manager.companyName) as manager'))
+        $moneymoves = MoneyMoves::select(DB::raw('money_move.*, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.type = 0, manager.fio, manager.companyName) as manager'))
             ->from(DB::raw('money_move
             left join cashboxes as cashbox_in on cashbox_in.id = money_move.in_cashbox_id
             left join cashboxes as cashbox_out on cashbox_out.id = money_move.out_cashbox_id

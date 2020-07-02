@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Partner;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -21,6 +22,7 @@ class PartnerRequest extends FormRequest
         if($this->access && $this['phone'] != null){
             $this['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $this['phone']);
         }
+
         if($this['issued_date'] == '__.__.____'){
             $this['issued_date'] = null;
         }
@@ -34,7 +36,7 @@ class PartnerRequest extends FormRequest
     {
         $rules = null;
 
-        if($this->isfl){
+        if($this->type == 0){
             $rules = [
                 'fio' => ['required', 'min:4', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id']
@@ -50,7 +52,7 @@ class PartnerRequest extends FormRequest
             if($this->issued_date){$rules['issued_date'] = ['min:0', 'max:250', 'date_format:d.m.Y'];}
             if($this->issued_place){$rules['issued_place'] = ['min:0', 'max:250'];}
 
-        } elseif(!$this->isfl) {
+        } elseif($this->type == 2) {
             $rules = [
                 'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
                 'companyName' => ['required', 'min:4', 'string', 'max:255'],
@@ -58,8 +60,13 @@ class PartnerRequest extends FormRequest
             ];
         }
         if($this->email){$rules['email'] = ['min:3', 'email'];}
-        if($this->phone != null){
-            $rules['phone'] = ['unique:users'];
+        if($this->access && $this->phone != null){
+
+            $partner = Partner::find($this->id);
+
+            if($partner == null || $partner && !$partner->user) {
+                $rules['phone'] = ['unique:users'];
+            }
         }
 
         $rules['vehicle_ids'] = ['nullable', 'array'];

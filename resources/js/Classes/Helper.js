@@ -277,7 +277,7 @@ class Helper{
         }
     }
 
-    printDocument(doc, id, data = null){
+    printDocument(doc, id, data = null, landscape = false){
         axios({
             method: 'POST',
             url: '/document',
@@ -289,6 +289,24 @@ class Helper{
         }).then(function (response) {
             var printContents = response.data;
 
+            var css = '@page { size: landscape; }',
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.type = 'text/css';
+            style.media = 'print';
+
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+
+            if(landscape === true) {
+                head.appendChild(style);
+                console.log(style);
+            }
+
             let unprinted = document.getElementById('unprinted');
             let printed = document.getElementById('printed');
             printed.innerHTML = printContents;
@@ -297,6 +315,10 @@ class Helper{
                 window.print();
                 unprinted.classList.remove('hide');
                 printed.innerHTML = '';
+                let print_style = document.querySelector('style[media="print"]');
+                if(print_style){
+                    print_style.remove();
+                }
             }, 700);
 
         }).then(function (error) {

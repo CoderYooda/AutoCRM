@@ -406,7 +406,7 @@ class ShipmentsController extends Controller
 
         $shipments =
             Shipment::withoutGlobalScopes()->select(DB::raw('
-                shipments.*, shipments.created_at as date, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' ₽\')) as discount, shipments.summ as price, shipments.itogo as total
+                shipments.*, shipments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' ₽\')) as discount, shipments.summ as price, shipments.itogo as total
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
                 ->where('shipments.company_id', Auth::user()->company()->first()->id)
@@ -420,7 +420,7 @@ class ShipmentsController extends Controller
                 ->orderBy($field, $dir)
                 ->paginate($size);
 
-//        select shipments.id, shipments.created_at, IF(partners.isfl = 1, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
+//        select shipments.id, shipments.created_at, IF(partners.type != 2, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
 //        from shipments
 //        left join `partners` on `partners`.`id` = `shipments`.`partner_id`
 //        and `shipments`.`company_id` = 2

@@ -125,7 +125,7 @@ class RegisterController extends Controller
         $roles = RoleController::createStartRoles($company);
 	    $user->assignRole($roles['main']);
         SettingsController::createCompanySettingsPack($company, $roles['default']);
-	    
+
         $store = new Store();
         $store->company_id = $company->id;
         $store->type = 'casual';
@@ -141,7 +141,7 @@ class RegisterController extends Controller
         $cashbox->save();
 
         $partner = new Partner();
-        $partner->isfl = true;
+        $partner->type = 0;
         $partner->user_id = $user->id;
         $partner->category_id = 5; //Сотрудник
         $partner->fio = $data['fio'];

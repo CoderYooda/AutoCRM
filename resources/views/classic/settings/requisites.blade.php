@@ -4,16 +4,17 @@
 
 @section('tab')
 
-    <div id="ajax-table-role" class="box d-flex p-15 m-15">
+    <div id="ajax-table-requisites" class="box d-flex p-15 m-15">
 
-        <form style="width: 700px;" onsubmit="settings.saveRequisites(this)">
+        <form style="width: 700px;" action="{{ route('SaveCompanySettings') }}" method="POST" onsubmit="settings.saveRequisites(this)">
 
             @csrf
             <input type="hidden" name="company_id" value="{{ auth()->user()->company->id }}">
+            <input type="hidden" name="is_company" value="{{ $company->is_company }}">
 
             <div class="d-flex">
-                <button style="width: 50%;" onclick="settings.activeTab(this, 'fl')" class="button primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
-                <button style="width: 50%;" onclick="settings.activeTab(this, 'ul')" class="ml-15 button primary @if($company->is_company) active @endif">Юридическое лицо</button>
+                <button onclick="settings.activeTab(this, 'fl')" class="button flex-1 primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
+                <button onclick="settings.activeTab(this, 'ul')" class="ml-15 flex-1 button primary @if($company->is_company) active @endif">Юридическое лицо</button>
             </div>
 
             <div class="tab fl @if(!$company->is_company) active @endif">
@@ -35,7 +36,7 @@
 
                 <div class="form-group mt-15">
                     <label>БИК</label>
-                    <input name="bik" type="text" onchange="settings.wroteBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ !$company->is_company ? $company->bik : '' }}">
+                    <input name="bik" type="text" onchange="settings.writingBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ !$company->is_company ? $company->bik : '' }}">
                 </div>
 
                 <div class="form-group mt-15">
@@ -69,7 +70,7 @@
 
                 <div class="form-group">
                     <label>ОГРН</label>
-                    <input name="name" type="text" class="form-control" placeholder="Ваш ОГРН" value="{{ $company->is_company ? $company->ogrn : '' }}">
+                    <input name="ogrn" type="text" class="form-control" placeholder="Ваш ОГРН" value="{{ $company->is_company ? $company->ogrn : '' }}">
                 </div>
 
                 <div class="form-group">
@@ -86,10 +87,10 @@
 
                     <div class="form-group ml-15 w-350 p_rel">
                         <label>Фактический адрес</label>
-                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ $company->actual_address }}">
+                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ !$company->similar_address ? $company->actual_address : '' }}" @if($company->similar_address) disabled @endif>
 
                         <div class="form_checkbox">
-                            <input name="similar_address" type="checkbox" onchange="settings.similarCompanyAddress(this)" @if(strlen($company->actual_address)) checked @endif>
+                            <input name="similar_address" type="checkbox" onchange="settings.similarCompanyAddress(this)" @if($company->similar_address) checked @endif>
                             <label>Совпадает с юридическим</label>
                         </div>
 
@@ -99,7 +100,7 @@
 
                 <div class="form-group">
                     <label>БИК</label>
-                    <input name="bik" type="text" onchange="settings.wroteBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ $company->is_company ? $company->bik : '' }}">
+                    <input name="bik" type="text" onchange="settings.writingBik(this)" class="form-control" placeholder="Ваш БИК" value="{{ $company->is_company ? $company->bik : '' }}">
                 </div>
 
                 <div class="form-group ">
@@ -117,6 +118,20 @@
                     <div class="ml-15 form-group w-350 ">
                         <label>Расчетный счет</label>
                         <input name="rs" type="text" class="form-control" placeholder="Ваш расчетный счет" value="{{ $company->is_company ? $company->rs : '' }}">
+                    </div>
+
+                </div>
+
+                <div class="d-flex">
+
+                    <div class="form-group w-350">
+                        <label>Руководитель компании</label>
+                        <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя компании" value="{{ $company->owner }}">
+                    </div>
+
+                    <div class="form-group ml-15 w-350 p_rel">
+                        <label>Главный бухгалтер</label>
+                        <input name="auditor" type="text" class="form-control" placeholder="ФИО главного руководителя" value="{{ $company->auditor  }}">
                     </div>
 
                 </div>
