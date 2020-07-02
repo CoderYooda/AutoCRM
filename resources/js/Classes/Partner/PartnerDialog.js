@@ -305,9 +305,8 @@ class partnerDialog extends Modal{
 
         let input = this.current_dialog.querySelector('[name=' + input_name + ']');
 
-        input.style.display = 'block';
-
-        input.parentElement.removeAttribute('style');
+        input.classList.remove('d-none');
+        input.parentElement.classList.remove('mb-0');
     }
 
     writingBik(element) {
