@@ -1,6 +1,6 @@
 <div class="form-group ip ul">
     <label>ИНН</label>
-    <input type="text" name="inn" value="{{ $partner->inn ?? '' }}" class="form-control entrance" placeholder="ИНН">
+    <input type="text" name="inn" onchange="{{ $class }}.writingInn(this)" value="{{ $partner->inn ?? '' }}" class="form-control entrance" placeholder="ИНН">
 </div>
 
 <div class="form-group ul">

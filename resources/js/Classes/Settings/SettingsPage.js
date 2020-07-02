@@ -1,7 +1,7 @@
 class settingsPage{
 
     constructor(){
-        console.log('страница настроек инициализировано');
+        console.log('страница настроек инициализирована');
         this.active = true;
         this.root = document.getElementById('baseSettings');
         this.active_tab = this.getCurrentActiveTab();
@@ -48,6 +48,33 @@ class settingsPage{
 
         this.addNumberMasks();
     }
+
+    writingInn(element) {
+
+        if(element.value.length < 10) return;
+
+        axios({
+            url: '/api/inn/' + element.value,
+            method: 'get'
+        })
+            .then(response => {
+
+                let data = response.data;
+
+                let name_element = document.querySelector('.active input[name="name"]');
+                if(name_element) name_element.value = data.name;
+
+                let opf_element = document.querySelector('.active input[name="opf"]');
+                if(opf_element) opf_element.value = data.opf.short;
+
+                let ogrn_element = document.querySelector('.active input[name="ogrn"]');
+                if(ogrn_element) ogrn_element.value = data.ogrn;
+
+                let kpp_element = document.querySelector('.active input[name="kpp"]');
+                if(kpp_element && data.kpp) kpp_element.value = data.kpp;
+            });
+    }
+
 
     getSmsPayment(){
         let amount_input = document.getElementById('amount');
@@ -293,17 +320,19 @@ class settingsPage{
             rs: '00000000000000000000',
             bik: '000000000',
             inn: '0000000000000',
-            ogrn: '0000000000000',
+            ogrn: '0000000000000000',
             kpp: '000000000'
         };
 
         Object.keys(inputs).forEach(name => {
 
-            let element = document.getElementsByName(name)[0];
+            let elements = document.getElementsByName(name);
 
-            window.IMask(element, {
-                mask: inputs[name],
-                lazy: true
+            elements.forEach(element => {
+                window.IMask(element, {
+                    mask: inputs[name],
+                    lazy: true
+                });
             });
         });
     }

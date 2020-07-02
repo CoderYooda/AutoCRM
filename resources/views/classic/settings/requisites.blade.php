@@ -26,7 +26,7 @@
 
                 <div class="form-group mt-15">
                     <label>ИНН</label>
-                    <input name="inn" type="text" class="form-control" placeholder="Ваш ИНН" value="{{ !$company->is_company ? $company->inn : '' }}">
+                    <input name="inn" type="text" onchange="settings.writingInn(this)" class="form-control" placeholder="Ваш ИНН" value="{{ !$company->is_company ? $company->inn : '' }}">
                 </div>
 
                 <div class="form-group mt-15">
@@ -60,12 +60,15 @@
 
                 <div class="form-group mt-15">
                     <label>Наименование организации</label>
-                    <input name="name" type="text" class="form-control" placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" value="{{ $company->is_company ? $company->name : '' }}">
+                    <div class="d-flex">
+                        <input name="opf" type="text" maxlength="3" class="form-control mr-5" style="flex: 0 0 7%; max-width: 7%;" placeholder="ЗАО" value="{{ $company->opf ?? '' }}">
+                        <input name="name" type="text" class="form-control" style="flex: 0 0 93%; max-width: 93%;"  placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" value="{{ $company->is_company ? $company->name : '' }}">
+                    </div>
                 </div>
 
                 <div class="form-group ">
                     <label>ИНН</label>
-                    <input name="inn" type="text" class="form-control" placeholder="Ваш ИНН" value="{{ $company->is_company ? $company->inn : '' }}">
+                    <input name="inn" type="text" onchange="settings.writingInn(this)" class="form-control" placeholder="Ваш ИНН" value="{{ $company->is_company ? $company->inn : '' }}">
                 </div>
 
                 <div class="form-group">

@@ -81,6 +81,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::namespace('API')->prefix('api')->group(function () {
         Route::get('/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
         Route::get('/bik/{bik}', 'BikController@getInfo')->name('getBikInfo');
+        Route::get('/inn/{inn}', 'InnController@getInfo')->name('getInnInfo');
     });
 
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');

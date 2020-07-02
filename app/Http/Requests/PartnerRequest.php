@@ -59,6 +59,11 @@ class PartnerRequest extends FormRequest
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             ];
         }
+
+        if($this->type != 0) {
+            $rules['opf'] = ['nullable', 'string', 'max:3'];
+        }
+
         if($this->email){$rules['email'] = ['min:3', 'email'];}
         if($this->access && $this->phone != null){
 

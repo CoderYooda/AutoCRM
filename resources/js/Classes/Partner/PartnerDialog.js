@@ -257,6 +257,36 @@ class partnerDialog extends Modal{
         });
     }
 
+    writingInn(element) {
+
+        if(element.value.length < 10) return;
+
+        axios({
+            url: '/api/inn/' + element.value,
+            method: 'get'
+        })
+            .then(response => {
+
+                let data = response.data;
+
+                let type = this.current_dialog.querySelector('[name="type"]').value;
+
+                let name_element = document.querySelector('input[name="' + (type != 2 ? 'name' : 'companyName') + '"]');
+                if (name_element) name_element.value = data.name;
+
+                let opf_element = document.querySelector('input[name="opf"]');
+                if(opf_element) opf_element.value = data.opf.short;
+
+                let types = ['fl', 'ip', 'ul'];
+
+                let ogrn_element = document.querySelector('.' + types[type] + ' input[name="ogrn"]');
+                if(ogrn_element) ogrn_element.value = data.ogrn;
+
+                let kpp_element = document.querySelector('input[name="kpp"]');
+                if(kpp_element && data.kpp) kpp_element.value = data.kpp;
+            });
+    }
+
     addPhone(element){
         var div = element.closest('.addable').querySelector('.phones');
         var count = div.getElementsByClassName('phone').length;
@@ -291,7 +321,7 @@ class partnerDialog extends Modal{
             rs: '00000000000000000000',
             bik: '000000000',
             inn: '0000000000000',
-            ogrn: '0000000000000',
+            ogrn: '0000000000000000',
             kpp: '000000000'
         };
 

@@ -98,20 +98,20 @@
     <form name="ShipmentForm" class="WarrantStoredListner PartnerSelectedListner" action="{{ route('StoreShipment') }}" method="POST">
         <div class="box-body">
             @csrf
+
+            <input type="hidden" name="id" value="{{ $shipment->id ?? '' }}">
+
             @if(isset($shipment))
-                <input type="hidden" name="id" value="{{ $shipment->id }}">
                 <input type="hidden" name="summ" value="{{ $shipment->summ }}">
                 <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
                 <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->wsumm }}">
                 @if($shipment->clientOrder)
-                <input type="hidden" name="clientorder_id" value="{{ $shipment->clientOrder->id }}">
+                    <input type="hidden" name="clientorder_id" value="{{ $shipment->clientOrder->id }}">
                 @endif
-            @else
-                <input type="hidden" name="id" value="">
             @endif
 
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
-            <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($shipment) && $shipment->partner != NULL){{ $shipment->partner->id }}@endif">
+            <input class="partner_select" type="hidden" name="partner_id" value="{{ $shipment->partner->id ?? null }}">
             <input id="inpercents" name="inpercents" type="hidden" @if($shipment && $shipment->id != NULL && $shipment->inpercents) value="1" @else value="0" @endif>
             <div class="row row-sm">
                 <div class="col-sm-6">
@@ -122,7 +122,7 @@
                                 @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
                                     {{ $shipment->partner->outputName() }}
                                 @else
-                                    Не выбрано
+                                    Аноним
                                 @endif
                             </button>
                         </div>

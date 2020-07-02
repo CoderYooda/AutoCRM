@@ -71,8 +71,11 @@
 </div>
 
 <div class="form-group ul">
-    <label>Название компании</label>
-    <input type="text" name="companyName" id="ul_dialog_focused" value="{{ $partner->companyName ?? '' }}" class="form-control entrance" placeholder="Название компании">
+    <label>Название компани</label>
+    <div class="d-flex">
+        <input type="text" name="opf" style="flex: 0 0 14%;" maxlength="3" value="{{ $partner->opf ?? '' }}" class="form-control entrance mr-5" placeholder="ЗАО">
+        <input type="text" name="companyName" id="ul_dialog_focused" value="{{ $partner->companyName ?? '' }}" class="form-control entrance" placeholder="Название компании">
+    </div>
 </div>
 
 <div class="form-group ul">
