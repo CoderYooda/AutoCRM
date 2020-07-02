@@ -8,7 +8,12 @@
     <input type="text" name="kpp" value="{{ $partner->kpp ?? '' }}" class="form-control entrance" placeholder="КПП">
 </div>
 
-<div class="form-group ip ul">
+<div class="form-group ip">
+    <label>ОГРНИП</label>
+    <input type="text" name="ogrn" value="{{ $partner->ogrn ?? '' }}" class="form-control entrance" placeholder="ОГРНИП">
+</div>
+
+<div class="form-group ul">
     <label>ОГРН</label>
     <input type="text" name="ogrn" value="{{ $partner->ogrn ?? '' }}" class="form-control entrance" placeholder="ОГРН">
 </div>

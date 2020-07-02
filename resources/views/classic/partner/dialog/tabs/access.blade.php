@@ -2,7 +2,7 @@
 <div class="form-group fl ip ul">
     <label>Доступ в систему</label>
     <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
-        @if(isset($partner) && $partner->user()->first() != null)
+        @if(isset($partner) && $partner->user != null)
             <option value="1" @if(isset($partner) && $partner->user()->first()->banned_at == null) selected @endif>Разрешен</option>
             <option value="0" @if(isset($partner) && $partner->user()->first()->banned_at != null) selected @endif>Запрещен</option>
         @else
