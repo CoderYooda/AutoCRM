@@ -94,7 +94,7 @@
                         @endcanany
                         @endcan
                     </ul>
-                    <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
+                    <span class="md-auto  mr-auto"><span id="shop_name">{{ session('store_id') }}</span></span>
                     <div id="current_time">
                         <div class="h">00</div>
                         <div class="m">00</div>

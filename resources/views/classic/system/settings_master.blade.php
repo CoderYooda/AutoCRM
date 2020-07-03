@@ -1,17 +1,19 @@
-<div id="settings_master" class="modal" data-backdrop="false" style=" background: rgba(0, 0, 0, 0.15);">
+<div id="settings_master" class="modal" data-backdrop="false" style="display: block; background: rgba(0, 0, 0, 0.15);">
     <div class="modal-dialog">
         <div class="modal-content ov-hidden">
             <form action="{{ route('StoreFromMaster') }}" method="POST">
                 <div class="d-flex">
                     <div class="left-s">
                         <h2 class="p-15">Мастер настройки #bbcrm</h2>
-                        <div id="step_1" class="m_step p-15 pt-0 mb-15 active " data-simplebar style="max-height: calc(100vh - 350px);">
+                        <input type="hidden" name="company_id" value="{{ Auth::user()->company->id }}">
+                        <input type="hidden" name="is_company" value="0">
+                        <div data-id="1" id="step_1" class="m_step p-15 pt-0 mb-15 active" data-simplebar style="max-height: calc(100vh - 350px);">
                             <div class="fl-ul-tab">
                                 <h3 class="mb-10 mt-0">Данные вашей компании</h3>
-                                <div class="form-group">
-                                    <label>Название компании</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Название компании (не более 255 символов)" autofocus>
-                                </div>
+                                {{--<div class="form-group">--}}
+                                    {{--<label>Название компании</label>--}}
+                                    {{--<input type="text" name="company_name" class="form-control" placeholder="Название компании (не более 255 символов)" autofocus>--}}
+                                {{--</div>--}}
                                 <div class="form-group">
                                     <label>Стандартная наценка (%)</label>
                                     <input name="markup" type="number" class="form-control" value="30">
@@ -20,7 +22,7 @@
                                     <button onclick="setting_master.activeTab(this, 'fl')" class="button primary flex-1 active" >Индивидуальный предприниматель</button>
                                     <button onclick="setting_master.activeTab(this, 'ul')" class="ml-15 button flex-1 primary">Юридическое лицо</button>
                                 </div>
-                                <div class="tab active">
+                                <div class="tab fl active">
 
                                     <div class="form-group mt-15">
                                         <label>ФИО (полностью)</label>
@@ -58,7 +60,7 @@
                                     </div>
 
                                 </div>
-                                <div class="tab">
+                                <div class="tab ul">
 
                                     <div class="form-group mt-15">
                                         <label>Организация</label>
@@ -72,7 +74,7 @@
 
                                     <div class="form-group">
                                         <label>ОГРН</label>
-                                        <input name="name" type="text" class="form-control" placeholder="Ваш ОГРН" >
+                                        <input name="ogrn" type="text" class="form-control" placeholder="Ваш ОГРН" >
                                     </div>
 
                                     <div class="form-group">
@@ -113,7 +115,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="step_2" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
+                        <div data-id="2" id="step_2" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
                             <div class="fl-ul-tab">
                                 <h3 class="mb-10 mt-0">Добавьте сотрудников</h3>
                                 <div id="employees">
@@ -141,7 +143,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="step_3" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
+                        <div data-id="3" id="step_3" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
                             <div class="fl-ul-tab">
                                 <h3 class="mb-10 mt-0">Добавьте поставщиков</h3>
                                 <div id="partners">

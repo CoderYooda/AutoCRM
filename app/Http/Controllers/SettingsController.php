@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\PartnerRequest;
 use App\Http\Requests\SaveCompanySettingsRequest;
+use App\Http\Requests\SettingsMasterRequest;
 use App\Models\Cashbox;
 use App\Models\Company;
 use App\Models\DdsArticle;
@@ -80,7 +82,6 @@ class SettingsController extends Controller
 
     public function saveCompanySettings(SaveCompanySettingsRequest $request)
     {
-//        dd($request->validated());
 
         Company::where('id', $request->company_id)->update($request->validated());
 
@@ -208,8 +209,21 @@ class SettingsController extends Controller
         return $setting;
     }
 
-    public function storeFromMaster(Request $request){
-        dd($request);
+    public function storeFromMaster(SettingsMasterRequest $request)
+    {
+        $company_values = ['name','inn','ogrn','kpp','actual_address', 'legal_address', 'bik','bank','cs', 'rs','owner', 'auditor', 'is_company','similar_address','opf'];
+        Company::where('id', $request->company_id)->update(collect($request->validated())->only($company_values)->toArray());
+
+        $setting = Setting::owned()->where('key' , 'markup')->first();
+        $setting->value = $request->markup;
+        $setting->save();
+
+
+
+        return response()->json([
+            'message' => 'Настройки успешно сохранены.',
+            'type' => 'success'
+        ]);
     }
 
 }

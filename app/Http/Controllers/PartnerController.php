@@ -376,13 +376,6 @@ class PartnerController extends Controller
                 }
             })
 
-
-
-//            ->where(function($q) use ($request){
-//                if(isset($request['search']) && $request['search'] != ""){
-//                    $q->where('articles.foundstring', 'LIKE' , '%' . mb_strtolower (str_replace(' ', '', $request['search'])) . '%');
-//                }
-//            })
             ->when($request['search'] != null, function($query) use ($request) {
                 if(mb_strlen($request['search']) == 1){
                     $query->where(function($q) use ($request){
@@ -395,7 +388,6 @@ class PartnerController extends Controller
                 }
             })
 
-
             ->when($request['provider'] != [], function($query) use ($request) {
                 $query->whereIn('partner_id', $request['provider']);
             })
@@ -405,59 +397,13 @@ class PartnerController extends Controller
             ->when($request['accountable'] != [], function($query) use ($request) {
                 $query->whereIn('client_orders.partner_id', $request['accountable']);
             })
-//            ->when($request['dates_range'] != null, function($query) use ($request) {
-//                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
-//            })
 
             ->groupBy('partners.id')
 
             ->orderBy($field, $dir)
-//            ->toSql();
-//
-//            dd($partners);
             ->paginate($size);
 
         return $partners;
-
-
-
-
-
-
-
-//        #TODO слить методы выборки сущностей (6.10)
-//        $category = 3;
-//        if($request['category_id']){
-//            $category = (int)$request['category_id'];
-//        }
-//        if($request['page']){
-//            Paginator::currentPageResolver(function () use ($request) {
-//                return (int)$request['page'];
-//            });
-//        }
-//        $partners = Partner::where('company_id', Auth::user()->company()->first()->id )->with('passport')->where(function($q) use ($request, $category){
-//            if($category != 3) {
-//                $q->where('category_id', $category);
-//            } else {
-//
-//            }
-//
-//            if($request['search'] != null) {
-//                if (mb_strlen($request['search']) === 1) {
-//                    $q->where('fio', 'LIKE', $request['search'] . '%' )
-//                        ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-//                } else {
-//                    $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-//                        ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-//                        ->orWhereHas('phones', function ($query) use ($request) {
-//                            $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-//                        });
-//                }
-//                $q->orWhere('barcode', $request['search']);
-//            }
-//        })->orderBy('created_at', 'ASC')->paginate(11);
-//
-//        return $partners;
     }
 
 }

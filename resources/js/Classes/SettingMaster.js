@@ -31,17 +31,16 @@ class SettingMaster
     }
 
     save(elem){
+        let object = this;
         window.event.preventDefault();
-        let form = elem.closest("form");
-        let data = new FormData(form);
-        axios({
-            method: form.getAttribute("method"),
-            url: form.getAttribute("action"),
-            data: data
-        }).then(function (response) {
-
+        window.axform.send(elem, function(response){
+            if(response.status == 422){
+                let invalids = object.root_dialog.querySelectorAll('.is-invalid');
+                [].forEach.call(invalids, function(elem){
+                    elem.closest('.m_step');
+                });
+            }
         });
-        console.log(data);
     }
 
     addPhoneMask(){
@@ -163,6 +162,8 @@ class SettingMaster
 
         event.preventDefault();
 
+        document.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
+
         let button_elements = document.querySelectorAll('.d-flex > button');
         button_elements.forEach(element => {
             element.classList.remove('active');
@@ -177,26 +178,26 @@ class SettingMaster
         });
 
 
-        // let input_elements = document.querySelectorAll('input');
+        let input_elements = document.querySelectorAll('.tab input');
 
-        // input_elements.forEach(element => {
-        //
-        //     if(element.parentElement.tagName === 'FORM') return;
-        //
-        //     if(type === 'ul' && element.name === 'actual_address') {
-        //
-        //     }
-        //
-        //     element.disabled = true;
-        // });
+        input_elements.forEach(element => {
+
+            if(element.parentElement.tagName === 'FORM') return;
+
+            if(type === 'ul' && element.name === 'actual_address') {
+
+            }
+
+            element.disabled = true;
+        });
 
         document.querySelector('#step_1 .tab.' + type).classList.add('active');
 
-        // let valid_inputs = document.querySelectorAll('#step_1 .tab.' + type + '.active input');
-        //
-        // valid_inputs.forEach(element => {
-        //     element.disabled = false;
-        // })
+        let valid_inputs = document.querySelectorAll('#step_1 .tab.' + type + '.active input');
+
+        valid_inputs.forEach(element => {
+            element.disabled = false;
+        })
     }
 
     writingBik(element) {
