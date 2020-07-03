@@ -7,8 +7,7 @@
     <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
     <meta name=ProgId content=Excel.Sheet>
     <meta name=Generator content="Microsoft Excel 15">
-
-    <link rel=Stylesheet href="{{ asset('/public/css/documents/invoice-for-payment.css') }}">
+    <link rel=Stylesheet href="{{ asset('/css/documents/invoice-for-payment.css') }}">
     <style>
         <!--table
         {mso-displayed-decimal-separator:"\,";
@@ -59,35 +58,16 @@
     <col width=16 span=4 style='mso-width-source:userset;mso-width-alt:682;
  width:12pt'>
     <col width=7 style='mso-width-source:userset;mso-width-alt:298;width:5pt'>
-    <tr height=46 style='mso-height-source:userset;height:34.5pt'>
-        <td height=46 width=7 style='height:34.5pt;width:5pt'></td>
-        <td colspan=37 class=xl95 width=705 style='width:534pt'>Внимание! Оплата
-            данного счета означает согласие с условиями поставки товара. Уведомление об
-            оплате <br>
-            <span style='mso-spacerun:yes'> </span>обязательно, в противном случае не
-            гарантируется наличие товара на складе. Товар отпускается по факту<br>
-            <span style='mso-spacerun:yes'> </span>прихода денег на р/с Поставщика,
-            самовывозом, при<span style='mso-spacerun:yes'> </span></td>
-    </tr>
     <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td class=xl60></td>
-        <td colspan=17 style='mso-ignore:colspan'></td>
-        <td class=xl60></td>
-        <td colspan=2 style='mso-ignore:colspan'></td>
-        <td class=xl60></td>
-        <td colspan=15 style='mso-ignore:colspan'></td>
-    </tr>
-    <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'>{{ $shipment->partner->bank ?? '---' }}</td>
+        <td height=17 width=7 style='height:12.75pt;width:5pt'></td>
         <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>&nbsp;</td>
-        <td colspan=3 class=xl96 style='border-left:none'>БИК</td>
-        <td colspan=16 class=xl97 style='border-left:none'>{{ $partner->bik ?? '---' }}</td>
+        <td colspan=3 class=xl95 width=63 style='border-left:none;width:48pt'>БИК</td>
+        <td colspan=16 class=xl96 width=272 style='border-left:none;width:206pt'>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
         <td colspan=3 rowspan=2 class=xl89>Сч. №</td>
-        <td colspan=16 rowspan=2 class=xl98>счет 1</td>
+        <td colspan=16 rowspan=2 class=xl97>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
@@ -96,15 +76,15 @@
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
         <td colspan=2 class=xl93>ИНН</td>
-        <td colspan=7 class=xl94>{{ $partner->inn ?? '---' }}</td>
+        <td colspan=7 class=xl94>&nbsp;</td>
         <td colspan=2 class=xl93 style='border-left:none'>КПП</td>
-        <td colspan=7 class=xl94>{{ $partner->kpp ?? '---' }}</td>
+        <td colspan=7 class=xl94>&nbsp;</td>
         <td colspan=3 rowspan=4 class=xl89>Сч. №</td>
-        <td colspan=16 rowspan=4 class=xl90>счет 2</td>
+        <td colspan=16 rowspan=4 class=xl90>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
-        <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>{{ $partner->official_name ?? '---' }}</td>
+        <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
@@ -125,42 +105,42 @@
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=6 class=xl61>Поставщик:</td>
-        <td colspan=31 class=xl62 width=587 style='width:446pt'>{{ auth()->user()->partner->official_name }}</td>
+        <td colspan=6 class=xl60>Поставщик:</td>
+        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxxx</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td class=xl61></td>
+        <td class=xl60></td>
         <td colspan=3 style='mso-ignore:colspan'></td>
-        <td class=xl62 width=19 style='width:14pt'></td>
+        <td class=xl61 width=19 style='width:14pt'></td>
         <td></td>
-        <td class=xl62 width=21 style='width:16pt'></td>
+        <td class=xl61 width=21 style='width:16pt'></td>
         <td colspan=30 style='mso-ignore:colspan'></td>
     </tr>
-    <tr height=17 style='height:12.75pt'>
+    <tr height=17 style='mso-height-source:userset;height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=6 class=xl61>Грузоотправитель:</td>
-        <td colspan=31 class=xl62 width=587 style='width:446pt'>---</td>
+        <td colspan=6 class=xl60>Грузоотправитель:</td>
+        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxx</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=6 class=xl61>Покупатель:</td>
-        <td colspan=31 class=xl62 width=587 style='width:446pt'>{{ $partner->official_name ?? '---' }}</td>
+        <td colspan=6 class=xl60>Покупатель:</td>
+        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxx</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td class=xl61></td>
+        <td class=xl60></td>
         <td colspan=3 style='mso-ignore:colspan'></td>
-        <td class=xl62 width=19 style='width:14pt'></td>
+        <td class=xl61 width=19 style='width:14pt'></td>
         <td colspan=32 style='mso-ignore:colspan'></td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=6 class=xl61>Грузополучатель:</td>
-        <td colspan=31 class=xl62 width=587 style='width:446pt'>---</td>
+        <td colspan=6 class=xl60>Грузополучатель:</td>
+        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxx</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
@@ -175,16 +155,18 @@
         <td colspan=4 class=xl86 style='border-left:none'>Цена</td>
         <td colspan=5 class=xl87 style='border-left:none'>Сумма</td>
     </tr>
-    <tr height=15 style='height:11.25pt'>
-        <td height=15 style='height:11.25pt'></td>
-        <td colspan=2 class=xl81>1</td>
-        <td colspan=4 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>&nbsp;</td>
-        <td colspan=3 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=2 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
-    </tr>
+    @foreach($products as $product)
+        <tr height=15 style='height:11.25pt'>
+            <td height=15 style='height:11.25pt'></td>
+            <td colspan=2 class=xl81>{{ ($loop->index + 1) }}</td>
+            <td colspan=4 class=xl82 style='border-left:none'>{{ $product->article }}</td>
+            <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>{{ $product->name }}</td>
+            <td colspan=3 class=xl84 style='border-left:none'>{{ $sorted_products[$product->id]['count'] }}</td>
+            <td colspan=2 class=xl82 style='border-left:none'>&nbsp;</td>
+            <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
+            <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
+        </tr>
+    @endforeach
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
         <td colspan=2 class=xl81>2</td>
@@ -205,8 +187,8 @@
         <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
         <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
     </tr>
-    <tr height=15 style='height:11.25pt'>
-        <td height=15 style='height:11.25pt'></td>
+    <tr height=16 style='height:12.0pt'>
+        <td height=16 style='height:12.0pt'></td>
         <td colspan=2 class=xl81>4</td>
         <td colspan=4 class=xl82 style='border-left:none'>&nbsp;</td>
         <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>&nbsp;</td>
@@ -217,233 +199,249 @@
     </tr>
     <tr height=9 style='mso-height-source:userset;height:6.95pt'>
         <td height=9 style='height:6.95pt'></td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
-        <td class=xl63>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
+        <td class=xl62>&nbsp;</td>
         <td class=xl63>&nbsp;</td>
         <td class=xl64>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
         <td class=xl64>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl63>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td class=xl65></td>
+        <td colspan=4 class=xl66>Итого:</td>
+        <td colspan=5 class=xl77></td>
+    </tr>
+    <tr height=17 style='height:12.75pt'>
+        <td height=17 style='height:12.75pt'></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
         <td class=xl66></td>
         <td class=xl66></td>
         <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td colspan=4 class=xl67>Итого:</td>
+        <td class=xl66>В том числе НДС:</td>
         <td colspan=5 class=xl78></td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
         <td class=xl67></td>
         <td class=xl67></td>
         <td class=xl67></td>
-        <td class=xl67>В том числе НДС:</td>
-        <td colspan=5 class=xl79></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td class=xl67></td>
+        <td colspan=5 class=xl66>Всего к оплате:</td>
+        <td colspan=5 class=xl77></td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td class=xl68></td>
-        <td colspan=5 class=xl67>Всего к оплате:</td>
-        <td colspan=5 class=xl78></td>
+        <td colspan=37 class=xl79>Всего наименований xx, на сумму xxxxxxxxxx руб.</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=37 class=xl60>Всего наименований xx, на сумму xxxxxxxxxx руб.</td>
-    </tr>
-    <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td colspan=37 class=xl68></td>
+        <td colspan=37 class=xl67></td>
     </tr>
     <tr height=9 style='mso-height-source:userset;height:6.95pt'>
         <td height=9 colspan=38 style='height:6.95pt;mso-ignore:colspan'></td>
     </tr>
     <tr height=9 style='mso-height-source:userset;height:6.95pt'>
         <td height=9 style='height:6.95pt'></td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
-        <td class=xl65>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
+        <td class=xl64>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=5 class=xl69>Руководитель</td>
+        <td colspan=5 class=xl68>Руководитель</td>
+        <td colspan=2 style='mso-ignore:colspan'></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl98></td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl70>&nbsp;</td>
         <td></td>
-        <td colspan=9 class=xl77>&nbsp;</td>
-        <td></td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
         <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl71>&nbsp;</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl77>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=7 style='height:11.25pt;mso-ignore:colspan'></td>
-        <td colspan=9 class=xl73>должность</td>
+        <td colspan=9 class=xl98></td>
         <td></td>
-        <td colspan=10 class=xl73>подпись</td>
-        <td class=xl73></td>
-        <td colspan=10 class=xl73>расшифровка подписи</td>
+        <td colspan=10 class=xl72>подпись</td>
+        <td class=xl72></td>
+        <td colspan=10 class=xl72>расшифровка подписи</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td class=xl69></td>
-        <td class=xl69></td>
-        <td class=xl69></td>
-        <td class=xl69></td>
-        <td class=xl69></td>
+        <td class=xl68></td>
+        <td class=xl68></td>
+        <td class=xl68></td>
+        <td class=xl68></td>
+        <td class=xl68></td>
         <td colspan=2 style='mso-ignore:colspan'></td>
         <td></td>
         <td></td>
@@ -453,19 +451,19 @@
         <td></td>
         <td></td>
         <td></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
         <td></td>
         <td></td>
-        <td class=xl72></td>
-        <td class=xl74></td>
+        <td class=xl71></td>
+        <td class=xl73></td>
         <td></td>
         <td></td>
         <td></td>
@@ -478,7 +476,7 @@
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td class=xl69 colspan=10 style='mso-ignore:colspan'>Главный (старший)
+        <td class=xl68 colspan=10 style='mso-ignore:colspan'>Главный (старший)
             бухгалтер</td>
         <td></td>
         <td></td>
@@ -486,87 +484,87 @@
         <td></td>
         <td></td>
         <td></td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
         <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl71>&nbsp;</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl77>&nbsp;</td>
+        <td class=xl71></td>
+        <td colspan=10 class=xl76>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=17 style='height:11.25pt;mso-ignore:colspan'></td>
-        <td colspan=10 class=xl73>подпись</td>
-        <td class=xl73></td>
-        <td colspan=10 class=xl73>расшифровка подписи</td>
+        <td colspan=10 class=xl72>подпись</td>
+        <td class=xl72></td>
+        <td colspan=10 class=xl72>расшифровка подписи</td>
     </tr>
     <tr height=16 style='height:12.0pt'>
         <td height=16 style='height:12.0pt'></td>
         <td colspan=5></td>
+        <td class=xl74></td>
+        <td class=xl74></td>
+        <td class=xl74></td>
+        <td class=xl74></td>
         <td class=xl75></td>
         <td class=xl75></td>
         <td class=xl75></td>
         <td class=xl75></td>
-        <td class=xl76></td>
-        <td class=xl76></td>
-        <td class=xl76></td>
-        <td class=xl76></td>
-        <td class=xl76></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
-        <td class=xl72></td>
+        <td class=xl75></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
+        <td class=xl71></td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=5 class=xl69>Ответственный</td>
+        <td colspan=5 class=xl68>Ответственный</td>
         <td></td>
-        <td colspan=9 class=xl77>&nbsp;</td>
+        <td colspan=9 class=xl98></td>
         <td></td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
+        <td class=xl69>&nbsp;</td>
         <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl70>&nbsp;</td>
-        <td class=xl71>&nbsp;</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl77>&nbsp;</td>
+        <td class=xl71></td>
+        <td colspan=10 class=xl76>&nbsp;</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=7 style='height:11.25pt;mso-ignore:colspan'></td>
-        <td colspan=9 class=xl73>должность</td>
+        <td colspan=9 class=xl98></td>
         <td></td>
-        <td colspan=10 class=xl73>подпись</td>
-        <td class=xl73></td>
-        <td colspan=10 class=xl73>расшифровка подписи</td>
+        <td colspan=10 class=xl72>подпись</td>
+        <td class=xl72></td>
+        <td colspan=10 class=xl72>расшифровка подписи</td>
     </tr>
     <![if supportMisalignedColumns]>
     <tr height=0 style='display:none'>

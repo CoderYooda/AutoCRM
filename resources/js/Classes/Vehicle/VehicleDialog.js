@@ -64,14 +64,6 @@ class vehicleDialog extends Modal {
         // });
     }
 
-    copy() {
-        event.preventDefault();
-
-        let vin_element = this.current_dialog.querySelector('#vin_code');
-        vin_element.select();
-        document.execCommand("copy");
-    }
-
     changeMark() {
 
         let mark_element = this.current_dialog.querySelector('#mark');

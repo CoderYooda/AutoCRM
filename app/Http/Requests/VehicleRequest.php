@@ -19,13 +19,13 @@ class VehicleRequest extends FormRequest
     {
         return [
             'id' => ['nullable', 'exists:vehicles,id'],
-            'mark_id' => ['required', 'exists:vehicle_marks,id'],
+            'mark_id' => ['nullable', 'exists:vehicle_marks,id'],
             'model_id' => ['nullable', 'exists:vehicle_models,id'],
             'modify_id' => ['nullable', 'exists:vehicle_modifies,id'],
             'color' => ['nullable', 'string'],
             'type' => ['nullable', 'string'],
             'partner_id' => ['exists:partners,id'],
-            'vin_code' => ['nullable', 'string'],
+            'vin_code' => ['required', 'string'],
             'year' => ['nullable', 'integer', 'min:1950', 'max:' . Carbon::now()->year],
             'numberplate' => ['nullable', 'string']
         ];

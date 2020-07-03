@@ -37,6 +37,7 @@ import Auth from './Classes/Auth.js';
 import Tabs from './Classes/Tabs.js';
 import SettingMaster from './Classes/SettingMaster.js';
 
+window.clipboardJS = require('clipboard');
 window.helper = new Helper();
 window.socket = new Socket();
 window.system = new System();

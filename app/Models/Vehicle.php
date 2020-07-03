@@ -32,6 +32,8 @@ class Vehicle extends Model
 
     public function getImageAttribute()
     {
+        if(!$this->mark) return asset('images/images_carmodels/default.jpg');
+
         $mark_name = strtolower($this->mark->name);
         $mark_name = str_replace(' ', '_', $mark_name);
 
@@ -55,9 +57,7 @@ class Vehicle extends Model
             ];
         }
 
-        if(!count($names)) {
-            return asset('images/images_carmodels/default.jpg');
-        }
+        if(!count($names)) return asset('images/images_carmodels/default.jpg');
 
         $file = collect($names)->sortByDesc('length')->first()['file'];
 

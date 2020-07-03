@@ -35,6 +35,16 @@ class partnerDialog extends Modal{
             let type = this.current_dialog.querySelector('[name="type"]').value;
             this.current_dialog.querySelectorAll('.nav-item a')[type].click();
         }, 50);
+
+        let clipboard = new window.clipboardJS('.fa-clipboard');
+
+        clipboard.on('success', function(e) {
+            console.info('Action:', e.action);
+            console.info('Text:', e.text);
+            console.info('Trigger:', e.trigger);
+
+            e.clearSelection();
+        });
     }
 
     initDatePicker() {

@@ -13,11 +13,11 @@
             <input type="hidden" name="is_company" value="{{ $company->is_company }}">
 
             <div class="d-flex">
-                <button onclick="settings.activeTab(this, 'fl')" class="button flex-1 primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
-                <button onclick="settings.activeTab(this, 'ul')" class="ml-15 flex-1 button primary @if($company->is_company) active @endif">Юридическое лицо</button>
+                <button onclick="settings.activeTab(this, 'fl')" class="button flex-1 primary">Индивидуальный предприниматель</button>
+                <button onclick="settings.activeTab(this, 'ul')" class="ml-15 flex-1 button primary">Юридическое лицо</button>
             </div>
 
-            <div class="tab fl @if(!$company->is_company) active @endif">
+            <div class="tab fl">
 
                 <div class="form-group mt-15">
                     <label>ФИО (полностью)</label>
@@ -56,7 +56,7 @@
 
             </div>
 
-            <div class="tab ul @if($company->is_company) active @endif">
+            <div class="tab ul">
 
                 <div class="form-group mt-15">
                     <label>Наименование организации</label>
