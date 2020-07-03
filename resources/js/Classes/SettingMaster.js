@@ -30,6 +30,20 @@ class SettingMaster
         this.goToStep(this.step - 1);
     }
 
+    save(elem){
+        window.event.preventDefault();
+        let form = elem.closest("form");
+        let data = new FormData(form);
+        axios({
+            method: form.getAttribute("method"),
+            url: form.getAttribute("action"),
+            data: data
+        }).then(function (response) {
+
+        });
+        console.log(data);
+    }
+
     addPhoneMask(){
         let elements = this.root_dialog.querySelectorAll('.phone_input');
         [].forEach.call(elements, function(element){

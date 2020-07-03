@@ -133,7 +133,6 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.sms', compact('smses','users', 'request', 'payments'));
     }
 
-
     public static function DdsarticleTab($request)
     {
         $Ddsarticles = DdsarticleController::getDdsarticles($request);
@@ -149,8 +148,6 @@ class SettingsController extends Controller
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
     }
-
-    //Saves
 
     public static function createCompanySettingsPack($company, $defaultrole)
     {
@@ -209,6 +206,10 @@ class SettingsController extends Controller
             $setting = false;
         }
         return $setting;
+    }
+
+    public function storeFromMaster(Request $request){
+        dd($request);
     }
 
 }

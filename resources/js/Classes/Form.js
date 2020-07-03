@@ -12,10 +12,10 @@ class AxForm{
 
     send(elem, callback = null){
         let object = this;
-        var dialog = elem.closest(".dialog");
+        let dialog = elem.closest(".dialog");
         window.event.preventDefault();
-        var form = elem.closest("form");
-        var data = new FormData(form);
+        let form = elem.closest("form");
+        let data = new FormData(form);
         object.setActionButtons(false, elem);
         axios({
             method: form.getAttribute("method"),

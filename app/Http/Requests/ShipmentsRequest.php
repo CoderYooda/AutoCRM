@@ -2,16 +2,23 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Shipment;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class ShipmentsRequest extends FormRequest
 {
     public function authorize()
     {
+        if($this->id){
+            $shipment = Shipment::find($this->id);
+            return $shipment->company_id == Auth::user()->company->id;
+        }
         return true;
+
     }
 
     public function prepareForValidation()
