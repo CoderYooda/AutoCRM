@@ -345,6 +345,7 @@ class partnerDialog extends Modal{
         input.classList.remove('d-none');
         input.parentElement.classList.remove('mb-0');
         input.parentElement.classList.remove('hide');
+        input.focus();
     }
 
     writingBik(element) {
