@@ -39,6 +39,20 @@ class Company extends Model
         return ($store == null || $this->stores()->where('id', $store->id)->first() == NULL);
     }
 
+    public function getOfficialNameAttribute()
+    {
+        $return_name = '';
+
+        if($this->is_company) {
+            $return_name = (($this->opf . ' ') ?? '') . $this->name;
+        }
+        else {
+            $return_name = 'ИП ' . $this->name;
+        }
+
+        return $return_name;
+    }
+
     public function getFirstCompanyMember() // TODO получать лидера компании
     {
         return $this->members()->first();

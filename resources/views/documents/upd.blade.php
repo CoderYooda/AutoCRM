@@ -261,12 +261,7 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Продавец</td>
         <td colspan=58 class=xl75>
-
-            @if($company->is_company)
-                {{ $company->name ?? 'Не указан' }}
-            @else
-                ИП {{ $company->name }}
-            @endif
+            {{ $company->official_name ?? '---' }}
         </td>
         <td colspan=3 class=xl67>(2)</td>
     </tr>
@@ -276,7 +271,7 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
         <td colspan=2 class=xl104>1</td>
         <td colspan=2 class=xl105 style='border-left:none'> </td>
         <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $company->legal_address ?? 'Не указан' }}</td>
+        <td colspan=58 class=xl103>{{ $company->legal_address ?? '---' }}</td>
         <td colspan=3 class=xl67>(2а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -285,7 +280,7 @@ width:72pt'><br>
             1 - счет-фактура и передаточный документ (акт) <br>
             2 - передаточный документ (акт)</td>
         <td colspan=16 class=xl102 style='border-left:none'>ИНН/КПП продавца</td>
-        <td colspan=58 class=xl103>{{ $company->inn ?? 'Не указан' }} / {{ $company->kpp ?? 'Не указан' }}</td>
+        <td colspan=58 class=xl103>{{ $company->inn ?? '---' }} / {{ $company->kpp ?? '---' }}</td>
         <td colspan=3 class=xl67>(2б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -311,12 +306,12 @@ width:72pt'><br>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Покупатель</td>
-        <td colspan=58 class=xl75>{{ $shipment->partner->isfl ? $shipment->partner->fio : $shipment->partner->companyName }}</td>
+        <td colspan=58 class=xl75>{{ $shipment->partner->official_name }}</td>
         <td colspan=3 class=xl67>(6)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $shipment->partner->isfl ? $shipment->partner->address : $shipment->partner->ur_address }}</td>
+        <td colspan=58 class=xl103>{{ $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address }}</td>
         <td colspan=3 class=xl67>(6а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -536,14 +531,14 @@ none;width:18pt'>код</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ auth()->user()->partner->cut_surname }}</td>
+        <td colspan=14 class=xl75>{{ auth()->user()->partner->fio }}</td>
         <td colspan=3 class=xl76>[10]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=13 class=xl79>&nbsp;</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ $shipment->partner->isfl ? $shipment->partner->cut_surname : $shipment->partner->ur_fio }}</td>
+        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->fio : $shipment->partner->ur_fio }}</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[15]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -661,9 +656,9 @@ none;width:18pt'>код</td>
         <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
 
             @if($company->is_company)
-                {{ $company->name }}, ИНН {{ $company->inn ?? 'Не указан' }}, КПП {{ $company->kpp ?? 'Не указан' }}
+                {{ $company->name }}, ИНН {{ $company->inn ?? '---' }}, КПП {{ $company->kpp ?? '---' }}
             @else
-                ИП {{ $company->name ?? 'Не указан' }}
+                {{ $company->name ?? '---' }}
             @endif
 
         </td>
@@ -671,8 +666,10 @@ none;width:18pt'>код</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=39 class=xl75>
 
-            @if(!$shipment->partner->isfl)
-                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? 'Не указан' }}, КПП {{ $shipment->partner->kpp ?? 'Не указан' }}
+            @if($shipment->partner->type == 2)
+                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? '--' }}, КПП {{ $shipment->partner->kpp ?? '---' }}
+            @elseif($shipment->partner->type == 1)
+                {{ $shipment->partner->fio }}
             @else
                 Частное лицо
             @endif

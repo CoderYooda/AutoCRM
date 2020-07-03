@@ -1,41 +1,23 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\AnalogController;
-use App\Http\Controllers\API\DecoderController;
-use App\Models\Shipment;
-use App\Models\User;
-use App\Models\Warrant;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use App\Models\SystemMessage as SM;
-use App\Events\SystemMessage;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class Test extends Command
+class InnController extends Controller
 {
-    protected $signature = 'command:test';
-
-    protected $description = 'Command description';
-
-    public function __construct()
+    public function getInfo(string $inn)
     {
-        parent::__construct();
-    }
+        $url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party";
 
-    private $base_url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs";
-    private $token;
-    private $handle;
-
-    public function handle()
-    {
         $fields = [
-            'query' => '312181691267',
+            'query' => $inn,
             'count' => 1
         ];
 
         $handle = curl_init();
-        curl_setopt($handle, CURLOPT_URL, "https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party");
+        curl_setopt($handle, CURLOPT_URL, $url);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($handle, CURLOPT_HTTPHEADER, array(
             "Content-Type: application/json",
@@ -46,7 +28,6 @@ class Test extends Command
         curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($fields));
 
         $result = curl_exec($handle);
-        $info = curl_getinfo($handle);
 
         curl_close($handle);
 
@@ -61,10 +42,10 @@ class Test extends Command
             ],
             'inn' => $suggestion->data->inn,
             'ogrn' => $suggestion->data->ogrn,
+            'name' => $suggestion->data->name->full,
+            'kpp' => $suggestion->data->kpp ?? null
         ];
 
-        dd($suggestion);
-
-        return $result;
+        return response()->json($response);
     }
 }

@@ -68,6 +68,13 @@ class PartnerController extends Controller
         if($request->partner_id != null){
             $tag .= $request->partner_id;
             $partner = Partner::with('vehicles', 'passport')->findOrFail($request->partner_id);
+
+            if($partner->category->name == 'Анонимы') {
+                return response()->json([
+                    'message' => 'Запрещено редактировать анонимов',
+                    'type' => 'error'
+                ], 422);
+            }
         }
 
 //        if($request['partner_select']){

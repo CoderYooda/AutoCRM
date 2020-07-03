@@ -39,7 +39,8 @@ class Partner extends Model
         'bik',
         'kpp',
         'cs',
-        'rs'
+        'rs',
+        'opf'
     ];
 
     public function vehicles()
@@ -147,6 +148,26 @@ class Partner extends Model
 
     public function isflText(){
         return ['Физическое лицо', 'Индивидуальный предприниматель', 'Юридическое лицо'][$this->type];
+    }
+
+    public function getOfficialNameAttribute()
+    {
+        $return_name = '';
+
+        if($this->category->name == 'Анонимы') {
+            $return_name = 'Физическое лицо';
+        }
+        else if($this->type == 0) {
+            $return_name = $this->fio;
+        }
+        else if($this->type == 1) {
+            $return_name = 'ИП ' . $this->fio;
+        }
+        else {
+            $return_name = ($this->opf . ' ' ?? '') . $this->companyName;
+        }
+
+        return $return_name;
     }
 
     public function user(){

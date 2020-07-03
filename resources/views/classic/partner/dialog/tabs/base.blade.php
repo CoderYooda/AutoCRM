@@ -62,17 +62,20 @@
     <label>Дата рождения @if(!$partner || !$partner->email) <span onclick="{{ $class }}.showField(this, 'birthday')" class="input_as_link pointer">добавить</span> @endif</label>
     <input onclick="this.select();" type="text" name="birthday"
            @if($partner) value="{{ $partner->getBirthday() == 'Не указано' ? '' : $partner->getBirthday() }}" @endif
-           class="form-control date_picker entrance" placeholder="Выберите дату">
+           class="form-control date_picker entrance @if(!$partner || !$partner->email) d-none @endif" placeholder="Выберите дату">
 </div>
 
 <div class="form-group fl @if(!$partner || !$partner->address) mb-0 @endif">
     <label>Адрес проживания <span onclick="{{ $class }}.showField(this, 'address')" class="input_as_link pointer" @hide($partner && $partner->address)>добавить</span></label>
-    <input type="text" name="address" value="{{ $partner->address ?? '' }}" class="form-control entrance" placeholder="Адрес проживания">
+    <input type="text" name="address" value="{{ $partner->address ?? '' }}" class="form-control entrance @if(!$partner || !$partner->email) d-none @endif" placeholder="Адрес проживания">
 </div>
 
 <div class="form-group ul">
-    <label>Название компании</label>
-    <input type="text" name="companyName" id="ul_dialog_focused" value="{{ $partner->companyName ?? '' }}" class="form-control entrance" placeholder="Название компании">
+    <label>Название компани</label>
+    <div class="d-flex">
+        <input type="text" name="opf" style="flex: 0 0 14%;" maxlength="3" value="{{ $partner->opf ?? '' }}" class="form-control entrance mr-5" placeholder="ЗАО">
+        <input type="text" name="companyName" id="ul_dialog_focused" value="{{ $partner->companyName ?? '' }}" class="form-control entrance" placeholder="Название компании">
+    </div>
 </div>
 
 <div class="form-group ul">
@@ -80,12 +83,12 @@
     <input type="text" name="ur_fio" value="{{ $partner->fio ?? '' }}" class="form-control entrance" placeholder="Контактное лицо">
 </div>
 
-<div class="form-group fl ip ul">
+<div class="form-group fl ip ul @if(!$partner || !$partner->address) mb-0 @endif">
     <label>Email @if(!$partner || !$partner->email) <span onclick="{{ $class }}.showField(this, 'email')" class="input_as_link pointer">добавить</span> @endif </label>
-    <input type="email" name="email" value="{{ $partner->email ?? '' }}" class="form-control" placeholder="Электронная почта">
+    <input type="email" name="email" value="{{ $partner->email ?? '' }}" class="form-control @if(!$partner || !$partner->email) d-none @endif" placeholder="Электронная почта">
 </div>
 
-<div class="form-group fl ip ul">
+<div class="form-group fl ip ul @if(!$partner || !$partner->address) mb-0 @endif">
     <label>Комментарий @if(!$partner || !$partner->comment) <span onclick="{{ $class }}.showField(this, 'comment')" class="input_as_link pointer">добавить</span> @endif</label>
-    <textarea type="text" name="comment" class="form-control w-100" placeholder="Комментарий">@isset($partner){{ $partner->comment }}@endisset</textarea>
+    <textarea type="text" name="comment" class="form-control w-100 @if(!$partner || !$partner->email) d-none @endif" placeholder="Комментарий">@isset($partner){{ $partner->comment }}@endisset</textarea>
 </div>

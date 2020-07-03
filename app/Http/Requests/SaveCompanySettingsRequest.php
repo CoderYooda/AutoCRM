@@ -35,7 +35,8 @@ class SaveCompanySettingsRequest extends FormRequest
             'owner' => ['nullable', 'string', 'max:255'],
             'auditor' => ['nullable', 'string', 'max:255'],
             'is_company' => ['required', 'between:0,1'],
-            'similar_address' => ['boolean']
+            'similar_address' => ['boolean'],
+            'opf' => ['nullable', 'string', 'max:3']
         ];
     }
 

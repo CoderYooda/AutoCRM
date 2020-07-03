@@ -98,20 +98,20 @@
     <form name="ShipmentForm" class="WarrantStoredListner PartnerSelectedListner" action="{{ route('StoreShipment') }}" method="POST">
         <div class="box-body">
             @csrf
+
+            <input type="hidden" name="id" value="{{ $shipment->id ?? '' }}">
+
             @if(isset($shipment))
-                <input type="hidden" name="id" value="{{ $shipment->id }}">
                 <input type="hidden" name="summ" value="{{ $shipment->summ }}">
                 <input type="hidden" name="itogo" value="{{ $shipment->itogo }}">
                 <input type="hidden" name="ostatok" value="{{ $shipment->itogo - $shipment->wsumm }}">
                 @if($shipment->clientOrder)
-                <input type="hidden" name="clientorder_id" value="{{ $shipment->clientOrder->id }}">
+                    <input type="hidden" name="clientorder_id" value="{{ $shipment->clientOrder->id }}">
                 @endif
-            @else
-                <input type="hidden" name="id" value="">
             @endif
 
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
-            <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($shipment) && $shipment->partner != NULL){{ $shipment->partner->id }}@endif">
+            <input class="partner_select" type="hidden" name="partner_id" value="{{ $shipment->partner->id ?? null }}">
             <input id="inpercents" name="inpercents" type="hidden" @if($shipment && $shipment->id != NULL && $shipment->inpercents) value="1" @else value="0" @endif>
             <div class="row row-sm">
                 <div class="col-sm-6">
@@ -122,7 +122,7 @@
                                 @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
                                     {{ $shipment->partner->outputName() }}
                                 @else
-                                    Не выбрано
+                                    Аноним
                                 @endif
                             </button>
                         </div>
@@ -192,14 +192,14 @@
             <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             {{--<button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>--}}
 
-                <button class="dropdown pull-right button" onclick="event.preventDefault(); window.helper.openModal(this, event)">
-                    Печать
-                    <div class="dropdown_container">
-                        <div class="arrow"></div>
-                        <span onclick="{{ $class }}.printScore()" class="element">Счёт</span>
-                        <span onclick="{{ $class }}.printUpd()" class="element">УПД</span>
-                    </div>
-                </button>
+{{--            <button class="dropdown pull-right button" onclick="event.preventDefault(); window.helper.openModal(this, event)">--}}
+{{--                Печать--}}
+{{--                <div class="dropdown_container">--}}
+{{--                    <div class="arrow"></div>--}}
+{{--                    <span onclick="{{ $class }}.printScore()" class="element">Счёт</span>--}}
+{{--                    <span onclick="{{ $class }}.printUpd()" class="element">УПД</span>--}}
+{{--                </div>--}}
+{{--            </button>--}}
 
             <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
         </div>
