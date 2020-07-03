@@ -58,7 +58,7 @@
                 <div role="tabpanel" class="tab-pane active main_tab animate text-muted" aria-labelledby="tab_base{{ $class }}-tab" id="tab_base{{ $class }}">
                     @include(get_template() . '.partner.dialog.tabs.base')
                 </div>
-                <div data-simplebar role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_company{{ $class }}-tab" id="tab_company{{ $class }}" style="max-height: 500px;">
+                <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_company{{ $class }}-tab" id="tab_company{{ $class }}">
                     @include(get_template() . '.partner.dialog.tabs.company')
                 </div>
                 <div role="tabpanel" class="tab-pane animate text-muted" aria-labelledby="tab_passport{{ $class }}-tab" id="tab_passport{{ $class }}">
