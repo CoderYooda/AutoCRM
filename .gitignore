@@ -6,6 +6,8 @@
 /public/fonts
 /public/images
 /public/dependencies
+/public/storage
+/public/mix-manifest.json
 /vendor
 .env
 .env.backup

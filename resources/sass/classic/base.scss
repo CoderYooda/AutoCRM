@@ -1899,3 +1899,8 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 }
+
+.disabled {
+    cursor: auto !important;
+    color: grey !important;
+}
