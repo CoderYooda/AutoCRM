@@ -87,8 +87,7 @@
     <label>Email @if(!$partner || !$partner->email) <span onclick="{{ $class }}.showField(this, 'email')" class="input_as_link pointer">добавить</span> @endif </label>
     <input type="email" name="email" value="{{ $partner->email ?? '' }}" class="form-control @if(!$partner || !$partner->email) d-none @endif" placeholder="Электронная почта">
 </div>
-
-<div class="form-group fl ip ul @if(!$partner || !$partner->address) mb-0 @endif">
+<div class="form-group fl ip ul @if(!$partner || !$partner->comment) mb-0 @endif">
     <label>Комментарий @if(!$partner || !$partner->comment) <span onclick="{{ $class }}.showField(this, 'comment')" class="input_as_link pointer">добавить</span> @endif</label>
-    <textarea type="text" name="comment" class="form-control w-100 @if(!$partner || !$partner->email) d-none @endif" placeholder="Комментарий">@isset($partner){{ $partner->comment }}@endisset</textarea>
+    <textarea type="text" name="comment" class="form-control w-100 @if(!$partner || !$partner->comment) d-none @endif" placeholder="Комментарий">@isset($partner){{ $partner->comment }}@endisset</textarea>
 </div>

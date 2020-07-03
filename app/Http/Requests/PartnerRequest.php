@@ -6,6 +6,7 @@ use App\Models\Partner;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class PartnerRequest extends FormRequest
 {
@@ -63,6 +64,8 @@ class PartnerRequest extends FormRequest
         if($this->type != 0) {
             $rules['opf'] = ['nullable', 'string', 'max:3'];
         }
+
+        $rules['barcode'] = ['nullable', Rule::unique('partners', 'barcode')->ignore($this->id)];
 
         if($this->email){$rules['email'] = ['min:3', 'email'];}
         if($this->access && $this->phone != null){

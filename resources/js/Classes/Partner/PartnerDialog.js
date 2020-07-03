@@ -37,14 +37,6 @@ class partnerDialog extends Modal{
         }, 50);
 
         let clipboard = new window.clipboardJS('.fa-clipboard');
-
-        clipboard.on('success', function(e) {
-            console.info('Action:', e.action);
-            console.info('Text:', e.text);
-            console.info('Trigger:', e.trigger);
-
-            e.clearSelection();
-        });
     }
 
     initDatePicker() {
@@ -380,8 +372,6 @@ class partnerDialog extends Modal{
     toggleAccess(elem){
         let account_data = this.current_dialog.querySelector('.account_data');
         account_data.classList.toggle('hide');
-
-        console.log(this.phoneLoginMask.unmaskedValue.length);
 
         if(this.phoneLoginMask.unmaskedValue.length != 11) {
             let elements = this.current_dialog.querySelectorAll('.account_data > div');

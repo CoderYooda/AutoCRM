@@ -1640,6 +1640,18 @@ input:-moz-placeholder { /* Firefox 18- */
     line-height: 16px;
 }
 
+@media (min-width: 1480px) {
+    .statistic-title {
+        padding-top: 18px;
+        padding-left: 16px;
+        color: #BBBBBB;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 16px;
+    }
+}
+
 .statistic-summ {
     padding-top: 32px;
     text-align: center;
