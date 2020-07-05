@@ -37,6 +37,10 @@ class partnerDialog extends Modal{
         }, 50);
 
         let clipboard = new window.clipboardJS('.fa-clipboard');
+
+        clipboard.on('success', (e) => {
+            notification.notify('success', 'VIN успешно скопирован.');
+        });
     }
 
     initDatePicker() {

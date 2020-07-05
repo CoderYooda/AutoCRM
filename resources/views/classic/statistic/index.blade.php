@@ -48,7 +48,7 @@
                                         @if(isset($list[$sort['name']]) && is_array($list[$sort['name']]))
                                             {{ array_sum($list[$sort['name']]) }}
                                         @else
-                                            {{ $list[$sort['name']][$current_date] ?? 0 }}
+                                            {{ number_format($list[$sort['name']][$current_date] ?? 0, 0, '', ' ') }}
                                         @endif
 
                                         {{ $sort['name'] == 'ROI' ? '%' : '₽' }}
