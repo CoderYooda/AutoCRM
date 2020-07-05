@@ -9,7 +9,9 @@ class registerPage{
     }
 
     init(){
-        this.addPhoneMask()
+        this.addPhoneMask();
+        document.getElementById('phone_input').focus();
+        document.getElementById('phone_input').select();
     }
 
     changeCountry(elem){
@@ -37,7 +39,8 @@ class registerPage{
                     });
                 }
             }
-        )
+        );
+        document.getElementById('phone_input').focus();
     }
 
     linked(){

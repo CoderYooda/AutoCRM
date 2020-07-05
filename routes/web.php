@@ -259,6 +259,13 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Штрихкоды
     Route::post('/barcode/search', 'BarcodeController@search')->name('BarcodeSearch');
 
+
+
+    Route::post('/settings/master/store', 'SettingsController@storeFromMaster')->name('StoreFromMaster');
+
+
+
+
     Route::group(['prefix' => 'ws'], function(){
         Route::get('/check-auth', function(){
             return response()->json([

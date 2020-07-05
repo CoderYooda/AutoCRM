@@ -34,7 +34,11 @@ class resetPage{
         this.pass_changed = false;
 
         this.phone = null;
+        document.getElementById('phone_input').focus();
+        document.getElementById('phone_input').select();
     }
+
+
 
     linked(){
 

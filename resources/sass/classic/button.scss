@@ -52,11 +52,18 @@
     color: #2d76a8;
     border: 1px solid #2d76a8;
 }
-.button.white:hover {
-    background-color: #fff;
-    color: #225c84;
+.button.yellow {
+    background-color: #38ff20;
+    color: #404040;
     border: 1px solid #2d76a8;
 }
+
+.button.yellow:hover {
+    background-color: #2de017;
+    color: #404040;
+    border: 1px solid #2d76a8;
+}
+
 .button.white:focus:not(:active) {
     background-color: #fff;
     color: #1f98e9;
