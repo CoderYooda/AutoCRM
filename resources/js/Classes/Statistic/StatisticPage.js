@@ -81,67 +81,21 @@ class statisticPage {
         });
     }
 
-    removeFilter(filter_element) {
-        filter_element = filter_element.parentElement;
-
-        let entity_name = filter_element.innerText;
-
-        filter_element.remove();
-
-        let elements = document.getElementsByName('entities[]');
-
-        elements.forEach(element => {
-
-            if(element.value === entity_name) {
-                element.checked = false;
-            }
-        });
-
-        if(!document.getElementsByClassName('filter-item').length) {
-            document.getElementsByClassName('filter-list')[0].innerHTML = 'Результатов нет.';
-        }
-
-        document.getElementById('select_all').checked = false;
-    }
-
     toggleFilter(element) {
 
         let input = element.querySelector('input');
 
         input.checked = !input.checked;
 
-        let item_count = document.getElementsByClassName('filter-item').length;
+        let inputs = document.querySelectorAll('input[class="d-none"]');
 
-        let list_element = document.getElementsByClassName('filter-list')[0];
+        let count = 0;
 
-        if(input.checked) {
+        inputs.forEach(input => {
+            if(input.checked) count++;
+        });
 
-            if(!item_count) {
-                list_element.innerHTML = '';
-            }
-
-            let html = '<div class="filter-item">\n' +
-                '           ' + input.value + '\n' +
-                '           <button type="button" onclick="statistic.removeFilter(this)" class="right-remove pr-10"><i class="fa fa-remove"></i></button>\n' +
-                '       </div>';
-
-            list_element.append(helper.createElementFromHTML(html));
-        }
-        else {
-            let elements = document.getElementsByClassName('filter-item');
-
-            elements.forEach(element => {
-                if(element.innerText === input.value) {
-                    element.remove();
-                }
-            });
-
-            if(item_count - 1 <= 0) {
-                list_element.innerHTML = 'Результатов нет.';
-            }
-        }
-
-        document.getElementById('select_all').checked = document.getElementsByClassName('filter-item').length === 15;
+        document.getElementById('select_all').checked = count === 15;
     }
 
     toggleFilters(current_element) {
@@ -155,25 +109,6 @@ class statisticPage {
         elements.forEach(element => {
             element.checked = input.checked;
         });
-
-        let list_element = document.getElementsByClassName('filter-list')[0];
-
-        if(input.checked) {
-
-            list_element.innerHTML = '';
-
-            this.entity_names.forEach(name => {
-                let html = '<div class="filter-item">\n' +
-                    '           ' + name + '\n' +
-                    '           <button type="button" onclick="statistic.removeFilter(this)" class="right-remove pr-10"><i class="fa fa-remove"></i></button>\n' +
-                    '       </div>';
-
-                list_element.append(helper.createElementFromHTML(html));
-            });
-        }
-        else {
-            list_element.innerHTML = 'Результатов нет.';
-        }
     }
 
     selectDdsarticle(id){
