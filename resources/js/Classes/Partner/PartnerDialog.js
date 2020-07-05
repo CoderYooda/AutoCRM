@@ -245,16 +245,10 @@ class partnerDialog extends Modal{
 
         field_elements.forEach(element => {
 
-            let input = element.querySelector('input');
-
             element.classList.add('d-none');
 
             if(element.classList.contains(type)) {
                 element.classList.remove('d-none');
-            }
-
-            if(input) {
-                element.querySelector('input').disabled = element.classList.contains('d-none');
             }
         });
     }
@@ -344,7 +338,7 @@ class partnerDialog extends Modal{
 
         let input = this.current_dialog.querySelector('[name=' + input_name + ']');
 
-        input.classList.remove('d-none');
+        input.classList.remove('hide');
         input.parentElement.classList.remove('mb-0');
         input.parentElement.classList.remove('hide');
     }
@@ -372,13 +366,6 @@ class partnerDialog extends Modal{
     toggleAccess(elem){
         let account_data = this.current_dialog.querySelector('.account_data');
         account_data.classList.toggle('hide');
-
-        if(this.phoneLoginMask.unmaskedValue.length != 11) {
-            let elements = this.current_dialog.querySelectorAll('.account_data > div');
-            elements.forEach(element => {
-                element.classList.remove('d-none');
-            });
-        }
     }
 
     canAddMorePhone(div){

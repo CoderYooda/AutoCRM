@@ -14,13 +14,13 @@
 
 @if(isset($partner) && $partner->user != null)
     @if($partner->user->banned_at != null)
-        <span> Пользователь был заблокирован {{ $partner->user->banned_at }}</span>
+        <span>Пользователь был заблокирован {{ $partner->user->banned_at }}</span>
     @else
-        <span> Пользователь был создан {{ $partner->user->created_at }}</span>
+        <span>Пользователь был создан {{ $partner->user->created_at }}</span>
     @endif
 @endif
-<div class="account_data hide">
-    <div class="form-group">
+<div class="account_data hide @if($partner && !$partner->access) d-none @endif">
+    <div class="form-group fl ip ul">
         <label>Привязать к магазину</label>
         <select name="store_id" class="form-control input-c">
             @foreach($stores as $store)
@@ -28,7 +28,8 @@
             @endforeach
         </select>
     </div>
-    <div class="form-group">
+
+    <div class="form-group fl ip ul">
         <label>Номер телефона</label>
         <input id="phone_login_input" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
         <div class="primary mt-15 p-15">
@@ -36,4 +37,3 @@
         </div>
     </div>
 </div>
-
