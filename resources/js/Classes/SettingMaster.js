@@ -34,12 +34,21 @@ class SettingMaster
         let object = this;
         window.event.preventDefault();
         window.axform.send(elem, function(response){
+            object.steps_icon[1] = 'success';
+            object.steps_icon[2] = 'success';
+            object.steps_icon[3] = 'success';
             if(response.status == 422){
                 let invalids = object.root_dialog.querySelectorAll('.is-invalid');
                 [].forEach.call(invalids, function(elem){
-                    elem.closest('.m_step');
+                    //object.steps_icon.2 = 'error';
+                    let id = elem.closest('.m_step').getAttribute('data-id');
+                    object.steps_icon[id] = 'error';
+
                 });
+            } else {
+                document.getElementById('all_ready').classList.remove('hide');
             }
+            object.checkButts();
         });
     }
 
@@ -162,7 +171,7 @@ class SettingMaster
 
         event.preventDefault();
 
-        document.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
+        this.root_dialog.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
 
         let button_elements = document.querySelectorAll('.d-flex > button');
         button_elements.forEach(element => {

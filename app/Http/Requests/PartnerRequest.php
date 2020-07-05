@@ -43,7 +43,9 @@ class PartnerRequest extends FormRequest
             ];
 
             $active = false;
+
             foreach($this->phones as $phone){if($phone['number'] != NULL){$active = true;}}
+
             if($active){$rules['phones.*.number'] = ['min:0', 'required', 'regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];}
             if($this->number){
                 $rules['number'] = ['min:0', 'digits:10', 'integer'];

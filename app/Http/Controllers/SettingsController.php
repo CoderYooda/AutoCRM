@@ -220,6 +220,63 @@ class SettingsController extends Controller
 
 
 
+        if(isset( $request->validated()['employees'])){
+            foreach($request->validated()['employees'] as $employee){
+                $partner = new Partner();
+                $partner->type = 0;
+                $partner->company_id = Auth::user()->company->id;
+                $partner->store_id = Auth::user()->getStoreFirst()->id;
+                $partner->basePhone = $employee['phone'];
+                $partner->category_id = 5;
+                $partner->fio = $employee['fio'];
+                $partner->save();
+
+                $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
+                $partner->phones()->sync($phones->pluck('id'));
+
+                if($employee['access']){
+                    $password = rand(10000, 99999);
+                    $user = User::create([
+                        'name' => $partner->outputName(),
+                        'phone' => $employee['phone'],
+                        'company_id' => Auth::user()->company->id,
+                        'password' => bcrypt($password)
+                    ]);
+                    $partner->user_id = $user->id;
+                    $partner->save();
+
+                    $role = \App\Models\Role::owned()->whereId(SettingsController::getSettingByKey('role_id')->value)->first();
+                    $user->syncRoles([$role->id]);
+                    if($user){
+                        SmsController::sendSMS($user->phone, 'Вам предоставлен доступ к ' . env('APP_NAME') .'! Логин: ' . $user->phone . ' Пароль: ' . $password);
+                    }
+                }
+            }
+        }
+
+        if(isset( $request->validated()['partners'])){
+            foreach($request->validated()['partners'] as $partn){
+                $partner = new Partner();
+                $partner->type = 2;
+                $partner->company_id = Auth::user()->company->id;
+                $partner->basePhone = $partn['phone'];
+                $partner->category_id = 6;
+                $partner->fio = $partn['fio'];
+                $partner->companyName = $partn['companyName'];
+                $partner->save();
+
+                $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
+                $partner->phones()->sync($phones->pluck('id'));
+            }
+        }
+
+
+//        foreach($request['partners'] as $partner){
+//            dd($employee);
+//        }
+
+
+
         return response()->json([
             'message' => 'Настройки успешно сохранены.',
             'type' => 'success'

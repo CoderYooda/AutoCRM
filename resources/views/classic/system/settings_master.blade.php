@@ -1,5 +1,11 @@
-<div id="settings_master" class="modal" data-backdrop="false" style="display: block; background: rgba(0, 0, 0, 0.15);">
+<div id="settings_master" class="modal" data-backdrop="false" style="   background: rgba(0, 0, 0, 0.15);">
     <div class="modal-dialog">
+        <div id="all_ready" class="hide">
+            <div>
+                <span>Всё готово!</span>
+                <button type="button" onclick="setting_master.close()">Приступить к работе</button>
+            </div>
+        </div>
         <div class="modal-content ov-hidden">
             <form action="{{ route('StoreFromMaster') }}" method="POST">
                 <div class="d-flex">
@@ -64,53 +70,53 @@
 
                                     <div class="form-group mt-15">
                                         <label>Организация</label>
-                                        <input name="name" type="text" class="form-control" placeholder="Общество с ограниченной ответственностью «ББ-СРМ»">
+                                        <input name="name" type="text" class="form-control" placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" disabled>
                                     </div>
 
                                     <div class="form-group ">
                                         <label>ИНН</label>
-                                        <input name="inn" type="text" class="form-control" placeholder="Ваш ИНН" >
+                                        <input name="inn" type="text" class="form-control" placeholder="Ваш ИНН" disabled>
                                     </div>
 
                                     <div class="form-group">
                                         <label>ОГРН</label>
-                                        <input name="ogrn" type="text" class="form-control" placeholder="Ваш ОГРН" >
+                                        <input name="ogrn" type="text" class="form-control" placeholder="Ваш ОГРН" disabled>
                                     </div>
 
                                     <div class="form-group">
                                         <label>КПП</label>
-                                        <input name="kpp" type="text" class="form-control" placeholder="Ваш КПП" >
+                                        <input name="kpp" type="text" class="form-control" placeholder="Ваш КПП" disabled>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Юридический адрес</label>
-                                        <input name="legal_address" type="text" class="form-control" placeholder="Ваш юридический адрес" >
+                                        <input name="legal_address" type="text" class="form-control" placeholder="Ваш юридический адрес" disabled>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Фактический адрес <input title="Совпадает с юридическим" name="similar_address" type="checkbox" onchange="setting_master.similarCompanyAddress(this)"></label>
-                                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" >
+                                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" disabled>
 
                                     </div>
 
                                     <div class="form-group">
                                         <label>БИК</label>
-                                        <input name="bik" type="text" onchange="setting_master.writingBik(this)" class="form-control" placeholder="Ваш БИК" >
+                                        <input name="bik" type="text" onchange="setting_master.writingBik(this)" class="form-control" placeholder="Ваш БИК" disabled>
                                     </div>
 
                                     <div class="form-group ">
                                         <label>Банк</label>
-                                        <input name="bank" type="text" class="form-control" placeholder="Наименование банка" >
+                                        <input name="bank" type="text" class="form-control" placeholder="Наименование банка" disabled>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Корреспондентский счет</label>
-                                        <input name="cs" type="text" class="form-control" placeholder="Ваш корреспондентский счет" >
+                                        <input name="cs" type="text" class="form-control" placeholder="Ваш корреспондентский счет" disabled>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Расчетный счет</label>
-                                        <input name="rs" type="text" class="form-control" placeholder="Ваш расчетный счет" >
+                                        <input name="rs" type="text" class="form-control" placeholder="Ваш расчетный счет" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +145,7 @@
                                 </div>
                                 <div class="add_more_container">
                                     <button type="button" onclick="setting_master.insertEmployee();" class="button primary">Добавить еще</button>
-                                    <button  onclick="setting_master.nextStep()" class="button white">Нет сотрудников</button>
+                                    <button type="button" onclick="setting_master.nextStep()" class="button white">Нет сотрудников</button>
                                 </div>
                             </div>
                         </div>
@@ -172,10 +178,10 @@
                                 <div class="letter">1</div>
                             </div>
                             <div id="stepb_2" onclick="setting_master.goToStep(2)" class="wait">
-                                <div class="letter">1</div>
+                                <div class="letter">2</div>
                             </div>
                             <div id="stepb_3" onclick="setting_master.goToStep(3)" class="wait">
-                                <div class="letter">1</div>
+                                <div class="letter">3</div>
                             </div>
                         </div>
                     </div>
