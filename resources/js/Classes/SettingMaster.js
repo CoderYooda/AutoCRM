@@ -193,9 +193,7 @@ class SettingMaster
 
             if(element.parentElement.tagName === 'FORM') return;
 
-            if(type === 'ul' && element.name === 'actual_address') {
-
-            }
+            console.log(element.getAttribute('name'), element);
 
             element.disabled = true;
         });

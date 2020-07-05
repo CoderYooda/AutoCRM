@@ -22,7 +22,7 @@ class DocumentsController extends Controller
 
         $view = view($names[$request->doc], compact('request'));
 
-        if($request->doc == 'shipment-upd') {
+        if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 
             $selected_products = json_decode($request->data);
 

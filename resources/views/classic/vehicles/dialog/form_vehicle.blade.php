@@ -29,13 +29,12 @@
                         <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
                                @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
                                class="form-control mw-100" />
-                    <button onclick="{{ $tag }}.copy()" class="button primary ml-10">Скопировать</button>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Марка:</label>
-                    <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control">
+                    <label name="mark_id">Марка:</label>
+                    <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control is-invalid">
                         <option value="">Не выбрано</option>
                         @foreach($marks as $mark)
                             <option @if($vehicle && $vehicle->mark_id == $mark->id) selected @endif value="{{ $mark->id }}">{{ $mark->name }}</option>

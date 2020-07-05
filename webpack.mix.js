@@ -8,12 +8,9 @@ mix.sass('resources/sass/' + template + '/app.scss', 'public/css').options({ pro
 mix.sass('resources/sass/' + template + '/fonts.scss', 'public/css');
 mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ processCssUrls: false });
 
-//Тут документы
-mix.sass('resources/sass/' + template + '/documents/upd.scss', 'public/css/documents').options({ processCssUrls: false });
-    //.sass('resources/sass/template.scss', 'public/css');
-
 mix.sass('resources/sass/' + template + '/auth.scss', 'public/css');
 
+mix.copyDirectory('resources/sass/documents', 'public/css/documents');
 mix.copyDirectory('resources/fonts', 'public/fonts');
 mix.copyDirectory('resources/images', 'public/images');
 mix.copyDirectory('resources/sounds', 'public/sounds');

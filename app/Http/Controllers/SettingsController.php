@@ -82,7 +82,6 @@ class SettingsController extends Controller
 
     public function saveCompanySettings(SaveCompanySettingsRequest $request)
     {
-
         Company::where('id', $request->company_id)->update($request->validated());
 
         return response()->json([

@@ -1597,6 +1597,11 @@ input:-moz-placeholder { /* Firefox 18- */
     cursor: help;
 }
 
+.statistic-info > img {
+    width: 15px;
+    height: 15px;
+}
+
 .statistic-select-all > .box {
     background: #ECECEC;
     border: 1px solid #E4E4E4;
@@ -1633,11 +1638,18 @@ input:-moz-placeholder { /* Firefox 18- */
 .statistic-title {
     padding-top: 18px;
     padding-left: 16px;
-    color: #BBBBBB;
+    color: black;
     font-style: normal;
     font-weight: normal;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 16px;
+    white-space: nowrap;
+}
+
+@media (min-width: 1480px) {
+    .statistic-title {
+        font-size: 12px;
+    }
 }
 
 .statistic-summ {
@@ -1659,6 +1671,12 @@ input:-moz-placeholder { /* Firefox 18- */
     float: right;
     padding-right: 16px;
 }
+
+.statistic-question > img {
+    width: 18px;
+    height: 18px;
+}
+
 
 .tippy-box[data-theme~='tomato'] {
     background-color: tomato;
@@ -1754,7 +1772,7 @@ input:-moz-placeholder { /* Firefox 18- */
     font-weight: normal;
     font-size: 12px;
     line-height: 16px;
-    color: #C6C6C6;
+    color: black;
 }
 
 .tippy-tooltip.light-theme {
@@ -1898,4 +1916,13 @@ input:-moz-placeholder { /* Firefox 18- */
             display: block;
         }
     }
+}
+
+.disabled {
+    cursor: auto !important;
+    color: grey !important;
+}
+
+.focus-blue:hover {
+    color: #1F98E9 !important;
 }

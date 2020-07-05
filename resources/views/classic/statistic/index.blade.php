@@ -37,9 +37,9 @@
 
                         @foreach($sorts as $sort)
 
-                            <div onclick="{{ $class }}.toggleFilter(this)" class="statistic-filter mb-15 pointer">
+                            <div class="statistic-filter mb-15">
 
-                                <div class="box mr-15" style="height: 146px;">
+                                <div onclick="{{ $class }}.toggleFilter(this)" class="box mr-15 pointer" style="height: 146px;">
 
                                     <div class="statistic-title">{{ $sort['name'] }}</div>
 
@@ -48,7 +48,7 @@
                                         @if(isset($list[$sort['name']]) && is_array($list[$sort['name']]))
                                             {{ array_sum($list[$sort['name']]) }}
                                         @else
-                                            {{ $list[$sort['name']][$current_date] ?? 0 }}
+                                            {{ number_format($list[$sort['name']][$current_date] ?? 0, 0, '', ' ') }}
                                         @endif
 
                                         {{ $sort['name'] == 'ROI' ? '%' : '₽' }}
@@ -60,7 +60,7 @@
                                     <div class="statistic-checkbox">
                                             <span class="float-right ml-2" style="line-height: 0;">
                                                 <label style="background: {{ $sort['color'] }}" class="ui-switch orange mt-1">
-                                                    <input name="entities[]" id="{{ $sort['field_name'] }}" type="checkbox" value="{{ $sort['name'] }}"><i></i>
+                                                    <input class="d-none" name="entities[]" onclick="event.preventDefault();" id="{{ $sort['field_name'] }}" type="checkbox" value="{{ $sort['name'] }}"><i></i>
                                                 </label>
                                             </span>
                                     </div>
@@ -134,15 +134,6 @@
                                 <input type="hidden" name="partner_id"/>
                                 <input type="hidden" name="dds_id"/>
 
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-simplebar="init" class="box min-vh-100" style="max-height: calc(100vh - 525px);">
-                        <div class="p-15">
-                            <div class="filter-title">Выбранный результат</div>
-                            <div class="filter-list">
-                                Результатов нет.
                             </div>
                         </div>
                     </div>

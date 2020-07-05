@@ -27,10 +27,21 @@ class shipmentDialog extends Modal{
     };
 
     printScore() {
-        window.helper.printDocument('shipment-score');
+
+        let data = JSON.stringify(this.items);
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+
+        console.log(this.items);
+
+        window.helper.printDocument('shipment-score', id, data);
     }
 
-    printUpd() {
+    printUpd(element) {
+
+        if(element.classList.contains('disabled')) {
+            window.notification.notify( 'error', "Продажа должна быть сохранена и покупателем должен быть ИП или ЮЛ.");
+            return;
+        }
 
         let data = JSON.stringify(this.items);
         let id = this.root_dialog.querySelector('input[name=id]').value;

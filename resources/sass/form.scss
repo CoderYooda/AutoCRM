@@ -83,8 +83,8 @@ Switch
 
 
 .form-control.is-invalid {
-  border-color: #e3342f;
-  padding-right: calc(1.6em + 0.75rem);
+  border-color: #e3342f !important;
+  padding-right: calc(1.6em + 0.75rem) !important;
   background-image: none!important;
 }
 
