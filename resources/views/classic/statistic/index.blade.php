@@ -46,9 +46,9 @@
                                     <div class="statistic-summ" style="color: {{ $sort['color'] }}">
 
                                         @if(isset($list[$sort['name']]) && is_array($list[$sort['name']]))
-                                            {{ array_sum($list[$sort['name']]) }}
+                                            {{ number_format(array_sum($list[$sort['name']]), 2, '.', ' ') }}
                                         @else
-                                            {{ number_format($list[$sort['name']][$current_date] ?? 0, 0, '', ' ') }}
+                                            {{ number_format($list[$sort['name']][$current_date] ?? 0, 2, '.', ' ') }}
                                         @endif
 
                                         {{ $sort['name'] == 'ROI' ? '%' : '₽' }}

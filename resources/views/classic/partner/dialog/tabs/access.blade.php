@@ -19,7 +19,8 @@
         <span>Пользователь был создан {{ $partner->user->created_at }}</span>
     @endif
 @endif
-<div class="account_data hide @if($partner && !$partner->access) d-none @endif">
+
+<div class="account_data hide @if($partner && $partner->user) d-none @endif">
     <div class="form-group fl ip ul">
         <label>Привязать к магазину</label>
         <select name="store_id" class="form-control input-c">
