@@ -531,14 +531,14 @@ none;width:18pt'>код</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ auth()->user()->partner->fio }}</td>
+        <td colspan=14 class=xl75>{{ auth()->user()->partner->cut_surname ?? '' }}</td>
         <td colspan=3 class=xl76>[10]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=13 class=xl79>&nbsp;</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->fio : $shipment->partner->ur_fio }}</td>
+        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->cur_surname : $shipment->partner->cur_surname }}</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[15]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>

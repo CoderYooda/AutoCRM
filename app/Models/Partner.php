@@ -126,11 +126,6 @@ class Partner extends Model
         return $this->hasOne(Passport::class);
     }
 
-    public function car()
-    {
-        return $this->hasOne(Car::class);
-    }
-
     public function outputName() //Вывод имени или наименования компании
     {
         return $this->type == 2 ? $this->companyName : $this->fio;
