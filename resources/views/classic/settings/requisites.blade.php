@@ -20,7 +20,7 @@
             <div class="tab fl">
 
                 <div class="form-group mt-15">
-                    <label>ФИО (полностью)</label>
+                    <label>Наименование организации</label>
                     <input name="name" type="text" class="form-control" placeholder="ФИО" value="{{ !$company->is_company ? $company->name : '' }}">
                 </div>
 
@@ -54,6 +54,16 @@
                     <input name="rs" type="text" class="form-control" placeholder="Ваш расчетный счет" value="{{ !$company->is_company ? $company->rs: '' }}">
                 </div>
 
+                <div class="form-group mt-15">
+                    <label>Фактический адрес</label>
+                    <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ !$company->is_company ? $company->actual_address : '' }}">
+                </div>
+
+                <div class="form-group mt-15">
+                    <label>Руководитель организации</label>
+                    <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя организации" value="{{ !$company->is_company ? $company->owner : '' }}">
+                </div>
+
             </div>
 
             <div class="tab ul">
@@ -61,7 +71,7 @@
                 <div class="form-group mt-15">
                     <label>Наименование организации</label>
                     <div class="d-flex">
-                        <input name="opf" type="text" maxlength="3" class="form-control mr-5" style="flex: 0 0 7%; max-width: 7%;" placeholder="ЗАО" value="{{ $company->opf ?? '' }}">
+                        <input name="opf" type="text" maxlength="3" class="form-control mr-5" style="flex: 0 0 7%; max-width: 7%;" placeholder="ЗАО" value="{{ $company->is_company ? $company->opf : '' }}">
                         <input name="name" type="text" class="form-control" style="flex: 0 0 93%; max-width: 93%;"  placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" value="{{ $company->is_company ? $company->name : '' }}">
                     </div>
                 </div>
@@ -85,12 +95,12 @@
 
                     <div class="form-group w-350">
                         <label>Юридический адрес</label>
-                        <input name="legal_address" type="text" class="form-control" placeholder="Ваш юридический адрес" value="{{ $company->legal_address }}">
+                        <input name="legal_address" type="text" class="form-control" placeholder="Ваш юридический адрес" value="{{ $company->is_company ? $company->legal_address : '' }}">
                     </div>
 
                     <div class="form-group ml-15 w-350 p_rel">
                         <label>Фактический адрес</label>
-                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ !$company->similar_address ? $company->actual_address : '' }}" @if($company->similar_address) disabled @endif>
+                        <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ $company->is_company ? (!$company->similar_address ? $company->actual_address : '') : ('') }}" @if($company->similar_address) disabled @endif>
 
                         <div class="form_checkbox">
                             <input name="similar_address" type="checkbox" onchange="settings.similarCompanyAddress(this)" @if($company->similar_address) checked @endif>
@@ -128,13 +138,13 @@
                 <div class="d-flex">
 
                     <div class="form-group w-350">
-                        <label>Руководитель компании</label>
-                        <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя компании" value="{{ $company->owner }}">
+                        <label>Руководитель организации</label>
+                        <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя организации" value="{{ $company->owner }}">
                     </div>
 
                     <div class="form-group ml-15 w-350 p_rel">
                         <label>Главный бухгалтер</label>
-                        <input name="auditor" type="text" class="form-control" placeholder="ФИО главного руководителя" value="{{ $company->auditor  }}">
+                        <input name="auditor" type="text" class="form-control" placeholder="ФИО главного бухгалтера" value="{{ $company->is_company ? $company->auditor : ''  }}">
                     </div>
 
                 </div>
