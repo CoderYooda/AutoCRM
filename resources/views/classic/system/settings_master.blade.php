@@ -1,4 +1,4 @@
-<div id="settings_master" class="modal" data-backdrop="false" style="   background: rgba(0, 0, 0, 0.15);">
+<div id="settings_master" class="modal" data-backdrop="false" style=" display: block; background: rgba(0, 0, 0, 0.15);">
     <div class="modal-dialog">
         <div id="all_ready" class="hide">
             <div>

@@ -15,6 +15,13 @@ class SettingMaster
 
     close(){
         this.root_dialog.classList.add('hide');
+        console.log(123);
+        axios({
+            method: "POST",
+            url: '/settings/master/close',
+        }).then(function(response){
+            console.log(response);
+        });
     }
 
     init()

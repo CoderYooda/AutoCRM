@@ -262,6 +262,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
 
     Route::post('/settings/master/store', 'SettingsController@storeFromMaster')->name('StoreFromMaster');
+    Route::post('/settings/master/close', 'SettingsController@closeSettingsMaster')->name('CloseMaster');
 
 
 

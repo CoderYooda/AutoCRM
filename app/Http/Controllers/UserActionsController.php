@@ -20,7 +20,8 @@ class UserActionsController extends Controller
         $actions = self::getActions($request);
         //$system_messages = SM::owned()->get();
         $system_messages = SM::getMessages($request);
-        $members = Auth::user()->company()->first()->members()->get();
+        $members = Auth::user()->company->members()->get();
+        //dd($members->pluck('id'));
         if($request->expectsJson() && $request['search'] === NULL){
             $content = view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'system_messages', 'members'))->render();
 
