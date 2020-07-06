@@ -8,7 +8,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
+        <script src="{{ mix('js/app.js') }}" defer></script>
 
         <script>
             window.socket_host = '{{ env('SOCKET_HOST') }}';
@@ -17,9 +17,9 @@
         </script>
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/base.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/base.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/fonts.css') }}" rel="stylesheet">
     </head>
     <body>
     <input type="hidden" name="barcode_temp" id="barcode_temp">
@@ -94,7 +94,7 @@
                         @endcanany
                         @endcan
                     </ul>
-                    <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
+                    <span class="md-auto  mr-auto"><span id="shop_name">{{ session('store_id') }}</span></span>
                     <div id="current_time">
                         <div class="h">00</div>
                         <div class="m">00</div>

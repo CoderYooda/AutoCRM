@@ -31,6 +31,10 @@ class RefundController extends Controller
         ]);
     }
 
+    public function getSideInfo(){
+        //TODO
+    }
+
     public function tableData(Request $request)
     {
         $refunds = RefundController::getRefunds($request);

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\PartnerRequest;
 use App\Http\Requests\SaveCompanySettingsRequest;
+use App\Http\Requests\SettingsMasterRequest;
 use App\Models\Cashbox;
 use App\Models\Company;
 use App\Models\DdsArticle;
@@ -131,7 +133,6 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.sms', compact('smses','users', 'request', 'payments'));
     }
 
-
     public static function DdsarticleTab($request)
     {
         $Ddsarticles = DdsarticleController::getDdsarticles($request);
@@ -147,8 +148,6 @@ class SettingsController extends Controller
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
     }
-
-    //Saves
 
     public static function createCompanySettingsPack($company, $defaultrole)
     {
@@ -207,6 +206,80 @@ class SettingsController extends Controller
             $setting = false;
         }
         return $setting;
+    }
+
+    public function storeFromMaster(SettingsMasterRequest $request)
+    {
+        $company_values = ['name','inn','ogrn','kpp','actual_address', 'legal_address', 'bik','bank','cs', 'rs','owner', 'auditor', 'is_company','similar_address','opf'];
+        Company::where('id', $request->company_id)->update(collect($request->validated())->only($company_values)->toArray());
+
+        $setting = Setting::owned()->where('key' , 'markup')->first();
+        $setting->value = $request->markup;
+        $setting->save();
+
+
+
+        if(isset( $request->validated()['employees'])){
+            foreach($request->validated()['employees'] as $employee){
+                $partner = new Partner();
+                $partner->type = 0;
+                $partner->company_id = Auth::user()->company->id;
+                $partner->store_id = Auth::user()->getStoreFirst()->id;
+                $partner->basePhone = $employee['phone'];
+                $partner->category_id = 5;
+                $partner->fio = $employee['fio'];
+                $partner->save();
+
+                $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
+                $partner->phones()->sync($phones->pluck('id'));
+
+                if($employee['access']){
+                    $password = rand(10000, 99999);
+                    $user = User::create([
+                        'name' => $partner->outputName(),
+                        'phone' => $employee['phone'],
+                        'company_id' => Auth::user()->company->id,
+                        'password' => bcrypt($password)
+                    ]);
+                    $partner->user_id = $user->id;
+                    $partner->save();
+
+                    $role = \App\Models\Role::owned()->whereId(SettingsController::getSettingByKey('role_id')->value)->first();
+                    $user->syncRoles([$role->id]);
+                    if($user){
+                        SmsController::sendSMS($user->phone, 'Вам предоставлен доступ к ' . env('APP_NAME') .'! Логин: ' . $user->phone . ' Пароль: ' . $password);
+                    }
+                }
+            }
+        }
+
+        if(isset( $request->validated()['partners'])){
+            foreach($request->validated()['partners'] as $partn){
+                $partner = new Partner();
+                $partner->type = 2;
+                $partner->company_id = Auth::user()->company->id;
+                $partner->basePhone = $partn['phone'];
+                $partner->category_id = 6;
+                $partner->fio = $partn['fio'];
+                $partner->companyName = $partn['companyName'];
+                $partner->save();
+
+                $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
+                $partner->phones()->sync($phones->pluck('id'));
+            }
+        }
+
+
+//        foreach($request['partners'] as $partner){
+//            dd($employee);
+//        }
+
+
+
+        return response()->json([
+            'message' => 'Настройки успешно сохранены.',
+            'type' => 'success'
+        ]);
     }
 
 }
