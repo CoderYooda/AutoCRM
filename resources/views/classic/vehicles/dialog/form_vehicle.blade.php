@@ -26,9 +26,7 @@
                 <div class="form-group">
                     <label for="vin_code">VIN:</label>
                     <div class="d-flex">
-                        <input id="vin_code" onclick="this.select();" type="text" name="vin_code"
-                               @if(isset($vehicle)) value="{{ $vehicle->vin_code }}" @endif
-                               class="form-control mw-100" />
+                        <input id="vin_code" onclick="this.select();" type="text" name="vin_code" value="{{ $vehicle->vin_code ?? '' }}" class="form-control mw-100" />
                     </div>
                 </div>
 
@@ -68,17 +66,8 @@
 
                 <div class="form-group">
                     <label>Год:</label>
-                    <input id="year" onclick="this.select();" type="text" name="year"
-                           @if(isset($vehicle)) value="{{ $vehicle->year }}" @endif
-                           class="form-control" />
+                    <input id="year" onclick="this.select();" type="text" name="year" value="{{ $vehicle->year ?? '' }}" class="form-control" />
                 </div>
-
-{{--                <div class="form-group">--}}
-{{--                    <label>Гос. номер:</label>--}}
-{{--                    <input id="numberplate" onclick="this.select();" type="text"--}}
-{{--                           @if(isset($vehicle)) value="{{ $vehicle->numberplate }}" @endif--}}
-{{--                           class="form-control" />--}}
-{{--                </div>--}}
 
             </div>
 

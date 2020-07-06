@@ -280,7 +280,7 @@ width:72pt'><br>
             1 - счет-фактура и передаточный документ (акт) <br>
             2 - передаточный документ (акт)</td>
         <td colspan=16 class=xl102 style='border-left:none'>ИНН/КПП продавца</td>
-        <td colspan=58 class=xl103>{{ $company->inn ?? '---' }} / {{ $company->kpp ?? '---' }}</td>
+        <td colspan=58 class=xl103>{{ $company->inn ?? '        ' }} / {{ $company->kpp ?? '' }}</td>
         <td colspan=3 class=xl67>(2б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -317,7 +317,7 @@ width:72pt'><br>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>ИНН/КПП
             покупателя</td>
-        <td colspan=58 class=xl103>{{ $shipment->partner->inn ?? '---' }} / {{ $shipment->partner->kpp ?? '---' }}</td>
+        <td colspan=58 class=xl103>{{ $shipment->partner->inn ?? '        ' }} / {{ $shipment->partner->kpp ?? '' }}</td>
         <td colspan=3 class=xl67>(6б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -445,13 +445,13 @@ none;width:18pt'>код</td>
         </td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '---' }}</td>
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>
         <td colspan="16" class="xl81" width="192" style="width:144pt">Главный бухгалтер
             <br>
             или иное уполномоченное лицо</td>
         <td colspan="6" class="xl88" width="72" style="width:54pt">&nbsp;</td>
         <td class="xl68" width="12" style="width:9pt"></td>
-        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '---' }}</td>
+        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=3 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
@@ -656,9 +656,9 @@ none;width:18pt'>код</td>
         <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
 
             @if($company->is_company)
-                {{ $company->name }}, ИНН {{ $company->inn ?? '---' }}, КПП {{ $company->kpp ?? '---' }}
+                {{ $company->name }}, ИНН {{ $company->inn ?? '        ' }}, КПП {{ $company->kpp ?? '        ' }}
             @else
-                {{ $company->name ?? '---' }}
+                {{ $company->name ?? '' }}
             @endif
 
         </td>
@@ -667,7 +667,7 @@ none;width:18pt'>код</td>
         <td colspan=39 class=xl75>
 
             @if($shipment->partner->type == 2)
-                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? '--' }}, КПП {{ $shipment->partner->kpp ?? '---' }}
+                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? '        ' }}, КПП {{ $shipment->partner->kpp ?? '' }}
             @elseif($shipment->partner->type == 1)
                 {{ $shipment->partner->fio }}
             @else
