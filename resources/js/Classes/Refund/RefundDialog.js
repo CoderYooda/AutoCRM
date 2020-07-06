@@ -137,7 +137,7 @@ class refundDialog extends Modal{
         let itogo = this.root_dialog.querySelector('input[name=summ]').value;
         let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
         let id = this.root_dialog.querySelector('input[name=id]').value;
-        let refer = 'refund';
+        let refer = 'Refund';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
         partner = parseInt(partner);
         var params = '';

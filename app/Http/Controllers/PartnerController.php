@@ -214,9 +214,13 @@ class PartnerController extends Controller
             foreach($partners->get() as $partner){
                 if($partner->company()->first()->id != Auth::user()->company()->first()->id){
                     $this->message = 'Вам не разрешено удалять контакт';
+                    $this->type = 'error';
+                    $this->status = 422;
+                } elseif($partner->user_id === Auth::user()->id){
+                    $this->message = 'Вы пытаетесь удалить сами себя';
+                    $this->type = 'error';
                     $this->status = 422;
                 } else {
-
                     $partner->delete();
                     UA::makeUserAction($partner, 'delete');
                 }
@@ -229,16 +233,22 @@ class PartnerController extends Controller
             if($partner->company()->first()->id != Auth::user()->company()->first()->id){
                 $this->message = 'Вам не разрешено удалять контакт';
                 $this->status = 422;
+                $this->type = 'error';
+            } elseif($partner->user_id === Auth::user()->id){
+                $this->message = 'Вы пытаетесь удалить сами себя';
+                $this->type = 'error';
+                $this->status = 422;
+            } else {
+                $partner->delete();
             }
-            $partner->delete();
+
             UA::makeUserAction($partner, 'delete');
         }
         $this->status = 200;
-
-
         return response()->json([
             'id' => $returnIds,
-            'message' => $this->message
+            'message' => $this->message,
+            'type' => $this->type
         ], $this->status);
     }
 

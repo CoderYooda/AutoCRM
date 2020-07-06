@@ -153,6 +153,8 @@ class settingsPage{
 
     linked(){
         this.active_tab = this.getCurrentActiveTab();
+
+        this.init();
     }
 
     getCurrentActiveTab(){

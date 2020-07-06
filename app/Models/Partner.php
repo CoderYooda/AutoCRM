@@ -113,12 +113,10 @@ class Partner extends Model
 
         foreach ($arr as $key => $value)
         {
-            if(!$key) $return_name .= $value . ' ';
-            else $return_name .= mb_substr($value, 0, 1) . '.';
+
+            if(!$key) $return_name .= ($value . ' ');
+            else $return_name .= (mb_substr($value, 0, 1) . '.');
         }
-
-        dd($return_name);
-
         return $return_name;
     }
 

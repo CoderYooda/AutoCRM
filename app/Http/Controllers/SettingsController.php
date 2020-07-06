@@ -210,7 +210,7 @@ class SettingsController extends Controller
 
     public function storeFromMaster(SettingsMasterRequest $request)
     {
-        $company_values = ['name','inn','ogrn','kpp','actual_address', 'legal_address', 'bik','bank','cs', 'rs','owner', 'auditor', 'is_company','similar_address','opf'];
+        $company_values = ['name', 'owner', 'inn', 'ogrn', 'kpp', 'actual_address', 'legal_address', 'bik', 'bank', 'cs', 'rs', 'owner', 'auditor', 'is_company', 'similar_address', 'opf'];
 
         $company = Company::where('id', Auth::user()->company->id);
 

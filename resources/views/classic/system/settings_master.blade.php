@@ -31,8 +31,13 @@
                                 <div class="tab fl active">
 
                                     <div class="form-group mt-15">
-                                        <label>ФИО (полностью)</label>
-                                        <input name="name" type="text" class="form-control" placeholder="ФИО" >
+                                        <label>Руководитель</label>
+                                        <input name="owner" type="text" class="form-control" placeholder="ФИО" >
+                                    </div>
+
+                                    <div class="form-group mt-15">
+                                        <label>Название компании</label>
+                                        <input name="name" type="text" class="form-control" placeholder="Название компании" >
                                     </div>
 
                                     <div class="form-group mt-15">
