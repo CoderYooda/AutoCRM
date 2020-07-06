@@ -2,17 +2,176 @@ class SettingMaster
 {
     constructor()
     {
+        this.root_dialog = document.getElementById('settings_master');
+        this.step = 1;
+        this.steps = 3;
         this.init();
+        this.steps_icon = {
+            1:'current',
+            2:'wait',
+            3:'wait'
+        }
+    }
+
+    close(){
+        this.root_dialog.classList.add('hide');
     }
 
     init()
     {
         this.addNumberMasks();
+        this.addPhoneMask();
+    }
+
+    nextStep(){
+        this.goToStep(this.step + 1);
+    }
+    backStep(){
+        this.goToStep(this.step - 1);
+    }
+
+    save(elem){
+        let object = this;
+        window.event.preventDefault();
+        window.axform.send(elem, function(response){
+            object.steps_icon[1] = 'success';
+            object.steps_icon[2] = 'success';
+            object.steps_icon[3] = 'success';
+            if(response.status == 422){
+                let invalids = object.root_dialog.querySelectorAll('.is-invalid');
+                [].forEach.call(invalids, function(elem){
+                    //object.steps_icon.2 = 'error';
+                    let id = elem.closest('.m_step').getAttribute('data-id');
+                    object.steps_icon[id] = 'error';
+
+                });
+            } else {
+                document.getElementById('all_ready').classList.remove('hide');
+            }
+            object.checkButts();
+        });
+    }
+
+    addPhoneMask(){
+        let elements = this.root_dialog.querySelectorAll('.phone_input');
+        [].forEach.call(elements, function(element){
+            var dispatchMask = window.IMask(element, {
+                    mask: [
+                        {
+                            mask: '+{7}(000)000-00-00',
+                            startsWith: '7',
+                            lazy: true,
+                            country: 'Россия'
+                        },
+                        {
+                            mask: '{8}(000)000-00-00',
+                            startsWith: '8',
+                            lazy: true,
+                            country: 'Россия'
+                        }
+                    ],
+                    dispatch: function (appended, dynamicMasked) {
+                        var number = (dynamicMasked.value + appended).replace(/\D/g,'');
+
+                        return dynamicMasked.compiledMasks.find(function (m) {
+                            return number.indexOf(m.startsWith) === 0;
+                        });
+                    }
+                }
+            )
+        });
+    }
+
+    insertEmployee(){
+        let count = this.root_dialog.querySelectorAll('#employees .unit_elem').length;
+        var node = helper.createElementFromHTML('<div class="unit_elem mb-10 p-15">\n' +
+            '<div class="form-group">\n' +
+                '<label>ФИО</label>\n' +
+                '<input type="text" name="employees[' + (count + 1) + '][fio]" id="fl_dialog_focused" value="" class="form-control entrance" placeholder="ФИО">\n' +
+                '</div>\n' +
+                '<div class="form-group">\n' +
+                '<label>Номер телефона</label>\n' +
+                '<input id="phone_login_input" type="text" name="employees[' + (count + 1) + '][phone]" class="form-control phone_input" value="" placeholder="Телефон">\n' +
+                '</div>\n' +
+                '<div class="form-group">\n' +
+                    '<label>Доступ к системе</label>\n' +
+                    '<select name="employees[' + (count + 1) + '][access]" class="form-control input-c">\n' +
+                    '<option value="1">Разрешен</option>\n' +
+                    '<option value="0" selected="">Запрещен</option>\n' +
+                    '</select>\n' +
+                '</div>\n' +
+            '</div>');
+
+        document.getElementById('employees').appendChild(node);
+        this.addPhoneMask();
+    }
+
+    insertPartner(){
+        let count = this.root_dialog.querySelectorAll('#partners .unit_elem').length;
+        var node = helper.createElementFromHTML('                                <div class="unit_elem mb-10 p-15">\n' +
+            '<div class="form-group">\n' +
+            '<label>Названия организации</label>\n' +
+            '<input type="text" name="partners[' + (count + 1) + '][companyName]" value="" class="form-control" placeholder="Названия организации">\n' +
+            '</div>\n' +
+            '<div class="form-group">\n' +
+            '<label>Контактное лицо</label>\n' +
+            '<input type="text" name="partners[' + (count + 1) + '][fio]" value="" class="form-control" placeholder="Контактное лицо">\n' +
+            '</div>\n' +
+            '<div class="form-group">\n' +
+            '<label>Номер телефона</label>\n' +
+            '<input type="text" name="partners[' + (count + 1) + '][phone]" class="form-control phone_input" value="" placeholder="Телефон">\n' +
+            '</div>\n' +
+            '</div>');
+
+        document.getElementById('partners').appendChild(node);
+        this.addPhoneMask();
+    }
+
+    goToStep(num) {
+        if(num < 1){num = 1;}
+        if(num > this.steps){num = this.steps;}
+
+        for (const [key, value] of Object.entries(this.steps_icon)) {
+            if(this.steps_icon[key] === 'current'){
+                this.steps_icon[key] = 'wait';
+            }
+        }
+        if(this.steps_icon[num] === 'wait'){
+            this.steps_icon[num] = 'current';
+        }
+        let steps = this.root_dialog.querySelectorAll('.m_step');
+        this.step = num;
+        [].forEach.call(steps, function(elem){
+            elem.classList.add('hide');
+            elem.classList.remove('active');
+        });
+
+        let selected = this.root_dialog.querySelector('#step_' + num);
+        selected.classList.add('active');
+        selected.classList.remove('hide');
+        this.checkButts();
+    }
+
+    checkButts(){
+
+        for (const [key, value] of Object.entries(this.steps_icon)) {
+            this.root_dialog.querySelector('#stepb_' + key).className = value;
+        }
+
+        if(this.step === this.steps){
+            this.root_dialog.querySelector('#next_b').classList.add('hide');
+            this.root_dialog.querySelector('#finish_b').classList.remove('hide');
+        } else{
+            this.root_dialog.querySelector('#next_b').classList.remove('hide');
+            this.root_dialog.querySelector('#finish_b').classList.add('hide');
+        }
     }
 
     activeTab(button_element, type) {
 
         event.preventDefault();
+
+        this.root_dialog.querySelector('[name="is_company"]').value = type === 'fl' ? 0 : 1;
 
         let button_elements = document.querySelectorAll('.d-flex > button');
         button_elements.forEach(element => {
@@ -28,7 +187,7 @@ class SettingMaster
         });
 
 
-        let input_elements = document.querySelectorAll('input');
+        let input_elements = document.querySelectorAll('.tab input');
 
         input_elements.forEach(element => {
 

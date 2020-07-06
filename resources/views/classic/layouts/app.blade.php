@@ -8,10 +8,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Scripts -->
-        <script src="{{ asset('js/classic.js') }}" defer></script>
+        <script src="{{ mix('js/classic.js') }}" defer></script>
 
         <!-- Styles -->
-        <link href="{{ asset('css/classic.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/classic.css') }}" rel="stylesheet">
     </head>
     <body>
         <div class="app">

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Суперадмин');
         });
-
+        Schema::defaultStringLength(191);
         \App\Models\Shipment::observe(\App\Observers\ShipmentObserver::class);
         \App\Models\Company::observe(\App\Observers\CompanyObserver::class);
         \App\Models\Partner::observe(\App\Observers\PartnerObserver::class);

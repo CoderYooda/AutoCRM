@@ -246,8 +246,8 @@ class ShipmentsController extends Controller
             $wasExisted = true;
         } else {
             $shipmentWasExisted = false;
-            $shipment->company_id = Auth::user()->company()->first()->id;
-            $shipment->manager_id = Auth::user()->partner()->first()->id;
+            $shipment->company_id = Auth::user()->company->id;
+            $shipment->manager_id = Auth::user()->partner->id;
             $this->message = 'Продажа сохранена';
             $wasExisted = false;
         }

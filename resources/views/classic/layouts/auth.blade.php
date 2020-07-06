@@ -8,12 +8,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ mix('js/app.js') }}" defer></script>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/base.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/auth.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/base.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/auth.css') }}" rel="stylesheet">
 </head>
     <body>
 

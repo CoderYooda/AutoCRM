@@ -67,13 +67,16 @@
     <form class="RefundStoredListner WarrantStoredListner ShipmentStoredListner" action="{{ route('StoreRefund') }}" method="POST">
         <div class="box-body">
             @csrf
+
             @if(isset($refund) && $refund->id != NULL)
                 <input type="hidden" name="id" value="{{ $refund->id }}">
             @else
                 <input type="hidden" name="id" value="">
             @endif
+
             <input class="shipment_select" type="hidden" name="shipment_id" value=" @if(isset($refund)){{ $refund->shipment()->first()->id }}@endif">
             <input class="partner_id" type="hidden" name="partner_id" value=" @if(isset($refund)){{ $refund->shipment->partner->id }}@endif">
+
             @if(isset($refund))
             <input type="hidden" name="summ" value="{{ abs($refund->summ) }}">
             <input type="hidden" name="itogo" value="{{ abs($refund->summ) }}">
