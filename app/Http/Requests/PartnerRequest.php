@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Partner;
+use App\Rules\CheckPartnerSmsCode;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -67,17 +68,10 @@ class PartnerRequest extends FormRequest
             $rules['opf'] = ['nullable', 'string', 'max:3'];
         }
 
+        $rules['code'] = ['nullable', new CheckPartnerSmsCode];
         $rules['barcode'] = ['nullable', Rule::unique('partners', 'barcode')->ignore($this->id)];
 
         if($this->email){$rules['email'] = ['min:3', 'email'];}
-        if($this->access && $this->phone != null){
-
-            $partner = Partner::find($this->id);
-
-            if($partner == null || $partner && !$partner->user) {
-                $rules['phone'] = ['unique:users'];
-            }
-        }
 
         $rules['vehicle_ids'] = ['nullable', 'array'];
         $rules['vehicle_ids.*'] = ['exists:vehicles,id'];

@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\DeletePartnerRequest;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Category;
 use App\Models\Partner;
+use App\Models\SMSMessages;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Store;
-use Auth;
 use SystemMessage;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
@@ -160,12 +162,19 @@ class PartnerController extends Controller
                 $user->save();
             } else {
                 $password = rand(10000, 99999);
-                $user = User::create([
+                $user = User::updateOrCreate(['phone' => $request['phone']], [
                     'name' => $partner->outputName(),
-                    'phone' => $request['phone'],
                     'company_id' => Auth::user()->company()->first()->id,
-                    'password' => bcrypt($password)
+                    'password' => bcrypt($password),
                 ]);
+
+                if(!$user->wasRecentlyCreated) {
+                    $user->partner->update([
+                        'user_id' => null,
+                        'banned_at' => null
+                    ]);
+                }
+
                 $partner->user_id = $user->id;
                 $partner->store_id = $request['store_id'];
                 $partner->save();
@@ -178,10 +187,16 @@ class PartnerController extends Controller
                 }
             }
         } else {
-            if($partner->user()->first() != null){
-                $user = $partner->user()->first();
-                $user->banned_at = Carbon::now();
-                $user->save();
+            if($partner->user != null){
+
+                if($partner->id == auth()->user()->partner->id) {
+                    return response()->json([
+                        'message' => 'Вы не можете заблокировать себя.',
+                        'type' => 'error'
+                    ]);
+                }
+
+                $partner->user->update(['banned_at' => Carbon::now()]);
             }
         }
 
@@ -208,38 +223,58 @@ class PartnerController extends Controller
         PermissionController::canByPregMatch('Удалять контакты');
 
         $returnIds = null;
-        if($id == 'array'){
-            $partners = Partner::owned()->whereIn('id', $request['ids']);
-            $this->message = 'Контакты удалены';
-            foreach($partners->get() as $partner){
-                if($partner->company()->first()->id != Auth::user()->company()->first()->id){
-                    $this->message = 'Вам не разрешено удалять контакт';
-                    $this->status = 422;
-                } else {
 
+        $this->status = 200;
+        $this->message = 'Удаление выполнено';
+        $this->type = 'success';
+
+        if($id == 'array') {
+            $partners = Partner::with('company')->owned()->whereIn('id', $request['ids'])->get();
+
+            foreach($partners as $partner){
+                if($partner->company->id != Auth::user()->company->id || $partner->id == Auth::user()->partner->id){
+                    $this->message = 'Вам не разрешено удалять контакт';
+                    $this->type = 'error';
+                } else {
                     $partner->delete();
                     UA::makeUserAction($partner, 'delete');
                 }
             }
-            $returnIds = $partners->get()->pluck('id');
+            $returnIds = $partners->pluck('id');
         } else {
-            $partner = Partner::where('id', $id)->first();
-            $this->message = 'Контакт удален';
-            $returnIds = $partner->id;
-            if($partner->company()->first()->id != Auth::user()->company()->first()->id){
+            $partner = Partner::find($id);
+            if($partner->company->id != Auth::user()->company->id || $partner->id == Auth::user()->partner->id){
                 $this->message = 'Вам не разрешено удалять контакт';
-                $this->status = 422;
+                $this->type = 'error';
             }
-            $partner->delete();
-            UA::makeUserAction($partner, 'delete');
+            else {
+                $partner->delete();
+                UA::makeUserAction($partner, 'delete');
+                $returnIds = $partner->id;
+            }
         }
-        $this->status = 200;
-
 
         return response()->json([
             'id' => $returnIds,
-            'message' => $this->message
+            'message' => $this->message,
+            'type' => $this->type
         ], $this->status);
+    }
+
+    public function checkPhone(Request $request)
+    {
+        $phone_exists = User::where('phone', $request->phone)->exists();
+
+        if($phone_exists) {
+            $code = rand(1111, 9999);
+
+            session()->put('partner_code', $code);
+            SmsController::sendSMS($request->phone, 'Код подтверждения: ' . $code);
+        }
+
+        return response()->json([
+            'phone_exists' => $phone_exists
+        ], 200);
     }
 
     public static function selectPartnerDialog($request)

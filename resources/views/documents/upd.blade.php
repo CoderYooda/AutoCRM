@@ -406,12 +406,12 @@ none;width:18pt'>код</td>
         <td colspan=2 class=xl92 style='border-left:none'>796</td>
         <td colspan=6 class=xl92 style='border-left:none'>шт</td>
         <td colspan=4 class=xl97 style='border-left:none'>{{ $sorted_products[$product->id]['count'] }}</td>
-        <td colspan=5 class=xl91 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price'], 2, ',', ' ') }}</td>
-        <td colspan=7 class=xl91 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price'] * $sorted_products[$product->id]['count'], 2, ',', ' ') }}</td>
+        <td colspan=5 class=xl91 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price_without_nds'], 2, ',', ' ') }}</td>
+        <td colspan=7 class=xl91 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price_without_nds'] * $sorted_products[$product->id]['count'], 2, ',', ' ') }}</td>
         <td colspan=4 class=xl91 style='border-left:none'>без акциза</td>
         <td colspan=4 class=xl91 style='border-left:none'>20%</td>
-        <td colspan=6 class=xl91 style='border-left:none'>{{ number_format((($sorted_products[$product->id]['price'] / 100) * 20) * $sorted_products[$product->id]['count'], 2, ',', ' ') }}</td>
-        <td colspan=7 class=xl91 style='border-left:none'>{{ number_format(($sorted_products[$product->id]['price'] * $sorted_products[$product->id]['count']) + ((($sorted_products[$product->id]['price'] / 100) * 20) * $sorted_products[$product->id]['count']), 2, ',', ' ') }}</td>
+        <td colspan=6 class=xl91 style='border-left:none'>{{ number_format($sorted_products[$product->id]['nds'] * $sorted_products[$product->id]['count'], 2, ',', ' ') }}</td>
+        <td colspan=7 class=xl91 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price_with_nds'] * $sorted_products[$product->id]['count'], 2, ',', ' ') }}</td>
         <td colspan=4 class=xl92 style='border-left:none'>---</td>
         <td colspan=7 class=xl92 style='border-left:none'>---</td>
         <td colspan=6 class=xl92 style='border-left:none'>---</td>
@@ -422,10 +422,10 @@ none;width:18pt'>код</td>
         <td colspan="2" height="16" class="xl93" width="24" style="height:12.0pt;width:18pt">&nbsp;</td>
         <td colspan="6" class="xl94" width="72" style="border-left:none;width:54pt">&nbsp;</td>
         <td colspan="32" class="xl95" width="384" style="width:288pt">Всего к оплате</td>
-        <td colspan="7" class="xl91" style="border-left:none">{{ number_format($sorted_products['total_price'], 2, ',', ' ') }}</td>
+        <td colspan="7" class="xl91" style="border-left:none">{{ number_format($sorted_products['price_without_nds'], 2, ',', ' ') }}</td>
         <td colspan="8" class="xl91" style="border-left:none">Х</td>
-        <td colspan="6" class="xl91" style="border-left:none">{{ number_format($sorted_products['total_nds'], 2, ',', ' ') }}</td>
-        <td colspan="7" class="xl91" style="border-left:none">{{ number_format($sorted_products['total_price'] + $sorted_products['total_nds'], 2, ',', ' ') }}</td>
+        <td colspan="6" class="xl91" style="border-left:none">{{ number_format($sorted_products['nds'], 2, ',', ' ') }}</td>
+        <td colspan="7" class="xl91" style="border-left:none">{{ number_format($sorted_products['price_with_nds'], 2, ',', ' ') }}</td>
         <td colspan="4" class="xl92" style="border-left:none">&nbsp;</td>
         <td colspan="7" class="xl92" style="border-left:none">&nbsp;</td>
         <td colspan="6" class="xl92" style="border-left:none">&nbsp;</td>
