@@ -107,14 +107,17 @@ class Partner extends Model
 
     public function getCutSurnameAttribute()
     {
-        $str = $this->fio;
-        $arr = explode(' ',$str);
-        foreach ($arr as $key=>$value)
+        $return_name = '';
+
+        $arr = explode(' ', $this->fio);
+
+        foreach ($arr as $key => $value)
         {
-            mb_internal_encoding("UTF-8");
-            $arr["$key"] = mb_strtoupper(mb_substr(trim($value),0,1));
+            if(!$key) $return_name .= ($value . ' ');
+            else $return_name .= (mb_substr($value, 0, 1) . '.');
         }
-        return implode('.',$arr).'.';
+
+        return $return_name;
     }
 
     public function getComment()
