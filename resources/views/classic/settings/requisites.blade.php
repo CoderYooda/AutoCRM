@@ -72,7 +72,7 @@
                     <label>Наименование организации</label>
                     <div class="d-flex">
                         <input name="opf" type="text" maxlength="3" class="form-control mr-5" style="flex: 0 0 7%; max-width: 7%;" placeholder="ЗАО" value="{{ $company->is_company ? $company->opf : '' }}">
-                        <input name="name" type="text" class="form-control" style="flex: 0 0 93%; max-width: 93%;"  placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" value="{{ $company->is_company ? $company->name : '' }}">
+                        <input name="name" type="text" class="form-control" style="flex: 0 0 93%; max-width: 93%;"  placeholder="ББ-СРМ" value="{{ $company->is_company ? $company->name : '' }}">
                     </div>
                 </div>
 
