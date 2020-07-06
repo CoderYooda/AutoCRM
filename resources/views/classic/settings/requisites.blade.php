@@ -13,11 +13,11 @@
             <input type="hidden" name="is_company" value="{{ $company->is_company }}">
 
             <div class="d-flex">
-                <button onclick="settings.activeTab(this, 'fl')" class="button flex-1 primary">Индивидуальный предприниматель</button>
-                <button onclick="settings.activeTab(this, 'ul')" class="ml-15 flex-1 button primary">Юридическое лицо</button>
+                <button type="button" onclick="settings.activeTab(this, 'fl')" class="button flex-1 primary @if(!$company->is_company) active @endif">Индивидуальный предприниматель</button>
+                <button type="button" onclick="settings.activeTab(this, 'ul')" class="ml-15 flex-1 button primary @if($company->is_company) active @endif">Юридическое лицо</button>
             </div>
 
-            <div class="tab fl">
+            <div class="tab fl @if(!$company->is_company) active @endif">
 
                 <div class="form-group mt-15">
                     <label>Наименование организации</label>
@@ -66,13 +66,13 @@
 
             </div>
 
-            <div class="tab ul">
+            <div class="tab ul @if($company->is_company) active @endif">
 
                 <div class="form-group mt-15">
                     <label>Наименование организации</label>
                     <div class="d-flex">
                         <input name="opf" type="text" maxlength="3" class="form-control mr-5" style="flex: 0 0 7%; max-width: 7%;" placeholder="ЗАО" value="{{ $company->is_company ? $company->opf : '' }}">
-                        <input name="name" type="text" class="form-control" style="flex: 0 0 93%; max-width: 93%;"  placeholder="Общество с ограниченной ответственностью «ББ-СРМ»" value="{{ $company->is_company ? $company->name : '' }}">
+                        <input name="name" type="text" class="form-control" style="flex: 0 0 93%; max-width: 93%;"  placeholder="ББ-СРМ" value="{{ $company->is_company ? $company->name : '' }}">
                     </div>
                 </div>
 

@@ -47,13 +47,6 @@ class settingsPage{
         }
 
         this.addNumberMasks();
-
-        setTimeout(() => {
-            let is_company = document.querySelector('[name="is_company"]').value;
-            let buttons = document.querySelectorAll('#ajax-table-requisites .d-flex button');
-
-            buttons[is_company].click();
-        }, 50);
     }
 
     writingInn(element) {
@@ -153,8 +146,6 @@ class settingsPage{
 
     linked(){
         this.active_tab = this.getCurrentActiveTab();
-
-        this.init();
     }
 
     getCurrentActiveTab(){

@@ -27,7 +27,8 @@ class VehicleRequest extends FormRequest
             'partner_id' => ['exists:partners,id'],
             'vin_code' => ['required', 'string'],
             'year' => ['nullable', 'integer', 'min:1950', 'max:' . Carbon::now()->year],
-            'numberplate' => ['nullable', 'string']
+            'numberplate' => ['nullable', 'string'],
+            'comment' => ['nullable', 'string', 'max:512']
         ];
     }
 
