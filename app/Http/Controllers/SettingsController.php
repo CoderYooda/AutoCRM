@@ -210,14 +210,15 @@ class SettingsController extends Controller
 
     public function storeFromMaster(SettingsMasterRequest $request)
     {
-        $company_values = ['name','inn','ogrn','kpp','actual_address', 'legal_address', 'bik','bank','cs', 'rs','owner', 'auditor', 'is_company','similar_address','opf'];
-        Company::where('id', $request->company_id)->update(collect($request->validated())->only($company_values)->toArray());
+        $company_values = ['name', 'owner', 'inn', 'ogrn', 'kpp', 'actual_address', 'legal_address', 'bik', 'bank', 'cs', 'rs', 'owner', 'auditor', 'is_company', 'similar_address', 'opf'];
+
+        $company = Company::where('id', Auth::user()->company->id);
+
+        $company->update(collect($request->validated())->only($company_values)->toArray());
 
         $setting = Setting::owned()->where('key' , 'markup')->first();
         $setting->value = $request->markup;
         $setting->save();
-
-
 
         if(isset( $request->validated()['employees'])){
             foreach($request->validated()['employees'] as $employee){
@@ -269,16 +270,22 @@ class SettingsController extends Controller
             }
         }
 
-
-//        foreach($request['partners'] as $partner){
-//            dd($employee);
-//        }
-
-
+        $sm_serponce = $this->closeSettingsMaster();
 
         return response()->json([
             'message' => 'Настройки успешно сохранены.',
             'type' => 'success'
+        ]);
+    }
+
+    public function closeSettingsMaster()
+    {
+        $company = Company::where('id', Auth::user()->company->id)->first();
+        $company->set_master_complite = true;
+        $company->save();
+
+        return response()->json([
+            'status' => 'success'
         ]);
     }
 

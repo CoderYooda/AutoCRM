@@ -19,13 +19,14 @@ class WarrantRequest extends FormRequest
             $refer = 'App\Models\\' . $this->refer;
             if(!is_subclass_of($refer, 'Illuminate\Database\Eloquent\Model')){
                 throw new HttpResponseException(
-                    response()->json(['message' => 'Попытка взлома зафиксирована1', 'type' => 'error'], 422)
+                    response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
                 );
             }
-            $model = $refer::owned()->whereId($this->refer_id)->first();
+
+            $model = $refer::owned()->find($this->refer_id);
             if($model == null){
                 throw new HttpResponseException(
-                    response()->json(['message' => 'Попытка взлома зафиксирована2', 'type' => 'error'], 422)
+                    response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
                 );
             }
         }

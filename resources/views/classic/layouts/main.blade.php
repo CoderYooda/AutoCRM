@@ -94,7 +94,8 @@
                         @endcanany
                         @endcan
                     </ul>
-                    <span class="md-auto  mr-auto"><span id="shop_name">{{ session('store_id') }}</span></span>
+                    <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
+                    {{--{{ session('store_id') }}--}}
                     <div id="current_time">
                         <div class="h">00</div>
                         <div class="m">00</div>
@@ -268,7 +269,9 @@
                 @include(env('DEFAULT_THEME', 'classic') . '.system.aside_messages')
                 @include(env('DEFAULT_THEME', 'classic') . '.system.system_dialog')
                 @include(env('DEFAULT_THEME', 'classic') . '.system.croppr_dialog')
-                @include(env('DEFAULT_THEME', 'classic') . '.system.settings_master')
+                @if(!Auth::user()->company->set_master_complite)
+                    @include(env('DEFAULT_THEME', 'classic') . '.system.settings_master')
+                @endif
             </div>
 
         </div>

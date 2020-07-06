@@ -22,7 +22,7 @@ class CreatePartnersTable extends Migration
             $table->bigInteger('avatar_id')->unsigned()->nullable();
             $table->bigInteger('pic_id')->unsigned()->nullable();
             $table->char('foundstring', 128)->nullable();
-            $table->integer('type')->comment('тип лица');
+            $table->integer('isfl')->comment('тип лица');
             $table->double('balance')->default(0)->comment('Баланс');
             $table->char('basePhone', 15)->nullable()->comment('Основной телефон');
             $table->char('fio')->nullable()->comment('ФИО');
