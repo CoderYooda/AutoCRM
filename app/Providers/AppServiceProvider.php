@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        setlocale(LC_ALL, 'ru-RU.utf8');
+
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Суперадмин');
         });

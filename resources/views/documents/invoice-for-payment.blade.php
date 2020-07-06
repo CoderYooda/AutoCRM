@@ -31,6 +31,7 @@
             }
         }
 
+
         fnUpdateTabs();
         //-->
     </script>
@@ -60,14 +61,14 @@
     <col width=7 style='mso-width-source:userset;mso-width-alt:298;width:5pt'>
     <tr height=17 style='height:12.75pt'>
         <td height=17 width=7 style='height:12.75pt;width:5pt'></td>
-        <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>&nbsp;</td>
+        <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>{{ $shipment->company->bank ?? '' }}</td>
         <td colspan=3 class=xl95 width=63 style='border-left:none;width:48pt'>БИК</td>
-        <td colspan=16 class=xl96 width=272 style='border-left:none;width:206pt'>&nbsp;</td>
+        <td colspan=16 class=xl96 width=272 style='border-left:none;width:206pt'>{{ $shipment->company->bik ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
         <td colspan=3 rowspan=2 class=xl89>Сч. №</td>
-        <td colspan=16 rowspan=2 class=xl97>&nbsp;</td>
+        <td colspan=16 rowspan=2 class=xl97>{{ $shipment->company->cs ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
@@ -76,15 +77,15 @@
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
         <td colspan=2 class=xl93>ИНН</td>
-        <td colspan=7 class=xl94>&nbsp;</td>
+        <td colspan=7 class=xl94>{{ $shipment->company->inn ?? '' }}</td>
         <td colspan=2 class=xl93 style='border-left:none'>КПП</td>
-        <td colspan=7 class=xl94>&nbsp;</td>
+        <td colspan=7 class=xl94>{{ $shipment->company->kpp ?? '' }}</td>
         <td colspan=3 rowspan=4 class=xl89>Сч. №</td>
-        <td colspan=16 rowspan=4 class=xl90>&nbsp;</td>
+        <td colspan=16 rowspan=4 class=xl90>{{ $shipment->company->rs ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
-        <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>&nbsp;</td>
+        <td colspan=18 rowspan=2 class=xl91 width=370 style='width:280pt'>{{ $shipment->company->official_name ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
@@ -98,7 +99,7 @@
     </tr>
     <tr height=46 style='mso-height-source:userset;height:34.5pt'>
         <td height=46 style='height:34.5pt'></td>
-        <td colspan=37 class=xl88>Счет на оплату № 4 от 17 апреля 2007 г.</td>
+        <td colspan=37 class=xl88>Счет на оплату №{{ $shipment->id ?? '' }} от {{ $shipment->created_at->formatLocalized('%d %B %Y') }} г.</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
@@ -106,21 +107,7 @@
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
         <td colspan=6 class=xl60>Поставщик:</td>
-        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxxx</td>
-    </tr>
-    <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td class=xl60></td>
-        <td colspan=3 style='mso-ignore:colspan'></td>
-        <td class=xl61 width=19 style='width:14pt'></td>
-        <td></td>
-        <td class=xl61 width=21 style='width:16pt'></td>
-        <td colspan=30 style='mso-ignore:colspan'></td>
-    </tr>
-    <tr height=17 style='mso-height-source:userset;height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td colspan=6 class=xl60>Грузоотправитель:</td>
-        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxx</td>
+        <td colspan=31 class=xl61 width=587 style='width:446pt'>{{ $shipment->company->official_name ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
@@ -128,19 +115,7 @@
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
         <td colspan=6 class=xl60>Покупатель:</td>
-        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxx</td>
-    </tr>
-    <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td class=xl60></td>
-        <td colspan=3 style='mso-ignore:colspan'></td>
-        <td class=xl61 width=19 style='width:14pt'></td>
-        <td colspan=32 style='mso-ignore:colspan'></td>
-    </tr>
-    <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td colspan=6 class=xl60>Грузополучатель:</td>
-        <td colspan=31 class=xl61 width=587 style='width:446pt'>xxxxxxxxxxxxxxxxxxxxx</td>
+        <td colspan=31 class=xl61 width=587 style='width:446pt'>{{ $shipment->partner->official_name ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
@@ -162,41 +137,11 @@
             <td colspan=4 class=xl82 style='border-left:none'>{{ $product->article }}</td>
             <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>{{ $product->name }}</td>
             <td colspan=3 class=xl84 style='border-left:none'>{{ $sorted_products[$product->id]['count'] }}</td>
-            <td colspan=2 class=xl82 style='border-left:none'>&nbsp;</td>
-            <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
-            <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
+            <td colspan=2 class=xl82 style='border-left:none'>шт</td>
+            <td colspan=4 class=xl84 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price'], 2, '.', ' ') }}</td>
+            <td colspan=5 class=xl80 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price'] * $sorted_products[$product->id]['count'], 2, '.', ' ') }}</td>
         </tr>
     @endforeach
-    <tr height=15 style='height:11.25pt'>
-        <td height=15 style='height:11.25pt'></td>
-        <td colspan=2 class=xl81>2</td>
-        <td colspan=4 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>&nbsp;</td>
-        <td colspan=3 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=2 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
-    </tr>
-    <tr height=15 style='height:11.25pt'>
-        <td height=15 style='height:11.25pt'></td>
-        <td colspan=2 class=xl81>3</td>
-        <td colspan=4 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>&nbsp;</td>
-        <td colspan=3 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=2 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
-    </tr>
-    <tr height=16 style='height:12.0pt'>
-        <td height=16 style='height:12.0pt'></td>
-        <td colspan=2 class=xl81>4</td>
-        <td colspan=4 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>&nbsp;</td>
-        <td colspan=3 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=2 class=xl82 style='border-left:none'>&nbsp;</td>
-        <td colspan=4 class=xl84 style='border-left:none'>&nbsp;</td>
-        <td colspan=5 class=xl80 style='border-left:none'>&nbsp;</td>
-    </tr>
     <tr height=9 style='mso-height-source:userset;height:6.95pt'>
         <td height=9 style='height:6.95pt'></td>
         <td class=xl62>&nbsp;</td>
@@ -268,7 +213,7 @@
         <td class=xl65></td>
         <td class=xl65></td>
         <td colspan=4 class=xl66>Итого:</td>
-        <td colspan=5 class=xl77></td>
+        <td colspan=5 class=xl77>{{ number_format($sorted_products['total_price'], 2, '.', ' ') }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
@@ -299,12 +244,8 @@
         <td class=xl67></td>
         <td class=xl67></td>
         <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66></td>
-        <td class=xl66>В том числе НДС:</td>
-        <td colspan=5 class=xl78></td>
+        <td colspan=5 class=xl66>В том числе НДС:</td>
+        <td colspan=5 class=xl77>{{ number_format($sorted_products['total_nds'], 2, '.', ' ') }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
@@ -336,11 +277,11 @@
         <td class=xl67></td>
         <td class=xl67></td>
         <td colspan=5 class=xl66>Всего к оплате:</td>
-        <td colspan=5 class=xl77></td>
+        <td colspan=5 class=xl77>{{ number_format($sorted_products['total_price'] + $sorted_products['total_nds'], 2, '.', ' ') }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=37 class=xl79>Всего наименований xx, на сумму xxxxxxxxxx руб.</td>
+        <td colspan=37 class=xl79>Всего наименований {{ count($products) }}, на сумму {{ number_format($sorted_products['total_price'], 2, '.', ' ') }} руб.</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
