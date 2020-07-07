@@ -76,11 +76,16 @@ class partnerDialog extends Modal{
         );
     }
 
+    setRole(element, role_id) {
+        this.current_dialog.querySelector('[name="role"]').value = element.innerText;
+        this.current_dialog.querySelector('[name="role_id"]').value = role_id;
+    }
+
     save(elem){
 
         if(!window.isXHRloading){
             window.axform.send(elem, e => {
-                this.finitaLaComedia(true);
+                if(e.status === 200) this.finitaLaComedia(true);
             });
         }
     }
@@ -126,8 +131,12 @@ class partnerDialog extends Modal{
             if(resp.data.id === 7) {
                 this.current_dialog.querySelector('#vehicle_tab').classList.remove('d-none');
             }
+            else if(resp.data.id === 5) {
+                this.current_dialog.querySelector('.role_select_cont').parentElement.classList.remove('hide');
+            }
             else {
                 this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
+                this.current_dialog.querySelector('.role_select_cont').parentElement.classList.add('hide');
             }
 
             window.notification.notify( 'success', 'Категория выбрана');
@@ -255,6 +264,8 @@ class partnerDialog extends Modal{
                 element.classList.remove('d-none');
             }
         });
+
+        this.current_dialog.querySelector('input[type="text"]').focus();
     }
 
     writingInn(element) {
@@ -349,10 +360,15 @@ class partnerDialog extends Modal{
 
                 let data = response.data;
 
+                let code_element = this.current_dialog.querySelector('[name="code"]');
+
                 if(data.phone_exists) {
-                    let code_element = this.current_dialog.querySelector('[name="code"]');
                     code_element.parentElement.classList.remove('hide');
                     code_element.disabled = false;
+                }
+                else {
+                    code_element.parentElement.classList.add('hide');
+                    code_element.disabled = true;
                 }
             })
             .catch(response => {

@@ -16,7 +16,7 @@
     <div class="search-panel box mb-15">
         <div class="search-field-container w-100">
             <input onclick="store.showBrands()" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
-            <div class="box">
+            <div class="box" onmouseleave="this.style.display = 'none';">
                 <div class="store-title">
                     Выберите производителя:
                 </div>

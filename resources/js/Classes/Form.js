@@ -89,7 +89,6 @@ class AxForm{
 
                 for(var error_stack in messages){
 
-                    dd(messages[error_stack][0]);
                     var error_stack_arr = error_stack.split('.');
 
                     var iteration = 0;

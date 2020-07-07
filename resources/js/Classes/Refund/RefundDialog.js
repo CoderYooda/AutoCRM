@@ -365,7 +365,7 @@ class refundDialog extends Modal{
     }
 
     openSelectShipmentModal(){
-        window.openDialog('selectShipment', '&refer=' + this.root_dialog.id);
+        window.openDialog('selectShipment', '&hide_paid=1&refer=' + this.root_dialog.id);
     }
 
     recalculate(){

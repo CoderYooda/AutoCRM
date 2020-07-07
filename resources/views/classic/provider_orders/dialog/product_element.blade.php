@@ -2,7 +2,7 @@
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 200px">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;"><a onclick="window.helper.copy('{{ $product->article }}');" >{{ $product->article }}</a></div></td>
-    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
+    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem"
                @if(isset($request['count']) && $request['count'] != null) value="{{ $request['count'] }}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="1" @endif
                type="number" ></td>
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"

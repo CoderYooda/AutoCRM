@@ -1,13 +1,14 @@
-
 // Класс описывающий стандартные действия сущностей.
 
-class Entity{
+class Entity {
 
     remove(tag, id, object = null) { // Удаление элемента списка с подтверждением
-        if (isXHRloading) { return; }
+        if (isXHRloading) {
+            return;
+        }
         let data = {};
         data.ids = null;
-        if(Array.isArray(id)){
+        if (Array.isArray(id)) {
             data.ids = id;
             id = 'array'
         }
@@ -26,39 +27,40 @@ class Entity{
                 axios({
                     method: 'POST',
                     url: tag + '/' + id + '/delete',
-                    data:data,
+                    data: data,
                 }).then(function (resp) {
                     let type = 'success';
-                    if(resp.data.type != null){
+                    if (resp.data.type != null) {
                         type = resp.data.type;
                     }
-                    if(object === null){
+                    if (object === null) {
                         var element = document.getElementById(tag + '_' + resp.data.id);
 
-                        if(type === 'success'){
+                        if (type === 'success') {
                             element.remove();
-                        };
+                        }
+                        ;
                     } else {
                         object.table.deleteRow(resp.data.id);
                         object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
                     }
 
-                    if(resp.data.event){
+                    if (resp.data.event) {
                         let event = new Event(resp.data.event, {bubbles: true});
                         document.dispatchEvent(event);
                         console.log("Событие " + resp.data.event + " объявлено");
                     }
-                    notification.notify( type, resp.data.message);
+                    notification.notify(type, resp.data.message);
                 });
             } else {
             }
         });
     };
 
-    addProductToList(elem_or_id, object, type){ // Добавление элемента в список
+    addProductToList(elem_or_id, object, type) { // Добавление элемента в список
         let article_id = null;
         let focus = true;
-        if(Number.isInteger(elem_or_id)){
+        if (Number.isInteger(elem_or_id)) {
             article_id = elem_or_id;
             focus = false;
         } else {
@@ -67,7 +69,7 @@ class Entity{
 
         object.touch();
         let store_id = false;
-        if(!Number.isInteger(elem_or_id)) {
+        if (!Number.isInteger(elem_or_id)) {
             if (elem_or_id.closest('.dialog').querySelector('input[name=store_id]') != null) {
                 let store_id = elem_or_id.closest('.dialog').querySelector('input[name=store_id]').value;
             }
@@ -80,40 +82,44 @@ class Entity{
             method: 'post',
             url: 'product/addtolist',
             data: {
-                refer:object.root_dialog.id,
-                type:type,
-                article_id:article_id,
-                store_id:store_id,
-                count:count,
+                refer: object.root_dialog.id,
+                type: type,
+                article_id: article_id,
+                store_id: store_id,
+                count: count,
             }
         }).then(function (resp) {
-            let isset = object.items.map(function(e){
+            let isset = object.items.map(function (e) {
                 return e.id;
             }).indexOf(resp.data.product.id);
-            if(Number.isInteger(elem_or_id)){
-                if(isset < 0){
+            if (Number.isInteger(elem_or_id)) {
+                if (isset < 0) {
                     object.addItem({
-                        id:resp.data.product.id,
-                        html:resp.data.html
+                        id: resp.data.product.id,
+                        html: resp.data.html
                     }, resp.data.product.id);
-                    if(focus){
+                    if (focus) {
                         object.root_dialog.querySelector('.price_elem:last-child').focus();
                     }
                 } else {
-                    let item = object.items.map(function(e){
+                    let item = object.items.map(function (e) {
                         return e.id;
                     }).indexOf(resp.data.product.id);
-                    object.items[item].count ++;
-                    object.root_dialog.querySelector('#product_selected_' + object.items[item].id).querySelector('.count_elem').value = object.items[item].count;
+                    object.items[item].count++;
+
+                    let increment_element = object.root_dialog.querySelector('#product_selected_' + object.items[item].id).querySelector('.count_elem');
+
+                    increment_element.value = Number.parseInt(increment_element.value) + 1;
+
                     object.recalculate();
                 }
             } else {
-                if(isset < 0){
+                if (isset < 0) {
                     object.addItem({
-                        id:resp.data.product.id,
-                        html:resp.data.html
+                        id: resp.data.product.id,
+                        html: resp.data.html
                     }, resp.data.product.id);
-                    if(focus){
+                    if (focus) {
                         object.root_dialog.querySelector('.price_elem:last-child').focus();
                     }
                 } else {
@@ -171,4 +177,5 @@ class Entity{
 
 
 }
+
 export default Entity;

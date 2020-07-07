@@ -63,7 +63,7 @@ class Test extends Command
             'ogrn' => $suggestion->data->ogrn,
         ];
 
-        dd($suggestion);
+        dd($result);
 
         return $result;
     }

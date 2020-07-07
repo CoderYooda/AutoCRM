@@ -270,14 +270,21 @@ class Helper{
         let myTabs = document.getElementById(id);
         let myTabsCollection = myTabs.getElementsByTagName('a');
         for (var i = 0; i < myTabsCollection.length; i++) {
-            new bootstrap.Tab(myTabsCollection[i],
-                { // our options
-                    //height: true
-                });
+            let tab = new bootstrap.Tab(myTabsCollection[i], {});
+
+            myTabsCollection[i].addEventListener('show.bs.tab', function(event) {
+
+                let element_id = event.target.getAttribute('aria-controls');
+
+                let input = document.getElementById(element_id).querySelector('.form-group:not(.d-none) input[type="text"]');
+
+                if(input) input.focus();
+
+            }, false);
         }
     }
 
-    printDocument(doc, id, data = null, landscape = false){
+        printDocument(doc, id, data = null, landscape = false){
         axios({
             method: 'POST',
             url: '/document',

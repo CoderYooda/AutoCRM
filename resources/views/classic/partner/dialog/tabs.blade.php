@@ -1,4 +1,4 @@
-<div class="modal-body">
+<div data-simplebar="init" class="modal-body">
     <div class="row">
         <div class="col-sm-5 no-pr d-flex">
             <ul class="nav" id="partner_tabs" role="tablist">
@@ -36,7 +36,7 @@
                     </a>
                 </li>
                 <li class="nav-item fl ip ul" role="tab">
-                    <a id="tab_barcodes{{ $class }}-tab" href="#tab_barcodes{{ $class }}"  data-height="false" aria-controls="tab_access{{ $class }}" aria-selected="false" class="nav-link">
+                    <a id="tab_barcodes{{ $class }}-tab" href="#tab_barcodes{{ $class }}"  data-height="false" aria-controls="tab_barcodes{{ $class }}" aria-selected="false" class="nav-link">
                         Штрих-коды
                         <span class="float-right helper_danger d-none">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>

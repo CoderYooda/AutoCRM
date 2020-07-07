@@ -30,6 +30,25 @@
         </select>
     </div>
 
+    @can('Редактировать настройки')
+
+        <div class="form-group fl ip ul @if($partner && $partner->category->name != 'Сотрудники') hide @endif">
+            <label>Роль</label>
+
+            <div class="dropdown role_select_cont" onclick="window.helper.openModal(this, event)">
+                <input readonly id="role" name="role" type="text" value="Не выбрано" class="form-control role_selector pointer" >
+                <input name="role_id" type="hidden" value="{{ $partner->user->roles[0]->id ?? '' }}" />
+                <div class="dropdown_container">
+                    <div class="arrow"></div>
+                    @foreach($roles as $role)
+                        <span onclick="{{ $class }}.setRole(this, {{ $role->id }})" class="element">{{ $role->name }}</span>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+    @endcan
+
     <div class="form-group fl ip ul">
         <label>Номер телефона</label>
         <input id="phone_login_input" onchange="{{ $class }}.writingPhone(this)" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
@@ -39,7 +58,10 @@
     </div>
 
     <div class="form-group fl ip ul hide">
-        <label>SMS код с указанного номера</label>
+        <label>SMS код</label>
         <input maxlength="4" type="text" name="code" class="form-control" placeholder="SMS код" disabled>
+        <div class="primary mt-15 p-15">
+            Данный номер привязан к другой учетной записи, для подтверждения введите код из SMS с указанного номера
+        </div>
     </div>
 </div>

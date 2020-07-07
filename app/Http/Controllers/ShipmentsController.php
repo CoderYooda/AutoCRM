@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ShipmentsRequest;
 use App\Models\ClientOrder;
+use App\Models\Refund;
 use App\Models\Shipment;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
@@ -84,14 +85,20 @@ class ShipmentsController extends Controller
     private static function selectShipmentInner($request)
     {
         $class = 'selectShipmentDialog';
-        $shipments = Shipment::
-            when($request['string'], function ($q) use ($request) {
+        $query = Shipment::where('company_id', Auth::user()->company->id)
+            ->when($request['string'], function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
-            ->where('company_id', Auth::user()->company()->first()->id)
             ->orderBy('created_at', 'DESC')
-            ->limit(30)
-            ->get();
+            ->limit(30);
+
+        if($request['hide_paid']) {
+           $refund_ids = Refund::where('store_id', Auth::user()->partner->store_id)->pluck('shipment_id');
+
+           $query->whereNotIn('id', $refund_ids);
+        }
+
+        $shipments = $query->get();
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 

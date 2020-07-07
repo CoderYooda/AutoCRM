@@ -96,6 +96,7 @@ class PartnerController extends Controller
         $view = view(get_template() . '.partner.dialog.form_partner', compact('partner', 'category', 'request', 'stores'))
             ->with('vehicles', $partner->vehicles ?? [])
             ->with('class', $tag)
+            ->with('roles', Role::where('company_id', Auth::user()->company->id)->get())
             ->render();
 
         $response = [
@@ -149,7 +150,7 @@ class PartnerController extends Controller
         foreach($partner->phones as $phone){
             $phones_str .= $phone->number;
         }
-        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str));
+        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
         $partner->save();
 
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
@@ -167,6 +168,10 @@ class PartnerController extends Controller
                     'company_id' => Auth::user()->company()->first()->id,
                     'password' => bcrypt($password),
                 ]);
+
+                if($request['role_id']) {
+                    $user->syncRoles([ $request['role_id'] ]);
+                }
 
                 if(!$user->wasRecentlyCreated) {
                     $user->partner->update([
@@ -229,7 +234,7 @@ class PartnerController extends Controller
         $this->type = 'success';
 
         if($id == 'array') {
-            $partners = Partner::with('company')->owned()->whereIn('id', $request['ids'])->get();
+            $partners = Partner::owned()->with('company')->whereIn('id', $request['ids'])->get();
 
             foreach($partners as $partner){
                 if($partner->company->id != Auth::user()->company->id || $partner->id == Auth::user()->partner->id){

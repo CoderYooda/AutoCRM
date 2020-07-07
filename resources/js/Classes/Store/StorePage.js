@@ -617,6 +617,9 @@ class storePage{
                 object.loadCategory(object.category_id, true, false);
             }
         });
+
+        let focused = document.querySelector('#search');
+        if(focused) focused.focus();
     }
 
     load(){
@@ -653,6 +656,9 @@ class storePage{
         this.searchInit();
         this.initDatesFilter();
         this.checkActive();
+
+        let focused = document.querySelector('#search');
+        if(focused) focused.focus();
     }
 
     prepareParams(){
@@ -688,7 +694,7 @@ class storePage{
     }
 
     showBrands() {
-        if(this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
+        if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
     }
 
     searchInit(){

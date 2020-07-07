@@ -19,7 +19,7 @@
 
     @if(!isset($adjustment))
         <td>
-            <input onClick="this.select();" name="products[{{ $product->id }}][fact]" class="form-control form-control-sm"
+            <input onClick="this.select();" name="products[{{ $product->id }}][fact]" class="form-control form-control-sm count_elem"
                    @if(isset($product)) value="{{ $product->getCountInStoreId($request['store_id']) }}"@else value="0" @endif
                    type="number" >
         </td>

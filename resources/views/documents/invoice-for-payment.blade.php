@@ -99,7 +99,7 @@
     </tr>
     <tr height=46 style='mso-height-source:userset;height:34.5pt'>
         <td height=46 style='height:34.5pt'></td>
-        <td colspan=37 class=xl88>Счет на оплату №{{ $shipment->id ?? '' }} от {{ $shipment->created_at->formatLocalized('%d %B %Y') }} г.</td>
+        <td colspan=37 class=xl88>Счет на оплату №{{ $shipment->id ?? '' }} от {{ isset($shipment->created_at) ? $shipment->created_at->formatLocalized('%d %B %Y') : '________' }} г.</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
@@ -138,8 +138,8 @@
             <td colspan=17 class=xl83 width=333 style='border-left:none;width:254pt'>{{ $product->name }}</td>
             <td colspan=3 class=xl84 style='border-left:none'>{{ $sorted_products[$product->id]['count'] }}</td>
             <td colspan=2 class=xl82 style='border-left:none'>шт</td>
-            <td colspan=4 class=xl84 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price'], 2, '.', ' ') }}</td>
-            <td colspan=5 class=xl80 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price'] * $sorted_products[$product->id]['count'], 2, '.', ' ') }}</td>
+            <td colspan=4 class=xl84 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price_with_nds'], 2, '.', ' ') }}</td>
+            <td colspan=5 class=xl80 style='border-left:none'>{{ number_format($sorted_products[$product->id]['price_with_nds'] * $sorted_products[$product->id]['count'], 2, '.', ' ') }}</td>
         </tr>
     @endforeach
     <tr height=9 style='mso-height-source:userset;height:6.95pt'>
@@ -213,7 +213,7 @@
         <td class=xl65></td>
         <td class=xl65></td>
         <td colspan=4 class=xl66>Итого:</td>
-        <td colspan=5 class=xl77>{{ number_format($sorted_products['total_price'], 2, '.', ' ') }}</td>
+        <td colspan=5 class=xl77>{{ number_format($sorted_products['price_with_nds'], 2, '.', ' ') }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
@@ -245,7 +245,7 @@
         <td class=xl67></td>
         <td class=xl67></td>
         <td colspan=5 class=xl66>В том числе НДС:</td>
-        <td colspan=5 class=xl77>{{ number_format($sorted_products['total_nds'], 2, '.', ' ') }}</td>
+        <td colspan=5 class=xl77>{{ number_format($sorted_products['nds'], 2, '.', ' ') }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
@@ -277,11 +277,11 @@
         <td class=xl67></td>
         <td class=xl67></td>
         <td colspan=5 class=xl66>Всего к оплате:</td>
-        <td colspan=5 class=xl77>{{ number_format($sorted_products['total_price'] + $sorted_products['total_nds'], 2, '.', ' ') }}</td>
+        <td colspan=5 class=xl77>{{ number_format($sorted_products['price_with_nds'], 2, '.', ' ') }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=37 class=xl79>Всего наименований {{ count($products) }}, на сумму {{ number_format($sorted_products['total_price'], 2, '.', ' ') }} руб.</td>
+        <td colspan=37 class=xl79>Всего наименований {{ count($products) }}, на сумму {{ number_format($sorted_products['price_with_nds'], 2, '.', ' ') }} руб.</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>

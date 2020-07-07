@@ -50,6 +50,8 @@ class partnerPage{
             }
         });
 
+        document.getElementById('search').focus();
+
         object.linked();
     }
 

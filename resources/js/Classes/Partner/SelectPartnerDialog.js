@@ -34,10 +34,8 @@ class selectPartnerDialog  extends Modal{
             object.finitaLaComedia();
         });
 
-        let focused = document.getElementById('select_partner_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
+        let focused = document.getElementById('partner_search');
+        if(focused) focused.focus();
     }
 
     searchInit(){

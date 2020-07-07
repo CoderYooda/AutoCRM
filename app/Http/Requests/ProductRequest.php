@@ -6,6 +6,7 @@ use App\Http\Controllers\SupplierController;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ProductRequest extends FormRequest
@@ -41,7 +42,7 @@ class ProductRequest extends FormRequest
             'storage_vertical' => ['string', 'max:2'],
             'storage_horizontal' => ['string', 'max:2'],
 
-            'barcode' => ['nullable', Rule::unique('articles', 'barcode')->ignore($this->id)]
+            'barcode' => ['nullable', Rule::unique('articles', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)]
         ];
     }
 

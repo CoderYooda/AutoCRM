@@ -64,6 +64,8 @@ class PartnerRequest extends FormRequest
             ];
         }
 
+        $rules['role_id'] = ['nullable', 'integer', 'exists:roles,id'];
+
         if($this->type != 0) {
             $rules['opf'] = ['nullable', 'string', 'max:3'];
         }

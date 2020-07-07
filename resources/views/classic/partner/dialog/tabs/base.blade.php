@@ -58,16 +58,16 @@
     </div>
 </div>
 
-<div class="form-group fl @if(!$partner || !$partner->address) mb-0 @endif">
-    <label>Дата рождения @if(!$partner || !$partner->email) <span onclick="{{ $class }}.showField(this, 'birthday')" class="input_as_link pointer">добавить</span> @endif</label>
+<div class="form-group fl @if(!$partner || !$partner->birthday) mb-0 @endif">
+    <label>Дата рождения @if(!$partner || !$partner->birthday) <span onclick="{{ $class }}.showField(this, 'birthday')" class="input_as_link pointer">добавить</span> @endif</label>
     <input onclick="this.select();" type="text" name="birthday"
-           @if($partner) value="{{ $partner->getBirthday() == 'Не указано' ? '' : $partner->getBirthday() }}" @endif
-           class="form-control date_picker entrance @if(!$partner || !$partner->email) hide @endif" placeholder="Выберите дату">
+           @if($partner) value="{{ !$partner->birthday ? '' : $partner->getBirthday() }}" @endif
+           class="form-control date_picker entrance @if(!$partner || !$partner->birthday) hide @endif" placeholder="Выберите дату">
 </div>
 
 <div class="form-group fl @if(!$partner || !$partner->address) mb-0 @endif">
     <label>Адрес проживания <span onclick="{{ $class }}.showField(this, 'address')" class="input_as_link pointer" @hide($partner && $partner->address)>добавить</span></label>
-    <input type="text" name="address" value="{{ $partner->address ?? '' }}" class="form-control entrance @if(!$partner || !$partner->email) hide @endif" placeholder="Адрес проживания">
+    <input type="text" name="address" value="{{ $partner->address ?? '' }}" class="form-control entrance @if(!$partner || !$partner->address) hide @endif" placeholder="Адрес проживания">
 </div>
 
 <div class="form-group ul">
@@ -83,7 +83,7 @@
     <input type="text" name="ur_fio" value="{{ $partner->fio ?? '' }}" class="form-control entrance" placeholder="Контактное лицо">
 </div>
 
-<div class="form-group fl ip ul @if(!$partner || !$partner->address) mb-0 @endif">
+<div class="form-group fl ip ul @if(!$partner || !$partner->email) mb-0 @endif">
     <label>Email @if(!$partner || !$partner->email) <span onclick="{{ $class }}.showField(this, 'email')" class="input_as_link pointer">добавить</span> @endif </label>
     <input type="email" name="email" value="{{ $partner->email ?? '' }}" class="form-control @if(!$partner || !$partner->email) hide @endif" placeholder="Электронная почта">
 </div>

@@ -37,7 +37,7 @@
         @include(get_template() . '.partner.dialog.tabs')
         <div class="modal-footer">
             <button onclick="window.{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
-            <button type="submit" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
+            <button type="button" onclick="window.{{ $class }}.save(this)" class="button pull-right">Сохранить</button>
         </div>
         <div class="system_message"></div>
     </form>

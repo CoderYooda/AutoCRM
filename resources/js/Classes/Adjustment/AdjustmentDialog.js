@@ -63,11 +63,6 @@ class adjustmentDialog extends Modal{
                 object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
-
-        let focused = document.getElementById('adjustment_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
     }
 
     save(elem){
@@ -134,8 +129,16 @@ class adjustmentDialog extends Modal{
         });
     }
 
-    addProduct(elem){
-        window.entity.addProductToList(elem, this, 'adjustment');
+    scanOperation(product_id){
+        this.addProduct(product_id);
+    }
+
+    addProduct(elem_or_id, refer = null){
+        let object = this;
+        window.entity.addProductToList(elem_or_id, this, 'adjustment');
+        if(refer != null){
+            object.refer = refer;
+        }
     };
 
     openProductmodal(){

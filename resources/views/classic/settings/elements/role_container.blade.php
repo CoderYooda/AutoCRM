@@ -5,12 +5,12 @@
             @foreach($users as $user)
                 <div class="item_elem">
                     <div class="flex-1">
-                        {{ $user->partner()->first()->outputName() }}
+                        {{ $user->partner->fio ?? '' }}
                     </div>
                     <div class="flex-1">
                         <div class="pull-right">
                             <div class="dropdown role_select_cont" onclick="window.helper.openModal(this, event)">
-                                <input readonly="" name="role" id="role" type="text" value="@if($user->roles()->first()){{ $user->roles()->first()->name }}@else Не выбрано @endif" class="form-control role_selector" >
+                                <input readonly name="role" id="role" type="text" value="@if($user->roles()->first()){{ $user->roles()->first()->name }}@else Не выбрано @endif" class="form-control role_selector" >
                                 <div class="dropdown_container">
                                     <div class="arrow"></div>
                                     @foreach($roles as $role)

@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <textarea placeholder="Комментарий" style="resize: none;height: 80px;" class="form-control" name="comment" id="providerorder_dialog_focused" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
+                        <textarea placeholder="Комментарий" style="resize: none;height: 80px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                     </div>
                 </div>
                 <div class="form-group">

@@ -11,7 +11,6 @@ class providerOrderDialog extends Modal{
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.refer = null;
-        this.focused = document.getElementById('providerorder_dialog_focused');
         this.init();
     }
 
@@ -63,9 +62,10 @@ class providerOrderDialog extends Modal{
         });
 
         this.loadItemsIfExists();
-        if(object.focused){
-            object.focused.focus();
-        }
+    }
+
+    scanOperation(product_id){
+        this.addProduct(product_id);
     }
 
     freshContent(id, callback = null){
@@ -253,9 +253,9 @@ class providerOrderDialog extends Modal{
         this.recalculate();
     }
 
-    addProduct(elem, refer = null){
+    addProduct(elem_or_id, refer = null){
         let object = this;
-        window.entity.addProductToList(elem, this, 'providerOrder');
+        window.entity.addProductToList(elem_or_id, this, 'providerOrder');
         if(refer != null){
             object.refer = refer;
         }
@@ -278,9 +278,6 @@ class providerOrderDialog extends Modal{
             document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
             console.log("Событие PartnerSelected вызвано");
             //closeDialog(event);
-            if(object.focused){
-                object.focused.focus();
-            }
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

@@ -17,7 +17,9 @@
             mso-header-margin:.51in;
             mso-footer-margin:.51in;
             mso-page-orientation:landscape;
-            mso-horizontal-page-align:center;}
+            mso-horizontal-page-align:center;
+            width: 100%;
+        }
         -->
     </style>
     <![if !supportTabStrip]><script language="JavaScript">
@@ -280,7 +282,7 @@ width:72pt'><br>
             1 - счет-фактура и передаточный документ (акт) <br>
             2 - передаточный документ (акт)</td>
         <td colspan=16 class=xl102 style='border-left:none'>ИНН/КПП продавца</td>
-        <td colspan=58 class=xl103>{{ $company->inn ?? '        ' }} / {{ $company->kpp ?? '' }}</td>
+        <td colspan=58 class=xl103>{{ $company->inn ?? '________' }} / {{ $company->kpp ?? '________' }}</td>
         <td colspan=3 class=xl67>(2б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -317,7 +319,7 @@ width:72pt'><br>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>ИНН/КПП
             покупателя</td>
-        <td colspan=58 class=xl103>{{ $shipment->partner->inn ?? '        ' }} / {{ $shipment->partner->kpp ?? '' }}</td>
+        <td colspan=58 class=xl103>{{ $shipment->partner->inn ?? '________' }} / {{ $shipment->partner->kpp ?? '________' }}</td>
         <td colspan=3 class=xl67>(6б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -656,7 +658,7 @@ none;width:18pt'>код</td>
         <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
 
             @if($company->is_company)
-                {{ $company->name }}, ИНН {{ $company->inn ?? '        ' }}, КПП {{ $company->kpp ?? '        ' }}
+                {{ $company->name }}, ИНН {{ $company->inn ?? '________' }}, КПП {{ $company->kpp ?? '________' }}
             @else
                 {{ $company->name ?? '' }}
             @endif
@@ -667,7 +669,7 @@ none;width:18pt'>код</td>
         <td colspan=39 class=xl75>
 
             @if($shipment->partner->type == 2)
-                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? '        ' }}, КПП {{ $shipment->partner->kpp ?? '' }}
+                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? '________' }}, КПП {{ $shipment->partner->kpp ?? '________' }}
             @elseif($shipment->partner->type == 1)
                 {{ $shipment->partner->fio }}
             @else
