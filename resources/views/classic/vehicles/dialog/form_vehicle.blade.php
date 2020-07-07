@@ -68,7 +68,7 @@
                     <label>Год:</label>
                     <input id="year" onclick="this.select();" type="text" name="year" value="{{ $vehicle->year ?? '' }}" class="form-control" />
                 </div>
-
+{{-- 12s --}}
                 <div class="form-group">
                     <label>Комментарий</label>
                     <textarea id="comment" cols="20" rows="6" style="height: 80px; resize: none;" onclick="this.select();" name="comment" class="form-control">{{ $vehicle->comment ?? '' }}</textarea>

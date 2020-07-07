@@ -32,7 +32,7 @@ class Vehicle extends Model
 
     public function getImageAttribute()
     {
-        if(!$this->mark) return asset('images/images_carmodels/default.jpg');
+        if(!$this->mark || !$this->model || !$this->modify) return asset('images/images_carmodels/default.jpg');
 
         $mark_name = strtolower($this->mark->name);
         $mark_name = str_replace(' ', '_', $mark_name);
