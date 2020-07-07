@@ -22,7 +22,7 @@
             <span class="item-title _500">Розничная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->getMidPriceByStoreId(Auth::user()->partner->store->id) }}
+                   {{ $product->getMidPriceByStoreId(session('store_id')) }}
                 </span>
             </div>
             <div class="item-tag tag hide">
