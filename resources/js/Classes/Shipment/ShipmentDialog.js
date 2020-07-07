@@ -432,7 +432,7 @@ class shipmentDialog extends Modal{
     }
 
     openSelectPartnermodal(){
-        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id + '&category_id=7');
+        window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=7');
     }
 
     recalculate(){

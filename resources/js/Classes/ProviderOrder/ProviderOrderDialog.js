@@ -290,7 +290,7 @@ class providerOrderDialog extends Modal{
     }
 
     openSelectPartnerModal(){
-        window.openDialog('selectPartner', '&refer=' + this.root_dialog.id + '&category_id=6');
+        window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=6');
     }
 
     recalculate(){

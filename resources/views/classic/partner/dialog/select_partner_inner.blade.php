@@ -1,7 +1,9 @@
 
-<div id="search_partner_categories" class="col-sm-3 no-pr">
-    @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
-</div>
+@if(!$request->has('only_current_category'))
+    <div id="search_partner_categories" class="col-sm-3 no-pr">
+        @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
+    </div>
+@endif
 
 <div class="col-sm-9 no-pl">
     @if(count($partners))

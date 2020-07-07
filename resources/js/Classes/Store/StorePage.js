@@ -47,7 +47,7 @@ class storePage{
             cat_id = 7;
         }
 
-        window.openDialog('selectPartner', '&refer=' + 'store&category_id=' + cat_id + '&target=' + target);
+        window.openDialog('selectPartner', '&only_current_category=1&refer=' + 'store&category_id=' + cat_id + '&target=' + target);
     }
 
     openCategoryModal(){
