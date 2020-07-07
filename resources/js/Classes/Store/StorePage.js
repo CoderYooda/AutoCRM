@@ -13,7 +13,7 @@ class storePage{
         this.active_tab = this.getCurrentActiveTab();
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = 1;
-        this.search = 'null';
+        this.search = null;
         this.tableContextual = null;
         this.selectedData = null;
         this.root_category = 2;
@@ -183,7 +183,9 @@ class storePage{
             data: data
         }).then(function (resp) {
             document.getElementById('category-nav').innerHTML = resp.data.html;
-            object.loadBreadcrumbs(category_id, object.root_category);
+            if(!object.search){
+                object.loadBreadcrumbs(category_id, object.root_category);
+            }
             if(update_data != null && update_data){
                 object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }

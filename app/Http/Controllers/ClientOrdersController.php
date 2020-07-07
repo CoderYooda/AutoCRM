@@ -21,8 +21,11 @@ class ClientOrdersController extends Controller
     {
         $tag = 'clientorderDialog';
 
-        if ($request['client_order_id']) {
-            $client_order = ClientOrder::where('id', (int)$request['client_order_id'])->first();
+        if ($request['client_order_id'] || $request['clientorder_id']) {
+
+            $co_id = isset($request['client_order_id']) ? $request['client_order_id'] : $request['clientorder_id'];
+
+            $client_order = ClientOrder::where('id', (int)$co_id)->first();
 
             $client_order->articles = $client_order->articles()->get();
 
