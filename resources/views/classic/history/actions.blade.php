@@ -11,8 +11,13 @@
                 ">
                 <div class="sl-content">
                     <div class="sl-date text-muted">{{$action->created_at->diffForHumans()}}</div>
-                    <p>{{ $action->user()->first()->partner()->first()->outputName() }}
-                        <a href="#" class="text-info">{{ $action->message }}</a>.</p>
+                    <p>{{ $action->user()->first()->partner->outputName() }}
+                        @php
+                            $modelName = mb_strtolower($action->model);
+                            $dialogName = $modelName . 'Dialog';
+                            $dialogParams = '&' . $modelName . '_id=' . $action->model_id
+                        @endphp
+                        <a onclick="openDialog( '{{ $dialogName }}', '{{ $dialogParams }}' )" class="text-info">{{ $action->message }}</a>.</p>
                 </div>
             </div>
         @endforeach

@@ -20,8 +20,9 @@ class ProviderOrdersController extends Controller
     {
         $tag = 'providerorderDialog';
 
-        if($request['provider_order_id']){
-            $provider_order = ProviderOrder::where('id', (int)$request['provider_order_id'])->first();
+        if($request['provider_order_id'] || $request['providerorder_id']){
+            $po_id = isset($request['provider_order_id']) ? $request['provider_order_id'] : $request['providerorder_id'];
+            $provider_order = ProviderOrder::where('id', (int)$po_id)->first();
             $tag .= $provider_order->id;
         } else {
             $provider_order = null;
@@ -379,6 +380,8 @@ class ProviderOrdersController extends Controller
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
             //dd(Carbon::parse($dates[0]));
+            $dates[0] .= ' 00:00:00';
+            $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
 

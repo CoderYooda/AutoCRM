@@ -6,20 +6,14 @@ class Scanner{
     }
 
     init(){
-
         let object = this;
-
         let scanFN = window.helper.debounce(function(e) {
             if (object.UPC.length >= 6) {
-
                 console.log('Штрихкод отсканирован:', object.UPC);
-
                 let dialogs = document.getElementsByClassName('dialog');
-
                 let targeted = false;
                 if(dialogs.length) {
                     [].forEach.call(dialogs, function (elem) {
-
                         if (elem.classList.contains('selected')) {
                             window.axios({
                                 method: 'post',
@@ -43,14 +37,11 @@ class Scanner{
                             }).finally(function () {
                                 window.isXHRloading = false;
                             });
-
                         }
                     });
                 } else {
                     //window.openDialog('barcodeDialog', '&upc=' + object.UPC);
                 }
-
-
             }
             setTimeout(function(){
                 object.UPC = '';
