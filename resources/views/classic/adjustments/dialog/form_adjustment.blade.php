@@ -50,7 +50,12 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
+                        @if($adjustment)
+                            <label>Комментарий</label>
+                            <div>{{ $adjustment->comment ?? 'Не указан' }}</div>
+                        @else
                         <textarea placeholder="Комментарий" style="resize: none;height: 80px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($adjustment)){{ $adjustment->comment }}@endif</textarea>
+                        @endif
                     </div>
                 </div>
                 <div class="form-group">
