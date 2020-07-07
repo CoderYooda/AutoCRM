@@ -71,7 +71,7 @@
 
                 <div class="form-group">
                     <label>Комментарий</label>
-                    <textarea id="comment" cols="20" rows="6" style="height: 80px; resize: none;" onclick="this.select();" name="comment" class="form-control">{{ $vehicle->comment }}</textarea>
+                    <textarea id="comment" cols="20" rows="6" style="height: 80px; resize: none;" onclick="this.select();" name="comment" class="form-control">{{ $vehicle->comment ?? '' }}</textarea>
                 </div>
 
             </div>
