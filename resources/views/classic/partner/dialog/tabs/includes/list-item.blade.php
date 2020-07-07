@@ -1,6 +1,6 @@
 <li id="vehicle_item_{{ $vehicle->id }}" ondblclick="openDialog('vehicleDialog', '&refer={{ $class }}&vehicle_id={{ $vehicle->id }}&partner_id={{ $request->partner_id }}')" class="pointer mb-15" style="max-height: 94px;">
 
-    <i class="fa fa-times focus-blue float-right" style="color:#C6C6C6; font-size: 15px;" aria-hidden="true"></i>
+    <i onclick="{{ $class }}.deleteVehicle({{ $vehicle->id }})" class="fa fa-times focus-blue float-right" style="color:#C6C6C6; font-size: 15px;" aria-hidden="true"></i>
 
     <div class="d-flex">
         <div style="width: 120px; height: 60px;">
