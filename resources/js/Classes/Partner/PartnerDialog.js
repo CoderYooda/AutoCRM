@@ -336,6 +336,30 @@ class partnerDialog extends Modal{
         });
     }
 
+    writingPhone(element) {
+
+        axios({
+            url: '/partner/check-phone',
+            method: 'POST',
+            data: {
+                phone: this.phoneLoginMask.unmaskedValue
+            }
+        })
+            .then(response => {
+
+                let data = response.data;
+
+                if(data.phone_exists) {
+                    let code_element = this.current_dialog.querySelector('[name="code"]');
+                    code_element.parentElement.classList.remove('hide');
+                    code_element.disabled = false;
+                }
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
+
     showField(element, input_name) {
 
         element.style.display = 'none';

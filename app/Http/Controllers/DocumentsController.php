@@ -27,18 +27,25 @@ class DocumentsController extends Controller
             $selected_products = json_decode($request->data);
 
             $sorted_products = [
-                'total_price' => 0,
-                'total_nds' => 0,
+                'price_without_nds' => 0,
+                'price_with_nds' => 0,
+                'nds' => 0
             ];
 
             foreach($selected_products as $product) {
                 $sorted_products[$product->id] = [
                     'count' => $product->count,
-                    'price' => $product->price
+                    'price_with_nds' => $product->price,
+                    'price_without_nds' => $product->price - ($product->price / 100 * 20),
+                    'nds' => ($product->price / 100 * 20)
                 ];
 
-                $sorted_products['total_price'] += $product->price * $product->count;
-                $sorted_products['total_nds'] += ($product->price * $product->count) / 100 * 20;
+                $total_price = ($product->price * $product->count);
+                $nds = ($total_price / 100 * 20);
+
+                $sorted_products['price_without_nds'] += $total_price - $nds;
+                $sorted_products['price_with_nds'] += $total_price;
+                $sorted_products['nds'] += $nds;
             }
 
             $view->with('company', Auth::user()->company)

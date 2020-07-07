@@ -90,9 +90,9 @@ class SettingsController extends Controller
         ]);
     }
 
-    public static function storeTab($request)
+    public static function storeTab(Request $request)
     {
-        $stores = Store::owned()->orderBy('created_at', 'DESC')->get();
+        $stores = Store::owned()->with('articles')->orderBy('created_at', 'DESC')->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container', compact('stores', 'request'));
         }
@@ -107,7 +107,7 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request', 'last_imports'));
     }
 
-    public static function roleTab($request)
+    public static function roleTab(Request $request)
     {
         $roles = RoleController::getRoles($request);
 		$users = User::owned()->get();
@@ -117,7 +117,7 @@ class SettingsController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','users', 'request'));
     }
 
-    public static function smsTab($request)
+    public static function smsTab(Request $request)
     {
         $smses = SmsController::getCompanySms();
         $users = User::owned()->get();

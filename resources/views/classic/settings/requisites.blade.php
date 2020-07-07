@@ -6,7 +6,7 @@
 
     <div id="ajax-table-requisites" class="box d-flex p-15 m-15">
 
-        <form style="width: 700px;" action="{{ route('SaveCompanySettings') }}" method="POST" onsubmit="settings.saveRequisites(this)">
+        <form data-simplebar="init" style="width: 700px; height: 95%;" action="{{ route('SaveCompanySettings') }}" method="POST" onsubmit="settings.saveRequisites(this)">
 
             @csrf
             <input type="hidden" name="company_id" value="{{ auth()->user()->company->id }}">

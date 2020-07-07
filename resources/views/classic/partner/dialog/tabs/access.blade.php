@@ -32,9 +32,14 @@
 
     <div class="form-group fl ip ul">
         <label>Номер телефона</label>
-        <input id="phone_login_input" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
+        <input id="phone_login_input" onchange="{{ $class }}.writingPhone(this)" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
         <div class="primary mt-15 p-15">
             Пароль для доступа будет оправлен по SMS
         </div>
+    </div>
+
+    <div class="form-group fl ip ul hide">
+        <label>SMS код с указанного номера</label>
+        <input maxlength="4" type="text" name="code" class="form-control" placeholder="SMS код" disabled>
     </div>
 </div>
