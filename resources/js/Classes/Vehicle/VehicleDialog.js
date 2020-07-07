@@ -62,6 +62,8 @@ class vehicleDialog extends Modal {
         //     lazy: true,
         //     placeholderChar: '_'
         // });
+
+        this.current_dialog.querySelector('#vin_code').focus();
     }
 
     changeMark() {

@@ -1,11 +1,9 @@
 
-@if($request->category_id == null)
-    <div id="search_partner_categories" class="col-sm-3 no-pr">
-        @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
-    </div>
-@endif
+<div id="search_partner_categories" class="col-sm-3 no-pr">
+    @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
+</div>
 
-<div class="col-sm-9 ml-5">
+<div class="col-sm-9 no-pl">
     @if(count($partners))
         <div class="" data-simplebar style="max-height: 400px;">
             <div class="box-body">
