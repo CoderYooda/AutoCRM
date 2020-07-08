@@ -56,6 +56,7 @@ class Alerts{
         let html = '';
         let count = 0;
         if(object.stack_item_container) {
+
             object.stack_item_container.innerHTML = html;
             Object.keys(dialogs).map(function (objectKey, index) {
                 var elem = dialogs[objectKey];
@@ -68,6 +69,7 @@ class Alerts{
             });
 
             if (count > 0) {
+                html = '';
                 object.stack_item.classList.add('add');
                 setTimeout(function () {
                     object.stack_item.classList.remove('add');
@@ -75,18 +77,20 @@ class Alerts{
                 object.stack_item.classList.add('active');
             } else {
                 object.stack_item.classList.remove('active');
+                html = '<span class="sver">Свернутых окон нет</span>';
+                object.stack_item_container.innerHTML = html;
             }
 
 
             this.stack_badge_count.innerHTML = count;
         }
-        if(this.stack_dropdown){
-            if(count > 0){
-                this.stack_dropdown.classList.remove('hide');
-            } else {
-                this.stack_dropdown.classList.add('hide');
-            }
-        }
+        // if(this.stack_dropdown){
+        //     if(count > 0){
+        //         this.stack_dropdown.classList.remove('hide');
+        //     } else {
+        //         this.stack_dropdown.classList.add('hide');
+        //     }
+        // }
 
         //this.stack_item
     }

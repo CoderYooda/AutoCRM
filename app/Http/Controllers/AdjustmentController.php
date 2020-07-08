@@ -132,6 +132,7 @@ class AdjustmentController extends Controller
         if($request->expectsJson()){
             return response()->json([
                 'message' => 'Удаление невозможно',
+                'type' => 'error',
             ], 200);
         } else {
             return redirect()->back();

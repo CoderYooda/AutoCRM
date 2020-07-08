@@ -110,16 +110,11 @@ function findPrevDialog(id){
 
     dance:
     for(let i = id - 1; i !== -1; i --) {
-
         for(let x = 0; x < array.length; x++) {
             let dialog = dialogs[array[x]];
-
             if (dialog.index === i) {
-
                 let element = document.getElementById(dialog.tag);
-
                 element.classList.add('selected');
-
                 break dance;
             }
         }
