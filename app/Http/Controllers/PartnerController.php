@@ -63,6 +63,9 @@ class PartnerController extends Controller
 
     public static function partnerDialog(Request $request)
     {
+        #Фикс транспорта для нового пользователя
+        Vehicle::where('creator_id', Auth::id())->update(['creator_id' => null]);
+
         $tag = 'partnerDialog';
 
         $partner = null;
@@ -157,7 +160,7 @@ class PartnerController extends Controller
 
         if($request['access']){
             SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), Auth::user());
-            $user = $partner->user()->first();
+            $user = $partner->user;
             if($user != null){
                 $user->banned_at = null;
                 $user->save();

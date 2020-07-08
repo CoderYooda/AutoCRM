@@ -69,19 +69,20 @@ class adjustmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            let root_id = object.root_dialog.id;
-            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-            object.root_dialog.setAttribute('id', 'adjustmentDialog' + resp.data.id);
-            object.root_dialog.setAttribute('data-id', resp.data.id);
-            object.freshContent(resp.data.id, function(){
-                delete window[root_id];
-                let drag_dialog = window.dialogs[root_id];
-                delete window.dialogs[root_id];
-                window.dialogs['adjustmentDialog' + resp.data.id] = drag_dialog;
-                drag_dialog.tag = 'adjustmentDialog' + resp.data.id;
-                window.helper.initDialogMethods();
-            });
-
+            if(resp.status === 200) {
+                let root_id = object.root_dialog.id;
+                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+                object.root_dialog.setAttribute('id', 'adjustmentDialog' + resp.data.id);
+                object.root_dialog.setAttribute('data-id', resp.data.id);
+                object.freshContent(resp.data.id, function () {
+                    delete window[root_id];
+                    let drag_dialog = window.dialogs[root_id];
+                    delete window.dialogs[root_id];
+                    window.dialogs['adjustmentDialog' + resp.data.id] = drag_dialog;
+                    drag_dialog.tag = 'adjustmentDialog' + resp.data.id;
+                    window.helper.initDialogMethods();
+                });
+            }
 
 
             // let dialog = document.getElementById('clientorderDialog' + resp.data.id);
@@ -95,7 +96,7 @@ class adjustmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            object.finitaLaComedia(true);
+            if(resp.status === 200) object.finitaLaComedia(true);
         });
     }
 

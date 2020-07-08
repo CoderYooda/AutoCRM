@@ -15,13 +15,13 @@ class VehicleController extends Controller
 {
     public function store(VehicleRequest $request)
     {
-//        dd($request->all());
-
         $attributes = $request->except('id', '_token', 'refer', 'target');
+
+        $attributes['creator_id'] = Auth::id();
 
         Vehicle::updateOrCreate(['id' => $request->id], $attributes);
 
-        $vehicles = Vehicle::where('partner_id', $request->partner_id)->get();
+        $vehicles = Vehicle::where('partner_id', $request->partner_id)->where('partner_id', '!=', null)->orWhere('creator_id', Auth::id())->get();
 
         $class = $request->refer;
 

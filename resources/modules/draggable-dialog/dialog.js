@@ -1,5 +1,6 @@
 var containerId = 'dialogs';
 window.dialogs = [];
+window.dialogs_index = 0;
 
 document.addEventListener('mouseup', function(e){
 	e = e || window.event;
@@ -77,6 +78,9 @@ window.openDialog = function(tag, params = null, reload = false) {
 window.closeDialog = function(event, id = null){
 	if(id){
 		var dial = document.getElementById(id);
+
+		if(dialogs[id]) findPrevDialog(dialogs[id].index);
+
 		delete dialogs[id];
 		if(dial){
 			dial.remove();
@@ -87,6 +91,9 @@ window.closeDialog = function(event, id = null){
 			var elem = dialogs[key];
 			var dial = document.getElementById(elem.tag);
 			if(dial.contains(event.target)){
+
+                if(dialogs[key]) findPrevDialog(dialogs[key].index);
+
 				delete dialogs[key];
 				if(dial){
 					dial.remove();
@@ -95,12 +102,39 @@ window.closeDialog = function(event, id = null){
 			}
 		});
 	}
+}
 
+function findPrevDialog(id){
+
+    console.log('get', id);
+
+    let array = Object.keys(dialogs);
+
+    dance:
+    for(let i = id - 1; i !== -1; i --) {
+
+        for(let x = 0; x < array.length; x++) {
+            let dialog = dialogs[array[x]];
+
+            if (dialog.index === i) {
+
+                let element = document.getElementById(dialog.tag);
+
+                console.log(element);
+
+                element.classList.add('selected');
+
+                break dance;
+            }
+        }
+    }
 }
 
 function appendDialog(resp, tag){
+
 	window.dialogs[tag] = [];
 	window.dialogs[tag].tag = tag;
+	window.dialogs[tag].index = window.dialogs_index;
 	var node = helper.createElementFromHTML(resp.html);
 	document.getElementById(containerId).appendChild(node);
 	var position = dialogPosition(tag);
@@ -121,6 +155,7 @@ function appendDialog(resp, tag){
 
 	dialog.classList.add('selected');
 	downEventListners();
+    window.dialogs_index++;
 }
 
 function downEventListners(){
