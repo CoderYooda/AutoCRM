@@ -183,20 +183,22 @@ class shipmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            let root_id = object.root_dialog.id;
-            object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-            object.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
-            object.root_dialog.setAttribute('data-id', resp.data.id);
-            object.freshContent(resp.data.id, function(){
-                delete window[root_id];
-                let drag_dialog = window.dialogs[root_id];
-                delete window.dialogs[root_id];
-                window.dialogs['shipmentDialog' + resp.data.id] = drag_dialog;
-                drag_dialog.tag = 'shipmentDialog' + resp.data.id;
-                window.helper.initDialogMethods();
-                // object.finitaLaComedia(true);
-                object.getPayment();
-            });
+            if(resp.status === 200) {
+                let root_id = object.root_dialog.id;
+                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+                object.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
+                object.root_dialog.setAttribute('data-id', resp.data.id);
+                object.freshContent(resp.data.id, function () {
+                    delete window[root_id];
+                    let drag_dialog = window.dialogs[root_id];
+                    delete window.dialogs[root_id];
+                    window.dialogs['shipmentDialog' + resp.data.id] = drag_dialog;
+                    drag_dialog.tag = 'shipmentDialog' + resp.data.id;
+                    window.helper.initDialogMethods();
+                    // object.finitaLaComedia(true);
+                    object.getPayment();
+                });
+            }
         });
     }
 
@@ -204,8 +206,7 @@ class shipmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-
-            object.finitaLaComedia(true);
+            if(resp.status === 200) object.finitaLaComedia(true);
         });
     }
 
