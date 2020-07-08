@@ -17,6 +17,11 @@
             </li>
         @endcan
         @can('Смотреть поступления')
+            <li id="provider_refunds-tab" data-tab="provider_refunds" class="@if($request['active_tab'] == 'provider_refunds') active @endif">
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_refunds', 'target' => 'ajax-tab-content']) }}">Возвраты поставщикам</a>
+            </li>
+        @endcan
+        @can('Смотреть поступления')
             <li id="income-tab" data-tab="entrance" class="@if($request['active_tab'] == 'entrance') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}">Поступления</a>
             </li>
@@ -28,7 +33,7 @@
         @endcan
         @can('Смотреть возвраты')
             <li id="refund-tab" data-tab="refund" class="@if($request['active_tab'] == 'refund') active @endif">
-                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'refund', 'target' => 'ajax-tab-content']) }}">Возвраты</a>
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'refund', 'target' => 'ajax-tab-content']) }}">Возвраты по продажам</a>
             </li>
         @endcan
         @can('Смотреть заказ клиента')
