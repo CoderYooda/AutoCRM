@@ -169,14 +169,17 @@ class PartnerController extends Controller
                 $user = User::updateOrCreate(['phone' => $request['phone']], [
                     'name' => $partner->outputName(),
                     'company_id' => Auth::user()->company()->first()->id,
-                    'password' => bcrypt($password),
+                    'password' => bcrypt($password)
                 ]);
 
-                if($request['role_id']) {
-                    $user->syncRoles([ $request['role_id'] ]);
+                if($request['role']) {
+
+                    $role = Role::where('name', $request['role'])->first();
+
+                    $user->syncRoles([ $role->id ]);
                 }
 
-                if(!$user->wasRecentlyCreated) {
+                if(!$user->wasRecentlyCreated && $user->partner) {
                     $user->partner->update([
                         'user_id' => null,
                         'banned_at' => null
@@ -187,10 +190,7 @@ class PartnerController extends Controller
                 $partner->store_id = $request['store_id'];
                 $partner->save();
 
-                $role = Role::owned()->whereId(SettingsController::getSettingByKey('role_id')->value)->first();
-                $user->syncRoles([$role->id]);
-
-                if($user){
+                if($user) {
                     SmsController::sendSMS($user->phone, 'Вам предоставлен доступ к ' . env('APP_NAME') .'! Логин: ' . $user->phone . ' Пароль: ' . $password);
                 }
             }

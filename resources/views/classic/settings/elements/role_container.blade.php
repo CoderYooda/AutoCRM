@@ -14,7 +14,7 @@
                                 <div class="dropdown_container">
                                     <div class="arrow"></div>
                                     @foreach($roles as $role)
-                                        <span onclick="window.settings.setRoleToUser({{ $user->id }},{{ $role->id }})" class="element">{{ $role->name }}</span>
+                                        <span onclick="window.settings.setRoleToUser(this, {{ $user->id }},{{ $role->id }})" class="element">{{ $role->name }}</span>
                                     @endforeach
                                 </div>
                             </div>

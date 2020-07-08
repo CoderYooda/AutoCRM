@@ -76,9 +76,8 @@ class partnerDialog extends Modal{
         );
     }
 
-    setRole(element, role_id) {
+    setRole(element, role) {
         this.current_dialog.querySelector('[name="role"]').value = element.innerText;
-        this.current_dialog.querySelector('[name="role_id"]').value = role_id;
     }
 
     save(elem){
@@ -267,6 +266,9 @@ class partnerDialog extends Modal{
             let input = element.querySelector('input');
             if(input) input.disabled = element.classList.contains('d-none') || element.closest('.form-group').classList.contains('hide');
         });
+
+        let input = this.current_dialog.querySelector('.active .form-group input[type="text"]:not([disabled])');
+        if(input) input.focus();
     }
 
     writingInn(element) {

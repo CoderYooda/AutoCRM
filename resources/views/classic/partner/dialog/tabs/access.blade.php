@@ -32,12 +32,11 @@
 
     @can('Редактировать настройки')
 
-        <div class="form-group fl ip ul @if($partner && $partner->category->name != 'Сотрудники') hide @endif">
+        <div class="form-group fl ip ul @if(!$partner || $partner && $partner->category->name != 'Сотрудники') hide @endif">
             <label>Роль</label>
 
             <div class="dropdown role_select_cont" onclick="window.helper.openModal(this, event)">
-                <input readonly id="role" name="role" type="text" value="Не выбрано" class="form-control role_selector pointer" >
-                <input name="role_id" type="hidden" value="{{ $partner->user->roles[0]->id ?? '' }}" />
+                <input id="role" name="role" type="text" value="{{ $partner->user->roles[0]->id ?? 'Не выбрано' }}" class="form-control role_selector pointer" >
                 <div class="dropdown_container">
                     <div class="arrow"></div>
                     @foreach($roles as $role)
@@ -51,7 +50,7 @@
 
     <div class="form-group fl ip ul">
         <label>Номер телефона</label>
-        <input id="phone_login_input" onkeyup="{{ $class }}.writingPhone(this)" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
+        <input id="phone_login_input" onchange="{{ $class }}.writingPhone(this)" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
         <div class="primary mt-15 p-15">
             Пароль для доступа будет оправлен по SMS
         </div>

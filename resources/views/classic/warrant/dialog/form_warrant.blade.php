@@ -26,6 +26,9 @@
     <form action="{{ route('StoreWarrant') }}" method="POST">
         @csrf
 
+        <input type="hidden" name="entity_id" value="{{ $request->entity_id ?? null }}" />
+        <input type="hidden" name="ostatok" value="{{ $request->ostatok ?? null }}" />
+
         @if(isset($request) && $request['refer'] != NULL)
             <input type="hidden" name="refer" value="{{ $request['refer'] }}">
         @endif
@@ -165,7 +168,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" >Сумма</label>
                 <div class="col-sm-9">
-                    <input id="warrant_dialog_focused" type="number" name="summ"
+                    <input id="warrant_dialog_focused" onkeyup="{{ $class }}.writingSumm(this)" type="number" name="summ"
                            @if(isset($warrant)) value="{{ $warrant->summ }}" @elseif (isset($data->summ)) value="{{ $data->summ }}" @else value="0" @endif
                            class="form-control" placeholder="Сумма">
                 </div>
