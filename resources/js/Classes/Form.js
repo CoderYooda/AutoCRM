@@ -119,6 +119,7 @@ class AxForm{
                     }
 
                     if(el !== null && el.getAttribute('type') != 'hidden'){
+
                         el.classList.add('is-invalid');
                         tippy(el, {
                             content: messages[error_stack][0],

@@ -12,6 +12,11 @@ class ProviderOrder extends Model
 {
     use OwnedTrait, SoftDeletes, HasManagerAndPartnerTrait, PayableTrait;
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     public $fields = [
         'partner_id',
         'manager_id',

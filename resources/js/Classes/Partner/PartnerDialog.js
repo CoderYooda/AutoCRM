@@ -263,9 +263,10 @@ class partnerDialog extends Modal{
             if(element.classList.contains(type)) {
                 element.classList.remove('d-none');
             }
-        });
 
-        this.current_dialog.querySelector('input[type="text"]').focus();
+            let input = element.querySelector('input');
+            if(input) input.disabled = element.classList.contains('d-none') || element.closest('.form-group').classList.contains('hide');
+        });
     }
 
     writingInn(element) {
@@ -349,6 +350,8 @@ class partnerDialog extends Modal{
 
     writingPhone(element) {
 
+        if(this.phoneLoginMask.unmaskedValue.length !== 11) return;
+
         axios({
             url: '/partner/check-phone',
             method: 'POST',
@@ -408,9 +411,15 @@ class partnerDialog extends Modal{
         });
     }
 
-    toggleAccess(elem){
+    toggleAccess(elem) {
         let account_data = this.current_dialog.querySelector('.account_data');
         account_data.classList.toggle('hide');
+
+        let inputs = account_data.querySelectorAll('input');
+
+        inputs.forEach(element => {
+            element.disabled = account_data.classList.contains('hide');
+        });
     }
 
     canAddMorePhone(div){

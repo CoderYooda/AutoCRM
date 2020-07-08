@@ -3,7 +3,7 @@
         <input class="entrance" type="hidden" name="passport_id" value="{{$partner->passport->id}}">
     @endif
 
-    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none-f @endif">
+    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none @endif">
         <label>Серия и номер</label>
         <div class="input-group mb-2">
             <input type="text" name="number"
@@ -13,7 +13,7 @@
                    class="form-control pass_num_input entrance" placeholder="Серия и номер" @if(isset($partner) && $partner['type'] != 0) disabled @endif>
         </div>
     </div>
-    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none-f @endif">
+    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none @endif">
         <label>Кем выдан</label>
         <div class="input-group mb-2">
             <input type="text" name="issued_by"
@@ -23,7 +23,7 @@
                    class="form-control entrance" placeholder="Кем выдан" @if(isset($partner) && $partner['type'] != 0) disabled @endif>
         </div>
     </div>
-    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none-f @endif">
+    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none @endif">
         <label>Дата выдачи</label>
         <div class="input-group mb-2">
             <input type="text" name="issued_date"
@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none-f @endif">
+    <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none @endif">
         <label>Место выдачи</label>
         <div class="input-group mb-2">
             <input type="text" name="issued_place"

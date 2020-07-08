@@ -1,7 +1,7 @@
 <div class="tab-pane p-3" id="{{$class}}_tab_barcode">
     <div class="form-group">
         <label>Штрих код (EAN 13)</label>
-        <input type="text" name="barcode" class="form-control" value="@if(isset($product)){{ $product->barcode }}@endif" placeholder="Штрих код">
+        <input type="text" name="barcode" class="form-control" value="{{ $product->barcode ?? '' }}" placeholder="Штрих код">
     </div>
     @if(isset($product) && $product->barcode != null)
         <div class="form-group">
@@ -10,7 +10,7 @@
     @endif
     <div class="form-group">
         <label>Штрих код склада (EAN 13)</label>
-        <input type="text" name="barcode_local" class="form-control" value="@if(isset($product)){{ $product->barcode_local }}@endif" placeholder="Штрих код склада">
+        <input type="text" id="barcode_local" name="barcode_local" class="form-control" value="{{ $product->barcode_local ?? '' }}" placeholder="Штрих код склада">
     </div>
     @if(isset($product) && $product->barcode_local != null)
         <div class="form-group">
@@ -19,7 +19,7 @@
     @endif
     <div class="form-group">
         <label>Внутренний номер склада (EAN 13)</label>
-        <input type="text" name="storeCode" class="form-control" value="@if(isset($product)){{ $product->storeCode }}@endif" placeholder="Внутренний номер склада">
+        <input type="text" name="storeCode" class="form-control" value="{{ $product->storeCode ?? '' }}" placeholder="Внутренний номер склада">
     </div>
     @if(isset($product) && $product->storeCode != null)
         <div class="form-group">

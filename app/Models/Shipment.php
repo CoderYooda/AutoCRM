@@ -14,6 +14,11 @@ class Shipment extends Model
 {
     use OwnedTrait, HasManagerAndPartnerTrait, PayableTrait;
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     public $fields = [
         'id',
         'partner_id',

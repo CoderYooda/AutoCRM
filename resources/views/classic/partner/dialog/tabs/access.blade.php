@@ -51,7 +51,7 @@
 
     <div class="form-group fl ip ul">
         <label>Номер телефона</label>
-        <input id="phone_login_input" onchange="{{ $class }}.writingPhone(this)" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
+        <input id="phone_login_input" onkeyup="{{ $class }}.writingPhone(this)" type="text" name="phone" class="form-control" value="{{ $partner->user->phone ?? '' }}" placeholder="Телефон">
         <div class="primary mt-15 p-15">
             Пароль для доступа будет оправлен по SMS
         </div>

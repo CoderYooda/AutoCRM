@@ -68,30 +68,36 @@
                 <div class="col-sm-5 no-pr d-flex">
                     <ul class="nav" id="product_tabs">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#{{$class}}_tab_base" data-toggle="tab" data-target="#{{$class}}_tab_base">
+                            <a class="nav-link" href="#{{$class}}_tab_base" aria-controls="{{$class}}_tab_base" data-toggle="tab" data-target="#{{$class}}_tab_base">
                                 Основные
                                 <span class="float-right helper_danger d-none-f">
-                            <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
-                        </span>
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#{{$class}}_tab_store" data-toggle="tab" data-target="#{{$class}}_tab_store">
+                            <a class="nav-link" href="#{{$class}}_tab_store" aria-controls="{{$class}}_tab_store" data-toggle="tab" data-target="#{{$class}}_tab_store">
                                 Склад
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#{{$class}}_tab_barcode" data-toggle="tab" data-target="#{{$class}}_tab_barcode">
+                            <a class="nav-link" href="#{{$class}}_tab_barcode" aria-controls="{{$class}}_tab_barcode" data-toggle="tab" data-target="#{{$class}}_tab_barcode">
                                 Штрихкоды
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="col-sm-7 no-pl">
                     <div class="tab-content mb-3 pl-8">
-                        @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.tabs.base')
-                        @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.tabs.store')
-                        @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.tabs.barcode')
+                        @include(get_template() . '.product.dialog.tabs.base')
+                        @include(get_template() . '.product.dialog.tabs.store')
+                        @include(get_template() . '.product.dialog.tabs.barcode')
                     </div>
                 </div>
             </div>

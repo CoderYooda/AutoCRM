@@ -148,7 +148,7 @@ class cashPage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"ID", field:"id", width:80},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Тип", field:"type", minWidth:150, align:"left"},
                 {title:"Контакт", field:"partner", minWidth:150, align:"left"},
                 {title:"Статья", field:"dds", width:130, align:"left"},
@@ -177,7 +177,7 @@ class cashPage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:50},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Откуда", field:"cin", width:160, align:"left"},
                 {title:"Куда", field:"cout", width:160, align:"left"},
                 {title:"Ответственный", field:"manager", align:"left"},
