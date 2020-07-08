@@ -70,20 +70,12 @@ class adjustmentDialog extends Modal{
         let object = this;
         elem.setAttribute('disabled', true);
         window.axform.send(elem, function(resp){
-<<<<<<< HEAD
-            if(resp.status == 200){
-=======
             if(resp.status === 200) {
->>>>>>> 3cf89499cbf2f4d8143913d0d050bbac9f9ad065
                 let root_id = object.root_dialog.id;
                 object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 object.root_dialog.setAttribute('id', 'adjustmentDialog' + resp.data.id);
                 object.root_dialog.setAttribute('data-id', resp.data.id);
-<<<<<<< HEAD
-                object.freshContent(resp.data.id, function(){
-=======
-                object.freshContent(resp.data.id, function () {
->>>>>>> 3cf89499cbf2f4d8143913d0d050bbac9f9ad065
+                object.freshContent(resp.data.id, function (){
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];
@@ -91,17 +83,8 @@ class adjustmentDialog extends Modal{
                     drag_dialog.tag = 'adjustmentDialog' + resp.data.id;
                     window.helper.initDialogMethods();
                 });
-            }
-<<<<<<< HEAD
+            }s
             elem.setAttribute('disabled', false);
-=======
-
-
-            // let dialog = document.getElementById('clientorderDialog' + resp.data.id);
-            // console.log(dialog);
-            // window['clientorderDialog' + resp.data.id] = new clientorderDialog(dialog);
-
->>>>>>> 3cf89499cbf2f4d8143913d0d050bbac9f9ad065
         });
     }
 
@@ -109,11 +92,7 @@ class adjustmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-<<<<<<< HEAD
-            if(resp.status == 200) object.finitaLaComedia(true);
-=======
             if(resp.status === 200) object.finitaLaComedia(true);
->>>>>>> 3cf89499cbf2f4d8143913d0d050bbac9f9ad065
         });
     }
 

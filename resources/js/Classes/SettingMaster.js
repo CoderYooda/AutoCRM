@@ -248,12 +248,8 @@ class SettingMaster
         Object.keys(inputs).forEach(name => {
 
             let element = document.getElementsByName(name)[0];
-<<<<<<< HEAD
-            if(element){
-=======
 
-            if(element) {
->>>>>>> origin/refactor
+            if(element){
                 window.IMask(element, {
                     mask: inputs[name],
                     lazy: true
