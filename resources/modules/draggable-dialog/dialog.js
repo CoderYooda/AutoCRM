@@ -106,24 +106,15 @@ window.closeDialog = function(event, id = null){
 
 function findPrevDialog(id){
 
-    console.log('get', id);
-
     let array = Object.keys(dialogs);
 
     dance:
     for(let i = id - 1; i !== -1; i --) {
-
         for(let x = 0; x < array.length; x++) {
             let dialog = dialogs[array[x]];
-
             if (dialog.index === i) {
-
                 let element = document.getElementById(dialog.tag);
-
-                console.log(element);
-
                 element.classList.add('selected');
-
                 break dance;
             }
         }

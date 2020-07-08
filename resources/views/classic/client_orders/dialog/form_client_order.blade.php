@@ -17,16 +17,6 @@
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="modal-header dark" style="-webkit-justify-content: flex-start;justify-content: normal;">
-        {{--<div class="b-r pr-3 mr-3">--}}
-            {{--<span class="item-title _500">Поступление</span>--}}
-            {{--<div class="item-except text-sm h-1x font-weight-bolder">--}}
-                {{--@if(isset($client_order) && $client_order->id != NULL)--}}
-                    {{--№{{ $client_order->id }}--}}
-                {{--@else--}}
-                    {{--Новое--}}
-                {{--@endif--}}
-            {{--</div>--}}
-        {{--</div>--}}
         <div class="modal-alt-header">
             <span class="item-title _500">Магазин</span>
             <div class="item-except font-weight-bolder h-1x">
@@ -225,29 +215,27 @@
                         </div>
                     </div>
 
+                    @if(isset($client_order))
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Статус заказа</label>
                         <div class="col-sm-9 input-group">
                             <select name="status" class="form-control" @if(!isset($client_order)) disabled="" @endif>
-                                @if(isset($client_order))
-                                    <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
-                                    <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
-                                    <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
-                                    {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
-                                    <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
-                                @else
-                                    <option selected value="">Не определено</option>
-                                @endif
+                                <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
+                                <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
+                                <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
+                                {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
+                                <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
                             </select>
                         </div>
                     </div>
+                    @endif
                     <div class="form-group row row-sm">
                         <div class="col-sm-12">
                             <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 form-group no-pl intabs">
+                <div class="col-sm-6 form-group no-pl intabs @if(!isset($client_order)) hide @endif">
                     <div class="b-b nav-active-bg">
                         <ul class="nav nav-tabs" id="cl_tabs">
                             <li class="nav-item active">

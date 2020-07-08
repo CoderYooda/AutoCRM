@@ -74,7 +74,7 @@
                 <input type="hidden" name="id" value="">
             @endif
 
-            <input class="shipment_select" type="hidden" name="shipment_id" value=" @if(isset($refund)){{ $refund->shipment()->first()->id }}@endif">
+            <input class="shipment_select" type="hidden" name="shipment_id" value=" @if(isset($refund)){{ $refund->shipment()->first()->id }} @elseif(isset($shipment)) {{ $shipment->id }} @endif">
             <input class="partner_id" type="hidden" name="partner_id" value=" @if(isset($refund)){{ $refund->shipment->partner->id }}@endif">
 
             @if(isset($refund))
@@ -91,6 +91,8 @@
                             <button onclick="{{ $class }}.openSelectShipmentModal()" type="button" name="shipment_id" class="shipment_select form-control text-left button_select">
                                 @if(isset($refund) && $refund->shipment()->first() != null)
                                     {{ $refund->shipment()->first()->outputName() }}
+                                @elseif(isset($shipment))
+                                    Продажа №{{ $shipment->id }}
                                 @else
                                     Не выбрано
                                 @endif
@@ -142,6 +144,10 @@
                         <tbody class="product_list">
                         @if(isset($refund))
                             @foreach($refund->articles as $product)
+                                @include(env('DEFAULT_THEME', 'classic') . '.refund.dialog.product_element')
+                            @endforeach
+                        @elseif(isset($shipment))
+                            @foreach($shipment->articles as $product)
                                 @include(env('DEFAULT_THEME', 'classic') . '.refund.dialog.product_element')
                             @endforeach
                         @endif

@@ -2,7 +2,7 @@ class Scanner{
     constructor(){
         this.init();
         this.UPC = '';
-        console.log('Сканер активен');
+        console.log('Сканер подключен');
     }
 
     init(){

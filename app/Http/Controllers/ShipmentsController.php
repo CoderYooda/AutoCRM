@@ -98,7 +98,7 @@ class ShipmentsController extends Controller
            $query->whereNotIn('id', $refund_ids);
         }
 
-        $shipments = $query->get();
+        $shipments = $query->get();;
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 
