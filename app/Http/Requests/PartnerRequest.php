@@ -37,13 +37,16 @@ class PartnerRequest extends FormRequest
 
     public function rules()
     {
+        $partner = Partner::find($this->id);
+
         $rules = [];
 
         $rules['phones'] = ['array'];
         $rules['phones.*.number'] = ['nullable', 'regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];
 
         #Проверка для доступа в систему
-        if($this->access == 1) {
+        if($this->access == 1 && !isset($partner->user)) {
+
             $rules['phone'] = ['regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];
             if($this->category_id == 5) $rules['role'] = ['exists:roles,name'];
             $rules['store_id'] = ['integer', 'exists:stores,id'];
