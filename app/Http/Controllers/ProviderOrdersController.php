@@ -359,7 +359,6 @@ class ProviderOrdersController extends Controller
 
     public static function getPoviderOrders($request)
     {
-
         $size = 30;
         if(isset($request['size'])){
             $size = (int)$request['size'];
@@ -395,15 +394,6 @@ class ProviderOrdersController extends Controller
         '))
             ->leftJoin('partners as partner',  'partner.id', '=', 'provider_orders.partner_id')
             ->leftJoin('partners as manager',  'manager.id', '=', 'provider_orders.manager_id')
-
-
-
-//            ->leftJoin('provider_order_warrant', 'provider_order_warrant.providerorder_id', '=', 'provider_orders.id')
-//            ->leftJoin('warrants',  'provider_order_warrant.warrant_id', '=', 'warrants.id')
-//            ->leftJoin('article_provider_orders',  'article_provider_orders.provider_order_id', '=', 'provider_orders.id')
-//            ->leftJoin('entrances',  'provider_orders.id', '=', 'entrances.providerorder_id')
-//            ->leftJoin('article_entrance',  'article_entrance.entrance_id', '=', 'entrances.id')
-
             ->when($request['provider'] != null, function($query) use ($request) {
                 $query->whereIn('provider_orders.partner_id', $request['provider']);
             })
@@ -443,81 +433,10 @@ class ProviderOrdersController extends Controller
             ->where('provider_orders.company_id', Auth::user()->company()->first()->id)
             ->groupBy('provider_orders.id')
             ->orderBy($field, $dir)
-
             //->toSql();
-
-       //dd($provider_orders);
+            //dd($provider_orders);
             ->paginate($size);
-//        where('provider_orders.company_id', Auth::user()->company()->first()->id)
-//            ->where('provider_orders.deleted_at', null)
-//            ->join('partners','partners.id','=','provider_orders.partner_id')
-//            ->select(DB::raw('provider_orders.*,  provider_orders.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as name'))
-//
-//            ->orderBy($field, $dir)
-//            //->toSql();
-//            ->paginate($size);
 
-
-
-//
-//
-//from `provider_orders`
-//inner join `partners` on `partners`.`id` = `provider_orders`.`partner_id`
-//
-//left join provider_order_warrant as pow on pow.providerorder_id = provider_orders.id
-//left join warrants as w on pow.warrant_id = w.id
-//
-//left join article_provider_orders as apo on apo.provider_order_id = provider_orders.id
-//
-//left join entrances as e on provider_orders.id = e.providerorder_id
-//left join article_entrance as ae on ae.entrance_id = e.id
-//
-//where `provider_orders`.`company_id` = 2
-//    and `provider_orders`.`deleted_at` is null
-//GROUP BY provider_orders.id
-//order by `id` asc
-
-
-
-
-        //dd($provider_orders);
-
-//        select * from `provider_orders`
-//where `company_id` = 2 and `provider_orders`.`deleted_at` is null
-//order by `itogo` asc
-
-
-//        $provider_orders = providerorder::owned()
-//        ->where(function($q) use ($request){
-//            if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-//                $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
-//            }
-//            if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-//                $q->where('do_date', '<=', Carbon::parse($request['date_end']));
-//            }
-//        })
-//        ->where(function($q) use ($request){
-//            if(isset($request['search']) && $request['search'] !== 'null') {
-//                if (mb_strlen($request['search']) === 1) {
-//                    $q->whereHas('partner', function ($q) use ($request) {
-//                        $q->where('fio', 'LIKE', $request['search'] . '%' )
-//                            ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-//                    });
-//                } else {
-//                    $q->whereHas('partner', function ($q) use ($request) {
-//                        $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-//                            ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-//                            ->orWhereHas('phones', function ($query) use ($request) {
-//                                $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-//                            });
-//                    });
-//                }
-//            }
-//        })
-//        ->orderBy($field, $dir)
-//         //   ->toSql();
-//        ->paginate($size);
-        //dd($provider_orders);
         return $provider_orders;
     }
 }

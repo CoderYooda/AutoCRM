@@ -16,10 +16,6 @@
                         <div data-id="1" id="step_1" class="m_step p-15 pt-0 mb-15 active" data-simplebar style="max-height: calc(100vh - 350px);">
                             <div class="fl-ul-tab">
                                 <h3 class="mb-10 mt-0">Данные вашей компании</h3>
-                                {{--<div class="form-group">--}}
-                                    {{--<label>Название компании</label>--}}
-                                    {{--<input type="text" name="company_name" class="form-control" placeholder="Название компании (не более 255 символов)" autofocus>--}}
-                                {{--</div>--}}
                                 <div class="form-group">
                                     <label>Стандартная наценка (%)</label>
                                     <input name="markup" type="number" class="form-control" value="30">
