@@ -362,10 +362,6 @@ class PartnerController extends Controller
     {
         $partners = PartnerController::getPartners($request);
 
-        foreach($partners as $partner){
-            $partner->date = $partner->created_at->format('Y.m.d/H:i');
-        }
-
         return response()->json($partners);
     }
 

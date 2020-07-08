@@ -145,9 +145,7 @@ class ShipmentsController extends Controller
     public function tableData(Request $request)
     {
         $shipments = ShipmentsController::getShipments($request);
-        foreach($shipments as $shipment){
-            $shipment->date = $shipment->created_at->format('d.m.Y/H:i');
-        }
+
         return response()->json(['data' => $shipments]);
     }
 

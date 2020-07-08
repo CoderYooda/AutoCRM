@@ -14,6 +14,11 @@ class Refund extends Model
     use PayableTrait, OwnedTrait, HasManagerAndPartnerTrait;
     protected $table = 'refund';
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     public $fields = [
         'shipment_id',
         'partner_id',

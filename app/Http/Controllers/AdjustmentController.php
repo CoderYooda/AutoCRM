@@ -36,9 +36,6 @@ class AdjustmentController extends Controller
     public function tableData(Request $request)
     {
         $adjustments = AdjustmentController::getAdjustments($request);
-        foreach($adjustments as $adjustment){
-            $adjustment->date = $adjustment->created_at->format('Y.m.d/H:i');
-        }
         return response()->json(['data' => $adjustments]);
     }
 

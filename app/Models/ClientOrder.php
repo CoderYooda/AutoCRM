@@ -13,6 +13,11 @@ class ClientOrder extends Model
 {
     use OwnedTrait, PayableTrait, HasManagerAndPartnerTrait;
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     public $fields = [
         'partner_id',
         'company_id',

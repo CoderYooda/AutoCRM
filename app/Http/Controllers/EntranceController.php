@@ -39,9 +39,7 @@ class EntranceController extends Controller
     public function tableData(Request $request)
     {
         $entrances = EntranceController::getEntrances($request);
-        foreach($entrances as $entrance){
-            $entrance->date = $entrance->created_at->format('Y.m.d/H:i');
-        }
+
         return response()->json(['data' => $entrances]);
     }
 

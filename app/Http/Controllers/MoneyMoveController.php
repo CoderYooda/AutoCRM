@@ -122,9 +122,6 @@ class MoneyMoveController extends Controller
     public function tableData(Request $request)
     {
         $moneymoves = self::getMoneymoves($request);
-        foreach($moneymoves as $moneymove){
-            $moneymove->date = $moneymove->created_at->format('Y.m.d/H:i');
-        }
 
         return response()->json($moneymoves);
     }

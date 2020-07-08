@@ -9,6 +9,11 @@ class Adjustment extends Model
 {
     use OwnedTrait;
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     public $fields = [
         'partner_id',
         'company_id',

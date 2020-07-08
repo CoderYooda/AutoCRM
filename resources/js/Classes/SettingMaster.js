@@ -40,10 +40,8 @@ class SettingMaster
         let object = this;
         window.event.preventDefault();
         window.axform.send(elem, function(response){
-            object.steps_icon[1] = 'success';
-            object.steps_icon[2] = 'success';
-            object.steps_icon[3] = 'success';
-            if(response.status == 422){
+            for(let i = 1; i <= 3; i++) object.steps_icon[i] = 'success';
+            if(response.status === 422){
                 let invalids = object.root_dialog.querySelectorAll('.is-invalid');
                 [].forEach.call(invalids, function(elem){
                     //object.steps_icon.2 = 'error';
@@ -247,10 +245,12 @@ class SettingMaster
 
             let element = document.getElementsByName(name)[0];
 
-            window.IMask(element, {
-                mask: inputs[name],
-                lazy: true
-            });
+            if(element) {
+                window.IMask(element, {
+                    mask: inputs[name],
+                    lazy: true
+                });
+            }
         });
     }
 
