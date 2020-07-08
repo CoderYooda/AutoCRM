@@ -100,9 +100,7 @@ class WarrantController extends Controller
     public function tableData(Request $request)
     {
         $warrants = self::getWarrants($request);
-        foreach($warrants as $warrant){
-            $warrant->date = $warrant->created_at->format('Y.m.d/H:i');
-        }
+
         return response()->json($warrants);
     }
 

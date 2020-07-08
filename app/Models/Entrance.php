@@ -10,6 +10,11 @@ class Entrance extends Model
 {
     use OwnedTrait, HasManagerAndPartnerTrait;
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     public $fields = [
         'company_id',
         'providerorder_id',

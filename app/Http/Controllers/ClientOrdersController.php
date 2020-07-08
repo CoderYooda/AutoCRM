@@ -64,10 +64,6 @@ class ClientOrdersController extends Controller
     {
         $client_orders = ClientOrdersController::getClientOrders($request);
 
-        foreach ($client_orders as $client_order) {
-            $client_order->date = $client_order->created_at->format('Y.m.d/H:i');
-        }
-
         return response()->json(['data' => $client_orders]);
     }
 

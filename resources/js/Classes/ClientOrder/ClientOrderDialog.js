@@ -219,6 +219,9 @@ class clientorderDialog extends Modal{
         if(partner !== null){
             params += '&partner_id='+partner;
         }
+        if(partner !== null){
+            params += '&entity_id='+id;
+        }
         if(warrant_type != null){
             params += '&warrant_type='+warrant_type;
         }

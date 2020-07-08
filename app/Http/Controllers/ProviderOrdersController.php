@@ -39,9 +39,7 @@ class ProviderOrdersController extends Controller
     public function tableData(Request $request)
     {
         $providerorders = ProviderOrdersController::getPoviderOrders($request);
-        foreach($providerorders as $providerorder){
-            $providerorder->date = $providerorder->created_at->format('Y.m.d/H:i');
-        }
+
         return response()->json(['data' => $providerorders]);
     }
 

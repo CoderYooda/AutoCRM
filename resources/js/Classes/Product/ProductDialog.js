@@ -40,7 +40,7 @@ class ProductDialog extends Modal{
     save(elem){
         if(window.isXHRloading) return;
         window.axform.send(elem, (e) => {
-            this.finitaLaComedia(true);
+            if(e.status === 200) this.finitaLaComedia(true);
         });
     }
 

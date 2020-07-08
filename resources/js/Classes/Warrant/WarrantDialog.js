@@ -15,11 +15,17 @@ class warrantDialog extends Modal{
             object.finitaLaComedia(true);
         });
         let focused = document.getElementById('warrant_dialog_focused');
-        if(focused){
+        if(focused) {
             focused.focus();
             focused.select();
         }
         //tippy('[data-tippy-content]');
+
+        let entity_element = this.current_dialog.querySelector('[name="entity_id"]');
+        if(entity_element) this.entity_id = Number.parseInt(entity_element.value);
+
+        let ostatok_element = this.current_dialog.querySelector('[name="ostatok"]');
+        if(ostatok_element) this.ostatok = Number.parseInt(ostatok_element.value);
     }
 
     save(elem){
@@ -27,7 +33,7 @@ class warrantDialog extends Modal{
         let object = this;
         let form = this.root_dialog.getElementsByTagName('form')[0];
         window.axform.send(form, function(e){
-            object.finitaLaComedia(true);
+            if(e.status === 200) object.finitaLaComedia(true);
         });
     }
 
@@ -98,6 +104,18 @@ class warrantDialog extends Modal{
             window.isXHRloading = false;
         });
     };
+
+    writingSumm(element) {
+        let refer = this.current_dialog.querySelector('input[name="refer"]').value;
+
+        if(refer === 'ClientOrder') {
+            let summ = Number.parseInt(element.value);
+
+            let reason_element = this.current_dialog.querySelector('input[name="reason"]');
+
+            reason_element.value = (summ >= this.ostatok) ? ('Реализация заказа №' + this.entity_id) : ('Предоплата по заказу №' + this.entity_id);
+        }
+    }
 
     selectDdsarticle(id){
         var object = this;
