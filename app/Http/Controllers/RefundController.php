@@ -41,9 +41,6 @@ class RefundController extends Controller
     public function tableData(Request $request)
     {
         $refunds = RefundController::getRefunds($request);
-        foreach ($refunds as $refund) {
-            $refund->date = $refund->created_at->format('d.m.Y/H:i');
-        }
 
         return response()->json(['data' => $refunds]);
     }

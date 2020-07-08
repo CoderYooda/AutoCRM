@@ -10,6 +10,11 @@ class Warrant extends Model
 {
     use OwnedTrait, HasManagerAndPartnerTrait;
 
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
     protected $guarded = [];
 
     public $fields = [

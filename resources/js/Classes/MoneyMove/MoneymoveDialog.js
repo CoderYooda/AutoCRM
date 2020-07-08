@@ -22,7 +22,11 @@ class moneymoveDialog extends Modal{
         let object = this;
         let form = this.root_dialog.getElementsByTagName('form')[0];
         window.axform.send(form, function(e){
+<<<<<<< HEAD
             if(e.status == 200) object.finitaLaComedia(true);
+=======
+            if(e.status === 200) object.finitaLaComedia(true);
+>>>>>>> origin/refactor
         });
     }
 

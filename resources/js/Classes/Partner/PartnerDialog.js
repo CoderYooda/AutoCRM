@@ -76,9 +76,8 @@ class partnerDialog extends Modal{
         );
     }
 
-    setRole(element, role_id) {
+    setRole(element, role) {
         this.current_dialog.querySelector('[name="role"]').value = element.innerText;
-        this.current_dialog.querySelector('[name="role_id"]').value = role_id;
     }
 
     save(elem){
@@ -262,9 +261,13 @@ class partnerDialog extends Modal{
             if(element.classList.contains(type)) {
                 element.classList.remove('d-none');
             }
+
+            let input = element.querySelector('input');
+            if(input) input.disabled = element.classList.contains('d-none') || element.closest('.form-group').classList.contains('hide');
         });
 
-        this.current_dialog.querySelector('input[type="text"]').focus();
+        let input = this.current_dialog.querySelector('.active .form-group input[type="text"]:not([disabled])');
+        if(input) input.focus();
     }
 
     writingInn(element) {
@@ -348,6 +351,8 @@ class partnerDialog extends Modal{
 
     writingPhone(element) {
 
+        if(this.phoneLoginMask.unmaskedValue.length !== 11) return;
+
         axios({
             url: '/partner/check-phone',
             method: 'POST',
@@ -407,9 +412,15 @@ class partnerDialog extends Modal{
         });
     }
 
-    toggleAccess(elem){
+    toggleAccess(elem) {
         let account_data = this.current_dialog.querySelector('.account_data');
         account_data.classList.toggle('hide');
+
+        let inputs = account_data.querySelectorAll('input');
+
+        inputs.forEach(element => {
+            element.disabled = account_data.classList.contains('hide');
+        });
     }
 
     canAddMorePhone(div){

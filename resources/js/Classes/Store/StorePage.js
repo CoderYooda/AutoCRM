@@ -285,7 +285,7 @@ class storePage{
                 {title:"№", field:"id", width:50},
                 {title:"Оплата", field:"pays", width:80, formatter:iconFormatter},
                 {title:"Поступление", field:"incomes",align:"left", width:130, formatter:iconFormatter},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Поставщик", field:"partner", align:"left"},
                 {title:"Ответственный", field:"manager", align:"left"},
                 {title:"Сумма", field:"itogo", width:130, align:"left", formatter:priceFormatter},
@@ -299,7 +299,7 @@ class storePage{
                     }},
                 {title:"№", field:"id", width:80},
                 {title:"Заявка", field:"ordid", width:100},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Поставщик", field:"partner", align:"left"},
                 {title:"Принимающий", field:"manager", align:"left"},
                 {title:"Комментарий", field:"comment", width:150, align:"left"},
@@ -321,7 +321,7 @@ class storePage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Покупатель", field:"partner", align:"left"},
                 {title:"Сумма", field:"price", width:130, align:"left", formatter:priceFormatter},
                 {title:"Скидка", field:"discount", width:90, align:"left"},
@@ -344,7 +344,7 @@ class storePage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Ответственный", field:"manager", align:"left"},
                 {title:"Покупатель", field:"partner", align:"left"},
                 {title:"Сумма", field:"price", width:130, align:"left", formatter:priceFormatter}
@@ -367,7 +367,7 @@ class storePage{
                     }},
                 {title:"№", field:"coid", width:80},
                 {title:"Статус", field:"status_formatted", width:150},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Покупатель", field:"partner", align:"left"},
                 {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
                 {title:"Скидка", field:"discount_formatted", width:90, align:"left"},
@@ -381,7 +381,7 @@ class storePage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
-                {title:"Дата", field:"date", width:150},
+                {title:"Дата", field:"created_at", width:150},
                 {title:"Ответственный", field:"partner"},
                 {title:"Магазин ", field:"store", align:"left"},
                 {title:"Комментарий", field:"comment", width:150, align:"left"},

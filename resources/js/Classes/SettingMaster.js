@@ -42,10 +42,8 @@ class SettingMaster
         let object = this;
         window.event.preventDefault();
         window.axform.send(elem, function(response){
-            object.steps_icon[1] = 'success';
-            object.steps_icon[2] = 'success';
-            object.steps_icon[3] = 'success';
-            if(response.status == 422){
+            for(let i = 1; i <= 3; i++) object.steps_icon[i] = 'success';
+            if(response.status === 422){
                 let invalids = object.root_dialog.querySelectorAll('.is-invalid');
                 [].forEach.call(invalids, function(elem){
                     //object.steps_icon.2 = 'error';
@@ -250,7 +248,12 @@ class SettingMaster
         Object.keys(inputs).forEach(name => {
 
             let element = document.getElementsByName(name)[0];
+<<<<<<< HEAD
             if(element){
+=======
+
+            if(element) {
+>>>>>>> origin/refactor
                 window.IMask(element, {
                     mask: inputs[name],
                     lazy: true

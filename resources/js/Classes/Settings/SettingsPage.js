@@ -190,13 +190,13 @@ class settingsPage{
         });
     }
 
-    setRoleToUser(user_id, role_id){
+    setRoleToUser(element, user_id, role_id){
         window.axios({
             method: 'post',
             url: '/roles/assign',
             data: {user_id:user_id, role_id:role_id}
         }).then(function (resp) {
-            dd(resp.data);
+            // console.log(resp);
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -214,7 +214,6 @@ class settingsPage{
             method: 'get',
             url: object.getUrlString(),
         }).then(function (resp) {
-            dd(resp.data.target);
             var results_container = document.getElementById(resp.data.target);
             results_container.innerHTML = resp.data.html;
             window.helper.insertParamUrl('active_tab', object.active_tab);
