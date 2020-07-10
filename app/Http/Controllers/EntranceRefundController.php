@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EntranceRefundStoreRequest;
+use App\Models\Article;
 use App\Models\Entrance;
 use App\Models\EntranceRefund;
 use Carbon\Carbon;
@@ -11,14 +13,47 @@ use Illuminate\Support\Facades\DB;
 
 class EntranceRefundController extends Controller
 {
+    public function store(EntranceRefundStoreRequest $request)
+    {
+        #Создание заявки на возврат
+        $entrance_refund = EntranceRefund::create([
+            'partner_id' => $request->partner_id,
+            'manager_id' => Auth::user()->partner->id,
+            'store_id' => $request->store_id,
+            'entrance_id' => $request->entrance_id,
+            'company_id' => Auth::user()->company_id,
+            'comment' => $request->comment
+        ]);
+
+        #Создаем новые пивоты
+        foreach ($request->products as $product) {
+
+            $entrance_refund->articles()->attach($product['id'], [
+                'entrance_refund_id' => $entrance_refund->id,
+                'store_id' => $request->store_id,
+                'count' => $product['count'],
+                'price' => $product['price'],
+                'total' => $product['total_price']
+            ]);
+        }
+
+        return response()->json([
+            'id' => $entrance_refund->id,
+            'type' => 'success',
+            'message' => 'Возврат по поступлению успешно создан.'
+        ]);
+    }
+
     public static function entranceRefundDialog(Request $request)
     {
         $entrance_refund = EntranceRefund::with('partner', 'manager', 'entrance', 'articles')->find($request['entrance_refund_id']);
         $class = 'entranceRefundDialog' . ($entrance_refund->id ?? '');
 
+        $products = $entrance_refund->articles ?? [];
+
         return response()->json([
             'tag' => $class,
-            'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'request', 'class'))->render()
+            'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'request', 'class', 'products'))->render()
         ]);
     }
 
@@ -68,5 +103,17 @@ class EntranceRefundController extends Controller
 
         return $entrance_refunds;
 
+    }
+
+    public function fresh(EntranceRefund $entrance_refund, Request $request)
+    {
+        $class = 'entranceRefundDialog' . ($entrance_refund->id ?? '');
+        $content = view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact( 'entrance_refund', 'class', 'request'))
+            ->render();
+
+        return response()->json([
+            'html' => $content,
+            'target' => $class,
+        ], 200);
     }
 }

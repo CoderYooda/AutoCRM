@@ -1,6 +1,6 @@
 <div id="entranceRefundDialog{{ $entrance_refund->id ?? '' }}" @if($entrance_refund) data-id="{{ $entrance_refund->id }}" @endif class="dialog" style="width:880px">
 
-    <div class="titlebar">{{ $entrance_refund ? ('Возврат поставщика №' . $entrance_refund->id) : 'Новый возврат поставщика' }}</div>
+    <div class="titlebar">{{ $entrance_refund ? ('Возврат поступления №' . $entrance_refund->id) : 'Новый возврат поступления' }}</div>
 
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
@@ -20,7 +20,7 @@
             <span class="item-title _500">Дата оформления</span>
             <div class="item-except font-weight-bolder h-1x">
                     <span>
-                        {{ $entrance_refund->normalizedData() }}
+                        {{ $entrance_refund->created_at }}
                     </span>
             </div>
             <div class="item-tag tag hide">
@@ -34,12 +34,10 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-        @endif
 
-        @if($entrance_refund)
-            <div class="modal-alt-header">
-                <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
-            </div>
+        <div class="modal-alt-header">
+            <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
+        </div>
         @endif
 
     </div>
@@ -100,7 +98,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <div for="category_id" class="mb-15"><b>Список возвращаемых номенклатур</b>
+                <div for="category_id" class="mb-15"><b>Список доступных для возврата номенклатур</b>
                 </div>
                 <div data-simplebar style="max-height: 300px;">
                     <table class="table-modal" >
@@ -108,17 +106,16 @@
                         <tr>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
-                            <th width="10%" style="min-width: 60px;">Кол-во</th>
-                            <th width="10%" style="min-width: 100px;">Цена</th>
-                            <th width="10%" style="min-width: 100px;">Всего</th>
-                            <th width="5%" style="max-width:44px"></th>
+                            <th width="10%">Кол-во</th>
+                            <th width="20%">Возвращено / Поступило</th>
+                            <th width="10%">Цена</th>
+                            <th width="10%">Всего</th>
+                            <th width="5%"></th>
                         </tr>
                         </thead>
                         <tbody class="product_list">
-                        @isset($entrance_refund->articles)
-                            @foreach($entrance_refund->articles as $product)
-                                @include(get_template() . '.entrance_refund.dialog.product_element')
-                            @endforeach
+                        @isset($products)
+                            @include(get_template() . '.entrance_refunds.dialog.products_element')
                         @endisset
                         </tbody>
                     </table>

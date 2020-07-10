@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EntranceRequest;
+use App\Models\EntranceRefund;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -234,19 +235,39 @@ class EntranceController extends Controller
 
     public function select(Entrance $entrance, Request $request)
     {
-        $products = $entrance->articles;
+        $products = null;
 
-        if(!$entrance){
+        if(!$entrance) {
             return response()->json([
                 'message' => 'Поступление не найдено, возможно оно было удалёно',
             ], 422);
         }
 
+        $view = null;
+
+        if(strpos($request->refer, 'entranceRefundDialog') !== false) {
+
+            $products = $entrance->articles;
+            $entrance_refunded = $entrance->entrancerefunds->load('articles');
+
+            $refunded_count = [];
+
+            foreach ($entrance_refunded as $entrance_refund) {
+                foreach ($entrance_refund->articles as $product) {
+                    if(!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
+                    $refunded_count[$product->id] += $product->pivot->count;
+                }
+            }
+
+            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'refunded_count', 'products', 'request'))->render();
+        }
+
         return response()->json([
             'id' => $entrance->id,
-            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('entrance', 'products', 'request'))->render(),
+            'items_html' => $view,
             'items' => $products,
             'partner' => $entrance->partner->outputName(),
+            'partner_id' => $entrance->partner->id,
             'balance' => $entrance->partner->balance,
             'name' => $entrance->outputName()
         ]);

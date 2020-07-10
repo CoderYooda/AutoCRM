@@ -43,6 +43,11 @@ class Entrance extends Model
             ->withPivot('count', 'price');
     }
 
+    public function entrancerefunds()
+    {
+        return $this->hasMany(EntranceRefund::class, 'entrance_id');
+    }
+
     public function providerorder()
     {
         return $this->belongsTo(ProviderOrder::class, 'providerorder_id')->withTrashed();

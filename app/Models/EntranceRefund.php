@@ -19,7 +19,7 @@ class EntranceRefund extends Model
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class, 'article_entrance_refund', 'entrance_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_entrance_refund', 'entrance_refund_id')
             ->withPivot('count', 'price', 'total')->withTrashed();
     }
 

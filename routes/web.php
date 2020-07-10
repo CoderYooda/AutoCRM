@@ -79,8 +79,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance/{entrance}/select', 'EntranceController@select')->name('SelectEntrance');
 
     #Возвраты поступлений
-    Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceData');
+    Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
     Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');
+    Route::post('/entrance_refunds/{id}/fresh', 'EntranceRefundController@fresh')->name('FreshEntranceRefund');
 
     #Поставщики (внешние)
     Route::namespace('API')->prefix('api')->group(function () {

@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Rules\ValidProductCountForEntranceRefund;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+class EntranceRefundStoreRequest extends FormRequest
+{
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
+    {
+        return [
+            'partner_id' => ['required', 'exists:partners,id'],
+            'store_id' => ['required', 'exists:stores,id'],
+            'entrance_id' => ['required', 'exists:entrances,id'],
+            'products' => ['required', 'array'],
+            'products.*.id' => ['integer', 'exists:articles,id'],
+            'products.*.count' => ['integer', 'min:0'],
+            'products.*.price' => ['numeric', 'between:1,100000'],
+            'products.*.total_price' => ['numeric', 'between:1,1000000'],
+            'comment' => ['nullable', 'string', 'max:512']
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if($this->expectsJson()) {
+            throw new HttpResponseException(
+                response()->json(['messages' => $validator->errors()], 422)
+            );
+        }
+
+        parent::failedValidation($validator);
+    }
+}

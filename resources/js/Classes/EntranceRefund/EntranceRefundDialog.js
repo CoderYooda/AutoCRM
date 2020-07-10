@@ -26,8 +26,11 @@ class entranceRefundDialog extends Modal{
         window.axios({
             method: 'post',
             url: 'entrance/'+ id +'/select',
-            data: {refer:this.root_dialog.id}
-        }).then(function (resp) {
+            data: {
+                refer: this.root_dialog.id
+            }
+        }).then(resp => {
+
             object.touch();
             let select = object.root_dialog.querySelector('button[name=entrance_id]');
             let partner_butt = object.root_dialog.querySelector('#partner_butt');
@@ -35,9 +38,11 @@ class entranceRefundDialog extends Modal{
             //let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
             let balance = object.root_dialog.querySelector('#balance');
             let str = resp.data.name;
-            input.value = resp.data.id;
+            input.value = id;
             partner_butt.value = resp.data.partner;
             select.innerHTML = str;
+
+            object.current_dialog.querySelector('input[name="partner_id"]').value = resp.data.partner_id;
 
             window.notification.notify( 'success', 'Поступление выбрано');
             document.dispatchEvent(new Event('EntranceSelected', {bubbles: true}));
@@ -50,7 +55,7 @@ class entranceRefundDialog extends Modal{
                     id: elem.id,
                     count: elem.pivot.count,
                     price: elem.pivot.price,
-                    total: elem.pivot.total,
+                    total: elem.pivot.total
                 });
 
                 let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
@@ -65,10 +70,8 @@ class entranceRefundDialog extends Modal{
                     elem.addEventListener("delete", fn);
                 });
 
-
-
+                object.recalculate();
             });
-
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -77,8 +80,6 @@ class entranceRefundDialog extends Modal{
     }
 
     recalculate() {
-
-        console.log(123);
 
         var object = this;
         this.items.forEach(function(elem){
@@ -156,9 +157,34 @@ class entranceRefundDialog extends Modal{
         }
     }
 
+    freshContent(id, callback = null){
+        let object = this;
+
+        let data = {};
+        if(object.refer){
+            data.refer = object.refer;
+        }
+
+        window.axios({
+            method: 'post',
+            url: '/entrance_refunds/' + id + '/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            callback();
+        });
+    }
+
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
+
+        console.log(this.items);
+
         window.axform.send(elem, function(resp){
             if(resp.status === 200) {
                 let root_id = object.root_dialog.id;

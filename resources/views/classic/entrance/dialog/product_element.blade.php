@@ -1,4 +1,3 @@
-
 <tr
     data-id="{{ $product->id }}"
     data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->pivot->count)) {{$product->pivot->count}} @else 0 @endif"
