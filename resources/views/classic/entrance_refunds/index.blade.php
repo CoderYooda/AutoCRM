@@ -1,16 +1,16 @@
-@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.store.layout.tabs')
+@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? get_template() . '.layouts.TabXHR' : get_template() . '.store.layout.tabs')
 
 @section('tab')
-    <div id="ajax-table-provider-refund" class="bottom-container full-box-cont">
+    <div id="ajax-table-entrance_refund" class="bottom-container full-box-cont">
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
-                <div id="entrance-table" ></div>
+                <div id="entrance_refunds-table" ></div>
             </div>
         </div>
         <div class="content-rightside">
-            @can('Создавать возвраты')
-                <button onclick="openDialog('providerOrderRefundDialog')" class="button primary mb-15 w-100">Оформить возврат</button>
-            @endcan
+{{--            @can('Создавать возвраты')--}}
+                <button onclick="openDialog('entranceRefundDialog')" class="button primary mb-15 w-100">Оформить возврат</button>
+{{--            @endcan--}}
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
                 <div class="form-group d-flex mb-10">

@@ -58,6 +58,12 @@ class DialogController extends Controller
             case 'entranceDialog':
                 $dialog = EntranceController::entranceDialog($request); #
                 break;
+            case 'selectEntranceDialog':
+                $dialog = EntranceController::selectEntranceDialog($request); /////
+                break;
+            case 'entranceRefundDialog':
+                $dialog = EntranceRefundController::entranceRefundDialog($request); #
+                break;
             case 'warrantDialog':
                 $dialog = WarrantController::warrantDialog($request); #
                 break;

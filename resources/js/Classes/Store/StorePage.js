@@ -124,10 +124,9 @@ class storePage{
     };
 
     removePartner(id, type){
-        let object = this;
-        object[type].remove(id);
+        this[type].splice(this[type].indexOf(id));
         document.getElementById(type + '_' + id).remove();
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
     loadBreadcrumbs(category_id, root_category){
@@ -387,6 +386,30 @@ class storePage{
                 {title:"Комментарий", field:"comment", width:150, align:"left"},
             ];
         }
+        else if(object.active_tab === 'entrance_refunds'){
+            object.contextDop = 'entranceRefund';
+            object.parametr = 'entrance_refund';
+            var priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    var formatter = new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                    });
+                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                });
+            };
+
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Дата", field:"created_at", width:150},
+                {title:"Ответственный", field:"manager_name", align:"left"},
+                {title:"Покупатель", field:"partner_name", align:"left"},
+                {title:"Сумма", field:"wsumm", width:130, align:"left", formatter:priceFormatter}
+            ];
+        }
         return columns;
     }
 
@@ -448,6 +471,7 @@ class storePage{
                 document.body.classList.add('loading');
             },
             ajaxResponse: (url, params, response) => {
+
                 window.isXHRloading = false;
                 document.body.classList.remove('loading');
 

@@ -38,7 +38,7 @@ class EntranceController extends Controller
 
     public function tableData(Request $request)
     {
-        $entrances = EntranceController::getEntrances($request);
+        $entrances = self::getEntrances($request);
 
         return response()->json(['data' => $entrances]);
     }
@@ -230,6 +230,52 @@ class EntranceController extends Controller
             //'total' => $vtotal,
         ];
         return $data;
+    }
+
+    public function select(Entrance $entrance, Request $request)
+    {
+        $products = $entrance->articles;
+
+        if(!$entrance){
+            return response()->json([
+                'message' => 'Поступление не найдено, возможно оно было удалёно',
+            ], 422);
+        }
+
+        return response()->json([
+            'id' => $entrance->id,
+            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('entrance', 'products', 'request'))->render(),
+            'items' => $products,
+            'partner' => $entrance->partner->outputName(),
+            'balance' => $entrance->partner->balance,
+            'name' => $entrance->outputName()
+        ]);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        return self::selectEntranceDialog($request);
+    }
+
+    public static function selectEntranceDialog(Request $request)
+    {
+        $class = 'selectEntranceDialog';
+        $query = Entrance::where('company_id', Auth::user()->company->id)
+            ->when($request['string'], function ($q) use ($request) {
+                $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
+            })
+            ->orderBy('created_at', 'DESC')
+            ->limit(30);
+
+        $entrances = $query->get();
+
+        $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';
+
+        $content = view(get_template() . '.entrance.dialog.' . $view, compact('entrances','class', 'request'))->render();
+        return response()->json([
+            'tag' => 'selectEntranceDialog',
+            'html' => $content
+        ]);
     }
 
     public static function getEntrances($request){

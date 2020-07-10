@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Entrance extends Model
 {
@@ -25,6 +26,16 @@ class Entrance extends Model
     ];
 
     protected $guarded = [];
+
+    public function outputName()
+    {
+        return 'Поступление №' . $this->id;
+    }
+
+    public function getProductTotalCount($product_id)
+    {
+        return $this->articles->find($product_id)->pivot->count ?? 0;
+    }
 
     public function articles()
     {

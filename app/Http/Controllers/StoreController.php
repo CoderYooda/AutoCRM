@@ -158,13 +158,9 @@ class StoreController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 
-    public static function provider_refundsTab($request)
+    public static function entrance_refundsTab($request)
     {
-        if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider-refund') {
-            return view(get_template() . '.provider_refunds.elements.table_container', compact('request'));
-        }
-
-        return view(get_template() . '.provider_refunds.index', compact('request'));
+        return view(get_template() . '.entrance_refunds.index', compact('request'));
     }
 
     public static function entranceTab($request)

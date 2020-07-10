@@ -27,6 +27,8 @@ import supplierDialog from "./Supplier/SupplierDialog";
 import roleDialog from "./Role/RoleDialog";
 import vehicleDialog from "./Vehicle/VehicleDialog";
 import storeImportDialog from "./Store/StoreImportDialog";
+import entranceRefundDialog from "./EntranceRefund/EntranceRefundDialog";
+import selectEntranceDialog from "./Entrance/SelectEntranceDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -77,7 +79,9 @@ const classes = {
     selectSupplierDialog,
     supplierDialog,
     vehicleDialog,
-    storeImportDialog
+    storeImportDialog,
+    entranceRefundDialog,
+    selectEntranceDialog
 };
 
 const pages = {

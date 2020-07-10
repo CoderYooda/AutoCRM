@@ -47,7 +47,7 @@ class RefundController extends Controller
         $request['fresh'] = true;
         $class = 'refundDialog' . $refund->id;
         $inner = true;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact( 'refund','class', 'inner', 'request'))->render();
+        $content = view(get_template() . '.refund.dialog.form_refund', compact( 'refund','class', 'inner', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => $class,

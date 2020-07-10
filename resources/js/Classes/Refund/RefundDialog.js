@@ -310,7 +310,7 @@ class refundDialog extends Modal{
         });
     }
 
-    selectShipment(id){
+    selectShipment(id) {
         var object = this;
         window.axios({
             method: 'post',
