@@ -110,7 +110,9 @@
                             <div id="stack_dropdown" class="dropdown_container">
                                 <div class="arrow"></div>
                                 <div class="mess_container" data-simplebar style="max-height: 220px; width: 200px">
-                                    <div id="stack_item_container"></div>
+                                    <div id="stack_item_container">
+                                        <a class="stack_item">Ytn</a>
+                                    </div>
                                 </div>
                             </div>
                         </li>

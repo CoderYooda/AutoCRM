@@ -280,8 +280,12 @@ class Helper{
 
                 let element_id = event.target.getAttribute('aria-controls');
 
-                let input = document.getElementById(element_id).querySelector('.form-group:not(.d-none) input[type="text"]');
+                let element = document.getElementById(element_id);
 
+                let input = null;
+                if(element){
+                    input = element.querySelector('.form-group:not(.d-none) input[type="text"]');
+                }
                 if(input) input.focus();
 
             }, false);

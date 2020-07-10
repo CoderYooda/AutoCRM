@@ -183,7 +183,7 @@ class shipmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            if(resp.status === 200) {
+            if(resp.status == 200) {
                 let root_id = object.root_dialog.id;
                 object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 object.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
@@ -206,7 +206,7 @@ class shipmentDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){
-            if(resp.status === 200) object.finitaLaComedia(true);
+            if(resp.status == 200) object.finitaLaComedia(true);
         });
     }
 

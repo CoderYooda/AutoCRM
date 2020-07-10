@@ -68,13 +68,14 @@ class adjustmentDialog extends Modal{
     save(elem){
         if(window.isXHRloading) return;
         let object = this;
+        elem.setAttribute('disabled', true);
         window.axform.send(elem, function(resp){
             if(resp.status === 200) {
                 let root_id = object.root_dialog.id;
                 object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 object.root_dialog.setAttribute('id', 'adjustmentDialog' + resp.data.id);
                 object.root_dialog.setAttribute('data-id', resp.data.id);
-                object.freshContent(resp.data.id, function () {
+                object.freshContent(resp.data.id, function (){
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];
@@ -82,13 +83,8 @@ class adjustmentDialog extends Modal{
                     drag_dialog.tag = 'adjustmentDialog' + resp.data.id;
                     window.helper.initDialogMethods();
                 });
-            }
-
-
-            // let dialog = document.getElementById('clientorderDialog' + resp.data.id);
-            // console.log(dialog);
-            // window['clientorderDialog' + resp.data.id] = new clientorderDialog(dialog);
-
+            }s
+            elem.setAttribute('disabled', false);
         });
     }
 

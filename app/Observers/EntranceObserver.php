@@ -17,13 +17,13 @@ class EntranceObserver
 
     public function deleted(Entrance $entrance)
     {
-        $payable = $warrant->payable;
+        $payable = $entrance->payable;
         if($payable){
-            if($warrant->isIncoming){
-                $payable->wsumm = $payable->wsumm - $warrant->summ;
+            if($entrance->isIncoming){
+                $payable->wsumm = $payable->wsumm - $entrance->summ;
                 $payable->save();
             } else {
-                $payable->wsumm = $payable->wsumm + $warrant->summ;
+                $payable->wsumm = $payable->wsumm + $entrance->summ;
                 $payable->save();
             }
         }

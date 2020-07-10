@@ -263,12 +263,12 @@ class storePage{
         } else if(object.active_tab === 'provider_orders'){
             object.contextDop = 'providerorder';
             object.parametr = 'provider_order';
-            var iconFormatter = function(cell, formatterParams, onRendered){
+            let iconFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
                 });
             };
-            var priceFormatter = function(cell, formatterParams, onRendered){
+            let priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     var formatter = new Intl.NumberFormat('ru-RU', {
                         style: 'currency',
@@ -523,6 +523,9 @@ class storePage{
 
                 items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
                 items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
+                if(object.contextDop == 'shipment'){
+                    items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + row.getData().id);} }));
+                }
                 items.push(new ContextualItem({type:'seperator'}));
                 items.push(new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }));
 

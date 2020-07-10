@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RefundRequest;
 use App\Models\Refund;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -19,15 +20,17 @@ class RefundController extends Controller
 
         if ($request['refund_id']) {
             $refund = Refund::where('id', (int)$request['refund_id'])->first();
-
             $tag .= $refund->id;
+        } elseif( $request['shipment_id']){
+            $shipment = Shipment::owned()->find((int)$request['shipment_id']);
         } else {
             $refund = null;
+            $shipment = null;
         }
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact('refund', 'request'))->render()
+            'html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request'))->render()
         ]);
     }
 

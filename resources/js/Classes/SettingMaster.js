@@ -3,13 +3,15 @@ class SettingMaster
     constructor()
     {
         this.root_dialog = document.getElementById('settings_master');
-        this.step = 1;
-        this.steps = 3;
-        this.init();
-        this.steps_icon = {
-            1:'current',
-            2:'wait',
-            3:'wait'
+        if(this.root_dialog){
+            this.step = 1;
+            this.steps = 3;
+            this.init();
+            this.steps_icon = {
+                1:'current',
+                2:'wait',
+                3:'wait'
+            }
         }
     }
 
@@ -89,6 +91,7 @@ class SettingMaster
     insertEmployee(){
         let count = this.root_dialog.querySelectorAll('#employees .unit_elem').length;
         var node = helper.createElementFromHTML('<div class="unit_elem mb-10 p-15">\n' +
+            '<div onclick="this.closest(\'.unit_elem\').remove()" class="remove_unit"></div>\n' +
             '<div class="form-group">\n' +
                 '<label>ФИО</label>\n' +
                 '<input type="text" name="employees[' + (count + 1) + '][fio]" id="fl_dialog_focused" value="" class="form-control entrance" placeholder="ФИО">\n' +
@@ -113,6 +116,7 @@ class SettingMaster
     insertPartner(){
         let count = this.root_dialog.querySelectorAll('#partners .unit_elem').length;
         var node = helper.createElementFromHTML('                                <div class="unit_elem mb-10 p-15">\n' +
+            '<div onclick="this.closest(\'.unit_elem\').remove()" class="remove_unit"></div>\n' +
             '<div class="form-group">\n' +
             '<label>Названия организации</label>\n' +
             '<input type="text" name="partners[' + (count + 1) + '][companyName]" value="" class="form-control" placeholder="Названия организации">\n' +
@@ -245,7 +249,7 @@ class SettingMaster
 
             let element = document.getElementsByName(name)[0];
 
-            if(element) {
+            if(element){
                 window.IMask(element, {
                     mask: inputs[name],
                     lazy: true

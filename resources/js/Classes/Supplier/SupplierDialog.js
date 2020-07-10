@@ -26,7 +26,7 @@ class SupplierDialog extends Modal{
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(e){
-            object.finitaLaComedia(true);
+            if(e.status == 200) object.finitaLaComedia(true);
         });
     }
 
