@@ -401,7 +401,8 @@ class ShipmentsController extends Controller
 
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
-            //dd(Carbon::parse($dates[0]));
+            $dates[0] .= ' 00:00:00';
+            $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
 

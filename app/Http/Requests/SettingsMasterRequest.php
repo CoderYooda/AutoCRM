@@ -24,13 +24,13 @@ class SettingsMasterRequest extends FormRequest
         foreach($this->employees as $key => $employee){
             $employees[$key]['access'] = (boolean)$employee['access'];
             $employees[$key]['fio'] = $employee['fio'];
-            $employees[$key]['phone'] = (int)str_replace(array('(', ')', ' ', '_', '.', '-', '+'), '', $employee['phone']);
+            $employees[$key]['phone'] = (int)( 7 . substr(str_replace(array('(', ')', ' ', '_', '.', '-', '+'), '', $employee['phone']),1));
         }
 
         foreach($this->partners as $key => $partner){
             $partners[$key]['companyName'] = $partner['companyName'];
             $partners[$key]['fio'] = $partner['fio'];
-            $partners[$key]['phone'] = (int)str_replace(array('(', ')', ' ', '_', '.', '-', '+'), '', $partner['phone']);
+            $partners[$key]['phone'] = (int)( 7 . substr(str_replace(array('(', ')', ' ', '_', '.', '-', '+'), '', $partner['phone']),1));
         }
 
         $this['employees'] = $employees;

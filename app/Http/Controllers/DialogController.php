@@ -31,6 +31,9 @@ class DialogController extends Controller
             case 'partnerDialog':
                 $dialog = PartnerController::partnerDialog($request);#
                 break;
+            case 'userDialog':
+                $dialog = PartnerController::partnerDialog($request);#
+                break;
             case 'selectPartner':
                 $dialog = PartnerController::selectPartnerDialog($request);#
                 break;

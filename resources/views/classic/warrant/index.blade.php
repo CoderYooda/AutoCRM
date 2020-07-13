@@ -29,6 +29,20 @@
                     </div>
                     <div id="any_stack"></div>
                 </div>
+                <div class="filter_field mb-10">
+                    <div class="form-group d-flex mb-10">
+                        <label class="no-wrap" for="provider">Тип</label>
+                        <div class="dropdown" onclick="window.helper.openModal(this, event)">
+                            <input readonly id="isIncoming" type="text" name="isIncoming" value="{{ request('pay_status') }}" class="form-control isIncoming input_as_link" placeholder="не выбрано" disabled>
+                            <div class="dropdown_container">
+                                <div class="arrow"></div>
+                                <span onclick="window.cash.setField('isIncoming', null, 'не выбрано', this)" class="element">не выбрано</span>
+                                <span onclick="window.cash.setField('isIncoming', 1, 'приходный ордер', this)" class="element">приходный ордер</span>
+                                <span onclick="window.cash.setField('isIncoming', 0, 'расходный ордер', this)" class="element">расходный ордер</span>
+                            </div>
+                    </div>
+                    <div id="any_stack"></div>
+                </div>
                 <div id="adds-card" class="hide">
                     <hr>
                     <div class="box-title">Контактная информация</div>

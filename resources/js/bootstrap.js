@@ -128,10 +128,6 @@ window.iw =  window.innerWidth;
 // window.notifications = new bootstrap.Modal(notifications, options);
 
 
-
-
-
-
 window.fakeCounter = 0;
 
 axios({

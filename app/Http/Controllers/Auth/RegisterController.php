@@ -35,6 +35,7 @@ class RegisterController extends Controller
     protected function validator($request)
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
+        $request['phone'] = 7 . substr($request['phone'],1);
         $request['name'] = $request['fio'];
         //SmsController::sendTo($data['phone']);
         return Validator::make($request->all(), [

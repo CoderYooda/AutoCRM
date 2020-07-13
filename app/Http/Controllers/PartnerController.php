@@ -70,8 +70,11 @@ class PartnerController extends Controller
 
         $partner = null;
 
-        if($request->partner_id != null){
-            $tag .= $request->partner_id;
+        if($request->partner_id != null || $request->user_id != null){
+
+            $p_id = isset($request['partner_id']) ? $request['partner_id'] : $request['user_id'];
+
+            $tag .= $p_id;
             $partner = Partner::with('vehicles', 'passport')->findOrFail($request->partner_id);
 
             if($partner->category->name == 'Анонимы') {
