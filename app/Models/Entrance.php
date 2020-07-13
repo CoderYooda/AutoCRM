@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+
+Carbon::setToStringFormat('d.m.Y H:i');
 
 class Entrance extends Model
 {
@@ -82,6 +85,19 @@ class Entrance extends Model
             $store->decreaseArticleCount($article->id, $count);
             $newStore->increaseArticleCount($article->id, $count);
         }
+    }
+
+    public function getTotalPrice()
+    {
+        $total_price = 0;
+
+        $products = $this->articles;
+
+        foreach ($products as $product) {
+            $total_price += $product->pivot->price * $product->pivot->count;
+        }
+
+        return $total_price;
     }
 
     public function warrants()

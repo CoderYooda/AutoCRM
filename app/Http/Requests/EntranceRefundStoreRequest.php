@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckArticlesOnValid;
 use App\Rules\ValidProductCountForEntranceRefund;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,10 +22,7 @@ class EntranceRefundStoreRequest extends FormRequest
             'store_id' => ['required', 'exists:stores,id'],
             'entrance_id' => ['required', 'exists:entrances,id'],
             'products' => ['required', 'array'],
-            'products.*.id' => ['integer', 'exists:articles,id'],
-            'products.*.count' => ['integer', 'min:0'],
-            'products.*.price' => ['numeric', 'between:1,100000'],
-            'products.*.total_price' => ['numeric', 'between:1,1000000'],
+            'products.*.count' => ['integer', 'min:1', new CheckArticlesOnValid],
             'comment' => ['nullable', 'string', 'max:512']
         ];
     }

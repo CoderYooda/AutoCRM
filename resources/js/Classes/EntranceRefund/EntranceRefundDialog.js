@@ -7,14 +7,15 @@ class entranceRefundDialog extends Modal{
         console.log('Окно возврата поступления инициализировано');
 
         this.items = [];
-        this.itogo = 0;
-        this.totalPrice = 0.0;
 
         this.init();
     }
 
     init(){
-
+        this.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored', () => {
+            let id = this.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null) this.fresh(id);
+        });
     }
 
     openSelectEntranceRefundModal() {
@@ -55,20 +56,23 @@ class entranceRefundDialog extends Modal{
                     id: elem.id,
                     count: elem.pivot.count,
                     price: elem.pivot.price,
-                    total: elem.pivot.total
+                    total: elem.pivot.count * elem.pivot.price
                 });
 
                 let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-                let inputs = item.getElementsByTagName('input');
 
-                [].forEach.call(inputs, function (elem) {
-                    let fn = window.helper.debounce(function (e) {
-                        object.recalculate(e);
-                    }, 50);
-                    elem.addEventListener("keydown", fn);
-                    elem.addEventListener("paste", fn);
-                    elem.addEventListener("delete", fn);
-                });
+                if(item) {
+                    let inputs = item.getElementsByTagName('input');
+
+                    [].forEach.call(inputs, function (elem) {
+                        let fn = window.helper.debounce(function (e) {
+                            object.recalculate(e);
+                        }, 50);
+                        elem.addEventListener("keydown", fn);
+                        elem.addEventListener("paste", fn);
+                        elem.addEventListener("delete", fn);
+                    });
+                }
 
                 object.recalculate();
             });
@@ -79,23 +83,48 @@ class entranceRefundDialog extends Modal{
         });
     }
 
+    getBackPayment() {
+        let warrant_type = 'refund_of_goods';
+        let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
+        let refer = 'EntranceRefund';
+        let refer_id = this.root_dialog.querySelector('input[name=id]').value;
+        let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
+        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+        partner = parseInt(partner);
+        var params = '';
+        if(partner !== null){
+            params += '&partner_id='+partner;
+        }
+        if(warrant_type != null){
+            params += '&warrant_type='+warrant_type;
+        }
+        if(itogo != null){
+            params += '&itogo='+itogo;
+        }
+        if(ostatok != null){
+            params += '&ostatok='+ostatok;
+        }
+        if(refer != null){
+            params += '&refer='+refer;
+        }
+        if(refer_id != null){
+            params += '&refer_id='+refer_id;
+        }
+        if(id != null){
+            let reason = 'Возврат товаров по поступлению №' + id;
+            params += '&reason='+reason;
+        }
+
+        openDialog('warrantDialog', '&isIncoming=1'+params);
+    }
+
     recalculate() {
 
-        var object = this;
+        let object = this;
         this.items.forEach(function(elem){
             object.recalculateItem(elem.id);
         });
-        var total_price = object.totalPrice;
-        var itogo = object.itogo;
-
-        object.items.map(function(e){
-            total_price = total_price + Number(e.total);
-        });
-
-        itogo = total_price;
-
-        object.setTotalPrice(total_price);
-        object.setItogo(itogo);
     }
 
     removeItem(id, tag = null){
@@ -114,18 +143,6 @@ class entranceRefundDialog extends Modal{
         }
         let product = this.root_dialog.querySelector('#product_selected_' + id).remove();
         object.recalculate();
-    }
-
-    setTotalPrice(count){
-        let container = this.root_dialog.querySelector('#total_price');
-        container.innerHTML = Number(count).toFixed(2);
-    }
-
-    setItogo(count){
-        let itogo_prices = this.root_dialog.querySelectorAll('.itogo_price');
-        [].forEach.call(itogo_prices, function(itogo_price){
-            itogo_price.innerHTML = Number(count).toFixed(2);
-        });
     }
 
     recalculateItem(id){
@@ -157,50 +174,21 @@ class entranceRefundDialog extends Modal{
         }
     }
 
-    freshContent(id, callback = null){
-        let object = this;
+    save(elem){
+        if(window.isXHRloading) return;
 
-        let data = {};
-        if(object.refer){
-            data.refer = object.refer;
-        }
-
-        window.axios({
-            method: 'post',
-            url: '/entrance_refunds/' + id + '/fresh',
-            data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            console.log('Вставили html');
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            callback();
+        window.axform.send(elem, (resp) => {
+            if(resp.status === 200) {
+                this.fresh(resp.data.id);
+            }
         });
     }
 
-    save(elem){
-        if(window.isXHRloading) return;
-        let object = this;
+    //DDS ID change TODO
 
-        console.log(this.items);
-
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) {
-                let root_id = object.root_dialog.id;
-                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-                object.root_dialog.setAttribute('id', 'entranceRefundDialog' + resp.data.id);
-                object.root_dialog.setAttribute('data-id', resp.data.id);
-                object.freshContent(resp.data.id, function () {
-                    delete window[root_id];
-                    let drag_dialog = window.dialogs[root_id];
-                    delete window.dialogs[root_id];
-                    window.dialogs['entranceRefundDialog' + resp.data.id] = drag_dialog;
-                    drag_dialog.tag = 'entranceRefundDialog' + resp.data.id;
-                    window.helper.initDialogMethods();
-                });
-            }
-        });
+    fresh(id) {
+        this.finitaLaComedia(true);
+        window.openDialog('entranceRefundDialog', '&entrance_refund_id=' + id);
     }
 
     saveAndClose(elem){

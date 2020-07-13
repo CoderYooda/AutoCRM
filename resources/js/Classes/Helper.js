@@ -135,7 +135,8 @@ class Helper{
     initDialogMethods(){
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){
-            [].forEach.call(dialogs, function(elem){
+            [].forEach.call(dialogs, function(elem) {
+
                 if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
 
                     var classname = elem.id.replace(/[^a-zA-Z]/g, '');
@@ -442,7 +443,5 @@ class Helper{
         }
         return serialized.join('&');
     };
-
-
 }
 export default Helper;

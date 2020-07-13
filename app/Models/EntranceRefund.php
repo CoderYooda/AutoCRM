@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use App\Traits\HasManagerAndPartnerTrait;
+use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+
+Carbon::setToStringFormat('d.m.Y H:i');
 
 class EntranceRefund extends Model
 {
-    use PayableTrait, HasManagerAndPartnerTrait;
+    use PayableTrait, HasManagerAndPartnerTrait, OwnedTrait;
 
     protected $guarded = [];
 
@@ -23,6 +27,10 @@ class EntranceRefund extends Model
             ->withPivot('count', 'price', 'total')->withTrashed();
     }
 
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
@@ -33,12 +41,21 @@ class EntranceRefund extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function entrance()
+    public function getTotalPrice()
     {
-        return $this->belongsTo(Entrance::class);
+        $total_price = 0;
+
+        $products = $this->articles;
+
+        foreach ($products as $product) {
+            $total_price += $product->pivot->price * $product->pivot->count;
+        }
+
+        return $total_price;
     }
 
-    public function normalizedData(){
-        return $this->created_at->format('d.m.Y (H:i)');
+    public function entrance()
+    {
+        return $this->belongsTo(Entrance::class, 'entrance_id', 'id');
     }
 }

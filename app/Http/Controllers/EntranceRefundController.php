@@ -15,6 +15,8 @@ class EntranceRefundController extends Controller
 {
     public function store(EntranceRefundStoreRequest $request)
     {
+        $entrance = Entrance::with('articles')->find($request->entrance_id);
+
         #Создание заявки на возврат
         $entrance_refund = EntranceRefund::create([
             'partner_id' => $request->partner_id,
@@ -28,32 +30,51 @@ class EntranceRefundController extends Controller
         #Создаем новые пивоты
         foreach ($request->products as $product) {
 
+            $price = $entrance->articles->find($product['id'])->pivot->price;
+
             $entrance_refund->articles()->attach($product['id'], [
                 'entrance_refund_id' => $entrance_refund->id,
                 'store_id' => $request->store_id,
                 'count' => $product['count'],
-                'price' => $product['price'],
-                'total' => $product['total_price']
+                'price' => $price,
+                'total' => $price * $product['count']
             ]);
         }
 
         return response()->json([
             'id' => $entrance_refund->id,
             'type' => 'success',
+            'event' => 'EntranceRefundStored',
             'message' => 'Возврат по поступлению успешно создан.'
         ]);
     }
 
     public static function entranceRefundDialog(Request $request)
     {
-        $entrance_refund = EntranceRefund::with('partner', 'manager', 'entrance', 'articles')->find($request['entrance_refund_id']);
+        $entrance_refund = EntranceRefund::find($request['entrance_refund_id']);
         $class = 'entranceRefundDialog' . ($entrance_refund->id ?? '');
 
-        $products = $entrance_refund->articles ?? [];
+        $entrance = $entrance_refund->entrance ?? null;
+
+        $products = $entrance->articles ?? [];
+
+        $refunded_count = [];
+
+        if($entrance) {
+            $entrance_refunded = $entrance->entrancerefunds->load('articles');
+
+            foreach ($entrance_refunded as $entrance_refund) {
+                foreach ($entrance_refund->articles as $product) {
+                    if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
+                    $refunded_count[$product->id] += $product->pivot->count;
+                }
+            }
+        }
 
         return response()->json([
             'tag' => $class,
-            'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'request', 'class', 'products'))->render()
+            'id' => $entrance->id ?? null,
+            'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class', 'products'))->render()
         ]);
     }
 
@@ -103,17 +124,5 @@ class EntranceRefundController extends Controller
 
         return $entrance_refunds;
 
-    }
-
-    public function fresh(EntranceRefund $entrance_refund, Request $request)
-    {
-        $class = 'entranceRefundDialog' . ($entrance_refund->id ?? '');
-        $content = view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact( 'entrance_refund', 'class', 'request'))
-            ->render();
-
-        return response()->json([
-            'html' => $content,
-            'target' => $class,
-        ], 200);
     }
 }

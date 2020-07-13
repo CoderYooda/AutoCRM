@@ -607,40 +607,31 @@ class storePage{
             object.loadCategory(this.root_category, true, true);
         }
 
-        document.addEventListener('ProductStored', function(e){
-            object.prepareParams();
-            object.reload();
+        let events = [
+            'ProductStored',
+            'ProviderOrderStored',
+            'EntranceStored',
+            'RefundStored',
+            'AdjustmentStored',
+            'ShipmentStored',
+            'WarrantStored',
+            'EntranceRefundStored'
+        ];
+
+        events.forEach(event => {
+            document.addEventListener(event, function(e){
+                object.prepareParams();
+                object.reload();
+            });
         });
+
         document.addEventListener('ClientOrderStored', function(e){
             if(object.active){
                 object.prepareParams();
                 object.reload();
             }
         });
-        document.addEventListener('ProviderOrderStored', function(e){
-            object.prepareParams();
-            object.reload();
-        });
-        document.addEventListener('EntranceStored', function(e){
-            object.prepareParams();
-            object.reload();
-        });
-        document.addEventListener('RefundStored', function(e){
-            object.prepareParams();
-            object.reload();
-        });
-        document.addEventListener('AdjustmentStored', function(e){
-            object.prepareParams();
-            object.reload();
-        });
-        document.addEventListener('ShipmentStored', function(e){
-            object.prepareParams();
-            object.reload();
-        });
-        document.addEventListener('WarratnStored', function(e){
-            object.prepareParams();
-            object.reload();
-        });
+
         document.addEventListener('CategoryStored', function(e){
             if(object.active){
                 object.loadCategory(object.category_id, true, false);

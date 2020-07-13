@@ -177,10 +177,7 @@ class WarrantController extends Controller
 
         $warrant->save();
 
-
         UA::makeUserAction($warrant, $wasExisted ? 'fresh' : 'create');
-
-
 
 //        $method = $warrant->refer;
 //        if($method !== null){
