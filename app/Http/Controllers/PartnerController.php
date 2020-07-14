@@ -298,8 +298,8 @@ class PartnerController extends Controller
     private static function selectPartnerInner($request){
         $class = 'selectPartnerDialog';
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
-        $partners = Partner::
-            when($request['string'], function($q) use ($request){
+        $partners = Partner::with('phones')
+            ->when($request['string'], function($q) use ($request){
                 $q->where('foundstring', 'LIKE', '%' . str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
             })
             ->when(!$request['string'] && $request['category_id'], function($q) use ($request){

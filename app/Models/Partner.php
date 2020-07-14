@@ -91,7 +91,7 @@ class Partner extends Model
 
     public function firstActivePhoneNumber()
     {
-        $phones = $this->phones();
+        $phones = $this->phones;
         $num_out = 'Основной номер не указан';
         if($phones){
             $number = $phones->where('main', true)->first();
