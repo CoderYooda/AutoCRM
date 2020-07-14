@@ -1,34 +1,31 @@
 import Modal from "../Modal/Modal";
 
-class selectShipmentDialog  extends Modal{
+class selectEntranceDialog  extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно выбора поступления инициализированно');
         this.refer = dialog.querySelector("#refer").value;
         if(dialog.querySelector("#target")){
             this.target = dialog.querySelector("#target").value;
         } else {
             this.target = null;
         }
-        this.new_btn = dialog.querySelector("#new_btn");
-        this.search_obj = dialog.querySelector("#selectshipment_search");
-        this.search_str = null;
+        this.search_obj = dialog.querySelector("#selectentrance_search");
 
         this.active = true;
         this.init();
-        //shipmentStored
     }
 
     init(){
         let object = this;
         this.searchInit();
 
-        document.addEventListener("ShipmentSelected", function(){
+        document.addEventListener("EntranceSelected", function(){
             object.finitaLaComedia();
         });
 
-        let focused = document.getElementById('select_shipment_dialog_focused');
+        let focused = document.getElementById('select_entrance_dialog_focused');
         if(focused){
             focused.focus();
         }
@@ -36,7 +33,7 @@ class selectShipmentDialog  extends Modal{
 
     searchInit(){
         let object = this;
-        let el = object.root_dialog.querySelector("#selectshipment_search");
+        let el = object.root_dialog.querySelector("#selectentrance_search");
         let searchFn = window.helper.debounce(function(e) {
             object.search(object);
         }, 400);
@@ -45,13 +42,12 @@ class selectShipmentDialog  extends Modal{
             el.addEventListener("paste", searchFn);
             el.addEventListener("delete", searchFn);}
 
-        object.root_dialog.addEventListener("ShipmentStored", function(){
+        object.root_dialog.addEventListener("EntranceStored", function(){
             object.search(object);
         });
     }
 
     search(object){
-        //var string = el.value;
 
         if (isXHRloading) { return; } window.isXHRloading = true;
 
@@ -67,22 +63,22 @@ class selectShipmentDialog  extends Modal{
         }
         window.axios({
             method: 'post',
-            url: 'shipment/dialog/search',
+            url: 'entrance/dialog/search',
             data: data,
         }).then(function (resp) {
 
-            var results_container = document.querySelector('#search_shipment_results');
+            var results_container = document.querySelector('#search_entrance_results');
             results_container.innerHTML = resp.data.html;
 
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
             window.isXHRloading = false;
-            document.removeEventListener("shipmentStored", function(){
+            document.removeEventListener("entranceStored", function(){
                 console.warn(object.root_dialog.querySelector("#refer").value);
                 object.search(object);
             });
         });
     }
 }
-export default selectShipmentDialog;
+export default selectEntranceDialog;

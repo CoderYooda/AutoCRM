@@ -8,7 +8,7 @@ class EntranceObserver
 {
     public function saved(Entrance $entrance)
     {
-        $po = $entrance->providerorder()->first();
+        $po = $entrance->providerorder;
 
         //$po->incomes;
 

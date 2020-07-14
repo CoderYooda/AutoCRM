@@ -45,7 +45,12 @@
                     </div>
                     <div class="form-group row row-sm mb-0">
                         <div class="col-sm-12">
-                            <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
+                            @if(!isset($entrance))
+                                <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5"></textarea>
+                            @else
+                                <label>Комментарий:</label>
+                                {{ $entrance->comment ?? 'Не указан' }}
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -84,8 +89,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
-            <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @if(isset($entrance))
+                <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+                <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @endif
             <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
         </div>
         <div class="system_message">

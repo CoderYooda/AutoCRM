@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EntranceRequest;
+use App\Models\EntranceRefund;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class EntranceController extends Controller
 
     public function tableData(Request $request)
     {
-        $entrances = EntranceController::getEntrances($request);
+        $entrances = self::getEntrances($request);
 
         return response()->json(['data' => $entrances]);
     }
@@ -52,148 +53,66 @@ class EntranceController extends Controller
 
     public function store(EntranceRequest $request)
     {
-        PermissionController::canByPregMatch( $request['id'] ? 'Редактировать поступления' : 'Создавать поступления');
-        $entrance = Entrance::firstOrNew(['id' => $request['id']]);
+        PermissionController::canByPregMatch( 'Создавать поступления');
 
-        if($entrance->locked){
-            return response()->json([
-                'system_message' => view('messages.locked_error')->render(),
-            ], 422);
-        }
+        $store = Store::find(session('store_id'));
 
-        # Склад с которым оперируем
-        if(isset($entranceWasExisted) && $entranceWasExisted) {
-            $store = $entrance->providerorder()->first()->store()->first();
-        } else {
-            $store = Auth::user()->getStoreFirst();
-        }
+        $providerorder = ProviderOrder::owned()->find($request['providerorder_id']);
 
+        #проверка валидации
         $messages = [];
+
         foreach($request['products'] as $id => $product) {
-
-            $providerorder_id = $request['providerorder_id'];
-            $providerorder = ProviderOrder::owned()->where('id', $providerorder_id)->first();
-            $entrance_count = $providerorder->getArticleEntredCount($id, $entrance->id);
-            $providers_count = $providerorder->getArticleCount($product['id']);
+            $entrance_count = $providerorder->getArticleEntredCount($id);
+            $providers_count = $providerorder->getArticleCount($id);
             $form_count = (int)$product['count'];
-
             if($entrance_count + $form_count > $providers_count){
-                $messages['products[' . $id . '][count]'][] = 'Кол-во не может быть больше чем в заявке';
+                $messages['products[' . $id . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
             }
-
-            #Что то не понятно как дальше
-//            for ($i = 0; $i <= (int)$product['count']; $i++) {
-//                ArticleStock::loadProductToStore($product['id'], $store->id, $product['price']);
-//            }
-
         }
 
-        if(count($messages) > 0){
+        if(count($messages)){
             return response()->json(['messages' => $messages], 422);
         }
 
-        if($entrance->exists) {
-            $wasExisted = true;
-            #Прибавляем к балансу предидущего партнера
-            $entrance->providerorder()->first()->partner()->first()
-                ->subtraction($entrance->totalPrice);
+        $entrance = Entrance::create([
+            'manager_id' => Auth::user()->partner->id,
+            'partner_id' => $providerorder->partner->id,
+            'company_id' => Auth::user()->company->id,
+            'comment' => $request->comment,
+            'providerorder_id' => $providerorder->id
+        ]);
 
-            //$old_store_id = $entrance->store_id;
-            $entranceWasExisted = true;
-            $request['partner_id'] = $entrance->partner()->first()->id;
-        } else {
-            $wasExisted = false;
-            $entranceWasExisted = false;
-            $request['partner_id'] = Auth::user()->partner()->first()->id;
-            $entrance->manager_id = Auth::user()->partner()->first()->id;
-        }
-        # Предварительно сохраняем поступление
-            $entrance->fill($request->only($entrance->fields));
-            //$entrance->totalPrice = 0;
-            $entrance->company_id = Auth::user()->company()->first()->id;
-            $entrance->partner_id = Auth::user()->partner()->first()->id;
-            $entrance->save();
+        foreach ($request->products as $product) {
+            $price = $providerorder->articles->find($product['id'])->pivot->price;
 
-        # Исходные состояния товаров к поступлению до операции
-            $previous_article_entrance = $entrance->articles()->get();
+            $entrance->articles()->attach($product['id'], [
+                'store_id' => $providerorder->store_id,
+                'company_id' => $entrance->company_id,
+                'count' => $product['count'],
+                'price' => $price,
+            ]);
 
-        # Собираем товары в массив id шников из Request`a
-            $plucked_articles = [];
-            foreach($request['products'] as $id => $product) {
-                $plucked_articles[] = $id;
-            }
-
-        # Синхронизируем товары к складу
-        //dd(Store::owned()->where('id', Auth::user()->getStoreFirst()->store_id)->first());
-
-        $store->articles()->syncWithoutDetaching($plucked_articles, false);
-
-        if(isset($entranceWasExisted) && $entranceWasExisted) {
-            # Исходные состояния товаров к складу из поступления
-                $previous_article_store = $store->articles()
-                    ->whereIn('article_id', $previous_article_entrance
-                        ->pluck('id')
-                        )->get();
-            # Отнимаем со склада все изначальные товары
-                foreach($previous_article_store as $article){
-                    $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
-                }
+            $store->increaseArticleCount($product['id'], $product['count']);
+            $store->recalculateMidprice($product['id']);
         }
 
-
-        $article_entrance_pivot_data = [];
-        foreach($request['products'] as $id => $product) {
-            $article_entrance_pivot_data[$id] = self::calculatePivotArticleEntrance($request, $store, $product);
-        }
-
-        # Синхронизируем товары к поступлению
-            $entrance->articles()->sync($article_entrance_pivot_data, true);
+        $product_ids = array_column($request->products, 'id');
+        $store->articles()->syncWithoutDetaching($product_ids, false);
 
         #Обработка ответа
-            if(isset($entranceWasExisted) && $entranceWasExisted) {
-                $this->message = 'Поступление обновлено';
-            } else {
-                if(Auth::user() != null){ // Проверка для сидирования
-                    $entrance->company_id = Auth::user()->company()->first()->id;
-                } else {
-                    $entrance->company_id = 1;
-                }
-                $this->message = 'Поступление сохранено';
-            }
-
-        #Сохраняем поступление
-            $entrance->fill($request->only($entrance->fields));
-            //$entrance->totalPrice = $entrance->articles()->sum('total');
-            $entrance->save();
-
-        #Если указана дата - сохраняем
-            if($request['do_date'] != NULL){
-                $entrance->created_at = $request['do_date'];
-                $entrance->save();
-            }
-
-        #Добавляем на склад все товары из поступления
-            foreach($entrance->articles()->get() as $article){
-                $store->increaseArticleCount($article->id, $article->pivot->count);
-                $store->recalculateMidprice($article->id);
-            }
+        $entrance->company_id = Auth::user()->company_id ?? 1;
 
         #Добавляем к балансу контакта
-        $entrance->providerorder()->first()->partner()->first()
-            ->addition($entrance->totalPrice);
-
-        UA::makeUserAction($entrance, $wasExisted ? 'fresh' : 'create');
+        $entrance->providerorder->partner->addition($entrance->totalPrice);
+        UA::makeUserAction($entrance,'create');
 
         #Ответ сервера
-            if($request->expectsJson()){
-                return response()->json([
-                    'message' => $this->message,
-                    'id' => $entrance->id,
-                    'event' => 'EntranceStored',
-                ], 200);
-            } else {
-                return redirect()->back();
-            }
+        return response()->json([
+            'message' => 'Поступление было успешно создано.',
+            'id' => $entrance->id,
+            'event' => 'EntranceStored',
+        ], 200);
     }
 
     public function fresh($id, Request $request)
@@ -230,6 +149,72 @@ class EntranceController extends Controller
             //'total' => $vtotal,
         ];
         return $data;
+    }
+
+    public function select(Entrance $entrance, Request $request)
+    {
+        $products = null;
+
+        if(!$entrance) {
+            return response()->json([
+                'message' => 'Поступление не найдено, возможно оно было удалёно',
+            ], 422);
+        }
+
+        $view = null;
+
+        if(strpos($request->refer, 'entranceRefundDialog') !== false) {
+
+            $products = $entrance->articles;
+            $entrance_refunded = $entrance->entrancerefunds->load('articles');
+
+            $refunded_count = [];
+
+            foreach ($entrance_refunded as $entrance_refund) {
+                foreach ($entrance_refund->articles as $product) {
+                    if(!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
+                    $refunded_count[$product->id] += $product->pivot->count;
+                }
+            }
+
+            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'refunded_count', 'products', 'request'))->render();
+        }
+
+        return response()->json([
+            'id' => $entrance->id,
+            'items_html' => $view,
+            'items' => $products,
+            'partner' => $entrance->partner->outputName(),
+            'partner_id' => $entrance->partner->id,
+            'balance' => $entrance->partner->balance,
+            'name' => $entrance->outputName()
+        ]);
+    }
+
+    public function dialogSearch(Request $request)
+    {
+        return self::selectEntranceDialog($request);
+    }
+
+    public static function selectEntranceDialog(Request $request)
+    {
+        $class = 'selectEntranceDialog';
+        $query = Entrance::where('company_id', Auth::user()->company->id)
+            ->when($request['string'], function ($q) use ($request) {
+                $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
+            })
+            ->orderBy('created_at', 'DESC')
+            ->limit(30);
+
+        $entrances = $query->get();
+
+        $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';
+
+        $content = view(get_template() . '.entrance.dialog.' . $view, compact('entrances','class', 'request'))->render();
+        return response()->json([
+            'tag' => 'selectEntranceDialog',
+            'html' => $content
+        ]);
     }
 
     public static function getEntrances($request){

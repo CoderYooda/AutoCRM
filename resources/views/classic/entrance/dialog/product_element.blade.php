@@ -1,27 +1,40 @@
-<tr class="product_list_elem " id="product_selected_{{ $product->id }}">
+<tr
+    data-id="{{ $product->id }}"
+    data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->pivot->count)) {{$product->pivot->count}} @else 0 @endif"
+    data-price="@if(isset($entrance)) {{ sprintf("%.2f", $product->pivot->price) }}  @else {{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }} @endif"
+    data-total="@if(isset($product->pivot->total)) {{ sprintf("%.2f", $product->pivot->total) }} @else 0.00 @endif"
+    class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
 
-    <input name="products[{{ $product->id }}][price]" value="{{ $providerorder->getArticlePrice($product->id) }}" type="hidden" >
+    <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
 
-    <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 200px">{{ $product->name }}</span></td>
-    <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
-    {{--<td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>--}}
-
-    <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm"
-               @if($product->count != null) value="{{ $product->count }}" @elseif(isset($product->pivot) && isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
-               type="number" ></td>
     <td>
-        {{ $providerorder->getArticleEntredCount($product->id) }} / {{ $providerorder->getArticleCount($product->id) }}
-
+        <div class="compressed" style="width: 100px;">{{ $product->article }}</div>
     </td>
+
     <td>
-        {{ $providerorder->getArticlePrice($product->id) }}
-    </td>
-    <td>
-        @if(isset($request) && $request['refer'] != null)
-            <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+        @if(!isset($entrance))
+            <input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem" value="{{ $product->pivot->count }}" type="number"  min="0" step="1">
         @else
-            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+            {{ $product->pivot->count }}
+        @endif
+    </td>
+
+    <td>
+        {{ $entrance->providerorder->getArticleEntredCount($product->id) }} / {{ $entrance->providerorder->getArticlesCountById($product->id) }}
+    </td>
+
+    <td>
+        @if(!isset($entrance))
+            <input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm" value="{{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}" disabled type="number">
+        @else
+            {{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}
+        @endif
+    </td>
+
+    <td>
+        @if(!isset($entrance))
+        <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
         @endif
     </td>
 </tr>

@@ -71,7 +71,8 @@ class UserActionsController extends Controller
             $request['accountable'] = [];
         }
 
-        $actions = UserAction::where('company_id', Auth::user()->company()->first()->id)
+        $actions = UserAction::with('user.partner')
+            ->where('company_id', Auth::user()->company()->first()->id)
             ->when($request['search'] != null, function ($query) use ($request) {
                 if (mb_strlen($request['search']) == 1) {
                     $query->where('fio', 'like', $request['search'] . '%')

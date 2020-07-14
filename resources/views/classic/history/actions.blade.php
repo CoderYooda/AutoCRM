@@ -11,7 +11,7 @@
                 ">
                 <div class="sl-content">
                     <div class="sl-date text-muted">{{$action->created_at->diffForHumans()}}</div>
-                    <p>{{ $action->user()->first()->partner->outputName() }}
+                    <p>{{ $action->user->partner->outputName() }}
                         @php
                             $modelName = mb_strtolower($action->model);
                             $dialogName = $modelName . 'Dialog';

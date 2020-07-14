@@ -27,6 +27,8 @@ import supplierDialog from "./Supplier/SupplierDialog";
 import roleDialog from "./Role/RoleDialog";
 import vehicleDialog from "./Vehicle/VehicleDialog";
 import storeImportDialog from "./Store/StoreImportDialog";
+import entranceRefundDialog from "./EntranceRefund/EntranceRefundDialog";
+import selectEntranceDialog from "./Entrance/SelectEntranceDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -77,7 +79,9 @@ const classes = {
     selectSupplierDialog,
     supplierDialog,
     vehicleDialog,
-    storeImportDialog
+    storeImportDialog,
+    entranceRefundDialog,
+    selectEntranceDialog
 };
 
 const pages = {
@@ -131,7 +135,8 @@ class Helper{
     initDialogMethods(){
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){
-            [].forEach.call(dialogs, function(elem){
+            [].forEach.call(dialogs, function(elem) {
+
                 if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
 
                     var classname = elem.id.replace(/[^a-zA-Z]/g, '');
@@ -438,7 +443,5 @@ class Helper{
         }
         return serialized.join('&');
     };
-
-
 }
 export default Helper;

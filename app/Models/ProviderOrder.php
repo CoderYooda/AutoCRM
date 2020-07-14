@@ -58,7 +58,7 @@ class ProviderOrder extends Model
     public function getEnteredArticleCount()
     {
         $entered_count = 0;
-        foreach($this->entrances()->get() as $entrance){
+        foreach($this->entrances as $entrance){
             $entered_count += $entrance->articles()->sum('count');
         }
         return $entered_count;
@@ -69,16 +69,10 @@ class ProviderOrder extends Model
         return $this->hasMany(Entrance::class, 'providerorder_id');
     }
 
-    public function getArticleEntredCount($article_id, $not_self_id = null)
+    public function getArticleEntredCount($article_id)
     {
-        if($not_self_id !== null){
-            $entrances = $this->entrances()->where('id', '!=', $not_self_id)->get();
-        } else {
-            $entrances = $this->entrances()->get();
-        }
-        //dd($entrances);
         $summ = 0;
-        foreach($entrances as $entrance){
+        foreach($this->entrances as $entrance){
             $summ += $entrance->articles()->where('article_id', $article_id)->sum('count');
         }
 

@@ -31,9 +31,6 @@ class DialogController extends Controller
             case 'partnerDialog':
                 $dialog = PartnerController::partnerDialog($request);#
                 break;
-            case 'userDialog':
-                $dialog = PartnerController::partnerDialog($request);#
-                break;
             case 'selectPartner':
                 $dialog = PartnerController::selectPartnerDialog($request);#
                 break;
@@ -60,6 +57,12 @@ class DialogController extends Controller
                 break;
             case 'entranceDialog':
                 $dialog = EntranceController::entranceDialog($request); #
+                break;
+            case 'selectEntranceDialog':
+                $dialog = EntranceController::selectEntranceDialog($request); /////
+                break;
+            case 'entranceRefundDialog':
+                $dialog = EntranceRefundController::entranceRefundDialog($request); #
                 break;
             case 'warrantDialog':
                 $dialog = WarrantController::warrantDialog($request); #

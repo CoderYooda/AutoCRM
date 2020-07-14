@@ -23,7 +23,7 @@ class roleDialog extends Modal{
         let object = this;
         if(!window.isXHRloading){
             window.axform.send(elem, function(e){
-                if(e.status == 200) object.finitaLaComedia(true);
+                if(e.status === 200) object.finitaLaComedia(true);
             });
         }
     }

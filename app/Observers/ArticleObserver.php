@@ -8,6 +8,6 @@ class ArticleObserver
 {
     public function saving(Article $article)
     {
-        $article->supplier = $article->supplier()->first()->name;
+        $article->supplier = $article->supplier->name;
     }
 }

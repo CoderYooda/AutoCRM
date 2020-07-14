@@ -158,6 +158,11 @@ class StoreController extends Controller
         return view(env('DEFAULT_THEME', 'classic') . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 
+    public static function entrance_refundsTab($request)
+    {
+        return view(get_template() . '.entrance_refunds.index', compact('request'));
+    }
+
     public static function entranceTab($request)
     {
         PermissionController::canByPregMatch('Смотреть поступления');

@@ -75,9 +75,14 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance/{id}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
     Route::get('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
     Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
+    Route::post('/entrance/dialog/search', 'EntranceController@dialogSearch')->name('EntranceDialogSearch');
+    Route::post('/entrance/{entrance}/select', 'EntranceController@select')->name('SelectEntrance');
+
+    #Возвраты поступлений
+    Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
+    Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');
 
     #Поставщики (внешние)
-
     Route::namespace('API')->prefix('api')->group(function () {
         Route::get('/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
         Route::get('/bik/{bik}', 'BikController@getInfo')->name('getBikInfo');
