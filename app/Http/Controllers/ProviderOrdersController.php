@@ -45,7 +45,7 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->orderBy('created_at', 'DESC')->limit(10)->get();
+        $providerorders = ProviderOrder::owned()->orderBy('created_at', 'DESC')->limit(25)->get();
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
             'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
@@ -357,83 +357,56 @@ class ProviderOrdersController extends Controller
 
     public static function getPoviderOrders($request)
     {
-        $size = 30;
-        if(isset($request['size'])){
-            $size = (int)$request['size'];
-        }
-
-        $field = null;
-        $dir = null;
-
-        if(isset($request['sorters'])){
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-        if($field === null &&  $dir === null){
-            $field = 'created_at';
-            $dir = 'DESC';
-        }
-
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
+        $size = $request['size'] ? (int)$request['size'] : 30;
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
-            //dd(Carbon::parse($dates[0]));
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
-
-        if($request['provider'] == null){
-            $request['provider'] = [];
-        }
-
-        $provider_orders =
-        ProviderOrder::select(DB::raw('
-            provider_orders.*, provider_orders.created_at as date, IF(partner.type != 2, partner.fio,partner.companyName) as partner, IF(manager.type != 2, manager.fio,manager.companyName) as manager
-        '))
-            ->leftJoin('partners as partner',  'partner.id', '=', 'provider_orders.partner_id')
-            ->leftJoin('partners as manager',  'manager.id', '=', 'provider_orders.manager_id')
-            ->when($request['provider'] != null, function($query) use ($request) {
-                $query->whereIn('provider_orders.partner_id', $request['provider']);
+        $provider_orders = ProviderOrder::owned()->with('partner', 'manager')
+            ->when(is_array($request['provider']), function($query) use ($request) {
+                $query->whereHas('partner', function($query) use ($request){
+                    $query->whereIn('id', $request['provider']);
+                });
             })
-            ->when($request['accountable'] != null, function($query) use ($request) {
-                $query->whereIn('provider_orders.manager_id', $request['accountable']);
+            ->when(is_array($request['accountable']), function($query) use ($request) {
+                $query->whereHas('manager', function($query) use ($request){
+                    $query->whereIn('id', $request['accountable']);
+                });
             })
             ->when($request['search'] != null, function($query) use ($request) {
-                $query->where('provider_orders.id', 'like', '%'.$request['search'].'%')
-                    ->orWhere('partner.fio', 'like', '%'.$request['search'].'%')
-                    ->orWhere('partner.companyName', 'like', '%'.$request['search'].'%')
-                    ->orWhere('partner.foundstring', 'like', '%'.$request['search'].'%');
+                $query->where('id', 'like', '%'.$request['search'].'%')
+                    ->orWhereHas('partner', function($query) use ($request){
+                        $query->where('company_id', Auth::user()->company_id)
+                            ->where(function($q) use ($request){
+                                $q->where('fio', 'like', '%'.$request['search'].'%')
+                                    ->orWhere('companyName', 'like', '%'.$request['search'].'%')
+                                    ->orWhere('foundstring', 'like', '%'.$request['search'].'%');
+                            });
+                    });
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]),
+                    Carbon::parse($request['dates'][1])]);
             })
             ->when($request['pay_status'] != null, function($query) use ($request) {
                 $query->where('pays', $request['pay_status']);
             })
             ->when($request['entrance_status'] != null, function($query) use ($request) {
-                switch ($request['entrance_status']) {
-                    case 3:
-                        $query->where('ent_count', 0)->orWhere('ent_count', null);
-                        break;
-                    case 2:
-                        $query->whereRaw('`provider_orders`.`ent_count` > 0 and `provider_orders`.`ent_count` < `provider_orders`.`apo_count`');
-                        break;
-                    case 1:
-                        $query->whereRaw('`provider_orders`.`ent_count` = `provider_orders`.`apo_count`');
-                        break;
-                    case 4:
-                        $query->whereRaw('`provider_orders`.`ent_count` > `provider_orders`.`apo_count`');
-                        break;
-                }
-
+                $query->where('incomes', $request['entrance_status']);
             })
-            ->where('provider_orders.deleted_at', null)
-            ->where('provider_orders.company_id', Auth::user()->company()->first()->id)
-            ->groupBy('provider_orders.id')
             ->orderBy($field, $dir)
             //->toSql();
-            //dd($provider_orders);
+        //dd($provider_orders);
             ->paginate($size);
+
+        foreach ($provider_orders as $provider_order) {
+            $provider_order['manager_name'] = $provider_order->manager->official_name;
+            $provider_order['partner_name'] = $provider_order->partner->official_name;
+        }
 
         return $provider_orders;
     }

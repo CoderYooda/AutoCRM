@@ -71,13 +71,14 @@ class storePage{
         object[option] = value;
         document.getElementById(option).value = text;
         if(elem !== null){
-            elem.closest('.dropdown').classList.remove('show');
-        }
+            setTimeout(function(){
+                elem.closest('.dropdown').classList.remove('show');
+            }, 50);
 
+        }
         if(value == null){
             window.notification.notify( 'success', 'Поле очищено');
         }
-
         object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable ());
     }
 
@@ -176,24 +177,28 @@ class storePage{
         data.search = object.search;
         data.class = 'store';
 
-        window.axios({
-            method: 'post',
-            url: '/category/loadview',
-            data: data
-        }).then(function (resp) {
-            document.getElementById('category-nav').innerHTML = resp.data.html;
-            if(!object.search){
-                object.loadBreadcrumbs(category_id, object.root_category);
-            }
-            if(update_data != null && update_data){
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
-            }
-            object.initCategoryContextual();
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            window.isXHRloading = false;
-        });
+        let category_block = document.getElementById('category-nav');
+
+        if(category_block){
+            window.axios({
+                method: 'post',
+                url: '/category/loadview',
+                data: data
+            }).then(function (resp) {
+                category_block.innerHTML = resp.data.html;
+                if(!object.search){
+                    object.loadBreadcrumbs(category_id, object.root_category);
+                }
+                if(update_data != null && update_data){
+                    object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                }
+                object.initCategoryContextual();
+            }).catch(function (error) {
+                console.log(error);
+            }).then(function () {
+                window.isXHRloading = false;
+            });
+        }
     }
 
     initCategoryContextual(){
@@ -285,8 +290,8 @@ class storePage{
                 {title:"Оплата", field:"pays", width:80, formatter:iconFormatter},
                 {title:"Поступление", field:"incomes",align:"left", width:130, formatter:iconFormatter},
                 {title:"Дата", field:"created_at", width:150},
-                {title:"Поставщик", field:"partner", align:"left"},
-                {title:"Ответственный", field:"manager", align:"left"},
+                {title:"Поставщик", field:"partner_name", align:"left"},
+                {title:"Ответственный", field:"manager_name", align:"left"},
                 {title:"Сумма", field:"itogo", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'entrance'){
@@ -416,6 +421,11 @@ class storePage{
     cleanSearch(){
         this.search = null;
         document.getElementById("search").value = null;
+        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+    }
+
+
+    search(){
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
@@ -618,6 +628,18 @@ class storePage{
             'EntranceRefundStored'
         ];
 
+        // //Поиск
+        // let el = document.querySelector("#ajax-tab-content #search");
+        // let searchFn = window.helper.debounce(function(e) {
+        //     object.search();
+        // }, 400);
+        // if(el){
+        //     el.addEventListener("keydown", searchFn);
+        //     el.addEventListener("paste", searchFn);
+        //     el.addEventListener("delete", searchFn);
+        // }
+
+
         events.forEach(event => {
             document.addEventListener(event, function(e){
                 object.prepareParams();
@@ -719,17 +741,18 @@ class storePage{
 
     searchInit(){
         var object = this;
-        var search;
         var searchFn;
-        if(document.getElementById("search")){
-            search = document.getElementById("search");
+        let search_field = document.getElementById("search");
+        if(search_field){
             searchFn = window.helper.debounce((e) => {
-
                 this.manufacture_show = true;
-                document.querySelector('.search-field-container > .box').style.display = 'none';
+                let manufacturer_list = document.querySelector('.search-field-container > .box');
+                if(manufacturer_list){
+                    manufacturer_list.style.display = 'none';
+                }
 
-                object.search = search.value;
-                window.helper.insertParamUrl('search', search.value);
+                object.search = search_field.value;
+                window.helper.insertParamUrl('search', search_field.value);
                 object.category_id = null;
                 if(object.search == ''){
                     object.category_id = object.root_category;
@@ -741,9 +764,9 @@ class storePage{
                 //object.page = 1;
                 //object.reload(e);
             }, 400);
-            search.addEventListener("keydown", searchFn);
-            search.addEventListener("paste", searchFn);
-            search.addEventListener("delete", searchFn);
+            search_field.addEventListener("keydown", searchFn);
+            search_field.addEventListener("paste", searchFn);
+            search_field.addEventListener("delete", searchFn);
         }
     }
 

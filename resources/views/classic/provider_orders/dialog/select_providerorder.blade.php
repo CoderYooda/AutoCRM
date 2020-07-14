@@ -10,6 +10,11 @@
             @endif
         </form>
     </div>
+    <div class="modal-header">
+        <form class="flex d-flex w-100 ProviderOrderStoredListner">
+            <input id="selectproviderorder_search" type="text" class="form-control search" placeholder="Поиск заявок поставщику" required="">
+        </form>
+    </div>
     <div id="search_providerorder_results" class="mb-15">
         @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder_inner')
     </div>

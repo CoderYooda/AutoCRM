@@ -117,8 +117,8 @@ class Helper{
         //
         // }
 
-        if(container){ //!event.target.closest('.dropdown_container')
-            block.classList.toggle('show');
+        if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')
+            block.classList.add('show');
         }
 }
 

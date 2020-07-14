@@ -5,6 +5,7 @@
         <small>{{ $message->link }}</small>
     </div>
     <div class="box-body">
+        <div class="sl-date text-muted">{{$message->created_at->diffForHumans()}}</div>
         @if( $message->kind && $message->kind_id)
             @php
                 $modelName = mb_strtolower($message->kind);
