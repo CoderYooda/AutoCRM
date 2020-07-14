@@ -59,7 +59,7 @@
         @endif
 
     </div>
-    <form class="RefundStoredListner WarrantStoredListner ShipmentStoredListner" action="{{ route('StoreEntranceRefund') }}" method="POST">
+    <form class="WarrantStoredListner" action="{{ route('StoreEntranceRefund') }}" method="POST">
         <div class="box-body">
             @csrf
 

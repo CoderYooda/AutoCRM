@@ -84,7 +84,7 @@ class entranceRefundDialog extends Modal{
     }
 
     getBackPayment() {
-        let warrant_type = 'refund_of_goods';
+        let warrant_type = 'receipt_of_funds';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
         let refer = 'EntranceRefund';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
@@ -175,23 +175,42 @@ class entranceRefundDialog extends Modal{
     }
 
     save(elem){
-        if(window.isXHRloading) return;
 
-        window.axform.send(elem, (resp) => {
-            if(resp.status === 200) {
-                this.fresh(resp.data.id);
+        event.preventDefault();
+        if(window.isXHRloading) return;
+        window.axform.send(elem, (response) => {
+            if(response.status === 200) {
+                this.fresh(response.data.id);
             }
         });
     }
 
-    //DDS ID change TODO
-
     fresh(id) {
-        this.finitaLaComedia(true);
-        window.openDialog('entranceRefundDialog', '&entrance_refund_id=' + id);
+        let root_id = this.root_dialog.id;
+
+        this.root_dialog.querySelector('input[name=id]').value = id;
+        this.root_dialog.setAttribute('id', 'entranceRefundDialog' + id);
+        this.root_dialog.setAttribute('data-id', id);
+
+        axios.get('/dialog_entranceRefundDialog_open?inner=1&entrance_refund_id=' + id)
+            .then(response => {
+                this.current_dialog.innerHTML = response.data.html;
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['entranceRefundDialog' + id] = drag_dialog;
+                drag_dialog.tag = 'entranceRefundDialog' + id;
+                window.helper.initDialogMethods();
+            })
+            .catch(response => {
+                console.log(response);
+            });
     }
 
     saveAndClose(elem){
+
+        event.preventDefault();
+
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){

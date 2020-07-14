@@ -73,7 +73,7 @@ class EntranceRefundController extends Controller
 
         return response()->json([
             'tag' => $class,
-            'id' => $entrance->id ?? null,
+            'id' => $entrance_refund->id ?? null,
             'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class', 'products'))->render()
         ]);
     }

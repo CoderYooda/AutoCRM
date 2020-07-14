@@ -104,7 +104,7 @@ class EntranceController extends Controller
             $request['partner_id'] = $entrance->partner()->first()->id;
         } else {
             $wasExisted = false;
-            $entranceWasExisted = false;
+            $entranceWasExisted = false;    
             $request['partner_id'] = Auth::user()->partner()->first()->id;
             $entrance->manager_id = Auth::user()->partner()->first()->id;
         }
@@ -281,7 +281,8 @@ class EntranceController extends Controller
     public static function selectEntranceDialog(Request $request)
     {
         $class = 'selectEntranceDialog';
-        $query = Entrance::where('company_id', Auth::user()->company->id)
+        $query = Entrance::with('partner')
+            ->where('company_id', Auth::user()->company->id)
             ->when($request['string'], function ($q) use ($request) {
                 $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
@@ -289,6 +290,8 @@ class EntranceController extends Controller
             ->limit(30);
 
         $entrances = $query->get();
+
+        dd($entrances->first()->manager, $entrances->first()->partner);
 
         $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';
 

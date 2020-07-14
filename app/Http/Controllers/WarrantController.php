@@ -49,22 +49,16 @@ class WarrantController extends Controller
         }
 
         if($request['warrant_type'] && $request['warrant_type'] !== null){
-            $dds_type_id = null;
 
-            switch ($request['warrant_type']){
-                case 'refund_of_goods':
-                    $dds_type_id = 6;
-                    break;
-                case 'sale_of_goods':
-                    $dds_type_id = 2;
-                    break;
-                case 'receipt_of_goods':
-                    $dds_type_id = 4;
-                    break;
-                case 'pay_to_provider':
-                    $dds_type_id = 5;
-                    break;
-            }
+            $types = [
+                'refund_of_goods' => 6,
+                'sale_of_goods' => 2,
+                'receipt_of_goods' => 4,
+                'pay_to_provider' => 5,
+                'receipt_of_funds' => 11,
+            ];
+
+            $dds_type_id = $types[$request['warrant_type']];
 
             if($dds_type_id !== null){
                 $data->dds_article = DdsArticle::owned()->where('id', $dds_type_id)->first();
