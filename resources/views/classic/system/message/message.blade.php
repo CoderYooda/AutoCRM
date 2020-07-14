@@ -4,7 +4,16 @@
         {{--<h3 class="mt-0">Box Header</h3>--}}
         <small>{{ $message->link }}</small>
     </div>
-    <div class="box-body mb-10">
-        <p class="m-0 text-muted">{{ $message->message }}</p>
+    <div class="box-body">
+        @if( $message->kind && $message->kind_id)
+            @php
+                $modelName = mb_strtolower($message->kind);
+                $dialogName = $modelName . 'Dialog';
+                $dialogParams = '&' . $modelName . '_id=' . $message->kind_id
+            @endphp
+            <p onclick="systemMessages.modal.hide();openDialog( '{{ $dialogName }}', '{{ $dialogParams }}' )" class="m-0 text-muted linkable">{{ $message->message }}</p>
+        @else
+            <p class="m-0 text-muted">{{ $message->message }}</p>
+        @endif
     </div>
 </div>

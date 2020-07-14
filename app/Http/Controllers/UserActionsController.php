@@ -173,7 +173,7 @@ class UserActionsController extends Controller
 
         $model_text = null;
         switch ($className){
-            case 'Partner': $model_text = 'контакта'; break;
+            case 'Partner': $model_text = 'контакт'; break;
             case 'ProviderOrder': $model_text = 'заявку поставщику'; break;
             case 'Warrant': $model_text = 'финансовую операций'; break;
             case 'Cashbox': $model_text = 'кассовый аппарат'; break;

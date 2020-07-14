@@ -279,6 +279,9 @@ class WarrantController extends Controller
                 ->leftJoin('dds_articles',  'dds_articles.id', '=', 'warrants.ddsarticle_id')
                 ->leftJoin('cashboxes',  'cashboxes.id', '=', 'warrants.cashbox_id')
                 ->where('warrants.company_id', Auth::user()->company()->first()->id)
+                ->when($request['isIncoming'] != null, function($query) use ($request) {
+                    $query->where('warrants.isIncoming', (boolean)$request['isIncoming']);
+                })
                 ->when($request['partner'] != null, function($query) use ($request) {
                     $query->whereIn('warrants.partner_id', $request['partner']);
                 })

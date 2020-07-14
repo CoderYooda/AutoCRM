@@ -214,6 +214,7 @@ class StoreController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть заявки поставщикам');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider_orders') {
+            dd(1);
             return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.elements.table_container', compact('request'));
         }
         return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.index', compact('request'));

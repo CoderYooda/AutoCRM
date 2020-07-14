@@ -24,6 +24,7 @@ use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Webmozart\Assert\Assert;
 
 class StatisticController extends Controller
 {
@@ -201,7 +202,7 @@ class StatisticController extends Controller
 
             $class_fields = (new $classes[$key])->fields;
 
-            if (isset($request->dds_id) && in_array('dds_articleid', $class_fields)) {
+            if (isset($request->dds_id) && in_array('ddsarticle_id', $class_fields)) {
                 $query = $query->where('ddsarticle_id', $request->dds_id);
             }
 

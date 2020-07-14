@@ -67,6 +67,17 @@
     padding: 0;
     border: 0;
 }
+
+.aside_message:hover{
+    background: #2d76a8!important;
+}
+
+.aside_message .linkable{
+    cursor: pointer;
+}
+.aside_message .box-body{
+    padding-right: 20px;
+}
 .mess-flat{
     background: url(/images/icons/mail.svg) no-repeat center;
     display: block;

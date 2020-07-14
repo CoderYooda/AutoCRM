@@ -50,6 +50,18 @@
             <div class="item-tag tag hide">
             </div>
         </div>
+            @if(isset($refund) && $refund->id != NULL)
+                <div class="modal-alt-header">
+                    <span class="item-title _500">Возвращено</span>
+                    <div class="item-except @if($refund->wsumm >= $refund->summ) text-success @endif font-weight-bolder h-1x">
+                    <span>
+                        {{ sprintf("%.2f", abs ($refund->wsumm)) }} р / <span id="payed_price">{{ $refund->summ }}</span> р
+                    </span>
+                    </div>
+                    <div class="item-tag tag hide">
+                    </div>
+                </div>
+            @endif
         @endif
         @if(isset($refund) && $refund->id != NULL && (-$refund->wsumm > $refund->summ))
             <div class="modal-alt-header">
@@ -62,6 +74,7 @@
                 <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
             </div>
         @endif
+
 
     </div>
     <form class="RefundStoredListner WarrantStoredListner ShipmentStoredListner" action="{{ route('StoreRefund') }}" method="POST">
@@ -80,7 +93,7 @@
             @if(isset($refund))
             <input type="hidden" name="summ" value="{{ abs($refund->summ) }}">
             <input type="hidden" name="itogo" value="{{ abs($refund->summ) }}">
-            <input type="hidden" name="ostatok" value="{{ abs($refund->summ - -$refund->wsumm) }}">
+            <input type="hidden" name="ostatok" value="{{ $refund->summ - abs($refund->wsumm) }}">
             @endif
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
             <div class="row row-sm">

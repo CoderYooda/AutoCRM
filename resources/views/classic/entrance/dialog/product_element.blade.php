@@ -5,28 +5,36 @@
     data-total="@if(isset($product->pivot->total)) {{ sprintf("%.2f", $product->pivot->total) }} @else 0.00 @endif"
     class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
+
     <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
+
     <td>
         <div class="compressed" style="width: 100px;">{{ $product->article }}</div>
     </td>
+
     <td>
-        <input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem"
-               @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}" @else value="0" @endif
-               type="number"  min="0" step="1">
-    </td>
-    <td>
-        <input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
-               @if(isset($entrance)) value="{{ sprintf("%.2f", $product->pivot->price) }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
-               type="number" min="0" step="0.1" @if(isset($entrance) && $entrance->clientorder) disabled="disabled" @endif >
-    </td>
-    <td>
-        <input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm" value="{{ $product->pivot->total ?? '0.00' }}" disabled type="number">
-    </td>
-    <td>
-        @if(isset($request) && $request['refer'] != null)
-            <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+        @if(!isset($entrance))
+            <input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem" value="{{ $product->pivot->count }}" type="number"  min="0" step="1">
         @else
-            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+            {{ $product->pivot->count }}
+        @endif
+    </td>
+
+    <td>
+        {{ $entrance->providerorder->getArticleEntredCount($product->id) }} / {{ $entrance->providerorder->getArticlesCountById($product->id) }}
+    </td>
+
+    <td>
+        @if(!isset($entrance))
+            <input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm" value="{{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}" disabled type="number">
+        @else
+            {{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}
+        @endif
+    </td>
+
+    <td>
+        @if(!isset($entrance))
+        <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
         @endif
     </td>
 </tr>

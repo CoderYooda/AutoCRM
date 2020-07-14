@@ -23,6 +23,7 @@ class Entrance extends Model
         'company_id',
         'providerorder_id',
         'partner_id',
+        'manager_id',
         'locked',
         'comment',
         'created_at'

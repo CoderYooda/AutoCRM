@@ -83,6 +83,7 @@ class refundDialog extends Modal{
                     window.dialogs['refundDialog' + resp.data.id] = drag_dialog;
                     drag_dialog.tag = 'refundDialog' + resp.data.id;
                     window.helper.initDialogMethods();
+                    object.getBackPayment();
                 });
             }
         });

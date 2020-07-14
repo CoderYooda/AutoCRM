@@ -70,8 +70,11 @@ class PartnerController extends Controller
 
         $partner = null;
 
-        if($request->partner_id != null){
-            $tag .= $request->partner_id;
+        if($request->partner_id != null || $request->user_id != null){
+
+            $p_id = isset($request['partner_id']) ? $request['partner_id'] : $request['user_id'];
+
+            $tag .= $p_id;
             $partner = Partner::with('vehicles', 'passport')->findOrFail($request->partner_id);
 
             if($partner->category->name == 'Анонимы') {
@@ -159,7 +162,7 @@ class PartnerController extends Controller
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
 
         if($request['access']){
-            SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), Auth::user());
+            SystemMessage::sendToCompany(Auth::user()->company()->first()->id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), $partner);
             $user = $partner->user;
             if($user != null){
                 $user->banned_at = null;

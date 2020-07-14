@@ -314,6 +314,21 @@ class cashPage{
         window.openDialog('selectPartner', '&refer=' + 'cash&category_id=' + cat_id + '&target=' + target);
     }
 
+    setField(option, value = null, text, elem = null){
+        let object = this;
+        object[option] = value;
+        document.getElementById(option).value = text;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
+
+        if(value == null){
+            window.notification.notify( 'success', 'Поле очищено');
+        }
+
+        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable ());
+    }
+
     prepareDataForTable(){
         let object = this;
         let data = {};
@@ -325,7 +340,7 @@ class cashPage{
         if(object.any !== []){data.any = object.any;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
 
-
+        if(object.isIncoming !== null){data.isIncoming = object.isIncoming;}
         if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
         return data;
     }
