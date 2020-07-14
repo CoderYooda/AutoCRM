@@ -2,7 +2,6 @@
     data-id="{{ $product->id }}"
     data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->pivot->count)) {{$product->pivot->count}} @else 0 @endif"
     data-price="@if(isset($entrance)) {{ sprintf("%.2f", $product->pivot->price) }}  @else {{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }} @endif"
-    data-total="@if(isset($product->pivot->total)) {{ sprintf("%.2f", $product->pivot->total) }} @else 0.00 @endif"
     class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
 
@@ -25,11 +24,7 @@
     </td>
 
     <td>
-        @if(!isset($entrance))
-            <input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm" value="{{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}" disabled type="number">
-        @else
-            {{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}
-        @endif
+        {{ sprintf("%.2f", $product->pivot->price * $product->pivot->count) }}
     </td>
 
     <td>

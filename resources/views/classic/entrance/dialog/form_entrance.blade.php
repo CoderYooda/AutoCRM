@@ -89,7 +89,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            @if(isset($entrance))
+            @if(!isset($entrance))
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
             @endif

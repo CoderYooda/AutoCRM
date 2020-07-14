@@ -6,6 +6,7 @@ use App\Http\Requests\EntranceRequest;
 use App\Models\EntranceRefund;
 use App\Models\ProviderOrder;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Entrance;
@@ -201,15 +202,13 @@ class EntranceController extends Controller
         $class = 'selectEntranceDialog';
         $query = Entrance::with('partner')
             ->where('company_id', Auth::user()->company->id)
-            ->when($request['string'], function ($q) use ($request) {
+            ->when($request['string'], function (Builder $q) use ($request) {
                 $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
             ->orderBy('created_at', 'DESC')
-            ->limit(30);
+            ->limit(15);
 
         $entrances = $query->get();
-
-        dd($entrances->first()->manager, $entrances->first()->partner);
 
         $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';
 

@@ -150,23 +150,24 @@ class entranceRefundDialog extends Modal{
         let object = this;
 
         let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total, count, price;
-        if(item !== null && item !== 'undefined' && item !== 'null') {
-            total = item.querySelector("input[name='products[" + id + "][total_price]']");
-            count = item.querySelector("input[name='products[" + id + "][count]']");
-            price = item.querySelector("input[name='products[" + id + "][price]']");
-            let vcount = Number(count.value);
-            let vprice = Number(price.value);
-            let vtotal = Number(total.value);
 
-            vtotal = vprice * vcount;
-            total.value = vtotal.toFixed(2);
+        if(item !== null && item !== 'undefined' && item !== 'null') {
+
+            let count_element = item.querySelector("input[name='products[" + id + "][count]']");
+            let price_element = item.querySelector("#product_price_" + id);
+            let total_price_element = item.querySelector("#product_total_price_" + id);
+
+            let value_count = Number(count_element.value);
+            let value_price = Number(price_element.innerText);
+            let value_total = value_count * value_price;
+
+            total_price_element.innerText = value_total.toFixed(2);
 
             object.items.map(function(e){
                 if(e.id === id){
-                    e.total = vtotal;
-                    e.count = vcount;
-                    e.price = vprice;
+                    e.total = value_total;
+                    e.count = value_count;
+                    e.price = value_price;
                 }
             });
         } else {

@@ -406,7 +406,7 @@ class storePage{
                 {title:"№", field:"id", width:80},
                 {title:"Дата", field:"created_at", width:150},
                 {title:"Ответственный", field:"manager_name", align:"left"},
-                {title:"Покупатель", field:"partner_name", align:"left"},
+                {title:"Поставщик", field:"partner_name", align:"left"},
                 {title:"Сумма", field:"wsumm", width:130, align:"left", formatter:priceFormatter}
             ];
         }
