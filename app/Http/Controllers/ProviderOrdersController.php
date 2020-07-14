@@ -360,12 +360,14 @@ class ProviderOrdersController extends Controller
         $field = $request['sorters'][0]['field'] ?? 'created_at';
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
         $size = $request['size'] ? (int)$request['size'] : 30;
+
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
+
         $provider_orders = ProviderOrder::owned()->with('partner', 'manager')
             ->when(is_array($request['provider']), function($query) use ($request) {
                 $query->whereHas('partner', function($query) use ($request){
@@ -399,8 +401,6 @@ class ProviderOrdersController extends Controller
                 $query->where('incomes', $request['entrance_status']);
             })
             ->orderBy($field, $dir)
-            //->toSql();
-        //dd($provider_orders);
             ->paginate($size);
 
         foreach ($provider_orders as $provider_order) {

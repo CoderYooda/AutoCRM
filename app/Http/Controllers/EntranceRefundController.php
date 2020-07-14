@@ -103,12 +103,14 @@ class EntranceRefundController extends Controller
             ->where('company_id', $company_id)
             ->where('store_id', $store_id)
             ->when(is_array($request['provider']), function($query) use ($request) {
-                $query->whereHas('entrance', function($query) use ($request){
-                    $query->whereIn('partner_id', $request['provider']);
+                $query->whereHas('partner', function($query) use ($request){
+                    $query->whereIn('id', $request['provider']);
                 });
             })
             ->when(is_array($request['accountable']), function($query) use ($request) {
-                $query->whereIn('entrances.partner_id', $request['accountable']);
+                $query->whereHas('manager', function($query) use ($request){
+                    $query->whereIn('id', $request['accountable']);
+                });
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('entrances.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);

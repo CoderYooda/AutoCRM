@@ -200,7 +200,7 @@ class EntranceController extends Controller
     public static function selectEntranceDialog(Request $request)
     {
         $class = 'selectEntranceDialog';
-        $query = Entrance::with('partner')
+        $query = Entrance::with('partner', 'articles', 'entrancerefunds', 'entrancerefunds.articles')
             ->where('company_id', Auth::user()->company->id)
             ->when($request['string'], function (Builder $q) use ($request) {
                 $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
@@ -209,6 +209,20 @@ class EntranceController extends Controller
             ->limit(15);
 
         $entrances = $query->get();
+
+        foreach ($entrances as $key => $entrance) {
+            $refunded_count = 0;
+
+            $entrance_refunded = $entrance->entrancerefunds;
+
+            foreach ($entrance_refunded as $entrance_refund) {
+                foreach ($entrance_refund->articles as $product) {
+                    $refunded_count += $product->pivot->count;
+                }
+            }
+
+            if($refunded_count == $entrance->articles->sum('pivot.count')) unset($entrances[$key]);
+        }
 
         $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';
 

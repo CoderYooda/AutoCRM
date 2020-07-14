@@ -26,7 +26,7 @@
             <div>
                 <div class="out_of_search"></div>
                 <div class="mb-15">
-                    Продаж по запросу <b>{{ $request['string'] }}</b> не найдено
+                    Поступлений по запросу <b>{{ $request['string'] }}</b> не найдено
                 </div>
             </div>
             <button onclick="openDialog('entranceDialog')" class="button success mb-15">Новое поступление</button>
@@ -36,7 +36,7 @@
             <div>
                 <div class="out_of_search"></div>
                 <div class="mb-15">
-                    Продаж нет
+                    Поступлений с невозвращенными товарами нет
                 </div>
             </div>
             <button onclick="openDialog('entranceDialog')" class="button success mb-15">Новое поступление</button>
