@@ -353,15 +353,16 @@ class EntranceController extends Controller
         if(!Gate::allows('Удалять поступления')){
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }
+
         $returnIds = null;
 
         if($id == 'array'){
-            $entrances = Entrance::whereIn('id', $request['ids']);
+            $entrances = Entrance::whereIn('id', $request['ids'])->get();
             $this->message = 'Поступления удалены';
-            $returnIds = $entrances->get()->pluck('id');
-            foreach($entrances->get() as $entrance){
-                $store = $entrance->providerorder()->first()->store()->first();
-                foreach($entrance->articles()->get() as $article){
+            $returnIds = $entrances->pluck('id');
+            foreach($entrances as $entrance){
+                $store = $entrance->providerorder->store;
+                foreach($entrance->articles as $article){
                     $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
                 }
 
@@ -371,10 +372,10 @@ class EntranceController extends Controller
                 UA::makeUserAction($entrance, 'delete');
             }
         } else {
-            $entrance = Entrance::where('id', $id)->first();
+            $entrance = Entrance::find($id);
             # Склад с которым оперируем
-            $store = $entrance->providerorder()->first()->store()->first();
-            foreach($entrance->articles()->get() as $article){
+            $store = $entrance->providerorder->store;
+            foreach($entrance->articles as $article){
                 $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
             }
             $returnIds = $entrance->id;

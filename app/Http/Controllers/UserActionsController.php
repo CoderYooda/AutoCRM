@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\UserAction;
 use App\Http\Controllers\HelpController as HC;
@@ -127,7 +128,7 @@ class UserActionsController extends Controller
     public function searchPartner(Request $request)
     {
         $target = HC::selectTarget();
-        $members = Auth::user()->company()->first()->members()
+        $members = Auth::user()->company->members()
             ->when($request['search'] != null, function($q) use ($request){
                 $q->whereHas('partner', function($q) use ($request){
                     $q->where('fio', 'like', '%' . $request['search'] . '%');
@@ -194,15 +195,16 @@ class UserActionsController extends Controller
             case 'Supplier': $model_text = 'производитель'; break;
             case 'Refund': $model_text = 'возврат'; break;
             case 'User': $model_text = 'пользователя'; break;
+            case 'EntranceRefund': $model_text = 'возврат поставщику'; break;
         }
 
-        $action = new UserAction();
-        $action->user_id = Auth::user()->id;
-        $action->company_id = Auth::user()->company()->first()->id;
-        $action->model = $className;
-        $action->type = $type;
-        $action->model_id = $model->id;
-        $action->message = $message_text . ' ' . $model_text . ' #' . $model->id;
-        $action->save();
+        UserAction::create([
+            'user_id' => Auth::id(),
+            'company_id' => Auth::user()->company_id,
+            'model' => $className,
+            'type' => $type,
+            'model_id' => $model->id,
+            'message' => $message_text . ' ' . $model_text . ' #' . $model->id,
+        ]);
     }
 }

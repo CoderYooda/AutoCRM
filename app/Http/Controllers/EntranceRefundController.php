@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\UserActionsController as UA;
 use App\Http\Requests\EntranceRefundStoreRequest;
 use App\Models\Article;
 use App\Models\Entrance;
 use App\Models\EntranceRefund;
+use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +18,8 @@ class EntranceRefundController extends Controller
     public function store(EntranceRefundStoreRequest $request)
     {
         $entrance = Entrance::with('articles')->find($request->entrance_id);
+
+        $store = Store::find(session('store_id'));
 
         #Создание заявки на возврат
         $entrance_refund = EntranceRefund::create([
@@ -39,7 +43,15 @@ class EntranceRefundController extends Controller
                 'price' => $price,
                 'total' => $price * $product['count']
             ]);
+
+            $store->decreaseArticleCount($product['id'], $product['count']);
+            $store->recalculateMidprice($product['id']);
         }
+
+        #Добавляем к балансу контакта
+        $entrance->providerorder->partner->subtraction($entrance->totalPrice);
+
+        UA::makeUserAction($entrance_refund, 'create');
 
         return response()->json([
             'id' => $entrance_refund->id,
