@@ -1,7 +1,7 @@
 <tr
     data-id="{{ $product->id }}"
     data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->pivot->count)) {{$product->pivot->count}} @else 0 @endif"
-    data-price="@if(isset($entrance)) {{ sprintf("%.2f", $product->pivot->price) }}  @else {{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }} @endif"
+    data-price="@if(isset($entrance)) {{ sprintf("%.2f", $product->pivot->price) }}  @else {{ 0 /* TODO RRC */ }} @endif"
     class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
 

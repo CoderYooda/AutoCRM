@@ -22,7 +22,7 @@
             <span class="item-title _500">Розничная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->getMidPriceByStoreId(session('store_id')) }}
+                   {{ 0 /* TODO RRC*/ }}
                 </span>
             </div>
             <div class="item-tag tag hide">

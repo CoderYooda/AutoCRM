@@ -162,7 +162,7 @@ class ShipmentsController extends Controller
                 if($shipment->delete()){
                     $articles = $shipment->articles()->get();
                     foreach($articles as $article){
-                        $store = $shipment->store()->first();
+                        $store = $shipment->store;
                         $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
                     }
                     #Добавляем к балансу контакта
@@ -183,7 +183,7 @@ class ShipmentsController extends Controller
             $articles = $shipment->articles()->get();
 
             foreach($articles as $article){
-                $store = $shipment->store()->first();
+                $store = $shipment->store;
                 $store->increaseArticleCount($article->id, $shipment->getArticlesCountById($article->id));
             }
             #Добавляем к балансу контакта
@@ -233,9 +233,8 @@ class ShipmentsController extends Controller
             $request['inpercents'] = true;
         }
 
-        //TODO добавить в валидатор проверку и выводить ошибку мб?
         if($request['inpercents']){
-            if((int)$request['discount'] >= 100){
+            if((int)$request['discount'] > 100) {
                 $request['discount'] = 100;
             }
             if((int)$request['discount'] <= 0){
@@ -265,11 +264,10 @@ class ShipmentsController extends Controller
         UA::makeUserAction($shipment, $wasExisted ? 'fresh' : 'create');
         ##########################################################################
 
-        $store = $shipment->store()->first();
+        $store = $shipment->store;
 
         if($shipmentWasExisted){
-            $articles = $shipment->articles()->get();
-            foreach($articles as $article){
+            foreach($shipment->articles as $article){
                 $store->increaseArticleCount($article->id, $article->pivot->count);
                 if($shipment->clientOrder){
                     $shipment->clientOrder->decreaseShippedCount($article->id, $article->pivot->count);
@@ -279,7 +277,6 @@ class ShipmentsController extends Controller
 
         if(count($request['products']))
         {
-            //TODO check
             $ids = collect($request['products'])->pluck('id');
             # Синхронизируем товары к складу
             $store->articles()->syncWithoutDetaching($ids, false);
@@ -314,15 +311,15 @@ class ShipmentsController extends Controller
                 'article_id' => (int)$product['id'],
                 'shipment_id' => $shipment->id,
                 'count' => (int)$vcount,
-                'midprice' => $store->getMidPriceById((int)$product['id']),
+//                'midprice' => $store->getMidPriceById((int)$product['id']),
                 'price' => (double)$vprice,
                 'total' => (double)$vtotal,
                 'status' => 'given'
             ];
 
-            if(!$shipmentWasExisted){
-                $pivot_data['midprice'] = $store->getMidPriceById($product['id']);
-            }
+//            if(!$shipmentWasExisted){
+//                $pivot_data['midprice'] = $store->getMidPriceById($product['id']);
+//            }
 
             $shipment_data[] = $pivot_data;
         }

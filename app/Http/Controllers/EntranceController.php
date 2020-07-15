@@ -91,11 +91,11 @@ class EntranceController extends Controller
                 'store_id' => $providerorder->store_id,
                 'company_id' => $entrance->company_id,
                 'count' => $product['count'],
-                'price' => $price,
+                'price' => $price
             ]);
 
             $store->increaseArticleCount($product['id'], $product['count']);
-            $store->recalculateMidprice($product['id']);
+//            $store->recalculateMidprice($product['id']);
         }
 
         $product_ids = array_column($request->products, 'id');

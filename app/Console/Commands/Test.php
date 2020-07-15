@@ -26,7 +26,6 @@ class Test extends Command
 
     public function handle()
     {
-        EntranceRefund::latest()->delete();
-        DB::table('article_entrance_refund')->latest()->delete();
+
     }
 }

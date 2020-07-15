@@ -56,13 +56,13 @@
     </div>
 
     @if(!isset($product))
+
     <div class="form-group">
         <label for="supplier_id">Начальные данные</label>
         @foreach($stores as $store)
-            <div>для магазина "{{ $store->name }}"</div>
+            <div>Для магазина "{{ $store->name }}"</div>
             <div class="input-group mb-3">
-                <input type="number" name="storage[{{ $store->id }}][count]" class="form-control brad-3 mr-5" placeholder="Начальное кол-во" >
-                <input type="number" step="0.1" name="storage[{{ $store->id }}][midprice]" class="form-control ml-5" placeholder="Усредненная цена" >
+                <input type="number" min="0" name="storage[{{ $store->id }}][retail_price]" class="form-control ml-0" placeholder="Усредненная цена" >
             </div>
         @endforeach
     </div>

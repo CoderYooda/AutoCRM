@@ -287,7 +287,7 @@ class ProviderOrdersController extends Controller
             }
 
             $store = Store::where('id', $request['store_id'])->first();
-            $store->recalculateMidprice($product['id']);
+//            $store->recalculateMidprice($product['id']);
 
         }
         $provider_order->freshWsumm();

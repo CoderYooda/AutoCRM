@@ -97,7 +97,7 @@ class StoreImportProduct implements ShouldQueue
             'warehouse' => ['array'],
             'warehouse.*' => ['string', 'max:2'],
             'count' => ['integer', 'between:0,1000000'],
-            'midprice' => ['numeric', 'between::0,1000000'],
+//            'midprice' => ['numeric', 'between::0,1000000'],
             'barcode_manufacturer' => ['string'],
             'barcode_warehouse' => ['string']
         ]);
@@ -151,7 +151,7 @@ class StoreImportProduct implements ShouldQueue
 
         $article->stores()->updateExistingPivot($store->id, [
             'count' => $attributes['count'],
-            'midprice' => $attributes['midprice'],
+//            'midprice' => $attributes['midprice'],
             'storage_zone' => $attributes['warehouse'][0] ?? '',
             'storage_rack' => $attributes['warehouse'][1] ?? '',
             'storage_vertical' => $attributes['warehouse'][2] ?? '',

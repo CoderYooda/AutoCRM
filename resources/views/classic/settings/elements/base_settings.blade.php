@@ -5,13 +5,22 @@
         @csrf
         <input name="id" type="hidden" value="{{ $company->id ?? '' }}" />
         @foreach($settings as $setting)
+
             <div class="form-group w-350 mt-5">
                 <label>{{ $setting->name }}</label>
                 @if($setting->type == 'select')
-                    <select class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
+                    <select onchange="{{ $class }}.changeField(this)" class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
                         @if($setting->model == 'Role')
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}" @if($setting->value == $role->id) selected @endif>{{ $role->name }}</option>
+                            @endforeach
+                        @elseif($setting->model == 'PriceSource')
+                            @foreach(['retail' => 'Розничная цена', 'fifo-lifo' => 'FIFO/LIFO'] as $key => $value)
+                                <option value="{{ $key }}" @if($setting->value == $key) selected @endif>{{ $value }}</option>
+                            @endforeach
+                        @elseif($setting->model == 'RRC')
+                            @foreach(['fifo', 'lifo'] as $type)
+                                <option value="{{ $type }}" @if($type == $setting->value) selected @endif>{{ strtoupper($type) }}</option>
                             @endforeach
                         @endif
                     </select>

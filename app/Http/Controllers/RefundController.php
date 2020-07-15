@@ -34,7 +34,8 @@ class RefundController extends Controller
         ]);
     }
 
-    public function getSideInfo(){
+    public function getSideInfo()
+    {
         //TODO
     }
 

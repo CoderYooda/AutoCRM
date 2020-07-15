@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Request as FR;
 
 class HelpController extends Controller
 {
-    //TODO check
     public static function selectTarget()
     {
         return request('target') ?: 'ajax-content';

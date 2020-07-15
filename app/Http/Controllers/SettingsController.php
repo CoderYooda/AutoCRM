@@ -56,7 +56,7 @@ class SettingsController extends Controller
     public static function indexTab($request)
     {
         $company = Auth::user()->company()->first();
-        $settings = Setting::owned()->get();
+        $settings = Setting::owned()->orderBy('sort')->get();
         $roles = Role::where('company_id', Auth::user()->company->id)->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
             return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings', 'roles'));
@@ -153,7 +153,7 @@ class SettingsController extends Controller
     {
         Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'model' => NULL,  'type' => 'number', 'key' => 'markup', 'value' => '10']);
         Setting::create(['name' => 'Роль для новых пользователей', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'select', 'key' => 'role_id', 'value' => $defaultrole->id]);
-        Setting::create(['name' => 'Расчётный день', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'number', 'key' => 'day_id', 'value' => '1']);
+        Setting::create(['name' => 'Расчётный день', 'company_id' => $company->id, 'model' => null, 'type' => 'number', 'key' => 'day_id', 'value' => '1']);
     }
 
     public function baseStore(Request $request)

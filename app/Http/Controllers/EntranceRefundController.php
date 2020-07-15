@@ -45,7 +45,9 @@ class EntranceRefundController extends Controller
             ]);
 
             $store->decreaseArticleCount($product['id'], $product['count']);
-            $store->recalculateMidprice($product['id']);
+//            $store->recalculateMidprice($product['id']);
+
+            $entrance_refund->entrance->articles()->where('article_id', $product['id'])->increment('released_count', $product['count']);
         }
 
         #Добавляем к балансу контакта
@@ -59,6 +61,11 @@ class EntranceRefundController extends Controller
             'event' => 'EntranceRefundStored',
             'message' => 'Возврат по поступлению успешно создан.'
         ]);
+    }
+
+    public function getSideInfo()
+    {
+        //TODO
     }
 
     public static function entranceRefundDialog(Request $request)

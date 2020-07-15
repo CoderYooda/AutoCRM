@@ -22,7 +22,7 @@
                type="number" disabled></td>
 
     <td><input onClick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
-               @if(isset($client_order)) value="{{ $product->pivot->price }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
+               @if(isset($client_order)) value="{{ $product->pivot->price }}"  @else value="{{ 0 /* TODO RRC */ }}" @endif
                type="number" min="0" step="0.1" @if(isset($client_order) && $client_order->getShippedCount($product->id) > 0) disabled="disabled"  @endif></td>
 
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"

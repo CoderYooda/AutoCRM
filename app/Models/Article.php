@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\SettingsController;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class Article extends Model
 {
@@ -53,7 +53,51 @@ class Article extends Model
     public function stores()
     {
         return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
+            ->withPivot('location', 'count', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
+//            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
+    }
+
+    public function getPrice()
+    {
+        $company = Auth::user()->company->load('settings');
+
+        $price_source = $company->getSettingField('Источник цены');
+        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+
+        $store_id = session('store_id');
+
+        if($price_source == 'retail') {
+            return $this->stores->find($store_id)->pivot->retail_price;
+        }
+        else {
+
+            $count = 3;
+
+            $products = DB::table('article_entrance')->where(['article_id' => $this->id, 'store_id' => Auth::user()->store_id])->get();
+
+            $selected_products = [];
+
+            foreach ($products as $product) {
+
+                if(!$count) break;
+
+                if($product->count) {
+                    if(!isset($selected_products[$product->id])) $selected_products[$product->id] = 0;
+
+                    $selected_products[$product->id]++;
+
+                    $count--;
+                }
+            }
+
+            DB::table('article_entrance')->update('')
+        }
+    }
+
+    public function entrances()
+    {
+        return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
+            ->withPivot('price');
     }
 
     public static function makeCorrectArticle(string $article)
@@ -109,55 +153,55 @@ class Article extends Model
         return $this->stores()->where('store_id', '!=', $store_id)->sum('count');
     }
 
-    public function getMidPriceByStoreId($store_id, $isInteger = null)
-    {
-        $relation = $this->stores()->where('store_id',  $store_id)->first();
-
-        $markup = (int)SettingsController::getSettingByKey('markup')->value;
-
-        $midprice = 0;
-        if($relation){
-            $midprice = $relation->pivot->midprice;
-        }
-
-        $retail = $midprice + ( $midprice / 100 * $markup );
-
-        if( $retail === 0){
-            if($isInteger){
-                return 0;
-            } else {
-                return 'Не уст.';
-            }
-        } else {
-            if($isInteger){
-                return (int)$retail;
-            } else {
-                return number_format($retail, 2, ',', ' ') . ' ₽';
-            }
-        }
-
-    }
+//    public function getMidPriceByStoreId($store_id, $isInteger = null)
+//    {
+//        $relation = $this->stores()->where('store_id',  $store_id)->first();
+//
+//        $markup = (int)SettingsController::getSettingByKey('markup')->value;
+//
+//        $midprice = 0;
+//        if($relation){
+//            $midprice = $relation->pivot->midprice;
+//        }
+//
+//        $retail = $midprice + ( $midprice / 100 * $markup );
+//
+//        if( $retail === 0){
+//            if($isInteger){
+//                return 0;
+//            } else {
+//                return 'Не уст.';
+//            }
+//        } else {
+//            if($isInteger){
+//                return (int)$retail;
+//            } else {
+//                return number_format($retail, 2, ',', ' ') . ' ₽';
+//            }
+//        }
+//
+//    }
 
     public function getReservedCount()
     {
         return 1;
     }
 
-    public function getMidPriceInStoreId($store_id)
-    {
-        $article = $this->stores()->get()->where('id', $store_id)->first();
-
-        if($article){
-            $midprice = $article->pivot->midprice;
-            if($midprice === null){
-                $midprice = 0;
-            }
-        } else {
-            $midprice = 0;
-        }
-
-        return $midprice;
-    }
+//    public function getMidPriceInStoreId($store_id)
+//    {
+//        $article = $this->stores()->get()->where('id', $store_id)->first();
+//
+//        if($article){
+//            $midprice = $article->pivot->midprice;
+//            if($midprice === null){
+//                $midprice = 0;
+//            }
+//        } else {
+//            $midprice = 0;
+//        }
+//
+//        return $midprice;
+//    }
 
     public function addToStore($store_id, $count)
     {

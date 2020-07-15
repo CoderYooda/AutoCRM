@@ -1,7 +1,7 @@
 <tr
         data-id="{{ $product->id }}"
         data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->pivot->count)) {{$product->pivot->count}} @else 0 @endif"
-        data-price="@if(isset($shipment)) {{ sprintf("%.2f", $product->pivot->price) }}  @else {{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }} @endif"
+        data-price="@if(isset($shipment)) {{ sprintf("%.2f", $product->pivot->price) }}  @else {{ 0 /* TODO RRC*/ }} @endif"
         data-total="@if(isset($product->pivot->total)) {{ sprintf("%.2f", $product->pivot->total) }} @else 0.00 @endif"
         class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
@@ -12,7 +12,7 @@
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}" @else value="0" @endif
                type="number"  min="0" step="1"></td>
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
-               @if(isset($shipment)) value="{{ sprintf("%.2f", $product->pivot->price) }}"  @else value="{{ $product->getMidPriceByStoreId(Auth::user()->getStoreFirst()->id, true) }}" @endif
+               @if(isset($shipment)) value="{{ sprintf("%.2f", $product->pivot->price) }}"  @else value="{{ $product->getPrice() }}" @endif
                type="number" min="0" step="0.1" @if(isset($shipment) && $shipment->clientorder) disabled="disabled" @endif ></td>
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
                @if(isset($product->pivot->total)) value="{{ sprintf("%.2f", $product->pivot->total) }}"@else value="0.00" @endif
