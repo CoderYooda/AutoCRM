@@ -125,7 +125,7 @@ class shipmentDialog extends Modal{
     init(){
         let object = this;
 
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
+        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 300);
         ///Вешаем обрабочик на поле скидки/////////////
         let discount = object.root_dialog.querySelector('input[name=discount]');
         discount.addEventListener("keydown", fn);
@@ -249,7 +249,7 @@ class shipmentDialog extends Modal{
                 [].forEach.call(inputs, function(elem){
                     var fn = window.helper.debounce(function(e) {
                         object.recalculate(e);
-                    }, 50);
+                    }, 300);
                     elem.addEventListener("keydown", fn);
                     elem.addEventListener("change", fn);
                     elem.addEventListener("paste", fn);
@@ -373,7 +373,7 @@ class shipmentDialog extends Modal{
         [].forEach.call(inputs, function(elem){
             var fn = window.helper.debounce(function(e) {
                 object.recalculate(e);
-            }, 50);
+            }, 300);
             elem.addEventListener("keydown", fn);
             elem.addEventListener("paste", fn);
             elem.addEventListener("delete", fn);
@@ -472,29 +472,44 @@ class shipmentDialog extends Modal{
     }
 
     recalculateItem(id){
-        let object = this;
 
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + id + "][price]']");
+        let price_element = this.root_dialog.querySelector("input[name='products[" + id + "][price]']");
+        let count_element = this.root_dialog.querySelector("input[name='products[" + id + "][count]']");
+        let total_element = this.root_dialog.querySelector("input[name='products[" + id + "][total_price]']");
 
-        let vcount = Number(count.value);
-        let vprice = Number(price.value);
-        let vtotal = Number(total.value);
+        let price = Number(price_element.value);
+        let count = Number(count_element.value);
 
-        vtotal = vprice * vcount;
-        total.value = vtotal.toFixed(2);
+        if(!this.current_dialog.querySelector('[name="id"]').value.length) {
+            axios.post('/product/' + id + '/price', {
+                count: count_element.value
+            })
+            .then(response => {
+                price = response.data.price;
 
-        object.items.map(function(e){
-            if(e.id === id){
-                e.total = vtotal;
-                e.count = vcount;
-                e.price = vprice;
+                this.setItemPrice(id, price_element, total_element, price, count);
+            })
+            .catch(response => {
+                console.log(response);
+            });
+        }
+        else this.setItemPrice(id, price_element, total_element, price, count);
+    }
+
+    setItemPrice(id, price_element, total_element, price, count) {
+        let total = (price * count);
+
+        total_element.value = total;
+        price_element.value = price;
+
+        this.items.map(function (e) {
+            if (e.id === id) {
+                e.total = total;
+                e.count = count;
+                e.price = price;
             }
         });
     }
-
 
 }
 export default shipmentDialog;

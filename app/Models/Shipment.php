@@ -42,9 +42,15 @@ class Shipment extends Model
         $user = Auth::user();
         if($user){
             static::addGlobalScope('shipment', function (Builder $builder) use ($user) {
-                $builder->where('company_id', $user->company()->first()->id);
+                $builder->where('company_id', $user->company->id);
             });
         }
+    }
+
+    public function entrances()
+    {
+        return $this->belongsToMany(Entrance::class, 'shipment_entrance', 'shipment_id', 'entrance_id')
+            ->withPivot('article_id', 'count');
     }
 
     public function company()

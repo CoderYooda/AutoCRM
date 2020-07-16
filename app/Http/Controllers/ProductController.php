@@ -73,6 +73,11 @@ class ProductController extends Controller
         ], $this->status);
     }
 
+    public function getPrice(Article $product, Request $request)
+    {
+        return response()->json(['price' => $product->getPrice($request->count)]);
+    }
+
     public function addToList(Request $request)
     {
         if ($request['data'] != null && count($request['data']) > 0) {

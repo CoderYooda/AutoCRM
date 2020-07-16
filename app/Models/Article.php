@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\OwnedTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
@@ -57,7 +58,87 @@ class Article extends Model
 //            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
-    public function getPrice()
+    public function decrementFromEntrance(int $count)
+    {
+        $company = Auth::user()->company->load('settings');
+
+        $store_id = session('store_id');
+
+        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+
+        $products = DB::table('article_entrance')
+            ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            ->where('released_count', '>', '0')
+            ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
+            ->get();
+
+        foreach ($products as $product) {
+
+            if(!$count) break;
+
+            if($product->released_count <= 0) continue;
+
+            $count--;
+            $product->released_count--;
+
+            DB::table('article_entrance')->where('id', $product->id)->update(['released_count' => $product->released_count]);
+        }
+    }
+
+    public function incrementToEntrance(int $count)
+    {
+        $company = Auth::user()->company->load('settings');
+
+        $store_id = session('store_id');
+
+        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+
+        $products = DB::table('article_entrance')
+            ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            ->whereRaw('count != released_count')
+            ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
+            ->get();
+
+        $entrances = [];
+
+        foreach ($products as $product) {
+
+            for($i = $product->released_count; $i < $product->count; $i++) {
+
+                if(!$count) break 2;
+
+                $count--;
+                $product->released_count++;
+
+                DB::table('article_entrance')->where('id', $product->id)->update(['released_count' => $product->released_count]);
+
+                if(!isset($entrances[$product->entrance_id])) $entrances[$product->entrance_id] = 0;
+                $entrances[$product->entrance_id] ++;
+            }
+        }
+
+        return $entrances;
+    }
+
+    public function getEntrancesCount()
+    {
+        $company = Auth::user()->company->load('settings');
+
+        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+
+        $store_id = session('store_id');
+
+        $count_info = DB::table('article_entrance')
+            ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
+            ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            ->whereRaw('count != released_count')
+            ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
+            ->first();
+
+        return $count_info->count - $count_info->released_count;
+    }
+
+    public function getPrice(int $count = 1)
     {
         $company = Auth::user()->company->load('settings');
 
@@ -69,28 +150,30 @@ class Article extends Model
         if($price_source == 'retail') {
             return $this->stores->find($store_id)->pivot->retail_price;
         }
-        else {
+        else { /* FIFO-LIFO */
 
-            $count = 3;
+            $products = DB::table('article_entrance')
+                ->where(['article_id' => $this->id, 'store_id' => $store_id])
+                ->whereRaw('count != released_count')
+                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
+                ->get();
 
-            $products = DB::table('article_entrance')->where(['article_id' => $this->id, 'store_id' => Auth::user()->store_id])->get();
-
-            $selected_products = [];
+            $retail_price = 0;
+            $found_count = 0;
 
             foreach ($products as $product) {
 
-                if(!$count) break;
+                for($i = $product->count; $i != -1; $i--) {
 
-                if($product->count) {
-                    if(!isset($selected_products[$product->id])) $selected_products[$product->id] = 0;
+                    $retail_price += $product->price;
 
-                    $selected_products[$product->id]++;
+                    $found_count++;
 
-                    $count--;
+                    if ($count == $found_count) break 2;
                 }
             }
 
-            DB::table('article_entrance')->update('')
+            return $found_count ? ($retail_price / $found_count) : 0;
         }
     }
 

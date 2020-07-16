@@ -115,7 +115,7 @@
                     <div class="form-group row row-sm">
                         <div class="col-sm-12">
                             @if(!isset($entrance_refund))
-                            <textarea placeholder="Комментарий" style="resize: none;height: 128px;" class="form-control" name="comment" id="refund_dialog_focused" cols="30" rows="5">{{ $entrance_refund->comment ?? '' }}</textarea>
+                            <textarea placeholder="Комментарий" style="resize: none;height: 128px;" class="form-control" name="comment" cols="30" rows="5">{{ $entrance_refund->comment ?? '' }}</textarea>
                             @else
                                 <label>Комментарий:</label>
                                 {{ $entrance_refund->comment ?? 'Не указан' }}

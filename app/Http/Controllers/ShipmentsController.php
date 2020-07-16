@@ -227,11 +227,7 @@ class ShipmentsController extends Controller
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать продажи' : 'Создавать продажи');
 
-        $shipment = Shipment::firstOrNew(['id' => $request['id']]);
-
-        if($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0'){$request['inpercents'] = false;} else {
-            $request['inpercents'] = true;
-        }
+        $request['inpercents'] = !($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0');
 
         if($request['inpercents']){
             if((int)$request['discount'] > 100) {
@@ -242,18 +238,32 @@ class ShipmentsController extends Controller
             }
         }
 
+        $shipment = Shipment::firstOrNew(['id' => $request['id']]);
+
+        #Проверка наличия данного количества на складе
+        $products = Article::whereIn('id', array_keys($request['products']))->get();
+
+        foreach($products as $product) {
+
+            $count = $request['products'][$product->id]['count'];
+            $shipment_count = $shipment->articles->find($product->id)->pivot->count ?? 0;
+
+            if(($product->getEntrancesCount($count)) < ($count - $shipment_count)) {
+                $name = 'products.' . $product->id . '.count';
+                return response()->json([
+                    'messages' => [$name => ['В наличие нет такого количества.']]
+                ], 422);
+            }
+        }
+
         if($shipment->exists){
-            $shipmentWasExisted = true;
             $this->message = 'Продажа обновлена';
             #Отнимаем с баланса контакта
-            $shipment->partner()->first()->addition($shipment->itogo);
-            $wasExisted = true;
+            $shipment->partner->addition($shipment->itogo);
         } else {
-            $shipmentWasExisted = false;
             $shipment->company_id = Auth::user()->company->id;
             $shipment->manager_id = Auth::user()->partner->id;
             $this->message = 'Продажа сохранена';
-            $wasExisted = false;
         }
 
         $shipment->fill($request->only($shipment->fields));
@@ -261,12 +271,13 @@ class ShipmentsController extends Controller
         $shipment->balance = 0;
         $shipment->itogo = 0;
         $shipment->save();
-        UA::makeUserAction($shipment, $wasExisted ? 'fresh' : 'create');
+
+        UA::makeUserAction($shipment, $shipment->wasRecentlyCreated ? 'create' : 'store');
         ##########################################################################
 
         $store = $shipment->store;
 
-        if($shipmentWasExisted){
+        if(!$shipment->wasRecentlyCreated) {
             foreach($shipment->articles as $article){
                 $store->increaseArticleCount($article->id, $article->pivot->count);
                 if($shipment->clientOrder){
@@ -275,25 +286,49 @@ class ShipmentsController extends Controller
             }
         }
 
-        if(count($request['products']))
-        {
-            $ids = collect($request['products'])->pluck('id');
-            # Синхронизируем товары к складу
-            $store->articles()->syncWithoutDetaching($ids, false);
+        # Синхронизируем товары к складу
+        if(count($request['products'])) {
+            $store->articles()->syncWithoutDetaching(array_keys($request['products']), false);
         }
 
-        $shipment_data = [];
+        #Возвращаем товар в поступления для перезаписи
+        if(count($shipment->entrances)) {
 
-        if($shipment->clientOrder){
-            foreach($request['products'] as $product) {
-                if($product['count'] > $shipment->clientOrder->getAvailableToShippingArticlesCount($product['id'])){
-                    $name = 'products.' . $product['id'] . '.count';
-                    return response()->json([
-                        'messages' => [$name => ['Кол - во не может быть больше чем в заказе']]
-                    ], 422);
-                }
+            $entrances_pivot = DB::table('shipment_entrance')->where('shipment_id', $shipment->id)->get();
+
+            foreach ($entrances_pivot as $entrance_pivot) {
+
+                DB::table('article_entrance')->where([
+                    'entrance_id' => $entrance_pivot->entrance_id,
+                    'article_id' => $entrance_pivot->article_id
+                ])
+                ->decrement('released_count', $entrance_pivot->count);
+            }
+
+            #Удаляем данные из промежуточной таблицы
+            $shipment->entrances()->sync([]);
+        }
+
+        #Заполняем связующую таблицу shipment_entrance и резервируем товар в article_entrance
+        foreach ($products as $product) {
+
+            $count = $request['products'][$product->id]['count'];
+
+            $entrances_id = $product->incrementToEntrance($count);
+
+            foreach ($entrances_id as $entrance_id => $count) {
+                DB::table('shipment_entrance')->insert([
+                    'shipment_id' => $shipment->id,
+                    'entrance_id' => $entrance_id,
+                    'article_id' => $product->id,
+                    'count' => $count
+                ]);
             }
         }
+
+        #Убавляем количество на складе
+
+        $shipment_data = [];
 
         foreach($request['products'] as $product) {
 
@@ -311,22 +346,16 @@ class ShipmentsController extends Controller
                 'article_id' => (int)$product['id'],
                 'shipment_id' => $shipment->id,
                 'count' => (int)$vcount,
-//                'midprice' => $store->getMidPriceById((int)$product['id']),
                 'price' => (double)$vprice,
                 'total' => (double)$vtotal,
                 'status' => 'given'
             ];
 
-//            if(!$shipmentWasExisted){
-//                $pivot_data['midprice'] = $store->getMidPriceById($product['id']);
-//            }
-
             $shipment_data[] = $pivot_data;
         }
-        #Удаление всех отношений и запись новых (кастомный sync)
-        //dd($shipment_data);
-        $shipment->syncArticles($shipment->id, $shipment_data);
 
+        #Удаление всех отношений и запись новых (кастомный sync)
+        $shipment->syncArticles($shipment->id, $shipment_data);
 
         if($request['inpercents']){
             $shipment->itogo = $shipment->summ - ($shipment->summ / 100 * $request['discount']);
@@ -334,17 +363,12 @@ class ShipmentsController extends Controller
             if($request['discount'] >= $shipment->summ){
                 $request['discount'] = $shipment->summ;
             }
-            if($request['discount'] <= 0){
-                $request['discount'] = 0;
-            }
             $shipment->discount = $request['discount'];
             $shipment->itogo = $shipment->summ - $request['discount'];
         }
 
         #Добавляем к балансу контакта
-        $shipment->partner()->first()->subtraction($shipment->itogo);
-
-
+        $shipment->partner->subtraction($shipment->itogo);
 
         $shipment->foundstring = str_replace(["-","!","?",".", ""],  "", trim($shipment->id . $shipment->partner->foundstring));
 

@@ -74,12 +74,12 @@ class RefundController extends Controller
             $refundWasExisted = true;
             $this->message = 'Возврат обновлен';
             #Добавляем к балансу контакта
-            $refund->partner()->first()->subtraction($refund->summ);
+            $refund->partner->subtraction($refund->summ);
         } else {
             $refundWasExisted = false;
             //$shipment->company_id = Auth::user()->company()->first()->id;
-            $refund->company_id = Auth::user()->company()->first()->id;
-            $refund->manager_id = Auth::user()->partner()->first()->id;
+            $refund->company_id = Auth::user()->company->id;
+            $refund->manager_id = Auth::user()->partner->id;
             $this->message = 'Возврат сохранен';
         }
 
@@ -90,13 +90,28 @@ class RefundController extends Controller
         $refund->summ = 0;
         $refund->save();
 
-        $store = $refund->shipment->store()->first();
+        $shipment = $refund->shipment;
+
+        $store = $shipment->store;
 
         if($refundWasExisted){
             foreach($refund->articles()->get() as $article){
                 $store->decreaseArticleCount($article->id, $article->pivot->count);
                 $refund->shipment->decreaseRefundedCount($article->id, $article->pivot->count);
             }
+        }
+
+        #Возвращаем товар в поступления для перезаписи
+
+        $entrances_pivot = DB::table('shipment_entrance')->where('shipment_id', $shipment->id)->get();
+
+        foreach ($entrances_pivot as $entrance_pivot) {
+
+            DB::table('article_entrance')->where([
+                'entrance_id' => $entrance_pivot->entrance_id,
+                'article_id' => $entrance_pivot->article_id
+            ])
+            ->decrement('released_count', $entrance_pivot->count);
         }
 
         $refund_data = [];
