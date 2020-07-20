@@ -46,7 +46,21 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->orderBy('created_at', 'DESC')->limit(10)->get();
+        $providerorders = ProviderOrder::owned()->with('articles')->orderBy('created_at', 'DESC')->limit(10)->get();
+
+        foreach ($providerorders as $key => $providerorder) {
+
+            $product_count = 0;
+
+            foreach ($providerorder->articles as $product) {
+                $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id);
+
+                $product_count += $count;
+            }
+
+            if($product_count <= 0) unset($providerorders[$key]);
+        }
+
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
             'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
@@ -84,15 +98,15 @@ class ProviderOrdersController extends Controller
         return $data;
     }
 
-    public function select($id)
+    public function select($id, Request $request)
     {
-        $providerorder = ProviderOrder::owned()->where('id', $id)->first();
+        $providerorder = ProviderOrder::find($id);
         if(!$providerorder){
             return response()->json([
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
-        $request = request();
+
         return response()->json([
             'id' => $providerorder->id,
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),

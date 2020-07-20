@@ -1,4 +1,4 @@
-@foreach($providerorder->articles()->get() as $product)
+@foreach($providerorder->articles as $product)
 @php $class = 'entranceDialog' @endphp
 @php $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id) @endphp
 @if($count > 0)
