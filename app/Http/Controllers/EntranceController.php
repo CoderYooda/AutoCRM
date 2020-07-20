@@ -169,16 +169,19 @@ class EntranceController extends Controller
             $products = $entrance->articles;
             $entrance_refunded = $entrance->entrancerefunds->load('articles');
 
-            $refunded_count = [];
+            $available_count = [];
+
+            foreach ($entrance->articles as $product) {
+                $available_count[$product->id] = $product->pivot->count - $product->pivot->released_count;
+            }
 
             foreach ($entrance_refunded as $entrance_refund) {
                 foreach ($entrance_refund->articles as $product) {
-                    if(!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
-                    $refunded_count[$product->id] += $product->pivot->count;
+                    $available_count[$product->id] -= $product->pivot->count;
                 }
             }
 
-            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'refunded_count', 'products', 'request'))->render();
+            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
         }
 
         return response()->json([
@@ -204,6 +207,9 @@ class EntranceController extends Controller
             ->where('company_id', Auth::user()->company->id)
             ->when($request['string'], function (Builder $q) use ($request) {
                 $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
+            })
+            ->whereHas('articles', function (Builder $query) {
+                $query->whereRaw('released_count < count');
             })
             ->orderBy('created_at', 'DESC')
             ->limit(15);

@@ -17,8 +17,9 @@ class RefundRequest extends FormRequest
     {
         return [
             'shipment_id' => ['required', 'exists:shipments,id'],
-            'products' => ['required'],
-            'products.*.count' => ['integer', 'min:1', 'max:9999'],
+            'products' => ['required', 'array'],
+            'products.*.id' => ['required', 'exists:articles,id'],
+            'products.*.count' => ['integer', 'min:1', 'max:9999']
         ];
     }
 

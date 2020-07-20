@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RefundRequest;
+use App\Models\Article;
 use App\Models\Refund;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
@@ -62,13 +63,18 @@ class RefundController extends Controller
     {
         PermissionController::canByPregMatch('Редактировать возвраты');
         $refund = Refund::firstOrNew(['id' => $request['id']]);
-//        dd(1);
-//        if(!isset($request['products']) || $request['products'] == []) {
-//            return response()->json([
-//                'system_message' => ['Проведение возврата без товаров невозможно']
-//            ], 422);
-//        }
+        $shipment = Shipment::find($request->shipment_id);
 
+        $products = $request->products;
+
+        foreach($products as $product) {
+            if ($product['count'] > $shipment->getAvailableToRefundArticlesCount($product['id'])) {
+                $name = 'products.' . $product['id'] . '.count';
+                return response()->json([
+                    'messages' => [$name => ['Кол - во не может быть больше чем в продаже']]
+                ], 422);
+            }
+        }
 
         if($refund->exists){
             $refundWasExisted = true;
@@ -83,57 +89,54 @@ class RefundController extends Controller
             $this->message = 'Возврат сохранен';
         }
 
-
-
         $refund->fill($request->only($refund->fields));
-        $refund->partner_id = $refund->shipment->partner->id;
+        $refund->partner_id = $shipment->partner_id;
         $refund->summ = 0;
         $refund->save();
-
-        $shipment = $refund->shipment;
 
         $store = $shipment->store;
 
         if($refundWasExisted){
-            foreach($refund->articles()->get() as $article){
+            foreach($refund->articles as $article){
                 $store->decreaseArticleCount($article->id, $article->pivot->count);
-                $refund->shipment->decreaseRefundedCount($article->id, $article->pivot->count);
+                $shipment->decreaseRefundedCount($article->id, $article->pivot->count);
             }
         }
 
-        #Возвращаем товар в поступления для перезаписи
+        #Возврат товара в поступление
+        if(count($shipment->entrances)) {
 
-        $entrances_pivot = DB::table('shipment_entrance')->where('shipment_id', $shipment->id)->get();
+            foreach ($products as $product) {
 
-        foreach ($entrances_pivot as $entrance_pivot) {
+                for($i = (int)$product['count']; $i != 0; $i--) {
 
-            DB::table('article_entrance')->where([
-                'entrance_id' => $entrance_pivot->entrance_id,
-                'article_id' => $entrance_pivot->article_id
-            ])
-            ->decrement('released_count', $entrance_pivot->count);
-        }
+                    foreach ($shipment->entrances as $entrance) {
 
-        $refund_data = [];
+                        if($entrance->articles->find($product['id'])->pivot->released_count) {
 
-        foreach($request['products'] as $product) {
-            if ($refund->shipment) {
-                if ($product['count'] > $refund->shipment->getAvailableToRefundArticlesCount($product['id'])) {
-                    $name = 'products.' . $product['id'] . '.count';
-                    return response()->json([
-                        'messages' => [$name => ['Кол - во не может быть больше чем в продаже']]
-                    ], 422);
+                            DB::table('article_entrance')
+                                ->where('entrance_id', $entrance->id)
+                                ->where('article_id', $product['id'])
+                                ->where('released_count', '>', 0)
+                                ->decrement('released_count');
+
+                            $entrance->articles->find($product['id'])->pivot->released_count--;
+
+                            break;
+                        }
+                    }
                 }
             }
         }
 
+        $refund_data = [];
 
         foreach($request['products'] as $product) {
 
             $store->increaseArticleCount($product['id'], $product['count']);
 
             $vcount = $product['count'];
-            $vprice = $refund->shipment->getProductPriceFromShipment($product['id']);
+            $vprice = $shipment->getProductPriceFromShipment($product['id']);
             $vtotal = $vprice * $vcount;
             $refund->summ += $vtotal;
             $pivot_data = [
@@ -156,8 +159,8 @@ class RefundController extends Controller
         #Добавляем к балансу контакта
         $refund->partner->addition($refund->summ);
 
-        foreach($refund->articles as $article){
-            $refund->shipment->increaseRefundedCount($article->id, $article->pivot->count);
+        foreach($shipment->articles as $product) {
+            $shipment->increaseRefundedCount($product->id, $product->pivot->refunded_count + $products[$product->id]['count']);
         }
 
         UA::makeUserAction($refund, $refundWasExisted ? 'fresh' : 'create');

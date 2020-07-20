@@ -7,7 +7,7 @@ use App\Models\ClientOrder;
 use App\Models\Refund;
 use App\Models\Shipment;
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
@@ -93,12 +93,12 @@ class ShipmentsController extends Controller
             ->limit(30);
 
         if($request['hide_paid']) {
-           $refund_ids = Refund::where('store_id', Auth::user()->partner->store_id)->pluck('shipment_id');
-
-           $query->whereNotIn('id', $refund_ids);
+            $query->whereHas('articles', function (Builder $query) {
+                $query->whereRaw('count != refunded_count');
+            });
         }
 
-        $shipments = $query->get();;
+        $shipments = $query->get();
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 
@@ -111,15 +111,26 @@ class ShipmentsController extends Controller
 
     public function select(Shipment $shipment, Request $request)
     {
-        $products = $shipment->notRefundedArticles()->get();
+        $products = $shipment->load('refunds', 'refunds.articles')->notRefundedArticles()->get();
+
+        $refunded_count = [];
+
+        foreach ($shipment->refunds as $refund) {
+
+            foreach ($refund->articles as $product) {
+                $refunded_count[$product->id] = $product->pivot->count;
+            }
+        }
+
         if(!$shipment){
             return response()->json([
                 'message' => 'Продажа не найдена, возможно она была удалёна',
             ], 422);
         }
+
         return response()->json([
             'id' => $shipment->id,
-            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.products_element', compact('products', 'request'))->render(),
+            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.products_element', compact('products', 'refunded_count', 'request'))->render(),
             'items' => $products,
             'partner' => $shipment->partner->outputName(),
             'balance' => $shipment->partner->balance,
@@ -243,17 +254,24 @@ class ShipmentsController extends Controller
         #Проверка наличия данного количества на складе
         $products = Article::whereIn('id', array_keys($request['products']))->get();
 
+        $errors = [];
+
         foreach($products as $product) {
 
             $count = $request['products'][$product->id]['count'];
             $shipment_count = $shipment->articles->find($product->id)->pivot->count ?? 0;
 
-            if(($product->getEntrancesCount($count)) < ($count - $shipment_count)) {
+            if($product->getEntrancesCount($count) < ($count - $shipment_count)) {
                 $name = 'products.' . $product->id . '.count';
-                return response()->json([
-                    'messages' => [$name => ['В наличие нет такого количества.']]
-                ], 422);
+
+                $errors[$name] = ['В наличие нет такого количества.'];
             }
+        }
+
+        if(count($errors)) {
+            return response()->json([
+                'messages' => $errors
+            ], 422);
         }
 
         if($shipment->exists){
@@ -304,9 +322,6 @@ class ShipmentsController extends Controller
                 ])
                 ->decrement('released_count', $entrance_pivot->count);
             }
-
-            #Удаляем данные из промежуточной таблицы
-            $shipment->entrances()->sync([]);
         }
 
         #Заполняем связующую таблицу shipment_entrance и резервируем товар в article_entrance

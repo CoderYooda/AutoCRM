@@ -95,7 +95,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-5" for="discount">Поставщик</label>
                         <div class="col-sm-4 input-group no-pr">
-                            <input title="{{ $entrance_refund->partner->official_name ?? 'Не указан' }}" id="partner_butt" type="text" name="partner_id" value="{{ $entrance_refund->partner->official_name ?? 'Не указан' }}" class="form-control" disabled="disabled">
+                            <input title="{{ $entrance_refund->partner->official_name ?? 'Не указан' }}" id="partner_butt" type="text" name="partner_id" value="{{ $entrance_refund->partner->official_name ?? 'Не указан' }}" class="form-control" disabled>
                         </div>
                         <div class="col-sm-3">
                             <span class="partner-balance">
@@ -134,7 +134,7 @@
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Кол-во</th>
-                            <th width="20%">Возвращено / Поступило</th>
+                            <th width="20%">Реализовано / Поступило</th>
                             <th width="10%">Цена</th>
                             <th width="10%">Всего</th>
                             <th width="5%"></th>
@@ -151,10 +151,8 @@
         </div>
         <div class="modal-footer" style="white-space: nowrap">
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            @if(!$entrance_refund)
-                <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
-                <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
-            @endif
+            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+            <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
         </div>
         <div class="system_message">
 

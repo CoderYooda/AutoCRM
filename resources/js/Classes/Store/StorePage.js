@@ -409,6 +409,7 @@ class storePage{
                         cell.getRow().toggleSelect();
                     }},
                 {title:"№", field:"id", width:80},
+                {title:"Поступление", field:"entrance_id", width:80},
                 {title:"Дата", field:"created_at", width:150},
                 {title:"Ответственный", field:"manager_name", align:"left"},
                 {title:"Поставщик", field:"partner_name", align:"left"},
@@ -533,15 +534,27 @@ class storePage{
 
                 items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
                 items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
-                if(object.contextDop == 'shipment'){
+                if(object.contextDop == 'shipment') {
                     items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + row.getData().id);} }));
                 }
                 items.push(new ContextualItem({type:'seperator'}));
-                items.push(new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }));
 
-                if(object.selectedData.length > 0){
-                    items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
-                }
+                // items.push(new ContextualItem({
+                //     label: 'Удалить', onClick: () => {
+                //         window.entity.remove(object.contextDop, row.getData().id, object)
+                //     },
+                //     shortcut: 'Ctrl+A'
+                // }));
+                //
+                // if (object.selectedData.length) {
+                //     items.push(new ContextualItem({
+                //         label: 'Удалить выделенные', onClick: () => {
+                //             window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)
+                //         },
+                //         shortcut: 'Ctrl+A'
+                //     }));
+                // }
+
                 object.tableContextual = null;
                 object.tableContextual = new Contextual({
                     isSticky: false,

@@ -22,7 +22,7 @@ class EntranceRefundStoreRequest extends FormRequest
             'store_id' => ['required', 'exists:stores,id'],
             'entrance_id' => ['required', 'exists:entrances,id'],
             'products' => ['required', 'array'],
-            'products.*.count' => ['integer', 'min:1', new CheckArticlesOnValid],
+            'products.*.count' => ['integer', 'min:1'],
             'comment' => ['nullable', 'string', 'max:512']
         ];
     }

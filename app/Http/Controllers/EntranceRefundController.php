@@ -19,10 +19,33 @@ class EntranceRefundController extends Controller
     {
         $entrance = Entrance::with('articles')->find($request->entrance_id);
 
+        $errors = [];
+
+        foreach ($request->products as $product) {
+            $entrance_count = $entrance->articles->find($product['id'])->pivot->count;
+            $entrance_released_count = $entrance->articles->find($product['id'])->pivot->count;
+            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product) {
+                return $query->articles->where('id', $product['id'])->sum('pivot.count');
+            });
+
+            $available_count = $entrance_count - ($entrance_released_count - $entrance_refund_count);
+
+            if((int)$product['count'] > $available_count) {
+                $name = 'products.' . $product['id'] . '.count';
+                $errors[$name] = ['Данное количество недоступно.'];
+            }
+        }
+
+        if(count($errors)) {
+            return response()->json([
+                'messages' => $errors
+            ], 422);
+        }
+
         $store = Store::find(session('store_id'));
 
         #Создание заявки на возврат
-        $entrance_refund = EntranceRefund::create([
+        $entrance_refund = EntranceRefund::updateOrCreate(['id' => $request->id], [
             'partner_id' => $request->partner_id,
             'manager_id' => Auth::user()->partner->id,
             'store_id' => $request->store_id,
@@ -30,6 +53,14 @@ class EntranceRefundController extends Controller
             'company_id' => Auth::user()->company_id,
             'comment' => $request->comment
         ]);
+
+        #Отнимаем имеющиеся количество для сохранения
+        foreach ($entrance_refund->articles as $product) {
+
+            $entrance_refund->entrance->articles()->where('article_id', $product->id)->decrement('released_count', $product->pivot->count);
+        }
+
+        $entrance_refund->articles()->sync([]);
 
         #Создаем новые пивоты
         foreach ($request->products as $product) {
@@ -45,8 +76,8 @@ class EntranceRefundController extends Controller
             ]);
 
             $store->decreaseArticleCount($product['id'], $product['count']);
-//            $store->recalculateMidprice($product['id']);
 
+            #Резервируем количество в поступлениях
             $entrance_refund->entrance->articles()->where('article_id', $product['id'])->increment('released_count', $product['count']);
         }
 

@@ -16,6 +16,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use phpDocumentor\Reflection\Types\Collection;

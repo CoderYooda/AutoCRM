@@ -47,6 +47,11 @@ class Shipment extends Model
         }
     }
 
+    public function hasRelations()
+    {
+        return $this->refunds->count() || $this->warrants->count();
+    }
+
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'shipment_entrance', 'shipment_id', 'entrance_id')
@@ -150,6 +155,11 @@ class Shipment extends Model
     public function elements()
     {
         return $this->articles->merge($this->stores);
+    }
+
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class, 'shipment_id', 'id');
     }
 
     public function getAvailableToRefundArticlesCount($article_id)
