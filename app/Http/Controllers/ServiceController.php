@@ -11,12 +11,16 @@ class ServiceController extends Controller
 {
     public function show(Service $service)
     {
-        return view(get_template() . '.system.settings_provider_dialog', compact('service'))
+        $view = view(get_template() . '.system.includes.settings_provider_dialog_inner', compact('service'))
             ->with('company_id', Auth::user()->company_id);
+
+        return response()->json([
+            'html' => $view->render()
+        ]);
     }
 
     public function save(Service $service, Company $company, SaveRequest $request)
     {
-
+        dd($service, $company);
     }
 }

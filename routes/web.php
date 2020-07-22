@@ -243,6 +243,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 
     #Сервисы
+    Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
     Route::post('/services/{service}/{company}/save', 'ServiceController@save')->name('ServiceSave');
 
     #Телефоны

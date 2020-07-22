@@ -35,7 +35,7 @@
                                     </div>
                                     <div>
                                         <label class="ui-switch float-right mt-5">
-                                            <input onclick="settings.toggleProviderOrder(this, {{ $service->id }}, {{ $company_id }})" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
+                                            <input onclick="settings.toggleProviderOrder(this, {{ $service->id }})" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
                                         </label>
                                     </div>
                                 </div>

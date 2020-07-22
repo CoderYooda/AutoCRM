@@ -48,37 +48,45 @@ class settingsPage{
 
         helper.initTabs('settings_services_tabs');
 
-        let modal_html = document.getElementById('settings_provider_dialog');
-        let options = {
-            backdrop: true,
-            keyboard: true,
-        };
-
-        this.modal = new bootstrap.Modal(modal_html, options);
+        this.initProviderModal();
 
         this.addNumberMasks();
     }
 
-    toggleProviderOrder(element, service_id, company_id) {
+    initProviderModal() {
+
+        let modal_element = document.getElementById('settings_provider_dialog');
+        this.modal = new bootstrap.Modal(modal_element, {
+            backdrop: true,
+            keyboard: true,
+        });
+
+        console.log(modal_element);
+
+        modal_element.addEventListener('hide.bs.modal', function (event) {
+            event.preventDefault();
+
+            console.log('try close');
+
+        }, false);
+    }
+
+    toggleProviderOrder(element, service_id) {
 
         event.preventDefault();
 
         if(element.checked) { //Если был выключен
 
             axios.get('/services/' + service_id)
-                .then(response => {
+            .then(response => {
 
-                });
+                this.modal.setContent(response.data.html);
 
-            let modal_html = document.getElementById('settings_provider_dialog');
-
-            let title_element = modal_html.querySelector('.modal-title');
-            title_element.innerText = provider;
-
-            let service_element = modal_html.querySelector('.service_id');
-            service_element.value = service_id;
-
-            this.modal.show();
+                this.modal.show();
+            })
+            .catch(response => {
+                console.log(response);
+            });
         }
     }
 
