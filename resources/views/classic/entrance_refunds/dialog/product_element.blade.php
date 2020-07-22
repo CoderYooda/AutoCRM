@@ -1,7 +1,8 @@
 @if(!isset($entrance_refund) && $available_count[$product->id] || isset($entrance_refund))
+
     <tr
         data-id="{{ $product->id }}"
-        data-count="{{ $product->pivot->count }}"
+        data-count="{{ $entrance_refund ? $entrance_refund->articles->find($product->id)->pivot->count : $available_count[$product->id] }}"
         data-price="{{ $product->pivot->price }}"
         data-total="{{ sprintf("%.2f", $product->pivot->total) }}"
         class="product_list_elem" id="product_selected_{{ $product->id }}">
@@ -9,7 +10,7 @@
         <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
         <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
         <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
-        <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm" value="{{ $available_count[$product->id] ?? $product->pivot->count }}" type="number" min="1" step="1"></td>
+        <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm" value="{{ $entrance_refund ? $entrance_refund->articles->find($product->id)->pivot->count : $available_count[$product->id] }}" type="number" min="1" step="1"></td>
         <td>{{ $product->pivot->released_count }} / {{ $product->pivot->count }}</td>
         <td id="product_price_{{ $product->id }}">{{ sprintf("%.2f", $product->pivot->price) }}</td>
         <td id="product_total_price_{{ $product->id }}">{{ sprintf("%.2f", ($available_count[$product->id] ?? $product->pivot->count) * $product->pivot->price) }}</td>
