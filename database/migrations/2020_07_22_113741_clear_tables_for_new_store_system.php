@@ -30,7 +30,6 @@ class ClearTablesForNewStoreSystem extends Migration
         DB::table('refund')->delete();
         DB::table('shipments')->delete();
         DB::table('shipment_entrance')->delete();
-        DB::table('stores')->delete();
         DB::table('user_actions')->delete();
         DB::table('warrants')->delete();
 
