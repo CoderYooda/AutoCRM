@@ -23,7 +23,7 @@ class EntranceRefundController extends Controller
 
         foreach ($request->products as $product) {
             $entrance_count = $entrance->articles->find($product['id'])->pivot->count;
-            $entrance_released_count = $entrance->articles->find($product['id'])->pivot->count;
+            $entrance_released_count = $entrance->articles->find($product['id'])->pivot->released_count;
             $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product) {
                 return $query->articles->where('id', $product['id'])->sum('pivot.count');
             });

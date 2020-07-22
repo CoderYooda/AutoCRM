@@ -12,6 +12,7 @@ use App\Models\DdsArticle;
 use App\Models\Partner;
 use App\Models\Payment;
 use App\Models\ImportHistory;
+use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -71,6 +72,14 @@ class SettingsController extends Controller
             return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.cashbox_container', compact('cashboxes', 'request'));
         }
         return view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes','request'));
+    }
+
+    public static function servicesTab($request)
+    {
+        $services = Service::all();
+        $company = Auth::user()->company->load('serviceproviders');
+
+        return view(get_template() . '.settings.services', compact('services', 'company', 'request'));
     }
 
     public static function requisitesTab(Request $request)

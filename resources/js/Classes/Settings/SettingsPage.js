@@ -34,7 +34,7 @@ class settingsPage{
         });
 
         if(form != null){
-            object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',  function(){
+            object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',function() {
                 let id = object.root.querySelector('input[name=id]').value;
                 if(id !== null){
                     //let root_id = object.root.id;
@@ -46,7 +46,40 @@ class settingsPage{
             });
         }
 
+        helper.initTabs('settings_services_tabs');
+
+        let modal_html = document.getElementById('settings_provider_dialog');
+        let options = {
+            backdrop: true,
+            keyboard: true,
+        };
+
+        this.modal = new bootstrap.Modal(modal_html, options);
+
         this.addNumberMasks();
+    }
+
+    toggleProviderOrder(element, service_id, company_id) {
+
+        event.preventDefault();
+
+        if(element.checked) { //Если был выключен
+
+            axios.get('/services/' + service_id)
+                .then(response => {
+
+                });
+
+            let modal_html = document.getElementById('settings_provider_dialog');
+
+            let title_element = modal_html.querySelector('.modal-title');
+            title_element.innerText = provider;
+
+            let service_element = modal_html.querySelector('.service_id');
+            service_element.value = service_id;
+
+            this.modal.show();
+        }
     }
 
     writingInn(element) {

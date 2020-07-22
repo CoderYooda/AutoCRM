@@ -24,6 +24,16 @@ class Company extends Model
         return $this->hasMany(Store::class, 'company_id');
     }
 
+    public function isServiceProviderActive($service_id)
+    {
+        return $this->serviceproviders->find($service_id)->enabled ?? false;
+    }
+
+    public function serviceproviders()
+    {
+        return $this->belongsToMany(Service::class, 'service_company')->withPivot('key', 'enabled');
+    }
+
     public function cashboxes()
     {
         return $this->hasMany(Cashbox::class, 'company_id');

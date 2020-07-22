@@ -184,9 +184,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/store/import', 'StoreController@import')->name('StoreImport');
     Route::post('/store/imports/{import}', 'StoreController@applyImport')->name('ApplyImport');
 
-    #Услуги
-    Route::get('/services', 'ServicesController@index')->name('ServicesIndex');
-
     #История
     Route::get('/actions', 'UserActionsController@index')->name('ActionsIndex');
     Route::post('/actions/freshPage', 'UserActionsController@freshPage')->name('ActionsFreshPage');
@@ -245,6 +242,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
     Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 
+    #Сервисы
+    Route::post('/services/{service}/{company}/save', 'ServiceController@save')->name('ServiceSave');
+
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
@@ -271,7 +271,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/settings/master/store', 'SettingsController@storeFromMaster')->name('StoreFromMaster');
     Route::post('/settings/master/close', 'SettingsController@closeSettingsMaster')->name('CloseMaster');
-
 
 
 
