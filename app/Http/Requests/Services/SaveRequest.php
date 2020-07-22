@@ -15,7 +15,9 @@ class SaveRequest extends FormRequest
     {
         return [
             'company_id' => ['integer', 'exists:companies,id'],
-            'service_id' => ['integer', 'exists:services,id']
+            'service_id' => ['integer', 'exists:services,id'],
+            'key' => ['string', 'min:1', 'max:255'],
+            'enabled' => ['integer', 'min:0', 'max:1']
         ];
     }
 }

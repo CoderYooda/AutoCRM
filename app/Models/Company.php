@@ -26,7 +26,7 @@ class Company extends Model
 
     public function isServiceProviderActive($service_id)
     {
-        return $this->serviceproviders->find($service_id)->enabled ?? false;
+        return $this->serviceproviders->find($service_id)->pivot->enabled ?? 0;
     }
 
     public function serviceproviders()

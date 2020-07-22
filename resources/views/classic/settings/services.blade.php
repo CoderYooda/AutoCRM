@@ -10,10 +10,10 @@
             <div class="modal-header tab-container">
                 <ul id="settings_services_tabs" class="nav header_selects_navs" role="tablist">
                     <li class="nav-item active" role="tab">
-                        <a id="tab_providerorders-tab" href="#tab_providerorders" data-height="false" aria-controls="tab_providerorders" aria-selected="true" class="nav-link button primary">Проценка</a>
+                        <a id="tab_providerorders-tab" href="#tab_providerorders" data-height="false" aria-controls="tab_providerorders" aria-selected="true" class="button primary">Проценка</a>
                     </li>
                     <li class="nav-item ml-10" role="tab">
-                        <a id="tab_messages-tab" href="#tab_messages" data-height="false" aria-controls="tab_messages" aria-selected="false" class="nav-link button primary">Мессенджеры</a>
+                        <a id="tab_messages-tab" href="#tab_messages" data-height="false" aria-controls="tab_messages" aria-selected="false" class="button primary">Мессенджеры</a>
                     </li>
                 </ul>
             </div>
@@ -29,13 +29,13 @@
                             @continue($service->category_id != 0)
 
                             <div class="col-sm-3 pr-0 mb-15">
-                                <div class="p-10 box text-center" style="min-height: 200px;">
+                                <div class="p-10 box pointer text-center" onclick="settings.toggleProviderOrder(this, {{ $service->id }})" style="min-height: 200px;">
                                     <div>
                                         <img style="max-width: 80%; height: 150px;" src="{{ asset('/images/logotypes/' . $service->img) }}">
                                     </div>
                                     <div>
                                         <label class="ui-switch float-right mt-5">
-                                            <input onclick="settings.toggleProviderOrder(this, {{ $service->id }})" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
+                                            <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
                                         </label>
                                     </div>
                                 </div>

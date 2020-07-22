@@ -48,26 +48,22 @@ class settingsPage{
 
         helper.initTabs('settings_services_tabs');
 
-        this.initProviderModal();
+        this.initServiceProviderModal();
 
         this.addNumberMasks();
     }
 
-    initProviderModal() {
+    initServiceProviderModal() {
 
         let modal_element = document.getElementById('settings_provider_dialog');
+
         this.modal = new bootstrap.Modal(modal_element, {
             backdrop: true,
-            keyboard: true,
+            keyboard: true
         });
-
-        console.log(modal_element);
 
         modal_element.addEventListener('hide.bs.modal', function (event) {
             event.preventDefault();
-
-            console.log('try close');
-
         }, false);
     }
 
@@ -75,9 +71,7 @@ class settingsPage{
 
         event.preventDefault();
 
-        if(element.checked) { //Если был выключен
-
-            axios.get('/services/' + service_id)
+        axios.get('/services/' + service_id)
             .then(response => {
 
                 this.modal.setContent(response.data.html);
@@ -87,7 +81,25 @@ class settingsPage{
             .catch(response => {
                 console.log(response);
             });
-        }
+    }
+
+    saveService(form_element) {
+
+        this.asd = 454;
+
+        window.axform.send(form_element, response => {
+
+            if(response.status === 200) {
+
+                let service_id = response.data.service.id;
+
+                let input = document.getElementById('service_' + service_id);
+
+                input.checked = !input.checked;
+
+                this.modal.hide();
+            }
+        });
     }
 
     writingInn(element) {

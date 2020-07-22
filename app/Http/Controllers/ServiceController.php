@@ -12,15 +12,29 @@ class ServiceController extends Controller
     public function show(Service $service)
     {
         $view = view(get_template() . '.system.includes.settings_provider_dialog_inner', compact('service'))
-            ->with('company_id', Auth::user()->company_id);
+            ->with('company', Auth::user()->company);
 
         return response()->json([
             'html' => $view->render()
         ]);
     }
 
-    public function save(Service $service, Company $company, SaveRequest $request)
+    public function save(Service $service, SaveRequest $request)
     {
-        dd($service, $company);
+        $company = Company::find($request->company_id);
+
+        $company->serviceproviders()->detach($service->id);
+
+        $company->serviceproviders()->attach($service->id, [
+                'key' => $request->key,
+                'enabled' => !$request->enabled
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Настройка успешно сохранена.',
+            'type' => 'success',
+            'service' => $service
+        ], 200);
     }
 }

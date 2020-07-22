@@ -205,6 +205,16 @@ class clientorderDialog extends Modal{
         });
     }
 
+    setField(type, value, text, elem = null){
+        let object = this;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
+        object.root_dialog.querySelector('#' + type).value = value;
+        object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
+        object.recalculate();
+    }
+
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
