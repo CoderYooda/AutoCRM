@@ -1,10 +1,6 @@
 <?php
 
-use App\Models\Cashbox;
-use App\Models\Partner;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ClearTablesForNewStoreSystem extends Migration
@@ -38,8 +34,8 @@ class ClearTablesForNewStoreSystem extends Migration
         DB::table('user_actions')->delete();
         DB::table('warrants')->delete();
 
-        Partner::update(['balance' => 0]);
-        Cashbox::update(['balance' => 0]);
+        DB::table('partners')->update(['balance' => 0]);
+        DB::table('cashboxes')->update(['balance' => 0]);
     }
 
     /**
