@@ -181,7 +181,8 @@ class ProductController extends Controller
         }
 
         $stores = Store::owned()->get();
-        $category = Category::where('id', $category_select)->first();
+        $category = Category::find($category_select);
+
         return response()->json([
             'tag' => $tag,
             'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()

@@ -45,7 +45,7 @@
             @endif
             <button onclick="{{ $class }}.openSelectSupplierDialog()" type="button" name="supplier_id" class="supplier_select form-control text-left button_select">
                 @if(isset($product))
-                    {{ $product->supplier()->first()->name }}
+                    {{ $product->supplier->name }}
                 @elseif(isset($request) && $request['brand'] != NULL)
                     {{ $request['brand'] }}
                 @else
@@ -55,17 +55,14 @@
         </div>
     </div>
 
-    @if(!isset($product))
-
     <div class="form-group">
         <label for="supplier_id">Начальные данные</label>
         @foreach($stores as $store)
             <div>Для магазина "{{ $store->name }}"</div>
             <div class="input-group mb-3">
-                <input type="number" min="0" name="storage[{{ $store->id }}][retail_price]" class="form-control ml-0" placeholder="Усредненная цена" >
+                <input type="number" min="0" name="storage[{{ $store->id }}][retail_price]" class="form-control ml-0" placeholder="Розничная цена" value="@if($product) {{ $product->stores->find($store->id)->pivot->retail_price ?? '0' }} @endif" >
             </div>
         @endforeach
     </div>
-    @endif
 
 </div>

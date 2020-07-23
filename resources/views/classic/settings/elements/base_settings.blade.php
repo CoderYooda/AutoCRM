@@ -30,7 +30,7 @@
             </div>
         @endforeach
         @can('Редактировать настройки')
-            <button type="submit" class="button m-t">Сохранить</button>
+            <button type="button" class="button m-t">Сохранить</button>
         @endcan
     </form>
 </div>

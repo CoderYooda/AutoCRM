@@ -58,7 +58,7 @@
         @elseif(isset($category)){{ $category->id }}
         @else 2 @endif
             ">
-        <input class="supplier_select" type="hidden" name="supplier_id" value="@if(isset($product)){{ $product->supplier()->first()->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@endif">
+        <input class="supplier_select" type="hidden" name="supplier_id" value="@if(isset($product)){{ $product->supplier->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@endif">
         @if(isset($product) && $product->id != NULL)
             <input type="hidden" name="id" value="{{ $product->id }}">
         @endif

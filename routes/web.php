@@ -91,6 +91,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::get('/inn/{inn}', 'InnController@getInfo')->name('getInnInfo');
     });
 
+    Route::get('/test', 'API\ProviderStoreController@tableData');
+
+    Route::get('/provider_stores/tabledata', 'API/ProviderStoreController@tableData')->name('ProviderStore');
+
+
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
 
     #Продажи

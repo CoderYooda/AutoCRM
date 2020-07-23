@@ -46,11 +46,9 @@ class settingsPage{
             });
         }
 
-        helper.initTabs('settings_services_tabs');
-
-        this.initServiceProviderModal();
-
         this.addNumberMasks();
+
+        this.linked();
     }
 
     initServiceProviderModal() {
@@ -84,8 +82,6 @@ class settingsPage{
     }
 
     saveService(form_element) {
-
-        this.asd = 454;
 
         window.axform.send(form_element, response => {
 
@@ -198,7 +194,21 @@ class settingsPage{
     }
 
     linked(){
-        this.active_tab = this.getCurrentActiveTab();
+         this.active_tab = this.getCurrentActiveTab();
+
+        if(this.active_tab === 'services') {
+            this.initServiceProviderModal();
+
+            this.initTabs('settings_services_tabs');
+        }
+    }
+
+    initTabs(element_id) {
+        let ul_element = document.getElementById('settings_services_tabs');
+
+        let a_elements = ul_element.querySelector('a');
+
+
     }
 
     getCurrentActiveTab(){

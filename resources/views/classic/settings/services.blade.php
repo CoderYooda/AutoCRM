@@ -4,23 +4,23 @@
 
 @section('tab')
 
-    <div id="ajax-table-services" style="margin: 15px 15px 15px 0;">
 
+    <div id="ajax-table-services" style="margin: 15px 15px 15px 0;">
         <div class="box ml-15">
             <div class="modal-header tab-container">
-                <ul id="settings_services_tabs" class="nav header_selects_navs" role="tablist">
-                    <li class="nav-item active" role="tab">
-                        <a id="tab_providerorders-tab" href="#tab_providerorders" data-height="false" aria-controls="tab_providerorders" aria-selected="true" class="button primary">Проценка</a>
+                <ul id="settings_services_tabs" class="nav header_selects_navs">
+                    <li class="nav-item active">
+                        <a href="#tab_providerorders" class="button primary">Проценка</a>
                     </li>
-                    <li class="nav-item ml-10" role="tab">
-                        <a id="tab_messages-tab" href="#tab_messages" data-height="false" aria-controls="tab_messages" aria-selected="false" class="button primary">Мессенджеры</a>
+                    <li class="nav-item ml-10">
+                        <a href="#tab_messages" class="button primary">Мессенджеры</a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div class="tab-content">
-            <div id="tab_providerorders" role="tabpanel" aria-labelledby="tab_providerorders-tab" class="tab-pane active">
+            <div id="tab_providerorders" class="tab-pane">
                 <div class="d-flex">
                     <div class="row row-sm">
 
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <div id="tab_messages" role="tabpanel" aria-labelledby="tab_messages-tab" class="tab-pane">
+            <div id="tab_messages" class="tab-pane">
                 123
             </div>
 

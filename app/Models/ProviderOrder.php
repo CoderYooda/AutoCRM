@@ -128,17 +128,19 @@ class ProviderOrder extends Model
         $plan = $this->getPlanArticleCount();
         $fact = $this->getEnteredArticleCount();
 
-        if($fact == 0) {
-            $this->incomes = 0;
-        } else if($fact > 0 && $fact < $plan){
-            $this->incomes = 1;
-        } else if($fact == $plan){
-            $this->incomes = 2;
-        } else if($fact > $plan){
-            $this->incomes = 3;
-        }
-        $this->save();
+        $status = 0;
 
+        if(!$fact) {
+            $status = 0;
+        } else if($fact && $fact < $plan){
+            $status = 1;
+        } else if($fact == $plan){
+            $status = 2;
+        } else if($fact > $plan){
+            $status = 3;
+        }
+
+        $this->update(['incomes' => $status]);
     }
 
     public function getArticlesCountById($id){

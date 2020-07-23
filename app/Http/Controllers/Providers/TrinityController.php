@@ -49,7 +49,7 @@ class TrinityController extends Controller
     protected function query($url, $context, $asArray = true){
         $this->error = '';
         $data = @file_get_contents($url, false, $context);
-        if (!$data){
+        if (!$data) {
             $this->error = (!$error = error_get_last()) ? 'Ошибка при получении данных' : $error['message'];
             return array();
         }

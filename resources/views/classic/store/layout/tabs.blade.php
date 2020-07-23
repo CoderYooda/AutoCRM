@@ -12,8 +12,8 @@
             </li>
         @endcan
 {{--            @can('Смотреть заявки поставщикам')--}}
-            <li id="provider_store" data-tab="provider_store" class="@if($request['active_tab'] == 'provider_store') active @endif">
-                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}">Заявки поставщикам</a>
+            <li id="provider_stores" data-tab="provider_stores" class="@if($request['active_tab'] == 'provider_stores') active @endif">
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_stores', 'target' => 'ajax-tab-content']) }}">Склады поставщиков</a>
             </li>
 {{--            @endcan--}}
         @can('Смотреть заявки поставщикам')

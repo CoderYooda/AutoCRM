@@ -23,7 +23,7 @@
                             <span class="badge badge-pill primary">Арт</span> {{ $article->article }}
                         </div>
                         <div class="item-except text-sm text-muted h-1x">
-                            <span class="badge badge-pill primary">Произв.</span> {{ $article->supplier()->first()->name }}
+                            <span class="badge badge-pill primary">Произв.</span> {{ $article->supplier->name }}
                         </div>
                     </div>
                     @if($request['refer'] != null)

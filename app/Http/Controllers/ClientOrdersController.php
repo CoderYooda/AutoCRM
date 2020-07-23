@@ -260,7 +260,7 @@ class ClientOrdersController extends Controller
                     $actor_product->save();
 
                     $prepared_article = mb_strtolower(str_replace(' ', '', $actor_product->article));
-                    $prepared_supplier = mb_strtolower(str_replace(' ', '', $actor_product->supplier()->first()->name));
+                    $prepared_supplier = mb_strtolower(str_replace(' ', '', $actor_product->supplier->name));
                     $prepared_name = mb_strtolower(str_replace(' ', '', $actor_product->name));
                     $prepared_barcode = mb_strtolower(str_replace(' ', '', $actor_product->barcode));
 

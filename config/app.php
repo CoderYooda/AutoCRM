@@ -72,6 +72,8 @@ return [
 
         Barryvdh\Debugbar\ServiceProvider::class,
 
+        \App\Providers\AppProviderStoreService::class
+
     ],
 
     /*
