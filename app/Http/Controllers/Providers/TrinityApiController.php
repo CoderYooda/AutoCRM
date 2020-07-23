@@ -8,18 +8,33 @@ use App\Http\Controllers\Providers\TrinityController;
 
 class TrinityApiController extends Controller
 {
-    public function searchBrands(Request $request)
+    public static function searchBrands(string $search)
     {
         $brands['count'] = 0;
-        if($request['search'] != null){
-            $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
-            $brands = $tp->searchBrands($request['search'], $online = true, $asArray = true);
+
+        $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
+        $products = $tp->searchBrands($search, $online = true, $asArray = true);
+
+        dd($products);
+
+        $prepare_data = [];
+
+        foreach ($products['data'] as $product) {
+
+            $supplier = $product['producer'];
+
+            $prepare_data[$supplier] = $product['article'];
         }
+
+        $prices = $tp->searchMassiveItems($prepare_data);
+
+        dd($prices['data'][1]);
+
         if(!isset($brands) && !isset($brands['data']) && (int)$brands['count'] < 1){
             dd(1);
             $brands['brands']['count'] = 0;
         }
-        return response()->json(['brands' => $brands, 'search' => $request['search']]);
+        return response()->json(['brands' => $brands, 'search' => $search]);
     }
 
     public function search(Request $request){

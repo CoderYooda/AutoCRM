@@ -118,7 +118,7 @@
                             </label>
                         </div>
                     </div>
-                    <div data-simplebar style="max-height: 300px;">
+                    <div data-simplebar style="max-height: 150px;">
                         <table class="table-modal" >
                             <thead class="text-muted">
                             <tr>
@@ -134,7 +134,7 @@
                             </thead>
                             <tbody class="product_list">
                             @if(isset($provider_order))
-                                @foreach($provider_order->articles()->get() as $product)
+                                @foreach($provider_order->articles as $product)
                                     @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.product_element')
                                 @endforeach
                             @endif

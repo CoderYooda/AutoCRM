@@ -266,8 +266,8 @@ class storePage{
                 // {title:"Цена (Ррозница)", field:"price", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'provider_orders'){
-            object.contextDop = 'providerorder';
-            object.parametr = 'provider_order';
+            object.contextDop = 'providerorders';
+            object.parametr = 'provider_orders';
             let iconFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
@@ -425,16 +425,19 @@ class storePage{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-
     search(){
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-    initTableData(){
+    initTableData() {
+
+        //Исключение для списка поставщиков
+        if(this.active_tab === 'provider_stores') return;
+
         let object = this;
         let table_container = document.getElementById('table-container');
         let height = 500;
-        if(table_container){
+        if(table_container) {
             height = table_container.offsetHeight;
         }
         let cleanHeight = height - 110;

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\API\DecoderController;
+use App\Http\Controllers\Providers\TrinityApiController;
 use App\Models\EntranceRefund;
 use App\Models\Shipment;
 use App\Models\User;
@@ -26,19 +27,6 @@ class Test extends Command
 
     public function handle()
     {
-        DB::table('shipment_entrance')->delete();
-        DB::table('article_shipment')->delete();
-        DB::table('entrances')->delete();
-        DB::table('refund')->delete();
-        DB::table('article_adjustment')->delete();
-        DB::table('client_orders')->delete();
-        DB::table('article_refund')->delete();
-        DB::table('article_client_orders')->delete();
-        DB::table('article_store')->delete();
-        DB::table('article_entrance_refund')->delete();
-        DB::table('entrance_refunds')->delete();
-        DB::table('article_shipment')->delete();
-        DB::table('shipments')->delete();
-        DB::table('article_entrance')->delete();
+        TrinityApiController::searchBrands('k1279');
     }
 }

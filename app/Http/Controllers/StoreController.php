@@ -13,6 +13,7 @@ use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\ImportHistory;
+use App\Models\Service;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\User;
@@ -74,7 +75,8 @@ class StoreController extends Controller
             'entrance' => 'Смотреть поступления',
             'shipments' => 'Смотреть продажи',
             'client_orders' => 'Смотреть заказ клиента',
-            'adjustment' => 'Смотреть корректировки'
+            'adjustment' => 'Смотреть корректировки',
+            'provider_stores' => 'Смотреть склады поставщиков'
         ];
         foreach ($tabs as $tab => $permission) {
             if (Gate::allows($permission)) {
@@ -138,6 +140,13 @@ class StoreController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function provider_storesTab(Request $request)
+    {
+        $services = Service::where('category_id', 0)->get();
+
+        return view(get_template() . '.provider_stores.index', compact('request', 'services'));
     }
 
     public static function storeTab($request)

@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="list-body">
                                     <div class="date">Артикул: {{ $product->article }}</div>
-                                    <div class="secondary">Производитель: {{ $product->supplier()->first()->name }}</div>
+                                    <div class="secondary">Производитель: {{ $product->supplier->name }}</div>
                                 </div>
                             </li>
                         @endforeach

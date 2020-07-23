@@ -273,9 +273,14 @@ class Helper{
 
     initTabs(id){
         let myTabs = document.getElementById(id);
+
         let myTabsCollection = myTabs.getElementsByTagName('a');
+
+        let tabs = [];
+
         for (var i = 0; i < myTabsCollection.length; i++) {
-            let tab = new bootstrap.Tab(myTabsCollection[i], {});
+
+            tabs.push(new bootstrap.Tab(myTabsCollection[i], {}));
 
             myTabsCollection[i].addEventListener('show.bs.tab', function(event) {
 
@@ -291,6 +296,7 @@ class Helper{
 
             }, false);
         }
+        return tabs;
     }
 
         printDocument(doc, id, data = null, landscape = false){

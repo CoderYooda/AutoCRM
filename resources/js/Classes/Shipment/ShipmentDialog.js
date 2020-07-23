@@ -480,23 +480,20 @@ class shipmentDialog extends Modal{
         let price = Number(price_element.value);
         let count = Number(count_element.value);
 
+        if(!this.current_dialog.querySelector('[name="id"]').value.length) {
+            axios.post('/product/' + id + '/price', {
+                count: count_element.value
+            })
+            .then(response => {
+                price = response.data.price;
 
-        this.setItemPrice(id, price_element, total_element, price, count);
-
-        // if(!this.current_dialog.querySelector('[name="id"]').value.length) {
-        //     axios.post('/product/' + id + '/price', {
-        //         count: count_element.value
-        //     })
-        //     .then(response => {
-        //         price = response.data.price;
-        //
-        //         this.setItemPrice(id, price_element, total_element, price, count);
-        //     })
-        //     .catch(response => {
-        //         console.log(response);
-        //     });
-        // }
-        // else this.setItemPrice(id, price_element, total_element, price, count);
+                this.setItemPrice(id, price_element, total_element, price, count);
+            })
+            .catch(response => {
+                console.log(response);
+            });
+        }
+        else this.setItemPrice(id, price_element, total_element, price, count);
     }
 
     setItemPrice(id, price_element, total_element, price, count) {

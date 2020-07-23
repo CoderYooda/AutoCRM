@@ -148,7 +148,7 @@ class Article extends Model
         $store_id = session('store_id');
 
         if($price_source == 'retail') {
-            return $this->stores->find($store_id)->pivot->retail_price;
+            return $this->stores->find($store_id)->pivot->retail_price ?? 0;
         }
         else { /* FIFO-LIFO */
 
@@ -199,16 +199,17 @@ class Article extends Model
 
     public function shipment()
     {
-        return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'article_id', 'shipment_id')
+        return $this->belongsToMany(Shipment::class, 'article_shipment', 'article_id', 'shipment_id')
             ->withPivot('count', 'price', 'total', 'shipment_id');
     }
 
     public function getCountSelfOthers()
     {
-        return $this->getCountInStoreId(Auth::user()->partner()->first()->store()->first()->id) . ' / ' . $this->getCountInOthersStores(Auth::user()->partner()->first()->store()->first()->id);
+        return $this->getCountInStoreId(Auth::user()->partner->store->id) . ' / ' . $this->getCountInOthersStores(Auth::user()->partner->store->id);
     }
 
-    public function getStorageCode(){
+    public function getStorageCode()
+    {
         $store = $this->stores()->where('store_id', session('store_id'))->first();
         return view('classic.product.storage_code', compact('store'));
     }
@@ -226,7 +227,7 @@ class Article extends Model
 
     public function getCountInStoreId($store_id)
     {
-        $article = $this->stores()->get()->where('id', $store_id)->first();
+        $article = $this->stores->find($store_id);
 
         return $article ? $article->pivot->count : 0;
     }

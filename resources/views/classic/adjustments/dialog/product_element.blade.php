@@ -2,7 +2,7 @@
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 230px">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
-    <td><div class="compressed" style="width: 100px;">{{ $product->supplier()->first()->name }}</div></td>
+    <td><div class="compressed" style="width: 100px;">{{ $product->supplier->name }}</div></td>
     @if(!isset($adjustment))
         <td>
             <input id="uc_{{ $product->id }}" class="form-control form-control-sm"

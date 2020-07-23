@@ -761,7 +761,7 @@
                 <tr class="R0">
                     <td class="R5C1" colspan="4">{{ $article->name }}</td>
                     <td class="R5C1" colspan="2">{{ $article->article }}</td>
-                    <td class="R5C1" colspan="2">{{ $article->supplier()->first()->name }}</td>
+                    <td class="R5C1" colspan="2">{{ $article->supplier->name }}</td>
                     <td class="R5C1" colspan="2">{{ $article->pivot->count }}</td>
                     <td class="R5C1" colspan="3">{{ $article->pivot->price }}</td>
                     <td class="R5C1" colspan="3">{{ $article->pivot->total }}</td>
