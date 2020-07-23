@@ -84,7 +84,7 @@ class entranceRefundDialog extends Modal{
     }
 
     getBackPayment() {
-        let warrant_type = 'refund_of_goods';
+        let warrant_type = 'receipt_of_funds';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
         let refer = 'EntranceRefund';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
@@ -150,23 +150,24 @@ class entranceRefundDialog extends Modal{
         let object = this;
 
         let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total, count, price;
-        if(item !== null && item !== 'undefined' && item !== 'null') {
-            total = item.querySelector("input[name='products[" + id + "][total_price]']");
-            count = item.querySelector("input[name='products[" + id + "][count]']");
-            price = item.querySelector("input[name='products[" + id + "][price]']");
-            let vcount = Number(count.value);
-            let vprice = Number(price.value);
-            let vtotal = Number(total.value);
 
-            vtotal = vprice * vcount;
-            total.value = vtotal.toFixed(2);
+        if(item !== null && item !== 'undefined' && item !== 'null') {
+
+            let count_element = item.querySelector("input[name='products[" + id + "][count]']");
+            let price_element = item.querySelector("#product_price_" + id);
+            let total_price_element = item.querySelector("#product_total_price_" + id);
+
+            let value_count = Number(count_element.value);
+            let value_price = Number(price_element.innerText);
+            let value_total = value_count * value_price;
+
+            total_price_element.innerText = value_total.toFixed(2);
 
             object.items.map(function(e){
                 if(e.id === id){
-                    e.total = vtotal;
-                    e.count = vcount;
-                    e.price = vprice;
+                    e.total = value_total;
+                    e.count = value_count;
+                    e.price = value_price;
                 }
             });
         } else {
@@ -175,23 +176,42 @@ class entranceRefundDialog extends Modal{
     }
 
     save(elem){
-        if(window.isXHRloading) return;
 
-        window.axform.send(elem, (resp) => {
-            if(resp.status === 200) {
-                this.fresh(resp.data.id);
+        event.preventDefault();
+        if(window.isXHRloading) return;
+        window.axform.send(elem, (response) => {
+            if(response.status === 200) {
+                this.fresh(response.data.id);
             }
         });
     }
 
-    //DDS ID change TODO
-
     fresh(id) {
-        this.finitaLaComedia(true);
-        window.openDialog('entranceRefundDialog', '&entrance_refund_id=' + id);
+        let root_id = this.root_dialog.id;
+
+        this.root_dialog.querySelector('input[name=id]').value = id;
+        this.root_dialog.setAttribute('id', 'entranceRefundDialog' + id);
+        this.root_dialog.setAttribute('data-id', id);
+
+        axios.get('/dialog_entranceRefundDialog_open?inner=1&entrance_refund_id=' + id)
+            .then(response => {
+                this.current_dialog.innerHTML = response.data.html;
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['entranceRefundDialog' + id] = drag_dialog;
+                drag_dialog.tag = 'entranceRefundDialog' + id;
+                window.helper.initDialogMethods();
+            })
+            .catch(response => {
+                console.log(response);
+            });
     }
 
     saveAndClose(elem){
+
+        event.preventDefault();
+
         if(window.isXHRloading) return;
         let object = this;
         window.axform.send(elem, function(resp){

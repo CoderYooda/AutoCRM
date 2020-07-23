@@ -16,6 +16,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use phpDocumentor\Reflection\Types\Collection;
@@ -73,6 +74,11 @@ class ProductController extends Controller
         ], $this->status);
     }
 
+    public function getPrice(Article $product, Request $request)
+    {
+        return response()->json(['price' => $product->getPrice($request->count)]);
+    }
+
     public function addToList(Request $request)
     {
         if ($request['data'] != null && count($request['data']) > 0) {
@@ -104,8 +110,7 @@ class ProductController extends Controller
         if ($request['type'] && $request['type'] == 'clientOrder_quick') {
 
         } else {
-            $article = Article::where('id', $request['article_id'])
-                ->first();
+            $article = Article::find($request['article_id']);
 
             if (!$article) {
                 return response()->json([
@@ -220,6 +225,7 @@ class ProductController extends Controller
             ->orderBy('created_at', 'ASC')
             ->limit(30)
             ->get();
+
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
@@ -266,44 +272,29 @@ class ProductController extends Controller
 
         $article->save();
         $this->status = 200;
-        if($request['storage'] != null){
-            foreach ($request['storage'] as $store_id => $storage){
-                $store = Store::where('id', $store_id)->first();
-                if (Auth::user()->company()->first()->checkAccessToStore($store)) {
+        if($request['storage']) {
+
+            $stores = Store::whereIn('id', array_keys($request['storage']))->get();
+
+            foreach ($stores as $store) {
+
+                $storage = $request['storage'][$store->id];
+
+                if (Auth::user()->company->checkAccessToStore($store)) {
                     $this->status = 403;
                     $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
                     return response()->json(['message' => $this->message], $this->status);
                 }
+
                 $store->articles()->syncWithoutDetaching($article->id);
-                $pivot_data = [
+
+                $article->stores()->updateExistingPivot($store->id, [
                     'storage_zone' => $storage['storage_zone'],
                     'storage_rack' => $storage['storage_rack'],
                     'storage_vertical' => $storage['storage_vertical'],
-                    'storage_horizontal' => $storage['storage_horizontal']
-                ];
-                if(isset($storage['midprice'])){$pivot_data['midprice'] = (double)$storage['midprice'];}
-                if(isset($storage['count'])){$pivot_data['count'] = (int)$storage['count'];}
-                $article->stores()->updateExistingPivot($store_id,$pivot_data);
-            }
-        }
-
-
-        if ($request['store'] != null) {
-            foreach ($request['store'] as $id => $store_elem) {
-                $store = Store::where('id', $id)->first();
-                if (!Auth::user()->company()->first()->checkAccessToStore($store)) {
-                    $this->status = 403;
-                    $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
-                    return response()->json(['message' => $this->message], $this->status);
-                }
-                if (isset($store_elem['isset']) && $store_elem['isset'] == true) {
-                    $store->articles()->syncWithoutDetaching($article->id);
-
-                    $article->stores()->updateExistingPivot($id, ['location' => $store_elem['location']]);
-                    $article->stores()->updateExistingPivot($id, ['isset' => $store_elem['isset']]);
-                } else {
-                    $article->stores()->updateExistingPivot($id, ['isset' => false]);
-                }
+                    'storage_horizontal' => $storage['storage_horizontal'],
+                    'retail_price' => $storage['retail_price']
+                ]);
             }
         }
 

@@ -258,7 +258,7 @@ class StoreController extends Controller
                     'categories' => (array)$product->categories->category,
                     'warehouse' => array_values((array)$product->warehouse),
                     'count' => (int)$product->count,
-                    'midprice' => (float)$product->midprice,
+//                    'midprice' => (float)$product->midprice,
                     'barcode_manufacturer' => (string)$product->barcode_manufacturer,
                     'barcode_warehouse' => (string)$product->barcode_warehouse
                 ];
@@ -277,7 +277,7 @@ class StoreController extends Controller
                         'categories' => explode(',', $row[3] ?? []),
                         'warehouse' => explode(',', $row[4] ?? []),
                         'count' => (int)$row[5] ?? 0,
-                        'midprice' => (float)$row[6] ?? 0.0,
+//                        'midprice' => (float)$row[6] ?? 0.0,
                         'barcode_manufacturer' => (string)$row[7] ?? '',
                         'barcode_warehouse' => (string)$row[8] ?? ''
                     ];

@@ -274,6 +274,7 @@
                 @if(!Auth::user()->company->set_master_complite)
                     @include(env('DEFAULT_THEME', 'classic') . '.system.settings_master')
                 @endif
+                @include(get_template(). '.system.settings_provider_dialog')
             </div>
 
         </div>

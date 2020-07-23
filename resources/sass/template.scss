@@ -3290,7 +3290,8 @@ Base
     z-index: 1; }
 
 .pos-abt {
-    position: absolute; }
+    position: absolute !important;
+}
 
 .pos-fix {
     position: fixed !important; }

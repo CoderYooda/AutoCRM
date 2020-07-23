@@ -11,6 +11,11 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}">База товаров</a>
             </li>
         @endcan
+{{--            @can('Смотреть заявки поставщикам')--}}
+            <li id="provider_store" data-tab="provider_store" class="@if($request['active_tab'] == 'provider_store') active @endif">
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}">Заявки поставщикам</a>
+            </li>
+{{--            @endcan--}}
         @can('Смотреть заявки поставщикам')
             <li id="provider_orders-tab" data-tab="provider_orders" class="@if($request['active_tab'] == 'provider_orders') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}">Заявки поставщикам</a>

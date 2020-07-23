@@ -22,7 +22,7 @@
             <span class="item-title _500">Розничная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->getMidPriceByStoreId(session('store_id')) }}
+                   {{ 0 /* TODO RRC*/ }}
                 </span>
             </div>
             <div class="item-tag tag hide">
@@ -91,6 +91,14 @@
                                 </span>
                             </a>
                         </li>
+                        <li class="nav-item @if(!$product) d-none @endif">
+                            <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
+                                Журнал поступлений
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-sm-7 no-pl">
@@ -98,6 +106,7 @@
                         @include(get_template() . '.product.dialog.tabs.base')
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')
+                        @include(get_template() . '.product.dialog.tabs.entrances')
                     </div>
                 </div>
             </div>

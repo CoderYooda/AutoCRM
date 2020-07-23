@@ -41,7 +41,7 @@
     color: #fff;
     box-shadow: 0 0 0 2px rgba(31, 152, 233, 0.25);
 }
-.button.primary:active, .button.primary.active{
+.active .button.primary, .button.primary:active, .button.primary.active{
     background-color: #0e7fca!important;
     padding-top: 9px;
     padding-bottom: 6px;

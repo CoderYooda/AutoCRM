@@ -145,6 +145,7 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
+
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complete';
         }
@@ -180,8 +181,8 @@ class ClientOrdersController extends Controller
 //            }
 
         } else {
-            $client_order->company_id = Auth::user()->company()->first()->id;
-            $client_order->manager_id = Auth::user()->partner()->first()->id;
+            $client_order->company_id = Auth::user()->company->id;
+            $client_order->manager_id = Auth::user()->partner->id;
             $this->message = 'Заказ сохранен';
             $wasExisted = false;
         }
@@ -205,6 +206,7 @@ class ClientOrdersController extends Controller
         }
         # Синхронизируем товары к складу
         $store->articles()->syncWithoutDetaching($plucked_articles, false);
+
         $client_order_data = [];
 
         #### Проверка на дубли

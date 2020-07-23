@@ -6,6 +6,7 @@ use App\Http\Requests\EntranceRequest;
 use App\Models\EntranceRefund;
 use App\Models\ProviderOrder;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Entrance;
@@ -90,11 +91,11 @@ class EntranceController extends Controller
                 'store_id' => $providerorder->store_id,
                 'company_id' => $entrance->company_id,
                 'count' => $product['count'],
-                'price' => $price,
+                'price' => $price
             ]);
 
             $store->increaseArticleCount($product['id'], $product['count']);
-            $store->recalculateMidprice($product['id']);
+//            $store->recalculateMidprice($product['id']);
         }
 
         $product_ids = array_column($request->products, 'id');
@@ -168,16 +169,19 @@ class EntranceController extends Controller
             $products = $entrance->articles;
             $entrance_refunded = $entrance->entrancerefunds->load('articles');
 
-            $refunded_count = [];
+            $available_count = [];
+
+            foreach ($entrance->articles as $product) {
+                $available_count[$product->id] = $product->pivot->count - $product->pivot->released_count;
+            }
 
             foreach ($entrance_refunded as $entrance_refund) {
                 foreach ($entrance_refund->articles as $product) {
-                    if(!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
-                    $refunded_count[$product->id] += $product->pivot->count;
+                    $available_count[$product->id] -= $product->pivot->count;
                 }
             }
 
-            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'refunded_count', 'products', 'request'))->render();
+            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
         }
 
         return response()->json([
@@ -199,14 +203,32 @@ class EntranceController extends Controller
     public static function selectEntranceDialog(Request $request)
     {
         $class = 'selectEntranceDialog';
-        $query = Entrance::where('company_id', Auth::user()->company->id)
-            ->when($request['string'], function ($q) use ($request) {
+        $query = Entrance::with('partner', 'articles', 'entrancerefunds', 'entrancerefunds.articles')
+            ->where('company_id', Auth::user()->company->id)
+            ->when($request['string'], function (Builder $q) use ($request) {
                 $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
+            ->whereHas('articles', function (Builder $query) {
+                $query->whereRaw('released_count < count');
+            })
             ->orderBy('created_at', 'DESC')
-            ->limit(30);
+            ->limit(15);
 
         $entrances = $query->get();
+
+        foreach ($entrances as $key => $entrance) {
+            $refunded_count = 0;
+
+            $entrance_refunded = $entrance->entrancerefunds;
+
+            foreach ($entrance_refunded as $entrance_refund) {
+                foreach ($entrance_refund->articles as $product) {
+                    $refunded_count += $product->pivot->count;
+                }
+            }
+
+            if($refunded_count == $entrance->articles->sum('pivot.count')) unset($entrances[$key]);
+        }
 
         $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';
 
@@ -337,15 +359,16 @@ class EntranceController extends Controller
         if(!Gate::allows('Удалять поступления')){
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }
+
         $returnIds = null;
 
         if($id == 'array'){
-            $entrances = Entrance::whereIn('id', $request['ids']);
+            $entrances = Entrance::whereIn('id', $request['ids'])->get();
             $this->message = 'Поступления удалены';
-            $returnIds = $entrances->get()->pluck('id');
-            foreach($entrances->get() as $entrance){
-                $store = $entrance->providerorder()->first()->store()->first();
-                foreach($entrance->articles()->get() as $article){
+            $returnIds = $entrances->pluck('id');
+            foreach($entrances as $entrance){
+                $store = $entrance->providerorder->store;
+                foreach($entrance->articles as $article){
                     $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
                 }
 
@@ -355,10 +378,10 @@ class EntranceController extends Controller
                 UA::makeUserAction($entrance, 'delete');
             }
         } else {
-            $entrance = Entrance::where('id', $id)->first();
+            $entrance = Entrance::find($id);
             # Склад с которым оперируем
-            $store = $entrance->providerorder()->first()->store()->first();
-            foreach($entrance->articles()->get() as $article){
+            $store = $entrance->providerorder->store;
+            foreach($entrance->articles as $article){
                 $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
             }
             $returnIds = $entrance->id;

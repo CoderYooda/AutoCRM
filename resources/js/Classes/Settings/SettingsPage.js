@@ -34,7 +34,7 @@ class settingsPage{
         });
 
         if(form != null){
-            object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',  function(){
+            object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',function() {
                 let id = object.root.querySelector('input[name=id]').value;
                 if(id !== null){
                     //let root_id = object.root.id;
@@ -46,7 +46,60 @@ class settingsPage{
             });
         }
 
+        helper.initTabs('settings_services_tabs');
+
+        this.initServiceProviderModal();
+
         this.addNumberMasks();
+    }
+
+    initServiceProviderModal() {
+
+        let modal_element = document.getElementById('settings_provider_dialog');
+
+        this.modal = new bootstrap.Modal(modal_element, {
+            backdrop: true,
+            keyboard: true
+        });
+
+        modal_element.addEventListener('hide.bs.modal', function (event) {
+            event.preventDefault();
+        }, false);
+    }
+
+    toggleProviderOrder(element, service_id) {
+
+        event.preventDefault();
+
+        axios.get('/services/' + service_id)
+            .then(response => {
+
+                this.modal.setContent(response.data.html);
+
+                this.modal.show();
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
+
+    saveService(form_element) {
+
+        this.asd = 454;
+
+        window.axform.send(form_element, response => {
+
+            if(response.status === 200) {
+
+                let service_id = response.data.service.id;
+
+                let input = document.getElementById('service_' + service_id);
+
+                input.checked = !input.checked;
+
+                this.modal.hide();
+            }
+        });
     }
 
     writingInn(element) {

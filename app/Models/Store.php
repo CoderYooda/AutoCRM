@@ -21,7 +21,8 @@ class Store extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_store', 'store_id', 'article_id')
-            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
+            ->withPivot('location', 'count', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
+//            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
     public function getArticlesCountById($id){
@@ -29,15 +30,15 @@ class Store extends Model
         return $article ? $article->pivot->count : 0;
     }
 
-    public function getMidPriceById($id){
-        $article = $this->articles()->where('article_id', $id)->first();
-        $midprice = 0;
-
-        if($article && $article->pivot->midprice != null){
-            $midprice = $article->pivot->midprice;
-        }
-        return $midprice;
-    }
+//    public function getMidPriceById($id){
+//        $article = $this->articles()->where('article_id', $id)->first();
+//        $midprice = 0;
+//
+//        if($article && $article->pivot->midprice != null){
+//            $midprice = $article->pivot->midprice;
+//        }
+//        return $midprice;
+//    }
 
     public function getArticleStorageZone($id){
         $article = $this->articles()->where('article_id', $id)->first();
@@ -56,46 +57,34 @@ class Store extends Model
         return $article ? $article->pivot->storage_horizontal : '';
     }
 
-    public function recalculateMidprice($article_id)
-    {
-//        $current_midprice = $this->articles()->where('id', $article_id)->first()->pivot->midprice;
-//        $current_count = $this->articles()->where('id', $article_id)->first()->pivot->midprice;
-
-        $entrances = Entrance::owned()->whereHas('articles', function($q) use ($article_id){
-            $q->where('article_id', $article_id);
-        })->get();
-
-        $entrance_count = 0;
-        $entrance_summ = 0;
-
-        foreach($entrances as $entrance){
-            $count = $entrance->articles()->where('article_id', $article_id)->first()->pivot->count;
-
-            $entrance_count += $count;
-            $entrance_summ += ($count * $entrance->articles()->where('article_id', $article_id)->first()->pivot->price);
-        }
-
-
-
-        if($entrance_count === 0 || $entrance_summ === 0){
-            $midprice = 0;
-        } else {
-            $midprice = $entrance_summ / $entrance_count;
-        }
-
-        $this->articles()->updateExistingPivot($article_id, ['midprice' => $midprice], false);
-
-        return $midprice;
-    }
-
-    public function insertProducts($id, $count, $price)
-    {
-        $current_midprice = $this->articles()->where('id', $id)->first()->pivot->midprice;
-
-        dd($current_midprice);
-
-        //$this
-    }
+//    public function recalculateMidprice($article_id)
+//    {
+//        $entrances = Entrance::owned()->whereHas('articles', function($q) use ($article_id){
+//            $q->where('article_id', $article_id);
+//        })->get();
+//
+//        $entrance_count = 0;
+//        $entrance_summ = 0;
+//
+//        foreach($entrances as $entrance){
+//            $count = $entrance->articles()->where('article_id', $article_id)->first()->pivot->count;
+//
+//            $entrance_count += $count;
+//            $entrance_summ += ($count * $entrance->articles()->where('article_id', $article_id)->first()->pivot->price);
+//        }
+//
+//
+//
+//        if($entrance_count === 0 || $entrance_summ === 0){
+//            $midprice = 0;
+//        } else {
+//            $midprice = $entrance_summ / $entrance_count;
+//        }
+//
+//        $this->articles()->updateExistingPivot($article_id, ['midprice' => $midprice], false);
+//
+//        return $midprice;
+//    }
 
     public static function getBufferStore()
     {
@@ -129,14 +118,14 @@ class Store extends Model
         return true;
     }
 
-    public function setArticleMidPrice($article_id, $midprice)
-    {
-        $this->articles()->syncWithoutDetaching($article_id, false);
-
-        $this->articles()->updateExistingPivot($article_id, ['midprice' => (int)$midprice]);
-
-        return true;
-    }
+//    public function setArticleMidPrice($article_id, $midprice)
+//    {
+//        $this->articles()->syncWithoutDetaching($article_id, false);
+//
+//        $this->articles()->updateExistingPivot($article_id, ['midprice' => (int)$midprice]);
+//
+//        return true;
+//    }
 
     public function getCountByArticle($article_id){ #TODO
         $this->articles()->where('id', $article_id)->get();

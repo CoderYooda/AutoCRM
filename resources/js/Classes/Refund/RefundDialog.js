@@ -35,11 +35,6 @@ class refundDialog extends Modal{
                 object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
-
-        let focused = document.getElementById('refund_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
     }
 
     freshContent(id, callback = null){

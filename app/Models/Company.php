@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
@@ -23,6 +24,16 @@ class Company extends Model
         return $this->hasMany(Store::class, 'company_id');
     }
 
+    public function isServiceProviderActive($service_id)
+    {
+        return $this->serviceproviders->find($service_id)->pivot->enabled ?? 0;
+    }
+
+    public function serviceproviders()
+    {
+        return $this->belongsToMany(Service::class, 'service_company')->withPivot('key', 'enabled');
+    }
+
     public function cashboxes()
     {
         return $this->hasMany(Cashbox::class, 'company_id');
@@ -37,6 +48,11 @@ class Company extends Model
     {
         //TODO check
         return ($store == null || $this->stores()->where('id', $store->id)->first() == NULL);
+    }
+
+    public function getSettingField($field)
+    {
+        return $this->settings->where('name', $field)->first()->value;
     }
 
     public function getOfficialNameAttribute()

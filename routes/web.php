@@ -66,6 +66,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/product/dialog/search', 'ProductController@dialogSearch')->name('ProductDialogSearch');
     Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
     Route::post('/product/getByUpc', 'ProductController@getByUpc')->name('GetProductByUpc');
+    Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
+
 
     #Поступления товаров
     Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
@@ -90,7 +92,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     });
 
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
-
 
     #Продажи
     Route::get('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
@@ -133,7 +134,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
     Route::post('/adjustment/side_info', 'AdjustmentController@getSideInfo')->name('GetPartnerSideInfo');
 
-    #Касса##############################################################################################
+    #Касса
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название
 
     #Кассовые операции
@@ -158,8 +159,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/cashmove/tabledata', 'MoneyMoveController@tableData')->name('MoneyMoveData');
     Route::post('/cashmove/side_info', 'MoneyMoveController@getSideInfo')->name('MoneyMoveSideInfo');
     Route::post('/moneymove/{id}/delete', 'MoneyMoveController@delete')->name('DeleteMoneyMove');
-    #/Касса##############################################################################################
-
+    #Касса
 
     #Кассовые аппараты
     Route::post('/cashbox/new', 'CashboxController@store')->name('StoreCashbox');
@@ -182,9 +182,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/store/import', 'StoreController@import')->name('StoreImport');
     Route::post('/store/imports/{import}', 'StoreController@applyImport')->name('ApplyImport');
 
-    #Услуги
-    Route::get('/services', 'ServicesController@index')->name('ServicesIndex');
-
     #История
     Route::get('/actions', 'UserActionsController@index')->name('ActionsIndex');
     Route::post('/actions/freshPage', 'UserActionsController@freshPage')->name('ActionsFreshPage');
@@ -194,7 +191,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/employee/resources', 'EmployeeController@resources')->name('EmployeeResources');
     Route::get('/employee/tabledata', 'EmployeeController@tabledata')->name('EmployeeTableData');
     Route::get('/employee', 'EmployeeController@index')->name('EmployeeIndex');
-
 
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
@@ -243,6 +239,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
     Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 
+    #Сервисы
+    Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
+    Route::post('/services/{service}/save', 'ServiceController@save')->name('ServiceSave');
+
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
@@ -269,7 +269,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/settings/master/store', 'SettingsController@storeFromMaster')->name('StoreFromMaster');
     Route::post('/settings/master/close', 'SettingsController@closeSettingsMaster')->name('CloseMaster');
-
 
 
 

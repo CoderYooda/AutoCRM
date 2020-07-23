@@ -45,7 +45,21 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->orderBy('created_at', 'DESC')->limit(25)->get();
+        $providerorders = ProviderOrder::owned()->with('articles')->orderBy('created_at', 'DESC')->limit(10)->get();
+
+        foreach ($providerorders as $key => $providerorder) {
+
+            $product_count = 0;
+
+            foreach ($providerorder->articles as $product) {
+                $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id);
+
+                $product_count += $count;
+            }
+
+            if($product_count <= 0) unset($providerorders[$key]);
+        }
+
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
             'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
@@ -83,15 +97,15 @@ class ProviderOrdersController extends Controller
         return $data;
     }
 
-    public function select($id)
+    public function select($id, Request $request)
     {
-        $providerorder = ProviderOrder::owned()->where('id', $id)->first();
+        $providerorder = ProviderOrder::find($id);
         if(!$providerorder){
             return response()->json([
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
-        $request = request();
+
         return response()->json([
             'id' => $providerorder->id,
             'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
@@ -290,7 +304,7 @@ class ProviderOrdersController extends Controller
             }
 
             $store = Store::where('id', $request['store_id'])->first();
-            $store->recalculateMidprice($product['id']);
+//            $store->recalculateMidprice($product['id']);
 
         }
         $provider_order->freshWsumm();
@@ -363,12 +377,14 @@ class ProviderOrdersController extends Controller
         $field = $request['sorters'][0]['field'] ?? 'created_at';
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
         $size = $request['size'] ? (int)$request['size'] : 30;
+
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
+
         $provider_orders = ProviderOrder::owned()->with('partner', 'manager')
             ->when(is_array($request['provider']), function($query) use ($request) {
                 $query->whereHas('partner', function($query) use ($request){
@@ -402,8 +418,6 @@ class ProviderOrdersController extends Controller
                 $query->where('incomes', $request['entrance_status']);
             })
             ->orderBy($field, $dir)
-            //->toSql();
-        //dd($provider_orders);
             ->paginate($size);
 
         foreach ($provider_orders as $provider_order) {

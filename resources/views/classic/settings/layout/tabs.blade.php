@@ -34,6 +34,11 @@
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'sms', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                     <span class="nav-text">Смс</span>
                 </a>
+            </li>   
+            <li id="setting-services-tab" data-tab="services" class="@if($request['active_tab'] == 'services') active @endif tab">
+                <a href="{{ route('SettingsIndex', ['active_tab' => 'services', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
+                    <span class="nav-text">Сервисы</span>
+                </a>
             </li>
         </ul>
         <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>

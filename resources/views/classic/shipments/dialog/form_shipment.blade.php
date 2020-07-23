@@ -165,6 +165,7 @@
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
+                            <th width="10%" style="min-width: 60px;">Доступное кол-во</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>
                             <th width="5%" style="max-width:44px"></th>
@@ -201,7 +202,9 @@
                 </div>
             </button>
 
-            <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @if(!isset($shipment) || !$shipment->hasRelations())
+                <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @endif
         </div>
         <div class="system_message">
 

@@ -18,7 +18,7 @@ class clientorderDialog extends Modal{
     init(){
         let object = this;
         helper.initTabs('cl_tabs');
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
+        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 500);
 
         ///Вешаем обрабочик на поле скидки/////////////
         let discount = object.root_dialog.querySelector('input[name=discount]');
@@ -205,6 +205,16 @@ class clientorderDialog extends Modal{
         });
     }
 
+    setField(type, value, text, elem = null){
+        let object = this;
+        if(elem !== null){
+            elem.closest('.dropdown').classList.remove('show');
+        }
+        object.root_dialog.querySelector('#' + type).value = value;
+        object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
+        object.recalculate();
+    }
+
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
@@ -322,7 +332,7 @@ class clientorderDialog extends Modal{
         [].forEach.call(inputs, function(elem){
             var fn = window.helper.debounce(function(e) {
                 object.recalculate(e);
-            }, 50);
+            }, 500);
             elem.addEventListener("keydown", fn);
             elem.addEventListener("paste", fn);
             elem.addEventListener("delete", fn);
@@ -514,31 +524,33 @@ class clientorderDialog extends Modal{
 
     recalculateItem(id){
 
-        let object = this;
+        let price_element = this.root_dialog.querySelector("input[name='products[" + id + "][price]']");
+        let count_element = this.root_dialog.querySelector("input[name='products[" + id + "][count]']");
+        let total_element = this.root_dialog.querySelector("input[name='products[" + id + "][total_price]']");
 
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total, count, price;
-        if(item !== null && item !== 'undefined' && item !== 'null') {
-            total = item.querySelector("input[name='products[" + id + "][total_price]']");
-            count = item.querySelector("input[name='products[" + id + "][count]']");
-            price = item.querySelector("input[name='products[" + id + "][price]']");
-            let vcount = Number(count.value);
-            let vprice = Number(price.value);
-            let vtotal = Number(total.value);
+        let count = Number(count_element.value);
 
-            vtotal = vprice * vcount;
-            total.value = vtotal.toFixed(2);
+        axios.post('/product/' + id + '/price', {
+            count: count_element.value
+        })
+            .then(response => {
+                let price = response.data.price;
+                let total = (price * count);
 
-            object.items.map(function(e){
-                if(e.id === id){
-                    e.total = vtotal;
-                    e.count = vcount;
-                    e.price = vprice;
-                }
+                total_element.value = total;
+                price_element.value = price;
+
+                this.items.map(function(e){
+                    if(e.id === id){
+                        e.total = total;
+                        e.count = count;
+                        e.price = price;
+                    }
+                });
+            })
+            .catch(response => {
+                console.log(response);
             });
-        } else {
-
-        }
     }
 }
 export default clientorderDialog;

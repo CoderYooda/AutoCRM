@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMysqlLogHistoryTable extends Migration
+class AddReleasedCountToEntranceArticleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateMysqlLogHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('mysql_log_history', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->text('query');
-            $table->timestamps();
+        Schema::table('article_entrance', function (Blueprint $table) {
+            $table->integer('released_count');
         });
     }
 
@@ -27,6 +25,8 @@ class CreateMysqlLogHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mysql_log_history');
+        Schema::table('article_entrance', function (Blueprint $table) {
+            $table->dropColumn('released_count');
+        });
     }
 }

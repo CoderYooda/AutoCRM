@@ -30,6 +30,7 @@ const ajaxRequest = new (function () {
 
     function ajaxLoad () {
         var vMsg, nStatus = this.status;
+
         switch (nStatus) {
             case 200:
                 vMsg = JSON.parse(this.responseText);
@@ -139,7 +140,7 @@ const ajaxRequest = new (function () {
              this.querySelector(":scope > .pr").style.opacity = 1;
             } catch (e) {
             }
-            
+
             requestPage(this.href);
             return false;
         }

@@ -44,12 +44,12 @@ class Entrance extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
-            ->withPivot('count', 'price');
+            ->withPivot('count', 'price', 'released_count');
     }
 
     public function entrancerefunds()
     {
-        return $this->hasMany(EntranceRefund::class, 'entrance_id');
+        return $this->hasMany(EntranceRefund::class, 'entrance_id')->with('articles');
     }
 
     public function providerorder()
@@ -110,6 +110,5 @@ class Entrance extends Model
         $article = $this->articles()->where('article_id', $id)->first();
         return $article ? $article->pivot->count : 0;
     }
-
 }
 

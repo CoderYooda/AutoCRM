@@ -45,7 +45,7 @@ class AxForm{
                     notification.notify( 'success', response.data.message);
                 }
             }
-            callback(response);
+            if(callback != null) callback(response);
             //rebuildLinks();
             object.setActionButtons(true, elem);
         }).catch(function (error) {
@@ -136,7 +136,7 @@ class AxForm{
             //
             // }
             object.setActionButtons(true, elem);
-            callback(error.response);
+            if(callback != null) callback(error.response);
         }).then(function(){
             object.setActionButtons(true, elem);
         });
