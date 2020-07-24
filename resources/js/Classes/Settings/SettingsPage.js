@@ -1,6 +1,8 @@
+import Tabs from "../../Tools/Tabs";
+
 class settingsPage{
 
-    constructor(){
+    constructor() {
         console.log('страница настроек инициализирована');
         this.active = true;
         this.root = document.getElementById('baseSettings');
@@ -199,16 +201,8 @@ class settingsPage{
         if(this.active_tab === 'services') {
             this.initServiceProviderModal();
 
-            this.initTabs('settings_services_tabs');
+            new Tabs('settings_services_tabs');
         }
-    }
-
-    initTabs(element_id) {
-        let ul_element = document.getElementById('settings_services_tabs');
-
-        let a_elements = ul_element.querySelector('a');
-
-
     }
 
     getCurrentActiveTab(){
@@ -234,7 +228,7 @@ class settingsPage{
     }
 
     saveBaseSettingsForm(elem, event){
-        event.preventDefault();
+
         if(window.isXHRloading) return;
         //let object = this;
         window.axform.send(elem, function(resp){

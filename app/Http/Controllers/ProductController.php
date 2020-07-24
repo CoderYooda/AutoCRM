@@ -231,10 +231,11 @@ class ProductController extends Controller
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'))->render();
+        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'));
+
         return response()->json([
             'tag' => 'selectProductDialog',
-            'html' => $content
+            'html' => $content->render()
         ]);
     }
 
@@ -341,17 +342,7 @@ class ProductController extends Controller
             $dir = 'ASC';
         }
 
-        $category = 0;
-
-        if ($request['category_id'] === null || $request['serach'] != null) {
-            if ($request['active_tab'] == "store") {
-                $category = 2;
-            }
-        } else {
-            $category = (int)$request['category_id'];
-        }
-
-        $company_id = Auth::user()->company()->first()->id;
+        $company_id = Auth::user()->company->id;
 
         $query = Article::where('company_id', $company_id)
             ->where(function ($q) use ($request) {
@@ -370,8 +361,13 @@ class ProductController extends Controller
             $query = $query->orWhereIn('article', $analogues)->where('company_id', $company_id);
         }
 
-        return $query->paginate($size);
+        $products = $query->paginate($size);
 
+        foreach ($products as $key => $product) {
+            $products[$key]['supplier_name'] = $product->supplier->name;
+        }
+
+        return $products;
     }
 
     public static function searchArticles($request)

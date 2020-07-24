@@ -9,41 +9,39 @@
         <div class="box ml-15">
             <div class="modal-header tab-container">
                 <ul id="settings_services_tabs" class="nav header_selects_navs">
-                    <li class="nav-item active">
-                        <a href="#tab_providerorders" class="button primary">Проценка</a>
+                    <li class="nav-item">
+                        <a href="#" data-target="tab_providerorders" class="button primary active">Проценка</a>
                     </li>
                     <li class="nav-item ml-10">
-                        <a href="#tab_messages" class="button primary">Мессенджеры</a>
+                        <a href="#" data-target="tab_messages" class="button primary">Мессенджеры</a>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <div class="tab-content">
-            <div id="tab_providerorders" class="tab-pane">
-                <div class="d-flex">
-                    <div class="row row-sm">
+        <div class="tab-content w-100">
+            <div id="tab_providerorders" class="tab-pane active">
+                <div class="statistic-row row-sm mt-0">
 
-                        @foreach($services as $service)
+                    @foreach($services as $service)
 
-                            @continue($service->category_id != 0)
+                        @continue($service->category_id != 0)
 
-                            <div class="col-sm-3 pr-0 mb-15">
-                                <div class="p-10 box pointer text-center" onclick="settings.toggleProviderOrder(this, {{ $service->id }})" style="min-height: 200px;">
-                                    <div>
-                                        <img style="max-width: 80%; height: 150px;" src="{{ asset('/images/logotypes/' . $service->img) }}">
-                                    </div>
-                                    <div>
-                                        <label class="ui-switch float-right mt-5">
-                                            <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
-                                        </label>
-                                    </div>
+                        <div class="statistic-filter pr-15 mb-15">
+                            <div class="p-10 box pointer text-center" onclick="settings.toggleProviderOrder(this, {{ $service->id }})" style="min-height: 200px;">
+                                <div>
+                                    <img style="max-width: 80%; height: 150px;" src="{{ asset('/images/logotypes/' . $service->img) }}">
+                                </div>
+                                <div>
+                                    <label class="ui-switch float-right mt-5">
+                                        <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
+                                    </label>
                                 </div>
                             </div>
+                        </div>
 
-                        @endforeach
+                    @endforeach
 
-                    </div>
                 </div>
             </div>
 

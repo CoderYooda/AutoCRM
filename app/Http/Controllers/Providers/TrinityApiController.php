@@ -15,8 +15,6 @@ class TrinityApiController extends Controller
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $products = $tp->searchBrands($search, $online = true, $asArray = true);
 
-        dd($products);
-
         $prepare_data = [];
 
         foreach ($products['data'] as $product) {
@@ -26,14 +24,8 @@ class TrinityApiController extends Controller
             $prepare_data[$supplier] = $product['article'];
         }
 
-        $prices = $tp->searchMassiveItems($prepare_data);
+        //$prices = $tp->searchMassiveItems($prepare_data);
 
-        dd($prices['data'][1]);
-
-        if(!isset($brands) && !isset($brands['data']) && (int)$brands['count'] < 1){
-            dd(1);
-            $brands['brands']['count'] = 0;
-        }
         return response()->json(['brands' => $brands, 'search' => $search]);
     }
 
