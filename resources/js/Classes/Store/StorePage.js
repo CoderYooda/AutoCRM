@@ -261,7 +261,7 @@ class storePage{
                 {title:"ID", field:"id", width:80},
                 {title:"Модель", field:"name"},
                 {title:"Артикул", field:"article", width:150, align:"left"},
-                {title:"Бренд", field:"supplier", width:150, align:"left"},
+                {title:"Бренд", field:"supplier_name", width:150, align:"left"},
                 // {title:"Наличие", field:"isset", width:130, align:"left"},
                 // {title:"Цена (Ррозница)", field:"price", width:130, align:"left", formatter:priceFormatter},
             ];

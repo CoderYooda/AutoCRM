@@ -3,7 +3,7 @@
         @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
     </div>
     <div class="col-sm-9 no-pl">
-        @if($products->count() > 0)
+        @if($products->count())
             <div data-simplebar style="max-height: 400px;">
                 <div class="box-body">
                     <ul  class="nav select-list-modal ">
@@ -19,6 +19,7 @@
                                 <div class="list-body">
                                     <div class="date">Артикул: {{ $product->article }}</div>
                                     <div class="secondary">Производитель: {{ $product->supplier->name }}</div>
+                                    <div class="secondary">Количество на складе: {{ $product->getEntrancesCount() }}</div>
                                 </div>
                             </li>
                         @endforeach

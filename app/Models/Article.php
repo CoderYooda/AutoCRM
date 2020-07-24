@@ -216,7 +216,7 @@ class Article extends Model
 
     public function getStorageCode()
     {
-        $store = $this->stores()->where('store_id', session('store_id'))->first();
+        $store = $this->stores->where('store_id', session('store_id'))->first();
         return view('classic.product.storage_code', compact('store'));
     }
 

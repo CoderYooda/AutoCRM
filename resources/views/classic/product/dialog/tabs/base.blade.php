@@ -60,7 +60,7 @@
         @foreach($stores as $store)
             <div>Для магазина "{{ $store->name }}"</div>
             <div class="input-group mb-3">
-                <input type="number" min="0" name="storage[{{ $store->id }}][retail_price]" class="form-control ml-0" placeholder="Розничная цена" value="@if($product) {{ $product->stores->find($store->id)->pivot->retail_price ?? '0' }} @endif" >
+                <input type="number" min="0" name="storage[{{ $store->id }}][retail_price]" class="form-control ml-0" placeholder="Розничная цена" value="@if($product){{ $product->stores->find($store->id)->pivot->retail_price ?? '0' }}@endif" >
             </div>
         @endforeach
     </div>

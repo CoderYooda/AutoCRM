@@ -22,7 +22,7 @@
             <span class="item-title _500">Розничная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ 0 /* TODO RRC*/ }}
+                   {{ $product->stores->find(session('store_id'))->pivot->retail_price ?? '0' }}
                 </span>
             </div>
             <div class="item-tag tag hide">
@@ -54,11 +54,11 @@
     <form action="{{ route('StoreProduct') }}" method="POST">
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="
-        @if(isset($product)){{ $product->category()->first()->id }}
+        @if(isset($product)){{ $product->category->id }}
         @elseif(isset($category)){{ $category->id }}
         @else 2 @endif
             ">
-        <input class="supplier_select" type="hidden" name="supplier_id" value="@if(isset($product)){{ $product->supplier->id }}@elseif(isset($product)){{ $product->category()->first()->id }}@endif">
+        <input class="supplier_select" type="hidden" name="supplier_id" value="@if(isset($product)){{ $product->supplier->id }}@elseif(isset($product)){{ $product->category->id }}@endif">
         @if(isset($product) && $product->id != NULL)
             <input type="hidden" name="id" value="{{ $product->id }}">
         @endif
