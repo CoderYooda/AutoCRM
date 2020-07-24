@@ -426,7 +426,52 @@ class storePage{
     }
 
     search() {
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+
+        if(this.active_tab == 'provider_stores') this.searchProviderStores();
+        else this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+    }
+
+    searchProviderStores() {
+
+        let service_input = document.querySelector('[name="service_id"]');
+
+        axios.post('/provider_stores/tableData', {
+            search: this.search,
+            selected_service: service_input.value
+        })
+        .then(response => {
+
+            document.getElementById('table_body').innerHTML = response.data.html;
+
+            let counts = response.data.counts;
+
+            Object.keys(counts).forEach(service_id => {
+
+                let manufacturers = counts[service_id];
+
+                document.getElementById('service_count_' + service_id).innerText = manufacturers.length;
+            });
+        })
+        .catch(response => {
+            dd(response);
+        });
+    }
+
+    showManufactureStores(element, manufacturer) {
+
+        let service_input = document.querySelector('[name="service_id"]');
+
+        axios.post('/provider_stores/stores', {
+            manufacturer: manufacturer,
+            article: this.search,
+            selected_service: Number(service_input.value)
+        })
+        .then(response => {
+            console.log(response);
+        })
+        .catch(response => {
+            console.log(response);
+        });
     }
 
     initTableData() {
@@ -783,10 +828,14 @@ class storePage{
                 if(object.search == ''){
                     object.category_id = object.root_category;
                 }
-                window.helper.insertParamUrl('category_id', 'null');
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
-                object.loadCategory(object.category_id);
-
+                if(object.table) {
+                    window.helper.insertParamUrl('category_id', 'null');
+                    object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                    object.loadCategory(object.category_id);
+                }
+                else {
+                    this.searchProviderStores();
+                }
                 //object.page = 1;
                 //object.reload(e);
             }, 400);

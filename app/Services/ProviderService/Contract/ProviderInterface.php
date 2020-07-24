@@ -6,11 +6,13 @@ namespace App\Services\ProviderService\Contract;
 
 interface ProviderInterface
 {
-    public function search(string $searchString): array;
+    public function searchBrandsCount(string $article): array;
+
+    public function getStoresByArticleAndBrand(string $article, string $brand): array;
 
     public function getName(): string;
 
-    public function getCountOfManufacturersArticle(string $article) : array;
+    public function getServiceId(): int;
 
-    public function isActivated() : bool;
+    public function isActivated(): bool;
 }

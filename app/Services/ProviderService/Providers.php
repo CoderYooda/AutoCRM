@@ -19,4 +19,15 @@ class Providers
     {
         return $this->providers;
     }
+
+    public function find(int $id)
+    {
+        foreach ($this->providers as $provider) {
+            $provider_id = $provider->getServiceId();
+
+            if($provider_id == $id) return $provider;
+        }
+
+        return false;
+    }
 }

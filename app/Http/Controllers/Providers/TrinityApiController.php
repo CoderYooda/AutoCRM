@@ -15,8 +15,6 @@ class TrinityApiController extends Controller
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $products = $tp->searchBrands($search, $online = true, $asArray = true);
 
-        dd($products);
-
         $prepare_data = [];
 
         foreach ($products['data'] as $product) {
