@@ -341,17 +341,7 @@ class ProductController extends Controller
             $dir = 'ASC';
         }
 
-        $category = 0;
-
-        if ($request['category_id'] === null || $request['serach'] != null) {
-            if ($request['active_tab'] == "store") {
-                $category = 2;
-            }
-        } else {
-            $category = (int)$request['category_id'];
-        }
-
-        $company_id = Auth::user()->company()->first()->id;
+        $company_id = Auth::user()->company->id;
 
         $query = Article::where('company_id', $company_id)
             ->where(function ($q) use ($request) {

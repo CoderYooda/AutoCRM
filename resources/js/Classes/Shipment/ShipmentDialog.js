@@ -11,6 +11,7 @@ class shipmentDialog extends Modal{
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.refer = null;
+
         this.init();
     }
 
@@ -63,18 +64,17 @@ class shipmentDialog extends Modal{
         if(partner !== null){
             params += '&partner_id='+partner;
         }
-        if(warrant_type != null){
             params += '&warrant_type='+warrant_type;
-        }
+
         if(itogo != null){
             params += '&itogo='+itogo;
         }
         if(ostatok != null){
             params += '&ostatok='+ostatok;
         }
-        if(refer != null){
-            params += '&refer='+refer;
-        }
+
+        params += '&refer='+refer;
+
         if(refer_id != null){
             params += '&refer_id='+refer_id;
         }
@@ -125,7 +125,7 @@ class shipmentDialog extends Modal{
     init(){
         let object = this;
 
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 300);
+        let fn = window.helper.debounce(e => this.recalculate(e), 300);
         ///Вешаем обрабочик на поле скидки/////////////
         let discount = object.root_dialog.querySelector('input[name=discount]');
         discount.addEventListener("keydown", fn);
@@ -139,28 +139,15 @@ class shipmentDialog extends Modal{
         ////////////////////////////////////////////////
 
         this.loadItemsIfExists();
-        // let focused = document.getElementById('shipment_dialog_focused');
-        // if(focused){
-        //     focused.focus();
-        // }
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+
+        object.root_dialog.querySelector('form').addEventListener('keydown',  function(e){
             if (e.which == 13) {
                 e.preventDefault();
                 object.save(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
-        });
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('ShipmentStored',  function(){
+        object.root_dialog.querySelector('form').addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
                 let root_id = object.root_dialog.id;
@@ -171,11 +158,20 @@ class shipmentDialog extends Modal{
             }
         });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('PartnerSelected',  function(){
-            if(focused){
-                focused.focus();
+        object.root_dialog.querySelector('form').addEventListener('ShipmentStored',  function(){
+            let id = object.root_dialog.querySelector('input[name=id]').value;
+            if(id !== null){
+                let root_id = object.root_dialog.id;
+                object.freshContent(id,function(){
+                    delete window[root_id];
+                    window.helper.initDialogMethods();
+                });
             }
         });
+
+        // object.root_dialog.querySelector('form').addEventListener('PartnerSelected',  function(){
+        //
+        // });
     }
 
     save(elem){
@@ -213,10 +209,8 @@ class shipmentDialog extends Modal{
     freshContent(id, callback = null){
         let object = this;
 
-        //var store_id = this.store_obj.value;
-
         let data = {};
-        //data.store_id = store_id;
+
         if(object.refer){
             data.refer = object.refer;
         }
@@ -237,101 +231,29 @@ class shipmentDialog extends Modal{
     loadItemsIfExists(){
 
         let products = this.root_dialog.querySelectorAll('.product_list_elem');
-        let object = this;
-        [].forEach.call(products, function(product){
-                object.items.push({
+
+        [].forEach.call(products, product => {
+                this.items.push({
                     id:product.dataset.id,
                     count:product.dataset.count,
                     price:product.dataset.price,
                     total:product.dataset.total,
                 });
+
                 let inputs = product.querySelectorAll('input');
-                [].forEach.call(inputs, function(elem){
-                    var fn = window.helper.debounce(function(e) {
-                        object.recalculate(e);
-                    }, 300);
+
+                [].forEach.call(inputs, elem => {
+
+                    let fn = window.helper.debounce(e => this.recalculate(e), 300);
+
                     elem.addEventListener("keydown", fn);
                     elem.addEventListener("change", fn);
                     elem.addEventListener("paste", fn);
                     elem.addEventListener("delete", fn);
                 });
         });
+
         this.recalculate();
-
-        // for(let key=0; key < products.length; key++)  {
-        //     dd(names[key].value);
-        // }
-
-
-
-        // let inputs = item.getElementsByTagName('input');
-        //
-        // [].forEach.call(inputs, function(elem){
-        //     var fn = window.helper.debounce(function(e) {
-        //         object.recalculate(e);
-        //     }, 50);
-        //     elem.addEventListener("keydown", fn);
-        //     elem.addEventListener("paste", fn);
-        //     elem.addEventListener("delete", fn);
-        //
-        //     object.items.push({
-        //         id:elem.product.id,
-        //         count:elem.count,
-        //         price:elem.price,
-        //         total:elem.total,
-        //     });
-        // });
-
-
-        // window.isXHRloading = true;
-        // let object = this;
-        // var shipment_id = this.root_dialog.dataset.id;
-        // if(shipment_id && shipment_id !== 'undefined') {
-        //
-        //     window.axios({
-        //         method: 'post',
-        //         url: 'shipment/' + shipment_id + '/get_products',
-        //         data: {},
-        //     }).then(function (resp) {
-        //         [].forEach.call(resp.data.products, function(elem){
-        //             object.items.push({
-        //                 id:elem.product.id,
-        //                 count:elem.count,
-        //                 price:elem.price,
-        //                 total:elem.total,
-        //             });
-        //
-        //             let item = object.root_dialog.querySelector('#product_selected_' + elem.product.id);
-        //
-        //             let inputs = item.getElementsByTagName('input');
-        //
-        //             [].forEach.call(inputs, function(elem){
-        //                 var fn = window.helper.debounce(function(e) {
-        //                     object.recalculate(e);
-        //                 }, 50);
-        //                 elem.addEventListener("keydown", fn);
-        //                 elem.addEventListener("paste", fn);
-        //                 elem.addEventListener("delete", fn);
-        //             });
-        //
-        //         });
-        //
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     }).finally(function () {
-        //         window.isXHRloading = false;
-        //     });
-        //
-        // }
-
-
-
-        // let list_elems = this.root_dialog.querySelector('.product_list_elem');
-        // if(list_elems){
-        //     [].forEach.call(list_elems, function(elem){
-        //         object.addItem({id:resp.data.id, html:resp.data.html});
-        //     });
-        // }
     }
 
     setTotalPrice(count){
@@ -370,15 +292,38 @@ class shipmentDialog extends Modal{
         let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
         let inputs = item.getElementsByTagName('input');
 
-        [].forEach.call(inputs, function(elem){
-            var fn = window.helper.debounce(function(e) {
-                object.recalculate(e);
-            }, 300);
-            elem.addEventListener("keydown", fn);
-            elem.addEventListener("paste", fn);
-            elem.addEventListener("delete", fn);
+        [].forEach.call(inputs, input => {
+
+            let fn = window.helper.debounce(e => object.recalculate(e), 300);
+
+            input.addEventListener("keydown", fn);
+            input.addEventListener("paste", fn);
+            input.addEventListener("delete", fn);
+
+            if(input.name == 'products[' + elem.id + '][count]') {
+
+                let getPriceFromServer = window.helper.debounce(e => this.getPriceFromServer(elem.id, input), 300);
+
+                input.addEventListener("keydown", getPriceFromServer);
+                input.addEventListener("paste", getPriceFromServer);
+                input.addEventListener("delete", getPriceFromServer);
+            }
         });
         this.recalculate();
+    }
+
+    getPriceFromServer(id, input) {
+
+        axios.post('/product/' + id + '/price', {
+            count: input.value
+        })
+        .then(response => {
+            this.current_dialog.querySelector('[name="products[' + id + '][price]"').value = response.data.price;
+            this.recalculateItem(id);
+        })
+        .catch(response => {
+            console.log(response);
+        });
     }
 
     removeItem(id){
@@ -436,18 +381,17 @@ class shipmentDialog extends Modal{
         window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=7');
     }
 
-    recalculate(){
-        console.log("Пересчет...");
-        var object = this;
-        this.items.forEach(function(elem){
-            object.recalculateItem(elem.id);
-        });
-        var total_price = object.totalPrice;
-        var itogo = object.itogo;
-        var inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        var discount = object.root_dialog.querySelector('input[name=discount]');
+    recalculate() {
 
-        object.items.map(function(e){
+        this.items.forEach(elem => {
+            this.recalculateItem(elem.id);
+        });
+        let total_price = this.totalPrice;
+        let itogo = 0;
+        let inpercents = this.root_dialog.querySelector('input[name=inpercents]');
+        let discount = this.root_dialog.querySelector('input[name=discount]');
+
+        this.items.map(function(e){
             total_price = total_price + Number(e.total);
         });
 
@@ -457,18 +401,11 @@ class shipmentDialog extends Modal{
             itogo = total_price - Number(discount.value).toFixed(2);
         }
 
-        var discount_val;
+        let discount_val = discount.value + (inpercents.value == 1 ? ' %' : ' р');
 
-        if(inpercents.value == 1){
-            discount_val = discount.value + ' %';
-        } else {
-            discount_val = discount.value + ' р';
-        }
-
-
-        object.setTotalPrice(total_price);
-        object.setItogo(itogo);
-        object.setDiscount(discount_val);
+        this.setTotalPrice(total_price);
+        this.setItogo(itogo);
+        this.setDiscount(discount_val);
     }
 
     recalculateItem(id){
@@ -480,20 +417,7 @@ class shipmentDialog extends Modal{
         let price = Number(price_element.value);
         let count = Number(count_element.value);
 
-        if(!this.current_dialog.querySelector('[name="id"]').value.length) {
-            axios.post('/product/' + id + '/price', {
-                count: count_element.value
-            })
-            .then(response => {
-                price = response.data.price;
-
-                this.setItemPrice(id, price_element, total_element, price, count);
-            })
-            .catch(response => {
-                console.log(response);
-            });
-        }
-        else this.setItemPrice(id, price_element, total_element, price, count);
+        this.setItemPrice(id, price_element, total_element, price, count);
     }
 
     setItemPrice(id, price_element, total_element, price, count) {

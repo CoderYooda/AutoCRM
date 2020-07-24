@@ -425,7 +425,7 @@ class storePage{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-    search(){
+    search() {
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
@@ -619,7 +619,17 @@ class storePage{
         if(object.provider !== []){data.provider = object.provider;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}
 
-        if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
+        if(object.search && object.search !== 'null' || object.search !== null) {
+
+            let search_string = object.search.toString();
+
+            if(search_string.length === 13) {
+                data.except_analogues = 1;
+            }
+
+            data.search = search_string;
+        }
+
         return data;
     }
 

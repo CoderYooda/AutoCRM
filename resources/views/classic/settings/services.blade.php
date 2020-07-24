@@ -9,18 +9,18 @@
         <div class="box ml-15">
             <div class="modal-header tab-container">
                 <ul id="settings_services_tabs" class="nav header_selects_navs">
-                    <li class="nav-item active">
-                        <a href="#tab_providerorders" class="button primary">Проценка</a>
+                    <li class="nav-item">
+                        <a href="#" data-target="tab_providerorders" class="button primary active">Проценка</a>
                     </li>
                     <li class="nav-item ml-10">
-                        <a href="#tab_messages" class="button primary">Мессенджеры</a>
+                        <a href="#" data-target="tab_messages" class="button primary">Мессенджеры</a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div class="tab-content">
-            <div id="tab_providerorders" class="tab-pane">
+            <div id="tab_providerorders" class="tab-pane active">
                 <div class="d-flex">
                     <div class="row row-sm">
 

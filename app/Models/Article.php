@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\SettingsController;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -140,6 +141,7 @@ class Article extends Model
 
     public function getPrice(int $count = 1)
     {
+        /** @var Company $company */
         $company = Auth::user()->company->load('settings');
 
         $price_source = $company->getSettingField('Источник цены');
@@ -173,7 +175,11 @@ class Article extends Model
                 }
             }
 
-            return $found_count ? ($retail_price / $found_count) : 0;
+            $markup_value = $company->getSettingField('Стандартная наценка (%)');
+
+            $total = $found_count ? ($retail_price / $found_count) : 0;
+
+            return (double)($total + ($total / 100 * $markup_value));
         }
     }
 

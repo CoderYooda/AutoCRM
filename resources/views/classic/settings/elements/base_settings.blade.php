@@ -1,6 +1,6 @@
 @php $class='settings'; @endphp
 <div id="baseSettings" class="m-15 box">
-    <form onsubmit="window.{{ $class }}.saveBaseSettingsForm(this, event)" action="{{ route('BaseSettingsStore') }}" method="POST" role="form" class="SettingsStoredListner m-14">
+    <form action="{{ route('BaseSettingsStore') }}" method="POST" role="form" class="SettingsStoredListner m-14">
         <h2 class="mt-0 style_header">Основные настройки</h2>
         @csrf
         <input name="id" type="hidden" value="{{ $company->id ?? '' }}" />
@@ -9,7 +9,7 @@
             <div class="form-group w-350 mt-5">
                 <label>{{ $setting->name }}</label>
                 @if($setting->type == 'select')
-                    <select onchange="{{ $class }}.changeField(this)" class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
+                    <select class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
                         @if($setting->model == 'Role')
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}" @if($setting->value == $role->id) selected @endif>{{ $role->name }}</option>
@@ -30,7 +30,7 @@
             </div>
         @endforeach
         @can('Редактировать настройки')
-            <button type="button" class="button m-t">Сохранить</button>
+            <button type="button" onclick="{{ $class }}.saveBaseSettingsForm(this, event)" class="button m-t">Сохранить</button>
         @endcan
     </form>
 </div>
