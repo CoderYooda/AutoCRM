@@ -266,8 +266,8 @@ class storePage{
                 // {title:"Цена (Ррозница)", field:"price", width:130, align:"left", formatter:priceFormatter},
             ];
         } else if(object.active_tab === 'provider_orders'){
-            object.contextDop = 'providerorders';
-            object.parametr = 'provider_orders';
+            object.contextDop = 'providerorder';
+            object.parametr = 'provider_order';
             let iconFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';

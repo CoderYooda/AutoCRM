@@ -115,7 +115,6 @@ class StoreController extends Controller
     {
         $analogues = [];
         $manufactures = [];
-        $analog_pluck = [];
 
         if(!$request->has('except_analogues')) { //Если аналоги не исключены из поиска
             if ($request->manufacture_id) {
@@ -129,13 +128,12 @@ class StoreController extends Controller
 
         $products = ProductController::getArticles($request, $analog_articles ?? []);
 
-        $is_exists_searchable = $products->contains('article', $request->search);
+        $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
 
-        if(!$request->has('except_analogues')) $analog_pluck = $products->where('article', '!=', $request->search)->pluck('article');
-
-        $info = '"' . $request->search . '" ' . ($is_exists_searchable ? 'найден' : 'не найден') . '. ';
-
-        if (count($analog_pluck)) $info .= 'Список доступных аналогов на складе: ' . trim($analog_pluck, '[]');
+        if(!$request->has('except_analogues')) {
+            $analog_pluck = $products->where('article', '!=', $request->search)->pluck('article');
+            $info .= 'Список доступных аналогов на складе: ' . trim($analog_pluck, '[]');
+        }
 
         $response = [
             'data' => $products,
