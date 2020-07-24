@@ -2,28 +2,24 @@
 
 namespace App\Providers;
 
-use App\Services\test\test;
+use App\Services\ProviderService\Providers;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
-use App\Services\test\Providers\qwe1;
+use App\Services\ProviderService\Providers\Trinity;
 
-use App\Services\test\Contract\ProviderInterface;
+use App\Services\ProviderService\Contract\ProviderInterface;
 
 class AppProviderStoreService extends ServiceProvider
 {
     public function register()
     {
-        //$this->app->bind(qwe1::class);
-
         $this->app->tag([
-            trinity::class,
-            exist::class,
-
+            Trinity::class,
         ], [ ProviderInterface::class ]);
 
-        $this->app->bind(test::class, function (Application $app) {
-            return new test($app->tagged(ProviderInterface::class));
+        $this->app->bind(Providers::class, function (Application $app) {
+            return new Providers($app->tagged(ProviderInterface::class));
         });
 
     }

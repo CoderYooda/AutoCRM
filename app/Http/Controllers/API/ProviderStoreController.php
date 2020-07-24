@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\test\test;
+use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProviderStoreController extends Controller
 {
-    public function tableData(Request $request, test $qwe1)
+    public function tableData(Request $request, Providers $providers)
     {
-        $qwe1->find($request->search);
+        foreach ($providers->all() as $provider) {
 
-        dd($qwe1);
+            if(!$provider->isActivated()) continue;
 
+            dd($provider);
+        }
     }
 }
