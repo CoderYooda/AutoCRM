@@ -3,6 +3,7 @@
 
 namespace App\Traits;
 
+use App\Models\ProviderOrder;
 use App\Models\Warrant;
 
 trait PayableTrait

@@ -118,11 +118,11 @@
                     <div class="form-group row">
                         <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
                         <div class="col-sm-6 no-pr">
-                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if(isset($shipment)) disabled @endif>
                                 @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
                                     {{ $shipment->partner->outputName() }}
                                 @else
-                                    Аноним
+                                    Нажмите для выбора
                                 @endif
                             </button>
                         </div>
@@ -133,6 +133,14 @@
                             </span>
                         </div>
                     </div>
+
+                    @if(!isset($shipment))
+                        <div class="form-group row">
+                            <label class="col-form-label pr-10">Анонимный покупатель</label>
+                            <input type="checkbox" name="anonymous" onchange="{{ $class }}.anonymousBuyerToggle(this)" style="max-height: 15px; margin-top: 3px;" />
+                        </div>
+                    @endif
+
                     <div class="form-group row">
                         <label class="col-sm-3" for="discount">Скидка</label>
                         <div class="col-sm-9 input-group">

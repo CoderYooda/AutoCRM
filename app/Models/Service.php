@@ -9,4 +9,6 @@ class Service extends Model
     protected $guarded = [];
 
     protected $table = 'services';
+
+    public $timestamps = false;
 }

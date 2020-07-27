@@ -4,19 +4,21 @@
 
 @section('tab')
 
+    <div class="box m-15">
 
-    <div id="ajax-table-services" style="margin: 15px 15px 15px 0;">
-        <div class="box ml-15">
-            <div class="modal-header tab-container">
-                <ul id="settings_services_tabs" class="nav header_selects_navs">
-                    <li class="nav-item">
-                        <a href="#" data-target="tab_providerorders" class="button primary active">Проценка</a>
-                    </li>
-                    <li class="nav-item ml-10">
-                        <a href="#" data-target="tab_messages" class="button primary">Мессенджеры</a>
-                    </li>
-                </ul>
-            </div>
+        <div style="margin-bottom: 30px !important;">
+            <h1 class="ml-15 service-header-title">Сервисы</h1>
+        </div>
+
+        <div class="ml-15 mt-15">
+            <ul id="settings_services_tabs" class="nav header_selects_navs">
+                <li class="nav-item statistic-filter pr-15">
+                    <a href="#" data-target="tab_providerorders" class="button primary w-100 active">Проценка</a>
+                </li>
+                <li class="nav-item statistic-filter pr-15">
+                    <a href="#" data-target="tab_messages" class="button primary w-100">Мессенджеры</a>
+                </li>
+            </ul>
         </div>
 
         <div class="tab-content w-100">
@@ -25,15 +27,16 @@
 
                     @foreach($services as $service)
 
-                        @continue($service->category_id != 0)
+                        @continue($service->category_id)
 
                         <div class="statistic-filter pr-15 mb-15">
-                            <div class="p-10 box pointer text-center" onclick="settings.toggleProviderOrder(this, {{ $service->id }})" style="min-height: 200px;">
+                            <div class="p-10 d-flex service-box pointer text-center" onclick="settings.toggleProviderOrder(this, {{ $service->id }})" style="min-height: 143px; position: relative; justify-content: center; flex-direction: column;">
                                 <div>
-                                    <img style="max-width: 80%; height: 150px;" src="{{ asset('/images/logotypes/' . $service->img) }}">
+                                    <div class="service-title title-elipsed">{{ $service->name }}</div>
+                                    <div class="service-url title-elipsed">{{ parse_url($service->url)['host'] }}</div>
                                 </div>
-                                <div>
-                                    <label class="ui-switch float-right mt-5">
+                                <div style="position: absolute; bottom: 0; margin-bottom: 10px;">
+                                    <label class="ui-switch float-left">
                                         <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
                                     </label>
                                 </div>

@@ -28,7 +28,7 @@ class ShipmentsRequest extends FormRequest
         //TODO check
         if($this->do_date == null) $this->do_date = Carbon::now();
 
-        if($this['partner_id'] == null) {
+        if($this->anonymous == 'on' && $this['partner_id'] == null) {
 
             $company_id = auth()->user()->partner->company_id;
 
@@ -54,7 +54,7 @@ class ShipmentsRequest extends FormRequest
     public function rules()
     {
         return [
-            'partner_id' => ['nullable', 'exists:partners,id'],
+            'partner_id' => ['required', 'exists:partners,id'],
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required'],
             'products.*.count' => ['integer', 'min:1', 'max:9999'],

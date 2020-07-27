@@ -459,19 +459,37 @@ class storePage{
 
     showManufactureStores(element, manufacturer) {
 
-        let service_input = document.querySelector('[name="service_id"]');
+        let target_element = document.getElementById('brand_context_' + manufacturer);
 
-        axios.post('/provider_stores/stores', {
-            manufacturer: manufacturer,
-            article: this.search,
-            selected_service: Number(service_input.value)
-        })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(response => {
-            console.log(response);
-        });
+        if(target_element.classList.contains('d-none')) {
+
+            let service_input = document.querySelector('[name="service_id"]');
+
+            axios.post('/provider_stores/stores', {
+                manufacturer: manufacturer,
+                article: this.search,
+                selected_service: Number(service_input.value)
+            })
+            .then(response => {
+
+                target_element.classList.remove('d-none');
+
+                target_element.querySelector('tbody').innerHTML = response.data.html;
+
+                element.innerText = 'CLOSE';
+            })
+            .catch(response => {
+                console.log(response);
+            });
+        }
+        else {
+
+            target_element.classList.add('d-none');
+
+            target_element.querySelector('tbody').innerHTML = '';
+
+            element.innerText = 'OPEN';
+        }
     }
 
     initTableData() {

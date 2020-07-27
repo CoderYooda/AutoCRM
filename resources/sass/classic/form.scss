@@ -629,6 +629,10 @@ label.label-sm{
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
+button:disabled {
+    color: grey;
+}
+
 .form-control:focus{
     outline-color: #2D76A8;
 }
@@ -902,7 +906,7 @@ label.label-sm{
     background-color: #1e85ca;
 }
 .mb-3{
-    margin-bottom: 15px;
+    margin-bottom: 3px !important;
 }
 .first_letter{
     font-size: 14px;
@@ -1122,6 +1126,9 @@ label.label-sm{
 }
 .float-right {
     float: right!important;
+}
+.float-left {
+    float: left!important;
 }
 .w-128 {
     width: 128px;

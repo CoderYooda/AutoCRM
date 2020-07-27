@@ -47,8 +47,10 @@ class ProviderStoreController extends Controller
 
         $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
 
+        $view = view(get_template() . '.provider_stores.includes.table_element', compact('stores'));
+
         return response()->json([
-            'stores' => $stores
+            'html' => $view->render()
         ]);
     }
 }

@@ -312,6 +312,18 @@ class shipmentDialog extends Modal{
         this.recalculate();
     }
 
+    anonymousBuyerToggle(element) {
+
+        let select_element = document.querySelector('button[name="partner_id"]');
+
+        select_element.disabled = element.checked;
+
+        if(element.checked) {
+            this.current_dialog.querySelector('input[name="partner_id"]').value = '';
+            this.current_dialog.querySelector('button[name="partner_id"]').innerText = 'Нажмите для выбора';
+        }
+    }
+
     getPriceFromServer(id, input) {
 
         axios.post('/product/' + id + '/price', {

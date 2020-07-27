@@ -5,6 +5,7 @@ namespace App\Services\ProviderService\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 
@@ -25,6 +26,12 @@ class Trinity implements ProviderInterface
         $url = $this->host . 'search/byCode';
 
         $results = $this->query($url, $this->createParams($params), true);
+
+//        $results = [];
+//
+//        foreach ($results['data'] as $index => $store) {
+//            $results[$index]['store_name'] = $store['']
+//        }
 
         return array_column($results['data'], 'producer');
     }
@@ -51,9 +58,7 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
-        dd($items);
-
-        return $items;
+        return $items['data'];
     }
 
     public function searchItems($article, $brand, $searchType = 'full', $asArray = true) {

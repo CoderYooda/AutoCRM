@@ -3,6 +3,7 @@
 
 namespace App\Services\ProviderService\Contract;
 
+use Illuminate\Http\JsonResponse;
 
 interface ProviderInterface
 {
