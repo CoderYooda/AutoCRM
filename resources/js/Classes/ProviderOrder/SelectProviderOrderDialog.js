@@ -5,10 +5,11 @@ class selectProviderOrderDialog extends Modal{
     constructor(dialog){
         super(dialog);
         console.log('Окно поиска заявок поставщику инициализировано');
-        this.search_obj = null;
+        this.search_obj = this.root_dialog.querySelector("#selectproviderorder_search");
         this.order_id = null;
         this.refer = dialog.querySelector("#refer").value;
         this.articles_container = dialog.querySelector("#articles_container");
+        this.results_obj = this.root_dialog.querySelector("#search_providerorder_results");
         this.init();
     }
 
@@ -21,20 +22,21 @@ class selectProviderOrderDialog extends Modal{
         if(focused){
             focused.focus();
         }
+        this.searchInit();
     }
 
     searchInit(){
         let object = this;
-        var searchFn = window.helper.debounce(function(e) {
-            object.search(e);
+        let searchFn = window.helper.debounce(function(e) {
+            object.search(object);
         }, 400);
-
-        this.search_obj.addEventListener("keydown", searchFn);
-        //this.store_obj.addEventListener("change", searchFn);
-        this.search_obj.addEventListener("paste", searchFn);
-        this.search_obj.addEventListener("delete", searchFn);
-        document.addEventListener("ProviderOrderStored", searchFn);
-
+        if(object.search_obj){
+            object.search_obj.addEventListener("keydown", searchFn);
+            object.search_obj.addEventListener("paste", searchFn);
+            object.search_obj.addEventListener("delete", searchFn);}
+        object.root_dialog.addEventListener("ProviderOrderStored", function(){
+            object.search(object);
+        });
     }
 
     markAsAdded(){
@@ -58,7 +60,7 @@ class selectProviderOrderDialog extends Modal{
 
     search(){
         let object = this;
-        var string = this.search_obj.value;
+        let string = this.search_obj.value;
         //var store_id = this.store_obj.value;
 
         let data = {};

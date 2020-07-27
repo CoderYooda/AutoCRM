@@ -117,16 +117,19 @@ class ProviderOrdersController extends Controller
     public function dialogSearch(Request $request)
     {
         $providerorders = ProviderOrder::owned()
-            ->where(function($q) use ($request){
-                $q->where('name', 'LIKE', '%' . $request['string'] .'%');
-                $q->orWhere('article', 'LIKE', '%' . $request['string'] .'%');
-                $q->orWhereHas('supplier', function ($query) use ($request) {
-                    $query->where('name', 'LIKE', '%' . $request['string'] .'%');
-                });
-            })
-            ->orderBy('id', 'DESC')->limit(10)->get();
 
-        $content = view('provider_orders.dialog.select_providerorder_inner', compact('providerorders', 'request'))->render();
+        ->where('id', 'like', '%'.$request['string'].'%')
+        ->orWhereHas('partner', function($query) use ($request){
+            $query->where('company_id', Auth::user()->company_id)
+                ->where(function($q) use ($request){
+                    $q->where('fio', 'like', '%'.$request['string'].'%')
+                        ->orWhere('companyName', 'like', '%'.$request['string'].'%')
+                        ->orWhere('foundstring', 'like', '%'.$request['string'].'%');
+                });
+        })
+        ->orderBy('id', 'DESC')->limit(10)->get();
+
+        $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder_inner', compact('providerorders', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);
