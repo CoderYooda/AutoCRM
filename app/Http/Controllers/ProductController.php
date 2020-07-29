@@ -365,9 +365,25 @@ class ProductController extends Controller
         return $query->paginate($size);
     }
 
-    public static function searchByArticle($articles)
+    public static function searchByArticleAndBrand($articles)
     {
-        return Article::whereIn('article', $articles)->paginate(10);
+        if(!count($articles)) return collect();
+
+        $prepare_data = [];
+
+        foreach ($articles as $manufacture => $article) {
+            $prepare_data[] = mb_strtolower($article . $manufacture);
+        }
+
+        $products = Article::owned()
+            ->where(function (Builder $query) use($prepare_data) {
+                foreach ($prepare_data as $string) {
+                    $query->orWhere('foundstring', 'like', "{$string}%");
+                }
+            })
+            ->get();
+
+        return $products;
     }
 
 }

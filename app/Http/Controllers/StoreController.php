@@ -127,7 +127,10 @@ class StoreController extends Controller
             }
 
             #Список артикулов аналогов
-            $analog_articles = collect($analogues)->pluck('nsa');
+
+            foreach ($analogues as $analogue) {
+                $analog_articles[$analogue['m_name']] = $analogue['nsa'];
+            }
 
             #Узнаем название производителя
             $manufacture_selected = collect($manufactures)->where('m_id', $request->manufacture_id)->first()['m_name'];
@@ -137,7 +140,7 @@ class StoreController extends Controller
         $products = ProductController::getArticles($request, $manufacture_selected);
 
         #Получаем список аналогов
-        $analog_products = ProductController::searchByArticle($analog_articles);
+        $analog_products = ProductController::searchByArticleAndBrand($analog_articles);
 
         $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
 
