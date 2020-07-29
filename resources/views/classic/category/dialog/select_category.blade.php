@@ -22,7 +22,7 @@
 
 
     <div id="search_category_results" class="row row-sm">
-        @include(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner')
+        @include(get_template() . '.category.dialog.select_category_inner')
     </div>
     <div class="modal-footer">
         <button class="button white" onclick="window.selectCategoryDialog.finitaLaComedia(this)">Закрыть</button>
@@ -32,6 +32,6 @@
     </div>
 
     {{--<div id="search_category_results" class="mh50-dialog white" data-simplebar style="max-height: 400px;">--}}
-        {{--@include(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner')--}}
+        {{--@include(get_template() . '.category.dialog.select_category_inner')--}}
     {{--</div>--}}
 </div>

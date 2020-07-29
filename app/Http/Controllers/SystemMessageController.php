@@ -90,7 +90,7 @@ class SystemMessageController extends Controller
         $messages = self::getMessagesAside();
         return response()->json([
             'count' => $messages->count(),
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.system.messages_list', compact('messages'))->render()
+            'html' => view(get_template() . '.system.messages_list', compact('messages'))->render()
         ]);
     }
 
@@ -104,7 +104,7 @@ class SystemMessageController extends Controller
         }
 //        return response()->json([
 //            'count' => $messages->count(),
-//            'html' => view(env('DEFAULT_THEME', 'classic') . '.system.messages_list', compact('messages'))->render()
+//            'html' => view(get_template() . '.system.messages_list', compact('messages'))->render()
 //        ]);
     }
 

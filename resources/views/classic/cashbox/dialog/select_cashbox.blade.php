@@ -24,7 +24,7 @@
 
     <div id="partner_list" class="mh50-dialog">
         <div id="search_cashbox_results">
-            @include(env('DEFAULT_THEME', 'classic') . '.cashbox.dialog.select_cashbox_inner')
+            @include(get_template() . '.cashbox.dialog.select_cashbox_inner')
         </div>
     </div>
     <div class="modal-footer white">

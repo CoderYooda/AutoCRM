@@ -1,6 +1,6 @@
 
 @foreach($cashboxes as $cashbox)
-    @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.cashbox_elem')
+    @include(get_template() . '.settings.elements.cashbox_elem')
 @endforeach
 @can('Редактировать настройки')
 <div class="col-sm-3 mt-30">

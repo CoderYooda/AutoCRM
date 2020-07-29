@@ -24,14 +24,14 @@ class ScheduleController extends Controller
         $target = HC::selectTarget();
 
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(env('DEFAULT_THEME', 'classic') . '.schedule.index', compact('request'))->render();
+            $content = view(get_template() . '.schedule.index', compact('request'))->render();
             return response()->json([
                 'target' => $target,
                 'page' => 'Планировщик',
                 'html' => $content
             ]);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.schedule.index', compact('request'));
+            return view(get_template() . '.schedule.index', compact('request'));
         }
     }
 
@@ -41,7 +41,7 @@ class ScheduleController extends Controller
         //$partners = Partner::where('company_id', Auth::user()->company()->first()->id)->paginate(7);
         return response()->json([
             'tag' => 'scheduleTemplateDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.schedule.dialog.select_day_type', compact('request', 'day_off_types'))->render()
+            'html' => view(get_template() . '.schedule.dialog.select_day_type', compact('request', 'day_off_types'))->render()
         ]);
     }
 

@@ -22,7 +22,7 @@ class SupplierController extends Controller
         $suppliers = Supplier::owned()->orderBy('name', 'DESC')->get();
         return response()->json([
             'tag' => 'selectSupplierDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.list_suppliers', compact('suppliers', 'request'))->render()
+            'html' => view(get_template() . '.supplier.dialog.list_suppliers', compact('suppliers', 'request'))->render()
         ]);
     }
 
@@ -47,7 +47,7 @@ class SupplierController extends Controller
         $supplier = Supplier::owned()->where('id', $request['id'])->first();
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.form_supplier', compact('supplier', 'request'))->render()
+            'html' => view(get_template() . '.supplier.dialog.form_supplier', compact('supplier', 'request'))->render()
         ]);
     }
 
@@ -82,7 +82,7 @@ class SupplierController extends Controller
             })
             ->orderBy('name', 'DESC')->limit(10)->get();
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.list_suppliers_inner', compact('suppliers', 'request'))->render();
+        $content = view(get_template() . '.supplier.dialog.list_suppliers_inner', compact('suppliers', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);

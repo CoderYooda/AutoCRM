@@ -1,4 +1,4 @@
-@extends(env('DEFAULT_THEME', 'classic') . '.layouts.auth')
+@extends(get_template() . '.layouts.auth')
 
 @section('content')
     <div class="auth-block">

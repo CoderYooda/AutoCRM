@@ -17,10 +17,10 @@ class RoleController extends Controller
 	public static function getRoles($request)
 	{
 		$roles = Role::where('company_id', Auth::user()->company->id)->get();
-		
+
 		return $roles;
 	}
-	
+
 	public function store(RoleRequest $request)
 	{
 		$ids = [];
@@ -41,7 +41,7 @@ class RoleController extends Controller
 		$role->name = $request['name'];
 		$role->save();
 		$role->syncPermissions($ids);
-		
+
 		if($request->expectsJson()){
 			return response()->json([
 				'message' => $this->message,
@@ -51,14 +51,14 @@ class RoleController extends Controller
 			return redirect()->back();
 		}
 	}
-	
+
 	public function assignRoleToUser(Request $request)
 	{
 		$user = User::owned()->where('id', $request['user_id'])->first();
 		$role = Role::where('company_id', Auth::user()->company()->first()->id)->where('id', $request['role_id'])->first();
-		
+
 		$user->syncRoles([$role->id]);
-		
+
 		if($request->expectsJson()){
 			return response()->json([
 				'message' => 'Роль назначена пользователю',
@@ -68,7 +68,7 @@ class RoleController extends Controller
 			return redirect()->back();
 		}
 	}
-	
+
 	public static function roleDialog($request)
 	{
 		$tag = 'roleDialog';
@@ -78,12 +78,12 @@ class RoleController extends Controller
 		} else {
 			$role = NULL;
 		}
-		
+
 		$permissions = PermissionController::getPermissionArray($role);
-		
+
 		return response()->json([
 			'tag' => $tag,
-			'html' => view(env('DEFAULT_THEME', 'classic') . '.role.dialog.form_role', compact('request', 'role', 'permissions'))->render()
+			'html' => view(get_template() . '.role.dialog.form_role', compact('request', 'role', 'permissions'))->render()
 		]);
 	}
 
@@ -109,7 +109,7 @@ class RoleController extends Controller
             'message' => $this->message
         ], $this->status);
     }
-	
+
 	public static function createStartRoles($company)
 	{
 		$role = LRole::create(['name' => 'Руководитель', 'company_id' => $company->id]);

@@ -16,7 +16,7 @@
         </form>
     </div>
     <div id="search_providerorder_results" class="mb-15">
-        @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder_inner')
+        @include(get_template() . '.provider_orders.dialog.select_providerorder_inner')
     </div>
     <div class="modal-footer">
         <button onclick="openDialog('providerorderDialog')" class="button primary pull-right uppercase-btn" type="button">Новая заявка</button>

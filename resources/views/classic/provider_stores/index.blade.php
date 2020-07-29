@@ -12,10 +12,12 @@
                 </span>
             </div>
 
-            <div class="box w-100 mb-15 p-5">
+            <div class="box w-100 mb-15 p-5 provider_tabs">
                 @foreach($services as $service)
 
-                    <button class="button primary mr-5 @if($loop->first) active @endif">{{ $service->name }} <span id="service_count_{{ $service->id }}"></span></button>
+                    @continue(!auth()->user()->company->isServiceProviderActive($service->id))
+
+                    <button onclick="store.showProvider(this, {{ $service->id }})" class="button primary mr-5 @if($loop->first) active @endif">{{ $service->name }} <span id="service_count_{{ $service->id }}"></span></button>
 
                 @endforeach
             </div>

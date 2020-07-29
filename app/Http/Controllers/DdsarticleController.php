@@ -51,7 +51,7 @@ class DdsarticleController extends Controller
         $ddstypes = DdsType::all();
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.form_ddsarticle', compact('ddsarticle','ddstypes', 'category', 'request'))->render()
+            'html' => view(get_template() . '.ddsarticle.dialog.form_ddsarticle', compact('ddsarticle','ddstypes', 'category', 'request'))->render()
         ]);
     }
 
@@ -126,7 +126,7 @@ class DdsarticleController extends Controller
         $categories = CategoryController::getModalCategories(self::$root_category, $request);
         $view = $request['inner'] ? 'select_ddsarticle_inner' : 'select_ddsarticle';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.' . $view, compact('ddsarticles', 'categories', 'class', 'request'))->render();
+        $content = view(get_template() . '.ddsarticle.dialog.' . $view, compact('ddsarticles', 'categories', 'class', 'request'))->render();
         return response()->json([
             'tag' => 'selectDdsarticleDialog',
             'html' => $content

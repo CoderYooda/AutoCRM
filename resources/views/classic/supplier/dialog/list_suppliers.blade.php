@@ -22,7 +22,7 @@
     @endif
     <div class="box-body inscroll">
         <div id="search_supplier_results" class="" data-simplebar style="max-height: 400px">
-            @include(env('DEFAULT_THEME', 'classic') . '.supplier.dialog.list_suppliers_inner')
+            @include(get_template() . '.supplier.dialog.list_suppliers_inner')
         </div>
     </div>
     <div class="modal-footer white">

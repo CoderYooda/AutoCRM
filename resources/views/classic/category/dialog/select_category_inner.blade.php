@@ -1,5 +1,5 @@
 <div id="search_partner_categories" class="col-sm-4 no-pr">
-    @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
+    @include(get_template() . '.category.modal_categories')
 </div>
 
 <div class="col-sm-8 no-pl">

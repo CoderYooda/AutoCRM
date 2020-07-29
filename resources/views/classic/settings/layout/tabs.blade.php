@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') .'.layouts.XHR' : 'classic.layouts.main')
+@extends($request['view_as'] == 'json' ? get_template() .'.layouts.XHR' : 'classic.layouts.main')
 
 @section('title', $page ?? 'Настройки')
 
@@ -34,7 +34,7 @@
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'sms', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                     <span class="nav-text">Смс</span>
                 </a>
-            </li>   
+            </li>
             <li id="setting-services-tab" data-tab="services" class="@if($request['active_tab'] == 'services') active @endif tab">
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'services', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
                     <span class="nav-text">Сервисы</span>

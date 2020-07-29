@@ -157,11 +157,11 @@
                         <tbody class="product_list">
                         @if(isset($refund))
                             @foreach($refund->articles as $product)
-                                @include(env('DEFAULT_THEME', 'classic') . '.refund.dialog.product_element')
+                                @include(get_template() . '.refund.dialog.product_element')
                             @endforeach
                         @elseif(isset($shipment))
                             @foreach($shipment->articles as $product)
-                                @include(env('DEFAULT_THEME', 'classic') . '.refund.dialog.product_element')
+                                @include(get_template() . '.refund.dialog.product_element')
                             @endforeach
                         @endif
                         </tbody>

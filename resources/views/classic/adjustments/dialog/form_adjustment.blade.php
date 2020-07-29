@@ -76,7 +76,7 @@
                             <tbody class="product_list">
                             @if(isset($adjustment))
                                 @foreach($adjustment->articles()->get() as $product)
-                                    @include(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.product_element')
+                                    @include(get_template() . '.adjustments.dialog.product_element')
                                 @endforeach
                             @endif
                             </tbody>

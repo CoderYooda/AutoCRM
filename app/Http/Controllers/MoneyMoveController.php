@@ -29,7 +29,7 @@ class MoneyMoveController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.cashmove.dialog.form_moneymove', compact('moneymove', 'request'))->render()
+            'html' => view(get_template() . '.cashmove.dialog.form_moneymove', compact('moneymove', 'request'))->render()
         ]);
     }
 
@@ -78,8 +78,8 @@ class MoneyMoveController extends Controller
         $comment = $moneymove->comment;
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.cashmove.contact-card', compact( 'partner','request', 'moneymove'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(get_template() . '.cashmove.contact-card', compact( 'partner','request', 'moneymove'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
         } else {
             return redirect()->back();

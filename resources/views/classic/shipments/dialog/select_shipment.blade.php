@@ -19,7 +19,7 @@
     </div>
     <div id="shipment_list">
         <div id="search_shipment_results" class="row row-sm">
-            @include(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.select_shipment_inner')
+            @include(get_template() . '.shipments.dialog.select_shipment_inner')
         </div>
     </div>
     <div class="modal-footer">

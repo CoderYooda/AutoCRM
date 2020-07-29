@@ -19,7 +19,7 @@
     <ul class="nav" id="category-block">
         @if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
             @foreach($categories['stack'] as $category)
-                @include(env('DEFAULT_THEME', 'classic') . '.category.aside-element')
+                @include(get_template() . '.category.aside-element')
             @endforeach
         @else
             <li>

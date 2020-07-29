@@ -28,7 +28,7 @@ class CashController extends Controller
         if($request['active_tab'] === 'null'){$classname = 'moneyTab';}
 
         $content = self::$classname($request);
-	
+
 	    if(class_basename($content) == "JsonResponse"){
 		    return $content;
 	    }
@@ -44,7 +44,7 @@ class CashController extends Controller
             return $content;
         }
     }
-	
+
 	public static function getAllowedPage(){
 		$tabs = [
 			'warrant' => 'Смотреть денежные операции',
@@ -56,16 +56,16 @@ class CashController extends Controller
 			}
 		}
 	}
-    
+
     public static function warrantTab($request)
     {
 	    if(!Gate::allows('Смотреть денежные операции')){
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
 	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-warrant'){
-            return view(env('DEFAULT_THEME', 'classic') . '.warrant.elements.table_container', compact('request'));
+            return view(get_template() . '.warrant.elements.table_container', compact('request'));
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.warrant.index', compact('request'));
+            return view(get_template() . '.warrant.index', compact('request'));
         }
     }
 
@@ -75,8 +75,8 @@ class CashController extends Controller
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
 	    }
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){
-            return view(env('DEFAULT_THEME', 'classic') . '.cashmove.elements.table_container', compact('request'));
+            return view(get_template() . '.cashmove.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.cashmove.index', compact('request'));
+        return view(get_template() . '.cashmove.index', compact('request'));
     }
 }

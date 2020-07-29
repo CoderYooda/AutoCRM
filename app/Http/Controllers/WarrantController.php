@@ -71,7 +71,7 @@ class WarrantController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.warrant.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
+            'html' => view(get_template() . '.warrant.dialog.form_warrant', compact( 'warrant', 'data', 'request'))->render()
         ]);
     }
 
@@ -83,8 +83,8 @@ class WarrantController extends Controller
 
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.warrant.contact-card', compact( 'partner','request', 'warrant'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(get_template() . '.warrant.contact-card', compact( 'partner','request', 'warrant'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
         }
 

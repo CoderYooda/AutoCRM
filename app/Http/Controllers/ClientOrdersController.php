@@ -56,7 +56,7 @@ class ClientOrdersController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))->render()
+            'html' => view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))->render()
         ]);
     }
 
@@ -116,7 +116,7 @@ class ClientOrdersController extends Controller
 
         $request['fresh'] = true;
         $class = 'clientorderDialog' . $client_order->id;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))->render();
+        $content = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'clientorderDialog' . $client_order->id,
@@ -451,8 +451,8 @@ class ClientOrdersController extends Controller
         $comment = $client_order->comment;
         if ($request->expectsJson()) {
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.client_orders.contact-card', compact('partner', 'request'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact('comment', 'request'))->render(),
+                'info' => view(get_template() . '.client_orders.contact-card', compact('partner', 'request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
             ], 200);
         } else {
             return redirect()->back();

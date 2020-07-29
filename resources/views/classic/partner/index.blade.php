@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') . '.layouts.XHR' : env('DEFAULT_THEME', 'classic') . '.layouts.main')
+@extends($request['view_as'] == 'json' ? get_template() . '.layouts.XHR' : get_template() . '.layouts.main')
 
 @section('title', $page ?? 'Контакты')
 
@@ -6,7 +6,7 @@
     @php $class = 'partner' @endphp
     <div id="ajax-table-warrant" class="bottom-container">
         <div class="content-menu box w-290" id="category-nav">
-            @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')
+            @include(get_template() . '.category.aside-list')
         </div>
         <div class="box-lister">
             <div class="w-100 box box-search mb-15">

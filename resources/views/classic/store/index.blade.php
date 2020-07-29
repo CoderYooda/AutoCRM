@@ -9,7 +9,7 @@
     @php $class = 'store' @endphp
 
     <div id="ajax-table-store" class="bottom-container" style="height: calc(100% - 79px) !important;">
-        @include(env('DEFAULT_THEME', 'classic') . '.store.elements.table_container')
+        @include(get_template() . '.store.elements.table_container')
     </div>
 
 @endsection

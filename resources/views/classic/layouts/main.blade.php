@@ -268,11 +268,11 @@
                     @yield('content')
                 </div>
                 <div id="dialogs"></div>
-                @include(env('DEFAULT_THEME', 'classic') . '.system.aside_messages')
-                @include(env('DEFAULT_THEME', 'classic') . '.system.system_dialog')
-                @include(env('DEFAULT_THEME', 'classic') . '.system.croppr_dialog')
+                @include(get_template() . '.system.aside_messages')
+                @include(get_template() . '.system.system_dialog')
+                @include(get_template() . '.system.croppr_dialog')
                 @if(!Auth::user()->company->set_master_complite)
-                    @include(env('DEFAULT_THEME', 'classic') . '.system.settings_master')
+                    @include(get_template() . '.system.settings_master')
                 @endif
                 @include(get_template(). '.system.settings_provider_dialog')
             </div>

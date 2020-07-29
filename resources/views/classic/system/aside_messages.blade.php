@@ -13,7 +13,7 @@ $messages = [];
             </div>
             <div data-simplebar style="max-height: calc(100vh - 55px); width: 370px">
                 <div class="prl-10" id="system_messages">
-                    @include(env('DEFAULT_THEME', 'classic') . '.system.messages_list')
+                    @include(get_template() . '.system.messages_list')
                 </div>
             </div>
         </div>

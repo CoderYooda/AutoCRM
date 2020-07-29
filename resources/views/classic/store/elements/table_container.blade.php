@@ -7,7 +7,7 @@
 
 @can('Смотреть категории')
     <div class="content-menu box w-290" id="category-nav" >
-        @include(env('DEFAULT_THEME', 'classic') . '.category.aside-list')
+        @include(get_template() . '.category.aside-list')
     </div>
 @endcan
 

@@ -43,20 +43,20 @@ class PartnerController extends Controller
         $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 3;
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request', 'categories', 'cat_info'))->render();
+            $content = view(get_template() . '.partner.index', compact('request', 'categories', 'cat_info'))->render();
             return response()->json([
                 'target' => 'ajax-content',
                 'page' => 'Контакты',
                 'html' => $content
             ]);
         } elseif($request->expectsJson() && $request['search'] != NULL){
-            $content = view(env('DEFAULT_THEME', 'classic') . '.partner.elements.list_container', compact('request', 'categories', 'cat_info'))->render();
+            $content = view(get_template() . '.partner.elements.list_container', compact('request', 'categories', 'cat_info'))->render();
             return response()->json([
                 'html' => $content,
                 'target' => 'ajax-table-partner',
             ], 200);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.partner.index', compact('request', 'categories', 'cat_info'));
+            return view(get_template() . '.partner.index', compact('request', 'categories', 'cat_info'));
         }
 
     }
@@ -316,7 +316,7 @@ class PartnerController extends Controller
 
         $view = $request['inner'] ? 'select_partner_inner' : 'select_partner';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.partner.dialog.' . $view, compact('partners', 'categories', 'class', 'request'))->render();
+        $content = view(get_template() . '.partner.dialog.' . $view, compact('partners', 'categories', 'class', 'request'))->render();
         return response()->json([
             'tag' => 'selectPartnerDialog',
             'html' => $content
@@ -328,7 +328,7 @@ class PartnerController extends Controller
         $partner = Partner::owned()->where('id', $request['id'])->first();
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.partner.contact-card', compact( 'partner','request'))->render(),
+                'info' => view(get_template() . '.partner.contact-card', compact( 'partner','request'))->render(),
             ], 200);
         } else {
             return redirect()->back();
@@ -338,7 +338,7 @@ class PartnerController extends Controller
     public function search(Request $request)
     {
         $partners = self::getPartners($request);
-        $content = view(env('DEFAULT_THEME', 'classic') . '.partner.elements.list_container', compact('partners', 'request'))->render();
+        $content = view(get_template() . '.partner.elements.list_container', compact('partners', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'ajax-table-partner',

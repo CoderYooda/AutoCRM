@@ -19,7 +19,7 @@
     </div>
     <div id="partner_list">
         <div id="search_partner_results" class="row row-sm">
-            @include(env('DEFAULT_THEME', 'classic') . '.partner.dialog.select_partner_inner')
+            @include(get_template() . '.partner.dialog.select_partner_inner')
         </div>
     </div>
     <div class="modal-footer">

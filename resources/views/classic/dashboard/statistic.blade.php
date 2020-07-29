@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') . '.layouts.XHR' : env('DEFAULT_THEME', 'classic') . '.layouts.main')
+@extends($request['view_as'] == 'json' ? get_template() . '.layouts.XHR' : get_template() . '.layouts.main')
 
 @section('content')
    Статистика

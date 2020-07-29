@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.user.index')
+@extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? get_template() . '.layouts.TabXHR' : get_template() . '.user.index')
 
 @section('tab')
     <div class="box mb-15">
@@ -105,7 +105,7 @@
                     @if($payments->count() > 0)
                         @foreach($payments as $payment)
                             <li class="item d-flex no-wrap" id="payment{{ $payment->id }}">
-                                @include(env('DEFAULT_THEME', 'classic') . '.tariff.payment_element')
+                                @include(get_template() . '.tariff.payment_element')
                             </li>
                         @endforeach
                     @else

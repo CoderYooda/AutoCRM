@@ -1,7 +1,7 @@
 
 @if(!$request->has('only_current_category'))
     <div id="search_partner_categories" class="col-sm-3 no-pr">
-        @include(env('DEFAULT_THEME', 'classic') . '.category.modal_categories')
+        @include(get_template() . '.category.modal_categories')
     </div>
 @endif
 

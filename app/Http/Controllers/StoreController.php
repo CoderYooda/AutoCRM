@@ -115,24 +115,44 @@ class StoreController extends Controller
     {
         $analogues = [];
         $manufactures = [];
+        $analog_articles = [];
+        $manufacture_selected = null;
 
         if(!$request->has('except_analogues')) { //Если аналоги не исключены из поиска
+
+            $manufactures = AnalogController::getManufacturersByArticle($request->search);
+
             if ($request->manufacture_id) {
                 $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
             }
 
-            $manufactures = AnalogController::getManufacturersByArticle($request->search);
-
+            #Список артикулов аналогов
             $analog_articles = collect($analogues)->pluck('nsa');
+
+            #Узнаем название производителя
+            $manufacture_selected = collect($manufactures)->where('m_id', $request->manufacture_id)->first()['m_name'];
         }
 
-        $products = ProductController::getArticles($request, $analog_articles ?? []);
+        #Получаем список продуктов из поиска
+        $products = ProductController::getArticles($request, $manufacture_selected);
+
+        #Получаем список аналогов
+        $analog_products = ProductController::searchByArticle($analog_articles);
 
         $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
 
+        $all_ids = $products->pluck('id')->merge($analog_products->pluck('id'));
+
+        #Сливаем коллекции для вывода
+        $products = Article::whereIn('id', $all_ids)->paginate(10);
+
+        foreach ($products as $key => $product) {
+            $products[$key]['supplier_name'] = $product->supplier->name;
+        }
+
         if(!$request->has('except_analogues')) {
-            $analog_pluck = $products->where('article', '!=', $request->search)->pluck('article');
-            $info .= 'Список доступных аналогов на складе: ' . trim($analog_pluck, '[]');
+            $analog_pluck = $analog_products->pluck('article');
+            $info .= 'Список доступных аналогов на складе: ' . (count($analog_pluck) ? trim($analog_pluck, '[]') : 'Нет');
         }
 
         $response = [
@@ -164,10 +184,10 @@ class StoreController extends Controller
 
 
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
-            return view(env('DEFAULT_THEME', 'classic') . '.store.elements.table_container', compact('categories', 'cat_info', 'request'));
+            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request'));
         }
         $trinity = null; #TODO
-        return view(env('DEFAULT_THEME', 'classic') . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
+        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
     }
 
     public static function entrance_refundsTab($request)
@@ -179,9 +199,9 @@ class StoreController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть поступления');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance') {
-            return view(env('DEFAULT_THEME', 'classic') . '.entrance.elements.table_container', compact('request'));
+            return view(get_template() . '.entrance.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.entrance.index', compact('request'));
+        return view(get_template() . '.entrance.index', compact('request'));
     }
 
     public static function providerTab($request)
@@ -190,62 +210,54 @@ class StoreController extends Controller
         $tp = new TrinityController('B61A560ED1B918340A0DDD00E08C990E');
         $brands = $tp->searchBrands($request['search'], $online = true, $asArray = false);
         if ($request['view_as'] == 'json' && $request['search'] != NULL && $request['target'] == 'ajax-table-provider') {
-            return view(env('DEFAULT_THEME', 'classic') . '.provider.elements.table_container', compact('brands', 'request'));
+            return view(get_template() . '.provider.elements.table_container', compact('brands', 'request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.provider.index', compact('brands', 'request'));
+        return view(get_template() . '.provider.index', compact('brands', 'request'));
     }
 
     public static function shipmentsTab($request)
     {
         PermissionController::canByPregMatch('Смотреть продажи');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments') {
-            return view(env('DEFAULT_THEME', 'classic') . '.shipments.elements.table_container', compact('request'));
+            return view(get_template() . '.shipments.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.shipments.index', compact('request'));
+        return view(get_template() . '.shipments.index', compact('request'));
     }
 
     public static function refundTab($request)
     {
         PermissionController::canByPregMatch('Смотреть возвраты');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-refund') {
-            return view(env('DEFAULT_THEME', 'classic') . '.refund.elements.table_container', compact('request'));
+            return view(get_template() . '.refund.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.refund.index', compact('request'));
+        return view(get_template() . '.refund.index', compact('request'));
     }
 
     public static function client_ordersTab($request)
     {
         PermissionController::canByPregMatch('Смотреть заказ клиента');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders') {
-            return view(env('DEFAULT_THEME', 'classic') . '.client_orders.elements.table_container', compact('request'));
+            return view(get_template() . '.client_orders.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.client_orders.index', compact('request'));
+        return view(get_template() . '.client_orders.index', compact('request'));
     }
 
     public static function provider_ordersTab($request)
     {
         PermissionController::canByPregMatch('Смотреть заявки поставщикам');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider_orders') {
-            dd(1);
-            return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.elements.table_container', compact('request'));
+            return view(get_template() . '.provider_orders.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.provider_orders.index', compact('request'));
+        return view(get_template() . '.provider_orders.index', compact('request'));
     }
 
     public static function adjustmentTab($request)
     {
         PermissionController::canByPregMatch('Смотреть корректировки');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment') {
-            return view(env('DEFAULT_THEME', 'classic') . '.adjustments.elements.table_container', compact('request'));
+            return view(get_template() . '.adjustments.elements.table_container', compact('request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.adjustments.index', compact('request'));
-    }
-
-    public static function updateArticlePivot($store_id, $article_id, $param, $value)
-    {
-        $pivot = Store::where('id', $store_id)->articles()->where('article_id', $article_id)->first();
-        dd($pivot);
-        $pivot->{$param} = $value;
+        return view(get_template() . '.adjustments.index', compact('request'));
     }
 
     public function import(StoreImportRequest $request)
@@ -330,7 +342,7 @@ class StoreController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.store.dialog.form_store', compact('store', 'request'))->render()
+            'html' => view(get_template() . '.store.dialog.form_store', compact('store', 'request'))->render()
         ]);
     }
 
@@ -407,28 +419,5 @@ class StoreController extends Controller
     public static function getStores($request)
     {
         return Store::owned()->get();
-    }
-
-    public static function getStoreById($id)
-    {
-        return Store::owned()->where('id', $id)->first();
-    }
-
-    public static function getStoreNameById($id)
-    {
-        $store = Store::owned()->where('id', $id)->first();
-        if ($store) {
-            return $store->name;
-        } else {
-            return 'Не найден';
-        }
-    }
-
-    public static function createStartStore($company)
-    {
-        $store = new Store();
-        $store->name = 'Основной склад';
-        $store->company_id = $company->id;
-        $company->stores()->save($store);
     }
 }

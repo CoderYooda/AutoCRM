@@ -83,7 +83,7 @@ class UserController extends Controller
             abort(404);
         }
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'editmode', 'user'));
+        $content = view(get_template() . '.user.tabs.profile', compact('request', 'editmode', 'user'));
 
         $target = HC::selectTarget();
         if($request->expectsJson() && $request['search'] === NULL){
@@ -118,7 +118,7 @@ class UserController extends Controller
             abort(404);
         }
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.user.tabs.password', compact('request',  'user'));
+        $content = view(get_template() . '.user.tabs.password', compact('request',  'user'));
 
         $target = HC::selectTarget();
         if($request->expectsJson() && $request['search'] === NULL){
@@ -155,32 +155,32 @@ class UserController extends Controller
 
     public static function profileTab($request, $user)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.profile', compact('request', 'user'));
+        return view(get_template() . '.user.tabs.profile', compact('request', 'user'));
     }
 
     public static function schemeTab($request)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.scheme', compact('request'));
+        return view(get_template() . '.user.tabs.scheme', compact('request'));
     }
 
     public static function premiumTab($request)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.premium', compact('request'));
+        return view(get_template() . '.user.tabs.premium', compact('request'));
     }
 
     public static function payoutTab($request)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.payout', compact('request'));
+        return view(get_template() . '.user.tabs.payout', compact('request'));
     }
 
     public static function salesTab($request)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.sales', compact('request'));
+        return view(get_template() . '.user.tabs.sales', compact('request'));
     }
 
     public static function vehiclesTab($request)
     {
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.vehicles', compact('request'))
+        return view(get_template() . '.user.tabs.vehicles', compact('request'))
             ->with('vehicles', Auth::user()->partner->vehicles);
     }
 
@@ -192,7 +192,7 @@ class UserController extends Controller
             $payment->freshStatus();
         }
 
-        return view(env('DEFAULT_THEME', 'classic') . '.user.tabs.service', compact('request', 'payments'));
+        return view(get_template() . '.user.tabs.service', compact('request', 'payments'));
     }
 
     public function saveSalarySchemaToUser(Request $request)
@@ -248,7 +248,7 @@ class UserController extends Controller
             return PermissionController::closedResponse('Вам запрещено это действие.');
         } else {
             $users = User::all();
-            $list = view(env('DEFAULT_THEME', 'classic') . '.system.admin_userlist', compact('users'))->render();
+            $list = view(get_template() . '.system.admin_userlist', compact('users'))->render();
             return $list;
         }
     }

@@ -59,7 +59,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/statistic/show', 'StatisticController@show')->name('StatisticShow');
 
     #Продукты
-    Route::get('/store/test', 'ProductController@test')->name('test');
     Route::post('/store/search', 'ProductController@search')->name('StoreSearch');
     Route::post('/product/store', 'ProductController@store')->name('StoreProduct');
     Route::post('/product/{id}/delete', 'ProductController@delete')->name('DeleteProduct');
@@ -67,7 +66,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
     Route::post('/product/getByUpc', 'ProductController@getByUpc')->name('GetProductByUpc');
     Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
-
 
     #Поступления товаров
     Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
@@ -92,7 +90,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     });
 
     Route::namespace('API')->group(function () {
-        Route::get('/test', 'ProviderStoreController@tableData'); #Тест, можно удалить
         Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderStore');
         Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
     });

@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' ? env('DEFAULT_THEME', 'classic') . '.layouts.XHR' : env('DEFAULT_THEME', 'classic') . '.layouts.main')
+@extends($request['view_as'] == 'json' ? get_template() . '.layouts.XHR' : get_template() . '.layouts.main')
 
 @section('content')
     <div id="ajax-table-provider_orders" class="bottom-container">
@@ -13,18 +13,18 @@
                     </div>
                 </div>
                 <ul id="members-container" class="nav select-list-modal">
-                    @include(env('DEFAULT_THEME', 'classic') . '.history.users')
+                    @include(get_template() . '.history.users')
                 </ul>
             </div>
         </div>
         <div class="box-lister box">
             <div id="actions-container" class="box-content">
-                @include(env('DEFAULT_THEME', 'classic') . '.history.actions')
+                @include(get_template() . '.history.actions')
             </div>
         </div>
         <div class="box-lister box ml-0">
             <div id="system_messages-container" class="box-content">
-                @include(env('DEFAULT_THEME', 'classic') . '.history.system_messages')
+                @include(get_template() . '.history.system_messages')
             </div>
         </div>
         <div class="content-rightside">

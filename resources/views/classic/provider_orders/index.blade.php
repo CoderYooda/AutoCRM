@@ -1,4 +1,4 @@
-@extends($request['view_as'] == 'json' && $request['target'] != null ? env('DEFAULT_THEME', 'classic') . '.layouts.TabXHR' : env('DEFAULT_THEME', 'classic') . '.store.layout.tabs')
+@extends($request['view_as'] == 'json' && $request['target'] != null ? get_template() . '.layouts.TabXHR' : get_template() . '.store.layout.tabs')
 
 @section('tab')
     <div id="ajax-table-provider_orders" class="bottom-container" style="height: calc(100% - 79px)!important;">

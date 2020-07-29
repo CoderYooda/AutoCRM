@@ -16,7 +16,7 @@
     </div>
     <div id="ddsarticle_list">
         <div id="search_ddsarticle_results">
-            @include(env('DEFAULT_THEME', 'classic') . '.ddsarticle.dialog.select_ddsarticle_inner')
+            @include(get_template() . '.ddsarticle.dialog.select_ddsarticle_inner')
         </div>
     </div>
     <div class="modal-footer">

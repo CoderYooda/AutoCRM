@@ -32,7 +32,7 @@ class ProviderOrdersController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'))->render()
+            'html' => view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'))->render()
         ]);
     }
 
@@ -62,7 +62,7 @@ class ProviderOrdersController extends Controller
 
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
+            'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
         ]);
     }
 
@@ -108,8 +108,8 @@ class ProviderOrdersController extends Controller
 
         return response()->json([
             'id' => $providerorder->id,
-            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
-            'info' => view(env('DEFAULT_THEME', 'classic') . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
+            'items_html' => view(get_template() . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
+            'info' => view(get_template() . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
             'name' => $providerorder->outputName()
         ]);
     }
@@ -129,7 +129,7 @@ class ProviderOrdersController extends Controller
         })
         ->orderBy('id', 'DESC')->limit(10)->get();
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.select_providerorder_inner', compact('providerorders', 'request'))->render();
+        $content = view(get_template() . '.provider_orders.dialog.select_providerorder_inner', compact('providerorders', 'request'))->render();
         return response()->json([
             'html' => $content
         ], 200);
@@ -215,7 +215,7 @@ class ProviderOrdersController extends Controller
         $request['fresh'] = true;
         $class = 'providerorderDialog' . $id;
         $inner = true;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'class', 'request', 'inner'))->render();
+        $content = view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'class', 'request', 'inner'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'providerorderDialog' . $id,
@@ -357,8 +357,8 @@ class ProviderOrdersController extends Controller
         $comment = $provider_order->comment;
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.provider.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(get_template() . '.provider.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
         } else {
             return redirect()->back();

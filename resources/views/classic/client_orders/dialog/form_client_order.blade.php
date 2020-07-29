@@ -258,7 +258,7 @@
                                         <div class="pt-3 pb-3">
                                             <div class="chat-list" data-simplebar style="height: 130px">
                                                 @forelse($client_order->smsMessages()->get() as $smsMessage)
-                                                    @include(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.sms_message')
+                                                    @include(get_template() . '.client_orders.dialog.sms_message')
                                                 @empty
                                                     <div class="no-result">
                                                         <div class="p-4 text-center">
@@ -379,7 +379,7 @@
                         <tbody class="product_list">
                             @if(isset($client_order))
                                 @foreach($client_order->articles as $product)
-                                    @include(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element')
+                                    @include(get_template() . '.client_orders.dialog.product_element')
                                 @endforeach
                             @endif
                         </tbody>

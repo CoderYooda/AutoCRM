@@ -58,7 +58,18 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
-        return $items['data'];
+        $results = [];
+
+        foreach ($items['data'] as $store) {
+            $results[] = [
+                'name' => $store['stock'],
+                'code' => $store['code'],
+                'delivery' => $store['deliverydays'],
+                'price' => $store['price'],
+            ];
+        }
+
+        return $results;
     }
 
     public function searchItems($article, $brand, $searchType = 'full', $asArray = true) {

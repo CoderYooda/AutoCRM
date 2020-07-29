@@ -34,7 +34,7 @@ class EntranceController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
+            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
         ]);
     }
 
@@ -123,7 +123,7 @@ class EntranceController extends Controller
         $request['fresh'] = true;
         $class = 'entranceDialog' . $id;
         $inner = true;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
+        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([
@@ -317,8 +317,8 @@ class EntranceController extends Controller
         $comment = $entrance->comment;
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.entrance.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(get_template() . '.entrance.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
         } else {
             return redirect()->back();

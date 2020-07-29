@@ -14,6 +14,7 @@ use App\Models\Shipment;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
 use Illuminate\Support\Facades\DB;
@@ -97,7 +98,7 @@ class ProductController extends Controller
                         $product->count = 0;
                     }
                 }
-                $content = view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element_array', compact('products', 'providerorder', 'request'))->render();
+                $content = view(get_template() . '.entrance.dialog.product_element_array', compact('products', 'providerorder', 'request'))->render();
             }
             return response()->json([
                 'products' => $products,
@@ -127,15 +128,15 @@ class ProductController extends Controller
         if ($request['type'] && $request['type'] === 'shipment') {
             $product = $article;
 
-            $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.product_element', compact('product','request'))->render();
+            $content = view(get_template() . '.shipments.dialog.product_element', compact('product','request'))->render();
 
         } elseif ($request['type'] && $request['type'] === 'clientOrder') {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.product_element', compact('product','request'))->render();
+            $content = view(get_template() . '.client_orders.dialog.product_element', compact('product','request'))->render();
 
         } elseif ($request['type'] && $request['type'] === 'providerOrder') {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(get_template() . '.provider_orders.dialog.product_element', compact('product', 'request'))->render();
 
         } elseif ($request['type'] && $request['type'] === 'clientOrder_quick') {
             $product = new StdClass();
@@ -143,15 +144,15 @@ class ProductController extends Controller
             $product->count = $request['count'];
             $product->price = 0;
             $product->total = 0;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
+            $content = view(get_template() . '.client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
 
         } elseif ($request['type'] && $request['type'] == 'adjustment') {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(get_template() . '.adjustments.dialog.product_element', compact('product', 'request'))->render();
 
         } else {
             $product = $article;
-            $content = view(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element', compact('product', 'request'))->render();
+            $content = view(get_template() . '.entrance.dialog.product_element', compact('product', 'request'))->render();
 
         }
         return response()->json([
@@ -185,7 +186,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
         ]);
     }
 
@@ -231,7 +232,7 @@ class ProductController extends Controller
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'));
+        $content = view(get_template() . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'));
 
         return response()->json([
             'tag' => 'selectProductDialog',
@@ -252,7 +253,7 @@ class ProductController extends Controller
         $existed_article = self::checkArticleUnique($request['id'], $request['article'], (int)$request['supplier_id']);
         if ($existed_article) {
             return response()->json([
-                'system_message' => view(env('DEFAULT_THEME', 'classic') . '.messages.product_already_exist', compact('existed_article'))->render(),
+                'system_message' => view(get_template() . '.messages.product_already_exist', compact('existed_article'))->render(),
             ], 422);
         }
 
@@ -326,7 +327,7 @@ class ProductController extends Controller
         }
     }
 
-    public static function getArticles(Request $request, $analogues = null)
+    public static function getArticles(Request $request, $manufacture_selected = null)
     {
         $size = (int)$request['size'] ?? 30;
 
@@ -342,39 +343,31 @@ class ProductController extends Controller
             $dir = 'ASC';
         }
 
-        $company_id = Auth::user()->company->id;
+        $company_id = Auth::user()->company_id;
 
-        $query = Article::where('company_id', $company_id)
-            ->where(function ($q) use ($request) {
-                if (isset($request->search) && $request->search != "") {
-                    $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
-                }
+        $query = Article::with('supplier')
+            ->where('company_id', $company_id)
+            ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
+                $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
             })
-            ->where(function ($q) use ($request) {
-                if (isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null") {
-                    $q->where('articles.category_id', (int)$request['category_id']);
-                }
+            ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
+                $q->where('articles.category_id', (int)$request['category_id']);
+            })
+            ->when($manufacture_selected != null, function (Builder $q) use($manufacture_selected) {
+                $q->whereHas('supplier', function (Builder $q) use($manufacture_selected) {
+                    $q->where('name', $manufacture_selected);
+                });
+
+//                $q->where('fapi_id', $request['manufacture_id']);
             })
             ->orderBy($field, $dir);
 
-        if(count($analogues)) {
-            $query = $query->orWhereIn('article', $analogues)->where('company_id', $company_id);
-        }
-
-        $products = $query->paginate($size);
-
-        foreach ($products as $key => $product) {
-            $products[$key]['supplier_name'] = $product->supplier->name;
-        }
-
-        return $products;
+        return $query->paginate($size);
     }
 
-    public static function searchArticles($request)
+    public static function searchByArticle($articles)
     {
-        $articles = Article::where('article', 'like', '%' . $request['search'] . '%')->orderBy('created_at', 'DESC')->paginate(24);
-        dd($articles);
-        return $articles;
+        return Article::whereIn('article', $articles)->paginate(10);
     }
 
 }

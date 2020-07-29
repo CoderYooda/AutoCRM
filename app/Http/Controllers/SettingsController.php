@@ -60,18 +60,18 @@ class SettingsController extends Controller
         $settings = Setting::owned()->orderBy('sort')->get();
         $roles = Role::where('company_id', Auth::user()->company->id)->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings', 'roles'));
+            return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.index', compact('request', 'company', 'settings', 'roles'));
+        return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
     }
 
     public static function cashboxTab($request)
     {
         $cashboxes = Cashbox::owned()->orderBy('created_at', 'ASC')->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashbox'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.cashbox_container', compact('cashboxes', 'request'));
+            return view(get_template() . '.settings.elements.cashbox_container', compact('cashboxes', 'request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.cashbox', compact('cashboxes','request'));
+        return view(get_template() . '.settings.cashbox', compact('cashboxes','request'));
     }
 
     public static function servicesTab($request)
@@ -103,7 +103,7 @@ class SettingsController extends Controller
     {
         $stores = Store::owned()->with('articles')->orderBy('created_at', 'DESC')->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_container', compact('stores', 'request'));
+            return view(get_template() . '.settings.elements.store_container', compact('stores', 'request'));
         }
 
         $company_id = Auth::user()->company->id;
@@ -113,7 +113,7 @@ class SettingsController extends Controller
             ->where('created_at', '>', Carbon::now()->addDays(-14))
             ->get();
 
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.store', compact('stores','request', 'last_imports'));
+        return view(get_template() . '.settings.store', compact('stores','request', 'last_imports'));
     }
 
     public static function roleTab(Request $request)
@@ -121,9 +121,9 @@ class SettingsController extends Controller
         $roles = RoleController::getRoles($request);
 		$users = User::owned()->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-role'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.role_container', compact( 'roles','users', 'request'));
+            return view(get_template() . '.settings.elements.role_container', compact( 'roles','users', 'request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.role', compact('roles','users', 'request'));
+        return view(get_template() . '.settings.role', compact('roles','users', 'request'));
     }
 
     public static function smsTab(Request $request)
@@ -137,9 +137,9 @@ class SettingsController extends Controller
 //        }
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-sms'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.elements.sms_container', compact( 'smses','users', 'request', 'payments'));
+            return view(get_template() . '.settings.elements.sms_container', compact( 'smses','users', 'request', 'payments'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.sms', compact('smses','users', 'request', 'payments'));
+        return view(get_template() . '.settings.sms', compact('smses','users', 'request', 'payments'));
     }
 
     public static function DdsarticleTab($request)
@@ -153,9 +153,9 @@ class SettingsController extends Controller
 
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view(env('DEFAULT_THEME', 'classic') . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
+            return view(get_template() . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
         }
-        return view(env('DEFAULT_THEME', 'classic') . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
+        return view(get_template() . '.settings.ddsarticle', compact('Ddsarticles','categories', 'cat_info', 'request'));
     }
 
     public static function createCompanySettingsPack($company, $defaultrole)
@@ -199,7 +199,7 @@ class SettingsController extends Controller
         $company = Company::where('id', $request['id'])->first();
         $settings = Setting::owned()->get();
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.settings.elements.base_settings', compact( 'company','request', 'settings'))
+        $content = view(get_template() . '.settings.elements.base_settings', compact( 'company','request', 'settings'))
             ->render();
 
         return response()->json([

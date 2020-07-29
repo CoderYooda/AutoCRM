@@ -24,7 +24,7 @@ class UserActionsController extends Controller
         $members = Auth::user()->company->members()->get();
         //dd($members->pluck('id'));
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'system_messages', 'members'))->render();
+            $content = view(get_template() . '.history.index', compact('request', 'actions', 'system_messages', 'members'))->render();
 
             return response()->json([
                 'target' => $target,
@@ -32,7 +32,7 @@ class UserActionsController extends Controller
                 'html' => $content
             ]);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions', 'system_messages', 'members'));
+            return view(get_template() . '.history.index', compact('request', 'actions', 'system_messages', 'members'));
         }
     }
 
@@ -109,9 +109,9 @@ class UserActionsController extends Controller
         $system_messages = SM::getMessages($request);
         $members = Auth::user()->company()->first()->members()->get();
         $messages = null;
-        $actionsView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
-        $membersView = view(env('DEFAULT_THEME', 'classic') . '.history.actions', compact('actions'))->render();
-        $system_messagesView = view(env('DEFAULT_THEME', 'classic') . '.history.system_messages', compact('system_messages'))->render();
+        $actionsView = view(get_template() . '.history.actions', compact('actions'))->render();
+        $membersView = view(get_template() . '.history.actions', compact('actions'))->render();
+        $system_messagesView = view(get_template() . '.history.system_messages', compact('system_messages'))->render();
         if($request->expectsJson() && $request['search'] === NULL){
             return response()->json([
                 'target' => $target,
@@ -121,7 +121,7 @@ class UserActionsController extends Controller
                 'messages' => null
             ]);
         } else {
-            return view(env('DEFAULT_THEME', 'classic') . '.history.index', compact('request', 'actions'));
+            return view(get_template() . '.history.index', compact('request', 'actions'));
         }
     }
 
@@ -136,7 +136,7 @@ class UserActionsController extends Controller
 
             })
             ->get();
-        $membersView = view(env('DEFAULT_THEME', 'classic') . '.history.users', compact('members'))->render();
+        $membersView = view(get_template() . '.history.users', compact('members'))->render();
         //$messagesView =
         return response()->json([
             'target' => $target,

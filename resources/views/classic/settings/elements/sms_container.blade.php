@@ -42,7 +42,7 @@
                     @if($payments->count() > 0)
                     @foreach($payments as $payment)
                     <li class="item d-flex no-wrap" id="payment{{ $payment->id }}">
-                        @include(env('DEFAULT_THEME', 'classic') . '.tariff.sms_payment_element')
+                        @include(get_template() . '.tariff.sms_payment_element')
                     </li>
                     @endforeach
                     @else

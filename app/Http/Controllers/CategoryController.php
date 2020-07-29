@@ -50,7 +50,7 @@ class CategoryController extends Controller
         if($request->expectsJson()){
 
            $response =  [];
-           $response['html'] = view(env('DEFAULT_THEME', 'classic') . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
+           $response['html'] = view(get_template() . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
 
            if($request['class'] == 'partner'){
                $partners = PartnerController::getPartners($request);
@@ -215,7 +215,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.form_category', compact('category', 'parent', 'request'))->render()
+            'html' => view(get_template() . '.category.dialog.form_category', compact('category', 'parent', 'request'))->render()
         ]);
     }
 
@@ -241,7 +241,7 @@ class CategoryController extends Controller
         $root = $data['root'];
         $searching = false;
         return response()->json([
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.category.dialog.select_category_inner', compact('root', 'class', 'searching', 'category', 'request'))->render()
+            'html' => view(get_template() . '.category.dialog.select_category_inner', compact('root', 'class', 'searching', 'category', 'request'))->render()
         ]);
     }
 
@@ -277,7 +277,7 @@ class CategoryController extends Controller
 
         $view = $request['inner'] ? 'select_category_inner' : 'select_category';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.category.dialog.' . $view, compact('cats', 'categories', 'class', 'request'))->render();
+        $content = view(get_template() . '.category.dialog.' . $view, compact('cats', 'categories', 'class', 'request'))->render();
         return response()->json([
             'tag' => 'selectCategoryDialog',
             'html' => $content

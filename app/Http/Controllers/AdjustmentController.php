@@ -29,7 +29,7 @@ class AdjustmentController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores',  'request'))->render()
+            'html' => view(get_template() . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores',  'request'))->render()
         ]);
     }
 
@@ -118,7 +118,7 @@ class AdjustmentController extends Controller
         $request['fresh'] = true;
         $class = 'adjustmentDialog' . $id;
         $inner = true;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'inner', 'request'))->render();
+        $content = view(get_template() . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'inner', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'adjustmentDialog' . $id,
@@ -146,8 +146,8 @@ class AdjustmentController extends Controller
         $comment = $adjustment->comment;
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.adjustments.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(get_template() . '.adjustments.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
         } else {
             return redirect()->back();

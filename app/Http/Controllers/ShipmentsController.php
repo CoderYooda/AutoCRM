@@ -68,7 +68,7 @@ class ShipmentsController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'request'))->render()
+            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'request'))->render()
         ]);
     }
 
@@ -102,7 +102,7 @@ class ShipmentsController extends Controller
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 
-        $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.' . $view, compact('shipments','class', 'request'))->render();
+        $content = view(get_template() . '.shipments.dialog.' . $view, compact('shipments','class', 'request'))->render();
         return response()->json([
             'tag' => 'selectShipmentDialog',
             'html' => $content
@@ -130,7 +130,7 @@ class ShipmentsController extends Controller
 
         return response()->json([
             'id' => $shipment->id,
-            'items_html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.products_element', compact('products', 'refunded_count', 'request'))->render(),
+            'items_html' => view(get_template() . '.refund.dialog.products_element', compact('products', 'refunded_count', 'request'))->render(),
             'items' => $products,
             'partner' => $shipment->partner->outputName(),
             'balance' => $shipment->partner->balance,
@@ -145,8 +145,8 @@ class ShipmentsController extends Controller
         $comment = $shipment->comment;
         if($request->expectsJson()){
             return response()->json([
-                'info' => view(env('DEFAULT_THEME', 'classic') . '.shipments.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(env('DEFAULT_THEME', 'classic') . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info' => view(get_template() . '.shipments.contact-card', compact( 'partner','request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
             ], 200);
         } else {
             return redirect()->back();
@@ -225,7 +225,7 @@ class ShipmentsController extends Controller
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
         $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
-        $content = view(env('DEFAULT_THEME', 'classic') . '.shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
+        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'stores', 'class', 'inner', 'request'))
             ->render();
 
         return response()->json([

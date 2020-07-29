@@ -57,7 +57,7 @@
                 <div class="col-sm-6 form-group mb-0" id="entrance_info_block">
                     @if(isset($entrance))
                         @php $providerorder = $entrance->providerorder()->first(); @endphp
-                        @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.contact-card')
+                        @include(get_template() . '.provider_orders.contact-card')
                     @endif
                 </div>
             </div>
@@ -80,7 +80,7 @@
                         <tbody class="product_list">
                         @if(isset($entrance))
                             @foreach($entrance->articles()->get() as $product)
-                                @include(env('DEFAULT_THEME', 'classic') . '.entrance.dialog.product_element')
+                                @include(get_template() . '.entrance.dialog.product_element')
                             @endforeach
                         @endif
                         </tbody>

@@ -1,11 +1,11 @@
 import {Contextual, ContextualItem} from "../Contentual";
+import Tabs from "../../Tools/Tabs";
 
 class storePage{
 
     constructor(){
         console.log('страница склада инициализировано');
         this.init();
-
     }
 
     baseParams(){
@@ -455,6 +455,22 @@ class storePage{
         .catch(response => {
             dd(response);
         });
+    }
+
+    showProvider(button, service_id) {
+        let button_elements = document.querySelectorAll('.provider_tabs button');
+
+        button_elements.forEach(element => {
+            element.classList.remove('active');
+        });
+
+        button.classList.add('active');
+
+        let service_input = document.querySelector('[name="service_id"]');
+
+        service_input.value = service_id;
+
+        this.searchProviderStores();
     }
 
     showManufactureStores(element, manufacturer) {

@@ -209,7 +209,7 @@ class TariffController extends Controller
 
         $payment->freshStatus();
 
-        $payment_htnl = view( env('DEFAULT_THEME', 'classic') . '.tariff.payment_element', compact('payment'));
+        $payment_htnl = view( get_template() . '.tariff.payment_element', compact('payment'));
 
         if($request->expectsJson()){
             return response()->json([

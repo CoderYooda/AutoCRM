@@ -34,7 +34,7 @@ class SystemMessage implements ShouldBroadcast
     {
         $message = $this->message;
         return [
-            'view' => view(env('DEFAULT_THEME', 'classic') . '.system.message.message', compact('message'))->render()
+            'view' => view(get_template() . '.system.message.message', compact('message'))->render()
         ];
     }
 

@@ -135,7 +135,7 @@
                             <tbody class="product_list">
                             @if(isset($provider_order))
                                 @foreach($provider_order->articles as $product)
-                                    @include(env('DEFAULT_THEME', 'classic') . '.provider_orders.dialog.product_element')
+                                    @include(get_template() . '.provider_orders.dialog.product_element')
                                 @endforeach
                             @endif
                             </tbody>

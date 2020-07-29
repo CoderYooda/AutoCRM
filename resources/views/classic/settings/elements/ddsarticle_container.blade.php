@@ -5,12 +5,12 @@
     {{--            </div>--}}
     {{--        @endif--}}
     <div id="dds_categories">
-        {{--@include(env('DEFAULT_THEME', 'classic') . '.category.list')--}}
+        {{--@include(get_template() . '.category.list')--}}
     </div>
 </div>
 <div class="row">
     @foreach($Ddsarticles as $Ddsarticle)
-        @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.ddsarticle_elem')
+        @include(get_template() . '.settings.elements.ddsarticle_elem')
     @endforeach
 </div>
 

@@ -1,5 +1,5 @@
 @foreach($stores as $store)
-    @include(env('DEFAULT_THEME', 'classic') . '.settings.elements.store_elem')
+    @include(get_template() . '.settings.elements.store_elem')
 @endforeach
 @can('Редактировать настройки')
 {{--<div class="col-sm-3 mt-30">--}}

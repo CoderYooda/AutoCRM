@@ -1,3 +1,3 @@
 @foreach($products as $product)
-    @include(env('DEFAULT_THEME', 'classic') . '.refund.dialog.product_element')
+    @include(get_template() . '.refund.dialog.product_element')
 @endforeach

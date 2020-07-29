@@ -31,7 +31,7 @@ class RefundController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(env('DEFAULT_THEME', 'classic') . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request'))->render()
+            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request'))->render()
         ]);
     }
 

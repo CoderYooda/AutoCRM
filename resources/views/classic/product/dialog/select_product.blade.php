@@ -21,7 +21,7 @@
     </div>
     <div id="product_list">
         <div id="search_product_results">
-            @include(env('DEFAULT_THEME', 'classic') . '.product.dialog.select_product_inner')
+            @include(get_template() . '.product.dialog.select_product_inner')
         </div>
     </div>
     <div class="modal-footer">
