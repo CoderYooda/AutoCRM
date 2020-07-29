@@ -56,7 +56,7 @@ class EntranceController extends Controller
     {
         PermissionController::canByPregMatch( 'Создавать поступления');
 
-        $store = Store::find(session('store_id'));
+        $store = Store::find(Auth::user()->current_store);
 
         $providerorder = ProviderOrder::owned()->find($request['providerorder_id']);
 

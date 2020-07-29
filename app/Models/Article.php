@@ -63,7 +63,7 @@ class Article extends Model
     {
         $company = Auth::user()->company->load('settings');
 
-        $store_id = session('store_id');
+        $store_id = Auth::user()->current_store;
 
         $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
 
@@ -90,7 +90,7 @@ class Article extends Model
     {
         $company = Auth::user()->company->load('settings');
 
-        $store_id = session('store_id');
+        $store_id = Auth::user()->current_store;
 
         $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
 
@@ -127,7 +127,7 @@ class Article extends Model
 
         $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
 
-        $store_id = session('store_id');
+        $store_id = Auth::user()->current_store;
 
         $count_info = DB::table('article_entrance')
             ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
@@ -147,7 +147,7 @@ class Article extends Model
         $price_source = $company->getSettingField('Источник цены');
         $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
 
-        $store_id = session('store_id');
+        $store_id = Auth::user()->current_store;
 
         if($price_source == 'retail') {
             return $this->stores->find($store_id)->pivot->retail_price ?? 0;
@@ -216,7 +216,7 @@ class Article extends Model
 
     public function getStorageCode()
     {
-        $store = $this->stores->where('store_id', session('store_id'))->first();
+        $store = $this->stores->where('store_id', Auth::user()->current_store)->first();
         return view('classic.product.storage_code', compact('store'));
     }
 

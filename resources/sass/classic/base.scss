@@ -2016,3 +2016,24 @@ input:-moz-placeholder { /* Firefox 18- */
 
     color: #5CB2ED;
 }
+
+#provider_stores-table > table > thead > tr > th:first-child, #provider_stores-table > table > tbody > tr > td:first-child {
+    padding-left: 15px;
+}
+
+#provider_stores-table > table > thead > tr > th:last-child, #provider_stores-table > table > tbody > tr > td:last-child {
+    padding-right: 15px;
+}
+
+#provider_stores-table > table > tbody > tr:hover:not(.unhovereable) {
+    td {
+        color: #FFFFFF;
+        background: #1F98E9;
+    }
+}
+
+.unhovereable table tr:hover {
+    td {
+        background: #EAF6FF;
+    }
+}

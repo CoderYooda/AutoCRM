@@ -477,7 +477,9 @@ class storePage{
 
         let target_element = document.getElementById('brand_context_' + manufacturer);
 
-        if(target_element.classList.contains('d-none')) {
+        element = element.querySelector('i');
+
+        if(element.classList.contains('fa-angle-down')) {
 
             let service_input = document.querySelector('[name="service_id"]');
 
@@ -488,11 +490,11 @@ class storePage{
             })
             .then(response => {
 
-                target_element.classList.remove('d-none');
+                element.classList.remove('fa-angle-down');
+                element.classList.add('fa-angle-up');
 
                 target_element.querySelector('tbody').innerHTML = response.data.html;
-
-                element.innerText = 'CLOSE';
+                target_element.classList.remove('d-none');
             })
             .catch(response => {
                 console.log(response);
@@ -500,11 +502,13 @@ class storePage{
         }
         else {
 
+            element.classList.remove('fa-angle-up');
+            element.classList.add('fa-angle-down');
+
             target_element.classList.add('d-none');
 
+            //Очищаем внутренний список
             target_element.querySelector('tbody').innerHTML = '';
-
-            element.innerText = 'OPEN';
         }
     }
 

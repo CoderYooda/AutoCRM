@@ -1,23 +1,26 @@
 @foreach($manufacturers as $manufacturer)
 
-    <tr id="brand_{{ $manufacturer }}">
+    <tr id="brand_{{ $manufacturer }}" style="height: 40px;">
         <td>{{ $loop->index + 1 }}</td>
         <td>{{ $manufacturer }}</td>
         <td>{{ $request->search }}</td>
-        <td>
-            <button type="button" onclick="store.showManufactureStores(this, '{{ $manufacturer }}')">OPEN</button>
+        <td style="width: 38px;">
+            <div class="store_arrow_bg pointer" onclick="store.showManufactureStores(this, '{{ $manufacturer }}')">
+                <i class="fa fa-angle-down fa-5" aria-hidden="true"></i>
+            </div>
         </td>
     </tr>
 
-    <tr class="d-none" id="brand_context_{{ $manufacturer }}">
+    <tr class="d-none unhovereable" id="brand_context_{{ $manufacturer }}">
         <td colspan="4" data-simplebar style="max-height: 100px;">
-            <table style="width: 60%; margin-left: 80px;">
+            <table class="w-100" cellspacing="0" cellpadding="0" border="0">
                 <thead>
                     <tr>
-                        <td>Склад</td>
-                        <td>Код</td>
-                        <td>Срок поставки</td>
-                        <td>Цена</td>
+                        <th></th>
+                        <th>Склад</th>
+                        <th>Код</th>
+                        <th>Срок поставки</th>
+                        <th>Цена</th>
                     </tr>
                 </thead>
                 <tbody>

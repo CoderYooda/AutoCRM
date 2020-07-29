@@ -22,7 +22,7 @@
             <span class="item-title _500">Розничная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->stores->find(session('store_id'))->pivot->retail_price ?? '0' }}
+                   {{ $product->stores->find(Auth::user()->current_store)->pivot->retail_price ?? '0' }}
                 </span>
             </div>
             <div class="item-tag tag hide">

@@ -42,7 +42,7 @@ class EntranceRefundController extends Controller
             ], 422);
         }
 
-        $store = Store::find(session('store_id'));
+        $store = Store::find(Auth::user()->current_store);
 
         #Создание заявки на возврат
         $entrance_refund = EntranceRefund::updateOrCreate(['id' => $request->id], [

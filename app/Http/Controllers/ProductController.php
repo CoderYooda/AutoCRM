@@ -362,7 +362,7 @@ class ProductController extends Controller
             })
             ->orderBy($field, $dir);
 
-        return $query->paginate($size);
+        return $query->get();
     }
 
     public static function searchByArticleAndBrand($articles)
