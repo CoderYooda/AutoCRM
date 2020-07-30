@@ -4,45 +4,60 @@
 
     <div id="ajax-table-provider_stores" class="bottom-container" style="height: calc(100% - 79px)!important;">
         <div class="box-lister" style="width: 1px!important;">
-            <div class="w-100 box box-search mb-15">
-                <input id="search" name="search" placeholder="Поиск по складам" class="input w-100" value="{{ request('search') }}" type="text">
-                <input type="hidden" name="service_id" value="{{ $services->first()->id }}" />
-                <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
-                    <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
-                </span>
+            <div class="box mb-15">
+                <div class="w-100 box-search">
+                    <div class="box m-10">
+                        <input id="search" name="search" placeholder="Поиск по складам" class="input w-100" value="{{ request('search') }}" type="text">
+                        <input type="hidden" name="service_id" value="{{ $services->first()->id }}" />
+                        <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
+                            <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="w-100 p-10 pt-0 provider_tabs">
+                    @foreach($services as $service)
+
+                        @continue(!auth()->user()->company->isServiceProviderActive($service->id))
+
+                        <button onclick="store.showProvider(this, {{ $service->id }})" class="button relative primary mr-5 btn_with_badge @if($loop->first) active @endif">
+                            {{ $service->name }} <span id="service_count_{{ $service->id }}" class="badge-pill">0</span>
+                        </button>
+
+                    @endforeach
+                </div>
             </div>
 
-            <div class="box w-100 mb-15 p-5 provider_tabs">
-                @foreach($services as $service)
+            <div id="table-container" class="box box-content preloader-block">
 
-                    @continue(!auth()->user()->company->isServiceProviderActive($service->id))
+                <div data-simplebar style="max-height: 778px;" >
 
-                    <button onclick="store.showProvider(this, {{ $service->id }})" class="button primary mr-5 @if($loop->first) active @endif">{{ $service->name }} <span id="service_count_{{ $service->id }}"></span></button>
+                    <div id="provider_stores-table">
 
-                @endforeach
-            </div>
+                        <table cellspacing="0" cellpadding="0" border="0" class="w-100 pt-15">
 
-            <div id="table-container" class="box box-content">
-                <div id="provider_stores-table" >
+                            <thead>
+                                <tr>
+                                    <th style="color: #2D76A8;">ID</th>
+                                    <th style="color: #2D76A8;">Производитель</th>
+                                    <th style="color: #2D76A8;">Артикул</th>
+                                </tr>
+                            </thead>
 
-                    <table class="w-100 pl-15 pt-15">
+                            <tbody id="table_body">
 
-                        <thead>
-                            <tr>
-                                <th style="color: #2D76A8;">ID</th>
-                                <th style="color: #2D76A8;">Производитель</th>
-                                <th style="color: #2D76A8;">Артикул</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="table_body">
-
-                        </tbody>
+                            </tbody>
 
                     </table>
 
+                    </div>
+
                 </div>
+
+                <div class="out_of_search" style="margin-top: 250px;"></div>
+
             </div>
+
         </div>
     </div>
 

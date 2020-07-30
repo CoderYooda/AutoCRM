@@ -147,7 +147,7 @@ class StoreController extends Controller
         $all_ids = $products->pluck('id')->merge($analog_products->pluck('id'));
 
         #Сливаем коллекции для вывода
-        $products = Article::whereIn('id', $all_ids)->paginate(10);
+        $products = Article::owned()->whereIn('id', $all_ids)->with('supplier')->paginate($request->size ?? 30);
 
         foreach ($products as $key => $product) {
             $products[$key]['supplier_name'] = $product->supplier->name;

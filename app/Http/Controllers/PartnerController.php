@@ -7,6 +7,7 @@ use App\Http\Requests\DeletePartnerRequest;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Category;
 use App\Models\Partner;
+use App\Models\Setting;
 use App\Models\SMSMessages;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -169,12 +170,14 @@ class PartnerController extends Controller
                 $user->save();
             } else {
                 $password = rand(10000, 99999);
+
                 $user = User::updateOrCreate(['phone' => $request['phone']], [
                     'name' => $partner->outputName(),
-                    'company_id' => Auth::user()->company()->first()->id,
+                    'company_id' => Auth::user()->company->id,
                     'password' => bcrypt($password)
                 ]);
 
+<<<<<<< HEAD
                 if($request['role']) {
                     $role = Role::where('name', $request['role'])->first();
                     $user->syncRoles([ $role->id ]);
@@ -184,6 +187,16 @@ class PartnerController extends Controller
                     $user->partner->update([
                         'user_id' => null
                     ]);
+=======
+                $user->syncRoles([
+                    $request->category_id == 5 ?
+                        Role::where('name', $request['role'])->first()->id :
+                        SettingsController::getSettingByKey('role_id')->value
+                ]);
+
+                if(!$user->wasRecentlyCreated && $user->partner) {
+                    $user->partner->update(['user_id' => null]);
+>>>>>>> 65d45711d98d7beb6223e3e4ed51c329d940861d
                     $user->update(['banned_at' => null]);
                 }
 

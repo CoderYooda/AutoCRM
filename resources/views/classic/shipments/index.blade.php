@@ -20,11 +20,11 @@
                 </div>
                 <div class="filter_field mb-10">
                     <div class="form-group d-flex mb-10">
-                        <label class="no-wrap" for="provider">Поставщик</label>
-                        <input readonly onclick="store.openSelectPartnerModal('provider')" id="provider" type="text" name="provider" value="{{ request('pay_status') }}" class="form-control provider input_as_link" placeholder="выбрать">
-                        <button type="button" onclick="store.clearList('provider', 'provider_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
+                        <label class="no-wrap" for="provider">Покупатель</label>
+                        <input readonly onclick="store.openSelectPartnerModal('client')" id="provider" type="text" name="provider" value="{{ request('pay_status') }}" class="form-control provider input_as_link" placeholder="выбрать">
+                        <button type="button" onclick="store.clearList('client', 'client_stack')" class="right-remove"><i class="fa fa-remove"></i></button>
                     </div>
-                    <div id="provider_stack"></div>
+                    <div id="client_stack"></div>
                 </div>
                 <div id="adds-card" class="hide">
                     <hr>

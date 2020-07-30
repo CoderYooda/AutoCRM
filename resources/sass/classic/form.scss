@@ -115,8 +115,14 @@ Switch
     display: block!important;
     opacity: 1!important;
 }
+.m-5 {
+    margin: 5px !important;
+}
 .m-15 {
     margin: 15px !important;
+}
+.m-10 {
+    margin: 10px !important;
 }
 .m-0{
     margin: 0!important;
@@ -1250,4 +1256,19 @@ button.form-control{
     transform: translate(100%);
     right: -15px;
     top: 35px;
+}
+
+.store_arrow_bg {
+    width: 38px;
+    height: 32px;
+    background: #EAF6FF;
+    border-radius: 4px;
+
+    i {
+        color: #1F98E9;
+        font-size: 28px;
+        display: block;
+        text-align: center;
+        line-height: 32px;
+    }
 }

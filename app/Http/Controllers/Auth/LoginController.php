@@ -105,7 +105,6 @@ class LoginController extends Controller
                     'status' => 'success'
                 ]);
             }
-            session(['store_id' => Auth::user()->getStoreFirst()->id]);
             return $this->sendLoginResponse($request);
         } else {
             $this->incrementLoginAttempts($request);

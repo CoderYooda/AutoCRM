@@ -14,7 +14,7 @@ class User extends Authenticatable
     use OwnedTrait, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password', 'company_id', 'banned_at'
+        'name', 'email', 'phone', 'password', 'company_id', 'banned_at', 'current_store'
     ];
 
     protected $hidden = [

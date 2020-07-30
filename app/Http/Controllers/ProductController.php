@@ -362,7 +362,7 @@ class ProductController extends Controller
             })
             ->orderBy($field, $dir);
 
-        return $query->paginate($size);
+        return $query->get();
     }
 
     public static function searchByArticleAndBrand($articles)
@@ -375,15 +375,13 @@ class ProductController extends Controller
             $prepare_data[] = mb_strtolower($article . $manufacture);
         }
 
-        $products = Article::owned()
+        return Article::owned()
             ->where(function (Builder $query) use($prepare_data) {
                 foreach ($prepare_data as $string) {
                     $query->orWhere('foundstring', 'like', "{$string}%");
                 }
             })
             ->get();
-
-        return $products;
     }
 
 }

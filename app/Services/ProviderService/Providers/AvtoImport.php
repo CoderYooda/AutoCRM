@@ -71,10 +71,14 @@ class AvtoImport implements ProviderInterface
         $results = [];
 
         foreach ($items as $item) {
+
+            $min_days = $item->deliveryPeriod / 24;
+            $max_days = $item->deliveryPeriodMax ?? 1 / 24;
+
             $results[] = [
                 'name' => $item->supplierCode,
                 'code' => $item->number,
-                'delivery' => ($item->deliveryPeriod / 24) . '/' . ($item->deliveryPeriodMax / 24),
+                'delivery' => $min_days . ($max_days > $min_days ?  ('/' . $max_days) : ''),
                 'price' => $item->price,
             ];
         }

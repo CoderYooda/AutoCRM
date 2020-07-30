@@ -13,7 +13,7 @@
         <script>
             window.socket_host = '{{ env('SOCKET_HOST') }}';
             window.socket_port = '{{ env('SOCKET_PORT') }}';
-            window.store_id = '{{ session('store_id') }}';
+            window.store_id = '{{ Auth::user()->current_store }}';
         </script>
 
         <!-- Styles -->
@@ -95,7 +95,7 @@
                         @endcan
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
-                    {{--{{ session('store_id') }}--}}
+                    {{--{{ Auth::user()->current_store }}--}}
                     <div id="current_time">
                         <div class="h">00</div>
                         <div class="m">00</div>
