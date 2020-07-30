@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\System\EvotorQueueController;
+use App\Models\System\EvotorQueue;
 use App\Models\Warrant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,28 +13,58 @@ use stdClass;
 class EvotorController extends Controller
 {
     public function longPulling(){
-        $user = User::find(15);
-        $warrants = Warrant::orderBy('id','DESC')->where('company_id', $user->company_id)->get();
-        $warrants_resp = collect();
-        foreach ($warrants as $warrant){
-            $w = new stdClass();
-            $w->id = $warrant->id;
-            $w->isIncoming = $warrant->isIncoming ? 'true' : 'false';
-            $w->name = $warrant->isIncoming ? "Приходный ордер № " . $warrant->id : "Расходный ордер № " . $warrant->id;
-            $w->summ = $warrant->summ;
-            $w->date = $warrant->created_at->diffForHumans();
-
-            $w->created_at = $warrant->created_at->format('m.d.Y H:i');
-            $w->partner = $warrant->partner->outputName();
-            $w->partner_id = $warrant->partner->id;
-            $w->cashbox = $warrant->cashbox->name;
-            $w->cashbox_id = $warrant->cashbox->id;
-            $w->dds = $warrant->ddsarticle->name;
-            $w->dds_id = $warrant->ddsarticle->id;
-            $w->comment = $warrant->comment;
-            $w->reason = $warrant->reason;
-            $warrants_resp->push($w);
+        $pull_seconds = 0;
+        while ($pull_seconds < 10){
+            $queue = self::checkQueueElem();
+            if($queue != null){
+                $warrant = Warrant::where('id', $queue->warrant_id)->first();
+                $queue->sended = true;
+                $queue->save();
+                return response()->json(['warrants' => $warrant], 200);
+            }
+            sleep(1);
+            $pull_seconds++;
         }
-        return response()->json(['warrants' => $warrants_resp], 200);
+        return response()->json(['warrants' => 'null'], 200);
+    }
+
+    private static function checkQueueElem()
+    {
+        return EvotorQueue::where('complited', '!=', true)->where('complited', false)->first();
+    }
+
+    public function getWarrantToPrint($id){
+        $user = User::find(2);
+        $warrant = Warrant::whereId($id)->where('company_id', $user->company_id)->first();
+
+        $warrant->isIncoming = $warrant->isIncoming ? 'true' : 'false';
+        $warrant->name = $warrant->isIncoming ? "Приходный ордер № " . $warrant->id : "Расходный ордер № " . $warrant->id;
+        $warrant->date = $warrant->created_at->diffForHumans();
+        //$warrant->created_at = $warrant->created_at->format('m.d.Y H:i');
+        $warrant->partner = $warrant->partner()->first()->outputName();
+        $warrant->partner_id = $warrant->partner()->first()->id;
+        $warrant->cashbox = $warrant->cashbox()->first()->name;
+        $warrant->cashbox_id = $warrant->cashbox()->first()->id;
+        $warrant->dds = $warrant->ddsarticle->name;
+        $warrant->dds_id = $warrant->ddsarticle->id;
+        #Payments
+        $warrant->payment = 0;
+        
+        if($warrant->payable->inpercents){
+            $percent = $warrant->payable->discount;
+        } else {
+            $percent = $warrant->payable->discount * 100 / $warrant->payable->summ;
+        }
+
+        $warrant->disc = $percent;
+        $articles = $warrant->payable->articles;
+        foreach($articles as $article){
+            $article->price = $article->pivot->price;
+            $article->count = $article->pivot->count;
+        }
+
+        $warrant->items = $articles;
+
+        return response()->json(['warrant' => $warrant], 200);
     }
 }

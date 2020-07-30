@@ -176,17 +176,15 @@ class PartnerController extends Controller
                 ]);
 
                 if($request['role']) {
-
                     $role = Role::where('name', $request['role'])->first();
-
                     $user->syncRoles([ $role->id ]);
                 }
 
                 if(!$user->wasRecentlyCreated && $user->partner) {
                     $user->partner->update([
-                        'user_id' => null,
-                        'banned_at' => null
+                        'user_id' => null
                     ]);
+                    $user->update(['banned_at' => null]);
                 }
 
                 $partner->user_id = $user->id;
@@ -284,7 +282,8 @@ class PartnerController extends Controller
         }
 
         return response()->json([
-            'phone_exists' => $phone_exists
+            'phone_exists' => $phone_exists,
+            'code' => $code
         ], 200);
     }
 

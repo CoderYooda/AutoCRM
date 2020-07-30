@@ -18,3 +18,4 @@ use Illuminate\Http\Request;
 //});
 
 Route::get('/evotor/longPulling', 'API\EvotorController@longPulling');
+Route::get('/evotor/getWarrantToPrint/{id}', 'API\EvotorController@getWarrantToPrint');

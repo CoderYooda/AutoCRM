@@ -6,6 +6,9 @@ use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed cashbox_id
+ */
 class Warrant extends Model
 {
     use OwnedTrait, HasManagerAndPartnerTrait;
