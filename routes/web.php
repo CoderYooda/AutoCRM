@@ -78,6 +78,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance/dialog/search', 'EntranceController@dialogSearch')->name('EntranceDialogSearch');
     Route::post('/entrance/{entrance}/select', 'EntranceController@select')->name('SelectEntrance');
 
+    Route::get('/test', function (\Illuminate\Http\Request $request) {
+        dd(auth()->user()->current_store);
+    });
+
     #Возвраты поступлений
     Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
     Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');

@@ -1,9 +1,9 @@
 @foreach($stores as $store)
     <tr>
-        <td><img src="{{ asset('/images/table/line.svg') }}" /></td>
-        <td>{{ $store['name'] }}</td>
-        <td>{{ $store['code'] }}</td>
-        <td>{{ $store['delivery'] }} дн.</td>
-        <td>{{ $store['price'] }}</td>
+        <td><div class="tree_image"></div></td>
+        <td><span>{{ $store['name'] }}</span></td>
+        <td><span>{{ $store['code'] }}</span></td>
+        <td><span>{{ $store['delivery'] }} дн.</span></td>
+        <td><span>{{ $store['price'] }}</span></td>
     </tr>
 @endforeach

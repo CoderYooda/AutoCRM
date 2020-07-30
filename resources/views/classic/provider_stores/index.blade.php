@@ -20,33 +20,44 @@
 
                         @continue(!auth()->user()->company->isServiceProviderActive($service->id))
 
-                        <button onclick="store.showProvider(this, {{ $service->id }})" class="button primary mr-5 @if($loop->first) active @endif">{{ $service->name }} <span id="service_count_{{ $service->id }}"></span></button>
+                        <button onclick="store.showProvider(this, {{ $service->id }})" class="button relative primary mr-5 btn_with_badge @if($loop->first) active @endif">
+                            {{ $service->name }} <span id="service_count_{{ $service->id }}" class="badge-pill">0</span>
+                        </button>
 
                     @endforeach
                 </div>
             </div>
 
-            <div id="table-container" class="box box-content">
-                <div id="provider_stores-table" >
+            <div id="table-container" class="box box-content preloader-block">
 
-                    <table cellspacing="0" cellpadding="0" border="0" class="w-100 pt-15">
+                <div data-simplebar style="max-height: 778px;" >
 
-                        <thead>
-                            <tr>
-                                <th style="color: #2D76A8;">ID</th>
-                                <th style="color: #2D76A8;">Производитель</th>
-                                <th style="color: #2D76A8;">Артикул</th>
-                            </tr>
-                        </thead>
+                    <div id="provider_stores-table">
 
-                        <tbody id="table_body">
+                        <table cellspacing="0" cellpadding="0" border="0" class="w-100 pt-15">
 
-                        </tbody>
+                            <thead>
+                                <tr>
+                                    <th style="color: #2D76A8;">ID</th>
+                                    <th style="color: #2D76A8;">Производитель</th>
+                                    <th style="color: #2D76A8;">Артикул</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="table_body">
+
+                            </tbody>
 
                     </table>
 
+                    </div>
+
                 </div>
+
+                <div class="out_of_search" style="margin-top: 250px;"></div>
+
             </div>
+
         </div>
     </div>
 

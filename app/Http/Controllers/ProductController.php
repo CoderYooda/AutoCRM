@@ -375,15 +375,13 @@ class ProductController extends Controller
             $prepare_data[] = mb_strtolower($article . $manufacture);
         }
 
-        $products = Article::owned()
+        return Article::owned()
             ->where(function (Builder $query) use($prepare_data) {
                 foreach ($prepare_data as $string) {
                     $query->orWhere('foundstring', 'like', "{$string}%");
                 }
             })
             ->get();
-
-        return $products;
     }
 
 }

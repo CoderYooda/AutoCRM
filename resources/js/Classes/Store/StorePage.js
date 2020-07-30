@@ -426,7 +426,6 @@ class storePage{
     }
 
     search() {
-
         if(this.active_tab == 'provider_stores') this.searchProviderStores();
         else this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
@@ -434,6 +433,12 @@ class storePage{
     searchProviderStores() {
 
         let service_input = document.querySelector('[name="service_id"]');
+
+        let table_element = document.getElementById('table-container');
+
+        document.querySelector('.out_of_search').classList.add('d-none');
+
+        table_element.classList.add('active');
 
         axios.post('/provider_stores/tableData', {
             search: this.search,
@@ -454,6 +459,9 @@ class storePage{
         })
         .catch(response => {
             dd(response);
+        })
+        .finally(() => {
+            table_element.classList.remove('active');
         });
     }
 
@@ -479,9 +487,13 @@ class storePage{
 
         element = element.querySelector('i');
 
+        let table_element = target_element.querySelector('.preloader-block');
+
         if(element.classList.contains('fa-angle-down')) {
 
             let service_input = document.querySelector('[name="service_id"]');
+
+            target_element.classList.remove('d-none');
 
             axios.post('/provider_stores/stores', {
                 manufacturer: manufacturer,
@@ -494,10 +506,12 @@ class storePage{
                 element.classList.add('fa-angle-up');
 
                 target_element.querySelector('tbody').innerHTML = response.data.html;
-                target_element.classList.remove('d-none');
             })
             .catch(response => {
                 console.log(response);
+            })
+            .finally(()=> {
+                table_element.classList.remove('active');
             });
         }
         else {
@@ -506,6 +520,7 @@ class storePage{
             element.classList.add('fa-angle-down');
 
             target_element.classList.add('d-none');
+            table_element.classList.add('active');
 
             //Очищаем внутренний список
             target_element.querySelector('tbody').innerHTML = '';
@@ -848,7 +863,7 @@ class storePage{
         if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
     }
 
-    searchInit(){
+    searchInit() {
         var object = this;
         var searchFn;
         let search_field = document.getElementById("search");

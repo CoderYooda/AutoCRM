@@ -330,8 +330,11 @@ class shipmentDialog extends Modal{
             count: input.value
         })
         .then(response => {
-            this.current_dialog.querySelector('[name="products[' + id + '][price]"').value = response.data.price;
-            this.recalculateItem(id);
+
+            if(Number(response.data.price)) {
+                this.current_dialog.querySelector('[name="products[' + id + '][price]"').value = response.data.price;
+                this.recalculateItem(id);
+            }
         })
         .catch(response => {
             console.log(response);

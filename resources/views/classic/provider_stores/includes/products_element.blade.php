@@ -11,22 +11,25 @@
         </td>
     </tr>
 
-    <tr class="d-none unhovereable" id="brand_context_{{ $manufacturer }}">
-        <td colspan="4" data-simplebar style="max-height: 100px;">
-            <table class="w-100" cellspacing="0" cellpadding="0" border="0">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Склад</th>
-                        <th>Код</th>
-                        <th>Срок поставки</th>
-                        <th>Цена</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <tr class="unhovereable d-none" id="brand_context_{{ $manufacturer }}">
+        <td colspan="4" class="pl-0">
 
-                </tbody>
-            </table>
+            <div class="preloader-block active" data-simplebar style="min-height: 150px; max-height: 400px;">
+                <table class="w-100" cellspacing="0" cellpadding="0" border="0">
+                    <thead>
+                        <tr style="height: 38px;">
+                            <th></th>
+                            <th>Склад</th>
+                            <th>Код</th>
+                            <th>Срок поставки</th>
+                            <th>Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
         </td>
     </tr>
 
