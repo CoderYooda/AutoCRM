@@ -129,14 +129,26 @@ class RefundController extends Controller
             }
         }
 
+        $discount_percent = 0;
+
+        if($shipment->discount) {
+
+            if($shipment->inpercents) $discount_percent = $shipment->discount;
+            else {
+                $discount_percent = $shipment->discount * 100 / $shipment->summ;
+            }
+        }
+
         $refund_data = [];
 
         foreach($request['products'] as $product) {
 
             $store->increaseArticleCount($product['id'], $product['count']);
 
+            $shipment_price = $shipment->getProductPriceFromShipment($product['id']);
+
             $vcount = $product['count'];
-            $vprice = $shipment->getProductPriceFromShipment($product['id']);
+            $vprice = $shipment_price - ($shipment_price / 100 * $discount_percent);
             $vtotal = $vprice * $vcount;
             $refund->summ += $vtotal;
             $pivot_data = [
@@ -252,8 +264,8 @@ class RefundController extends Controller
             $dir = 'DESC';
         }
 
-        if ($request['provider'] == null) {
-            $request['provider'] = [];
+        if ($request['client'] == null) {
+            $request['client'] = [];
         }
 
         if ($request['accountable'] == null) {
@@ -275,10 +287,10 @@ class RefundController extends Controller
 //                $query->whereIn('client_orders.partner_id', $request['accountable']);
 //            })
             ->when($request['client'] != [], function ($query) use ($request) {
-                $query->whereIn('client_orders.partner_id', $request['client']);
+                $query->whereIn('refund.partner_id', $request['client']);
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
-                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('refund.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
             ->where('refund.company_id', Auth::user()->company()->first()->id)
             ->groupBy('refund.id')

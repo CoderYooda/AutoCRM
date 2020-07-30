@@ -375,6 +375,8 @@ class ProductController extends Controller
             $prepare_data[] = mb_strtolower($article . $manufacture);
         }
 
+//        dd($prepare_data);
+
         return Article::owned()
             ->where(function (Builder $query) use($prepare_data) {
                 foreach ($prepare_data as $string) {

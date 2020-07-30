@@ -27,12 +27,6 @@ class Trinity implements ProviderInterface
 
         $results = $this->query($url, $this->createParams($params), true);
 
-//        $results = [];
-//
-//        foreach ($results['data'] as $index => $store) {
-//            $results[$index]['store_name'] = $store['']
-//        }
-
         return array_column($results['data'], 'producer');
     }
 
@@ -95,6 +89,14 @@ class Trinity implements ProviderInterface
         }
         $url = $this->host . 'search/byCodeBrand';
         return $this->query($url, $this->createParams($params), $asArray);
+    }
+
+    protected function getApiKey():string
+    {
+        /** @var Company $company */
+        $company = Auth::user()->company;
+
+        $company->serviceproviders->where('service_id', $this->service_id)->first()->key;
     }
 
     protected function createParams(array $params = array())

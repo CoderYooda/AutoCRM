@@ -442,8 +442,8 @@ class ShipmentsController extends Controller
             $request['dates'] = $dates;
         }
 
-        if($request['provider'] == null){
-            $request['provider'] = [];
+        if($request['client'] == null){
+            $request['client'] = [];
         }
 
         $shipments =
@@ -452,8 +452,8 @@ class ShipmentsController extends Controller
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
                 ->where('shipments.company_id', Auth::user()->company()->first()->id)
-                ->when($request['provider'] != null, function($query) use ($request) {
-                    $query->whereIn('shipments.partner_id', $request['provider']);
+                ->when($request['client'] != null, function($query) use ($request) {
+                    $query->whereIn('shipments.partner_id', $request['client']);
                 })
                 ->when($request['dates_range'] != null, function($query) use ($request) {
                     $query->whereBetween('shipments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);

@@ -142,6 +142,8 @@ class StoreController extends Controller
         #Получаем список аналогов
         $analog_products = ProductController::searchByArticleAndBrand($analog_articles);
 
+//        dd($analog_products);
+
         $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
 
         $all_ids = $products->pluck('id')->merge($analog_products->pluck('id'));
