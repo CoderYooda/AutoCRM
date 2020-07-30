@@ -177,6 +177,17 @@ class PartnerController extends Controller
                     'password' => bcrypt($password)
                 ]);
 
+<<<<<<< HEAD
+                if($request['role']) {
+                    $role = Role::where('name', $request['role'])->first();
+                    $user->syncRoles([ $role->id ]);
+                }
+
+                if(!$user->wasRecentlyCreated && $user->partner) {
+                    $user->partner->update([
+                        'user_id' => null
+                    ]);
+=======
                 $user->syncRoles([
                     $request->category_id == 5 ?
                         Role::where('name', $request['role'])->first()->id :
@@ -185,6 +196,7 @@ class PartnerController extends Controller
 
                 if(!$user->wasRecentlyCreated && $user->partner) {
                     $user->partner->update(['user_id' => null]);
+>>>>>>> 65d45711d98d7beb6223e3e4ed51c329d940861d
                     $user->update(['banned_at' => null]);
                 }
 
@@ -283,7 +295,8 @@ class PartnerController extends Controller
         }
 
         return response()->json([
-            'phone_exists' => $phone_exists
+            'phone_exists' => $phone_exists,
+            'code' => $code
         ], 200);
     }
 
