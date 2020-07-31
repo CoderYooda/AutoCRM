@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -31,7 +32,22 @@ class Company extends Model
 
     public function serviceproviders()
     {
-        return $this->belongsToMany(Service::class, 'service_company')->withPivot('key', 'enabled');
+        return $this->belongsToMany(Service::class, 'service_company')->withPivot('key', 'service_id', 'enabled');
+    }
+
+    public function getActiveServicesByCategory($category_id = 0)
+    {
+        return $this->serviceproviders()
+            ->where('category_id', $category_id)
+            ->whereHas('serviceproviders', function (Builder $query) {
+                $query->where('enabled', 1);
+            })
+            ->get();
+    }
+
+    public function getServiceFieldValue($service_id, $field)
+    {
+        return $this->serviceproviders()->find($service_id)->pivot->$field;
     }
 
     public function cashboxes()
@@ -47,7 +63,7 @@ class Company extends Model
     public function checkAccessToStore($store)
     {
         //TODO check
-        return ($store == null || $this->stores()->where('id', $store->id)->first() == NULL);
+        return ($store == null || $this->stores()->find($store->id) == NULL);
     }
 
     public function getSettingField($field)

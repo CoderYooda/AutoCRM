@@ -96,7 +96,7 @@ class RefundController extends Controller
 
         $store = $shipment->store;
 
-        if($refundWasExisted){
+        if($refundWasExisted) {
             foreach($refund->articles as $article){
                 $store->decreaseArticleCount($article->id, $article->pivot->count);
                 $shipment->decreaseRefundedCount($article->id, $article->pivot->count);
@@ -132,11 +132,8 @@ class RefundController extends Controller
         $discount_percent = 0;
 
         if($shipment->discount) {
-
             if($shipment->inpercents) $discount_percent = $shipment->discount;
-            else {
-                $discount_percent = $shipment->discount * 100 / $shipment->summ;
-            }
+            else $discount_percent = $shipment->discount * 100 / $shipment->summ;
         }
 
         $refund_data = [];

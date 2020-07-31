@@ -3,7 +3,6 @@
     @csrf
 
     <input type="hidden" name="enabled" value="{{ $company->isServiceProviderActive($service->id) }}">
-    <input type="hidden" name="company_id" value="{{ $company->id }}">
 
     <div class="modal-header" style="background-color: #1D87CF;">
         <h5 class="modal-title" style="color: white;">Проценка</h5>
@@ -40,12 +39,14 @@
                     <label>Активировать API-ключ</label>
                 </div>
 
-                <div class="form-group">
-                    <input class="form-control" name="key" placeholder="API-ключ">
-                </div>
-{{--                <div class="form-group">--}}
-{{--                    <input class="form-control" placeholder="API-ключ">--}}
-{{--                </div>--}}
+                @foreach($service->fields as $field)
+
+                    <div class="form-group">
+                        <input class="form-control" name="fields[{{ $field->name }}]" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
+                    </div>
+
+                @endforeach
+
             </div>
         </div>
 

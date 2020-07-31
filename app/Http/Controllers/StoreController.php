@@ -12,6 +12,7 @@ use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\ImportHistory;
 use App\Models\Service;
 use App\Models\Store;
@@ -172,9 +173,12 @@ class StoreController extends Controller
 
     public function provider_storesTab(Request $request)
     {
-        $services = Service::where('category_id', 0)->get();
+        /** @var Company $company */
+        $company = Auth::user()->company;
 
-        return view(get_template() . '.provider_stores.index', compact('request', 'services'));
+        $services = $company->getActiveServicesByCategory(0);
+
+        return view(get_template() . '.provider_stores.index', compact('request', 'services', 'company'));
     }
 
     public static function storeTab($request)
@@ -186,7 +190,6 @@ class StoreController extends Controller
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 2;
-
 
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
             return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request'));

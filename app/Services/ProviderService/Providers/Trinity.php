@@ -12,7 +12,6 @@ use stdClass;
 class Trinity implements ProviderInterface
 {
     protected $host = 'http://trinity-parts.ru/httpws/hs/';
-    protected $api_key = 'B61A560ED1B918340A0DDD00E08C990E';
 
     protected $name = 'Trinity';
     protected $service_id = 1;
@@ -96,13 +95,15 @@ class Trinity implements ProviderInterface
         /** @var Company $company */
         $company = Auth::user()->company;
 
-        $company->serviceproviders->where('service_id', $this->service_id)->first()->key;
+        $company->serviceproviders->where('service_id', $this->service_id)->first()->pivot->key;
     }
 
     protected function createParams(array $params = array())
     {
+        $key = '';
+
         $data = new stdClass();
-        $data->clientCode = $this->api_key;
+        $data->clientCode = $key;
         foreach ($params as $name => $param) {
             $data->$name = $param;
         }
