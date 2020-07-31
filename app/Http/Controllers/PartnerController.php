@@ -177,7 +177,6 @@ class PartnerController extends Controller
                     'password' => bcrypt($password)
                 ]);
 
-<<<<<<< HEAD
                 if($request['role']) {
                     $role = Role::where('name', $request['role'])->first();
                     $user->syncRoles([ $role->id ]);
@@ -187,16 +186,6 @@ class PartnerController extends Controller
                     $user->partner->update([
                         'user_id' => null
                     ]);
-=======
-                $user->syncRoles([
-                    $request->category_id == 5 ?
-                        Role::where('name', $request['role'])->first()->id :
-                        SettingsController::getSettingByKey('role_id')->value
-                ]);
-
-                if(!$user->wasRecentlyCreated && $user->partner) {
-                    $user->partner->update(['user_id' => null]);
->>>>>>> 65d45711d98d7beb6223e3e4ed51c329d940861d
                     $user->update(['banned_at' => null]);
                 }
 
