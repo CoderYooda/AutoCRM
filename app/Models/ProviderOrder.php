@@ -58,10 +58,30 @@ class ProviderOrder extends Model
     public function getEnteredArticleCount()
     {
         $entered_count = 0;
-        foreach($this->entrances as $entrance){
-            $entered_count += $entrance->articles()->sum('count');
+        foreach($this->entrances->load('articles') as $entrance) {
+            foreach ($entrance->articles as $article) {
+                $entered_count += $article->pivot->count;
+            }
         }
         return $entered_count;
+    }
+
+    public function updateIncomeStatus()
+    {
+        $plan = $this->getPlanArticleCount();
+        $fact = $this->getEnteredArticleCount();
+
+        $status = 0;
+
+        if($fact && $fact < $plan){
+            $status = 1;
+        } else if($fact == $plan){
+            $status = 2;
+        } else if($fact > $plan){
+            $status = 3;
+        }
+
+        $this->update(['incomes' => $status]);
     }
 
     public function entrances()
@@ -121,26 +141,6 @@ class ProviderOrder extends Model
             }
         }
         $this->save();
-    }
-
-    public function freshIncomes(){
-
-        $plan = $this->getPlanArticleCount();
-        $fact = $this->getEnteredArticleCount();
-
-        $status = 0;
-
-        if(!$fact) {
-            $status = 0;
-        } else if($fact && $fact < $plan){
-            $status = 1;
-        } else if($fact == $plan){
-            $status = 2;
-        } else if($fact > $plan){
-            $status = 3;
-        }
-
-        $this->update(['incomes' => $status]);
     }
 
     public function getArticlesCountById($id){

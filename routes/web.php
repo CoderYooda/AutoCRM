@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
@@ -51,7 +53,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/category/{id}/delete', 'CategoryController@delete')->name('DeleteCategory');
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
 
-
     Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
 
     #Статистика
@@ -77,10 +78,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
     Route::post('/entrance/dialog/search', 'EntranceController@dialogSearch')->name('EntranceDialogSearch');
     Route::post('/entrance/{entrance}/select', 'EntranceController@select')->name('SelectEntrance');
-
-    Route::get('/test', function (\Illuminate\Http\Request $request) {
-        dd(auth()->user()->current_store);
-    });
 
     #Возвраты поступлений
     Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');

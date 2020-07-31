@@ -102,11 +102,9 @@
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
-        @if(isset($client_order) && ($client_order->wsumm > $client_order->itogo) )
-            <div class="modal-alt-header">
-                <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
-            </div>
-        @endif
+        <div id="return_money" class="modal-alt-header @if(!isset($client_order) || $client_order->status !== 'canceled') d-none @endif">
+            <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
+        </div>
     </div>
     <form class="ShipmentStoredListner EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
         <div class="box-body">
@@ -219,7 +217,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Статус заказа</label>
                         <div class="col-sm-9 input-group">
-                            <select name="status" class="form-control" @if(!isset($client_order)) disabled="" @endif>
+                            <select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if(!isset($client_order)) disabled="" @endif>
                                 <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
                                 <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
                                 <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>

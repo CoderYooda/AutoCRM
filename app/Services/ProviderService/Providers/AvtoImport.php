@@ -16,16 +16,16 @@ class AvtoImport implements ProviderInterface
     protected $name = 'AvtoImport';
     protected $service_id = 2;
 
-    protected $login = 'audi-31@yandex.ru';
-    protected $password = '904fb12b14e1d08af410ec9db5f905d9';
-
     public function searchBrandsCount(string $article): array
     {
+        /** @var Company $company */
+        $company = Auth::user()->company;
+
         $params = [
             'method' => 'GET',
             'path' => 'search/brands/',
-            'userlogin' => $this->login,
-            'userpsw' => $this->password,
+            'userlogin' => $company->getServiceFieldValue($this->service_id, 2),
+            'userpsw' => md5($company->getServiceFieldValue($this->service_id, 3)),
             'number' => $article,
             'locale' => 'ru_RU'
         ];
@@ -55,11 +55,14 @@ class AvtoImport implements ProviderInterface
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
+        /** @var Company $company */
+        $company = Auth::user()->company;
+
         $params = [
             'method' => 'GET',
             'path' => 'search/articles/',
-            'userlogin' => $this->login,
-            'userpsw' => $this->password,
+            'userlogin' => $company->getServiceFieldValue($this->service_id, 2),
+            'userpsw' => md5($company->getServiceFieldValue($this->service_id, 3)),
             'number' => $article,
             'brand' => $brand,
             'useOnlineStocks' => 1,
@@ -96,6 +99,8 @@ class AvtoImport implements ProviderInterface
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 
         $result = curl_exec($handle);
+
+        dd($result);
 
         $result = (array)json_decode($result);
 

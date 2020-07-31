@@ -108,6 +108,8 @@ class EntranceController extends Controller
         $entrance->providerorder->partner->addition($entrance->totalPrice);
         UA::makeUserAction($entrance,'create');
 
+        $entrance->providerorder->updateIncomeStatus();
+
         #Ответ сервера
         return response()->json([
             'message' => 'Поступление было успешно создано.',

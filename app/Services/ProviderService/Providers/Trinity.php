@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class Trinity implements ProviderInterface
@@ -15,6 +16,7 @@ class Trinity implements ProviderInterface
 
     protected $name = 'Trinity';
     protected $service_id = 1;
+    protected $field_id = 1;
 
     public function searchBrandsCount(string $article): array
     {
@@ -90,20 +92,13 @@ class Trinity implements ProviderInterface
         return $this->query($url, $this->createParams($params), $asArray);
     }
 
-    protected function getApiKey():string
+    protected function createParams(array $params = array())
     {
         /** @var Company $company */
         $company = Auth::user()->company;
 
-        $company->serviceproviders->where('service_id', $this->service_id)->first()->pivot->key;
-    }
-
-    protected function createParams(array $params = array())
-    {
-        $key = '';
-
         $data = new stdClass();
-        $data->clientCode = $key;
+        $data->clientCode = $company->getServiceFieldValue($this->service_id, $this->field_id);
         foreach ($params as $name => $param) {
             $data->$name = $param;
         }

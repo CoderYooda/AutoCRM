@@ -9,8 +9,6 @@ class ValidProductCountForEntranceRefund implements Rule
 {
     public function passes($attribute, $value)
     {
-        dd($attribute, $value);
-
         $product_id = (int)explode('.', $attribute)[1];
 
         $entrance = Entrance::find($product_id);

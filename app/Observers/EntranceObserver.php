@@ -3,16 +3,13 @@
 namespace App\Observers;
 
 use App\Models\Entrance;
+use App\Models\ProviderOrder;
 
 class EntranceObserver
 {
-    public function saved(Entrance $entrance)
+    public function created(Entrance $entrance)
     {
-        $po = $entrance->providerorder;
 
-        //$po->incomes;
-
-        $po->freshIncomes();
     }
 
     public function deleted(Entrance $entrance)

@@ -45,9 +45,14 @@ class Company extends Model
             ->get();
     }
 
-    public function getServiceFieldValue($service_id, $field)
+    public function getServiceFieldValue($service_id, $field_id)
     {
-        return $this->serviceproviders()->find($service_id)->pivot->$field;
+        return DB::table('service_field_values')
+            ->where('company_id', $this->id)
+            ->where('service_id', $service_id)
+            ->where('field_id', $field_id)
+            ->first()
+            ->value ?? '';
     }
 
     public function cashboxes()
