@@ -8,7 +8,7 @@
                 <div class="w-100 box-search">
                     <div class="box m-10">
                         <input id="search" name="search" placeholder="Поиск по складам" class="input w-100" value="{{ request('search') }}" type="text">
-                        <input type="hidden" name="service_id" value="{{ $services->first()->id ?? 0 }}" />
+                        <input type="hidden" name="service_key" value="{{ $services->first()->key ?? 0 }}" />
                         <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
                             <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
                         </span>

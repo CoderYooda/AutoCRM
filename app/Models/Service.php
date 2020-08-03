@@ -17,7 +17,7 @@ class Service extends Model
 
     public function fields()
     {
-        return $this->hasMany(ServiceField::class, 'service_id');
+        return $this->hasMany(ServiceField::class, 'service_key','key');
     }
 
     public function serviceproviders()
@@ -30,7 +30,7 @@ class Service extends Model
         $company = Auth::user()->company;
 
         return DB::table('service_field_values')
-            ->where('service_id', $this->id)
+            ->where('service_key', $this->key)
             ->where('company_id', $company->id)
             ->where('field_id', $field_id)
             ->first()

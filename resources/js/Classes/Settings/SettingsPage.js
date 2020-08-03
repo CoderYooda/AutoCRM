@@ -83,6 +83,43 @@ class settingsPage{
             });
     }
 
+    changeValue(input) {
+        let url = document.getElementById('url').innerText;
+
+        if(url == 'armtek.ru' && input.name.includes('password')) {
+
+            let login = document.querySelector('[name="fields[login]"]');
+            let password = input.value;
+
+            axios.get('/provider_stores/armtek/sales_organization', {
+                    login: login,
+                    password: password
+                })
+                .then(response => {
+
+                    let data = response.data;
+
+                    Object.keys(data).forEach(key => {
+
+                        let value = data[key];
+
+                        let select_element = document.querySelector('[name="fields[sales_organization]"]');
+
+                        select_element.innerHTML = '';
+
+                        let option_element = document.createElement('option');
+                        option_element.value = value.VKORG;
+                        option_element.innerText = value.PROGRAM_NAME;
+
+                        select_element.add(option_element);
+                    });
+                })
+                .catch(response => {
+                    console.log(response);
+                });
+        }
+    }
+
     saveService(form_element) {
 
         window.axform.send(form_element, response => {

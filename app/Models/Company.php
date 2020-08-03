@@ -25,14 +25,14 @@ class Company extends Model
         return $this->hasMany(Store::class, 'company_id');
     }
 
-    public function isServiceProviderActive($service_id)
+    public function isServiceProviderActive($service_key)
     {
-        return $this->serviceproviders->find($service_id)->pivot->enabled ?? 0;
+        return $this->serviceproviders->where('key', $service_key)->first()->pivot->enabled ?? 0;
     }
 
     public function serviceproviders()
     {
-        return $this->belongsToMany(Service::class, 'service_company')->withPivot('key', 'service_id', 'enabled');
+        return $this->belongsToMany(Service::class, 'service_company', 'company_id', 'service_id')->withPivot('enabled');
     }
 
     public function getActiveServicesByCategory($category_id = 0)
@@ -45,14 +45,22 @@ class Company extends Model
             ->get();
     }
 
-    public function getServiceFieldValue($service_id, $field_id)
+    public function getServiceFieldValue($service_key, $field_id)
     {
         return DB::table('service_field_values')
             ->where('company_id', $this->id)
-            ->where('service_id', $service_id)
+            ->where('service_key', $service_key)
             ->where('field_id', $field_id)
             ->first()
             ->value ?? '';
+    }
+
+    public function getServiceFieldValues($service_key)
+    {
+        return DB::table('service_field_values')
+                ->where('company_id', $this->id)
+                ->where('service_key', $service_key)
+                ->get();
     }
 
     public function cashboxes()

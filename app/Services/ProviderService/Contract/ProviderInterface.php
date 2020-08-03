@@ -13,7 +13,7 @@ interface ProviderInterface
 
     public function getName(): string;
 
-    public function getServiceId(): int;
+    public function getServiceKey(): string;
 
     public function isActivated(): bool;
 }

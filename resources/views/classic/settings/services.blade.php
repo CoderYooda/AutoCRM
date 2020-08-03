@@ -37,7 +37,7 @@
                                 </div>
                                 <div style="position: absolute; bottom: 0; margin-bottom: 10px;">
                                     <label class="ui-switch float-left">
-                                        <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
+                                        <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->key)) checked @endif><i></i>
                                     </label>
                                 </div>
                             </div>

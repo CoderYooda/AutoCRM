@@ -9,4 +9,6 @@ class ServiceField extends Model
     protected $guarded = [];
 
     protected $table = 'service_fields';
+
+    public $timestamps = false;
 }

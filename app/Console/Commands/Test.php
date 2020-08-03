@@ -20,31 +20,17 @@ class Test extends Command
 
     public function handle()
     {
-        $url = "https://online.bbcrm.ru/test?";
+        $url = "http://ws.armtek.ru/api/ws_user/getUserVkorgList?format=json";
 
-        $params = [
-            'method' => 'GET',
-            'path'=> 'search/articles/',
-            'userlogin'=> 'audi-31@yandex.ru',
-            'userpsw' => '904fb12b14e1d08af410ec9db5f905d9',
-            'number' => 'k1279',
-            'useOnlineStocks' => '1',
-            'brand' => 'Kashiyama',
-            'locale' => 'ru_RU'
-        ];
+        $result = file_get_contents($url, null, stream_context_create(array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => 'Content-Type: application/json' . "\r\n"
+                    . 'Authorization: Basic '. base64_encode("WEBCFIRE.VOSTOK@MAIL.RU:ng2pP4R1zZz") . "\r\n",
+            ),
+        )));
 
-        $query_params = http_build_query($params);
-
-        $handle = curl_init();
-
-        curl_setopt($handle, CURLOPT_URL, $url . $query_params);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($handle);
-
-        $result = (array)json_decode($result);
-
-        curl_close($handle);
+        $result = json_decode($result);
 
         dd($result);
     }

@@ -432,7 +432,7 @@ class storePage{
 
     searchProviderStores() {
 
-        let service_input = document.querySelector('[name="service_id"]');
+        let service_input = document.querySelector('[name="service_key"]');
 
         let table_element = document.getElementById('table-container');
 

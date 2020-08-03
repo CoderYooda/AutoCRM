@@ -2,7 +2,7 @@
 
     @csrf
 
-    <input type="hidden" name="enabled" value="{{ $company->isServiceProviderActive($service->id) }}">
+    <input type="hidden" name="enabled" value="{{ $company->isServiceProviderActive($service->key) }}">
 
     <div class="modal-header" style="background-color: #1D87CF;">
         <h5 class="modal-title" style="color: white;">Проценка</h5>
@@ -31,7 +31,7 @@
                 <div class="box text-center d-flex" style="height: 143px; background: #185C8B; border-radius: 4px; flex-direction: column;justify-content: center;">
                     <div>
                         <div class="service-modal-title">{{ $service->name }}</div>
-                        <div class="service-modal-url">{{ parse_url($service->url)['host'] }}</div>
+                        <div id="url" class="service-modal-url">{{ parse_url($service->url)['host'] }}</div>
                     </div>
                 </div>
 
@@ -42,7 +42,20 @@
                 @foreach($service->fields as $field)
 
                     <div class="form-group">
-                        <input class="form-control" name="fields[{{ $field->name }}]" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
+                        @if($field->type == 'text')
+                            <input class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
+                        @else
+                            <select class="form-control" name="fields[{{ $field->name }}]">
+                                <option value="0">Не выбрано</option>
+
+                                @if($service->key == 'armtek' && $field->name == 'sales_organization')
+
+                                    @foreach($armtek_)
+
+                                @endif
+
+                            </select>
+                        @endif
                     </div>
 
                 @endforeach
@@ -57,7 +70,7 @@
     </div>
 
     <div class="modal-footer" style="height: 60px;">
-        <button type="button" onclick="settings.saveService(this)" class="button float-right">{{ $company->isServiceProviderActive($service->id) ? 'Деактивировать' : 'Активировать' }}</button>
+        <button type="button" onclick="settings.saveService(this)" class="button float-right">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
     </div>
 
 </form>

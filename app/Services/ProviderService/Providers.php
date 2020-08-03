@@ -20,12 +20,12 @@ class Providers
         return $this->providers;
     }
 
-    public function find(int $id)
+    public function find(string $key)
     {
         foreach ($this->providers as $provider) {
-            $provider_id = $provider->getServiceId();
+            $provider_key = $provider->getServiceKey();
 
-            if($provider_id == $id) return $provider;
+            if($provider_key == $key) return $provider;
         }
 
         return false;

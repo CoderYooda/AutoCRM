@@ -15,7 +15,7 @@ class Trinity implements ProviderInterface
     protected $host = 'http://trinity-parts.ru/httpws/hs/';
 
     protected $name = 'Trinity';
-    protected $service_id = 1;
+    protected $service_key = 'trinity';
     protected $field_id = 1;
 
     public function searchBrandsCount(string $article): array
@@ -24,6 +24,7 @@ class Trinity implements ProviderInterface
             'searchCode' => $article,
             'online' => true ? 'allow' : 'disallow'
         );
+
         $url = $this->host . 'search/byCode';
 
         $results = $this->query($url, $this->createParams($params), true);
@@ -36,9 +37,9 @@ class Trinity implements ProviderInterface
         return $this->name;
     }
 
-    public function getServiceId(): int
+    public function getServiceKey(): string
     {
-        return $this->service_id;
+        return $this->service_key;
     }
 
     public function isActivated(): bool
@@ -46,7 +47,7 @@ class Trinity implements ProviderInterface
         /** @var Company $company */
         $company = Auth::user()->company;
 
-        return (bool)$company->isServiceProviderActive($this->service_id);
+        return (bool)$company->isServiceProviderActive($this->service_key);
     }
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
@@ -98,7 +99,7 @@ class Trinity implements ProviderInterface
         $company = Auth::user()->company;
 
         $data = new stdClass();
-        $data->clientCode = $company->getServiceFieldValue($this->service_id, $this->field_id);
+        $data->clientCode = $company->getServiceFieldValue($this->service_key, $this->field_id);
         foreach ($params as $name => $param) {
             $data->$name = $param;
         }

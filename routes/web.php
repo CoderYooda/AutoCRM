@@ -93,6 +93,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::namespace('API')->group(function () {
         Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderStore');
         Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
+        Route::get('/provider_stores/armtek/sales_organization', 'ProviderStoreController@getArmTekSerialSales')->name('getArmTekSerialSales');
     });
 
 

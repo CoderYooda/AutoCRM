@@ -16,7 +16,7 @@ class CheckServiceFieldOnValid implements Rule
     {
         $name = explode('.', $attribute)[1];
 
-        return ServiceField::where(['name' => $name, 'service_id' => request()->service->id])->exists();
+        return ServiceField::where(['name' => $name, 'service_key' => request()->service->key])->exists();
     }
 
     public function message()

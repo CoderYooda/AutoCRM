@@ -9,12 +9,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 
-class AvtoImport implements ProviderInterface
+class ArmTek implements ProviderInterface
 {
-    protected $host = 'https://online.bbcrm.ru/test?';
+    protected $url = "http://ws.armtek.ru/api";
 
-    protected $name = 'AvtoImport';
-    protected $service_key = 'avtoimport';
+    //http://ws.armtek.ru/api/ws_user/getUserVkorgList?format=json
+    //http://ws.armtek.ru/api/ws_search/assortment_search?format=json
+
+    protected $name = 'ArmTek';
+    protected $service_key = 'armtek';
 
     public function searchBrandsCount(string $article): array
     {
@@ -40,7 +43,7 @@ class AvtoImport implements ProviderInterface
         return $this->name;
     }
 
-    public function getServiceKey(): string
+    public function getServiceId(): int
     {
         return $this->service_key;
     }
@@ -89,22 +92,35 @@ class AvtoImport implements ProviderInterface
         return $results;
     }
 
-    private function query($params): array
+    public function getFields()
     {
-        $query_params = http_build_query($params);
+        $fields = [];
 
-        $handle = curl_init();
+        $results = $this->query('/ws_user/getUserVkorgList', [], 'GET');
 
-        curl_setopt($handle, CURLOPT_URL, $this->host . $query_params);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+        return $fields;
+    }
 
-        $result = curl_exec($handle);
+    private function query($path, $params, $method): array
+    {
+        /** @var Company $company */
+        $company = Auth::user()->company;
 
-        dd($result);
+        $user = $company->getServiceFieldValue($this->service_key, 16);
+        $password = $company->getServiceFieldValue($this->service_key, 17);
+
+        $params = json_encode($params);
+
+         $result = file_get_contents($this->url . $path . '?format=json', null, stream_context_create(array(
+            'http' => array(
+                'method' => $method,
+                'header' => 'Content-Type: application/json' . "\r\n"
+                    . 'Authorization: Basic '. base64_encode($user . ":" . $password) . "\r\n",
+                'content' => $params
+            ),
+        )));
 
         $result = (array)json_decode($result);
-
-        curl_close($handle);
 
         return $result;
     }

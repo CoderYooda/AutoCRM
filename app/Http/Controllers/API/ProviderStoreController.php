@@ -19,12 +19,12 @@ class ProviderStoreController extends Controller
 
             if(!$provider->isActivated()) continue;
 
-            $service_id = $provider->getServiceId();
+            $service_key = $provider->getServiceKey();
 
-            $counts[$service_id] = $provider->searchBrandsCount($request->search);
+            $counts[$service_key] = $provider->searchBrandsCount($request->search);
 
-            if($service_id == $request->selected_service) {
-                $manufacturers = $counts[$service_id];
+            if($service_key == $request->selected_service) {
+                $manufacturers = $counts[$service_key];
             }
         }
 
@@ -43,7 +43,7 @@ class ProviderStoreController extends Controller
         $manufacturer = $request->manufacturer;
 
         /** @var ProviderInterface $provider */
-        $provider = $providers->find($selected_service);
+        $provider = $providers->find((string)$selected_service);
 
         $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
 
@@ -52,5 +52,22 @@ class ProviderStoreController extends Controller
         return response()->json([
             'html' => $view->render()
         ]);
+    }
+
+    public function getArmTekSerialSales(Request $request)
+    {
+        $url = "http://ws.armtek.ru/api/ws_user/getUserVkorgList?format=json";
+
+        $result = file_get_contents($url, null, stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => 'Content-Type: application/json' . "\r\n"
+                    . 'Authorization: Basic '. base64_encode("WEBCFIRE.VOSTOK@MAIL.RU:ng2pP4R1zZz") . "\r\n",
+            ],
+        ]));
+
+        $result = json_decode($result);
+
+        return response()->json($result->RESP);
     }
 }
