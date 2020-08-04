@@ -100,8 +100,6 @@ class AvtoImport implements ProviderInterface
 
         $result = curl_exec($handle);
 
-        dd($result);
-
         $result = (array)json_decode($result);
 
         curl_close($handle);
