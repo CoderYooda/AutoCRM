@@ -46,14 +46,11 @@
                             <input class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
                         @else
                             <select class="form-control" name="fields[{{ $field->name }}]">
-                                <option value="0">Не выбрано</option>
-
-                                @if($service->key == 'armtek' && $field->name == 'sales_organization')
-
-                                    @foreach($armtek_)
-
-                                @endif
-
+                                @forelse($provider_service->getSelectFieldValues('sales_organization') as $text => $value)
+                                    <option value="{{ $value }}" @if($service->getServiceValueByField($field->id) == $value) selected @endif>{{ $text }}</option>
+                                @empty
+                                    <option value="0">Не выбрано</option>
+                                @endforelse
                             </select>
                         @endif
                     </div>

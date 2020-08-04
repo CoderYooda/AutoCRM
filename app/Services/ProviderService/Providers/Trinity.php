@@ -16,7 +16,7 @@ class Trinity implements ProviderInterface
 
     protected $name = 'Trinity';
     protected $service_key = 'trinity';
-    protected $field_id = 1;
+    protected $field_name = 'apy_key';
 
     public function searchBrandsCount(string $article): array
     {
@@ -99,7 +99,8 @@ class Trinity implements ProviderInterface
         $company = Auth::user()->company;
 
         $data = new stdClass();
-        $data->clientCode = $company->getServiceFieldValue($this->service_key, $this->field_id);
+        $data->clientCode = $company->getServiceFieldValue($this->service_key, $this->field_name);
+
         foreach ($params as $name => $param) {
             $data->$name = $param;
         }
@@ -116,10 +117,16 @@ class Trinity implements ProviderInterface
     {
         $this->error = '';
         $data = @file_get_contents($url, false, $context);
+
         if (!$data) {
             $this->error = (!$error = error_get_last()) ? 'Ошибка при получении данных' : $error['message'];
             return array();
         }
         return json_decode($data, $asArray);
+    }
+
+    public function getSelectFieldValues(string $field_name): array
+    {
+        return [];
     }
 }

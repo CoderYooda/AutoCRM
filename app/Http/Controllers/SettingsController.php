@@ -56,9 +56,10 @@ class SettingsController extends Controller
 
     public static function indexTab($request)
     {
-        $company = Auth::user()->company()->first();
+        $company = Auth::user()->company;
+
         $settings = Setting::owned()->orderBy('sort')->get();
-        $roles = Role::where('company_id', Auth::user()->company->id)->get();
+        $roles = Role::where('company_id', $company->id)->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
             return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
         }

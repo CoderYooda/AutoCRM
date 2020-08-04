@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -54,6 +55,19 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
 
     Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
+
+    Route::get('/test', function (Request $request) {
+
+        $path = $request->get('path');
+        $method = $request->get('method');
+
+        return file_get_contents('http://id8341.public.api.abcp.ru/' . $path, null, stream_context_create([
+            'http' => [
+                'method' => $method,
+                'content' => json_encode($request->except('method', 'path'))
+            ],
+        ]));
+    });
 
     #Статистика
     Route::get('/statistic', 'StatisticController@index')->name('StatisticIndex');

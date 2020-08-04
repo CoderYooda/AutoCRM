@@ -19,8 +19,8 @@
 
                     @forelse($services as $service)
 
-                        <button onclick="store.showProvider(this, {{ $service->id }})" class="button relative primary mr-5 btn_with_badge @if($loop->first) active @endif">
-                            {{ $service->name }} <span id="service_count_{{ $service->id }}" class="badge-pill">0</span>
+                        <button onclick="store.showProvider(this, '{{ $service->key }}')" class="button relative primary mr-5 btn_with_badge @if($loop->first) active @endif">
+                            {{ $service->name }} <span id="service_count_{{ $service->key }}" class="badge-pill">0</span>
                         </button>
 
                     @empty

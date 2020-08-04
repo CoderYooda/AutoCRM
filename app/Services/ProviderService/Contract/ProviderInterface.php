@@ -16,4 +16,6 @@ interface ProviderInterface
     public function getServiceKey(): string;
 
     public function isActivated(): bool;
+
+    public function getSelectFieldValues(string $field_id): array;
 }

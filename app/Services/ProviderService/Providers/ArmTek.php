@@ -25,15 +25,11 @@ class ArmTek implements ProviderInterface
         $company = Auth::user()->company;
 
         $params = [
-            'method' => 'GET',
-            'path' => 'search/brands/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 2),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 3)),
-            'number' => $article,
-            'locale' => 'ru_RU'
+            'VKORG' => $company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'PIN' => $article,
         ];
 
-        $result = $this->query($params);
+        $result = $this->query('/ws_search/assortment_search', $params, 'POST');
 
         return array_column($result, 'brand');
     }
@@ -43,7 +39,7 @@ class ArmTek implements ProviderInterface
         return $this->name;
     }
 
-    public function getServiceId(): int
+    public function getServiceKey(): string
     {
         return $this->service_key;
     }
@@ -64,8 +60,8 @@ class ArmTek implements ProviderInterface
         $params = [
             'method' => 'GET',
             'path' => 'search/articles/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 2),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 3)),
+            'userlogin' => $company->getServiceFieldValue($this->service_key, 'login'),
+            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 'password')),
             'number' => $article,
             'brand' => $brand,
             'useOnlineStocks' => 1,
@@ -92,11 +88,19 @@ class ArmTek implements ProviderInterface
         return $results;
     }
 
-    public function getFields()
+    public function getSelectFieldValues(string $field_name): array
     {
         $fields = [];
 
-        $results = $this->query('/ws_user/getUserVkorgList', [], 'GET');
+        if($field_name == 'sales_organization') {
+            $result = $this->query('/ws_user/getUserVkorgList', [], 'GET');
+
+            if(isset($result['RESP'])) {
+                foreach ($result['RESP'] as $program) {
+                    $fields[$program->PROGRAM_NAME] = $program->VKORG;
+                }
+            }
+        }
 
         return $fields;
     }
@@ -106,12 +110,12 @@ class ArmTek implements ProviderInterface
         /** @var Company $company */
         $company = Auth::user()->company;
 
-        $user = $company->getServiceFieldValue($this->service_key, 16);
-        $password = $company->getServiceFieldValue($this->service_key, 17);
+        $user = $company->getServiceFieldValue($this->service_key, 'login');
+        $password = $company->getServiceFieldValue($this->service_key, 'password');
 
         $params = json_encode($params);
 
-         $result = file_get_contents($this->url . $path . '?format=json', null, stream_context_create(array(
+         $result = @file_get_contents($this->url . $path . '?format=json', null, stream_context_create(array(
             'http' => array(
                 'method' => $method,
                 'header' => 'Content-Type: application/json' . "\r\n"

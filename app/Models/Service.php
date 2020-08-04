@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Services\ProviderService\Providers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +20,14 @@ class Service extends Model
     public function fields()
     {
         return $this->hasMany(ServiceField::class, 'service_key','key');
+    }
+
+    public function getProviderService()
+    {
+        /** @var Providers $providers */
+        $providers = app()->get(Providers::class);
+
+        return $providers->find($this->key);
     }
 
     public function serviceproviders()

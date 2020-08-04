@@ -20,11 +20,21 @@ class Providers
         return $this->providers;
     }
 
+    public function activated()
+    {
+        $providers = [];
+
+        foreach ($this->providers as $provider) {
+            if($provider->isActivated()) $providers[] = $provider;
+        }
+
+        return $providers;
+    }
+
     public function find(string $key)
     {
-        foreach ($this->providers as $provider) {
+        foreach ($this->providers as $index => $provider) {
             $provider_key = $provider->getServiceKey();
-
             if($provider_key == $key) return $provider;
         }
 

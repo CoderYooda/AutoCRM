@@ -24,8 +24,8 @@ class AvtoImport implements ProviderInterface
         $params = [
             'method' => 'GET',
             'path' => 'search/brands/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 2),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 3)),
+            'userlogin' => $company->getServiceFieldValue($this->service_key, 'login'),
+            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 'password')),
             'number' => $article,
             'locale' => 'ru_RU'
         ];
@@ -61,8 +61,8 @@ class AvtoImport implements ProviderInterface
         $params = [
             'method' => 'GET',
             'path' => 'search/articles/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 2),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 3)),
+            'userlogin' => $company->getServiceFieldValue($this->service_key, 'login'),
+            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 'password')),
             'number' => $article,
             'brand' => $brand,
             'useOnlineStocks' => 1,
@@ -107,5 +107,10 @@ class AvtoImport implements ProviderInterface
         curl_close($handle);
 
         return $result;
+    }
+
+    public function getSelectFieldValues(string $field_name): array
+    {
+        return [];
     }
 }

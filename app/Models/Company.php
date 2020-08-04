@@ -45,8 +45,14 @@ class Company extends Model
             ->get();
     }
 
-    public function getServiceFieldValue($service_key, $field_id)
+    public function getServiceFieldValue($service_key, $field_name)
     {
+        $field_id = ServiceField::where([
+            'name' => $field_name,
+            'service_key' => $service_key
+        ])
+        ->first()->id;
+
         return DB::table('service_field_values')
             ->where('company_id', $this->id)
             ->where('service_key', $service_key)

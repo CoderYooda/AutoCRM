@@ -450,11 +450,17 @@ class storePage{
 
             let counts = response.data.counts;
 
-            Object.keys(counts).forEach(service_id => {
+            console.log(response);
 
-                let manufacturers = counts[service_id];
+            Object.keys(counts).forEach(service_key => {
 
-                document.getElementById('service_count_' + service_id).innerText = manufacturers.length;
+                let manufacturers = counts[service_key];
+
+                console.log(service_key, manufacturers);
+
+                console.log(document.getElementById('service_count_' + service_key));
+
+                document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
             });
         })
         .catch(response => {
@@ -465,7 +471,7 @@ class storePage{
         });
     }
 
-    showProvider(button, service_id) {
+    showProvider(button, service_key) {
         let button_elements = document.querySelectorAll('.provider_tabs button');
 
         button_elements.forEach(element => {
@@ -474,9 +480,9 @@ class storePage{
 
         button.classList.add('active');
 
-        let service_input = document.querySelector('[name="service_id"]');
+        let service_input = document.querySelector('[name="service_key"]');
 
-        service_input.value = service_id;
+        service_input.value = service_key;
 
         this.searchProviderStores();
     }
@@ -491,14 +497,14 @@ class storePage{
 
         if(element.classList.contains('fa-angle-down')) {
 
-            let service_input = document.querySelector('[name="service_id"]');
+            let service_input = document.querySelector('[name="service_key"]');
 
             target_element.classList.remove('d-none');
 
             axios.post('/provider_stores/stores', {
                 manufacturer: manufacturer,
                 article: this.search,
-                selected_service: Number(service_input.value)
+                selected_service: service_input.value
             })
             .then(response => {
 

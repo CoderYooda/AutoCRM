@@ -5,24 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Services\SaveRequest;
 use App\Models\Company;
 use App\Models\Service;
-use App\Services\ProviderService\Providers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ServiceController extends Controller
 {
-    public function show(Service $service, Providers $providers)
+    public function show(Service $service)
     {
+        $provider_service = $service->getProviderService();
+
         /** @var Company $company */
         $company = Auth::user()->company;
 
-        $view = view(get_template() . '.system.includes.settings_provider_dialog_inner', compact('service', 'company'));
-
-        if($service->key == 'armtek') {
-
-            $fields = $service->
-
-        }
+        $view = view(get_template() . '.system.includes.settings_provider_dialog_inner', compact('service', 'provider_service', 'company'));
 
         return response()->json([
             'html' => $view->render()
