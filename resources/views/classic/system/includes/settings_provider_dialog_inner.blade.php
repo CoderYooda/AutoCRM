@@ -6,6 +6,7 @@
 
     <div class="modal-header" style="background-color: #1D87CF;">
         <h5 class="modal-title" style="color: white;">Проценка</h5>
+        <button class="btn_close float-right" onclick="window.partnerDialog.finitaLaComedia()">×</button>
     </div>
 
     <div class="modal-body p-15 d-flex">
@@ -41,7 +42,7 @@
 
                 @foreach($service->fields as $field)
 
-                    <div class="form-group">
+                    <div class="form-group" name="fields">
                         @if($field->type == 'text')
                             <input class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
                         @else
@@ -57,6 +58,10 @@
 
                 @endforeach
 
+                <div class="form-group text-center mb-0">
+                    <button type="button" onclick="settings.saveService(this)" class="button">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
+                </div>
+
             </div>
         </div>
 
@@ -67,7 +72,8 @@
     </div>
 
     <div class="modal-footer" style="height: 60px;">
-        <button type="button" onclick="settings.saveService(this)" class="button float-right">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
+        <button type="button" class="button float-left">Закрыть</button>
+        <button type="button" class="button float-right">Сохранить</button>
     </div>
 
 </form>

@@ -129,4 +129,9 @@ class Trinity implements ProviderInterface
     {
         return [];
     }
+
+    public function checkConnect(array $fields): bool
+    {
+        // TODO: Implement checkConnect() method.
+    }
 }

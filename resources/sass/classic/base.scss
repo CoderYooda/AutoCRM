@@ -471,7 +471,7 @@ li.active .header-tab{
 .tr_result > span{
     display: block;
 }
-.dialog .btn_close {
+.dialog .btn_close, .modal_header .btn_close {
     float: right;
     background: url(/images/icons/cross.png) no-repeat 13px 15px;
     opacity: .75;

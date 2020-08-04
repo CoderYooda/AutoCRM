@@ -4,9 +4,14 @@
 namespace App\Services\ProviderService\Providers;
 
 use App\Models\Company;
+use App\Rules\CheckApiDataForServices;
+use App\Rules\CheckServiceFieldOnValid;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use Carbon\Carbon;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use stdClass;
 
 class ArmTek implements ProviderInterface
@@ -31,7 +36,7 @@ class ArmTek implements ProviderInterface
 
         $result = $this->query('/ws_search/assortment_search', $params, 'POST');
 
-        return array_column($result, 'brand');
+        return array_column($result['RESP'], 'BRAND');
     }
 
     public function getName(): string
@@ -58,30 +63,25 @@ class ArmTek implements ProviderInterface
         $company = Auth::user()->company;
 
         $params = [
-            'method' => 'GET',
-            'path' => 'search/articles/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 'login'),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 'password')),
-            'number' => $article,
-            'brand' => $brand,
-            'useOnlineStocks' => 1,
-            'locale' => 'ru_RU'
+            'VKORG' => $company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'BRAND' => $brand,
+            'KUNNR_RG' => $this->getApiKunnr(),
+            'PIN' => $article
         ];
 
-        $items = $this->query($params);
+        $items = $this->query('/ws_search/search', $params, 'POST');
 
         $results = [];
 
-        foreach ($items as $item) {
+        foreach ($items['RESP'] as $item) {
 
-            $min_days = $item->deliveryPeriod / 24;
-            $max_days = $item->deliveryPeriodMax ?? 1 / 24;
+            $delivery_timestamp = Carbon::parse($item->DLVDT);
 
             $results[] = [
-                'name' => $item->supplierCode,
-                'code' => $item->number,
-                'delivery' => $min_days . ($max_days > $min_days ?  ('/' . $max_days) : ''),
-                'price' => $item->price,
+                'name' => $item->RVALUE,
+                'code' => $item->ARTID,
+                'delivery' => Carbon::now()->diffInDays($delivery_timestamp),
+                'price' => $item->PRICE,
             ];
         }
 
@@ -115,7 +115,7 @@ class ArmTek implements ProviderInterface
 
         $params = json_encode($params);
 
-         $result = @file_get_contents($this->url . $path . '?format=json', null, stream_context_create(array(
+        $result = @file_get_contents($this->url . $path . '?format=json', null, stream_context_create(array(
             'http' => array(
                 'method' => $method,
                 'header' => 'Content-Type: application/json' . "\r\n"
@@ -127,5 +127,42 @@ class ArmTek implements ProviderInterface
         $result = (array)json_decode($result);
 
         return $result;
+    }
+
+    private function getApiKunnr()
+    {
+        /** @var Company $company */
+        $company = Auth::user()->company;
+
+        $params = [
+            'VKORG' => $company->getServiceFieldValue($this->service_key, 'sales_organization')
+        ];
+
+        $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
+
+        return $result['RESP']->STRUCTURE->RG_TAB[0]->KUNNR;
+    }
+
+    public function checkConnect(array $fields): bool
+    {
+        if(!isset($fields['login']) || !isset($fields['password'])) return false;
+
+        $result = @file_get_contents($this->url . '/ws_user/getUserVkorgList?format=json', null, stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => 'Content-Type: application/json' . "\r\n"
+                    . 'Authorization: Basic '. base64_encode($fields['login'] . ":" . $fields['password']) . "\r\n",
+            ],
+        ]));
+
+        if($result == []) return false;
+
+        $result = (array)json_decode($result);
+
+        $vkorgs_list = array_column($result['RESP'], 'VKORG');
+
+        if(!in_array($fields['sales_organization'], $vkorgs_list)) return false;
+
+        return $result['STATUS'] == 200;
     }
 }

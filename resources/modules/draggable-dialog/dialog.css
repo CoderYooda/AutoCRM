@@ -122,11 +122,11 @@
 	cursor: pointer;
 }
 
-
 .dialog .btn_close:hover {
 	opacity: 1;
 	filter: none;
 }
+
 .dialog .btn_close {
 	float: right;
 	background: url(/images/icons/cross.png) no-repeat 13px 15px;
