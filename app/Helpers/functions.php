@@ -18,6 +18,23 @@ if(!function_exists('isDate')) {
     }
 }
 
+if(!function_exists('throw_error')) {
+    function throw_error($message) {
+        exception(422, [
+            'message' => $message,
+            'type' => 'error'
+        ]);
+    }
+}
+
+if(!function_exists('throw_validator_exception')) {
+    function throw_validator_exception($errors) {
+        exception(422, [
+            'messages' => $errors
+        ]);
+    }
+}
+
 if(!function_exists('exception')) {
     function exception(int $status, array $attributes = [])
     {

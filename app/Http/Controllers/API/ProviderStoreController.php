@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\ProviderStore\SearchRequest;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
@@ -12,18 +13,23 @@ class ProviderStoreController extends Controller
     public function tableData(Request $request, Providers $providers)
     {
         $counts = [];
-
         $manufacturers = [];
+        $errors = [];
 
-        foreach ($providers->all() as $provider) {
-
-            if(!$provider->isActivated()) continue;
+        foreach ($providers->activated() as $provider) {
 
             $service_key = $provider->getServiceKey();
 
-            $counts[$service_key] = $provider->searchBrandsCount($request->search);
+            try {
+                $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
+            }
+            catch (\Exception $exception) {
+                $counts[$service_key] = [];
 
-            if($service_key == $request->selected_service) {
+                $errors[$service_key] = 'Ошибка получения ответа, проверьте настройки.';
+            }
+
+            if ($service_key == $request->selected_service) {
                 $manufacturers = $counts[$service_key];
             }
         }
@@ -32,7 +38,8 @@ class ProviderStoreController extends Controller
 
         return response()->json([
             'counts' => $counts,
-            'html' => $view->render()
+            'html' => $view->render(),
+            'errors' => $errors
         ]);
     }
 
@@ -46,6 +53,8 @@ class ProviderStoreController extends Controller
         $provider = $providers->find((string)$selected_service);
 
         $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
+
+        $stores = collect($stores)->sortBy('price')->toArray();
 
         $view = view(get_template() . '.provider_stores.includes.table_element', compact('stores'));
 

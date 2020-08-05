@@ -6,7 +6,7 @@
 
     <div class="modal-header" style="background-color: #1D87CF;">
         <h5 class="modal-title" style="color: white;">Проценка</h5>
-        <button class="btn_close float-right" onclick="window.partnerDialog.finitaLaComedia()">×</button>
+        <button class="btn_close float-right" data-dismiss="modal">×</button>
     </div>
 
     <div class="modal-body p-15 d-flex">
@@ -42,7 +42,7 @@
 
                 @foreach($service->fields as $field)
 
-                    <div class="form-group" name="fields">
+                    <div class="form-group">
                         @if($field->type == 'text')
                             <input class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
                         @else
@@ -59,21 +59,16 @@
                 @endforeach
 
                 <div class="form-group text-center mb-0">
-                    <button type="button" onclick="settings.saveService(this)" class="button">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
+                    <button type="button" onclick="settings.toggleService(this, {{ $service->id }})" class="button preloader-block">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
                 </div>
 
             </div>
         </div>
-
-{{--        <div class="form-group">--}}
-{{--            <label>API-ключ</label>--}}
-{{--            <input name="key" class="form-control" value="{{ $company->serviceproviders->find($service->id)->pivot->key ?? '' }}" />--}}
-{{--        </div>--}}
     </div>
 
     <div class="modal-footer" style="height: 60px;">
-        <button type="button" class="button float-left">Закрыть</button>
-        <button type="button" class="button float-right">Сохранить</button>
+        <button type="button" class="button float-left" data-dismiss="modal">Закрыть</button>
+        <button type="button" onclick="settings.saveService(this)" class="button float-right preloader-block">Сохранить</button>
     </div>
 
 </form>

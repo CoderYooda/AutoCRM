@@ -32,7 +32,7 @@ class Service extends Model
 
     public function serviceproviders()
     {
-        return $this->belongsToMany(Company::class, 'service_company')->withPivot('key', 'enabled', 'company_id');
+        return $this->belongsToMany(Company::class, 'service_company')->withPivot('enabled', 'company_id');
     }
 
     public function getServiceValueByField($field_id)

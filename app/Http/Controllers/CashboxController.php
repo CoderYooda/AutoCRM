@@ -113,7 +113,7 @@ class CashboxController extends Controller
             $this->message = 'Касса удалена';
             $returnIds = $cashbox->id;
             $this->status = 200;
-            if($cashbox->company()->first()->id != Auth::user()->company()->first()->id){
+            if($cashbox->company->id != Auth::user()->company->id){
                 $this->message = 'Вам не разрешено удалять эту кассу';
                 $this->status = 422;
             }

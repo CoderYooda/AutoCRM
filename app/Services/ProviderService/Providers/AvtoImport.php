@@ -16,16 +16,27 @@ class AvtoImport implements ProviderInterface
     protected $name = 'AvtoImport';
     protected $service_key = 'avtoimport';
 
+    /** @var Company */
+    protected $company = null;
+
+    protected $login = null;
+    protected $password = null;
+
+    public function __construct()
+    {
+        $this->company = Auth::user()->company;
+
+        $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
+        $this->password = md5($this->company->getServiceFieldValue($this->service_key, 'password'));
+    }
+
     public function searchBrandsCount(string $article): array
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
         $params = [
             'method' => 'GET',
             'path' => 'search/brands/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 'login'),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 'password')),
+            'userlogin' => $this->login,
+            'userpsw' => $this->password,
             'number' => $article,
             'locale' => 'ru_RU'
         ];
@@ -47,22 +58,16 @@ class AvtoImport implements ProviderInterface
 
     public function isActivated(): bool
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
-        return (bool)$company->isServiceProviderActive($this->service_key);
+        return (bool)$this->company->isServiceProviderActive($this->service_key);
     }
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
         $params = [
             'method' => 'GET',
             'path' => 'search/articles/',
-            'userlogin' => $company->getServiceFieldValue($this->service_key, 'login'),
-            'userpsw' => md5($company->getServiceFieldValue($this->service_key, 'password')),
+            'userlogin' => $this->login,
+            'userpsw' => $this->password,
             'number' => $article,
             'brand' => $brand,
             'useOnlineStocks' => 1,
@@ -102,7 +107,11 @@ class AvtoImport implements ProviderInterface
 
         $result = (array)json_decode($result);
 
-        curl_close($handle);
+        if(array_key_exists('errorCode', $result)) {
+            throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
+        }
+
+            curl_close($handle);
 
         return $result;
     }
@@ -114,6 +123,13 @@ class AvtoImport implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-        // TODO: Implement checkConnect() method.
+        if(!isset($fields['login']) || !isset($fields['password'])) return false;
+
+        $this->login = $fields['login'];
+        $this->password = md5($fields['password']);
+
+        $this->searchBrandsCount('k1279');
+
+        return true;
     }
 }

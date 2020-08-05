@@ -33,7 +33,7 @@ class Providers
 
     public function find(string $key)
     {
-        foreach ($this->providers as $index => $provider) {
+        foreach ($this->providers as $provider) {
             $provider_key = $provider->getServiceKey();
             if($provider_key == $key) return $provider;
         }

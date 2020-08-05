@@ -438,7 +438,9 @@ class storePage{
 
         document.querySelector('.out_of_search').classList.add('d-none');
 
-        table_element.classList.add('active');
+        togglePreloader(table_element, true);
+
+        if(this.search == null) this.search = '';
 
         axios.post('/provider_stores/tableData', {
             search: this.search,
@@ -446,28 +448,38 @@ class storePage{
         })
         .then(response => {
 
-            document.getElementById('table_body').innerHTML = response.data.html;
+            if(!response.data.html.length) {
+                document.getElementById('table_body').innerHTML = '';
+                document.querySelector('.out_of_search').classList.remove('d-none');
+            }
+            else {
 
-            let counts = response.data.counts;
+                document.getElementById('table_body').innerHTML = response.data.html;
 
-            console.log(response);
+                let counts = response.data.counts;
 
-            Object.keys(counts).forEach(service_key => {
+                Object.keys(counts).forEach(service_key => {
 
-                let manufacturers = counts[service_key];
+                    let manufacturers = counts[service_key];
 
-                console.log(service_key, manufacturers);
+                    document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
+                });
+            }
 
-                console.log(document.getElementById('service_count_' + service_key));
+            let errors = response.data.errors;
 
-                document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
-            });
+            if(errors) {
+                Object.keys(errors).forEach(key => {
+                    let value = errors[key];
+                    notification.notify('error', key + ': ' + value);
+                });
+            }
         })
         .catch(response => {
             dd(response);
         })
         .finally(() => {
-            table_element.classList.remove('active');
+            togglePreloader(table_element, false);
         });
     }
 

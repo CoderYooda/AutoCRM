@@ -7,11 +7,6 @@ use Illuminate\Contracts\Validation\Rule;
 
 class CheckApiDataForServices implements Rule
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function passes($attribute, $value)
     {
         /** @var Service $service */

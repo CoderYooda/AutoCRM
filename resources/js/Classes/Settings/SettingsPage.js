@@ -88,6 +88,10 @@ class settingsPage{
 
         if(url == 'armtek.ru' && input.name.includes('password')) {
 
+            let select_element = document.querySelector('[name="fields[sales_organization]"]');
+
+            select_element.innerHTML = '';
+
             let login = document.querySelector('[name="fields[login]"]');
             let password = input.value;
 
@@ -103,10 +107,6 @@ class settingsPage{
 
                         let value = data[key];
 
-                        let select_element = document.querySelector('[name="fields[sales_organization]"]');
-
-                        select_element.innerHTML = '';
-
                         let option_element = document.createElement('option');
                         option_element.value = value.VKORG;
                         option_element.innerText = value.PROGRAM_NAME;
@@ -120,20 +120,52 @@ class settingsPage{
         }
     }
 
-    saveService(form_element) {
+    toggleService(button_element, service_id) {
 
-        window.axform.send(form_element, response => {
+        togglePreloader(button_element, true);
 
-            if(response.status === 200) {
+        let enabled_input = document.querySelector('[name="enabled"]');
 
-                let service_id = response.data.service.id;
+        let field_inputs = document.querySelectorAll('.form-control');
 
-                let input = document.getElementById('service_' + service_id);
+        let data = {
+            enabled: Number(enabled_input.value),
+            fields: {}
+        };
 
-                input.checked = !input.checked;
+        field_inputs.forEach(input => {
 
-                this.modal.hide();
-            }
+            let correct_name = input.name.match(/\[(.+?)\]/)[1];
+
+            console.log(correct_name);
+
+            data['fields'][correct_name] = input.value;
+        });
+
+        axios.post('/services/' + service_id + '/toggle', data)
+        .then(response => {
+            let enabled = response.data.enabled;
+
+            button_element.innerText = enabled ? 'Деактивировать' : 'Активировать';
+            enabled_input.value = enabled;
+
+            let input = document.getElementById('service_' + service_id);
+            input.checked = enabled;
+        })
+        .catch(response => {
+            console.log(response);
+        })
+        .then(() => {
+            togglePreloader(button_element, false);
+        });
+    }
+
+    saveService(button_element) {
+
+        togglePreloader(button_element, true);
+
+        window.axform.send(button_element, response => {
+            togglePreloader(button_element, false);
         });
     }
 

@@ -2,14 +2,12 @@
 
 namespace App\Http\Requests\Services;
 
-use App\Models\Service;
 use App\Rules\CheckApiDataForServices;
-use App\Rules\CheckServiceFieldOnValid;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SaveRequest extends FormRequest
+class ToggleRequest extends FormRequest
 {
     public function authorize()
     {
@@ -18,12 +16,15 @@ class SaveRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'company_id' => ['integer', 'exists:companies,id'],
-            'enabled' => ['integer', 'min:0', 'max:1'],
-            'fields' => ['required', 'array'],
-            'fields.*' => ['nullable', 'string', 'max:255', 'min:1'],
+        $rules = [
+            'enabled' => ['required', 'integer', 'between:0,1'],
         ];
+
+        if($this->enabled == 0) {
+            $rules['fields'] = ['required', 'array', new CheckApiDataForServices];
+        }
+
+        return $rules;
     }
 
     protected function failedValidation(Validator $validator)

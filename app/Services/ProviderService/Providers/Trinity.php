@@ -5,6 +5,7 @@ namespace App\Services\ProviderService\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,14 +17,26 @@ class Trinity implements ProviderInterface
 
     protected $name = 'Trinity';
     protected $service_key = 'trinity';
-    protected $field_name = 'apy_key';
+    protected $field_name = 'api_key';
+
+    /** @var Company */
+    protected $company = null;
+
+    protected $api_key = null;
+
+    public function __construct()
+    {
+        $this->company = Auth::user()->company;
+
+        $this->api_key = $this->company->getServiceFieldValue($this->service_key, $this->field_name);
+    }
 
     public function searchBrandsCount(string $article): array
     {
-        $params = array(
+        $params = [
             'searchCode' => $article,
             'online' => true ? 'allow' : 'disallow'
-        );
+        ];
 
         $url = $this->host . 'search/byCode';
 
@@ -44,10 +57,7 @@ class Trinity implements ProviderInterface
 
     public function isActivated(): bool
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
-        return (bool)$company->isServiceProviderActive($this->service_key);
+        return (bool)$this->company->isServiceProviderActive($this->service_key);
     }
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
@@ -93,35 +103,28 @@ class Trinity implements ProviderInterface
         return $this->query($url, $this->createParams($params), $asArray);
     }
 
-    protected function createParams(array $params = array())
+    protected function createParams(array $params = [])
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
+        $params['clientCode'] = $this->api_key;
 
-        $data = new stdClass();
-        $data->clientCode = $company->getServiceFieldValue($this->service_key, $this->field_name);
-
-        foreach ($params as $name => $param) {
-            $data->$name = $param;
-        }
         return stream_context_create([
             'http' => [
                 'header' => "Content-Type:application/json\r\n\User-Agent:Trinity/1.0",
                 'method' => "POST",
-                'content' => json_encode($data)
+                'content' => json_encode($params)
             ]
         ]);
     }
 
     protected function query($url, $context, $asArray = true)
     {
-        $this->error = '';
-        $data = @file_get_contents($url, false, $context);
-
-        if (!$data) {
-            $this->error = (!$error = error_get_last()) ? 'Ошибка при получении данных' : $error['message'];
-            return array();
+        try {
+            $data = file_get_contents($url, false, $context);
         }
+        catch (\Exception $exception) {
+            throw_error('Trinity: Ошибка авторизации ключа.');
+        }
+
         return json_decode($data, $asArray);
     }
 
@@ -132,6 +135,12 @@ class Trinity implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-        // TODO: Implement checkConnect() method.
+        if(!isset($fields['api_key'])) return false;
+
+        $this->api_key = $fields['api_key'];
+
+        $this->searchBrandsCount('k1279');
+
+        return true;
     }
 }

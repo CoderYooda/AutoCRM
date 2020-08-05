@@ -471,7 +471,24 @@ li.active .header-tab{
 .tr_result > span{
     display: block;
 }
-.dialog .btn_close, .modal_header .btn_close {
+
+.modal-header .btn_close {
+    float: right;
+    background: url(/images/icons/cross.png) no-repeat center;
+    opacity: .75;
+    color: transparent;
+    filter: alpha(opacity=75);
+    cursor: pointer;
+    outline: none;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    right: 0;
+    padding: 0;
+    border: 0;
+}
+
+.dialog .btn_close {
     float: right;
     background: url(/images/icons/cross.png) no-repeat 13px 15px;
     opacity: .75;
@@ -523,13 +540,11 @@ li.active .header-tab{
 }
 
 .modal-header {
-    //background-color: #F7F7F7;
     padding: 10px 15px;
     display: flex;
-    -webkit-box-align: start;
-    align-items: flex-start;
     -webkit-box-pack: justify;
     border-radius: 3px;
+    align-items: center;
 }
 .modal-alt-header{
     border-right: 1px solid #C4C4C4;
@@ -2154,3 +2169,7 @@ input:-moz-placeholder { /* Firefox 18- */
 //    background-position-y: -18px;
 //    margin: 0 auto;
 //}
+
+.notification {
+    z-index: 9999999;
+}

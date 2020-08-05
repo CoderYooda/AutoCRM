@@ -147,15 +147,18 @@ class ArmTek implements ProviderInterface
     {
         if(!isset($fields['login']) || !isset($fields['password'])) return false;
 
-        $result = @file_get_contents($this->url . '/ws_user/getUserVkorgList?format=json', null, stream_context_create([
-            'http' => [
-                'method' => 'GET',
-                'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode($fields['login'] . ":" . $fields['password']) . "\r\n",
-            ],
-        ]));
-
-        if($result == []) return false;
+        try {
+            $result = file_get_contents($this->url . '/ws_user/getUserVkorgList?format=json', null, stream_context_create([
+                'http' => [
+                    'method' => 'GET',
+                    'header' => 'Content-Type: application/json' . "\r\n"
+                        . 'Authorization: Basic ' . base64_encode($fields['login'] . ":" . $fields['password']) . "\r\n",
+                ],
+            ]));
+        }
+        catch (\Exception $exception) {
+            throw_error('ArmTek: Ошибка авторизации логина или пароля.');
+        }
 
         $result = (array)json_decode($result);
 
