@@ -107,11 +107,11 @@ class AvtoImport implements ProviderInterface
 
         $result = (array)json_decode($result);
 
-        if(array_key_exists('errorCode', $result)) {
+        if(array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
             throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
         }
 
-            curl_close($handle);
+        curl_close($handle);
 
         return $result;
     }

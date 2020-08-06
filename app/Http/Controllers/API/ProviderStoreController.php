@@ -12,6 +12,8 @@ class ProviderStoreController extends Controller
 {
     public function tableData(Request $request, Providers $providers)
     {
+        $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
+
         $counts = [];
         $manufacturers = [];
         $errors = [];
@@ -24,9 +26,10 @@ class ProviderStoreController extends Controller
                 $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
             }
             catch (\Exception $exception) {
+
                 $counts[$service_key] = [];
 
-                $errors[$service_key] = 'Ошибка получения ответа, проверьте настройки.';
+                $errors[$service_key] = 'Ошибка получения ответа, проверьте соединение интернета и настройки.';
             }
 
             if ($service_key == $request->selected_service) {

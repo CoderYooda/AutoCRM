@@ -14,12 +14,7 @@
         <div class="flex-2" style="margin-right: 50px; position:relative;">
             <div>
                 <div><b>Подключение</b></div>
-                <div class="pt-5" style="color: black">Необходимо пройти регистрацию у поставщика и получить от него API-ключ для доступа в систему. Полученный ключ ввести в поле соответствующего поставщика в системе #BBcrm</div>
-            </div>
-
-            <div class="mt-15">
-                <div><b>Как работает система</b></div>
-                <div class="pt-5" style="color: black">При входе в систему … вы можете смотреть актуальные цены на автозапчасти, количество на складе поставщика и сроки поставки при заказе товара.</div>
+                <div class="pt-5" style="color: black">{!! $service->desc !!}</div>
             </div>
 
             <div style="position: absolute; bottom: 0;">

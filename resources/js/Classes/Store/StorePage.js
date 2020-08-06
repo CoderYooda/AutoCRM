@@ -1,5 +1,5 @@
 import {Contextual, ContextualItem} from "../Contentual";
-import Tabs from "../../Tools/Tabs";
+import Sortable from "sortablejs";
 
 class storePage{
 
@@ -843,6 +843,33 @@ class storePage{
 
         let focused = document.querySelector('#search');
         if(focused) focused.focus();
+
+        let available_list = document.querySelector('.provider_tabs');
+        let sortable = new Sortable(available_list, {
+            items: 'button',
+            // Element dragging ended
+            dragClass: "sortable-ghost",
+            onEnd: evt => {
+
+                let new_index = evt.newIndex;
+                let old_index = evt.oldIndex;
+
+                let dragged_element = evt.item;
+                let selected_element = document.querySelector('[data-sort="' + old_index + '"]');
+
+                dragged_element.dataset.sort = new_index;
+
+                let button_elements = available_list.querySelectorAll('button');
+
+                button_elements.forEach((element, index) => {
+                    if(element.dataset.sort != index) {
+                         dd(element.innerText, 'saved');
+                    }
+
+                    element.dataset.sort = index;
+                });
+            },
+        });
     }
 
     prepareParams(){

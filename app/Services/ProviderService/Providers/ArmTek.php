@@ -18,19 +18,26 @@ class ArmTek implements ProviderInterface
 {
     protected $url = "http://ws.armtek.ru/api";
 
-    //http://ws.armtek.ru/api/ws_user/getUserVkorgList?format=json
-    //http://ws.armtek.ru/api/ws_search/assortment_search?format=json
-
     protected $name = 'ArmTek';
     protected $service_key = 'armtek';
 
+    /** @var Company */
+    protected $company = null;
+    protected $login = null;
+    protected $password = null;
+
+    public function __construct()
+    {
+        $this->company = Auth::user()->company;
+
+        $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
+        $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
+    }
+
     public function searchBrandsCount(string $article): array
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
         $params = [
-            'VKORG' => $company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
             'PIN' => $article,
         ];
 
@@ -51,19 +58,13 @@ class ArmTek implements ProviderInterface
 
     public function isActivated(): bool
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
-        return (bool)$company->isServiceProviderActive($this->service_key);
+        return (bool)$this->company->isServiceProviderActive($this->service_key);
     }
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
         $params = [
-            'VKORG' => $company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
             'BRAND' => $brand,
             'KUNNR_RG' => $this->getApiKunnr(),
             'PIN' => $article
@@ -107,35 +108,26 @@ class ArmTek implements ProviderInterface
 
     private function query($path, $params, $method): array
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
-        $user = $company->getServiceFieldValue($this->service_key, 'login');
-        $password = $company->getServiceFieldValue($this->service_key, 'password');
-
         $params = json_encode($params);
 
-        $result = @file_get_contents($this->url . $path . '?format=json', null, stream_context_create(array(
-            'http' => array(
+        $result = @file_get_contents($this->url . $path . '?format=json', null, stream_context_create([
+            'http' => [
                 'method' => $method,
                 'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode($user . ":" . $password) . "\r\n",
+                    . 'Authorization: Basic '. base64_encode($this->login . ":" . $this->password) . "\r\n",
                 'content' => $params
-            ),
-        )));
+            ],
+        ]));
 
-        $result = (array)json_decode($result);
+        $result = (array)json_decode($result, true);
 
         return $result;
     }
 
     private function getApiKunnr()
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
         $params = [
-            'VKORG' => $company->getServiceFieldValue($this->service_key, 'sales_organization')
+            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization')
         ];
 
         $result = $this->query('/ws_user/getUserInfo', $params, 'POST');

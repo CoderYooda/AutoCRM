@@ -2173,3 +2173,12 @@ input:-moz-placeholder { /* Firefox 18- */
 .notification {
     z-index: 9999999;
 }
+
+.sortable-ghost {
+    border: 1px solid #1F98E9 !important;
+    background: none !important;
+
+    .badge-pill {
+        display: none;
+    }
+}

@@ -32,7 +32,7 @@ class Company extends Model
 
     public function serviceproviders()
     {
-        return $this->belongsToMany(Service::class, 'service_company', 'company_id', 'service_id')->withPivot('enabled');
+        return $this->belongsToMany(Service::class, 'service_company', 'company_id', 'service_id')->withPivot('enabled', 'sort');
     }
 
     public function getActiveServicesByCategory($category_id = 0)
@@ -42,6 +42,7 @@ class Company extends Model
             ->whereHas('serviceproviders', function (Builder $query) {
                 $query->where('enabled', 1);
             })
+            ->orderBy('sort')
             ->get();
     }
 
