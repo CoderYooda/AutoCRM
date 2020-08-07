@@ -15,13 +15,13 @@
                     </div>
                 </div>
 
-                <div class="w-100 p-10 pt-0 provider_tabs">
+                <div class="w-100 mb-10 pl-10 provider_tabs">
 
                     @forelse($services as $service)
 
 {{--                        @continue(!$company->isServiceProviderActive($service->key))--}}
 
-                        <button data-sort="{{ $service->pivot->sort }}" onclick="store.showProvider(this, '{{ $service->key }}')" class="button relative primary mr-5 btn_with_badge @if($loop->first) active @endif">
+                        <button data-id="{{ $service->id }}" data-sort="{{ $service->pivot->sort }}" onclick="store.showProvider(this, '{{ $service->key }}')" class="button mr-5 relative primary btn_with_badge @if($loop->first) active @endif">
                             {{ $service->name }} <span id="service_count_{{ $service->key }}" class="badge-pill">0</span>
                         </button>
 

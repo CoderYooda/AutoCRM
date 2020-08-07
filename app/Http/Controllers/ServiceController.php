@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Services\SaveRequest;
 use App\Http\Requests\Services\ToggleRequest;
+use App\Http\Requests\Services\UpdateSortRequest;
 use App\Models\Company;
 use App\Models\Service;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -85,5 +86,23 @@ class ServiceController extends Controller
             'type' => 'success',
             'service' => $service
         ], 200);
+    }
+
+    public function updateSort(UpdateSortRequest $request)
+    {
+        /** @var Company $company */
+        $company = Auth::user()->company;
+
+        foreach ($request->sorts as $sort)
+        {
+            $company->serviceproviders()->updateExistingPivot($sort['id'], [
+                 'sort' => $sort['sort']
+            ]);
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Сортировка успешно сохранена.'
+        ]);
     }
 }

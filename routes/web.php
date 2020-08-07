@@ -263,6 +263,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
     Route::post('/services/{service}/save', 'ServiceController@save')->name('ServiceSave');
     Route::post('/services/{service}/toggle', 'ServiceController@toggle')->name('ServiceToggle');
+    Route::post('/services/updateSort', 'ServiceController@updateSort')->name('ServiceUpdateSort');
 
     #Телефоны
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');

@@ -76,13 +76,13 @@ class ArmTek implements ProviderInterface
 
         foreach ($items['RESP'] as $item) {
 
-            $delivery_timestamp = Carbon::parse($item->DLVDT);
+            $delivery_timestamp = Carbon::parse($item['DLVDT']);
 
             $results[] = [
-                'name' => $item->RVALUE,
-                'code' => $item->ARTID,
+                'name' => $item['RVALUE'],
+                'code' => $item['ARTID'],
                 'delivery' => Carbon::now()->diffInDays($delivery_timestamp),
-                'price' => $item->PRICE,
+                'price' => $item['PRICE'],
             ];
         }
 
@@ -98,7 +98,8 @@ class ArmTek implements ProviderInterface
 
             if(isset($result['RESP'])) {
                 foreach ($result['RESP'] as $program) {
-                    $fields[$program->PROGRAM_NAME] = $program->VKORG;
+
+                    $fields[$program['PROGRAM_NAME']] = $program['VKORG'];
                 }
             }
         }
@@ -132,7 +133,7 @@ class ArmTek implements ProviderInterface
 
         $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
 
-        return $result['RESP']->STRUCTURE->RG_TAB[0]->KUNNR;
+        return $result['RESP']['STRUCTURE']['RG_TAB'][0]['KUNNR'];
     }
 
     public function checkConnect(array $fields): bool
