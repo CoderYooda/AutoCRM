@@ -322,6 +322,8 @@ class shipmentDialog extends Modal{
             this.current_dialog.querySelector('input[name="partner_id"]').value = '';
             this.current_dialog.querySelector('button[name="partner_id"]').innerText = 'Нажмите для выбора';
         }
+
+        element.blur(); //fix barcode
     }
 
     getPriceFromServer(id, input) {

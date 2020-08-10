@@ -613,7 +613,8 @@ class storePage{
                         document.getElementById('breadcrumbs-nav').innerHTML = response.info;
                     }
 
-                    if(manufacturers.length) {
+                    if(Object.keys(manufacturers).length) {
+
                         this.manufacture_id = null;
 
                         let store_list = document.getElementById('store-list');
@@ -621,6 +622,8 @@ class storePage{
                         store_list.innerHTML = '';
 
                         Object.keys(manufacturers).forEach(key => {
+
+                            console.log(manufacturers[key]);
 
                             let html = '<div onclick="store.selectManufacture(this)" class="store-list-item pointer" id="manufacture_' + manufacturers[key].m_id + '">' + manufacturers[key].m_name + '</div>';
 
@@ -738,11 +741,6 @@ class storePage{
         if(object.search && object.search !== 'null' || object.search !== null) {
 
             let search_string = object.search.toString();
-
-            if(search_string.length === 13) {
-                data.except_analogues = 1;
-            }
-
             data.search = search_string;
         }
 
@@ -844,37 +842,39 @@ class storePage{
         let focused = document.querySelector('#search');
         if(focused) focused.focus();
 
-        let available_list = document.querySelector('.provider_tabs');
-        let sortable = new Sortable(available_list, {
-            items: 'button',
-            dragClass: "sortable-ghost",
-            onEnd: evt => {
+        if(this.active_tab == 'provider_stores') {
+            let available_list = document.querySelector('.provider_tabs');
+            let sortable = new Sortable(available_list, {
+                items: 'button',
+                dragClass: "sortable-ghost",
+                onEnd: evt => {
 
-                let sorts = {};
+                    let sorts = {};
 
-                let button_elements = available_list.querySelectorAll('button');
+                    let button_elements = available_list.querySelectorAll('button');
 
-                button_elements.forEach((element, index) => {
-                    if(element.dataset.sort != index) {
-                        sorts[index] = {
-                            id: element.dataset.id,
-                            sort: index
-                        };
-                        element.dataset.sort = index;
-                    }
-                });
+                    button_elements.forEach((element, index) => {
+                        if (element.dataset.sort != index) {
+                            sorts[index] = {
+                                id: element.dataset.id,
+                                sort: index
+                            };
+                            element.dataset.sort = index;
+                        }
+                    });
 
-                axios.post('/services/updateSort', {
-                    sorts: sorts
-                })
-                .then(response => {
-                    // console.log(response);
-                })
-                .catch(response => {
-                    console.log(response);
-                });
-            },
-        });
+                    axios.post('/services/updateSort', {
+                        sorts: sorts
+                    })
+                    .then(response => {
+                        // console.log(response);
+                    })
+                    .catch(response => {
+                        console.log(response);
+                    });
+                },
+            });
+        }
     }
 
     prepareParams(){

@@ -1,8 +1,10 @@
 <div class="tab-pane p-3 active" id="{{$class}}_tab_base">
 
-    <div id="provider_search_container" class="provider_search_container fade" data-simplebar style="max-height: 400px;">
+    <div id="provider_search_container" class="provider_search_container fade" data-simplebar style="height: 300px;">
         <div class="cont"></div>
+        <div class="out_of_search"></div>
     </div>
+
     <div class="form-group">
         <label>Артикул <i id="trin_preload" class="fa fa-spinner fa-spin hide"></i></label>
         <input  type="text" name="article" id="product_dialog_focused" onclick="{{ $class }}.selectArticle(this)"
@@ -21,7 +23,7 @@
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
             <button onclick="{{ $class }}.openSelectCategoryDialog(
-                @if(isset($product)){{ $product->category()->first()->id }}
+                @if(isset($product)){{ $product->category->id }}
                 @elseif(isset($category)){{ $category->id }}
                 @else 2 @endif
                 )" type="button" name="category_id" class="category_select form-control text-left button_select">

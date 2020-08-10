@@ -74,9 +74,7 @@ class AnalogController extends Controller
             ];
         }
 
-        $manufacturers = collect($manufacturers)->sortBy('m_name')->toArray();
-
-//        dd($manufacturers);
+        $manufacturers = collect($manufacturers)->sortBy('m_name')->values();
 
         return $manufacturers;
     }

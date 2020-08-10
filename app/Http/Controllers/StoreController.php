@@ -119,21 +119,20 @@ class StoreController extends Controller
         $analog_articles = [];
         $manufacture_selected = null;
 
-        if(!$request->has('except_analogues')) { //Если аналоги не исключены из поиска
+        $manufactures = AnalogController::getManufacturersByArticle($request->search);
 
-            $manufactures = AnalogController::getManufacturersByArticle($request->search);
+        if ($request->manufacture_id) {
+            $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
+        }
 
-            if ($request->manufacture_id) {
-                $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
-            }
+        #Список артикулов аналогов
 
-            #Список артикулов аналогов
+        foreach ($analogues as $analogue) {
+            $analog_articles[$analogue['m_name']] = $analogue['nsa'];
+        }
 
-            foreach ($analogues as $analogue) {
-                $analog_articles[$analogue['m_name']] = $analogue['nsa'];
-            }
-
-            #Узнаем название производителя
+        #Узнаем название производителя
+        if(count($manufactures)) {
             $manufacture_selected = collect($manufactures)->where('m_id', $request->manufacture_id)->first()['m_name'];
         }
 
@@ -142,8 +141,6 @@ class StoreController extends Controller
 
         #Получаем список аналогов
         $analog_products = ProductController::searchByArticleAndBrand($analog_articles);
-
-//        dd($analog_products);
 
         $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
 
@@ -156,7 +153,9 @@ class StoreController extends Controller
             $products[$key]['supplier_name'] = $product->supplier->name;
         }
 
-        if(!$request->has('except_analogues')) {
+        $is_barcode = $products->where('barcode', $request->search)->count() && $products->where('article', '!=', $request->search);
+
+        if(!$is_barcode) {
             $analog_pluck = $analog_products->pluck('article');
             $info .= 'Список доступных аналогов на складе: ' . (count($analog_pluck) ? trim($analog_pluck, '[]') : 'Нет');
         }

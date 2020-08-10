@@ -177,10 +177,10 @@ class partnerDialog extends Modal{
         )
     }
 
-    addPhoneMask(){
+    addPhoneMask() {
         var elements = this.current_dialog.querySelectorAll('.phone_input');
-        [].forEach.call(elements, function(element){
-            var dispatchMask = window.IMask(element, {
+        elements.forEach(element => {
+            window.IMask(element, {
                     mask: [
                         {
                             mask: '+{7}(000)000-00-00',

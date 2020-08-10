@@ -453,12 +453,15 @@ li.active .header-tab{
     float: left;
     margin-top: 10px;
     margin-bottom: 10px;
-    border-radius: 0px 6px 6px 0px;
+    border-radius: 0 6px 6px 0;
     margin-left: 2px;
+
+    .out_of_search {
+        margin-top: 90px;
+    }
 }
 .tr_result{
     margin: 10px;
-    margin-bottom: 10px;
     color: #fff;
     font-size: 13px;
     border-bottom: 1px solid #fff;
