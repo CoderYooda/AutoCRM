@@ -239,20 +239,20 @@ class storePage{
         if(object.active_tab === 'store') {
             object.contextDop = 'product';
             object.parametr = 'product';
-            var priceFormatter = function(cell, formatterParams, onRendered){
-                onRendered(function(){
-
-                    if(isNaN(cell.getValue())){
-                        cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ cell.getValue() +'</span>';
-                    } else {
-                        var formatter = new Intl.NumberFormat('ru-RU', {
-                            style: 'currency',
-                            currency: 'RUB',
-                        });
-                        cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
-                    }
-                });
-            };
+            // var priceFormatter = function(cell, formatterParams, onRendered){
+            //     onRendered(function(){
+            //
+            //         if(isNaN(cell.getValue())){
+            //             cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ cell.getValue() +'</span>';
+            //         } else {
+            //             var formatter = new Intl.NumberFormat('ru-RU', {
+            //                 style: 'currency',
+            //                 currency: 'RUB',
+            //             });
+            //             cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+            //         }
+            //     });
+            // };
 
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
@@ -601,7 +601,6 @@ class storePage{
                 document.body.classList.add('loading');
             },
             ajaxResponse: (url, params, response) => {
-
                 window.isXHRloading = false;
                 document.body.classList.remove('loading');
 
@@ -643,6 +642,14 @@ class storePage{
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
+            renderComplete: () => {
+
+                let title_elements = document.querySelectorAll('.tabulator-cell');
+
+                title_elements.forEach(element => {
+                    element.title = element.innerText;
+                });
+            },
             rowDblClick:function(e, row){
                 openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
             },
