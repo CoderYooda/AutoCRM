@@ -175,24 +175,24 @@ class settingsPage{
 
         axios({
             url: '/api/inn/' + element.value,
-            method: 'get'
+            method: 'GET'
         })
-            .then(response => {
+        .then(response => {
 
-                let data = response.data;
+            let data = response.data;
 
-                let name_element = document.querySelector('.active input[name="name"]');
-                if(name_element) name_element.value = data.name;
+            let name_element = document.querySelector('.active input[name="name"]');
+            if(name_element && data.name) name_element.value = data.name;
 
-                let opf_element = document.querySelector('.active input[name="opf"]');
-                if(opf_element) opf_element.value = data.opf.short;
+            let opf_element = document.querySelector('.active input[name="opf"]');
+            if(opf_element && data.opf.short) opf_element.value = data.opf.short;
 
-                let ogrn_element = document.querySelector('.active input[name="ogrn"]');
-                if(ogrn_element) ogrn_element.value = data.ogrn;
+            let ogrn_element = document.querySelector('.active input[name="ogrn"]');
+            if(ogrn_element && data.ogrn) ogrn_element.value = data.ogrn;
 
-                let kpp_element = document.querySelector('.active input[name="kpp"]');
-                if(kpp_element && data.kpp) kpp_element.value = data.kpp;
-            });
+            let kpp_element = document.querySelector('.active input[name="kpp"]');
+            if(kpp_element && data.kpp) kpp_element.value = data.kpp;
+        });
     }
 
 
@@ -271,6 +271,13 @@ class settingsPage{
             this.initServiceProviderModal();
 
             new Tabs('settings_services_tabs');
+        }
+        else if(this.active_tab === 'requisites') {
+            let button_element = document.querySelector('#ajax-tab-content button[class~="active"]');
+
+            setTimeout(() => {
+                button_element.click();
+            }, 300)
         }
     }
 
@@ -427,11 +434,9 @@ class settingsPage{
             url: '/api/bik/' + element.value,
         }).then(response => {
 
-            console.log(response);
-
             let data = response.data;
 
-            if(!Object.keys(data).length) return ;
+            if(Object.keys(data).length < 2) return ;
 
             document.querySelector('.active input[name=cs]').value = data.ks;
             document.querySelector('.active input[name=bank]').value = data.name.split('&quot;').join('"');

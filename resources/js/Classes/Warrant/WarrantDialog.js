@@ -26,6 +26,15 @@ class warrantDialog extends Modal{
 
         let ostatok_element = this.current_dialog.querySelector('[name="ostatok"]');
         if(ostatok_element) this.ostatok = Number.parseInt(ostatok_element.value);
+
+        let summ_input = this.current_dialog.querySelector('input[name="summ"]');
+
+        IMask(summ_input, {
+            mask: Number,
+            min: 0,
+            max: 100000000,
+            thousandsSeparator: ''
+        });
     }
 
     save(elem){

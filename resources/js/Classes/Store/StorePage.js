@@ -643,7 +643,6 @@ class storePage{
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
             renderComplete: () => {
-
                 let title_elements = document.querySelectorAll('.tabulator-cell');
 
                 title_elements.forEach(element => {

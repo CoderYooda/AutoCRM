@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Shipment;
+use App\Models\Warrant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,11 @@ class DocumentsController extends Controller
 
         $view = view($names[$request->doc], compact('request'));
 
-        if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
+        if($request->doc == 'out-warrant') {
+            $view->with('company', Auth::user()->company)
+                ->with('warrant', Warrant::find($request->id));
+        }
+        else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 
             $selected_products = json_decode($request->data);
 

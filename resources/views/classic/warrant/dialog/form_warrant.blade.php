@@ -20,7 +20,8 @@
             <div class="titlebar">Новый расходный ордер</div>
         @endif
     @endif
-        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
     <form action="{{ route('StoreWarrant') }}" method="POST">
@@ -181,7 +182,7 @@
                            class="form-control" placeholder="Основание">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="height: 60px;">
                 <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
             </div>
         </div>

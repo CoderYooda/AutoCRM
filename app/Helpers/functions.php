@@ -66,7 +66,15 @@ if(!function_exists('convertPHPSizeToBytes')) {
 }
 
 if(!function_exists('num2str')) {
-    function num2str($num)
+    /**
+     * $type 0 - с копейками
+     * $type 1 - без копеек
+     * $type 2 - только копейки
+     * @param $num
+     * @param int $type
+     * @return string
+     */
+    function num2str($num, $type = 0)
     {
         $nul = 'ноль';
         $ten = array(
@@ -100,8 +108,8 @@ if(!function_exists('num2str')) {
                 if ($uk > 1) $out[] = morph($v, $unit[$uk][0], $unit[$uk][1], $unit[$uk][2]);
             } //foreach
         } else $out[] = $nul;
-        $out[] = morph(intval($rub), $unit[1][0], $unit[1][1], $unit[1][2]); // rub
-        $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
+        if($type != 2) $out[] = morph(intval($rub), $unit[1][0], $unit[1][1], $unit[1][2]); // rub
+        if($type == 2) $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
         return trim(preg_replace('/ {2,}/', ' ', join(' ', $out)));
     }
 }
