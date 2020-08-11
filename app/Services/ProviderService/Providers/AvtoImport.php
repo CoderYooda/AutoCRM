@@ -5,9 +5,7 @@ namespace App\Services\ProviderService\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
 
 class AvtoImport implements ProviderInterface
 {
@@ -24,6 +22,7 @@ class AvtoImport implements ProviderInterface
 
     public function __construct()
     {
+        /** @var Company company */
         $this->company = Auth::user()->company;
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');

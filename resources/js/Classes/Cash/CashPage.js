@@ -12,7 +12,7 @@ class cashPage{
         this.dates_range = null;
         this.date_start = 'null';
         this.date_end = 'null';
-        this.isIncoming = 'null';
+        this.isIncoming = null;
         this.dates = null;
         this.partner = [];
         this.any = [];
@@ -473,9 +473,6 @@ class cashPage{
         if(this.page === null || this.page === 'null'){
             this.page = 1;
         }
-        if(this.isIncoming === null || this.isIncoming === 'null'){
-            this.isIncoming = '';
-        }
         if(this.date_start === null || this.date_start === 'null'){
             this.date_start = '';
         }
@@ -499,9 +496,8 @@ class cashPage{
             url += '&page=';
             url += this.page;
         }
-        if(this.isIncoming !== null || this.isIncoming !== 'null'){
-            url += '&isIncoming=';
-            url += this.isIncoming;
+        if(this.isIncoming !== null){
+            url += '&isIncoming=' + this.isIncoming;
         }
         if(this.date_start !== null || this.date_start !== 'null' || this.date_start !== ''){
             url += '&date_start=';

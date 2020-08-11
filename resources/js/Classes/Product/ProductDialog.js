@@ -41,8 +41,8 @@ class ProductDialog extends Modal {
 
     save(elem) {
         if (window.isXHRloading) return;
-        window.axform.send(elem, (e) => {
 
+        window.axform.send(elem, (e) => {
             if (e.status === 200) this.finitaLaComedia(true);
         });
     }
@@ -50,13 +50,12 @@ class ProductDialog extends Modal {
     fapiSearch() {
 
         document.getElementById('trin_preload').classList.remove('hide');
+
         window.axios({
             method: 'get',
             url: '/api/manufacturers/' + this.article_input.value,
         }).then(response => {
             let data = response.data;
-
-            console.log(data);
 
             this.provider_search_container.classList.add('show');
 
@@ -77,7 +76,7 @@ class ProductDialog extends Modal {
 
             this.provider_search_cont.innerHTML = html;
 
-            let search_element = this.current_dialog.querySelector('.out_of_search');
+            let search_element = this.current_dialog.querySelector('.empty_search');
 
             if(html.length) {
                 search_element.classList.add('d-none');

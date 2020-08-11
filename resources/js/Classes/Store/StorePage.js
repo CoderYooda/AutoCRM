@@ -499,7 +499,9 @@ class storePage{
         this.searchProviderStores();
     }
 
-    showManufactureStores(element, manufacturer) {
+    showManufactureStores(element, manufacturer, sort = null) {
+
+        let is_desc = true;
 
         let target_element = document.getElementById('brand_context_' + manufacturer);
 
@@ -507,7 +509,42 @@ class storePage{
 
         let table_element = target_element.querySelector('.preloader-block');
 
-        if(element.classList.contains('fa-angle-down')) {
+        togglePreloader(table_element, true);
+
+        let sort_elements = document.querySelectorAll('.sort_arrow');
+
+        sort_elements.forEach(element => {
+
+            if(element.classList.contains(sort)) {
+
+                if(element.classList.contains('active')) {
+                    if(element.classList.contains('up')) {
+                        element.classList.remove('up');
+                        element.classList.add('down');
+
+                        is_desc = true;
+                    }
+                    else {
+                        element.classList.add('up');
+                        element.classList.remove('down');
+
+                        is_desc = false;
+                    }
+                }
+                else {
+                    element.classList.add('active');
+                }
+            }
+            else {
+                element.classList.remove('active');
+                element.classList.remove('up');
+                element.classList.remove('down');
+
+                element.classList.add('down');
+            }
+        });
+
+        if(element.classList.contains('fa-angle-down') || sort != null) {
 
             let service_input = document.querySelector('[name="service_key"]');
 
@@ -516,7 +553,9 @@ class storePage{
             axios.post('/provider_stores/stores', {
                 manufacturer: manufacturer,
                 article: this.search,
-                selected_service: service_input.value
+                selected_service: service_input.value,
+                sort: sort,
+                is_desc: is_desc
             })
             .then(response => {
 
@@ -529,7 +568,7 @@ class storePage{
                 console.log(response);
             })
             .finally(()=> {
-                table_element.classList.remove('active');
+                togglePreloader(table_element, false);
             });
         }
         else {
@@ -538,7 +577,6 @@ class storePage{
             element.classList.add('fa-angle-down');
 
             target_element.classList.add('d-none');
-            table_element.classList.add('active');
 
             //Очищаем внутренний список
             target_element.querySelector('tbody').innerHTML = '';
@@ -808,6 +846,10 @@ class storePage{
 
         let focused = document.querySelector('#search');
         if(focused) focused.focus();
+
+        if(this.active_tab == 'provider_stores') {
+            this.searchProviderStores();
+        }
     }
 
     load(){
@@ -901,6 +943,15 @@ class storePage{
         if(this.date_end === null || this.date_end === 'null'){
             this.date_end = '';
         }
+    }
+
+    sortBy(element, type) {
+
+        let brand_element = document.querySelector('.fa-angle-up').parentElement;
+
+        let brand_name = brand_element.dataset.manufacturer;
+
+        this.showManufactureStores(brand_element, brand_name, type);
     }
 
     checkActive(){

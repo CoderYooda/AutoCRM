@@ -67,9 +67,17 @@ class Trinity implements ProviderInterface
         $results = [];
 
         foreach ($items['data'] as $store) {
+
+            preg_match_all('/\d+/', $store['deliverydays'], $days)[0];
+
+            $days_min = $days[0];
+            $days_max = $days[1] ?? 9999;
+
             $results[] = [
                 'name' => $store['stock'],
                 'code' => $store['code'],
+                'days_min' => $days_min,
+                'days_max' => $days_max,
                 'delivery' => $store['deliverydays'],
                 'price' => $store['price'],
             ];

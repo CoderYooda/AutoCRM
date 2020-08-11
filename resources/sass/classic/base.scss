@@ -107,8 +107,46 @@ h2{
 .storage_store:not(:first-child) {
     border-left: none;
 }
-/* Dropdown */
 
+/* Sorters */
+
+.thead_sortable{
+    position: relative;
+    cursor: pointer;
+    color: #2D76A8;
+    &:hover{
+        color: #245a7f;
+    }
+}
+
+.sort_arrow{
+    background: transparent;
+    display: inline-block;
+    width: 12px;
+    height: 6px;
+    position: absolute;
+    margin-left: 10px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    top: 17px;
+    &.down{
+        border-bottom: none;
+        border-top: 6px solid #bbb;
+
+        &.active {
+            border-top: 6px solid #5181b8;
+        }
+    }
+    &.up{
+        border-top: none;
+        border-bottom: 6px solid #bbb;
+
+        &.active{
+            border-bottom: 6px solid #5181b8;
+        }
+    }
+}
+/* Dropdown */
 .dropdown{
     position: relative;
 }

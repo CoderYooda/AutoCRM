@@ -1,8 +1,5 @@
-
-@php  @endphp
 <div>
-    <style type="text/css">
-        @page {
+    <style type="text/css">@page {
             margin: 0cm;
         }
 
@@ -313,13 +310,8 @@
             PADDING-TOP: 0px;
             PADDING-LEFT: 2px;
             PADDING-RIGHT: 0px
-        }
-    </style>
-    <p>
-        <br>
-        <br>
-        <br>
-    </p>
+        }</style>
+    <p><br><br><br></p>
     <hr>
     <p></p>
     <p></p>
@@ -339,7 +331,8 @@
         <tbody>
         <tr class="R0">
             <td class="R0C9" colspan="10">
-                <div style="OVERFLOW: hidden; HEIGHT: 28px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Унифицированная&nbsp;форма&nbsp;КО-2<br>Утверждена&nbsp;постановлением&nbsp;Госкомстата&nbsp;России&nbsp;от&nbsp;18.08.98&nbsp;№&nbsp;88</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 28px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Унифицированная&nbsp;форма&nbsp;КО-2<br>Утверждена&nbsp;постановлением&nbsp;Госкомстата&nbsp;России&nbsp;от&nbsp;18.08.98&nbsp;№&nbsp;88</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 28px; WIDTH: 100%"></div>
@@ -366,10 +359,12 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%">{{ $company->official_name }}</div>
             </td>
             <td class="R2C8">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Форма&nbsp;по&nbsp;ОКУД</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Форма&nbsp;по&nbsp;ОКУД</span>
+                </div>
             </td>
             <td class="R2C9">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">0310002</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span
+                        style="WHITE-SPACE: nowrap">0310002</span></div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"></div>
@@ -380,10 +375,12 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R3C1" colspan="7">
-                <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">организация</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span
+                        style="WHITE-SPACE: nowrap">организация</span></div>
             </td>
             <td class="R3C8" rowspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 26px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">по&nbsp;ОКПО</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 26px; WIDTH: 100%"><span
+                        style="WHITE-SPACE: nowrap">по&nbsp;ОКПО</span></div>
             </td>
             <td class="R3C9" rowspan="2">
                 <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span></span></div>
@@ -408,7 +405,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R5C1" colspan="7">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">структурное&nbsp;подразделение</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">структурное&nbsp;подразделение</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
@@ -475,10 +473,12 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R7C6" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Номер&nbsp;документа</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Номер&nbsp;документа</span>
+                </div>
             </td>
             <td class="R7C8" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Дата&nbsp;документа</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Дата&nbsp;документа</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"></div>
@@ -486,13 +486,16 @@
         </tr>
         <tr class="R2">
             <td class="R8C5" colspan="6">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">РАСХОДНЫЙ&nbsp;КАССОВЫЙ&nbsp;ОРДЕР</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">РАСХОДНЫЙ&nbsp;КАССОВЫЙ&nbsp;ОРДЕР</span>
+                </div>
             </td>
             <td class="R8C6" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->id }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->id }}</span>
+                </div>
             </td>
             <td class="R8C8" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->created_at }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->created_at }}</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"></div>
@@ -540,8 +543,7 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 71px; WIDTH: 100%">Кредит</div>
             </td>
             <td class="R10C6" rowspan="2" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 71px; WIDTH: 100%">Сумма,
-                    <br>руб.коп.</div>
+                <div style="OVERFLOW: hidden; HEIGHT: 71px; WIDTH: 100%">Сумма,<br>руб.коп.</div>
             </td>
             <td class="R10C5" rowspan="2">
                 <div style="OVERFLOW: hidden; HEIGHT: 71px; WIDTH: 100%">Код целевого назначения</div>
@@ -574,10 +576,12 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R12C2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">50.01</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">50.01</span>
+                </div>
             </td>
             <td class="R12C2" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ number_format($warrant->summ, 2, ',', ' ') }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ correct_price($warrant->summ) }}</span>
+                </div>
             </td>
             <td class="R12C8">
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
@@ -594,10 +598,12 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span></span></div>
             </td>
             <td>
-                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Выдать</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Выдать</span>
+                </div>
             </td>
             <td class="R13C2" colspan="8">
-                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->partner->official_name }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->partner->official_name }}</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"></div>
@@ -611,7 +617,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R3C1" colspan="8">
-                <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">фамилия,&nbsp;имя,&nbsp;отчество</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">фамилия,&nbsp;имя,&nbsp;отчество</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"></div>
@@ -628,10 +635,12 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span></span></div>
             </td>
             <td>
-                <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Сумма</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Сумма</span>
+                </div>
             </td>
             <td class="R16C2" colspan="8">
-                <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ num2str($warrant->summ) }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ num2str($warrant->summ) }}</span>
+                </div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"></div>
@@ -724,7 +733,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
             </td>
             <td colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Руководитель&nbsp;организации</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Руководитель&nbsp;организации</span>
+                </div>
             </td>
             <td class="R4C1" colspan="2">
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
@@ -739,7 +749,7 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R4C1" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span>{{ $company->owner }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
             </td>
             <td>
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"></div>
@@ -760,7 +770,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
             </td>
             <td colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Главный&nbsp;бухгалтер</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Главный&nbsp;бухгалтер</span>
+                </div>
             </td>
             <td class="R4C1">
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
@@ -800,10 +811,11 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
             </td>
             <td>
-                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Получил</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span
+                        style="WHITE-SPACE: nowrap">Получил</span></div>
             </td>
             <td class="R25C2">
-                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="position: absolute">{{ num2str($warrant->summ, 1) }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="position: absolute;">{{ num2str($warrant->summ, 1) }}</span></div>
             </td>
             <td class="R25C2">
                 <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
@@ -863,7 +875,7 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%">руб.</div>
             </td>
             <td class="R4C1">
-                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span>{{ explode('.', $warrant->summ)[1] }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span>{{ sum_cents($warrant->summ) }}</span></div>
             </td>
             <td class="R27C7">
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%">коп.</div>
@@ -880,7 +892,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap"></span></div>
             </td>
             <td class="R28C6" colspan="4">
-                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Подпись</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span
+                        style="WHITE-SPACE: nowrap">Подпись</span></div>
             </td>
             <td class="R13C2">
                 <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span></span></div>
@@ -913,7 +926,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
             </td>
             <td>
-                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap; overflow:visible">По</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span
+                        style="WHITE-SPACE: nowrap; overflow:visible">По</span></div>
             </td>
             <td class="R15C2" colspan="8">
                 <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
@@ -925,7 +939,8 @@
         <tr class="R17">
             <td><span></span></td>
             <td><span></span></td>
-            <td class="R17C2" colspan="8"><span style="WHITE-SPACE: nowrap">наименование,&nbsp;номер,&nbsp;дата&nbsp;и&nbsp;место&nbsp;выдачи&nbsp;документа</span></td>
+            <td class="R17C2" colspan="8"><span style="WHITE-SPACE: nowrap">наименование,&nbsp;номер,&nbsp;дата&nbsp;и&nbsp;место&nbsp;выдачи&nbsp;документа</span>
+            </td>
             <td></td>
         </tr>
         <tr class="R4">
@@ -965,7 +980,8 @@
         </tr>
         <tr class="R17">
             <td><span></span></td>
-            <td class="R17C2" colspan="9"><span style="WHITE-SPACE: nowrap">удостоверяющего&nbsp;личность&nbsp;получателя</span></td>
+            <td class="R17C2" colspan="9"><span style="WHITE-SPACE: nowrap">удостоверяющего&nbsp;личность&nbsp;получателя</span>
+            </td>
             <td></td>
         </tr>
         <tr class="R4">
@@ -973,7 +989,8 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
             </td>
             <td>
-                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Выдал&nbsp;кассир</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Выдал&nbsp;кассир</span>
+                </div>
             </td>
             <td class="R4C1">
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>

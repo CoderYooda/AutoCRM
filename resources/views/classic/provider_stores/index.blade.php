@@ -19,8 +19,6 @@
 
                     @forelse($services as $service)
 
-{{--                        @continue(!$company->isServiceProviderActive($service->key))--}}
-
                         <button data-id="{{ $service->id }}" data-sort="{{ $service->pivot->sort }}" onclick="store.showProvider(this, '{{ $service->key }}')" class="button mr-5 relative primary btn_with_badge @if($loop->first) active @endif">
                             {{ $service->name }} <span id="service_count_{{ $service->key }}" class="badge-pill">0</span>
                         </button>

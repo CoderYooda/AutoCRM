@@ -52,14 +52,14 @@ class createEntrance extends Modal{
 
     save(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
+
+        window.axform.send(elem, (resp) => {
             if(resp.status === 200) {
                 let root_id = object.root_dialog.id;
-                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-                object.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
-                object.root_dialog.setAttribute('data-id', resp.data.id);
-                object.freshContent(resp.data.id, function () {
+                this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+                this.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
+                this.root_dialog.setAttribute('data-id', resp.data.id);
+                this.freshContent(resp.data.id, function () {
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];
@@ -73,9 +73,9 @@ class createEntrance extends Modal{
 
     saveAndClose(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) object.finitaLaComedia(true);
+
+        window.axform.send(elem, (resp) => {
+            if(resp.status === 200) this.finitaLaComedia(true);
         });
     }
 

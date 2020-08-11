@@ -53,11 +53,22 @@ class ProviderStoreController extends Controller
         $manufacturer = $request->manufacturer;
 
         /** @var ProviderInterface $provider */
-        $provider = $providers->find((string)$selected_service);
+        $provider = $providers->find($selected_service);
 
         $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
 
-        $stores = collect($stores)->sortBy('price')->toArray();
+        $stores = collect($stores);
+
+        if($request->sort == 'price') {
+            $stores = $stores->sortBy('price');
+        }
+        else if($request->sort == 'days') {
+            $stores = $stores->sortBy('days_min');
+        }
+
+        if($request->is_desc == true) $stores = $stores->reverse();
+
+        $stores = $stores->toArray();
 
         $view = view(get_template() . '.provider_stores.includes.table_element', compact('stores'));
 

@@ -2,7 +2,10 @@
 
     <div id="provider_search_container" class="provider_search_container fade" data-simplebar style="height: 300px;">
         <div class="cont"></div>
-        <div class="out_of_search"></div>
+        <div class="empty_search">
+            <div class="out_of_search"></div>
+            <div class="text-center">Результатов нет</div>
+        </div>
     </div>
 
     <div class="form-group">

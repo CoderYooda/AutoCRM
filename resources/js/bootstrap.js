@@ -24,7 +24,7 @@ window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = '*';
 
-window.token = document.head.querySelector('meta[name="csrf-token"]');
+let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     // XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
     // XMLHttpRequest.prototype.open   = function () {
@@ -75,6 +75,8 @@ setInterval(function () {
 
 window.togglePreloader = function togglePreloader(element, status) {
     let classList = element.classList;
+
+    if(!classList.contains('preloader-block')) classList.add('preloader-block');
 
     status ? classList.add('active') : classList.remove('active');
 };

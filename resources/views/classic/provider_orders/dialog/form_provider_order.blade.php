@@ -22,7 +22,7 @@
                 <span class="item-title _500">Всего на сумму</span>
                 <div class="item-except font-weight-bolder h-1x">
                     <span id="total_price">
-                        @if(isset($provider_order)){{ number_format($provider_order->summ, 2, ',', ' ') . ' ₽' }} @else 0.00 ₽ @endif
+                        @if(isset($provider_order)){{ correct_price($provider_order->summ) . ' ₽' }} @else 0.00 ₽ @endif
                     </span>
                 </div>
                 <div class="item-tag tag hide">
@@ -34,7 +34,7 @@
                     <div class="item-except @if(-$provider_order->wsumm === $provider_order->itogo) text-success
                         @elseif(-$provider_order->wsumm > $provider_order->itogo) text-danger @endif font-weight-bolder h-1x">
                         <span id="payed_price">
-                            {{ number_format(-$provider_order->wsumm, 2, ',', ' ') }} / <span id="itogo_price">{{ number_format( $provider_order->itogo, 2, ',', ' ')  }}</span> ₽
+                            {{ correct_price(-$provider_order->wsumm) }} / <span id="itogo_price">{{ correct_price($provider_order->itogo)  }}</span> ₽
                         </span>
                     </div>
                     <div class="item-tag tag hide">

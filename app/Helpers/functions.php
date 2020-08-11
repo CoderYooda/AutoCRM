@@ -65,6 +65,29 @@ if(!function_exists('convertPHPSizeToBytes')) {
     }
 }
 
+if(!function_exists('correct_price')) {
+    function correct_price($price) {
+        return number_format($price, 2, ',', ' ');
+    }
+}
+
+if(!function_exists('sum_percent')) {
+    /**
+     * @param $sum
+     * @param $percent
+     * @return float
+     */
+    function sum_percent($sum, $percent) {
+        return $sum / 100 * $percent;
+    }
+}
+
+if(!function_exists('sum_cents')) {
+    function sum_cents($price) {
+        return explode('.', $price)[1] ?? 0;
+    }
+}
+
 if(!function_exists('num2str')) {
     /**
      * $type 0 - с копейками
@@ -109,7 +132,7 @@ if(!function_exists('num2str')) {
             } //foreach
         } else $out[] = $nul;
         if($type != 2) $out[] = morph(intval($rub), $unit[1][0], $unit[1][1], $unit[1][2]); // rub
-        if($type == 2) $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
+        if($type == 2 || $type == 0) $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
         return trim(preg_replace('/ {2,}/', ' ', join(' ', $out)));
     }
 }

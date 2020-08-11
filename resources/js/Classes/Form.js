@@ -1,13 +1,7 @@
 class AxForm{
 
     setActionButtons(boolean, elem){
-        let state;
-        if(boolean){
-            elem.removeAttribute('disabled');
-        } else {
-            elem.setAttribute('disabled', true);
-        }
-
+        togglePreloader(elem, !boolean);
     }
 
     send(elem, callback = null){

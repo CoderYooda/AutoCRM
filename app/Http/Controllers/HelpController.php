@@ -12,11 +12,6 @@ class HelpController extends Controller
         return request('target') ?: 'ajax-content';
     }
 
-    public static function setActive($path)
-    {
-        return FR::is($path . '*') ? 'active' :  '';
-    }
-
     public static function generateRandomArticle($length = 10) {
         $characters = '----1234567890AGHBJOERCBN';
         $charactersLength = strlen($characters);

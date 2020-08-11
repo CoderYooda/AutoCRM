@@ -161,11 +161,8 @@ class settingsPage{
     }
 
     saveService(button_element) {
-
-        togglePreloader(button_element, true);
-
         window.axform.send(button_element, response => {
-            togglePreloader(button_element, false);
+            //
         });
     }
 
@@ -306,20 +303,9 @@ class settingsPage{
     saveBaseSettingsForm(elem, event){
 
         if(window.isXHRloading) return;
-        //let object = this;
+
         window.axform.send(elem, function(resp){
-            //let root_id = object.root_dialog.id;
-            // object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-            // object.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
-            // object.root_dialog.setAttribute('data-id', resp.data.id);
-            // object.freshContent(resp.data.id, function(){
-            //     delete window[root_id];
-            //     let drag_dialog = window.dialogs[root_id];
-            //     delete window.dialogs[root_id];
-            //     window.dialogs['entranceDialog' + resp.data.id] = drag_dialog;
-            //     drag_dialog.tag = 'entranceDialog' + resp.data.id;
-            //     window.helper.initDialogMethods();
-            // });
+            //
         });
     }
 
@@ -422,7 +408,7 @@ class settingsPage{
         event.preventDefault();
 
         window.axform.send(form_element, function(e){
-            // object.finitaLaComedia(true);
+            //
         });
     }
 

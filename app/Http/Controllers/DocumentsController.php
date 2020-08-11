@@ -14,6 +14,7 @@ class DocumentsController extends Controller
     {
         $names = [
             'out-warrant' => 'documents.out-warrant',
+            'in-warrant' => 'documents.in-warrant',
             'client-order' => 'documents.client-order',
             'provider-order' => 'documents.provider-order',
             'statistic-result' => 'documents.statistic-result',
@@ -23,7 +24,8 @@ class DocumentsController extends Controller
 
         $view = view($names[$request->doc], compact('request'));
 
-        if($request->doc == 'out-warrant') {
+        if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {
+
             $view->with('company', Auth::user()->company)
                 ->with('warrant', Warrant::find($request->id));
         }
