@@ -88,6 +88,25 @@ if(!function_exists('sum_cents')) {
     }
 }
 
+if(!function_exists('phone_format')) {
+    function phone_format($sPhone)
+    {
+        $sPhone = preg_replace("![^0-9]+!", '', $sPhone);
+        if (strlen($sPhone) != 11) return (false);
+        $sCountry = substr($sPhone, 0, 1);
+        $sArea = substr($sPhone, 1, 3);
+        $sPrefix = substr($sPhone, 4, 3);
+        $sNumber = substr($sPhone, 7, 2);
+        $sNumber2 = substr($sPhone, 9, 2);
+
+        if ($sCountry != 8) {
+            $sCountry = '+' . $sCountry;
+        }
+        $sPhone = $sCountry . "(" . $sArea . ")" . $sPrefix . "-" . $sNumber . "-" . $sNumber2;
+        return ($sPhone);
+    }
+}
+
 if(!function_exists('num2str')) {
     /**
      * $type 0 - с копейками

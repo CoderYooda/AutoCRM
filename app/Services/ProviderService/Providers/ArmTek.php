@@ -122,6 +122,10 @@ class ArmTek implements ProviderInterface
 
         $result = (array)json_decode($result, true);
 
+        if(isset($result['MESSAGES'][0]['TYPE']) && $result['MESSAGES'][0]['TYPE'] == 'E') {
+            throw_error($result['MESSAGES'][0]['TEXT']);
+        }
+
         return $result;
     }
 

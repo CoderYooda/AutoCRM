@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Refund;
 use App\Models\Shipment;
 use App\Models\Warrant;
 use Illuminate\Http\Request;
@@ -19,15 +20,18 @@ class DocumentsController extends Controller
             'provider-order' => 'documents.provider-order',
             'statistic-result' => 'documents.statistic-result',
             'shipment-score' => 'documents.invoice-for-payment',
-            'shipment-upd' => 'documents.upd'
+            'shipment-upd' => 'documents.upd',
+            'defective-act' => 'documents.defective-act'
         ];
 
-        $view = view($names[$request->doc], compact('request'));
+        $view = view($names[$request->doc], compact('request'))
+            ->with('company', Auth::user()->company);
 
         if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {
-
-            $view->with('company', Auth::user()->company)
-                ->with('warrant', Warrant::find($request->id));
+            $view->with('warrant', Warrant::find($request->id));
+        }
+        else if($request->doc == 'defective-act') {
+            $view->with('refund', Refund::find($request->id));
         }
         else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 
@@ -55,8 +59,7 @@ class DocumentsController extends Controller
                 $sorted_products['nds'] += $nds;
             }
 
-            $view->with('company', Auth::user()->company)
-                ->with('products', Article::whereIn('id', array_keys($sorted_products))->get())
+            $view->with('products', Article::whereIn('id', array_keys($sorted_products))->get())
                 ->with('sorted_products', $sorted_products)
                 ->with('shipment', Shipment::with('company')->find($request->id));
         }

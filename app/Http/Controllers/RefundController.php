@@ -17,21 +17,13 @@ class RefundController extends Controller
 {
     public static function refundDialog($request)
     {
-        $tag = 'refundDialog';
+        $refund = Refund::where('id', (int)$request['refund_id'])->first();
 
-        if ($request['refund_id']) {
-            $refund = Refund::where('id', (int)$request['refund_id'])->first();
-            $tag .= $refund->id;
-        } elseif( $request['shipment_id']){
-            $shipment = Shipment::owned()->find((int)$request['shipment_id']);
-        } else {
-            $refund = null;
-            $shipment = null;
-        }
+        $tag = 'refundDialog' . ($refund->id ?? '');
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request'))->render()
+            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund' , 'request'))->render()
         ]);
     }
 

@@ -24,8 +24,6 @@ Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePa
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
-//Route::multilingual('/', 'DashboardController@index');
-
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::get('/', function (){
@@ -55,19 +53,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/category/{id}/select', 'CategoryController@select')->name('SelectCategory');
 
     Route::post('/category/breadcrumbs', 'CategoryController@loadBreadcrumbs')->name('LoadBreadCrumbs');
-
-    Route::get('/test', function (Request $request) {
-
-        $path = $request->get('path');
-        $method = $request->get('method');
-
-        return file_get_contents('http://id8341.public.api.abcp.ru/' . $path, null, stream_context_create([
-            'http' => [
-                'method' => $method,
-                'content' => json_encode($request->except('method', 'path'))
-            ],
-        ]));
-    });
 
     #Статистика
     Route::get('/statistic', 'StatisticController@index')->name('StatisticIndex');

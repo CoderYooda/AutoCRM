@@ -82,13 +82,12 @@ class Mikado implements ProviderInterface
 
         foreach ($items as $item) {
 
-            $delivery_days = preg_replace('/[^0-9]/', '', $item['Srock'] ?? '0');
-
-            if ((int)$delivery_days == 0) $delivery_days = 0;
+            $delivery_days = (int)preg_replace('/[^0-9]/', '', $item['Srock'] ?? '0');
 
             $results[] = [
                 'name' => $item['Supplier'],
                 'code' => $item['ZakazCode'],
+                'days_min' => $delivery_days,
                 'delivery' => $delivery_days,
                 'price' => $item['PriceRUR'],
             ];
@@ -109,7 +108,13 @@ class Mikado implements ProviderInterface
         curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($params));
         $result = curl_exec($handle);
 
+        $info = curl_getinfo($handle);
+
         curl_close($handle);
+
+        if($info['http_code'] != 200) {
+            throw_error('Ошибка авторизации.');
+        }
 
         $result = simplexml_load_string($result);
 

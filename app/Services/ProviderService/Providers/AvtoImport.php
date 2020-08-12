@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AvtoImport implements ProviderInterface
 {
-    protected $host = 'https://online.bbcrm.ru/test?';
+    protected $host = 'http://id8341.public.api.abcp.ru/';
 
     protected $name = 'AvtoImport';
     protected $service_key = 'avtoimport';
@@ -32,15 +32,13 @@ class AvtoImport implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'method' => 'GET',
-            'path' => 'search/brands/',
             'userlogin' => $this->login,
             'userpsw' => $this->password,
             'number' => $article,
             'locale' => 'ru_RU'
         ];
 
-        $result = $this->query($params);
+        $result = $this->query('search/brands/', $params, 'GET');
 
         return array_column($result, 'brand');
     }
@@ -63,8 +61,6 @@ class AvtoImport implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'method' => 'GET',
-            'path' => 'search/articles/',
             'userlogin' => $this->login,
             'userpsw' => $this->password,
             'number' => $article,
@@ -73,7 +69,7 @@ class AvtoImport implements ProviderInterface
             'locale' => 'ru_RU'
         ];
 
-        $items = $this->query($params);
+        $items = $this->query('search/articles/', $params, 'GET');
 
         $results = [];
 
@@ -93,24 +89,22 @@ class AvtoImport implements ProviderInterface
         return $results;
     }
 
-    private function query($params): array
+    private function query($path, $params, $method): array
     {
-        $query_params = http_build_query($params);
+        $full_path = $this->host . $path . '?' . http_build_query($params);
 
-        $handle = curl_init();
-
-        curl_setopt($handle, CURLOPT_URL, $this->host . $query_params);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($handle);
+        $result = file_get_contents($full_path, null, stream_context_create([
+            'http' => [
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'method' => $method,
+            ],
+        ]));
 
         $result = (array)json_decode($result);
 
         if(array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
             throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
         }
-
-        curl_close($handle);
 
         return $result;
     }

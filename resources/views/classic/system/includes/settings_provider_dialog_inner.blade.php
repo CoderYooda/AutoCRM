@@ -9,21 +9,19 @@
         <button class="btn_close float-right" data-dismiss="modal">×</button>
     </div>
 
-    <div class="modal-body p-15 d-flex">
+    <div class="modal-body p-15 d-flex" style="height: 425px;">
 
-        <div class="flex-2" style="margin-right: 50px; position:relative;">
-            <div>
-                <div><b>Подключение</b></div>
-                <div class="pt-5" style="color: black">{!! $service->desc !!}</div>
-            </div>
-
-            <div style="position: absolute; bottom: 0;">
-                <a href="{{ $service->url }}">{{ parse_url($service->url)['host'] }}</a>
+        <div class="flex-2">
+            <div class="box" data-simplebar style="height: 100%;">
+                <div class="mt-10 ml-10">
+                    <b style="color: black;">Подключение</b>
+                </div>
+                @include(get_template() . '.system.includes.providers_desc.' .  $service->key)
             </div>
         </div>
 
-        <div class="flex-1">
-            <div class="box p-15" style="background: #F7F7F7; border-radius: 4px;">
+        <div class="flex-1 box ml-15" style="background: #F7F7F7; border-radius: 4px;">
+            <div class="p-15">
                 <div class="box text-center d-flex" style="height: 143px; background: #185C8B; border-radius: 4px; flex-direction: column;justify-content: center;">
                     <div>
                         <div class="service-modal-title">{{ $service->name }}</div>
@@ -59,6 +57,11 @@
 
             </div>
         </div>
+
+    </div>
+
+    <div class="ml-15 mb-15">
+        <a href="{{ $service->url }}">{{ parse_url($service->url)['host'] }}</a>
     </div>
 
     <div class="modal-footer" style="height: 60px;">

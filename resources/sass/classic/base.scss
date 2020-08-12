@@ -2224,3 +2224,19 @@ input:-moz-placeholder { /* Firefox 18- */
         display: none;
     }
 }
+
+.service-list {
+    list-style-type: decimal;
+    padding-left: 30px !important;
+    margin-top: 10px !important;
+
+    img {
+        max-width: 100%;
+    }
+
+    li {
+        margin-top: 4px;
+        padding-left: 10px;
+        color: #404040;
+    }
+}

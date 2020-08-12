@@ -115,7 +115,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-5" for="discount">Покупатель</label>
                         <div class="col-sm-4 input-group no-pr">
-                            <input id="partner_butt" type="text" name="partner_id" value="@if(isset($refund) && $refund->shipment()->first() != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled>
+                            <input id="partner_butt" type="text" name="partner_id" value="@if(isset($refund) && $refund->shipment != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif" class="form-control" disabled>
                         </div>
                         <div class="col-sm-3">
                             <span class="partner-balance">
@@ -176,7 +176,7 @@
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
             @else
-                <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $refund->id }})" >Печать</button>
+                <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('defective-act', {{ $refund->id }})" >Печать</button>
             @endif
 
         </div>
@@ -184,6 +184,7 @@
 
         </div>
     </form>
+
 @if(!$request['fresh'])
     </div>
 @endif
