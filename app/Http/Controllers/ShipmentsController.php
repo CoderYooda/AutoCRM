@@ -446,8 +446,7 @@ class ShipmentsController extends Controller
             $request['client'] = [];
         }
 
-        $shipments =
-            Shipment::withoutGlobalScopes()->select(DB::raw('
+        return Shipment::with('articles')->withoutGlobalScopes()->select(DB::raw('
                 shipments.*, shipments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' ₽\')) as discount, shipments.summ as price, shipments.itogo as total
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
@@ -468,8 +467,6 @@ class ShipmentsController extends Controller
 //        and `shipments`.`company_id` = 2
 //        group by `shipments`.`id`
 //        order by `created_at` desc
-
-        return $shipments;
     }
 
     public function events(Request $request)

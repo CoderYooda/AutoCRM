@@ -32,8 +32,6 @@ class shipmentDialog extends Modal{
         let data = JSON.stringify(this.items);
         let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        console.log(this.items);
-
         window.helper.printDocument('shipment-score', id, data);
     }
 

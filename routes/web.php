@@ -24,6 +24,8 @@ Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePa
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
+Route::view('/test', 'cheques.simple');
+
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::get('/', function (){
@@ -72,7 +74,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
     Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
     Route::post('/entrance/{id}/delete', 'EntranceController@delete')->name('DeleteEntrance');
-    Route::post('/entrance/{id}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
+    Route::post('/entrance/{entrance}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
     Route::get('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
     Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
     Route::post('/entrance/dialog/search', 'EntranceController@dialogSearch')->name('EntranceDialogSearch');

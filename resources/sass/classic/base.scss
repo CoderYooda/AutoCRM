@@ -1344,6 +1344,14 @@ input:-moz-placeholder { /* Firefox 18- */
 .d-flex{
     display: flex !important;
 }
+
+.all-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 .align-items-center {
     align-items: center !important;
 }
@@ -1390,6 +1398,27 @@ input:-moz-placeholder { /* Firefox 18- */
 .br-trans{
     border-right: 1px solid rgba(255, 255, 255, 0.5);
 }
+
+.border {
+    border: 1px solid black;
+}
+
+.border-left {
+    border-left: 1px solid black;
+}
+
+.border-right {
+    border-right: 1px solid black;
+}
+
+.border-top {
+    border-top: 1px solid black;
+}
+
+.border-bottom {
+    border-bottom: 1px solid black;
+}
+
 .h-32-text{
     height: 32px;
     line-height: 32px;
@@ -2225,6 +2254,10 @@ input:-moz-placeholder { /* Firefox 18- */
     }
 }
 
+.color-black {
+    color: #404040;
+}
+
 .service-list {
     list-style-type: decimal;
     padding-left: 30px !important;
@@ -2239,4 +2272,15 @@ input:-moz-placeholder { /* Firefox 18- */
         padding-left: 10px;
         color: #404040;
     }
+}
+
+.text-grey {
+    font-family: Segoe UI;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 21px;
+    letter-spacing: 0.0015em;
+
+    color: #C9C9C9;
 }

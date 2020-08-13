@@ -627,7 +627,7 @@
         <tr class="R1">
             <td><span></span></td>
             <td><span style="WHITE-SPACE: nowrap">Основание</span></td>
-            <td class="R15C2" colspan="8"><span></span></td>
+            <td class="R15C2" colspan="8"><span>{{ $warrant->reason }}</span></td>
             <td></td>
         </tr>
         <tr class="R16">

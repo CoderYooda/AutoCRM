@@ -20,21 +20,14 @@ class EntranceController extends Controller
 {
     public static function entranceDialog($request)
     {
+        $entrance = Entrance::find($request['entrance_id']);
+        $tag = 'entranceDialog' . ($entrance->id ?? '');
 
-        if($request['params'] && $request['entrance_id'] != null){
-            $id = (int)$request['entrance_id'];
-            $entrance = Entrance::where('id', $id)->first();
-            $tag = 'entranceDialog'.$entrance->id;
-        } else {
-            $entrance = null;
-            $tag = 'entranceDialog';
-        }
-
-        $stores = Store::owned()->get();
+        $providerorder = $entrance->providerorder ?? null;
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
+            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request'))->with('class', $tag)->render()
         ]);
     }
 
@@ -58,7 +51,7 @@ class EntranceController extends Controller
 
         $store = Store::find(Auth::user()->current_store);
 
-        $providerorder = ProviderOrder::owned()->find($request['providerorder_id']);
+        $providerorder = ProviderOrder::find($request['providerorder_id']);
 
         #проверка валидации
         $messages = [];
@@ -95,7 +88,6 @@ class EntranceController extends Controller
             ]);
 
             $store->increaseArticleCount($product['id'], $product['count']);
-//            $store->recalculateMidprice($product['id']);
         }
 
         $product_ids = array_column($request->products, 'id');
@@ -118,19 +110,18 @@ class EntranceController extends Controller
         ], 200);
     }
 
-    public function fresh($id, Request $request)
+    public function fresh(Entrance $entrance, Request $request)
     {
-        $entrance = Entrance::where('id', (int)$id)->first();
-        $stores = Store::owned()->get();
         $request['fresh'] = true;
-        $class = 'entranceDialog' . $id;
-        $inner = true;
-        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
+        $class = 'entranceDialog' . $entrance->id;
+
+        $content = view(get_template() . '.entrance.includes.inner_entrance_dialog', compact( 'entrance', 'class', 'request'))
+            ->with('providerorder', $entrance->providerorder)
             ->render();
 
         return response()->json([
             'html' => $content,
-            'target' => 'entranceDialog' . $id,
+            'target' => $class,
         ], 200);
     }
 

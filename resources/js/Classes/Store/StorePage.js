@@ -694,16 +694,44 @@ class storePage{
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
                 let items = [];
-                // if(object.contextDop == 'providerorder'){
-                //     items.push(new ContextualItem({label:'Оплатить', onClick: () => {window.providerorderDialog8.getPayment()} }));
-                // }
 
-                items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
-                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
+                let id = row.getData().id;
+
+                items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+
                 if(object.contextDop == 'shipment') {
-                    items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + row.getData().id);} }));
+
+                    items.push(new ContextualItem({type:'seperator'}));
+
+                    let products = row.getData().articles;
+
+                    let data = {};
+
+                    Object.values(products).forEach((value, index) => {
+                        data[index] = {
+                            id: value.id,
+                            count: value.pivot.count,
+                            price: value.pivot.price,
+                            total: value.pivot.count * value.pivot.price
+                        };
+                    });
+
+                    data = JSON.stringify(data);
+
+                    items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + id);} }));
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id, data, true);} }));
+                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id, data);} }));
                 }
-                items.push(new ContextualItem({type:'seperator'}));
+                else if(object.contextDop == 'clientorder') {
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('client-order', id);} }));
+                }
+                else if(object.contextDop == 'product') {
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
+                }
 
                 // items.push(new ContextualItem({
                 //     label: 'Удалить', onClick: () => {

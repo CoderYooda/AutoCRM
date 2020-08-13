@@ -445,7 +445,6 @@ class ClientOrdersController extends Controller
 
     public function getSideInfo(Request $request)
     {
-
         $client_order = ClientOrder::owned()->where('id', $request['id'])->first();
         $partner = $client_order->partner()->first();
         $comment = $client_order->comment;

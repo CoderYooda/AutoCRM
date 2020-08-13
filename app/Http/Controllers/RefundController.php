@@ -27,9 +27,16 @@ class RefundController extends Controller
         ]);
     }
 
-    public function getSideInfo()
+    public function getSideInfo(Request $request)
     {
-        //TODO
+        $client_order = Refund::find($request->id)->load('partner');
+        $partner = $client_order->partner;
+        $comment = $client_order->comment;
+
+        return response()->json([
+            'info' => view(get_template() . '.refund.contact-card', compact('partner', 'request'))->render(),
+            'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
+        ], 200);
     }
 
     public function tableData(Request $request)
