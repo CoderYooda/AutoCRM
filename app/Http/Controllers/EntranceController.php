@@ -74,7 +74,8 @@ class EntranceController extends Controller
             'partner_id' => $providerorder->partner->id,
             'company_id' => Auth::user()->company->id,
             'comment' => $request->comment,
-            'providerorder_id' => $providerorder->id
+            'providerorder_id' => $providerorder->id,
+            'invoice' => $request->invoice
         ]);
 
         foreach ($request->products as $product) {

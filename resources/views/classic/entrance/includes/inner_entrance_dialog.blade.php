@@ -39,6 +39,7 @@
 
                             <div class="mb-15">
                                 <div><span style="font-weight: 500;">ID заявки: </span></div>
+                                <div><span style="font-weight: 500;">Номер накладной: </span></div>
                                 <div><span style="font-weight: 500;">Дата оформления: </span></div>
                                 <div><span style="font-weight: 500;">Сумма заявки: </span></div>
                             </div>
@@ -59,6 +60,7 @@
 
                             <div class="mb-15">
                                 <div>{{ $providerorder->id }}</div>
+                                <div>{{ $providerorder->invoice ?? '-' }}</div>
                                 <div>{{ $providerorder->created_at }}</div>
                                 <div>{{ $providerorder->itogo }} р.</div>
                             </div>
@@ -91,7 +93,17 @@
             <div class="flex-1 d-flex flex-column ml-5 @if($entrance && $entrance->comment == null) all-center @endif">
 
                 @if(!isset($entrance))
-                    <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5"></textarea>
+
+                    <div class="form-group mb-5">
+                        <label>Комментарий</label>
+                        <textarea style="resize: none; height: 128px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5"></textarea>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label>Номер накладной</label>
+                        <input class="form-control" name="invoice" value="{{ $entrance->invoice ?? '' }}" @if($entrance) disabled @endif />
+                    </div>
+
                 @else
                     @if($entrance->comment)
                         <label>Комментарий:</label>

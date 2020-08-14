@@ -83,6 +83,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Возвраты поступлений
     Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
     Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');
+    Route::post('/entrance_refunds/side_info', 'EntranceRefundController@getSideInfo')->name('GetEntranceRefundSideInfo');
 
     #Поставщики (внешние)
     Route::namespace('API')->prefix('api')->group(function () {

@@ -94,9 +94,17 @@ class EntranceRefundController extends Controller
         ]);
     }
 
-    public function getSideInfo()
+    public function getSideInfo(Request $request)
     {
-        //TODO
+        $entrancerefund = EntranceRefund::find($request->id);
+
+        $partner = $entrancerefund->partner;
+        $comment = $entrancerefund->comment;
+
+        return response()->json([
+            'info' => view(get_template() . '.entrance_refunds.contact-card', compact('entrancerefund', 'partner', 'request'))->render(),
+            'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
+        ], 200);
     }
 
     public static function entranceRefundDialog(Request $request)

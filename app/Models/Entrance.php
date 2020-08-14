@@ -26,7 +26,8 @@ class Entrance extends Model
         'manager_id',
         'locked',
         'comment',
-        'created_at'
+        'created_at',
+        'invoice'
     ];
 
     protected $guarded = [];
