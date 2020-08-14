@@ -259,12 +259,19 @@ class cashPage{
                 let data = row.getData();
                 let id = row.getData().id;
 
-                let items = [
-                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }),
-                    new ContextualItem({type:'seperator'}),
-                    new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument((data.isIncoming ? 'in-warrant' : 'out-warrant'), id)}, shortcut:'Что то' }),
+                let items = [];
+
+                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+
+                if(object.contextDop !== 'warrant') {
+                    items.push(new ContextualItem({type: 'seperator'}));
+                    items.pust(new ContextualItem({
+                        label: 'Печать', onClick: () => {
+                            window.helper.printDocument((data.isIncoming ? 'in-warrant' : 'out-warrant'), id)
+                        }, shortcut: 'Что то'
+                    }));
+                }
                     // new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
-                ];
 
                 // if(object.selectedData.length > 0){
                 //     items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));

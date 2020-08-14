@@ -60,7 +60,7 @@
 
                             <div class="mb-15">
                                 <div>{{ $providerorder->id }}</div>
-                                <div>{{ $providerorder->invoice ?? '-' }}</div>
+                                <div>{{ strlen($entrance->invoice) ? $entrance->invoice : '-' }}</div>
                                 <div>{{ $providerorder->created_at }}</div>
                                 <div>{{ $providerorder->itogo }} р.</div>
                             </div>

@@ -181,7 +181,7 @@ class clientorderDialog extends Modal{
 
         window.axform.send(elem, (resp) => {
             if(resp.status === 200) {
-                let root_id = object.root_dialog.id;
+                let root_id = this.root_dialog.id;
                 this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 this.root_dialog.setAttribute('id', 'clientorderDialog' + resp.data.id);
                 this.root_dialog.setAttribute('data-id', resp.data.id);
@@ -200,8 +200,8 @@ class clientorderDialog extends Modal{
     saveAndClose(elem){
         if(window.isXHRloading) return;
 
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) object.finitaLaComedia(true);
+        window.axform.send(elem, (resp) => {
+            if(resp.status === 200) this.finitaLaComedia(true);
         });
     }
 
