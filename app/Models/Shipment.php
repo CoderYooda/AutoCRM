@@ -65,8 +65,12 @@ class Shipment extends Model
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')
-            ->withPivot('count', 'refunded_count', 'price', 'total');
+        //dd(DB::table('article_shipment')->where('shipment_id', $this->id)->get());
+
+        return $this->belongsToMany(Article::class, 'article_shipment', 'article_id', 'shipment_id')
+            ->withPivot('count', 'refunded_count', 'entrance_id', 'price', 'total');
+//            ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, articles.id as id, price')
+//            ->groupBy('article_id');
     }
 
     public function store()
@@ -179,16 +183,6 @@ class Shipment extends Model
 
     public function normalizedData(){
         return $this->created_at->format('d.m.Y (H:i)');
-    }
-
-    public function getArticlesCountById($id){
-        $article = $this->articles()->where('article_id', $id)->first();
-        if($article){
-            $count = $article->pivot->count;
-        } else {
-            $count = 0;
-        }
-        return $count;
     }
 
 }

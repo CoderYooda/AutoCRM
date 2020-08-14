@@ -233,9 +233,9 @@ class ProviderOrdersController extends Controller
         if($provider_order->exists){
             $store = Store::owned()->where('id', $request['store_id'])->first();
 
-            if($store->id !== $provider_order->store()->first()->id){
-                foreach($provider_order->entrances()->get() as $entrance){
-                    $entrance->migrateInStore($provider_order->store()->first(), $store);
+            if($store->id !== $provider_order->store->id){
+                foreach($provider_order->entrances as $entrance){
+                    $entrance->migrateInStore($store);
                 }
             }
 
@@ -285,7 +285,6 @@ class ProviderOrdersController extends Controller
             ### Пересчёт кол-ва с учетом предидущего поступления #######################################
             #$store->articles()->syncWithoutDetaching($actor_product->id);
             #$beforeCount = $entrance->getArticlesCountById($actor_product->id);
-            #$count = (int)$store->getArticlesCountById($actor_product->id) - (int)$beforeCount + (int)$vcount;
             #$count - Текущее кол-во на складе в наличии
             #############################################################################################
 

@@ -87,15 +87,13 @@ class EntranceController extends Controller
                 'count' => $product['count'],
                 'price' => $price
             ]);
-
-            $store->increaseArticleCount($product['id'], $product['count']);
         }
 
         $product_ids = array_column($request->products, 'id');
         $store->articles()->syncWithoutDetaching($product_ids, false);
 
         #Обработка ответа
-        $entrance->company_id = Auth::user()->company_id ?? 1;
+        $entrance->company_id = Auth::user()->company_id;
 
         #Добавляем к балансу контакта
         $entrance->providerorder->partner->addition($entrance->totalPrice);
@@ -344,54 +342,5 @@ class EntranceController extends Controller
             ];
         }
         return response($events);
-    }
-
-    public function delete($id, Request $request)
-    {
-        PermissionController::canByPregMatch( $request['id'] ? 'Редактировать поступления' : 'Создавать поступления');
-
-        if(!Gate::allows('Удалять поступления')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
-
-        $returnIds = null;
-
-        if($id == 'array'){
-            $entrances = Entrance::whereIn('id', $request['ids'])->get();
-            $this->message = 'Поступления удалены';
-            $returnIds = $entrances->pluck('id');
-            foreach($entrances as $entrance){
-                $store = $entrance->providerorder->store;
-                foreach($entrance->articles as $article){
-                    $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
-                }
-
-                $entrance->articles()->sync(null);
-
-                $entrance->delete();
-                UA::makeUserAction($entrance, 'delete');
-            }
-        } else {
-            $entrance = Entrance::find($id);
-            # Склад с которым оперируем
-            $store = $entrance->providerorder->store;
-            foreach($entrance->articles as $article){
-                $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
-            }
-            $returnIds = $entrance->id;
-            $entrance->articles()->sync(null);
-
-            $entrance->delete();
-            UA::makeUserAction($entrance, 'delete');
-            $this->status = 200;
-            $this->message = 'Поступление удалено';
-        }
-
-        return response()->json([
-            'id' => $returnIds,
-            'message' => $this->message
-        ], 200);
-
-
     }
 }

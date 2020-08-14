@@ -283,8 +283,6 @@ class ClientOrdersController extends Controller
         foreach ($rp as $id => $product) {
             if ($id !== 'new') {
 
-                //$store->decreaseArticleCount($id, $product['count']);
-
                 $vcount = $product['count'];
 
                 if($vcount < $client_order->getShippedCount($id)){
@@ -334,12 +332,6 @@ class ClientOrdersController extends Controller
 
 
         #Отнимаем со склада товары из заказа
-//        if ($client_order->status === 'complete') {
-//            foreach ($client_order->articles()->get() as $article) {
-//                $store = $client_order->store()->first();
-//                $store->decreaseArticleCount($article->id, $article->pivot->count);
-//            }
-//        }
 
 //        $client_order->partner()->first()
 //            ->subtraction($client_order->itogo);

@@ -97,7 +97,6 @@ class RefundController extends Controller
 
         if($refundWasExisted) {
             foreach($refund->articles as $article){
-                $store->decreaseArticleCount($article->id, $article->pivot->count);
                 $shipment->decreaseRefundedCount($article->id, $article->pivot->count);
             }
         }
@@ -138,8 +137,6 @@ class RefundController extends Controller
         $refund_data = [];
 
         foreach($request['products'] as $product) {
-
-            $store->increaseArticleCount($product['id'], $product['count']);
 
             $shipment_price = $shipment->getProductPriceFromShipment($product['id']);
 
@@ -182,56 +179,6 @@ class RefundController extends Controller
         } else {
             return redirect()->back();
         }
-    }
-
-    public function delete($id, Request $request)
-    {
-        PermissionController::canByPregMatch('Удалять возвраты');
-
-        return response()->json([
-            'message' => 'Удаление невозможно',
-            'type' => 'error',
-        ], 422);
-
-//        $returnIds = null;
-//        if($id == 'array'){
-//            $refunds = Refund::whereIn('id', $request['ids']);
-//            $this->message = 'Возвраты удалены';
-//            $returnIds = $refunds->get()->pluck('id');
-//            foreach($refunds->get() as $refund){
-//                if($refund->delete()){
-//                    foreach($refund->articles()->get() as $article){
-//                        $store = $refund->store()->first();
-//                        $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
-//                    }
-//                    #Добавляем к балансу контакта
-//                    $refund->partner()->first()->addition($refund->summ);
-//                    $refund->articles()->sync(null);
-//                    UA::makeUserAction($refund, 'delete');
-//                }
-//            }
-//        } else {
-//            $refund = Refund::where('id', $id)->first();
-//            $returnIds = $refund->id;
-//            foreach($refund->articles()->get() as $article){
-//                $store = $refund->store()->first();
-//                $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
-//            }
-//            #Добавляем к балансу контакта
-//            $refund->partner()->first()->addition($refund->summ);
-//            $refund->articles()->sync(null);
-//            $refund->delete();
-//            $this->status = 200;
-//            $this->message = 'Возврат удален';
-//        }
-//
-//        return response()->json([
-//            'id' => $returnIds,
-//            'message' => $this->message,
-//            'event' => 'RefundStored',
-//        ], 200);
-
-
     }
 
     public static function getRefunds($request)

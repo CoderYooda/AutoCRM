@@ -61,21 +61,21 @@ class AdjustmentController extends Controller
             $fact = $product['fact'];
             //$vprice = $product['price'];
 
-            $deviation_count = $store->getArticlesCountById($id) - $fact;
-            //$deviation_price = $store->getMidPriceById($id) - $vprice;
+//            $deviation_count = $store->getArticlesCountById($id) - $fact;
+//            $deviation_price = $store->getMidPriceById($id) - $vprice;
 
-            $store->setArticleCount($id, $fact);
-            //$store->setArticleMidPrice($id, $vprice);
+//            $store->setArticleCount($id, $fact);
+//            $store->setArticleMidPrice($id, $vprice);
 
             $pivot_data = [
                 'article_id' => (int)$product['id'],
                 'store_id' => (int)$request['store_id'],
                 'adjustment_id' => $adjustment->id,
-                'prev_count' => (int)$fact + $deviation_count,
+                'prev_count' => (int)$fact /*+ $deviation_count */,
                 'count' => (int)$fact,
                 'price' => null,
                 'prev_price' => null,
-                'deviation_count' => (int)$deviation_count,
+//                'deviation_count' => (int)$deviation_count,
                 'deviation_price' => null
             ];
             $adjustment_data[] = $pivot_data;

@@ -16,7 +16,7 @@
 
         <div class="d-flex">
 
-            <div class="flex-1 mr-5">
+            <div class="flex-1 mr-7">
 
                 <div class="form-group row row-sm">
                     <label for="category_id" class="col-sm-5 label-sm">Заявка поставщику</label>
@@ -90,7 +90,7 @@
 
             </div>
 
-            <div class="flex-1 d-flex flex-column ml-5 @if($entrance && $entrance->comment == null) all-center @endif">
+            <div class="flex-1 d-flex flex-column ml-7 @if($entrance && $entrance->comment == null) all-center @endif">
 
                 @if(!isset($entrance))
 

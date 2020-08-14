@@ -152,6 +152,7 @@ class ProductController extends Controller
 
         } else {
             $product = $article;
+
             $content = view(get_template() . '.entrance.dialog.product_element', compact('product', 'request'))->render();
 
         }

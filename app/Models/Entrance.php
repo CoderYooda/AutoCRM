@@ -53,6 +53,15 @@ class Entrance extends Model
         return $this->hasMany(EntranceRefund::class, 'entrance_id')->with('articles');
     }
 
+    public static function decrementReleasedCount($entrance_id, $article_id, $count)
+    {
+        return DB::table('article_entrance')->where([
+            'entrance_id' => $entrance_id,
+            'article_id' => $article_id
+        ])
+        ->decrement('released_count', $count);
+    }
+
     public function providerorder()
     {
         return $this->belongsTo(ProviderOrder::class, 'providerorder_id')->withTrashed();
@@ -78,15 +87,9 @@ class Entrance extends Model
         return true;
     }
 
-    public function migrateInStore($store, $newStore)
+    public function migrateInStore($newStore)
     {
-        $articles = $this->articles()->get();
-
-        foreach($articles as $article){
-            $count = $article->pivot->count;
-            $store->decreaseArticleCount($article->id, $count);
-            $newStore->increaseArticleCount($article->id, $count);
-        }
+        return $this->articles()->update(['store_id' => $newStore->id]);
     }
 
     public function getTotalPrice()
@@ -105,11 +108,6 @@ class Entrance extends Model
     public function warrants()
     {
         return $this->belongsToMany(Warrant::class, 'entrance_warrant',  'entrance_id', 'warrant_id' );
-    }
-
-    public function getArticlesCountById($id){
-        $article = $this->articles()->where('article_id', $id)->first();
-        return $article ? $article->pivot->count : 0;
     }
 }
 

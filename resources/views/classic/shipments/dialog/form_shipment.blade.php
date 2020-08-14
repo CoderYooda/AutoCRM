@@ -180,11 +180,11 @@
                         </tr>
                         </thead>
                         <tbody class="product_list">
-                        @if(isset($shipment))
+                        @isset($shipment)
                             @foreach($shipment->articles as $product)
                                 @include(get_template() . '.shipments.dialog.product_element')
                             @endforeach
-                        @endif
+                        @endisset
                         </tbody>
                     </table>
                 </div>

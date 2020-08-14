@@ -170,12 +170,6 @@ class ClientOrder extends Model
         return $this->status == 'complete';
     }
 
-    public function getArticlesCountById($id)
-    {
-        $article = $this->articles()->where('article_id', $id)->first();
-        return $article ? $article->pivot->count : 0;
-    }
-
     public function getWarrantPositive()
     {
         $minus = $this->warrants()->where('isIncoming', false)->sum('summ');

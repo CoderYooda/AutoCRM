@@ -178,7 +178,7 @@ class shipmentDialog extends Modal{
 
         window.axform.send(elem, (resp) => {
             if(resp.status == 200) {
-                let root_id = object.root_dialog.id;
+                let root_id = this.root_dialog.id;
                 this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 this.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
                 this.root_dialog.setAttribute('data-id', resp.data.id);

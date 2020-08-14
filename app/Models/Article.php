@@ -55,7 +55,7 @@ class Article extends Model
     public function stores()
     {
         return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'count', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
+            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
 //            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
@@ -226,11 +226,6 @@ class Article extends Model
 //            ->withPivot('count', 'price', 'total', 'shipment_id');
 //    }
 
-    public function getArticlesCountInAllStores(){
-        //$stores = Store::owned()->get();
-        return $this->stores()->sum('count');
-    }
-
     public function getCountInStoreId($store_id)
     {
         $article = $this->stores->find($store_id);
@@ -242,66 +237,4 @@ class Article extends Model
     {
         return $this->stores()->where('store_id', '!=', $store_id)->sum('count');
     }
-
-//    public function getMidPriceByStoreId($store_id, $isInteger = null)
-//    {
-//        $relation = $this->stores()->where('store_id',  $store_id)->first();
-//
-//        $markup = (int)SettingsController::getSettingByKey('markup')->value;
-//
-//        $midprice = 0;
-//        if($relation){
-//            $midprice = $relation->pivot->midprice;
-//        }
-//
-//        $retail = $midprice + ( $midprice / 100 * $markup );
-//
-//        if( $retail === 0){
-//            if($isInteger){
-//                return 0;
-//            } else {
-//                return 'Не уст.';
-//            }
-//        } else {
-//            if($isInteger){
-//                return (int)$retail;
-//            } else {
-//                return number_format($retail, 2, ',', ' ') . ' ₽';
-//            }
-//        }
-//
-//    }
-
-    public function getReservedCount()
-    {
-        return 1;
-    }
-
-//    public function getMidPriceInStoreId($store_id)
-//    {
-//        $article = $this->stores()->get()->where('id', $store_id)->first();
-//
-//        if($article){
-//            $midprice = $article->pivot->midprice;
-//            if($midprice === null){
-//                $midprice = 0;
-//            }
-//        } else {
-//            $midprice = 0;
-//        }
-//
-//        return $midprice;
-//    }
-
-    public function addToStore($store_id, $count)
-    {
-        $current = (int)$this->getArticlesCountById($article_id);
-
-        $total = $current + $count;
-
-        $this->articles()->owned()->updateExistingPivot($article_id, ['count' => $total]);
-
-        return $total;
-    }
-
 }

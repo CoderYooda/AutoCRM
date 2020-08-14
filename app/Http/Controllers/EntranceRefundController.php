@@ -75,8 +75,6 @@ class EntranceRefundController extends Controller
                 'total' => $price * $product['count']
             ]);
 
-            $store->decreaseArticleCount($product['id'], $product['count']);
-
             #Резервируем количество в поступлениях
             $entrance_refund->entrance->articles()->where('article_id', $product['id'])->increment('released_count', $product['count']);
         }
