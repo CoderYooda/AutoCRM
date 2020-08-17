@@ -14,6 +14,6 @@ trait HasManagerAndPartnerTrait
 
     public function partner()
     {
-        return $this->belongsTo(Partner::class, 'partner_id')->withTrashed();
+        return $this->belongsTo(Partner::class, 'partner_id');
     }
 }

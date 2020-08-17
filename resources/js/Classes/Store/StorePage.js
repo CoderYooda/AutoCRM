@@ -732,6 +732,10 @@ class storePage{
                     items.push(new ContextualItem({type:'seperator'}));
                     items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
                 }
+                else if(object.contextDop == 'refund') {
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
+                }
 
                 // items.push(new ContextualItem({
                 //     label: 'Удалить', onClick: () => {
