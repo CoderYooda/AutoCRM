@@ -89,18 +89,18 @@
                 <span class="text-muted pr-15">Дата</span>
                 <span>@if(isset($warrant)){{ \Carbon\Carbon::parse($warrant->do_date)->format('d.m.Y') }}@else{{ \Carbon\Carbon::now()->format('d.m.Y')  }}@endif</span>
             </div>
-            {{--<div class="pull-right flex-1">--}}
-                {{--<span class="text-muted">Баланс</span>--}}
-                {{--<span class="partner_balance text-warning">--}}
-                                {{--@if(isset($warrant))--}}
-                        {{--{{ $warrant->partner()->first()->balance }}--}}
-                    {{--@elseif(isset($data->partner_selected) && $data->partner_selected !== null)--}}
-                        {{--{{ $data->partner_selected->balance }}--}}
-                    {{--@else--}}
-                        {{--0--}}
-                    {{--@endif--}}
-            {{--</span>--}}
-            {{--</div>--}}
+            <div class="pull-right flex-1">
+                <span class="partner_balance text-warning">
+                    @if(isset($warrant) && $warrant->payed_at != null)
+                        @if($warrant->payed_by == 'evotor')
+                            <div class="evotor_ico">
+                                <span class="payed">ОПЛАЧЕНО</span>
+                                <span class="payed_logo"></span>
+                            </div>
+                        @endif
+                    @endif
+                </span>
+            </div>
         </div>
         <div class="box-body">
             <div class="form-group row">

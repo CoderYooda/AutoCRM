@@ -149,6 +149,7 @@ h2{
 /* Dropdown */
 .dropdown{
     position: relative;
+    position: relative;
 }
 .dropdown_container .arrow::after, .dropdown_container .arrow::before {
     position: absolute;
@@ -196,7 +197,38 @@ h2{
 }
 
 /*Header*/
-
+.evotor_ico{
+    position: relative;
+    height: 22px;
+}
+.evotor_ico .payed_logo{
+    background-image: url(/images/icons/evotor.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    width: 110px;
+    height: 28px;
+    position: absolute;
+    display: block;
+    right: 120px;
+    z-index: 0;
+}
+.evotor_ico .payed{
+    border: 2px solid #00c;
+    height: 30px;
+    color: #00c;
+    font-weight: bold;
+    display: block;
+    position: absolute;
+    line-height: 11px;
+    padding: 8px;
+    top: -8px;
+    right: 0;
+    width: 100px;
+    background: #fff;
+    transform: rotateZ(23deg);
+    z-index: 1;
+}
 .app-header {
     background-color: #2D76A8;
     height: 52px;

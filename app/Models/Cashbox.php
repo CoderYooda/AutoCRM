@@ -22,6 +22,13 @@ class Cashbox extends Model
         return $this->hasMany(Warrant::class, 'cashbox_id' );
     }
 
+    public function generateUuid(){
+        if(!$this->cashbox_uuid){
+            $this->cashbox_uuid = substr(base_convert(md5($this->id . $this->company_id), 16,32), 0, 7);
+            $this->save();
+        }
+    }
+
     public function getLastOperation()
     {
         $warrant = $this->warrants()->first();
