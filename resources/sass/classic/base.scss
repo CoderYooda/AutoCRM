@@ -149,6 +149,7 @@ h2{
 /* Dropdown */
 .dropdown{
     position: relative;
+    position: relative;
 }
 .dropdown_container .arrow::after, .dropdown_container .arrow::before {
     position: absolute;
@@ -198,6 +199,7 @@ h2{
 /*Header*/
 .evotor_ico{
     position: relative;
+    height: 22px;
 }
 .evotor_ico .payed_logo{
     background-image: url(/images/icons/evotor.png);
