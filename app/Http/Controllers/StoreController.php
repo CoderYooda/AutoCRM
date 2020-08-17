@@ -12,6 +12,7 @@ use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\ImportHistory;
 use App\Models\Service;
 use App\Models\Store;
@@ -118,21 +119,20 @@ class StoreController extends Controller
         $analog_articles = [];
         $manufacture_selected = null;
 
-        if(!$request->has('except_analogues')) { //Если аналоги не исключены из поиска
+        $manufactures = AnalogController::getManufacturersByArticle($request->search);
 
-            $manufactures = AnalogController::getManufacturersByArticle($request->search);
+        if ($request->manufacture_id) {
+            $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
+        }
 
-            if ($request->manufacture_id) {
-                $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
-            }
+        #Список артикулов аналогов
 
-            #Список артикулов аналогов
+        foreach ($analogues as $analogue) {
+            $analog_articles[$analogue['m_name']] = $analogue['nsa'];
+        }
 
-            foreach ($analogues as $analogue) {
-                $analog_articles[$analogue['m_name']] = $analogue['nsa'];
-            }
-
-            #Узнаем название производителя
+        #Узнаем название производителя
+        if(count($manufactures)) {
             $manufacture_selected = collect($manufactures)->where('m_id', $request->manufacture_id)->first()['m_name'];
         }
 
@@ -153,7 +153,9 @@ class StoreController extends Controller
             $products[$key]['supplier_name'] = $product->supplier->name;
         }
 
-        if(!$request->has('except_analogues')) {
+        $is_barcode = $products->where('barcode', $request->search)->count() && $products->where('article', '!=', $request->search);
+
+        if(!$is_barcode) {
             $analog_pluck = $analog_products->pluck('article');
             $info .= 'Список доступных аналогов на складе: ' . (count($analog_pluck) ? trim($analog_pluck, '[]') : 'Нет');
         }
@@ -170,9 +172,12 @@ class StoreController extends Controller
 
     public function provider_storesTab(Request $request)
     {
-        $services = Service::where('category_id', 0)->get();
+        /** @var Company $company */
+        $company = Auth::user()->company;
 
-        return view(get_template() . '.provider_stores.index', compact('request', 'services'));
+        $services = $company->getActiveServicesByCategory(0);
+
+        return view(get_template() . '.provider_stores.index', compact('request', 'services', 'company'));
     }
 
     public static function storeTab($request)
@@ -184,7 +189,6 @@ class StoreController extends Controller
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 2;
-
 
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
             return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request'));

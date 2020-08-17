@@ -15,9 +15,9 @@
                 <li class="nav-item statistic-filter pr-15">
                     <a href="#" data-target="tab_providerorders" class="button primary w-100 active">Проценка</a>
                 </li>
-                <li class="nav-item statistic-filter pr-15">
-                    <a href="#" data-target="tab_messages" class="button primary w-100">Мессенджеры</a>
-                </li>
+{{--                <li class="nav-item statistic-filter pr-15">--}}
+{{--                    <a href="#" data-target="tab_messages" class="button primary w-100">Мессенджеры</a>--}}
+{{--                </li>--}}
             </ul>
         </div>
 
@@ -37,7 +37,7 @@
                                 </div>
                                 <div style="position: absolute; bottom: 0; margin-bottom: 10px;">
                                     <label class="ui-switch float-left">
-                                        <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->id)) checked @endif><i></i>
+                                        <input id="service_{{ $service->id }}" onclick="event.preventDefault();" class="d-none" type="checkbox" @if($company->isServiceProviderActive($service->key)) checked @endif><i></i>
                                     </label>
                                 </div>
                             </div>
@@ -48,9 +48,9 @@
                 </div>
             </div>
 
-            <div id="tab_messages" class="tab-pane">
-                123
-            </div>
+{{--            <div id="tab_messages" class="tab-pane">--}}
+{{--                123--}}
+{{--            </div>--}}
 
         </div>
 

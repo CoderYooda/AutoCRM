@@ -83,20 +83,86 @@ class settingsPage{
             });
     }
 
-    saveService(form_element) {
+    changeValue(input) {
+        let url = document.getElementById('url').innerText;
 
-        window.axform.send(form_element, response => {
+        if(url == 'armtek.ru' && input.name.includes('password')) {
 
-            if(response.status === 200) {
+            let select_element = document.querySelector('[name="fields[sales_organization]"]');
 
-                let service_id = response.data.service.id;
+            select_element.innerHTML = '';
 
-                let input = document.getElementById('service_' + service_id);
+            let login = document.querySelector('[name="fields[login]"]');
+            let password = input.value;
 
-                input.checked = !input.checked;
+            axios.get('/provider_stores/armtek/sales_organization', {
+                    login: login,
+                    password: password
+                })
+                .then(response => {
 
-                this.modal.hide();
-            }
+                    let data = response.data;
+
+                    Object.keys(data).forEach(key => {
+
+                        let value = data[key];
+
+                        let option_element = document.createElement('option');
+                        option_element.value = value.VKORG;
+                        option_element.innerText = value.PROGRAM_NAME;
+
+                        select_element.add(option_element);
+                    });
+                })
+                .catch(response => {
+                    console.log(response);
+                });
+        }
+    }
+
+    toggleService(button_element, service_id) {
+
+        togglePreloader(button_element, true);
+
+        let enabled_input = document.querySelector('[name="enabled"]');
+
+        let field_inputs = document.querySelectorAll('.form-control');
+
+        let data = {
+            enabled: Number(enabled_input.value),
+            fields: {}
+        };
+
+        field_inputs.forEach(input => {
+
+            let correct_name = input.name.match(/\[(.+?)\]/)[1];
+
+            console.log(correct_name);
+
+            data['fields'][correct_name] = input.value;
+        });
+
+        axios.post('/services/' + service_id + '/toggle', data)
+        .then(response => {
+            let enabled = response.data.enabled;
+
+            button_element.innerText = enabled ? 'Деактивировать' : 'Активировать';
+            enabled_input.value = enabled;
+
+            let input = document.getElementById('service_' + service_id);
+            input.checked = enabled;
+        })
+        .catch(response => {
+            console.log(response);
+        })
+        .then(() => {
+            togglePreloader(button_element, false);
+        });
+    }
+
+    saveService(button_element) {
+        window.axform.send(button_element, response => {
+            //
         });
     }
 
@@ -106,24 +172,24 @@ class settingsPage{
 
         axios({
             url: '/api/inn/' + element.value,
-            method: 'get'
+            method: 'GET'
         })
-            .then(response => {
+        .then(response => {
 
-                let data = response.data;
+            let data = response.data;
 
-                let name_element = document.querySelector('.active input[name="name"]');
-                if(name_element) name_element.value = data.name;
+            let name_element = document.querySelector('.active input[name="name"]');
+            if(name_element && data.name) name_element.value = data.name;
 
-                let opf_element = document.querySelector('.active input[name="opf"]');
-                if(opf_element) opf_element.value = data.opf.short;
+            let opf_element = document.querySelector('.active input[name="opf"]');
+            if(opf_element && data.opf.short) opf_element.value = data.opf.short;
 
-                let ogrn_element = document.querySelector('.active input[name="ogrn"]');
-                if(ogrn_element) ogrn_element.value = data.ogrn;
+            let ogrn_element = document.querySelector('.active input[name="ogrn"]');
+            if(ogrn_element && data.ogrn) ogrn_element.value = data.ogrn;
 
-                let kpp_element = document.querySelector('.active input[name="kpp"]');
-                if(kpp_element && data.kpp) kpp_element.value = data.kpp;
-            });
+            let kpp_element = document.querySelector('.active input[name="kpp"]');
+            if(kpp_element && data.kpp) kpp_element.value = data.kpp;
+        });
     }
 
 
@@ -203,6 +269,13 @@ class settingsPage{
 
             new Tabs('settings_services_tabs');
         }
+        else if(this.active_tab === 'requisites') {
+            let button_element = document.querySelector('#ajax-tab-content button[class~="active"]');
+
+            setTimeout(() => {
+                button_element.click();
+            }, 300)
+        }
     }
 
     getCurrentActiveTab(){
@@ -230,20 +303,9 @@ class settingsPage{
     saveBaseSettingsForm(elem, event){
 
         if(window.isXHRloading) return;
-        //let object = this;
+
         window.axform.send(elem, function(resp){
-            //let root_id = object.root_dialog.id;
-            // object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-            // object.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
-            // object.root_dialog.setAttribute('data-id', resp.data.id);
-            // object.freshContent(resp.data.id, function(){
-            //     delete window[root_id];
-            //     let drag_dialog = window.dialogs[root_id];
-            //     delete window.dialogs[root_id];
-            //     window.dialogs['entranceDialog' + resp.data.id] = drag_dialog;
-            //     drag_dialog.tag = 'entranceDialog' + resp.data.id;
-            //     window.helper.initDialogMethods();
-            // });
+            //
         });
     }
 
@@ -346,7 +408,7 @@ class settingsPage{
         event.preventDefault();
 
         window.axform.send(form_element, function(e){
-            // object.finitaLaComedia(true);
+            //
         });
     }
 
@@ -358,11 +420,9 @@ class settingsPage{
             url: '/api/bik/' + element.value,
         }).then(response => {
 
-            console.log(response);
-
             let data = response.data;
 
-            if(!Object.keys(data).length) return ;
+            if(Object.keys(data).length < 2) return ;
 
             document.querySelector('.active input[name=cs]').value = data.ks;
             document.querySelector('.active input[name=bank]').value = data.name.split('&quot;').join('"');

@@ -96,7 +96,7 @@ class Partner extends Model
         if($phones){
             $number = $phones->where('main', true)->first();
             if($number){
-                $num_out = HelpController::phoneFormat( $number->number);
+                $num_out = phone_format( $number->number);
             }
         }
         if(!$num_out){

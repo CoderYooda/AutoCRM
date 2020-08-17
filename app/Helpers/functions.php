@@ -18,6 +18,23 @@ if(!function_exists('isDate')) {
     }
 }
 
+if(!function_exists('throw_error')) {
+    function throw_error($message) {
+        exception(422, [
+            'message' => $message,
+            'type' => 'error'
+        ]);
+    }
+}
+
+if(!function_exists('throw_validator_exception')) {
+    function throw_validator_exception($errors) {
+        exception(422, [
+            'messages' => $errors
+        ]);
+    }
+}
+
 if(!function_exists('exception')) {
     function exception(int $status, array $attributes = [])
     {
@@ -48,8 +65,58 @@ if(!function_exists('convertPHPSizeToBytes')) {
     }
 }
 
+if(!function_exists('correct_price')) {
+    function correct_price($price) {
+        return number_format($price, 2, ',', ' ');
+    }
+}
+
+if(!function_exists('sum_percent')) {
+    /**
+     * @param $sum
+     * @param $percent
+     * @return float
+     */
+    function sum_percent($sum, $percent) {
+        return $sum / 100 * $percent;
+    }
+}
+
+if(!function_exists('sum_cents')) {
+    function sum_cents($price) {
+        return explode('.', $price)[1] ?? 0;
+    }
+}
+
+if(!function_exists('phone_format')) {
+    function phone_format($sPhone)
+    {
+        $sPhone = preg_replace("![^0-9]+!", '', $sPhone);
+        if (strlen($sPhone) != 11) return (false);
+        $sCountry = substr($sPhone, 0, 1);
+        $sArea = substr($sPhone, 1, 3);
+        $sPrefix = substr($sPhone, 4, 3);
+        $sNumber = substr($sPhone, 7, 2);
+        $sNumber2 = substr($sPhone, 9, 2);
+
+        if ($sCountry != 8) {
+            $sCountry = '+' . $sCountry;
+        }
+        $sPhone = $sCountry . "(" . $sArea . ")" . $sPrefix . "-" . $sNumber . "-" . $sNumber2;
+        return ($sPhone);
+    }
+}
+
 if(!function_exists('num2str')) {
-    function num2str($num)
+    /**
+     * $type 0 - с копейками
+     * $type 1 - без копеек
+     * $type 2 - только копейки
+     * @param $num
+     * @param int $type
+     * @return string
+     */
+    function num2str($num, $type = 0)
     {
         $nul = 'ноль';
         $ten = array(
@@ -83,8 +150,8 @@ if(!function_exists('num2str')) {
                 if ($uk > 1) $out[] = morph($v, $unit[$uk][0], $unit[$uk][1], $unit[$uk][2]);
             } //foreach
         } else $out[] = $nul;
-        $out[] = morph(intval($rub), $unit[1][0], $unit[1][1], $unit[1][2]); // rub
-        $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
+        if($type != 2) $out[] = morph(intval($rub), $unit[1][0], $unit[1][1], $unit[1][2]); // rub
+        if($type == 2 || $type == 0) $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
         return trim(preg_replace('/ {2,}/', ' ', join(' ', $out)));
     }
 }

@@ -20,7 +20,8 @@
             <div class="titlebar">Новый расходный ордер</div>
         @endif
     @endif
-        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
     <form action="{{ route('StoreWarrant') }}" method="POST">
@@ -182,12 +183,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
+                <textarea placeholder="Комментарий" style="resize: none; height: 60px;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
             </div>
         </div>
         <div class="modal-footer">
             @if(isset($warrant))
-            <button type="button" class="button mr-15" onclick="window.helper.printDocument('out-warrant', {{ $warrant->id }})" >Печать</button>
+            <button type="button" class="button mr-15" onclick="window.helper.printDocument('{{ $warrant->isIncoming ? 'in-warrant' : 'out-warrant' }}', {{ $warrant->id }})" >Печать</button>
             @endif
             <button type="button" class="button white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             <button type="submit" class="button pull-right" onclick="window.{{ $class }}.save(this)" >Сохранить</button>

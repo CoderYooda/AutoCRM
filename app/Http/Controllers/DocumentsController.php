@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Refund;
 use App\Models\Shipment;
+use App\Models\Warrant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,16 +15,25 @@ class DocumentsController extends Controller
     {
         $names = [
             'out-warrant' => 'documents.out-warrant',
+            'in-warrant' => 'documents.in-warrant',
             'client-order' => 'documents.client-order',
             'provider-order' => 'documents.provider-order',
             'statistic-result' => 'documents.statistic-result',
             'shipment-score' => 'documents.invoice-for-payment',
-            'shipment-upd' => 'documents.upd'
+            'shipment-upd' => 'documents.upd',
+            'defective-act' => 'documents.defective-act'
         ];
 
-        $view = view($names[$request->doc], compact('request'));
+        $view = view($names[$request->doc], compact('request'))
+            ->with('company', Auth::user()->company);
 
-        if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
+        if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {
+            $view->with('warrant', Warrant::find($request->id));
+        }
+        else if($request->doc == 'defective-act') {
+            $view->with('refund', Refund::find($request->id));
+        }
+        else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 
             $selected_products = json_decode($request->data);
 
@@ -48,8 +59,7 @@ class DocumentsController extends Controller
                 $sorted_products['nds'] += $nds;
             }
 
-            $view->with('company', Auth::user()->company)
-                ->with('products', Article::whereIn('id', array_keys($sorted_products))->get())
+            $view->with('products', Article::whereIn('id', array_keys($sorted_products))->get())
                 ->with('sorted_products', $sorted_products)
                 ->with('shipment', Shipment::with('company')->find($request->id));
         }

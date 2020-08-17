@@ -8,7 +8,7 @@
 
         <div style="width: 700px; height: calc(100vh - 110px);" data-simplebar="init">
 
-            <form action="{{ route('SaveCompanySettings') }}" method="POST" onsubmit="settings.saveRequisites(this)">
+            <form action="{{ route('SaveCompanySettings') }}" method="POST">
 
                 @csrf
                 <input type="hidden" name="company_id" value="{{ auth()->user()->company->id }}">
@@ -153,7 +153,7 @@
 
                 </div>
 
-                <button class="button primary">Сохранить</button>
+                <button type="button" onclick="settings.saveRequisites(this)" class="button primary">Сохранить</button>
 
             </form>
 

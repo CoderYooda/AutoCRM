@@ -85,7 +85,6 @@ class LoginController extends Controller
         $this->validateLogin($request);
         $user = User::where('phone', $request['phone'])->first();
 
-
         if($user && $user->banned_at != null){
             return redirect()->back()->with('banned', ['Выша учетная запись была заблокирована']);
         }

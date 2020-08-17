@@ -54,7 +54,7 @@ class PartnerRequest extends FormRequest
 
         if ($this->type == 0) {
             $rules += [
-                'fio' => ['required', 'min:4', 'string', 'max:255'],
+                'fio' => ['required', 'min:2', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
                 'number' => ['nullable', 'min:0', 'digits:10', 'integer'],
                 'issued_by' => ['nullable', 'min:0', 'max:250'],

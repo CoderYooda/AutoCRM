@@ -8,23 +8,28 @@
                 <div class="w-100 box-search">
                     <div class="box m-10">
                         <input id="search" name="search" placeholder="Поиск по складам" class="input w-100" value="{{ request('search') }}" type="text">
-                        <input type="hidden" name="service_id" value="{{ $services->first()->id }}" />
+                        <input type="hidden" name="service_key" value="{{ $services->first()->key ?? 0 }}" />
                         <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
                             <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
                         </span>
                     </div>
                 </div>
 
-                <div class="w-100 p-10 pt-0 provider_tabs">
-                    @foreach($services as $service)
+                <div class="w-100 mb-10 pl-10 provider_tabs">
 
-                        @continue(!auth()->user()->company->isServiceProviderActive($service->id))
+                    @forelse($services as $service)
 
-                        <button onclick="store.showProvider(this, {{ $service->id }})" class="button relative primary mr-5 btn_with_badge @if($loop->first) active @endif">
-                            {{ $service->name }} <span id="service_count_{{ $service->id }}" class="badge-pill">0</span>
+                        <button data-id="{{ $service->id }}" data-sort="{{ $service->pivot->sort }}" onclick="store.showProvider(this, '{{ $service->key }}')" class="button mr-5 relative primary btn_with_badge @if($loop->first) active @endif">
+                            {{ $service->name }} <span id="service_count_{{ $service->key }}" class="badge-pill">0</span>
                         </button>
 
-                    @endforeach
+                    @empty
+
+                        <div class="text-center">
+                            У вас нет активных сервисов для проценки, для подключения перейдите в раздел <a class="ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'services']) }}">настройки</a>
+                        </div>
+
+                    @endforelse
                 </div>
             </div>
 

@@ -13,7 +13,11 @@ interface ProviderInterface
 
     public function getName(): string;
 
-    public function getServiceId(): int;
+    public function getServiceKey(): string;
 
     public function isActivated(): bool;
+
+    public function getSelectFieldValues(string $field_id): array;
+
+    public function checkConnect(array $fields): bool;
 }

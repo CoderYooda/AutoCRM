@@ -40,7 +40,7 @@
             <ul class="nav w-100 mb-0 mt-0">
                 <li class="item d-flex w-100">
                     {{--<div class="flex-1 stat_name">{{ $attributes['partner'] }}</div>--}}
-                    <div class="flex-1 stat_summ">{{ number_format($entity_ids, 2, ',', ' ')  }}</div>
+                    <div class="flex-1 stat_summ">{{ correct_price($entity_ids)  }}</div>
                     <div class="flex-1 stat_date">{{ $date }}</div>
                 </li>
             </ul>
@@ -56,7 +56,7 @@
                         <div class="flex-1 stat_id">{{ $entity_id }}</div>
                         {{--<div class="flex-1 stat_name">{{ $attributes['partner'] }}</div>--}}
                         <div class="flex-1 stat_name">{{ $attributes['manager'] }}</div>
-                        <div class="flex-1 stat_summ">{{ number_format($attributes['amount'], 2, ',', ' ')  }}</div>
+                        <div class="flex-1 stat_summ">{{ correct_price($attributes['amount'])  }}</div>
                         <div class="flex-1 stat_date">{{ $date }}</div>
                     </li>
                 </ul>

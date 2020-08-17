@@ -152,6 +152,7 @@ class ProductController extends Controller
 
         } else {
             $product = $article;
+
             $content = view(get_template() . '.entrance.dialog.product_element', compact('product', 'request'))->render();
 
         }
@@ -374,6 +375,8 @@ class ProductController extends Controller
         foreach ($articles as $manufacture => $article) {
             $prepare_data[] = mb_strtolower($article . $manufacture);
         }
+
+//        dd($prepare_data);
 
         return Article::owned()
             ->where(function (Builder $query) use($prepare_data) {

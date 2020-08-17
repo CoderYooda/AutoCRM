@@ -1,5 +1,5 @@
 import {Contextual, ContextualItem} from "../Contentual";
-import Tabs from "../../Tools/Tabs";
+import Sortable from "sortablejs";
 
 class storePage{
 
@@ -239,20 +239,20 @@ class storePage{
         if(object.active_tab === 'store') {
             object.contextDop = 'product';
             object.parametr = 'product';
-            var priceFormatter = function(cell, formatterParams, onRendered){
-                onRendered(function(){
-
-                    if(isNaN(cell.getValue())){
-                        cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ cell.getValue() +'</span>';
-                    } else {
-                        var formatter = new Intl.NumberFormat('ru-RU', {
-                            style: 'currency',
-                            currency: 'RUB',
-                        });
-                        cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
-                    }
-                });
-            };
+            // var priceFormatter = function(cell, formatterParams, onRendered){
+            //     onRendered(function(){
+            //
+            //         if(isNaN(cell.getValue())){
+            //             cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ cell.getValue() +'</span>';
+            //         } else {
+            //             var formatter = new Intl.NumberFormat('ru-RU', {
+            //                 style: 'currency',
+            //                 currency: 'RUB',
+            //             });
+            //             cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+            //         }
+            //     });
+            // };
 
             columns = [
                 {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
@@ -432,13 +432,15 @@ class storePage{
 
     searchProviderStores() {
 
-        let service_input = document.querySelector('[name="service_id"]');
+        let service_input = document.querySelector('[name="service_key"]');
 
         let table_element = document.getElementById('table-container');
 
         document.querySelector('.out_of_search').classList.add('d-none');
 
-        table_element.classList.add('active');
+        togglePreloader(table_element, true);
+
+        if(this.search == null) this.search = '';
 
         axios.post('/provider_stores/tableData', {
             search: this.search,
@@ -446,26 +448,42 @@ class storePage{
         })
         .then(response => {
 
-            document.getElementById('table_body').innerHTML = response.data.html;
+            if(!response.data.html.length) {
+                document.getElementById('table_body').innerHTML = '';
+                document.querySelector('.out_of_search').classList.remove('d-none');
+            }
+            else {
 
-            let counts = response.data.counts;
+                document.getElementById('table_body').innerHTML = response.data.html;
 
-            Object.keys(counts).forEach(service_id => {
+                let counts = response.data.counts;
 
-                let manufacturers = counts[service_id];
+                Object.keys(counts).forEach(service_key => {
 
-                document.getElementById('service_count_' + service_id).innerText = manufacturers.length;
-            });
+                    let manufacturers = counts[service_key];
+
+                    document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
+                });
+            }
+
+            let errors = response.data.errors;
+
+            if(errors) {
+                Object.keys(errors).forEach(key => {
+                    let value = errors[key];
+                    notification.notify('error', key + ': ' + value);
+                });
+            }
         })
         .catch(response => {
             dd(response);
         })
         .finally(() => {
-            table_element.classList.remove('active');
+            togglePreloader(table_element, false);
         });
     }
 
-    showProvider(button, service_id) {
+    showProvider(button, service_key) {
         let button_elements = document.querySelectorAll('.provider_tabs button');
 
         button_elements.forEach(element => {
@@ -474,14 +492,16 @@ class storePage{
 
         button.classList.add('active');
 
-        let service_input = document.querySelector('[name="service_id"]');
+        let service_input = document.querySelector('[name="service_key"]');
 
-        service_input.value = service_id;
+        service_input.value = service_key;
 
         this.searchProviderStores();
     }
 
-    showManufactureStores(element, manufacturer) {
+    showManufactureStores(element, manufacturer, sort = null) {
+
+        let is_desc = true;
 
         let target_element = document.getElementById('brand_context_' + manufacturer);
 
@@ -489,16 +509,53 @@ class storePage{
 
         let table_element = target_element.querySelector('.preloader-block');
 
-        if(element.classList.contains('fa-angle-down')) {
+        togglePreloader(table_element, true);
 
-            let service_input = document.querySelector('[name="service_id"]');
+        let sort_elements = document.querySelectorAll('.sort_arrow');
+
+        sort_elements.forEach(element => {
+
+            if(element.classList.contains(sort)) {
+
+                if(element.classList.contains('active')) {
+                    if(element.classList.contains('up')) {
+                        element.classList.remove('up');
+                        element.classList.add('down');
+
+                        is_desc = true;
+                    }
+                    else {
+                        element.classList.add('up');
+                        element.classList.remove('down');
+
+                        is_desc = false;
+                    }
+                }
+                else {
+                    element.classList.add('active');
+                }
+            }
+            else {
+                element.classList.remove('active');
+                element.classList.remove('up');
+                element.classList.remove('down');
+
+                element.classList.add('down');
+            }
+        });
+
+        if(element.classList.contains('fa-angle-down') || sort != null) {
+
+            let service_input = document.querySelector('[name="service_key"]');
 
             target_element.classList.remove('d-none');
 
             axios.post('/provider_stores/stores', {
                 manufacturer: manufacturer,
                 article: this.search,
-                selected_service: Number(service_input.value)
+                selected_service: service_input.value,
+                sort: sort,
+                is_desc: is_desc
             })
             .then(response => {
 
@@ -511,7 +568,7 @@ class storePage{
                 console.log(response);
             })
             .finally(()=> {
-                table_element.classList.remove('active');
+                togglePreloader(table_element, false);
             });
         }
         else {
@@ -520,7 +577,6 @@ class storePage{
             element.classList.add('fa-angle-down');
 
             target_element.classList.add('d-none');
-            table_element.classList.add('active');
 
             //Очищаем внутренний список
             target_element.querySelector('tbody').innerHTML = '';
@@ -583,7 +639,6 @@ class storePage{
                 document.body.classList.add('loading');
             },
             ajaxResponse: (url, params, response) => {
-
                 window.isXHRloading = false;
                 document.body.classList.remove('loading');
 
@@ -595,7 +650,8 @@ class storePage{
                         document.getElementById('breadcrumbs-nav').innerHTML = response.info;
                     }
 
-                    if(manufacturers.length) {
+                    if(Object.keys(manufacturers).length) {
+
                         this.manufacture_id = null;
 
                         let store_list = document.getElementById('store-list');
@@ -603,6 +659,8 @@ class storePage{
                         store_list.innerHTML = '';
 
                         Object.keys(manufacturers).forEach(key => {
+
+                            console.log(manufacturers[key]);
 
                             let html = '<div onclick="store.selectManufacture(this)" class="store-list-item pointer" id="manufacture_' + manufacturers[key].m_id + '">' + manufacturers[key].m_name + '</div>';
 
@@ -622,6 +680,13 @@ class storePage{
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
             columns: object.generateColumns(),
+            renderComplete: () => {
+                let title_elements = document.querySelectorAll('.tabulator-cell');
+
+                title_elements.forEach(element => {
+                    element.title = element.innerText;
+                });
+            },
             rowDblClick:function(e, row){
                 openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
             },
@@ -629,16 +694,44 @@ class storePage{
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
                 let items = [];
-                // if(object.contextDop == 'providerorder'){
-                //     items.push(new ContextualItem({label:'Оплатить', onClick: () => {window.providerorderDialog8.getPayment()} }));
-                // }
 
-                items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
-                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }));
+                let id = row.getData().id;
+
+                items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+
                 if(object.contextDop == 'shipment') {
-                    items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + row.getData().id);} }));
+
+                    items.push(new ContextualItem({type:'seperator'}));
+
+                    let products = row.getData().articles;
+
+                    let data = {};
+
+                    Object.values(products).forEach((value, index) => {
+                        data[index] = {
+                            id: value.id,
+                            count: value.pivot.count,
+                            price: value.pivot.price,
+                            total: value.pivot.count * value.pivot.price
+                        };
+                    });
+
+                    data = JSON.stringify(data);
+
+                    items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + id);} }));
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id, data, true);} }));
+                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id, data);} }));
                 }
-                items.push(new ContextualItem({type:'seperator'}));
+                else if(object.contextDop == 'clientorder') {
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('client-order', id);} }));
+                }
+                else if(object.contextDop == 'product') {
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
+                }
 
                 // items.push(new ContextualItem({
                 //     label: 'Удалить', onClick: () => {
@@ -720,11 +813,6 @@ class storePage{
         if(object.search && object.search !== 'null' || object.search !== null) {
 
             let search_string = object.search.toString();
-
-            if(search_string.length === 13) {
-                data.except_analogues = 1;
-            }
-
             data.search = search_string;
         }
 
@@ -786,6 +874,10 @@ class storePage{
 
         let focused = document.querySelector('#search');
         if(focused) focused.focus();
+
+        if(this.active_tab == 'provider_stores') {
+            this.searchProviderStores();
+        }
     }
 
     load(){
@@ -825,6 +917,40 @@ class storePage{
 
         let focused = document.querySelector('#search');
         if(focused) focused.focus();
+
+        if(this.active_tab == 'provider_stores') {
+            let available_list = document.querySelector('.provider_tabs');
+            let sortable = new Sortable(available_list, {
+                items: 'button',
+                dragClass: "sortable-ghost",
+                onEnd: evt => {
+
+                    let sorts = {};
+
+                    let button_elements = available_list.querySelectorAll('button');
+
+                    button_elements.forEach((element, index) => {
+                        if (element.dataset.sort != index) {
+                            sorts[index] = {
+                                id: element.dataset.id,
+                                sort: index
+                            };
+                            element.dataset.sort = index;
+                        }
+                    });
+
+                    axios.post('/services/updateSort', {
+                        sorts: sorts
+                    })
+                    .then(response => {
+                        // console.log(response);
+                    })
+                    .catch(response => {
+                        console.log(response);
+                    });
+                },
+            });
+        }
     }
 
     prepareParams(){
@@ -845,6 +971,15 @@ class storePage{
         if(this.date_end === null || this.date_end === 'null'){
             this.date_end = '';
         }
+    }
+
+    sortBy(element, type) {
+
+        let brand_element = document.querySelector('.fa-angle-up').parentElement;
+
+        let brand_name = brand_element.dataset.manufacturer;
+
+        this.showManufactureStores(brand_element, brand_name, type);
     }
 
     checkActive(){

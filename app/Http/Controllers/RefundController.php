@@ -17,27 +17,26 @@ class RefundController extends Controller
 {
     public static function refundDialog($request)
     {
-        $tag = 'refundDialog';
+        $refund = Refund::where('id', (int)$request['refund_id'])->first();
 
-        if ($request['refund_id']) {
-            $refund = Refund::where('id', (int)$request['refund_id'])->first();
-            $tag .= $refund->id;
-        } elseif( $request['shipment_id']){
-            $shipment = Shipment::owned()->find((int)$request['shipment_id']);
-        } else {
-            $refund = null;
-            $shipment = null;
-        }
+        $tag = 'refundDialog' . ($refund->id ?? '');
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request'))->render()
+            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund' , 'request'))->render()
         ]);
     }
 
-    public function getSideInfo()
+    public function getSideInfo(Request $request)
     {
-        //TODO
+        $client_order = Refund::find($request->id)->load('partner');
+        $partner = $client_order->partner;
+        $comment = $client_order->comment;
+
+        return response()->json([
+            'info' => view(get_template() . '.refund.contact-card', compact('partner', 'request'))->render(),
+            'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
+        ], 200);
     }
 
     public function tableData(Request $request)
@@ -96,9 +95,8 @@ class RefundController extends Controller
 
         $store = $shipment->store;
 
-        if($refundWasExisted){
+        if($refundWasExisted) {
             foreach($refund->articles as $article){
-                $store->decreaseArticleCount($article->id, $article->pivot->count);
                 $shipment->decreaseRefundedCount($article->id, $article->pivot->count);
             }
         }
@@ -129,14 +127,21 @@ class RefundController extends Controller
             }
         }
 
+        $discount_percent = 0;
+
+        if($shipment->discount) {
+            if($shipment->inpercents) $discount_percent = $shipment->discount;
+            else $discount_percent = $shipment->discount * 100 / $shipment->summ;
+        }
+
         $refund_data = [];
 
         foreach($request['products'] as $product) {
 
-            $store->increaseArticleCount($product['id'], $product['count']);
+            $shipment_price = $shipment->getProductPriceFromShipment($product['id']);
 
             $vcount = $product['count'];
-            $vprice = $shipment->getProductPriceFromShipment($product['id']);
+            $vprice = $shipment_price - ($shipment_price / 100 * $discount_percent);
             $vtotal = $vprice * $vcount;
             $refund->summ += $vtotal;
             $pivot_data = [
@@ -176,56 +181,6 @@ class RefundController extends Controller
         }
     }
 
-    public function delete($id, Request $request)
-    {
-        PermissionController::canByPregMatch('Удалять возвраты');
-
-        return response()->json([
-            'message' => 'Удаление невозможно',
-            'type' => 'error',
-        ], 422);
-
-//        $returnIds = null;
-//        if($id == 'array'){
-//            $refunds = Refund::whereIn('id', $request['ids']);
-//            $this->message = 'Возвраты удалены';
-//            $returnIds = $refunds->get()->pluck('id');
-//            foreach($refunds->get() as $refund){
-//                if($refund->delete()){
-//                    foreach($refund->articles()->get() as $article){
-//                        $store = $refund->store()->first();
-//                        $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
-//                    }
-//                    #Добавляем к балансу контакта
-//                    $refund->partner()->first()->addition($refund->summ);
-//                    $refund->articles()->sync(null);
-//                    UA::makeUserAction($refund, 'delete');
-//                }
-//            }
-//        } else {
-//            $refund = Refund::where('id', $id)->first();
-//            $returnIds = $refund->id;
-//            foreach($refund->articles()->get() as $article){
-//                $store = $refund->store()->first();
-//                $store->decreaseArticleCount($article->id, $refund->getArticlesCountById($article->id));
-//            }
-//            #Добавляем к балансу контакта
-//            $refund->partner()->first()->addition($refund->summ);
-//            $refund->articles()->sync(null);
-//            $refund->delete();
-//            $this->status = 200;
-//            $this->message = 'Возврат удален';
-//        }
-//
-//        return response()->json([
-//            'id' => $returnIds,
-//            'message' => $this->message,
-//            'event' => 'RefundStored',
-//        ], 200);
-
-
-    }
-
     public static function getRefunds($request)
     {
 
@@ -252,8 +207,8 @@ class RefundController extends Controller
             $dir = 'DESC';
         }
 
-        if ($request['provider'] == null) {
-            $request['provider'] = [];
+        if ($request['client'] == null) {
+            $request['client'] = [];
         }
 
         if ($request['accountable'] == null) {
@@ -275,10 +230,10 @@ class RefundController extends Controller
 //                $query->whereIn('client_orders.partner_id', $request['accountable']);
 //            })
             ->when($request['client'] != [], function ($query) use ($request) {
-                $query->whereIn('client_orders.partner_id', $request['client']);
+                $query->whereIn('refund.partner_id', $request['client']);
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
-                $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('refund.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
             ->where('refund.company_id', Auth::user()->company()->first()->id)
             ->groupBy('refund.id')

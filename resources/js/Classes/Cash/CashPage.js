@@ -12,7 +12,7 @@ class cashPage{
         this.dates_range = null;
         this.date_start = 'null';
         this.date_end = 'null';
-        this.isIncoming = 'null';
+        this.isIncoming = null;
         this.dates = null;
         this.partner = [];
         this.any = [];
@@ -255,14 +255,28 @@ class cashPage{
             rowContext:function(e, row){
                 e.preventDefault();
                 object.selectedData = object.table.getSelectedData();
-                let items = [
-                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
-                    new ContextualItem({type:'seperator'}),
-                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
-                ];
-                if(object.selectedData.length > 0){
-                    items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
+
+                let data = row.getData();
+                let id = row.getData().id;
+
+                let items = [];
+
+                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+
+                if(object.contextDop !== 'warrant') {
+                    items.push(new ContextualItem({type: 'seperator'}));
+                    items.pust(new ContextualItem({
+                        label: 'Печать', onClick: () => {
+                            window.helper.printDocument((data.isIncoming ? 'in-warrant' : 'out-warrant'), id)
+                        }, shortcut: 'Что то'
+                    }));
                 }
+                    // new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
+
+                // if(object.selectedData.length > 0){
+                //     items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
+                // }
+
                 object.tableContextual = null;
                 object.tableContextual = new Contextual({
                     isSticky: false,
@@ -473,9 +487,6 @@ class cashPage{
         if(this.page === null || this.page === 'null'){
             this.page = 1;
         }
-        if(this.isIncoming === null || this.isIncoming === 'null'){
-            this.isIncoming = '';
-        }
         if(this.date_start === null || this.date_start === 'null'){
             this.date_start = '';
         }
@@ -499,9 +510,8 @@ class cashPage{
             url += '&page=';
             url += this.page;
         }
-        if(this.isIncoming !== null || this.isIncoming !== 'null'){
-            url += '&isIncoming=';
-            url += this.isIncoming;
+        if(this.isIncoming !== null){
+            url += '&isIncoming=' + this.isIncoming;
         }
         if(this.date_start !== null || this.date_start !== 'null' || this.date_start !== ''){
             url += '&date_start=';

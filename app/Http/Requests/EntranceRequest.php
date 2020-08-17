@@ -17,9 +17,9 @@ class EntranceRequest extends FormRequest
     {
         return [
             'providerorder_id' => ['required', 'exists:provider_orders,id'],
-            //            'store_id' => ['required', 'exists:stores,id'],
             'products' => ['required'],
             'products.*.count' => ['integer', 'min:1', 'max:9999'],
+            'invoice' => ['required', 'string', 'max:255'],
         ];
     }
 

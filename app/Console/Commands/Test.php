@@ -20,32 +20,33 @@ class Test extends Command
 
     public function handle()
     {
-        $url = "https://online.bbcrm.ru/test?";
 
         $params = [
-            'method' => 'GET',
-            'path'=> 'search/articles/',
-            'userlogin'=> 'audi-31@yandex.ru',
-            'userpsw' => '904fb12b14e1d08af410ec9db5f905d9',
-            'number' => 'k1279',
-            'useOnlineStocks' => '1',
-            'brand' => 'Kashiyama',
-            'locale' => 'ru_RU'
+            'Search_Code' => 'k1279',
+            'ClientID'  => '25288',
+            'Password'  => '9524245038',
+            'FromStockOnly'  => 'FromStockAndByOrder'
         ];
 
-        $query_params = http_build_query($params);
+        $header = "Content-Type: application/x-www-form-urlencoded";
 
         $handle = curl_init();
 
-        curl_setopt($handle, CURLOPT_URL, $url . $query_params);
+        curl_setopt($handle, CURLOPT_URL, 'https://mikado-parts.ru/ws1/service.asmx/Code_Search');
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-
+        curl_setopt($handle, CURLOPT_POST, 1);
+        curl_setopt($handle,CURLOPT_FOLLOWLOCATION,TRUE);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($params));
         $result = curl_exec($handle);
-
-        $result = (array)json_decode($result);
 
         curl_close($handle);
 
-        dd($result);
+        $brands = simplexml_load_string($result);
+
+        foreach ($brands->List->Code_List_Row as $brand) {
+            dd($brand);
+        }
+
     }
 }

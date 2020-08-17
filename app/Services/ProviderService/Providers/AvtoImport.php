@@ -5,32 +5,40 @@ namespace App\Services\ProviderService\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
 
 class AvtoImport implements ProviderInterface
 {
-    protected $host = 'https://online.bbcrm.ru/test?';
+    protected $host = 'http://id8341.public.api.abcp.ru/';
 
     protected $name = 'AvtoImport';
-    protected $service_id = 2;
+    protected $service_key = 'avtoimport';
 
-    protected $login = 'audi-31@yandex.ru';
-    protected $password = '904fb12b14e1d08af410ec9db5f905d9';
+    /** @var Company */
+    protected $company = null;
+
+    protected $login = null;
+    protected $password = null;
+
+    public function __construct()
+    {
+        /** @var Company company */
+        $this->company = Auth::user()->company;
+
+        $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
+        $this->password = md5($this->company->getServiceFieldValue($this->service_key, 'password'));
+    }
 
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'method' => 'GET',
-            'path' => 'search/brands/',
             'userlogin' => $this->login,
             'userpsw' => $this->password,
             'number' => $article,
             'locale' => 'ru_RU'
         ];
 
-        $result = $this->query($params);
+        $result = $this->query('search/brands/', $params, 'GET');
 
         return array_column($result, 'brand');
     }
@@ -40,24 +48,19 @@ class AvtoImport implements ProviderInterface
         return $this->name;
     }
 
-    public function getServiceId(): int
+    public function getServiceKey(): string
     {
-        return $this->service_id;
+        return $this->service_key;
     }
 
     public function isActivated(): bool
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
-        return (bool)$company->isServiceProviderActive($this->service_id);
+        return (bool)$this->company->isServiceProviderActive($this->service_key);
     }
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'method' => 'GET',
-            'path' => 'search/articles/',
             'userlogin' => $this->login,
             'userpsw' => $this->password,
             'number' => $article,
@@ -66,7 +69,7 @@ class AvtoImport implements ProviderInterface
             'locale' => 'ru_RU'
         ];
 
-        $items = $this->query($params);
+        $items = $this->query('search/articles/', $params, 'GET');
 
         $results = [];
 
@@ -86,21 +89,40 @@ class AvtoImport implements ProviderInterface
         return $results;
     }
 
-    private function query($params): array
+    private function query($path, $params, $method): array
     {
-        $query_params = http_build_query($params);
+        $full_path = $this->host . $path . '?' . http_build_query($params);
 
-        $handle = curl_init();
-
-        curl_setopt($handle, CURLOPT_URL, $this->host . $query_params);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($handle);
+        $result = file_get_contents($full_path, null, stream_context_create([
+            'http' => [
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'method' => $method,
+            ],
+        ]));
 
         $result = (array)json_decode($result);
 
-        curl_close($handle);
+        if(array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
+            throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
+        }
 
         return $result;
+    }
+
+    public function getSelectFieldValues(string $field_name): array
+    {
+        return [];
+    }
+
+    public function checkConnect(array $fields): bool
+    {
+        if(!isset($fields['login']) || !isset($fields['password'])) return false;
+
+        $this->login = $fields['login'];
+        $this->password = md5($fields['password']);
+
+        $this->searchBrandsCount('k1279');
+
+        return true;
     }
 }

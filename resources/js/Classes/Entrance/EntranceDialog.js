@@ -14,19 +14,10 @@ class createEntrance extends Modal{
 
     init(){
         let object = this;
-        let event = '';
-        if(object.root_dialog.dataset.id){
-            event = 'EntranceStored' + object.root_dialog.dataset.id;
-        } else {
-            event = 'EntranceStored';
-        }
-        // console.log(event);
-        // document.addEventListener(event, function(e){
-        //     object.finitaLaComedia();
-        // });
+
         this.loadItemsIfExists();
         let focused = document.getElementById('entrance_dialog_focused');
-        if(focused){
+        if(focused) {
             focused.focus();
         }
 
@@ -52,14 +43,15 @@ class createEntrance extends Modal{
 
     save(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
+
+        window.axform.send(elem, (resp) => {
+            console.log(resp);
             if(resp.status === 200) {
-                let root_id = object.root_dialog.id;
-                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-                object.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
-                object.root_dialog.setAttribute('data-id', resp.data.id);
-                object.freshContent(resp.data.id, function () {
+                let root_id = this.root_dialog.id;
+                this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+                this.root_dialog.setAttribute('id', 'entranceDialog' + resp.data.id);
+                this.root_dialog.setAttribute('data-id', resp.data.id);
+                this.freshContent(resp.data.id, function () {
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];
@@ -73,9 +65,9 @@ class createEntrance extends Modal{
 
     saveAndClose(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) object.finitaLaComedia(true);
+
+        window.axform.send(elem, (resp) => {
+            if(resp.status === 200) this.finitaLaComedia(true);
         });
     }
 
@@ -87,9 +79,9 @@ class createEntrance extends Modal{
 
             window.axios({
                 method: 'post',
-                url: 'entrance/' + entrance_id + '/get_products',
-                data: {},
-            }).then(function (resp) {
+                url: 'entrance/' + entrance_id + '/get_products'
+            })
+            .then(function (resp) {
 
                 [].forEach.call(resp.data.products, function(elem){
                     object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
@@ -174,9 +166,8 @@ class createEntrance extends Modal{
             method: 'post',
             url: 'entrance/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            console.log('Вставили html');
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

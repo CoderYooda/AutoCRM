@@ -176,9 +176,9 @@ class entranceRefundDialog extends Modal{
     }
 
     save(elem){
-
         event.preventDefault();
         if(window.isXHRloading) return;
+
         window.axform.send(elem, (response) => {
             if(response.status === 200) {
                 this.fresh(response.data.id);
@@ -213,9 +213,8 @@ class entranceRefundDialog extends Modal{
         event.preventDefault();
 
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) object.finitaLaComedia(true);
+        window.axform.send(elem, (resp) => {
+            if(resp.status === 200) this.finitaLaComedia(true);
         });
     }
 }

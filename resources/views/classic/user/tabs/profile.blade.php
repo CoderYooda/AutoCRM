@@ -30,8 +30,6 @@
                                 <input class="name_edit" type="text" name="companyName"
                                        value="{{ $user->companyName }}">
                             @endif
-
-
                         @else
                             {{ $user->outputName() }}
                         @endif
@@ -42,17 +40,17 @@
 
                 <div class="user_stat">
                     <a href="#" class="item">
-                        <span class="text-md d-block">200</span>
+                        <span class="text-md d-block">{{ \App\Models\Shipment::where('manager_id', auth()->user()->partner_id)->count() }}</span>
                         <small class="text-xs text-muted">Продаж</small>
                     </a>
                     <a href="#" class="item">
-                        <span class="text-md d-block">120.000</span>
+                        <span class="text-md d-block">{{ \App\Models\Warrant::where('isIncoming', 1)->where('manager_id', auth()->user()->partner_id)->sum('summ') }}</span>
                         <small class="text-xs text-muted">Выручка</small>
                     </a>
-                    <a href="#" class="item">
-                        <span class="text-md d-block">12</span>
-                        <small class="text-xs text-muted">Клиентов</small>
-                    </a>
+{{--                    <a href="#" class="item">--}}
+{{--                        <span class="text-md d-block">12</span>--}}
+{{--                        <small class="text-xs text-muted">Клиентов</small>--}}
+{{--                    </a>--}}
                     <div class="btn-block">
                         {{--TODO Can--}}
                         @if(isset($editmode) && $editmode)

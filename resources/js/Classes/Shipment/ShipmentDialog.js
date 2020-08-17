@@ -32,8 +32,6 @@ class shipmentDialog extends Modal{
         let data = JSON.stringify(this.items);
         let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        console.log(this.items);
-
         window.helper.printDocument('shipment-score', id, data);
     }
 
@@ -177,22 +175,22 @@ class shipmentDialog extends Modal{
     save(elem){
         window.event.preventDefault();
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
+
+        window.axform.send(elem, (resp) => {
             if(resp.status == 200) {
-                let root_id = object.root_dialog.id;
-                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-                object.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
-                object.root_dialog.setAttribute('data-id', resp.data.id);
-                object.freshContent(resp.data.id, function () {
+                let root_id = this.root_dialog.id;
+                this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
+                this.root_dialog.setAttribute('id', 'shipmentDialog' + resp.data.id);
+                this.root_dialog.setAttribute('data-id', resp.data.id);
+                this.freshContent(resp.data.id, function () {
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];
                     window.dialogs['shipmentDialog' + resp.data.id] = drag_dialog;
                     drag_dialog.tag = 'shipmentDialog' + resp.data.id;
                     window.helper.initDialogMethods();
-                    // object.finitaLaComedia(true);
-                    object.getPayment();
+                    // this.finitaLaComedia(true);
+                    this.getPayment();
                 });
             }
         });
@@ -200,8 +198,8 @@ class shipmentDialog extends Modal{
 
     saveAndClose(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
+
+        window.axform.send(elem, (resp) => {
             if(resp.status == 200) object.finitaLaComedia(true);
         });
     }
@@ -322,6 +320,8 @@ class shipmentDialog extends Modal{
             this.current_dialog.querySelector('input[name="partner_id"]').value = '';
             this.current_dialog.querySelector('button[name="partner_id"]').innerText = 'Нажмите для выбора';
         }
+
+        element.blur(); //fix barcode
     }
 
     getPriceFromServer(id, input) {

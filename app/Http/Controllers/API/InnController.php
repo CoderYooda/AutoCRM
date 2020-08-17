@@ -35,16 +35,20 @@ class InnController extends Controller
 
         $suggestion = collect($result->suggestions)->first();
 
-        $response = [
-            'opf' => [
-                'short' => $suggestion->data->opf->short,
-                'full' => $suggestion->data->opf->full
-            ],
-            'inn' => $suggestion->data->inn,
-            'ogrn' => $suggestion->data->ogrn,
-            'name' => $suggestion->data->name->full,
-            'kpp' => $suggestion->data->kpp ?? null
-        ];
+        $response = [];
+
+        if(isset($response->data)) {
+            $response = [
+                'opf' => [
+                    'short' => $suggestion->data->opf->short,
+                    'full' => $suggestion->data->opf->full
+                ],
+                'inn' => $suggestion->data->inn,
+                'ogrn' => $suggestion->data->ogrn,
+                'name' => $suggestion->data->name->full,
+                'kpp' => $suggestion->data->kpp ?? null
+            ];
+        }
 
         return response()->json($response);
     }

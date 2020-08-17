@@ -5,33 +5,42 @@ namespace App\Services\ProviderService\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class Trinity implements ProviderInterface
 {
     protected $host = 'http://trinity-parts.ru/httpws/hs/';
-    protected $api_key = 'B61A560ED1B918340A0DDD00E08C990E';
 
     protected $name = 'Trinity';
-    protected $service_id = 1;
+    protected $service_key = 'trinity';
+    protected $field_name = 'api_key';
+
+    /** @var Company */
+    protected $company = null;
+
+    protected $api_key = null;
+
+    public function __construct()
+    {
+        $this->company = Auth::user()->company;
+
+        $this->api_key = $this->company->getServiceFieldValue($this->service_key, $this->field_name);
+    }
 
     public function searchBrandsCount(string $article): array
     {
-        $params = array(
+        $params = [
             'searchCode' => $article,
             'online' => true ? 'allow' : 'disallow'
-        );
+        ];
+
         $url = $this->host . 'search/byCode';
 
         $results = $this->query($url, $this->createParams($params), true);
-
-//        $results = [];
-//
-//        foreach ($results['data'] as $index => $store) {
-//            $results[$index]['store_name'] = $store['']
-//        }
 
         return array_column($results['data'], 'producer');
     }
@@ -41,17 +50,14 @@ class Trinity implements ProviderInterface
         return $this->name;
     }
 
-    public function getServiceId(): int
+    public function getServiceKey(): string
     {
-        return $this->service_id;
+        return $this->service_key;
     }
 
     public function isActivated(): bool
     {
-        /** @var Company $company */
-        $company = Auth::user()->company;
-
-        return (bool)$company->isServiceProviderActive($this->service_id);
+        return (bool)$this->company->isServiceProviderActive($this->service_key);
     }
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
@@ -61,9 +67,17 @@ class Trinity implements ProviderInterface
         $results = [];
 
         foreach ($items['data'] as $store) {
+
+            preg_match_all('/\d+/', $store['deliverydays'], $days)[0];
+
+            $days_min = $days[0];
+            $days_max = $days[1] ?? 9999;
+
             $results[] = [
                 'name' => $store['stock'],
                 'code' => $store['code'],
+                'days_min' => $days_min,
+                'days_max' => $days_max,
                 'delivery' => $store['deliverydays'],
                 'price' => $store['price'],
             ];
@@ -97,30 +111,44 @@ class Trinity implements ProviderInterface
         return $this->query($url, $this->createParams($params), $asArray);
     }
 
-    protected function createParams(array $params = array())
+    protected function createParams(array $params = [])
     {
-        $data = new stdClass();
-        $data->clientCode = $this->api_key;
-        foreach ($params as $name => $param) {
-            $data->$name = $param;
-        }
+        $params['clientCode'] = $this->api_key;
+
         return stream_context_create([
             'http' => [
                 'header' => "Content-Type:application/json\r\n\User-Agent:Trinity/1.0",
                 'method' => "POST",
-                'content' => json_encode($data)
+                'content' => json_encode($params)
             ]
         ]);
     }
 
     protected function query($url, $context, $asArray = true)
     {
-        $this->error = '';
-        $data = @file_get_contents($url, false, $context);
-        if (!$data) {
-            $this->error = (!$error = error_get_last()) ? 'Ошибка при получении данных' : $error['message'];
-            return array();
+        try {
+            $data = file_get_contents($url, false, $context);
         }
+        catch (\Exception $exception) {
+            throw_error('Trinity: Ошибка авторизации ключа.');
+        }
+
         return json_decode($data, $asArray);
+    }
+
+    public function getSelectFieldValues(string $field_name): array
+    {
+        return [];
+    }
+
+    public function checkConnect(array $fields): bool
+    {
+        if(!isset($fields['api_key'])) return false;
+
+        $this->api_key = $fields['api_key'];
+
+        $this->searchBrandsCount('k1279');
+
+        return true;
     }
 }

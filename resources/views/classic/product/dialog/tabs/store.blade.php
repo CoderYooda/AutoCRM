@@ -14,7 +14,7 @@
                     {{ $store->name }}
                 </td>
                 <td>
-                    @if(isset($product)){{ $store->getArticlesCountById($product->id) }}@else 0 @endif
+                    @if(isset($product)){{ $product->getEntrancesCount($product->id) }}@else 0 @endif
                 </td>
                 <td>
                    <div class="storage_store_container">

@@ -75,8 +75,6 @@ class EntranceRefundController extends Controller
                 'total' => $price * $product['count']
             ]);
 
-            $store->decreaseArticleCount($product['id'], $product['count']);
-
             #Резервируем количество в поступлениях
             $entrance_refund->entrance->articles()->where('article_id', $product['id'])->increment('released_count', $product['count']);
         }
@@ -94,9 +92,17 @@ class EntranceRefundController extends Controller
         ]);
     }
 
-    public function getSideInfo()
+    public function getSideInfo(Request $request)
     {
-        //TODO
+        $entrancerefund = EntranceRefund::find($request->id);
+
+        $partner = $entrancerefund->partner;
+        $comment = $entrancerefund->comment;
+
+        return response()->json([
+            'info' => view(get_template() . '.entrance_refunds.contact-card', compact('entrancerefund', 'partner', 'request'))->render(),
+            'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
+        ], 200);
     }
 
     public static function entranceRefundDialog(Request $request)

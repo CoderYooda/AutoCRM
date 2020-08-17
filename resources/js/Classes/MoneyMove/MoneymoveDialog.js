@@ -19,10 +19,9 @@ class moneymoveDialog extends Modal{
 
     save(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        let form = this.root_dialog.getElementsByTagName('form')[0];
-        window.axform.send(form, function(e){
-            if(e.status === 200) object.finitaLaComedia(true);
+
+        window.axform.send(elem, (e) => {
+            if(e.status === 200) this.finitaLaComedia(true);
         });
     }
 

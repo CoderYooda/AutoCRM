@@ -39,9 +39,9 @@ class CategoryDialog extends Modal{
 
     save(elem){
         if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(e){
-            object.finitaLaComedia(true);
+
+        window.axform.send(elem, (e) => {
+            if(e.status == 200) object.finitaLaComedia(true);
         });
     }
 

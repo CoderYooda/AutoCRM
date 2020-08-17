@@ -20,21 +20,14 @@ class EntranceController extends Controller
 {
     public static function entranceDialog($request)
     {
+        $entrance = Entrance::find($request['entrance_id']);
+        $tag = 'entranceDialog' . ($entrance->id ?? '');
 
-        if($request['params'] && $request['entrance_id'] != null){
-            $id = (int)$request['entrance_id'];
-            $entrance = Entrance::where('id', $id)->first();
-            $tag = 'entranceDialog'.$entrance->id;
-        } else {
-            $entrance = null;
-            $tag = 'entranceDialog';
-        }
-
-        $stores = Store::owned()->get();
+        $providerorder = $entrance->providerorder ?? null;
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance','stores', 'request'))->render()
+            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request'))->with('class', $tag)->render()
         ]);
     }
 
@@ -58,7 +51,7 @@ class EntranceController extends Controller
 
         $store = Store::find(Auth::user()->current_store);
 
-        $providerorder = ProviderOrder::owned()->find($request['providerorder_id']);
+        $providerorder = ProviderOrder::find($request['providerorder_id']);
 
         #проверка валидации
         $messages = [];
@@ -81,7 +74,8 @@ class EntranceController extends Controller
             'partner_id' => $providerorder->partner->id,
             'company_id' => Auth::user()->company->id,
             'comment' => $request->comment,
-            'providerorder_id' => $providerorder->id
+            'providerorder_id' => $providerorder->id,
+            'invoice' => $request->invoice
         ]);
 
         foreach ($request->products as $product) {
@@ -93,20 +87,19 @@ class EntranceController extends Controller
                 'count' => $product['count'],
                 'price' => $price
             ]);
-
-            $store->increaseArticleCount($product['id'], $product['count']);
-//            $store->recalculateMidprice($product['id']);
         }
 
         $product_ids = array_column($request->products, 'id');
         $store->articles()->syncWithoutDetaching($product_ids, false);
 
         #Обработка ответа
-        $entrance->company_id = Auth::user()->company_id ?? 1;
+        $entrance->company_id = Auth::user()->company_id;
 
         #Добавляем к балансу контакта
         $entrance->providerorder->partner->addition($entrance->totalPrice);
         UA::makeUserAction($entrance,'create');
+
+        $entrance->providerorder->updateIncomeStatus();
 
         #Ответ сервера
         return response()->json([
@@ -116,19 +109,18 @@ class EntranceController extends Controller
         ], 200);
     }
 
-    public function fresh($id, Request $request)
+    public function fresh(Entrance $entrance, Request $request)
     {
-        $entrance = Entrance::where('id', (int)$id)->first();
-        $stores = Store::owned()->get();
         $request['fresh'] = true;
-        $class = 'entranceDialog' . $id;
-        $inner = true;
-        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'stores', 'class', 'inner', 'request'))
+        $class = 'entranceDialog' . $entrance->id;
+
+        $content = view(get_template() . '.entrance.includes.inner_entrance_dialog', compact( 'entrance', 'class', 'request'))
+            ->with('providerorder', $entrance->providerorder)
             ->render();
 
         return response()->json([
             'html' => $content,
-            'target' => 'entranceDialog' . $id,
+            'target' => $class,
         ], 200);
     }
 
@@ -350,54 +342,5 @@ class EntranceController extends Controller
             ];
         }
         return response($events);
-    }
-
-    public function delete($id, Request $request)
-    {
-        PermissionController::canByPregMatch( $request['id'] ? 'Редактировать поступления' : 'Создавать поступления');
-
-        if(!Gate::allows('Удалять поступления')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        }
-
-        $returnIds = null;
-
-        if($id == 'array'){
-            $entrances = Entrance::whereIn('id', $request['ids'])->get();
-            $this->message = 'Поступления удалены';
-            $returnIds = $entrances->pluck('id');
-            foreach($entrances as $entrance){
-                $store = $entrance->providerorder->store;
-                foreach($entrance->articles as $article){
-                    $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
-                }
-
-                $entrance->articles()->sync(null);
-
-                $entrance->delete();
-                UA::makeUserAction($entrance, 'delete');
-            }
-        } else {
-            $entrance = Entrance::find($id);
-            # Склад с которым оперируем
-            $store = $entrance->providerorder->store;
-            foreach($entrance->articles as $article){
-                $store->decreaseArticleCount($article->id, $entrance->getArticlesCountById($article->id));
-            }
-            $returnIds = $entrance->id;
-            $entrance->articles()->sync(null);
-
-            $entrance->delete();
-            UA::makeUserAction($entrance, 'delete');
-            $this->status = 200;
-            $this->message = 'Поступление удалено';
-        }
-
-        return response()->json([
-            'id' => $returnIds,
-            'message' => $this->message
-        ], 200);
-
-
     }
 }

@@ -17,7 +17,7 @@
                     <td>{{ $sms->created_at->format('d.m.Y H:i:s') }}</td>
                     <td>{{ $sms->cost }} ₽</td>
                     <td>{{ $sms->message }}</td>
-                    <td>{{ App\Http\Controllers\HelpController::phoneFormat($sms->phone) }}</td>
+                    <td>{{ phone_format($sms->phone) }}</td>
                 </tr>
             @endforeach
             </tbody>

@@ -326,7 +326,6 @@ class Helper{
 
             if(landscape === true) {
                 head.appendChild(style);
-                console.log(style);
             }
 
             let unprinted = document.getElementById('unprinted');
@@ -342,8 +341,6 @@ class Helper{
                     print_style.remove();
                 }
             }, 700);
-
-        }).then(function (error) {
 
         });
     }

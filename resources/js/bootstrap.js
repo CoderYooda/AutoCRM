@@ -10,7 +10,7 @@ try {
 window.notification = require('notification-js/src/notification.js');
 notification.configProfile( 'global', {
     behaviour: {
-        autoHide: 1,
+        autoHide: 2,
         limit: 5
     },
     animations: {
@@ -24,7 +24,7 @@ window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = '*';
 
-window.token = document.head.querySelector('meta[name="csrf-token"]');
+let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     // XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
     // XMLHttpRequest.prototype.open   = function () {
@@ -73,6 +73,14 @@ setInterval(function () {
     }
 }, 1000);
 
+window.togglePreloader = function togglePreloader(element, status) {
+    let classList = element.classList;
+
+    if(!classList.contains('preloader-block')) classList.add('preloader-block');
+
+    status ? classList.add('active') : classList.remove('active');
+};
+
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');
     window.isXHRloading = false;
@@ -96,10 +104,14 @@ window.axios.interceptors.response.use(function (response) {
     }
     return response;
 }, function (error) {
+
     if (error.response.status === 401) {
         window.location.href = "/login";
     }
     if (error.response.status === 422 || error.response.status === 200) {
+
+        console.log('123', error.response.data.message, error.response.data.type);
+
         if(error.response.data.message && error.response.data.type){
             window.notification.notify( error.response.data.type, error.response.data.message);
         }
