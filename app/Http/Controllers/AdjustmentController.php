@@ -86,16 +86,11 @@ class AdjustmentController extends Controller
 
         UA::makeUserAction($adjustment, 'create');
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $this->message,
-                'id' => $adjustment->id,
-                'event' => 'AdjustmentStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
-
+        return response()->json([
+            'message' => $this->message,
+            'id' => $adjustment->id,
+            'event' => 'AdjustmentStored',
+        ], 200);
     }
 
     public function fresh($id, Request $request)

@@ -446,5 +446,16 @@ class Helper{
         }
         return serialized.join('&');
     };
+
+    restoreProduct(element, product_id) {
+
+        axios.post('/products/' + product_id + '/restore')
+            .then(response => {
+                element.remove();
+            })
+            .catch(response => {
+                dd(response);
+            });
+    }
 }
 export default Helper;

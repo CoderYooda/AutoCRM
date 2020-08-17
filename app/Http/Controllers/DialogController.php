@@ -71,10 +71,10 @@ class DialogController extends Controller
                 $dialog = BarcodeController::barcodeDialog($request); /////
                 break;
             case 'selectShipment':
-                $dialog = ShipmentsController::selectShipmentDialog($request); /////
+                $dialog = ShipmentController::selectShipmentDialog($request); /////
                 break;
             case 'shipmentDialog':
-                $dialog = ShipmentsController::shipmentDialog($request); #
+                $dialog = ShipmentController::shipmentDialog($request); #
                 break;
             case 'clientorderDialog':
                 $dialog = ClientOrdersController::clientorderDialog($request); #

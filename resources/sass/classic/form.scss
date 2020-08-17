@@ -735,6 +735,10 @@ button:disabled {
     text-overflow: ellipsis;
     overflow: hidden;
     display: block;
+
+    .fa-repeat {
+        transform: scale(-1, 1);
+    }
 }
 .font-weight-bolder {
     font-weight: bolder!important;

@@ -24,7 +24,7 @@ class EntranceRefund extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_entrance_refund', 'entrance_refund_id')
-            ->withPivot('count', 'price', 'total')->withTrashed();
+            ->withPivot('count', 'price', 'total');
     }
 
     public function freshWsumm(){

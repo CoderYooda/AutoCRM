@@ -84,6 +84,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');
     Route::post('/entrance_refunds/side_info', 'EntranceRefundController@getSideInfo')->name('GetEntranceRefundSideInfo');
 
+    Route::post('/products/{product}/restore', 'ProductController@restore')->name('RestoreProduct');
+
     #Поставщики (внешние)
     Route::namespace('API')->prefix('api')->group(function () {
         Route::get('/manufacturers/{article}', 'AnalogController@getManufacturersByArticle')->name('searchManufacturers');
@@ -101,16 +103,16 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/provider/search', 'Providers\TrinityApiController@search')->name('ProviderSearch');
 
     #Продажи
-    Route::get('/shipment/events', 'ShipmentsController@events')->name('ShipmentEvents');// Строгое название
-    Route::post('/shipment/store', 'ShipmentsController@store')->name('StoreShipment');// Строгое название
-    Route::post('/shipment/{shipment}/get_products', 'ShipmentsController@getShipmentProducts')->name('GetShipmentProducts');
-    Route::post('/shipment/search', 'ShipmentsController@search')->name('ShipmentPageSearch');
-    Route::post('/shipment/{id}/delete', 'ShipmentsController@delete')->name('DeleteShipment');
-    Route::post('/shipment/{shipment}/fresh', 'ShipmentsController@fresh')->name('FreshShipment');
-    Route::post('/shipment/{shipment}/select', 'ShipmentsController@select')->name('SelectShipment');
-    Route::post('/shipment/dialog/search', 'ShipmentsController@dialogSearch')->name('ShipmentDialogSearch');
-    Route::get('/shipments/tabledata', 'ShipmentsController@tableData')->name('StoreShipmentData');
-    Route::post('/shipments/side_info', 'ShipmentsController@getSideInfo')->name('GetShipmentSideInfo');
+    Route::get('/shipment/events', 'ShipmentController@events')->name('ShipmentEvents');// Строгое название
+    Route::post('/shipment/store', 'ShipmentController@store')->name('StoreShipment');// Строгое название
+    Route::post('/shipment/{shipment}/get_products', 'ShipmentController@getShipmentProducts')->name('GetShipmentProducts');
+    Route::post('/shipment/search', 'ShipmentController@search')->name('ShipmentPageSearch');
+    Route::post('/shipment/{id}/delete', 'ShipmentController@delete')->name('DeleteShipment');
+    Route::post('/shipment/{shipment}/fresh', 'ShipmentController@fresh')->name('FreshShipment');
+    Route::post('/shipment/{shipment}/select', 'ShipmentController@select')->name('SelectShipment');
+    Route::post('/shipment/dialog/search', 'ShipmentController@dialogSearch')->name('ShipmentDialogSearch');
+    Route::get('/shipments/tabledata', 'ShipmentController@tableData')->name('StoreShipmentData');
+    Route::post('/shipments/side_info', 'ShipmentController@getSideInfo')->name('GetShipmentSideInfo');
 
     #Заказы клиентов
     Route::get('/clientorder/events', 'ClientOrdersController@events')->name('ClientOrderEvents');// Строгое название

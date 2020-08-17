@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\SettingsController;
 use App\Traits\OwnedTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 
 class Article extends Model
@@ -31,6 +30,13 @@ class Article extends Model
     ];
 
     protected $guarded = [];
+
+    public static function bootSoftDeletes()
+    {
+//        static::addGlobalScope(new SoftDeletingScope);
+
+        return false;
+    }
 
     public function canUserTake()
     {
@@ -56,7 +62,6 @@ class Article extends Model
     {
         return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
             ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
-//            ->withPivot('location', 'count', 'isset', 'midprice', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 
     public function decrementFromEntrance(int $count)

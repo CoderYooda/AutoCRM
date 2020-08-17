@@ -37,18 +37,6 @@ class Refund extends Model
         return $this->belongsTo(Shipment::class, 'shipment_id');
     }
 
-    public function syncArticles($refund_id, $pivot_array)
-    {
-        DB::table('article_refund')
-            ->where('refund_id', $refund_id)
-            ->delete();
-        $relation = null;
-        foreach($pivot_array as $pivot_data){
-            $relation = DB::table('article_refund')->insert($pivot_data);
-        }
-        return $relation;
-    }
-
     public function getWarrantPositive()
     {
         $minus = $this->warrants()->where('isIncoming', false)->sum('summ');
@@ -77,7 +65,7 @@ class Refund extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
-            ->withPivot('count', 'price', 'total')->withTrashed();
+            ->withPivot('count', 'price', 'total');
     }
 
 }

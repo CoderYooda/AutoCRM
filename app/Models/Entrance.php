@@ -48,18 +48,18 @@ class Entrance extends Model
             ->withPivot('count', 'price', 'released_count');
     }
 
-    public function entrancerefunds()
-    {
-        return $this->hasMany(EntranceRefund::class, 'entrance_id')->with('articles');
-    }
-
-    public static function decrementReleasedCount($entrance_id, $article_id, $count)
+    public static function decrementReleasedCount(int $entrance_id, int $article_id, int $count)
     {
         return DB::table('article_entrance')->where([
             'entrance_id' => $entrance_id,
             'article_id' => $article_id
         ])
         ->decrement('released_count', $count);
+    }
+
+    public function entrancerefunds()
+    {
+        return $this->hasMany(EntranceRefund::class, 'entrance_id')->with('articles');
     }
 
     public function providerorder()

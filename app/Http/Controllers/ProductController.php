@@ -30,44 +30,35 @@ class ProductController extends Controller
 {
     private static $root_category = 2;
 
-    public function _construct()
-    {
-        $status = 500;
-        $message = 'Внутренняя ошибка сервера';
-    }
-
     public function getByUpc(Request $request)
     {
-        $product =  Article::owned()->where('barcode', $request['upc'])->first();
-        if($product){
-            return response()->json([
-                'id' => $product->id,
-            ], 200);
-        } else {
-            return response()->json([
-                'id' => null,
-            ], 200);
-        }
+        $product = Article::owned()->where('barcode', $request['upc'])->first();
 
+        return response()->json([
+            'id' => $product->id ?? null,
+        ], 200);
     }
 
     public function delete($id, Request $request)
     {
         PermissionController::canByPregMatch('Удалять товары');
+
         $returnIds = null;
+
         if ($id == 'array') {
             $products = Article::owned()->whereIn('id', $request['ids']);
             $this->message = 'Товары удалены';
             $returnIds = $products->get()->pluck('id');
             $products->delete();
-        } else {
+        }
+        else {
             $product = Article::where('id', $id)->first();
             $this->message = 'Товар удален';
             $returnIds = $product->id;
             $product->delete();
         }
-        $this->status = 200;
 
+        $this->status = 200;
 
         return response()->json([
             'id' => $returnIds,
@@ -78,6 +69,17 @@ class ProductController extends Controller
     public function getPrice(Article $product, Request $request)
     {
         return response()->json(['price' => $product->getPrice($request->count)]);
+    }
+
+    public function restore(Article $product)
+    {
+        $product->update(['deleted_at' => null]);
+
+        return response()->json([
+            'id' => $product->id,
+            'message' => 'Продукт был успешно восстановлен',
+            'type' => 'success'
+        ], 200);
     }
 
     public function addToList(Request $request)
@@ -226,6 +228,7 @@ class ProductController extends Controller
                 });
             })
             ->orderBy('created_at', 'ASC')
+            ->where('deleted_at', null)
             ->limit(30)
             ->get();
 
@@ -313,11 +316,6 @@ class ProductController extends Controller
 
     }
 
-    public static function getProductCategories()
-    {
-        return response()->json(['html' => view('product.elements.table_folders')->render()]);
-    }
-
     public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
     {
         $article = Article::where('article', $article)->where('supplier_id', $brand_id)->where('company_id', Auth::user()->company()->first()->id)->first();
@@ -361,6 +359,7 @@ class ProductController extends Controller
 
 //                $q->where('fapi_id', $request['manufacture_id']);
             })
+            ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir);
 
         return $query->get();
@@ -375,8 +374,6 @@ class ProductController extends Controller
         foreach ($articles as $manufacture => $article) {
             $prepare_data[] = mb_strtolower($article . $manufacture);
         }
-
-//        dd($prepare_data);
 
         return Article::owned()
             ->where(function (Builder $query) use($prepare_data) {

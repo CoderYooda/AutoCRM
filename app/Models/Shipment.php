@@ -15,7 +15,7 @@ class Shipment extends Model
     use OwnedTrait, HasManagerAndPartnerTrait, PayableTrait;
 
     protected $casts = [
-        'created_at'  => 'date:d.m.Y H:i',
+        'created_at' => 'date:d.m.Y H:i',
         'updated_at' => 'date:d.m.Y H:i'
     ];
 
@@ -40,7 +40,7 @@ class Shipment extends Model
     {
         parent::boot();
         $user = Auth::user();
-        if($user){
+        if ($user) {
             static::addGlobalScope('shipment', function (Builder $builder) use ($user) {
                 $builder->where('company_id', $user->company->id);
             });
@@ -65,12 +65,10 @@ class Shipment extends Model
 
     public function articles()
     {
-        //dd(DB::table('article_shipment')->where('shipment_id', $this->id)->get());
-
-        return $this->belongsToMany(Article::class, 'article_shipment', 'article_id', 'shipment_id')
-            ->withPivot('count', 'refunded_count', 'entrance_id', 'price', 'total');
-//            ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, articles.id as id, price')
-//            ->groupBy('article_id');
+        return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')
+            ->withPivot('count', 'refunded_count', 'entrance_id', 'price', 'total')
+            ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, articles.id as id, price')
+            ->groupBy('article_id');
     }
 
     public function store()
@@ -90,27 +88,28 @@ class Shipment extends Model
             ->where('shipment_id', $shipment_id)
             ->delete();
         $relation = null;
-        foreach($pivot_array as $pivot_data){
+        foreach ($pivot_array as $pivot_data) {
             $relation = DB::table('article_shipment')->insert($pivot_data);
         }
         return $relation;
     }
 
-    public function getArticles($data = null){
+    public function getArticles($data = null)
+    {
 
         $articles = DB::table('article_shipment')
             ->where('shipment_id', $this->id)
-            ->where(function($q) use ($data){
-                if($data !== null && $data['store_id'] !== null){
+            ->where(function ($q) use ($data) {
+                if ($data !== null && $data['store_id'] !== null) {
                     $q->where('store_id', $data['store_id']);
                 }
-                if($data !== null && $data['article'] !== null){
+                if ($data !== null && $data['article'] !== null) {
                     $q->where('article_id', $data['article_id']);
                 }
             })
             ->get();
-        foreach($articles as $article){
-            $article->product = Article::owned()->where('id', $article->article_id)->withTrashed()->first();
+        foreach ($articles as $article) {
+            $article->product = Article::owned()->where('id', $article->article_id)->first();
         }
         return $articles;
     }
@@ -120,28 +119,34 @@ class Shipment extends Model
         return $this->articles()->whereRaw('article_shipment.refunded_count < article_shipment.count');
     }
 
-    public function increaseRefundedCount($article_id, $amount)
+    public function incrementRefundedCount($article_id, $amount)
     {
-        $count = $this->getRefundedCount($article_id) + (int)$amount;
-        $this->setRefundedCount($article_id, $count);
-    }
+        $products = DB::table('article_shipment')->where([
+            'shipment_id' => $this->id,
+            'article_id' => $article_id,
+        ])
+            ->whereRaw('refunded_count != count')
+            ->get();
 
-    public function decreaseRefundedCount($article_id, $amount)
-    {
-        $count = $this->getRefundedCount($article_id) - (int)$amount;
-        $this->setRefundedCount($article_id, $count);
-    }
+        $entrances = [];
 
-    public function setRefundedCount($article_id, $count)
-    {
-        $this->articles()->updateExistingPivot($article_id, array('refunded_count' => $count), false);
-        return true;
-    }
+        foreach ($products as $product) {
+            if ($amount == 0) break;
 
-    public function getRefundedCount($article_id)
-    {
-        $article = $this->articles()->where('article_id', $article_id)->first();
-        return $article ? $article->pivot->shipped_count : 0;
+            if ($product->refunded_count >= $product->count) continue;
+
+            $product->count++;
+            $amount--;
+
+            DB::table('article_shipment')
+                ->where('entrance_id', $product->entrance_id)
+                ->increment('refunded_count', 1);
+
+            if (!isset($entrances[$product->entrance_id])) $entrances[$product->entrance_id] = 0;
+            $entrances[$product->entrance_id]++;
+        }
+
+        return $entrances;
     }
 
     public function outputName() //Вывод имени или наименования
@@ -168,20 +173,29 @@ class Shipment extends Model
 
     public function getAvailableToRefundArticlesCount($article_id)
     {
-        $article = $this->articles()->wherePivot('article_id', $article_id)->first();
-        return $article ? $article->pivot->count - $article->pivot->refunded_count : 0;
+        $response = DB::table('article_shipment')
+            ->selectRaw('SUM(count) as count, SUM(refunded_count) as refunded_count')
+            ->where([
+                'shipment_id' => $this->id,
+                'article_id' => $article_id
+            ])
+            ->first();
+
+        return $response->count - $response->refunded_count;
     }
 
-    public function freshWsumm(){
+    public function freshWsumm()
+    {
         //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
     }
 
     public function clientOrder()
     {
-        return $this->belongsTo('App\Models\ClientOrder', 'clientorder_id');
+        return $this->belongsTo(ClientOrder::class, 'clientorder_id');
     }
 
-    public function normalizedData(){
+    public function normalizedData()
+    {
         return $this->created_at->format('d.m.Y (H:i)');
     }
 

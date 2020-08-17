@@ -5,7 +5,14 @@
     class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
 
-    <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
+    <td title="{{ $product->name }}">
+        <span style="max-width: 350px;" class="product_list_element_name">
+            {{ $product->name }}
+            @if($product->deleted_at)
+                <i onclick="helper.restoreProduct(this, {{ $product->id }})" title="Этот продукт был удалён, нажмите для восстановления" class="fa fa-repeat ml-5 pointer" aria-hidden="true"></i>
+            @endif
+        </span>
+    </td>
 
     <td>
         <div class="compressed" style="width: 100px;">{{ $product->article }}</div>

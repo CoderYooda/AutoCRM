@@ -10,7 +10,7 @@ use App\Http\Controllers\ProviderOrdersController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\ShipmentsController;
+use App\Http\Controllers\ShipmentController;
 use App\Http\Requests\AdjustmentRequest;
 use App\Http\Requests\ClientOrdersRequest;
 use App\Http\Requests\EntranceRequest;
@@ -247,7 +247,7 @@ class StressTest extends Command
     }
 
     private static function createShipment($partner, $comment, $company){
-        $shipmnetController = new ShipmentsController();
+        $shipmnetController = new ShipmentController();
         $date = Carbon::now()->addDays(rand(-365, 0));
         $date = $date->addHours(rand(0, 24));
         $date = $date->addMinutes(rand(0, 60));

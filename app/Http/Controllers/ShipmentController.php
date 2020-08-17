@@ -5,19 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShipmentsRequest;
 use App\Models\ClientOrder;
 use App\Models\Entrance;
-use App\Models\Refund;
 use App\Models\Shipment;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
-use Illuminate\Support\Facades\Gate;
 
-class ShipmentsController extends Controller
+class ShipmentController extends Controller
 {
     public static function shipmentDialog(Request $request)
     {
@@ -37,14 +34,9 @@ class ShipmentsController extends Controller
             }
         }
 
-
-
         $shipment = Shipment::with('articles')->find($request->shipment_id);
 
-        dd($shipment);
         $tag = 'shipmentDialog' . ($shipment->id ?? '');
-
-
 
         if($clientorder) {
             $shipment = new Shipment();
@@ -153,7 +145,7 @@ class ShipmentsController extends Controller
 
     public function tableData(Request $request)
     {
-        $shipments = ShipmentsController::getShipments($request);
+        $shipments = ShipmentController::getShipments($request);
 
         return response()->json(['data' => $shipments]);
     }
@@ -250,12 +242,19 @@ class ShipmentsController extends Controller
                 $store->articles()->syncWithoutDetaching(array_keys($request['products']), false);
             }
 
-            #Возвращаем товар в поступления для перезаписи
             if (count($shipment->articles)) {
+
+                #Возвращаем товары в те поступления, с которых он был взят
+                $return_products = DB::table('article_shipment')->where('shipment_id', $shipment->id)->get();
+
+                foreach ($return_products as $product) {
+                    Entrance::decrementReleasedCount($product->entrance_id, $product->article_id, $product->count);
+                }
+
+                #Очищаем article_shipment
                 $shipment->articles()->delete();
             }
 
-            #Заполняем связующую таблицу shipment_entrance и резервируем товар в article_entrance
             foreach ($products as $product) {
 
                 $count = $request['products'][$product->id]['count'];

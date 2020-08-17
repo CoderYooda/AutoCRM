@@ -16,7 +16,7 @@ class ShipmentSeed extends Seeder
         Auth::login($fake_user);
 
         $this->command->getOutput()->progressStart(300);
-        $shipmnetController = new \App\Http\Controllers\ShipmentsController();
+        $shipmnetController = new \App\Http\Controllers\ShipmentController();
 
 
         for($i = 0; $i < 300; $i++){
