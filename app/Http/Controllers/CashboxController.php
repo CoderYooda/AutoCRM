@@ -27,8 +27,9 @@ class CashboxController extends Controller
 
         $cashbox->fill($request->all());
         $cashbox->company_id = Auth::user()->company()->first()->id;
+        //$cashbox->cashbox_uuid->
         $cashbox->save();
-
+        $cashbox->generateUuid();
 
         $cashboxes = self::getCashboxes($request);
 
@@ -41,12 +42,14 @@ class CashboxController extends Controller
                 'message' => $message,
                 //'container' => 'ajax-table',
                 'event' => 'CashboxStored'
-                //'html' => $content
+                //'html' => $contentgenerateUuid
                 ]);
         } else {
             return redirect()->back();
         }
     }
+
+
 
     public function dialogSearch(Request $request){
         $cashboxes = Cashbox::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
