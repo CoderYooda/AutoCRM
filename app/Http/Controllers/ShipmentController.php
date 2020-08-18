@@ -43,13 +43,16 @@ class ShipmentController extends Controller
             $shipment->id = null;
             $shipment->partner = $clientorder->partner;
             $shipment->clientorder_id = $clientorder->id;
-            $shipment->articles = $preselect_articles;
+            $shipment->articles = $clientorder->articles;
 
             $itogo = 0;
+
             foreach($shipment->articles as $article){
-                $total_of_article =  $article->count * $article->price;
-                $itogo += $total_of_article;
-                $article->total = $total_of_article;
+                $article->price = $article->pivot->price;
+                $article->count = $article->pivot->count;
+                $article->total = $article->pivot->total;
+
+                $itogo += $article->total;
             }
 
             $shipment->summ = $shipment->itogo = $itogo;

@@ -27,7 +27,7 @@
     <form action="{{ route('StoreWarrant') }}" method="POST">
         @csrf
 
-        <input type="hidden" name="entity_id" value="{{ $request->entity_id ?? null }}" />
+        <input type="hidden" name="entity_id" value="{{ $request->refer_id ?? null }}" />
         <input type="hidden" name="ostatok" value="{{ $request->ostatok ?? null }}" />
 
         @if(isset($request) && $request['refer'] != NULL)
@@ -67,7 +67,7 @@
 
 
         @if(isset($warrant))
-            <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle()->first()->id }}@endif">
+            <input class="ddsarticle_select" type="hidden" name="ddsarticle_id" value=" @if(isset($warrant)){{ $warrant->ddsarticle->id }}@endif">
         @else
             @if(isset($data->dds_article) && $data->dds_article !== null)
                 <input class="dds_article_select" type="hidden" name="ddsarticle_id" value="{{ $data->dds_article->id }}">
@@ -107,8 +107,8 @@
                 <label for="partner_id" class="col-sm-3 no-pr col-form-label">@if(isset($warrant) && $warrant->isIncoming) Плательщик @elseif($request['isIncoming']) Плательщик @else Получатель @endif</label>
                 <div class="col-sm-6 no-pr">
                     <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="form-control text-left button_select">
-                        @if(isset($warrant) && $warrant->partner()->first() != null)
-                            {{ $warrant->partner()->first()->outputName() }}
+                        @if(isset($warrant) && $warrant->partner != null)
+                            {{ $warrant->partner->outputName() }}
                         @else
                             @if(isset($data->partner_selected) && $data->partner_selected !== null)
                                 {{ $data->partner_selected->outputName() }}
@@ -130,8 +130,8 @@
                 <label for="partner_id" class="col-sm-3 col-form-label">Касса</label>
                 <div class="col-sm-9">
                     <button onclick="{{ $class }}.openSelectCashboxModal()" type="button" name="cashbox_id" class="form-control text-left button_select">
-                        @if(isset($warrant) && $warrant->cashbox()->first() != null)
-                            {{ $warrant->cashbox()->first()->name }}
+                        @if(isset($warrant) && $warrant->cashbox != null)
+                            {{ $warrant->cashbox->name }}
                         @else
                             @if(isset($data->cashbox) && $data->cashbox !== null)
                                 {{ $data->cashbox->name }}
@@ -146,15 +146,9 @@
             <div class="form-group row">
                 <label for="partner_id" class="col-sm-3 col-form-label">Статья</label>
                 <div class="col-sm-9">
-                    <button onclick="{{ $class }}.openSelectDdsarticleModal(
-                    @if(isset($warrant) && $warrant->id != NULL)
-                        @if($warrant->isIncoming) 1 @else 0 @endif
-                    @else
-                        @if($request['isIncoming']) 1 @else 0 @endif
-                    @endif
-                    )" type="button" name="ddsarticle_id" class="form-control text-left button_select">
-                        @if(isset($warrant) && $warrant->ddsarticle()->first() != null)
-                            {{ $warrant->ddsarticle()->first()->name }}
+                    <button onclick="{{ $class }}.openSelectDdsarticleModal({{ $warrant->isIncoming ?? $request['isIncoming'] }})" type="button" name="ddsarticle_id" class="form-control text-left button_select">
+                        @if(isset($warrant) && $warrant->ddsarticle != null)
+                            {{ $warrant->ddsarticle->name }}
                         @else
                             @if(isset($data->dds_article) && $data->dds_article !== null)
                                 {{ $data->dds_article->name }}
@@ -175,9 +169,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" >Основание</label>
                 <div class="col-sm-9">
-                    <input type="text" name="reason"
-                           @if(isset($warrant)) value="{{ $warrant->reason }}" @elseif(isset($data->reason) && $data->reason !== null)  value="{{ $data->reason }}" @endif
-                           class="form-control" placeholder="Основание">
+                    <input type="text" name="reason" value="{{ $warrant->reason ?? $data->reason }}" class="form-control" placeholder="Основание">
                 </div>
             </div>
             <div class="form-group">

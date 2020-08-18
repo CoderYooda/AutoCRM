@@ -65,9 +65,9 @@
         <div class="modal-alt-header">
             <span class="item-title _500">Дата оформления</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span>
-                            {{ $client_order->data() }}
-                    </span>
+                <span>
+                        {{ $client_order->created_at }}
+                </span>
             </div>
             <div class="item-tag tag hide">
             </div>
@@ -97,16 +97,20 @@
                 </div>
             </div>
         @endif
-        @if(isset($client_order) && ($client_order->wsumm < $client_order->itogo) )
+
+        @if($client_order && $client_order->status === 'active' && ($client_order->wsumm != $client_order->itogo))
             <div class="modal-alt-header">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
         @endif
-        <div id="return_money" class="modal-alt-header @if(!isset($client_order) || $client_order->status !== 'canceled') d-none @endif">
-            <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
-        </div>
+
+        @if($client_order && $client_order->status === 'canceled' && $client_order->wsumm == 0)
+            <div id="return_money" class="modal-alt-header">
+                <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
+            </div>
+        @endif
     </div>
-    <form class="ShipmentStoredListner EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" onsubmit="console.log(123);" action="{{ route('StoreClientOrder') }}" method="POST">
+    <form class="ShipmentStoredListner EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" action="{{ route('StoreClientOrder') }}" method="POST">
         <div class="box-body">
             @csrf
             @if(isset($client_order) && $client_order->id != NULL)
@@ -118,7 +122,7 @@
                 <input type="hidden" name="id" value="">
             @endif
             <input id="inpercents" name="inpercents" type="hidden" @if($client_order && $client_order->inpercents) value="1" @else value="0" @endif>
-            <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($client_order)){{ $client_order->partner()->first()->id }}@endif">
+            <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($client_order)){{ $client_order->partner->id }}@endif">
 
 
             <div class="row row-sm">
@@ -127,9 +131,9 @@
                     <div class="form-group row row-sm">
                         <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заказчик</label>
                         <div class="col-sm-9">
-                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
-                                @if(isset($client_order) && $client_order->partner()->first() != null)
-                                    {{ $client_order->partner()->first()->outputName() }}
+                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === 'canceled') disabled @endif>
+                                @if(isset($client_order) && $client_order->partner != null)
+                                    {{ $client_order->partner->outputName() }}
                                 @else
                                     Не выбрано
                                 @endif
@@ -140,7 +144,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Скидка</label>
                         <div class="col-sm-9 input-group">
-                            <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($client_order) value="{{ $client_order->discount }}" @else value="0" @endif>
+                            <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === 'canceled') disabled @endif>
                             <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span id="inpercents_text"> @if(isset($client_order) && $client_order->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
@@ -160,7 +164,7 @@
                         {{--<input type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>--}}
                         {{--</div>--}}
                         <div class="col-sm-9 input-group">
-                            <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>
+                            <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" value="{{ $client_order->phone ?? 0 }}" @if($client_order && $client_order->status === 'canceled') disabled @endif>
                             <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span>Номера контакта</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
@@ -168,7 +172,7 @@
                                         <div class="arrow"></div>
                                         <div id="phones-list">
                                             @if(isset($client_order))
-                                                    @forelse($client_order->partner()->first()->phones()->get() as $phone)
+                                                    @forelse($client_order->partner->phones as $phone)
                                                         <span onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="element">{{ $phone->number }}</span>
                                                     @empty
                                                     <div class="no-result">
@@ -217,7 +221,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Статус заказа</label>
                         <div class="col-sm-9 input-group">
-                            <select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if(!isset($client_order)) disabled="" @endif>
+                            <select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled') disabled @endif>
                                 <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
                                 <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
                                 <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
@@ -229,7 +233,7 @@
                     @endif
                     <div class="form-group row row-sm">
                         <div class="col-sm-12">
-                            <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5">@if(isset($client_order)){{ $client_order->comment }}@endif</textarea>
+                            <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5" @if($client_order && $client_order->status === 'canceled') disabled @endif>{{ $client_order->comment ?? '' }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -300,7 +304,7 @@
                         <div class="tab-pane" id="tab5" data-simplebar style="height: 192px">
                             <div class="list-group">
                                 @if(isset($client_order))
-                                    @forelse($client_order->warrants()->get() as $warrant)
+                                    @forelse($client_order->warrants as $warrant)
                                         <a onclick="openDialog('warrantDialog', '&warrant_id={{ $warrant->id }}')" href="#" class="list-group-item no-border-radius">
                                                     <span class="float-right text-right @if($warrant->isIncoming) text-success @else text-primary @endif w-128 pr-2" >
                                                         {{ $warrant->summ }} р. <i class="fa @if($warrant->isIncoming) fa-level-up @else fa-level-down @endif "></i>
@@ -391,12 +395,16 @@
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
 
-            <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
-            <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @if(!$client_order || $client_order && $client_order->status !== 'canceled')
+                <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
+                <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @endif
+
             @if(isset($client_order) && $client_order->id != NULL)
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
-            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped())
+
+            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled')
                 <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
             @endif
 
