@@ -116,10 +116,8 @@ class EntranceRefundController extends Controller
 
         $refunded_count = [];
 
-
         if($entrance) {
             $entrance_refunded = $entrance->entrancerefunds->load('articles');
-
 
             foreach ($entrance_refunded as $refund) {
 

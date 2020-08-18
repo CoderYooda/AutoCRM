@@ -33,7 +33,8 @@ class warrantDialog extends Modal{
             mask: Number,
             min: 0,
             max: 100000000,
-            thousandsSeparator: ''
+            thousandsSeparator: '',
+            radix: '.'
         });
     }
 

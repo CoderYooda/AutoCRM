@@ -1,4 +1,4 @@
-@if(!isset($entrance_refund) && $available_count[$product->id] || isset($entrance_refund))
+@if(!isset($entrance_refund) && $available_count[$product->id] || isset($entrance_refund) && $entrance_refund->articles->find($product->id) != null)
 
     <tr
         data-id="{{ $product->id }}"
