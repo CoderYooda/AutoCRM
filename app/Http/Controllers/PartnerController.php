@@ -76,8 +76,14 @@ class PartnerController extends Controller
             $p_id = isset($request['partner_id']) ? $request['partner_id'] : $request['user_id'];
 
             $tag .= $p_id;
-            $partner = Partner::with('vehicles', 'passport')->findOrFail($request->partner_id);
 
+            $partner = Partner::with('vehicles', 'passport')->find($request->partner_id);
+            if($partner == null){
+                return response()->json([
+                    'message' => 'Контакт не был найден, возможно он был удалён',
+                    'type' => 'error'
+                ], 422);
+            }
             if($partner->category->name == 'Анонимы') {
                 return response()->json([
                     'message' => 'Запрещено редактировать анонимов',

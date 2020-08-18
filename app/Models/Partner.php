@@ -84,10 +84,10 @@ class Partner extends Model
         return $this->belongsToMany(Phone::class, 'partner_phone');
     }
 
-    public function salarySchemas()
-    {
-        return $this->belongsToMany(SalarySchema::class, 'salary_schemas_partner');
-    }
+//    public function salarySchemas()
+//    {
+//        return $this->belongsToMany(SalarySchema::class, 'salary_schemas_partner');
+//    }
 
     public function firstActivePhoneNumber()
     {

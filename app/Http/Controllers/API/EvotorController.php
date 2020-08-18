@@ -66,8 +66,8 @@ class EvotorController extends Controller
     public function getWarrantToPrint($uuid){
         $warrants = Warrant::whereHas('cashbox', function($q) use ($uuid){
             $q->where('cashbox_uuid', $uuid);
-        })->where('payed_at', null)
-            ->orderByDesc('id')->limit(15)
+        })->where('payed_at', null)->where('isIncoming', 1)
+            ->orderByDesc('id')->limit(20)
             ->get();
 
         $warrants_arr = [];
