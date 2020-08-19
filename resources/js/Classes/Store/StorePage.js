@@ -730,11 +730,16 @@ class storePage{
                 }
                 else if(object.contextDop == 'product') {
                     items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
-                }
-                else if(object.contextDop == 'refund') {
-                    items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
+
+                    items.push(new ContextualItem({
+                        label: 'Печать ценников', onClick: () => {
+
+                            let ids = window.helper.pluck(object.selectedData, 'id');
+
+                            window.openDialog('chequeDialog', '&products='+ids);
+                        },
+                        shortcut: 'Ctrl+A'
+                    }));
                 }
 
                 // items.push(new ContextualItem({

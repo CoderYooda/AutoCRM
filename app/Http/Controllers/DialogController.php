@@ -13,6 +13,9 @@ class DialogController extends Controller
             case 'selectSupplier':
                 $dialog = SupplierController::selectSupplierDialog($request);#
                 break;
+            case 'chequeDialog':
+                $dialog = ProductController::chequeDialog($request);
+                break;
             case 'supplierDialog':
                 $dialog = SupplierController::supplierDialog($request);#
                 break;

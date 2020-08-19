@@ -18,7 +18,7 @@ return [
 
     'locale' => 'ru',
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'ru',
 
     'faker_locale' => 'en_US',
 

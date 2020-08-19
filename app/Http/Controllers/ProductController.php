@@ -30,6 +30,28 @@ class ProductController extends Controller
 {
     private static $root_category = 2;
 
+    public static function chequeDialog(Request $request)
+    {
+        $cheque_types = [
+            'Простой',
+            'Штрих-код',
+            'Этикетка',
+            'Термопринтер (29х20мм)',
+            'Термопринтер (58х40мм)'
+        ];
+
+        $tag = 'chequeDialog';
+
+        $request->products = explode(',', $request->products);
+
+        $products = Article::whereIn('id', $request->products)->get();
+
+        return response()->json([
+            'tag' => $tag,
+            'html' => view(get_template() . '.product.dialog.form_cheque', compact('products', 'request', 'tag', 'cheque_types'))->render()
+        ]);
+    }
+
     public function getByUpc(Request $request)
     {
         $product = Article::owned()->where('barcode', $request['upc'])->first();

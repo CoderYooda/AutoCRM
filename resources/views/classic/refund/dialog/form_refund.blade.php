@@ -149,7 +149,7 @@
                             <div class="col-sm-12">
                                 <textarea placeholder="Комментарий" style="resize: none;height: 128px;"
                                           class="form-control" name="comment" cols="30" @isset($refund) disabled @endisset
-                                          rows="5">{{ $refund->comment ?? 'Комментария нет' }}</textarea>
+                                          rows="5">@if($refund){{ $refund->comment ?? 'Комментария нет' }} @endif</textarea>
                             </div>
                         </div>
                     </div>

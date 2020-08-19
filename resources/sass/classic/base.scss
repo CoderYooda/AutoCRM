@@ -1069,6 +1069,16 @@ input:-moz-placeholder { /* Firefox 18- */
     color: inherit;
     box-shadow: none;
 }
+
+//@page {
+//    size: A4;
+//    margin: 0;
+//}
+
+.page_to_print{
+    height: 297mm!important;
+    width: 210mm!important;
+}
 .row .col, .row [class*=col-] {
     padding-left: 15px;
     padding-right: 15px;

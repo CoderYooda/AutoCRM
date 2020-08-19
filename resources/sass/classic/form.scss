@@ -334,6 +334,10 @@ Switch
     overflow: hidden!important;
 }
 
+.text-ov-hidden {
+    text-overflow: ellipsis;
+}
+
 .b_grad::after {
     background: transparent;
     background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);

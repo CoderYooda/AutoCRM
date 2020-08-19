@@ -21,13 +21,48 @@ class DocumentsController extends Controller
             'statistic-result' => 'documents.statistic-result',
             'shipment-score' => 'documents.invoice-for-payment',
             'shipment-upd' => 'documents.upd',
-            'defective-act' => 'documents.defective-act'
+            'defective-act' => 'documents.defective-act',
+            'cheque' => 'cheques.'
         ];
 
-        $view = view($names[$request->doc], compact('request'))
+        $view_name = $names[$request->doc];
+
+        if($request->doc == 'cheque') {
+
+            $types = [
+                'simple',
+                'barcode',
+                'label',
+                'thermal-printer29',
+                'thermal-printer58'
+            ];
+
+            $view_name .= $types[$request->id];
+        }
+
+        $view = view($view_name, compact('request'))
             ->with('company', Auth::user()->company);
 
-        if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {
+        if($request->doc == 'cheque') {
+
+            $products = Article::whereIn('id', $request->data['ids'])->get();
+
+            $count_type = $request->data['count_type'];
+            $count = $request->data['count'];
+
+            $full_count = 0;
+
+            foreach ($products as $product) {
+                $product->price = correct_price($product->getPrice());
+                $product->count = $count_type == 0 ? $count : $product->getEntrancesCount();
+
+                $full_count += $product->count;
+            }
+
+            $view->with('products', $products)
+                ->with('full_count', $full_count);
+        }
+        else if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {
             $view->with('warrant', Warrant::find($request->id));
         }
         else if($request->doc == 'defective-act') {

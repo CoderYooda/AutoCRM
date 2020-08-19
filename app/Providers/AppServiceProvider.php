@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -11,11 +12,6 @@ use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
     public function register()
     {
         $this->app->singleton(\Faker\Generator::class, function () {
@@ -23,13 +19,13 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot()
     {
+        $lang = config('app.locale');
+
+        setlocale(LC_ALL, $lang . '.UTF-8');
+        Carbon::setLocale($lang);
+
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Суперадмин');
         });
