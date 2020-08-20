@@ -45,7 +45,7 @@ class DocumentsController extends Controller
 
         if($request->doc == 'cheque') {
 
-            $products = Article::whereIn('id', $request->data['ids'])->get();
+            $products = Article::with('supplier')->whereIn('id', $request->data['ids'])->get();
 
             $count_type = $request->data['count_type'];
             $count = $request->data['count'];

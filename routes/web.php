@@ -24,7 +24,7 @@ Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePa
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
-Route::view('/test', 'cheques.simple');
+Route::view('/test', 'cheques.thermal-printer58');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 

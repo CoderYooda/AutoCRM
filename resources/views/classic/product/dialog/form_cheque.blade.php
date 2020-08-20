@@ -46,7 +46,7 @@
                     @foreach($cheque_types as $index => $cheque)
 
                         <span>
-                            <input class="pointer" type="radio" name="cheque_type" @if($loop->first) checked @endif value="0" />
+                            <input class="pointer" type="radio" name="cheque_type" @if($loop->first) checked @endif value="{{ $index }}" />
                             <label>{{ $cheque }}</label>
                         </span>
 
