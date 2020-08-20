@@ -2,18 +2,14 @@
     <div
         @if(isset($refund) && $refund->id != NULL)
         @php $class = 'refundDialog' . $refund->id @endphp
-        id="refundDialog{{$refund->id}}" data-id="{{$refund->id}}"
+        id="refundDialog{{$refund->id}}" @if($refund) data-id="{{$refund->id}}" @endif
         @else
         @php $class = 'refundDialog' @endphp
         id="refundDialog"
         @endif
         class="dialog refund_dialog " style="width:880px">
         @endif
-        @if(isset($refund) && $refund->id != NULL)
-            <div class="titlebar">Возврат №{{ $refund->id }}</div>
-        @else
-            <div class="titlebar">Новый возврат</div>
-        @endif
+        <div class="titlebar">{{ $refund ? ('Возврат №' . $refund->id) : 'Новый возврат' }}</div>
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
         <div class="modal-header dark" style="-webkit-justify-content: flex-start;justify-content: normal;">
@@ -54,9 +50,9 @@
                     <div class="modal-alt-header">
                         <span class="item-title _500">Возвращено</span>
                         <div
-                            class="item-except @if($refund->wsumm >= $refund->summ) text-success @endif font-weight-bolder h-1x">
+                            class="item-except @if($refund->wsumm >= $refund->itogo) text-success @endif font-weight-bolder h-1x">
                     <span>
-                        {{ sprintf("%.2f", abs ($refund->wsumm)) }} р / <span
+                        {{ decimal_price($refund->wsumm) }} р / <span
                             id="payed_price">{{ $refund->summ }}</span> р
                     </span>
                         </div>
@@ -131,8 +127,7 @@
                             <div class="col-sm-3">
                             <span class="partner-balance">
                                 Баланс:<br>
-                                <span id="balance">@if(isset($refund)){{ $refund->partner->balance }} р@else 0.00
-                                    р@endif</span>
+                                <span id="balance">{{ correct_price($refund->partner->balance ?? 0.0) }} р</span>
                             </span>
                             </div>
                         </div>
@@ -164,6 +159,8 @@
                                 <th width="30%">Наименование</th>
                                 <th width="10%">Артикул</th>
                                 <th width="10%" style="min-width: 60px;">Кол-во</th>
+                                <th width="10%" style="min-width: 60px;">Всего товаров</th>
+                                <th width="10%" style="min-width: 60px;">Возвращено товаров</th>
                                 <th width="10%" style="min-width: 100px;">Цена</th>
                                 <th width="10%" style="min-width: 100px;">Всего</th>
                                 <th width="5%" style="max-width:44px"></th>

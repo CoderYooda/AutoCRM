@@ -31,7 +31,7 @@
             <div class="modal-alt-header">
                 <span class="item-title _500">Итого</span>
                 <div class="item-except font-weight-bolder h-1x">
-                    <span id="itogo_price">{{ sprintf("%.2f", $entrance_refund->getTotalPrice()) }}</span> р
+                    <span id="itogo_price">{{ decimal_price($entrance_refund->getTotalPrice()) }}</span> р
                 </div>
                 <div class="item-tag tag hide">
                 </div>
@@ -41,7 +41,7 @@
                 <div class="modal-alt-header">
                     <span class="item-title _500">Возвращено</span>
                     <div class="item-except  font-weight-bolder h-1x">
-                        <span>{{ $entrance_refund->wsumm }} р / <span id="payed_price">{{ sprintf("%.2f", $entrance_refund->getTotalPrice()) }}</span> р</span>
+                        <span>{{ $entrance_refund->wsumm }} р / <span id="payed_price">{{ decimal_price($entrance_refund->getTotalPrice()) }}</span> р</span>
                     </div>
                     <div class="item-tag tag hide">
                     </div>
@@ -100,7 +100,7 @@
                         <div class="col-sm-3">
                             <span class="partner-balance">
                                 Баланс:<br>
-                                <span id="balance">{{ sprintf("%.2f", $entrance_refund->partner->balance ?? 0) }} р</span>
+                                <span id="balance">{{ correct_price($entrance_refund->partner->balance ?? 0) }} р</span>
                             </span>
                         </div>
                     </div>

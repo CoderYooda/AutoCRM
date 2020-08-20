@@ -1,10 +1,10 @@
 <tr
-{{--    @dd($product)--}}
+{{--    @dd(decimal_price($product->price))--}}
 
         data-id="{{ $product->id }}"
         data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->count)) {{$product->count}} @else 0 @endif"
-        data-price="@if(isset($shipment)) {{ sprintf("%.2f", $product->price) }}  @else {{ 0 /* TODO RRC*/ }} @endif"
-        data-total="@if(isset($product->total)) {{ sprintf("%.2f", $product->total) }} @else 0.00 @endif"
+        data-price="@if(isset($shipment)) {{ decimal_price($product->price) }}  @else {{ 0 /* TODO RRC*/ }} @endif"
+        data-total="@if(isset($product->total)) {{ decimal_price($product->total) }} @else 0.00 @endif"
         class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
@@ -20,14 +20,14 @@
 
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
                @if(isset($shipment))
-                    value="{{ sprintf("%.2f", $product->price) }}"
+                    value="{{ decimal_price($product->price) }}"
                @else
-                    value="{{ $product->getPrice() }}"
+                    value="{{ decimal_price($product->getPrice()) }}"
                @endif
-               type="number" min="0" step="0.1"></td>
+               type="text"></td>
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
-               @if(isset($product->total)) value="{{ sprintf("%.2f", $product->total) }}"@else value="{{ $product->getPrice() }}" @endif
-               disabled type="number"></td>
+               @if(isset($product->total)) value="{{ decimal_price($product->total) }}"@else value="{{ $product->getPrice() }}" @endif
+               disabled type="text"></td>
     <td>
         <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
     </td>

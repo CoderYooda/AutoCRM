@@ -126,7 +126,7 @@ class shipmentDialog extends Modal{
         let fn = window.helper.debounce(e => this.recalculate(e), 300);
         ///Вешаем обрабочик на поле скидки/////////////
         let discount = object.root_dialog.querySelector('input[name=discount]');
-        discount.addEventListener("keydown", fn);
+        discount.addEventListener("keyup", fn);
         discount.addEventListener("paste", fn);
         discount.addEventListener("delete", fn);
         ////////////////////////////////////////////////
@@ -138,7 +138,7 @@ class shipmentDialog extends Modal{
 
         this.loadItemsIfExists();
 
-        object.root_dialog.querySelector('form').addEventListener('keydown',  function(e){
+        object.root_dialog.querySelector('form').addEventListener('keyup',  function(e){
             if (e.which == 13) {
                 e.preventDefault();
                 object.save(object.root_dialog.getElementsByTagName('form')[0]);
@@ -244,7 +244,7 @@ class shipmentDialog extends Modal{
 
                     let fn = window.helper.debounce(e => this.recalculate(e), 300);
 
-                    elem.addEventListener("keydown", fn);
+                    elem.addEventListener("keyup", fn);
                     elem.addEventListener("change", fn);
                     elem.addEventListener("paste", fn);
                     elem.addEventListener("delete", fn);
@@ -294,7 +294,7 @@ class shipmentDialog extends Modal{
 
             let fn = window.helper.debounce(e => object.recalculate(e), 300);
 
-            input.addEventListener("keydown", fn);
+            input.addEventListener("keyup", fn);
             input.addEventListener("paste", fn);
             input.addEventListener("delete", fn);
 
@@ -302,7 +302,7 @@ class shipmentDialog extends Modal{
 
                 let getPriceFromServer = window.helper.debounce(e => this.getPriceFromServer(elem.id, input), 300);
 
-                input.addEventListener("keydown", getPriceFromServer);
+                input.addEventListener("keyup", getPriceFromServer);
                 input.addEventListener("paste", getPriceFromServer);
                 input.addEventListener("delete", getPriceFromServer);
             }
@@ -436,10 +436,11 @@ class shipmentDialog extends Modal{
     }
 
     setItemPrice(id, price_element, total_element, price, count) {
+
         let total = (price * count);
 
-        total_element.value = total;
-        price_element.value = price;
+        total_element.value = total.toFixed(2);
+        price_element.value = price.toFixed(2);
 
         this.items.map(function (e) {
             if (e.id === id) {

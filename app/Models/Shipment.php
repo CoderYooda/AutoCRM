@@ -63,6 +63,16 @@ class Shipment extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function getProductCount($product_id)
+    {
+        return $this->articles()->sum('article_shipment.count');
+    }
+
+    public function getRefundedCount($product_id)
+    {
+        return $this->articles()->sum('article_shipment.refunded_count');
+    }
+
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')
@@ -131,19 +141,23 @@ class Shipment extends Model
         $entrances = [];
 
         foreach ($products as $product) {
-            if ($amount == 0) break;
 
-            if ($product->refunded_count >= $product->count) continue;
+            for($i = $product->count - $product->refunded_count; $i > 0; $i--) {
 
-            $product->count++;
-            $amount--;
+                if ($amount == 0) break;
 
-            DB::table('article_shipment')
-                ->where('entrance_id', $product->entrance_id)
-                ->increment('refunded_count', 1);
+                if ($product->refunded_count >= $product->count) continue;
 
-            if (!isset($entrances[$product->entrance_id])) $entrances[$product->entrance_id] = 0;
-            $entrances[$product->entrance_id]++;
+                $product->count++;
+                $amount--;
+
+                DB::table('article_shipment')
+                    ->where('entrance_id', $product->entrance_id)
+                    ->increment('refunded_count', 1);
+
+                if (!isset($entrances[$product->entrance_id])) $entrances[$product->entrance_id] = 0;
+                $entrances[$product->entrance_id]++;
+            }
         }
 
         return $entrances;

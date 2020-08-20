@@ -79,7 +79,7 @@
             <span class="item-title _500">Факт / План</span>
             <div class="item-except @if($client_order->wsumm >= $client_order->itogo) text-success @endif font-weight-bolder h-1x">
                     <span id="payed_price">
-        {{ sprintf("%.2f", $client_order->wsumm) }} р / <span class="itogo_price">{{ $client_order->itogo }}</span> р
+        {{ decimal_price($client_order->wsumm) }} р / <span class="itogo_price">{{ $client_order->itogo }}</span> р
                     </span>
             </div>
             <div class="item-tag tag hide">

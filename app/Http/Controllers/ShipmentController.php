@@ -78,20 +78,19 @@ class ShipmentController extends Controller
     private static function selectShipmentInner($request)
     {
         $class = 'selectShipmentDialog';
-        $query = Shipment::where('company_id', Auth::user()->company->id)
+        $shipments = Shipment::with('articles')->where('company_id', Auth::user()->company->id)
             ->when($request['string'], function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
+            ->when($request['hide_paid'], function ($q) {
+                $q->whereRaw('wsumm = itogo');
+
+                $q->whereHas('articles', function (Builder $query) {
+                    $query->whereRaw('refunded_count < count');
+                });
+            })
             ->orderBy('created_at', 'DESC')
             ->limit(30);
-
-        if($request['hide_paid']) {
-            $query->whereHas('articles', function (Builder $query) {
-                $query->whereRaw('count != refunded_count');
-            });
-        }
-
-        $shipments = $query->get();
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 
@@ -123,7 +122,7 @@ class ShipmentController extends Controller
 
         return response()->json([
             'id' => $shipment->id,
-            'items_html' => view(get_template() . '.refund.dialog.products_element', compact('products', 'refunded_count', 'request'))->render(),
+            'items_html' => view(get_template() . '.refund.dialog.products_element', compact('products', 'shipment', 'refunded_count', 'request'))->render(),
             'items' => $products,
             'partner' => $shipment->partner->outputName(),
             'balance' => $shipment->partner->balance,
@@ -255,7 +254,7 @@ class ShipmentController extends Controller
                 }
 
                 #Очищаем article_shipment
-                $shipment->articles()->delete();
+                $shipment->articles()->sync([]);
             }
 
             foreach ($products as $product) {

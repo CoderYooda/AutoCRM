@@ -67,7 +67,7 @@
 
         <div class="sms-stat-block mb-15">
             <div class="text-muted">SMS Баланс:</div>
-            <div class="sms-balance"><span id="sms_balance">{{ Auth::user()->company->getSmsBalance() }}</span> ₽</div>
+            <div class="sms-balance"><span id="sms_balance">{{ correct_price(Auth::user()->company->getSmsBalance()) }}</span> ₽</div>
             <a onclick="settings.checkSmsPayments()">Обновить  <i class="fa fa-refresh"></i></a>
         </div>
 
