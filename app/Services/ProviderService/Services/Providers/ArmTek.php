@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\ProviderService\Providers;
+namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
 use App\Rules\CheckApiDataForServices;

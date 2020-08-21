@@ -248,10 +248,23 @@ class shipmentDialog extends Modal{
                     elem.addEventListener("change", fn);
                     elem.addEventListener("paste", fn);
                     elem.addEventListener("delete", fn);
+
+                    this.addInputPriceMask(elem);
                 });
         });
 
         this.recalculate();
+    }
+
+    addInputPriceMask(element) {
+        let options = {
+            mask: Number,
+            min: 0,
+            max: 9999999,
+            radix: '.'
+        };
+
+        IMask(element, options);
     }
 
     setTotalPrice(count){
@@ -297,6 +310,8 @@ class shipmentDialog extends Modal{
             input.addEventListener("keyup", fn);
             input.addEventListener("paste", fn);
             input.addEventListener("delete", fn);
+
+            this.addInputPriceMask(input);
 
             if(input.name == 'products[' + elem.id + '][count]') {
 
@@ -440,7 +455,7 @@ class shipmentDialog extends Modal{
         let total = (price * count);
 
         total_element.value = total.toFixed(2);
-        price_element.value = price.toFixed(2);
+        // price_element.value = price.toFixed(2);
 
         this.items.map(function (e) {
             if (e.id === id) {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\ProviderService\Providers;
+namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
@@ -68,10 +68,12 @@ class Trinity implements ProviderInterface
 
         foreach ($items['data'] as $store) {
 
-            preg_match_all('/\d+/', $store['deliverydays'], $days)[0];
+            if(!strlen($store['bid'])) continue;
 
-            $days_min = $days[0];
-            $days_max = $days[1] ?? 9999;
+            preg_match_all('/\d+/', $store['deliverydays'], $days);
+
+            $days_min = $days[0][0];
+            $days_max = $days[0][1] ?? 9999;
 
             $results[] = [
                 'name' => $store['stock'],
@@ -80,6 +82,12 @@ class Trinity implements ProviderInterface
                 'days_max' => $days_max,
                 'delivery' => $store['deliverydays'],
                 'price' => $store['price'],
+                'delivery_info' => [
+                    'id' => $store['bid'],
+                    'manufacturer' => $store['producer'],
+                    'name' => $store['caption'],
+                    'price' => $store['price']
+                ]
             ];
         }
 

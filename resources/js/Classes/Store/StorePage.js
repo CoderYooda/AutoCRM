@@ -124,6 +124,29 @@ class storePage{
         });
     };
 
+    addToCart(element) {
+        let target_element = element.closest('tr');
+
+        let service_input = document.querySelector('[name="service_key"]');
+
+        let data = {
+            provider_key: service_input.value,
+            delivery_key: target_element.dataset.delivery_key,
+            manufacturer: target_element.dataset.manufacturer,
+            name: target_element.dataset.name,
+            article: this.search,
+            price: target_element.dataset.price
+        };
+
+        axios.post('/provider_stores/cart/add', data)
+            .then(response => {
+               dd(response);
+            })
+            .catch(response => {
+                dd(response);
+            });
+    }
+
     removePartner(id, type){
         this[type].splice(this[type].indexOf(id));
         document.getElementById(type + '_' + id).remove();

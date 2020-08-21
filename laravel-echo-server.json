@@ -1,5 +1,5 @@
 {
-	"authHost": "http://bbcrm/",
+	"authHost": "http://localhost/",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{

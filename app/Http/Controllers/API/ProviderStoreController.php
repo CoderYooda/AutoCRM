@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\ProviderStore\SearchRequest;
+use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
+use App\Services\ProviderService\Services;
+use App\Services\ProviderService\Services\Cart\Cart;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -92,5 +94,15 @@ class ProviderStoreController extends Controller
         $result = json_decode($result);
 
         return response()->json($result->RESP);
+    }
+
+    public function addCart(Cart $cart, AddCartRequest $request)
+    {
+        $cart->addProduct($request->provider_key, $request->delivery_key, $request->manufacturer, $request->article, $request->price);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Продукт добавлен в корзину.'
+        ], 200);
     }
 }

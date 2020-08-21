@@ -79,10 +79,10 @@ class ShipmentController extends Controller
     {
         $class = 'selectShipmentDialog';
         $shipments = Shipment::with('articles')->where('company_id', Auth::user()->company->id)
-            ->when($request['string'], function ($q) use ($request) {
+            ->when(isset($request['string']), function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
-            ->when($request['hide_paid'], function ($q) {
+            ->when(isset($request['hide_paid']), function ($q) {
                 $q->whereRaw('wsumm = itogo');
 
                 $q->whereHas('articles', function (Builder $query) {
@@ -90,7 +90,8 @@ class ShipmentController extends Controller
                 });
             })
             ->orderBy('created_at', 'DESC')
-            ->limit(30);
+            ->limit(30)
+            ->get();
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 

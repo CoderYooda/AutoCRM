@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\StoreLimit;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -61,7 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'banned' => \App\Http\Middleware\banned::class,
-        'superAdmin' => \App\Http\Middleware\SuperAdmin::class,
+        'superAdmin' => \App\Http\Middleware\SuperAdmin::class
     ];
 
     /**

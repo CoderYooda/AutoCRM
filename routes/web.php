@@ -94,6 +94,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     });
 
     Route::namespace('API')->group(function () {
+
+        Route::post('/provider_stores/cart/add', 'ProviderStoreController@addCart')->name('ProviderCartAdd');
+
         Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
         Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
         Route::get('/provider_stores/armtek/sales_organization', 'ProviderStoreController@getArmTekSerialSales')->name('getArmTekSerialSales');
@@ -104,7 +107,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Продажи
     Route::get('/shipment/events', 'ShipmentController@events')->name('ShipmentEvents');// Строгое название
-    Route::post('/shipment/store', 'ShipmentController@store')->name('StoreShipment');// Строгое название
+    Route::middleware('throttle:5,1')->post('/shipment/store', 'ShipmentController@store')->name('StoreShipment');// Строгое название
     Route::post('/shipment/{shipment}/get_products', 'ShipmentController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentController@delete')->name('DeleteShipment');

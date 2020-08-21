@@ -67,13 +67,13 @@ if(!function_exists('convertPHPSizeToBytes')) {
 
 if(!function_exists('correct_price')) {
     function correct_price($price) {
-        return number_format($price, 2, '.', ' ');
+        return number_format((float)$price, 2, '.', ' ');
     }
 }
 
 if(!function_exists('decimal_price')) {
     function decimal_price($price) {
-        return number_format($price, 2, '.', '');
+        return number_format((float)$price, 2, '.', '');
     }
 }
 
