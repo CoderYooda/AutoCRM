@@ -14,7 +14,7 @@
                     {{ $store->name }}
                 </td>
                 <td>
-                    {{ $product->getCountInStoreId($store->id) ?? 0 }}
+                    @isset($product) {{ $product->getCountInStoreId($store->id) ?? 0 }} @endisset
                 </td>
                 <td>
                    <div class="storage_store_container">

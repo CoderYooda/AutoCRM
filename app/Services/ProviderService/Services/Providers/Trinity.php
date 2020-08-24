@@ -83,10 +83,11 @@ class Trinity implements ProviderInterface
                 'delivery' => $store['deliverydays'],
                 'price' => $store['price'],
                 'delivery_info' => [
-                    'id' => $store['bid'],
+                    'key' => $store['bid'],
                     'manufacturer' => $store['producer'],
                     'name' => $store['caption'],
-                    'price' => $store['price']
+                    'price' => $store['price'],
+                    'stock' => $store['stock']
                 ]
             ];
         }

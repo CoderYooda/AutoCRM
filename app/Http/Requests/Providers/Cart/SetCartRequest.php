@@ -4,7 +4,7 @@ namespace App\Http\Requests\Providers\Cart;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddCartRequest extends FormRequest
+class SetCartRequest extends FormRequest
 {
     public function authorize()
     {
@@ -20,7 +20,8 @@ class AddCartRequest extends FormRequest
             'manufacturer' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'article' => ['required', 'string', 'max:255'],
-            'price' => ['numeric', 'between:1,9999999']
+            'price' => ['required', 'numeric', 'between:1,9999999'],
+            'count' => ['required', 'integer', 'min:0', 'max:9999']
         ];
     }
 }

@@ -17,19 +17,24 @@ class Cart implements CartInterface
         $this->user_id = Auth::id();
     }
 
-    public function setProductCount($provider, $delivery_key, $manufacturer, $article, $price, $count)
+    public function setProductCount($provider, $stock, $delivery_key, $manufacturer, $article, $price, $count)
     {
         $values = [
             'user_id' => $this->user_id,
-            'delivery_key' => $delivery_key,
             'provider_key' => $provider,
+            'stock' => $stock,
             'manufacturer' => $manufacturer,
             'article' => $article
         ];
 
+        if($count == 0) {
+            return DB::table($this->table)->where($values)->delete();
+        }
+
         return DB::table($this->table)->updateOrInsert($values, [
-            'count' => $count,
-            'price' => $price
+            'delivery_key' => $delivery_key,
+            'price' => $price,
+            'count' => $count
         ]);
     }
 
@@ -43,18 +48,20 @@ class Cart implements CartInterface
         // TODO: Implement getProductsIds() method.
     }
 
-    public function addProduct($provider_key, $delivery_key, $manufacturer, $article, $price)
+    public function addProduct($provider_key, $stock, $delivery_key, $manufacturer, $article, $price)
     {
         $values = [
             'user_id' => $this->user_id,
             'provider_key' => $provider_key,
-            'delivery_key' => $delivery_key,
+            'stock' => $stock,
             'manufacturer' => $manufacturer,
-            'article' => $article,
-            'price' => $price
+            'article' => $article
         ];
 
-        DB::table($this->table)->updateOrInsert($values);
+        DB::table($this->table)->updateOrInsert($values, [
+            'delivery_key' => $delivery_key,
+            'price' => $price
+        ]);
 
         return DB::table($this->table)->where($values)->increment('count', 1);
     }
@@ -77,12 +84,12 @@ class Cart implements CartInterface
         // TODO: Implement getProductsTotalPrice() method.
     }
 
-    public function isProductExists($provider, $delivery_key, $manufacturer, $article)
+    public function isProductExists($provider, $stock, $manufacturer, $article)
     {
         $values = [
             'user_id' => $this->user_id,
-            'delivery_key' => $delivery_key,
             'provider_key' => $provider,
+            'stock' => $stock,
             'manufacturer' => $manufacturer,
             'article' => $article
         ];

@@ -30,7 +30,11 @@
                         </div>
 
                     @endforelse
+
+                    <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>
+
                 </div>
+
             </div>
 
             <div id="table-container" class="box box-content preloader-block">

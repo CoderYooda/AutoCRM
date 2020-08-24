@@ -30,6 +30,7 @@ import storeImportDialog from "./Store/StoreImportDialog";
 import entranceRefundDialog from "./EntranceRefund/EntranceRefundDialog";
 import selectEntranceDialog from "./Entrance/SelectEntranceDialog";
 import chequeDialog from "./Cheque/ChequeDialog";
+import providerCartDialog from "./ProviderCart/ProviderCartDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -83,7 +84,8 @@ const classes = {
     storeImportDialog,
     entranceRefundDialog,
     selectEntranceDialog,
-    chequeDialog
+    chequeDialog,
+    providerCartDialog
 };
 
 const pages = {

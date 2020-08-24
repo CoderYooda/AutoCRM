@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\ProviderStoreController;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,9 @@ class DialogController extends Controller
     public function openDialogByTag($tag, Request $request)
     {
         switch ($tag) {
+            case 'ProviderCartDialog':
+                $dialog = ProviderStoreController::ProviderCartDialog($request);#
+                break;
             case 'selectSupplier':
                 $dialog = SupplierController::selectSupplierDialog($request);#
                 break;

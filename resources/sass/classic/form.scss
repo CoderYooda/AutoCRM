@@ -879,9 +879,6 @@ button:disabled {
 .pointer{
     cursor: pointer!important;
 }
-.d-flex{
-    display: flex!important;
-}
 .select-list-modal i{
     font-size: 19px;
 }
@@ -948,6 +945,9 @@ button:disabled {
 }
 .flex-3{
     flex: 3!important;
+}
+.flex-4{
+    flex: 4!important;
 }
 #user_index_page .name_edit.is-invalid{
     border-bottom: 1px solid #e3342f!important;

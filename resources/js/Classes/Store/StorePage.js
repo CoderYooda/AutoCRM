@@ -124,7 +124,54 @@ class storePage{
         });
     };
 
-    addToCart(element) {
+    registerProviderOrder(element) {
+        openDialog('ProviderCartDialog');
+    }
+
+    setArticleCartAmount(element) {
+        let amount = Number(element.value);
+        this.changeArticleCartAmount(element, amount);
+    }
+
+    incrementArticleCartAmount(element) {
+        let target_element = element.closest('tr');
+        let input_element = target_element.querySelector('input');
+
+        let value = Number(input_element.value);
+
+        this.changeArticleCartAmount(element, value + 1);
+    }
+
+    decrementArticleCartAmount(element) {
+        let target_element = element.closest('tr');
+        let input_element = target_element.querySelector('input');
+
+        let value = Number(input_element.value);
+
+        this.changeArticleCartAmount(element, value - 1);
+    }
+
+    changeArticleCartAmount(element, count) {
+
+        let target_element = element.closest('tr');
+        let input_element = target_element.querySelector('input');
+
+        let current_count = Number(input_element.value);
+
+        if(count < 1) {
+            target_element.querySelector('.add-to-cart').classList.remove('d-none');
+            target_element.querySelector('.edit-cart-count').classList.add('d-none');
+        }
+
+        if(count < 0 && current_count <= 0 || count > 0 && current_count >= 999) return;
+
+        input_element.value = count;
+
+        this.debouneArticleCartAmount(element, count);
+    }
+
+    saveArticleCartAmount(element, count) {
+
         let target_element = element.closest('tr');
 
         let service_input = document.querySelector('[name="service_key"]');
@@ -132,6 +179,40 @@ class storePage{
         let data = {
             provider_key: service_input.value,
             delivery_key: target_element.dataset.delivery_key,
+            stock: target_element.dataset.stock,
+            manufacturer: target_element.dataset.manufacturer,
+            name: target_element.dataset.name,
+            article: this.search,
+            price: target_element.dataset.price,
+            count: count
+        };
+
+        axios.post('/provider_stores/cart/set', data)
+            .then(response => {
+                dd(response);
+            })
+            .catch(response => {
+                dd(response);
+            });
+    }
+
+    addToCart(element) {
+        let target_element = element.closest('tr');
+
+        let service_input = document.querySelector('[name="service_key"]');
+
+        target_element.querySelector('.add-to-cart').classList.add('d-none');
+        target_element.querySelector('.edit-cart-count').classList.remove('d-none');
+
+        let input = target_element.querySelector('input');
+        this.addInputCountMask(input);
+
+        input.value = '1';
+
+        let data = {
+            provider_key: service_input.value,
+            delivery_key: target_element.dataset.delivery_key,
+            stock: target_element.dataset.stock,
             manufacturer: target_element.dataset.manufacturer,
             name: target_element.dataset.name,
             article: this.search,
@@ -586,6 +667,12 @@ class storePage{
                 element.classList.add('fa-angle-up');
 
                 target_element.querySelector('tbody').innerHTML = response.data.html;
+
+                let inputs = document.querySelectorAll('.provider-cart-input');
+
+                inputs.forEach(input => {
+                    this.addInputCountMask(input);
+                });
             })
             .catch(response => {
                 console.log(response);
@@ -604,6 +691,14 @@ class storePage{
             //Очищаем внутренний список
             target_element.querySelector('tbody').innerHTML = '';
         }
+    }
+
+    addInputCountMask(element) {
+        IMask(element, {
+            mask: IMask.MaskedRange,
+            from: 0,
+            to: 999
+        });
     }
 
     initTableData() {
@@ -860,6 +955,10 @@ class storePage{
         if(object.active_tab == 'store'){
             object.loadCategory(this.root_category, true, true);
         }
+
+        this.debouneArticleCartAmount = helper.debounce((element, count) => {
+            this.saveArticleCartAmount(element, count);
+        }, 200);
 
         let events = [
             'ProductStored',
