@@ -130,8 +130,8 @@
         <div class="form-group">
             <div for="category_id" class="mb-3"><b>Список приходных номенклатур</b>
             </div>
-            <div data-simplebar style="max-height: 300px;">
-                <table class="table-modal" style="max-height: 300px;">
+            <div data-simplebar style="max-height: 170px;">
+                <table class="table-modal" style="max-height: 170px;">
                     <thead class="text-muted">
                     <tr>
                         <th width="30%">Наименование</th>

@@ -591,11 +591,14 @@ class storePage{
         let object = this;
         let table_container = document.getElementById('table-container');
         let height = 500;
+        let cleanHeight = height - 110;
+        let tableHeight = height - 55;
         if(table_container) {
             height = table_container.offsetHeight;
+            cleanHeight = height;
+            tableHeight = height;
         }
-        let cleanHeight = height - 110;
-        let elements = cleanHeight / 44;
+            let elements = cleanHeight / 44;
 
         object.table = new Tabulator("#" + this.getCurrentActiveTab() + "-table", {
             locale:true,
@@ -629,7 +632,7 @@ class storePage{
             selectable:true,
             selectableRangeMode:"click",
             resizableColumns:false,
-            height:height-55,
+            height:tableHeight,
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,

@@ -172,6 +172,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Кассовые аппараты
     Route::post('/cashbox/new', 'CashboxController@store')->name('StoreCashbox');
     Route::post('/cashbox/{id}/delete', 'CashboxController@delete')->name('DeleteCashbox');
+    Route::post('/cashbox/{id}/restore', 'CashboxController@restore')->name('RestoreCashbox');
     Route::post('/cashbox/{id}/select', 'CashboxController@select')->name('SelectCashbox');
     Route::post('/cashbox/dialog/search', 'CashboxController@dialogSearch')->name('CashboxDialogSearch');
 

@@ -17,7 +17,7 @@
 
     <div class="modal-header">
         <form class="flex d-flex w-100">
-            <input id="cashbox_search" type="text"  name="cashbox_search" class="form-control form-control-sm search mr-15" placeholder="Поиск производителя">
+            <input id="cashbox_search" type="text"  name="cashbox_search" class="form-control form-control-sm search mr-15" placeholder="Поиск кассы">
             <button onclick="openDialog('cashboxDialog')" class="button" type="button">Новый кассовый аппарат</button>
         </form>
     </div>

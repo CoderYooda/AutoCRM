@@ -68,7 +68,8 @@ class SettingsController extends Controller
 
     public static function cashboxTab($request)
     {
-        $cashboxes = Cashbox::owned()->orderBy('created_at', 'ASC')->get();
+        $cashboxes = Cashbox::owned()->orderBy('deleted_at', 'ASC')->withTrashed()->get();
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashbox'){
             return view(get_template() . '.settings.elements.cashbox_container', compact('cashboxes', 'request'));
         }

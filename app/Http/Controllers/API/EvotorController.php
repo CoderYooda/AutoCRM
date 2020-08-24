@@ -50,7 +50,9 @@ class EvotorController extends Controller
 
     public function setWarrantPayed(Request $request){
 
-
+        if($request['cashbox_uuid'] == 'demo1234'){
+            return response()->json([], 200);
+        }
         $cashbox = Cashbox::where('cashbox_uuid', $request['cashbox_uuid'])->first();
         $warrant = Warrant::find($request['warrant_id']);
 
@@ -64,51 +66,76 @@ class EvotorController extends Controller
     }
 
     public function getWarrantToPrint($uuid){
-        $warrants = Warrant::whereHas('cashbox', function($q) use ($uuid){
-            $q->where('cashbox_uuid', $uuid);
-        })->where('payed_at', null)->where('isIncoming', 1)
-            ->orderByDesc('id')->limit(20)
-            ->get();
+
+        if($uuid == 'demo1234'){
+            $warrants = Warrant::where('isIncoming', 1)
+                ->orderByDesc('id')->limit(20)
+                ->whereIn('payable_type', ['App\Models\Shipment', 'App\Models\ClientOrder'])
+                ->get();
+        } else {
+            $warrants = Warrant::whereHas('cashbox', function($q) use ($uuid){
+                $q->where('cashbox_uuid', $uuid);
+            })->where('payed_at', null)
+                ->where('isIncoming', 1)
+                ->whereIn('payable_type', ['App\Models\Shipment', 'App\Models\ClientOrder'])
+                ->orderByDesc('id')->limit(20)
+                ->get();
+        }
 
         $warrants_arr = [];
 
         foreach($warrants as $warrant){
-            $warrant->isIncoming = $warrant->isIncoming ? 'true' : 'false';
-            $warrant->name = $warrant->isIncoming ? "Приходный ордер № " . $warrant->id : "Расходный ордер № " . $warrant->id;
-            $warrant->date = $warrant->created_at->diffForHumans();
-            //$warrant->created_at = $warrant->created_at->format('m.d.Y H:i');
-            $warrant->partner = $warrant->partner()->first()->outputName();
-            $warrant->partner_id = $warrant->partner()->first()->id;
-            $warrant->cashbox = $warrant->cashbox()->first()->name;
-            $warrant->cashbox_id = $warrant->cashbox()->first()->id;
-            $warrant->dds = $warrant->ddsarticle->name;
-            $warrant->dds_id = $warrant->ddsarticle->id;
-            #Payments
-            $warrant->payment = 0;
-
-            if($warrant->payable){
-                if($warrant->payable->inpercents){
-                    $percent = $warrant->payable->discount;
-                } else {
-                    $percent = $warrant->payable->discount * 100 / $warrant->payable->summ;
-                }
-                $warrant->disc = $percent;
-                $articles = $warrant->payable->articles;
-                $articles_collection = collect();
-                foreach($articles as $article){
-                    $temp_article = new stdClass();
-                    $temp_article->price = $article->pivot->price;
-                    $temp_article->count = $article->pivot->count;
-                    $articles_collection->push($temp_article);
-                }
-
-                $warrant->items = $articles_collection;//$articles_collection;
-            } else {
-                $warrant->disc = 0;
-                $warrant->items = [];
+            if(!$warrant->payable || $warrant->cashbox()->first() == null){
+                break;
             }
 
-            $warrants_arr[] = $warrant;
+            try{
+                $warrant->isIncoming = $warrant->isIncoming ? 'true' : 'false';
+                $warrant->name = $warrant->isIncoming ? "Приходный ордер № " . $warrant->id : "Расходный ордер № " . $warrant->id;
+                $warrant->date = $warrant->created_at->diffForHumans();
+                //$warrant->created_at = $warrant->created_at->format('m.d.Y H:i');
+                $warrant->partner = $warrant->partner()->first()->outputName();
+                $warrant->partner_id = $warrant->partner()->first()->id;
+                $warrant->cashbox = $warrant->cashbox()->first()->name;
+                $warrant->cashbox_id = $warrant->cashbox()->first()->id;
+                $warrant->dds = $warrant->ddsarticle->name;
+                $warrant->dds_id = $warrant->ddsarticle->id;
+                #Payments
+                $warrant->payment = 0;
+
+                if($warrant->payable){
+                    if($warrant->payable->summ == null){
+                        $percent = 0;
+                    } else {
+                        if($warrant->payable->inpercents){
+                            $percent = $warrant->payable->discount;
+                        } else {
+                            $percent = $warrant->payable->discount * 100 / $warrant->payable->summ;
+                        }
+                    }
+                    $warrant->disc = $percent;
+                    $articles = $warrant->payable->articles;
+                    $articles_collection = collect();
+                    foreach($articles as $article){
+                        $temp_article = new stdClass();
+                        $temp_article->price = $article->pivot->price;
+                        $temp_article->count = $article->pivot->count;
+                        $articles_collection->push($temp_article);
+                    }
+
+                    $warrant->items = $articles_collection;//$articles_collection;
+                } else {
+                    $warrant->disc = 0;
+                    $warrant->items = [];
+                }
+
+                $warrants_arr[] = $warrant;
+            }catch(Exception $e){
+
+            }
+
+
+
         }
         return response()->json(['warrants' => $warrants_arr], 200);
     }

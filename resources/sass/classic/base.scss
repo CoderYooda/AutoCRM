@@ -201,6 +201,15 @@ h2{
     position: relative;
     height: 22px;
 }
+.trashed{
+    opacity: 0.45;
+}
+.trashed:hover{
+    opacity: 1;
+    .trashed_action{
+        display: block;
+    }
+}
 .evotor_ico .payed_logo{
     background-image: url(/images/icons/evotor.png);
     background-size: contain;
