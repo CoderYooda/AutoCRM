@@ -209,14 +209,16 @@ class storePage{
 
         input.value = '1';
 
+        let index = -1;
+
+        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
+            if(this.items[i].index == target_element.id) index = target_element.id;
+        }
+
         let data = {
             provider_key: service_input.value,
-            delivery_key: target_element.dataset.delivery_key,
-            stock: target_element.dataset.stock,
-            manufacturer: target_element.dataset.manufacturer,
-            name: target_element.dataset.name,
             article: this.search,
-            price: target_element.dataset.price
+            data: this.items[index]
         };
 
         axios.post('/provider_stores/cart/add', data)
@@ -663,10 +665,14 @@ class storePage{
             })
             .then(response => {
 
+                let data = response.data;
+
+                this.items = data.stores;
+
                 element.classList.remove('fa-angle-down');
                 element.classList.add('fa-angle-up');
 
-                target_element.querySelector('tbody').innerHTML = response.data.html;
+                target_element.querySelector('tbody').innerHTML = data.html;
 
                 let inputs = document.querySelectorAll('.provider-cart-input');
 

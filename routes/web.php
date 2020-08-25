@@ -97,6 +97,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         Route::post('/provider_stores/cart/add', 'ProviderStoreController@addCart')->name('ProviderCartAdd');
         Route::post('/provider_stores/cart/set', 'ProviderStoreController@setCart')->name('ProviderCartSet');
+        Route::post('/provider_stores/cart/order', 'ProviderStoreController@orderCart')->name('ProviderCartOrder');
 
         Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
         Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');

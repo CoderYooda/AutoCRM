@@ -11,5 +11,15 @@ class providerCartDialog extends Modal{
     init(){
 
     }
+
+    send() {
+        axios.post('/provider_stores/cart/order')
+            .then(response => {
+                dd(response);
+            })
+            .catch(response => {
+
+            });
+    }
 }
 export default providerCartDialog;

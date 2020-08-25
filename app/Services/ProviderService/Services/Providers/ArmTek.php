@@ -165,4 +165,9 @@ class ArmTek implements ProviderInterface
 
         return $result['STATUS'] == 200;
     }
+
+    public function sendOrder(array $products): bool
+    {
+        // TODO: Implement sendOrder() method.
+    }
 }

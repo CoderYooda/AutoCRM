@@ -10,6 +10,7 @@ use App\Services\ProviderService\Services;
 use App\Services\ProviderService\Services\Cart\Cart;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use function foo\func;
 
@@ -77,21 +78,14 @@ class ProviderStoreController extends Controller
 
         if($request->is_desc == true) $stores = $stores->reverse();
 
-        $existedStores = DB::table('providers_cart')
-            ->where(function ($query) use($stores, $request) {
-                $query->where('article', $request->article)
-                ->whereIn('stock', $stores->pluck('delivery_info.stock'));
-            })
-            ->get();
+        $existedStores = DB::table('providers_cart')->whereIn('stock', $stores->pluck('model'))->get();
 
         $stores = $stores->toArray();
 
         foreach ($stores as $key => $store) {
 
             $amount = $existedStores
-                ->where('stock', $store['delivery_info']['stock'])
-                ->where('manufacturer', $store['delivery_info']['manufacturer'])
-                ->where('article', $request->article)
+                ->where('data', $store['model'])
                 ->sum('count');
 
             $stores[$key]['count'] = $amount;
@@ -100,7 +94,8 @@ class ProviderStoreController extends Controller
         $view = view(get_template() . '.provider_stores.includes.table_element', compact('provider','stores', 'cart', 'request'));
 
         return response()->json([
-            'html' => $view->render()
+            'html' => $view->render(),
+            'stores' => $stores
         ]);
     }
 
@@ -123,6 +118,8 @@ class ProviderStoreController extends Controller
 
     public function addCart(Cart $cart, AddCartRequest $request)
     {
+        dd($request->all());
+
         $cart->addProduct($request->provider_key, $request->stock, $request->delivery_key, $request->manufacturer, $request->article, $request->price);
 
         return response()->json([
@@ -141,11 +138,53 @@ class ProviderStoreController extends Controller
         ], 200);
     }
 
+    public function orderCart(Providers $providers)
+    {
+        $user_id = Auth::id();
+
+        $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
+
+        $ordersKeys = $ordersCollection->pluck('provider_key')->unique('provider_key')->toArray();
+
+        $orders = [];
+
+        foreach ($ordersCollection as $order) {
+            $orders[$order->provider_key][] = $order;
+        }
+
+        /** @var ProviderInterface $provider */
+        foreach ($providers->activated() as $provider) {
+            $key = $provider->getServiceKey();
+
+            if(!in_array($key, $ordersKeys)) continue;
+
+            $provider->sendOrder($orders[$key]);
+
+            DB::table('providers_cart')->where([
+                'user_id' => $user_id,
+                'provider_key' => $key
+            ])->delete();
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Заявки поставщикам были успешно отправлены.'
+        ]);
+    }
+
     public static function ProviderCartDialog(Request $request)
     {
         $class = 'providerCartDialog';
 
-        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request'));
+        $ordersCollection = DB::table('providers_cart')->where('user_id', Auth::id())->get();
+
+        $orders = [];
+
+        foreach ($ordersCollection as $order) {
+            $orders[$order->provider_key][] = $order;
+        }
+
+        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders'));
 
         return response()->json([
             'tag' => $class,

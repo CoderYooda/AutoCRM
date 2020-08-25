@@ -1,12 +1,6 @@
 @foreach($stores as $store)
 
-    <tr
-        data-delivery_key="{{ $store['delivery_info']['key'] }}"
-        data-name="{{ $store['delivery_info']['name'] }}"
-        data-manufacturer="{{ $store['delivery_info']['manufacturer'] }}"
-        data-price="{{ $store['delivery_info']['price'] }}"
-        data-stock="{{ $store['delivery_info']['stock'] }}">
-
+    <tr id="{{ $store['index'] }}">
         <td><div class="tree_image"></div></td>
         <td><span>{{ $store['name'] }}</span></td>
         <td><span>{{ $store['code'] }}</span></td>

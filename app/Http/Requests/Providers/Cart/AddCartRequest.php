@@ -15,12 +15,13 @@ class AddCartRequest extends FormRequest
     {
         return [
             'provider_key' => ['required', 'string', 'max:255'],
-            'delivery_key' => ['required', 'string', 'max:255'],
-            'stock' => ['required', 'string', 'max:255'],
-            'manufacturer' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
             'article' => ['required', 'string', 'max:255'],
-            'price' => ['numeric', 'between:1,9999999']
+            'data.model' => ['required', 'json']
         ];
+    }
+
+    protected function passedValidation()
+    {
+        $this['data']['model'] = json_decode($this['data']['model']);
     }
 }

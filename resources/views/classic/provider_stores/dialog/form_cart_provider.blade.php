@@ -1,4 +1,4 @@
-<div id="providerCartDialog" class="dialog provider_cart_dialog" style="width:600px;">
+<div id="providerCartDialog" class="dialog provider_cart_dialog" style="width:750px;">
 
     <div class="titlebar">Оформление заявки поставщикам</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
@@ -8,31 +8,38 @@
 
         <div class="flex-4 pl-15 pt-15 pr-15">
 
-            <h2 class="mb-10">Тринити</h2>
+            @foreach($orders as $provider_name => $orders)
 
-            <table class="w-100" cellspacing="0">
-                <tr>
-                    <th>Склад</th>
-                    <th>Производитель</th>
-                    <th>Артиркул</th>
-                    <th>Цена</th>
-                    <th>Количество</th>
-                </tr>
+                <h2 class="mb-10">{{ ucfirst($provider_name) }}</h2>
 
-                @foreach([1, 2, 3] as $element)
+                <table class="w-100" cellspacing="0">
                     <tr>
-                        <td>Cella1070/3</td>
-                        <td>SANGSIN</td>
-                        <td>k1279</td>
-                        <td>1396.89</td>
+                        <th>Склад</th>
+                        <th>Производитель</th>
+                        <th>Артиркул</th>
+                        <th>Цена за шт</th>
+                        <th>Количество</th>
+                        <th>Общая стоимость</th>
+                    </tr>
+
+                    @foreach($orders as $order)
+
+                    <tr>
+                        <td>{{ $order->stock }}</td>
+                        <td>{{ $order->manufacturer }}</td>
+                        <td>{{ $order->article }}</td>
+                        <td>{{ correct_price($order->price) }} ₽</td>
+                        <td><input type="text" style="width: 60px; text-align: center;" value="{{ $order->count }}"></td>
                         <td>
-                            <span>33</span>
+                            <span>{{ correct_price($order->price * $order->count) }} ₽</span>
                             <i class="fa fa-trash ml-15 pointer" aria-hidden="true"></i>
                         </td>
                     </tr>
-                @endforeach
 
-            </table>
+                    @endforeach
+                </table>
+
+            @endforeach
 
         </div>
 
@@ -50,7 +57,7 @@
                 <i class="fa fa-trash" aria-hidden="true"></i>
                 <span>Очистить</span>
             </button>
-            <button type="button" class="button primary uppercase-btn" onclick="{{ $class }}.save(this)">Отправить заявки</button>
+            <button type="button" class="button primary uppercase-btn" onclick="{{ $class }}.send(this)">Отправить заявки</button>
         </div>
 
     </div>

@@ -32,10 +32,7 @@ class AvtoImport implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'userlogin' => $this->login,
-            'userpsw' => $this->password,
-            'number' => $article,
-            'locale' => 'ru_RU'
+            'number' => $article
         ];
 
         $result = $this->query('search/brands/', $params, 'GET');
@@ -61,28 +58,29 @@ class AvtoImport implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'userlogin' => $this->login,
-            'userpsw' => $this->password,
             'number' => $article,
             'brand' => $brand,
-            'useOnlineStocks' => 1,
-            'locale' => 'ru_RU'
+            'useOnlineStocks' => 1
         ];
 
         $items = $this->query('search/articles/', $params, 'GET');
 
         $results = [];
 
-        foreach ($items as $item) {
+        foreach ($items as $key => $item) {
 
             $min_days = $item->deliveryPeriod / 24;
             $max_days = $item->deliveryPeriodMax ?? 1 / 24;
 
             $results[] = [
+                'index' => $key,
                 'name' => $item->supplierCode,
                 'code' => $item->number,
                 'delivery' => $min_days . ($max_days > $min_days ?  ('/' . $max_days) : ''),
+                'days_min' => $min_days,
+                'days_max' => $max_days,
                 'price' => $item->price,
+                'model' => json_encode($item)
             ];
         }
 
@@ -91,6 +89,10 @@ class AvtoImport implements ProviderInterface
 
     private function query($path, $params, $method): array
     {
+        $params['userlogin'] = $this->login;
+        $params['userpsw'] = $this->password;
+        $params['locale'] = 'ru_RU';
+
         $full_path = $this->host . $path . '?' . http_build_query($params);
 
         $result = file_get_contents($full_path, null, stream_context_create([
@@ -124,5 +126,14 @@ class AvtoImport implements ProviderInterface
         $this->searchBrandsCount('k1279');
 
         return true;
+    }
+
+    public function sendOrder(array $products): bool
+    {
+        $params = [
+
+        ];
+
+        $items = $this->query('basket/add/', $params, 'POST');
     }
 }

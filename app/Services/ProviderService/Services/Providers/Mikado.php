@@ -150,4 +150,9 @@ class Mikado implements ProviderInterface
 
         return true;
     }
+
+    public function sendOrder(array $products): bool
+    {
+        // TODO: Implement sendOrder() method.
+    }
 }
