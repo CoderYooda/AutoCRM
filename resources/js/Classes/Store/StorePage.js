@@ -736,21 +736,21 @@ class storePage{
                     items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
                 }
 
-                // items.push(new ContextualItem({
-                //     label: 'Удалить', onClick: () => {
-                //         window.entity.remove(object.contextDop, row.getData().id, object)
-                //     },
-                //     shortcut: 'Ctrl+A'
-                // }));
-                //
-                // if (object.selectedData.length) {
-                //     items.push(new ContextualItem({
-                //         label: 'Удалить выделенные', onClick: () => {
-                //             window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)
-                //         },
-                //         shortcut: 'Ctrl+A'
-                //     }));
-                // }
+                items.push(new ContextualItem({
+                    label: 'Удалить', onClick: () => {
+                        window.entity.remove(object.contextDop, row.getData().id, object)
+                    },
+                    shortcut: 'Ctrl+A'
+                }));
+
+                if (object.selectedData.length) {
+                    items.push(new ContextualItem({
+                        label: 'Удалить выделенные', onClick: () => {
+                            window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)
+                        },
+                        shortcut: 'Ctrl+A'
+                    }));
+                }
 
                 object.tableContextual = null;
                 object.tableContextual = new Contextual({

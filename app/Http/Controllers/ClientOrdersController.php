@@ -145,7 +145,7 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
-
+        //dd(1);
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complete';
         }
@@ -209,12 +209,11 @@ class ClientOrdersController extends Controller
 
         $client_order_data = [];
 
-        #### Проверка на дубли
+        # Проверка на дубли
         $messages = [];
         $rp = $request['products'];
         if (isset($rp['new']) && $rp['new'] != null) {
             foreach ($rp['new'] as $id => $product) {
-
                 if ($id === 'new') {
                     $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
                     if ($stock_supplier) {
@@ -235,83 +234,84 @@ class ClientOrdersController extends Controller
             ], 422);
         }
 
-        #Сохраняем быстрые товары
-        if (isset($rp['new'])) {
-            foreach ($rp['new'] as $id => $product) {
-                $vcount = (int)$product['count'];
-
-                $vprice = (double)$product['price'];
-                $vtotal = $vprice * $vcount;
-                $client_order->summ += $vtotal;
-
-                $supplier_request = new Request(['new_supplier_name' => $product['new_supplier_name']]);
-
-                $supplier = SupplierController::silent_store($supplier_request);
-                //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
-                $actor_product = Article::firstOrNew([
-                    'article' => $product['article'],
-                    'supplier_id' => $supplier->id,
-                    'company_id' => Auth::user()->company()->first()->id
-                ]);
-                if (!$actor_product->exists) {
-                    $actor_product->category_id = 10;
-                    $actor_product->creator_id = Auth::user()->id;
-                    $actor_product->name = $product['name'];
-                    $actor_product->save();
-
-                    $prepared_article = mb_strtolower(str_replace(' ', '', $actor_product->article));
-                    $prepared_supplier = mb_strtolower(str_replace(' ', '', $actor_product->supplier->name));
-                    $prepared_name = mb_strtolower(str_replace(' ', '', $actor_product->name));
-                    $prepared_barcode = mb_strtolower(str_replace(' ', '', $actor_product->barcode));
-
-                    $actor_product->foundstring = $prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name;
-                    //
-                    $actor_product->save();
-
-                }
-                $pivot_data = [
-                    'store_id' => $client_order->store()->first()->id,
-                    'article_id' => (int)$actor_product->id,
-                    'client_order_id' => $client_order->id,
-                    'count' => (int)$vcount,
-                    'price' => (double)$vprice,
-                    'total' => (double)$vtotal
-                ];
-                $client_order_data[] = $pivot_data;
-            }
-        }
-        foreach ($rp as $id => $product) {
-            if ($id !== 'new') {
-
-                $vcount = $product['count'];
-
-                if($vcount < $client_order->getShippedCount($id)){
-                    $name = 'products.' . $product['id'] . '.count';
-                    return response()->json([
-                        'messages' => [$name => ['Отгружено более ' . $vcount . ' товаров, декремент невозможен']]
-                    ], 422);
-                }
-
-                if($client_order && $client_order->getShippedCount($id)){
-                    $vprice = $client_order->getProductPriceFromClientOrder($id);
-                } else {
-                    $vprice = (double)$product['price'];
-                }
-
-                $vtotal = $vprice * $vcount;
-                $client_order->summ += $vtotal;
-                $pivot_data = [
-                    'store_id' => $client_order->store()->first()->id,
-                    'article_id' => (int)$product['id'],
-                    'client_order_id' => $client_order->id,
-                    'count' => (int)$vcount,
-                    'price' => (double)$vprice,
-                    'total' => (double)$vtotal,
-                    'shipped_count' => $client_order->getShippedCount($id)
-                ];
-                $client_order_data[] = $pivot_data;
-            }
-        }
+//        #Сохраняем быстрые товары
+//        if (isset($rp['new'])) {
+//            foreach ($rp['new'] as $id => $product) {
+//                $vcount = (int)$product['count'];
+//
+//                $vprice = (double)$product['price'];
+//                $vtotal = $vprice * $vcount;
+//                $client_order->summ += $vtotal;
+//
+//                $supplier_request = new Request(['new_supplier_name' => $product['new_supplier_name']]);
+//
+//                $supplier = SupplierController::silent_store($supplier_request);
+//                //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
+//                $actor_product = Article::firstOrNew([
+//                    'article' => $product['article'],
+//                    'supplier_id' => $supplier->id,
+//                    'company_id' => Auth::user()->company()->first()->id
+//                ]);
+//                if (!$actor_product->exists) {
+//                    $actor_product->category_id = 10;
+//                    $actor_product->creator_id = Auth::user()->id;
+//                    $actor_product->name = $product['name'];
+//                    $actor_product->save();
+//
+//                    $prepared_article = mb_strtolower(str_replace(' ', '', $actor_product->article));
+//                    $prepared_supplier = mb_strtolower(str_replace(' ', '', $actor_product->supplier->name));
+//                    $prepared_name = mb_strtolower(str_replace(' ', '', $actor_product->name));
+//                    $prepared_barcode = mb_strtolower(str_replace(' ', '', $actor_product->barcode));
+//
+//                    $actor_product->foundstring = $prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name;
+//                    //
+//                    $actor_product->save();
+//
+//                }
+//                $pivot_data = [
+//                    'store_id' => $client_order->store()->first()->id,
+//                    'article_id' => (int)$actor_product->id,
+//                    'client_order_id' => $client_order->id,
+//                    'count' => (int)$vcount,
+//                    'price' => (double)$vprice,
+//                    'total' => (double)$vtotal
+//                ];
+//                $client_order_data[] = $pivot_data;
+//            }
+//        }
+//
+//        foreach ($rp as $id => $product) {
+//            if ($id !== 'new') {
+//
+//                $vcount = $product['count'];
+//
+//                if($vcount < $client_order->getShippedCount($id)){
+//                    $name = 'products.' . $product['id'] . '.count';
+//                    return response()->json([
+//                        'messages' => [$name => ['Отгружено более ' . $vcount . ' товаров, декремент невозможен']]
+//                    ], 422);
+//                }
+//
+//                if($client_order && $client_order->getShippedCount($id)){
+//                    $vprice = $client_order->getProductPriceFromClientOrder($id);
+//                } else {
+//                    $vprice = (double)$product['price'];
+//                }
+//
+//                $vtotal = $vprice * $vcount;
+//                $client_order->summ += $vtotal;
+//                $pivot_data = [
+//                    'store_id' => $client_order->store()->first()->id,
+//                    'article_id' => (int)$product['id'],
+//                    'client_order_id' => $client_order->id,
+//                    'count' => (int)$vcount,
+//                    'price' => (double)$vprice,
+//                    'total' => (double)$vtotal,
+//                    'shipped_count' => $client_order->getShippedCount($id)
+//                ];
+//                $client_order_data[] = $pivot_data;
+//            }
+//        }
         #Удаление всех отношений и запись новых (кастомный sync)
         $client_order->syncArticles($client_order->id, $client_order_data);
 

@@ -1,6 +1,21 @@
 <div id="{{ $class }}" class="dialog" style="width:640px;">
-
-    <div class="titlebar">{{ $partner ? $partner->outputName() : 'Создание нового контакта' }}</div>
+    @php
+        $postfix = 'контакта';
+        switch($request['category_select']){
+            case '6':
+                $postfix = 'партнера';
+                break;
+            case '7':
+                $postfix = 'покупателя';
+                break;
+            case '5':
+                $postfix = 'сотрудника';
+                break;
+            default:
+                $postfix = 'контакта';
+        }
+    @endphp
+    <div class="titlebar">{{ $partner ? $partner->outputName() : 'Создание нового ' . $postfix }}</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
     <form id="act_form_partner" action="{{ route('StorePartner') }}" method="POST">
