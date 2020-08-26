@@ -12,14 +12,15 @@ class providerCartDialog extends Modal{
 
     }
 
-    send() {
-        axios.post('/provider_stores/cart/order')
-            .then(response => {
-                dd(response);
-            })
-            .catch(response => {
+    send(element) {
 
-            });
+        // let form_element = this.current_dialog.querySelector('form');
+
+        window.axform.send(element, (response) => {
+            if(response.status === 200) {
+                //
+            }
+        });
     }
 }
 export default providerCartDialog;

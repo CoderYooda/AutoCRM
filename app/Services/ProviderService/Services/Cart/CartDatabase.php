@@ -17,14 +17,14 @@ class Cart implements CartInterface
         $this->user_id = Auth::id();
     }
 
-    public function setProductCount($provider, $stock, $delivery_key, $manufacturer, $article, $price, $count)
+    public function setProductCount($provider_key, $article, $product, $count)
     {
+        $hash = md5($product['hash_info']['stock'] . $product['hash_info']['manufacturer'] . $article . $product['hash_info']['days'] . $product['hash_info']['price']);
+
         $values = [
             'user_id' => $this->user_id,
-            'provider_key' => $provider,
-            'stock' => $stock,
-            'manufacturer' => $manufacturer,
-            'article' => $article
+            'provider_key' => $provider_key,
+            'hash'  => $hash
         ];
 
         if($count == 0) {
@@ -32,8 +32,7 @@ class Cart implements CartInterface
         }
 
         return DB::table($this->table)->updateOrInsert($values, [
-            'delivery_key' => $delivery_key,
-            'price' => $price,
+            'data' => json_encode($product),
             'count' => $count
         ]);
     }
@@ -48,19 +47,18 @@ class Cart implements CartInterface
         // TODO: Implement getProductsIds() method.
     }
 
-    public function addProduct($provider_key, $stock, $delivery_key, $manufacturer, $article, $price)
+    public function addProduct($provider_key, $article, $product)
     {
+        $hash = md5($product['hash_info']['stock'] . $product['hash_info']['manufacturer'] . $article . $product['hash_info']['days'] . $product['hash_info']['price']);
+
         $values = [
             'user_id' => $this->user_id,
             'provider_key' => $provider_key,
-            'stock' => $stock,
-            'manufacturer' => $manufacturer,
-            'article' => $article
+            'hash' => $hash
         ];
 
         DB::table($this->table)->updateOrInsert($values, [
-            'delivery_key' => $delivery_key,
-            'price' => $price
+            'data' => json_encode($product)
         ]);
 
         return DB::table($this->table)->where($values)->increment('count', 1);

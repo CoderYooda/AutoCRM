@@ -15,13 +15,8 @@ class SetCartRequest extends FormRequest
     {
         return [
             'provider_key' => ['required', 'string', 'max:255'],
-            'delivery_key' => ['required', 'string', 'max:65000'],
-            'stock' => ['required', 'string', 'max:255'],
-            'manufacturer' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
             'article' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'between:1,9999999'],
-            'count' => ['required', 'integer', 'min:0', 'max:9999']
+            'product' => ['required', 'array']
         ];
     }
 }

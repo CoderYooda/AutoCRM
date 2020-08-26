@@ -16,12 +16,7 @@ class AddCartRequest extends FormRequest
         return [
             'provider_key' => ['required', 'string', 'max:255'],
             'article' => ['required', 'string', 'max:255'],
-            'data.model' => ['required', 'json']
+            'product' => ['required', 'array']
         ];
-    }
-
-    protected function passedValidation()
-    {
-        $this['data']['model'] = json_decode($this['data']['model']);
     }
 }

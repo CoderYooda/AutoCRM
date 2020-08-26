@@ -4,13 +4,13 @@ namespace App\Services\ProviderService\Contract;
 
 interface CartInterface
 {
-    public function setProductCount($provider_key, $stock, $delivery_key, $manufacturer, $article, $price, $count);
+    public function setProductCount($provider_key, $article, $data, $count);
 
     public function getProducts();
 
     public function getProductsIds();
 
-    public function addProduct($provider_key, $stock, $delivery_key, $manufacturer, $article, $price);
+    public function addProduct($provider_key, $article, $data);
 
     public function getProductsCount();
 

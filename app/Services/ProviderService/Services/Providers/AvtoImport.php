@@ -6,6 +6,7 @@ namespace App\Services\ProviderService\Services\Providers;
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AvtoImport implements ProviderInterface
 {
@@ -20,10 +21,13 @@ class AvtoImport implements ProviderInterface
     protected $login = null;
     protected $password = null;
 
+    protected $user_id = null;
+
     public function __construct()
     {
         /** @var Company company */
         $this->company = Auth::user()->company;
+        $this->user_id = Auth::id();
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = md5($this->company->getServiceFieldValue($this->service_key, 'password'));
@@ -65,6 +69,20 @@ class AvtoImport implements ProviderInterface
 
         $items = $this->query('search/articles/', $params, 'GET');
 
+        foreach ($items as $key => $item) {
+
+            $items[$key]->index = $key;
+
+            $items[$key]->hash_info = [
+                'stock' => $item->supplierCode,
+                'manufacturer' => $item->brand,
+                'article' => $article,
+                'days' => $item->deliveryPeriod,
+                'price' => $item->price
+            ];
+
+        }
+
         $results = [];
 
         foreach ($items as $key => $item) {
@@ -80,7 +98,10 @@ class AvtoImport implements ProviderInterface
                 'days_min' => $min_days,
                 'days_max' => $max_days,
                 'price' => $item->price,
-                'model' => json_encode($item)
+                'manufacturer' => $item->brand,
+                'stock' => $item->supplierCode,
+                'model' => $item,
+                'hash' => md5($item->supplierCode . $item->brand . $article . $item->deliveryPeriod . $item->price)
             ];
         }
 
@@ -93,14 +114,22 @@ class AvtoImport implements ProviderInterface
         $params['userpsw'] = $this->password;
         $params['locale'] = 'ru_RU';
 
-        $full_path = $this->host . $path . '?' . http_build_query($params);
+        $full_path = $this->host . $path;
 
-        $result = file_get_contents($full_path, null, stream_context_create([
+        if($method == 'GET') $full_path .= ('?' . http_build_query($params));
+
+        $context = [
             'http' => [
                 'header' => 'Content-Type: application/x-www-form-urlencoded',
-                'method' => $method,
+                'method' => $method
             ],
-        ]));
+        ];
+
+        if($method == 'POST') {
+            $context['http']['content'] = http_build_query($params);
+        }
+
+        $result = file_get_contents($full_path, null, stream_context_create($context));
 
         $result = (array)json_decode($result);
 
@@ -130,10 +159,55 @@ class AvtoImport implements ProviderInterface
 
     public function sendOrder(array $products): bool
     {
-        $params = [
+//        $response = $this->query('basket/shipmentOffices', [], 'GET');
+        $response = $this->query('basket/shipmentAddresses', [], 'GET');
+//        $response = $this->query('basket/paymentMethods', [], 'GET');
+//        $response = $this->query('basket/shipmentMethods', [], 'GET');
+//        $response = $this->query('basket/shipmentDates', [], 'GET');
 
+        dd($response);
+
+        //Очищаем корзину от старых заказов
+        $this->query('basket/clear/', [], 'POST');
+
+        $orders = [];
+
+        foreach ($products as $product) {
+            $data = json_decode($product->data);
+
+            $orders[] = [
+                'number' => $data->hash_info->article,
+                'brand' => $data->hash_info->manufacturer,
+                'supplierCode' => $data->supplierCode,
+                'itemKey' => $data->itemKey,
+                'quantity' => $product->count
+            ];
+        }
+
+        $params = [
+            'positions' => $orders
         ];
 
-        $items = $this->query('basket/add/', $params, 'POST');
+        $response = $this->query('basket/add/', $params, 'POST');
+
+        //basket/order
+
+        $params = [
+            'shipmentMethod' => [],
+            'paymentMethod' => [],
+            'shipmentAddress' => 0,
+            'shipmentOffice' => 9119,
+            'shipmentDate' => [],
+            'comment' => 'Тестовый заказ, отмените его'
+        ];
+
+        $response = $this->query('basket/order/', $params, 'POST');
+
+        DB::table('providers_cart')->where([
+            'user_id' => $this->user_id,
+            'provider_key' => $this->service_key
+        ])->delete();
+
+        return true;
     }
 }

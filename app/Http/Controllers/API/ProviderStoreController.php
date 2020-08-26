@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\Providers\Cart\AddCartRequest;
+use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
@@ -78,14 +79,14 @@ class ProviderStoreController extends Controller
 
         if($request->is_desc == true) $stores = $stores->reverse();
 
-        $existedStores = DB::table('providers_cart')->whereIn('stock', $stores->pluck('model'))->get();
+        $existedStores = DB::table('providers_cart')->whereIn('hash', $stores->pluck('hash'))->get();
 
         $stores = $stores->toArray();
 
         foreach ($stores as $key => $store) {
 
             $amount = $existedStores
-                ->where('data', $store['model'])
+                ->where('hash', $store['hash'])
                 ->sum('count');
 
             $stores[$key]['count'] = $amount;
@@ -95,7 +96,7 @@ class ProviderStoreController extends Controller
 
         return response()->json([
             'html' => $view->render(),
-            'stores' => $stores
+            'stores' => array_column($stores, 'model')
         ]);
     }
 
@@ -107,7 +108,7 @@ class ProviderStoreController extends Controller
             'http' => [
                 'method' => 'GET',
                 'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode("WEBCFIRE.VOSTOK@MAIL.RU:ng2pP4R1zZz") . "\r\n",
+                    . 'Authorization: Basic '. base64_encode("WEBCFIRE.VOSTOK@MAIL.RU:ng2pP4R1zZz") . "\r\n", //TODO change account data
             ],
         ]));
 
@@ -118,9 +119,7 @@ class ProviderStoreController extends Controller
 
     public function addCart(Cart $cart, AddCartRequest $request)
     {
-        dd($request->all());
-
-        $cart->addProduct($request->provider_key, $request->stock, $request->delivery_key, $request->manufacturer, $request->article, $request->price);
+        $cart->addProduct($request->provider_key, $request->article, $request->product);
 
         return response()->json([
             'type' => 'success',
@@ -130,7 +129,7 @@ class ProviderStoreController extends Controller
 
     public function setCart(Cart $cart, SetCartRequest $request)
     {
-        $cart->setProductCount($request->provider_key, $request->stock, $request->delivery_key, $request->manufacturer, $request->article, $request->price, $request->count);
+        $cart->setProductCount($request->provider_key, $request->article, $request->product, $request->count);
 
         return response()->json([
             'type' => 'success',
@@ -138,8 +137,10 @@ class ProviderStoreController extends Controller
         ], 200);
     }
 
-    public function orderCart(Providers $providers)
+    public function orderCart(Providers $providers, OrderCartRequest $request)
     {
+        dd($request->all());
+
         $user_id = Auth::id();
 
         $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
@@ -176,11 +177,16 @@ class ProviderStoreController extends Controller
     {
         $class = 'providerCartDialog';
 
-        $ordersCollection = DB::table('providers_cart')->where('user_id', Auth::id())->get();
+        $user_id = Auth::id();
+
+        $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
 
         $orders = [];
 
         foreach ($ordersCollection as $order) {
+
+            $order->data = json_decode($order->data);
+
             $orders[$order->provider_key][] = $order;
         }
 

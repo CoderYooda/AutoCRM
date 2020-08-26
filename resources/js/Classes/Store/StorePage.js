@@ -1,5 +1,12 @@
 import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
+import entranceMethods from "./tabs/EntranceMethods";
+import providerStoresMethods from "./tabs/ProviderStoreMethods";
+
+const classes = {
+    entranceMethods,
+    providerStoresMethods
+};
 
 class storePage{
 
@@ -124,10 +131,6 @@ class storePage{
         });
     };
 
-    registerProviderOrder(element) {
-        openDialog('ProviderCartDialog');
-    }
-
     setArticleCartAmount(element) {
         let amount = Number(element.value);
         this.changeArticleCartAmount(element, amount);
@@ -176,14 +179,16 @@ class storePage{
 
         let service_input = document.querySelector('[name="service_key"]');
 
+        let index = -1;
+
+        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
+            if(this.items[i].index == target_element.id) index = target_element.id;
+        }
+
         let data = {
             provider_key: service_input.value,
-            delivery_key: target_element.dataset.delivery_key,
-            stock: target_element.dataset.stock,
-            manufacturer: target_element.dataset.manufacturer,
-            name: target_element.dataset.name,
             article: this.search,
-            price: target_element.dataset.price,
+            product: this.items[index],
             count: count
         };
 
@@ -212,13 +217,16 @@ class storePage{
         let index = -1;
 
         for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
-            if(this.items[i].index == target_element.id) index = target_element.id;
+            console.log(i, this.items[i].index, target_element.id, this.items[i].index == target_element.id);
+            if(this.items[i].index == target_element.id) index = i;
         }
+
+        console.log(index, target_element.id, this.items[index]);
 
         let data = {
             provider_key: service_input.value,
             article: this.search,
-            data: this.items[index]
+            product: this.items[index]
         };
 
         axios.post('/provider_stores/cart/add', data)
@@ -1088,6 +1096,22 @@ class storePage{
                 },
             });
         }
+
+        let model_names = {
+            store: 'store',
+            entrance: 'entrance',
+            provider_stores: 'providerStores',
+            provider_orders: 'providerOrders',
+            entrance_refunds: 'entranceRefunds',
+            refund: 'refund',
+            client_orders: 'clientOrders'
+        };
+
+        let model_name = model_names[this.active_tab] + 'Methods';
+
+        this.model = new classes[model_name]();
+
+        console.log(this.model);
     }
 
     prepareParams(){

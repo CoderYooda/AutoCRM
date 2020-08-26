@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\ProviderStoreController;
 use App\Models\Supplier;
+use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
 
 class DialogController extends Controller
