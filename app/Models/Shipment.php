@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\DocumentableTrait;
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Shipment extends Model
 {
-    use OwnedTrait, HasManagerAndPartnerTrait, PayableTrait;
+    use OwnedTrait, HasManagerAndPartnerTrait, PayableTrait, DocumentableTrait;
 
     protected $casts = [
         'created_at' => 'date:d.m.Y H:i',

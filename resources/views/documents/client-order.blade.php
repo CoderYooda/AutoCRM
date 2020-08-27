@@ -511,7 +511,7 @@
     <tbody>
     <tr class="R0">
         <td><span></span></td>
-        <td class="R0C1" colspan="6"><span style="white-space:nowrap">ПОСТАВЩИК:&nbsp;&nbsp;{{ Auth::user()->company()->first()->name }}</span></td>
+        <td class="R0C1" colspan="6"><span style="white-space:nowrap">ПОСТАВЩИК:&nbsp;&nbsp;{{ Auth::user()->company->name }}</span></td>
         <td class="R0C7"><span></span></td>
         <td class="R0C7"><span></span></td>
         <td colspan="2" rowspan="3" align="LEFT" valign="TOP"><img src="" alt="" style="margin-left:1pt;margin-top:0pt;"></td>
@@ -582,7 +582,7 @@
     </tr>
     <tr class="R0">
         <td><span></span></td>
-        <td class="R5C1" colspan="3">Заказчик: {{ $client_order->partner()->first()->outputName() }} </td>
+        <td class="R5C1" colspan="3">Заказчик: {{ $client_order->partner->outputName() }} </td>
         <td class="R5C1" colspan="6">телефон: {{ $client_order->phone }}</td>
         <td><span></span></td>
         <td><span></span></td>
@@ -690,11 +690,11 @@
         <td class="R5C1" colspan="3">Цена за шт.</td>
         <td class="R5C1" colspan="3">Цена итого</td>
     </tr>
-    @foreach($client_order->articles()->get() as $article)
+    @foreach($client_order->articles as $article)
         <tr class="R0">
             <td class="R5C1" colspan="4">{{ $article->name }}</td>
             <td class="R5C1" colspan="2">{{ $article->article }}</td>
-            <td class="R5C1" colspan="2">{{ $article->supplier()->first()->name }}</td>
+            <td class="R5C1" colspan="2">{{ $article->supplier->name }}</td>
             <td class="R5C1" colspan="2">{{ $article->pivot->count }}</td>
             <td class="R5C1" colspan="3">{{ $article->pivot->price }}</td>
             <td class="R5C1" colspan="3">{{ $article->pivot->total }}</td>

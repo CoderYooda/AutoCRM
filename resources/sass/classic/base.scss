@@ -2449,3 +2449,38 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 }
+
+#documentDialog {
+    span {
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 18px;
+        /* identical to box height, or 150% */
+
+        letter-spacing: 0.0015em;
+
+        color: #404040;
+    }
+
+    .selected {
+        background: #D1E2EF !important;
+    }
+
+    .focuseable {
+
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        border-bottom: 1px solid #E3E4E8;
+
+        &:hover {
+            background: #F7F7F7;
+            border: 1px solid #DFE0E4;
+
+            &:not(:first-child) {
+                border-top: 1px solid transparent;
+            }
+        }
+    }
+}

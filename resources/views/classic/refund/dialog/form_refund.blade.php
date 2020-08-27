@@ -189,10 +189,6 @@
                     <button type="button" class="button primary pull-right uppercase-btn mr-15"
                             onclick="{{ $class }}.save(this)">Сохранить
                     </button>
-                @else
-                    <button type="button" class="button primary pull-right uppercase-btn mr-15"
-                            onclick="window.helper.printDocument('defective-act', {{ $refund->id }})">Печать
-                    </button>
                 @endif
 
             </div>

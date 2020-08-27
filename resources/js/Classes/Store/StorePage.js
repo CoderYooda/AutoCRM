@@ -2,10 +2,12 @@ import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
+import documentMethods from "./tabs/DocumentMethods";
 
 const classes = {
     entranceMethods,
-    providerStoresMethods
+    providerStoresMethods,
+    documentMethods
 };
 
 class storePage{
@@ -528,6 +530,20 @@ class storePage{
                 {title:"Ответственный", field:"manager_name", align:"left"},
                 {title:"Поставщик", field:"partner_name", align:"left"},
                 {title:"Сумма", field:"wsumm", width:130, align:"left", formatter:priceFormatter}
+            ];
+        }
+        else if(object.active_tab === 'documents'){
+            object.contextDop = 'document';
+            object.parametr = 'document';
+
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Название", field:"name", width:150},
+                {title:"Менеджер", field:"manager_id", width:150},
+                {title:"Дата", field:"created_at", width:150},
             ];
         }
         return columns;
@@ -1104,14 +1120,13 @@ class storePage{
             provider_orders: 'providerOrders',
             entrance_refunds: 'entranceRefunds',
             refund: 'refund',
-            client_orders: 'clientOrders'
+            client_orders: 'clientOrders',
+            documents: 'document'
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
 
         this.model = new classes[model_name]();
-
-        console.log(this.model);
     }
 
     prepareParams(){

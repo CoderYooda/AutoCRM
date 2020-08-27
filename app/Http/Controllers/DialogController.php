@@ -12,6 +12,9 @@ class DialogController extends Controller
     public function openDialogByTag($tag, Request $request)
     {
         switch ($tag) {
+            case 'documentDialog':
+                $dialog = DocumentController::dialog($request);#
+                break;
             case 'ProviderCartDialog':
                 $dialog = ProviderStoreController::ProviderCartDialog($request);#
                 break;
