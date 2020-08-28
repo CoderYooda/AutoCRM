@@ -15,11 +15,7 @@
                     {{ $store->name }}
                 </td>
                 <td>
-<<<<<<< HEAD
-                    @if(isset($product)){{ $product->getCountInStoreId($store->id) ?? 0 }}@else 0 @endif
-=======
                     @isset($product) {{ $product->getCountInStoreId($store->id) ?? 0 }} @endisset
->>>>>>> origin/test_prod
                 </td>
                 <td>
                    <div class="storage_store_container">

@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $lang = config('app.locale');
 
         setlocale(LC_ALL, $lang . '.UTF-8');
+        setlocale(LC_NUMERIC,  'en.UTF-8');
         Carbon::setLocale($lang);
 
         Gate::before(function ($user, $ability) {

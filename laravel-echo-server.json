@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
 	"authHost": "http://autocrm/",
-=======
-	"authHost": "http://localhost/",
->>>>>>> origin/test_prod
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{

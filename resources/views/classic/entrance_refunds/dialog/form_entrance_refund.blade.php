@@ -48,12 +48,12 @@
                 </div>
 
                 <div class="modal-alt-header">
-                    <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Получить средства</button>
+                    <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть средства</button>
                 </div>
             @else
-                <div class="modal-alt-header mt-2">
-                    <button type="button" class="button success uppercase-btn" style="cursor: unset;">Средства получены</button>
-                </div>
+                {{--<div class="modal-alt-header mt-2">--}}
+                    {{--<button type="button" class="button success uppercase-btn" style="cursor: unset;">Средства получены</button>--}}
+                {{--</div>--}}
             @endif
 
         @endif

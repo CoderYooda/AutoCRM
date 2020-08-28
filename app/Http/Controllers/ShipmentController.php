@@ -201,7 +201,7 @@ class ShipmentController extends Controller
                 if ($product->getEntrancesCount($count) < ($count - $shipment_count)) {
                     $name = 'products.' . $product->id . '.count';
 
-                    $errors[$name] = ['В наличие нет такого количества.'];
+                    $errors[$name] = ['В наличии нет такого количества.'];
                 }
             }
 
