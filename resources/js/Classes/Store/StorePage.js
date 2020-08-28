@@ -1,11 +1,16 @@
 import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
 
+
 class storePage{
 
     constructor(){
         console.log('страница склада инициализировано');
         this.init();
+    }
+
+    searcher(){
+        this.model.search(arguments);
     }
 
     baseParams(){
@@ -591,14 +596,18 @@ class storePage{
         let object = this;
         let table_container = document.getElementById('table-container');
         let height = 500;
-        let cleanHeight = height - 110;
+        let cleanHeight = height - 125;
         let tableHeight = height - 55;
         if(table_container) {
             height = table_container.offsetHeight;
-            cleanHeight = height;
+            cleanHeight = height - 86;
             tableHeight = height;
+            if(this.active_tab == 'store'){
+                cleanHeight = height - 140;
+                tableHeight = height - 55;
+            }
         }
-            let elements = cleanHeight / 44;
+        let elements = cleanHeight / 44;
 
         object.table = new Tabulator("#" + this.getCurrentActiveTab() + "-table", {
             locale:true,
@@ -734,6 +743,10 @@ class storePage{
                 else if(object.contextDop == 'product') {
                     items.push(new ContextualItem({type:'seperator'}));
                     items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
+                }
+                else if(object.contextDop == 'refund') {
+                    items.push(new ContextualItem({type:'seperator'}));
+                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
                 }
 
                 items.push(new ContextualItem({

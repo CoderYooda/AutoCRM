@@ -197,6 +197,15 @@ h2{
 }
 
 /*Header*/
+.sms-table > td{
+    border-bottom: 1px solid #eee;
+    padding: 0 5px;
+}
+.scroll_optimize{
+    width: calc(100% + 26px);
+    margin-left: -13px;
+    padding: 0 13px;
+}
 .evotor_ico{
     position: relative;
     height: 22px;

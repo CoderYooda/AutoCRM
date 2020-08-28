@@ -402,25 +402,23 @@ class PartnerController extends Controller
             $field = 'id';
             $dir = 'DESC';
         }
-
-        if($request['provider'] == null){
-            $request['provider'] = [];
-        }
-
-        if($request['accountable'] == null){
-            $request['accountable'] = [];
-        }
-
-        $partners = Partner::select(DB::raw('
-            partners.id, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category, IF(partners.type != 2, partners.fio, partners.companyName) as name
-        '))
-            ->from(DB::raw('
-                partners
-                left join categories as cat on cat.id = partners.category_id
-            '))
-            ->where('partners.company_id', Auth::user()->company()->first()->id)
+        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name'))->select(
+            'partners.id',
+            'partners.created_at',
+            'partners.company_id',
+            'partners.balance',
+            'partners.created_at as date',
+            'basePhone as phone',
+            'cat.name as category'
+        )
+            ->leftJoin('categories as cat', 'cat.id', '=', 'partners.category_id')
+//            ->from(DB::raw('
+//                partners
+//                left join categories as cat on cat.id = partners.category_id
+//            '))
+            ->where('partners.company_id', Auth::user()->company_id)
             ->where(function($q) use ($request){
-                if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != "null"){
+                if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != 3 && $request['category_id'] != "null"){
                     $q->where('partners.category_id', (int)$request['category_id']);
                 }
             })
@@ -431,26 +429,15 @@ class PartnerController extends Controller
                         $q->where('fio', 'like', $request['search'].'%')->orWhere('companyName', 'like', $request['search']);
                     });
                 } else {
-                    $query->where(function($q) use ($request){
-                        $q->where('foundstring', 'like', '%' . str_replace(array('(', ')', ' ', '-'), '', $request['search']) . '%');
-                    });
+                    $query->where('foundstring', 'like', '%' . str_replace(array('(', ')', ' ', '-'), '', $request['search']) . '%');
                 }
             })
-
-            ->when($request['provider'] != [], function($query) use ($request) {
-                $query->whereIn('partner_id', $request['provider']);
-            })
-            ->when($request['clientorder_status'] != null, function($query) use ($request) {
-                $query->where('status', $request['clientorder_status']);
-            })
-            ->when($request['accountable'] != [], function($query) use ($request) {
-                $query->whereIn('client_orders.partner_id', $request['accountable']);
-            })
-
-            ->groupBy('partners.id')
+            //->groupBy('partners.id')
 
             ->orderBy($field, $dir)
             ->paginate($size);
+//        ->toSql();
+//        dd($partners);
 
         return $partners;
     }

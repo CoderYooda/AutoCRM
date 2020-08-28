@@ -7,10 +7,13 @@ use Faker\Generator as Faker;
 
 $factory->define(\App\Models\Article::class, function (Faker $faker) {
 
+    $json = json_decode(file_get_contents('public/demo/articles.json'));
+    $item_index = rand(0,count($json));
+
     $article = \App\Http\Controllers\HelpController::generateRandomArticle(rand(5, 10));
-    $name = $faker->realText(250);
+    $name = $json[$item_index]->name;
     $barcode = $faker->ean13();
-    $prepared_article = mb_strtolower(str_replace(' ', '', $article));
+    $prepared_article = $json[$item_index]->article;
     $prepared_name = mb_strtolower(str_replace(' ', '', $name));
     $prepared_barcode = mb_strtolower(str_replace(' ', '', $barcode));
 

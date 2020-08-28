@@ -119,13 +119,16 @@ class EntranceRefundController extends Controller
         if($entrance) {
             $entrance_refunded = $entrance->entrancerefunds->load('articles');
 
-            foreach ($entrance_refunded as $entrance_refund) {
-                foreach ($entrance_refund->articles as $product) {
+            foreach ($entrance_refunded as $refund) {
+
+                foreach ($refund->articles as $product) {
+
                     if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
                     $refunded_count[$product->id] += $product->pivot->count;
                 }
             }
         }
+
 
         return response()->json([
             'tag' => $class,

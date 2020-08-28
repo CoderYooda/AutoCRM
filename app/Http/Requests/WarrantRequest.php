@@ -8,6 +8,8 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class WarrantRequest extends FormRequest
 {
+    private $max_summ = PHP_INT_MAX;
+
     public function authorize()
     {
         return true;
@@ -29,6 +31,8 @@ class WarrantRequest extends FormRequest
                     response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
                 );
             }
+
+            $this->max_summ = (double)$model->itogo - (double)$model->wsumm;
         }
     }
 
@@ -39,7 +43,7 @@ class WarrantRequest extends FormRequest
             'cashbox_id' => ['required','exists:cashboxes,id'],
             'ddsarticle_id' => ['required','exists:dds_articles,id'],
             'isIncoming' => ['boolean'],
-            'summ' => ['required', 'numeric', 'between:1,' . (isset($this->max_summ) ? $this->max_summ : PHP_INT_MAX)],
+            'summ' => ['required', 'numeric', 'between:1,' . ($this->max_summ == PHP_INT_MAX ? PHP_INT_MAX : $this->max_summ)],
         ];
     }
 

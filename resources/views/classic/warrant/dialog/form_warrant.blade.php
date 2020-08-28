@@ -46,7 +46,7 @@
         @else
             <input class="partner_select" type="hidden" name="partner_id" value="
             @if(isset($warrant))
-            {{ $warrant->partner()->first()->id }}
+            {{ $warrant->partner->id }}
             @elseif(isset($data->partner_selected) && $data->partner_selected !== null)
             {{ $data->partner_selected->id }}
             @endif">
@@ -56,7 +56,7 @@
 
 
         @if(isset($warrant))
-            <input class="cashbox_select" type="hidden" name="cashbox_id" value="@if(isset($warrant)){{ $warrant->cashbox()->first()->id }}@else @endif">
+            <input class="cashbox_select" type="hidden" name="cashbox_id" value="@if(isset($warrant)){{ $warrant->cashbox->id }}@else @endif">
         @else
             @if(isset($data) && $data->cashbox !== null)
                 <input class="cashbox_select" type="hidden" name="cashbox_id" value="{{ $data->cashbox->id }}">
@@ -169,9 +169,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" >Сумма</label>
                 <div class="col-sm-9">
-                    <input id="warrant_dialog_focused" onkeyup="{{ $class }}.writingSumm(this)" type="number" name="summ"
-                           @if(isset($warrant)) value="{{ $warrant->summ }}" @elseif (isset($data->summ)) value="{{ $data->summ }}" @else value="0" @endif
-                           class="form-control" placeholder="Сумма">
+                    <input id="warrant_dialog_focused" onkeyup="{{ $class }}.writingSumm(this)" type="text" name="summ" value="{{ $warrant->summ ?? $data->summ }}" class="form-control" placeholder="Сумма">
                 </div>
             </div>
             <div class="form-group row">

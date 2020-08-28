@@ -7,7 +7,7 @@
                 <div class="col-sm-6">
                     <div class="p-15">
                         <div class="form-group row">
-                            <div for="partner_id" class="col-sm-3 no-pr col-form-label">
+                            <div for="partner_id" class="col-sm-3 no-pr col-form-label" >
                                 <select class="form-control text-left button_select" name="message_to" id="message_to">
                                     @foreach(\App\Http\Controllers\DashboardController::getAllUsers() as $user)
                                         <option value="{{ $user->id }}">ID_{{ $user->id }} {{ $user->name }}</option>

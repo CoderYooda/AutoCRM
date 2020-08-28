@@ -167,7 +167,11 @@
 
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
-                                {!! \App\Http\Controllers\UserController::getAllUsersList() !!}
+                                <div data-simplebar style="height:calc(100vh - 200px);width: 43vw;">
+
+                                    {!! \App\Http\Controllers\UserController::getAllUsersList() !!}
+                                </div>
+
                             </div>
                         </li>
                         @endcan

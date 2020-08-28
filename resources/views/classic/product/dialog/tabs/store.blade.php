@@ -8,13 +8,14 @@
         </tr>
         </thead>
         <tbody>
+        {{--{{ dd($stores) }}--}}
         @foreach($stores as $store)
             <tr>
                 <td>
                     {{ $store->name }}
                 </td>
                 <td>
-                    @if(isset($product)){{ $product->getEntrancesCount($product->id) }}@else 0 @endif
+                    @if(isset($product)){{ $product->getCountInStoreId($store->id) ?? 0 }}@else 0 @endif
                 </td>
                 <td>
                    <div class="storage_store_container">

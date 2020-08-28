@@ -131,6 +131,9 @@ class SettingsController extends Controller
     public static function smsTab(Request $request)
     {
         $smses = SmsController::getCompanySms();
+        foreach ($smses as $sms){
+            $sms->message = preg_replace('/[0-9]/', "*", $sms->message);
+        }
         $users = User::owned()->get();
         $payments = Payment::owned()->where('type', 'pay_to_sms')->orderBy('id', 'DESC')->get();
 

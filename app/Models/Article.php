@@ -191,7 +191,7 @@ class Article extends Model
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
-            ->withPivot('price');
+            ->withPivot('price', 'count', 'released_count');
     }
 
     public static function makeCorrectArticle(string $article)
@@ -221,8 +221,14 @@ class Article extends Model
 
     public function getStorageCode()
     {
-        $store = $this->stores->where('store_id', Auth::user()->current_store)->first();
-        return view('classic.product.storage_code', compact('store'));
+        $store = $this->stores->find(Auth::user()->current_store);
+        if($store != null){
+            return view('classic.product.storage_code', compact('store'))
+                ->with('product', $this);
+        } else {
+            return "Нет привязки";
+        }
+
     }
 
 //    public function providerorder()
@@ -233,13 +239,30 @@ class Article extends Model
 
     public function getCountInStoreId($store_id)
     {
-        $article = $this->stores->find($store_id);
+        $response = DB::table('article_entrance')
+            ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
+            ->where([
+                'store_id' => $store_id,
+                'article_id' => $this->id
+            ])
+            ->first();
 
-        return $article ? $article->pivot->count : 0;
+        return $response->count - $response->released_count;
     }
 
     public function getCountInOthersStores($store_id)
     {
-        return $this->stores()->where('store_id', '!=', $store_id)->sum('count');
+        $company = Auth::user()->company;
+
+        $response = DB::table('article_entrance')
+            ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
+            ->where([
+                'company_id' => $company->id,
+                'article_id' => $this->id
+            ])
+            ->where('store_id', '!=', $store_id)
+            ->first();
+
+        return $response->count - $response->released_count;
     }
 }

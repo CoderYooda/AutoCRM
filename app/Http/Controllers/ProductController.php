@@ -185,6 +185,7 @@ class ProductController extends Controller
         }
 
         $stores = Store::owned()->get();
+
         $category = Category::find($category_select);
 
         return response()->json([

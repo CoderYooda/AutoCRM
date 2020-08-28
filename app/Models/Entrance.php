@@ -64,7 +64,7 @@ class Entrance extends Model
 
     public function providerorder()
     {
-        return $this->belongsTo(ProviderOrder::class, 'providerorder_id')->withTrashed();
+        return $this->belongsTo(ProviderOrder::class, 'providerorder_id');
     }
 
     public function company()

@@ -46,9 +46,9 @@
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('entrance_status', null, 'не выбрано', this)" class="element">не выбрано</span>
-                            <span onclick="store.setField('entrance_status', 1, 'полностью', this)" class="element">полностью</span>
-                            <span onclick="store.setField('entrance_status', 2, 'частично', this)" class="element">частично</span>
-                            <span onclick="store.setField('entrance_status', 3, 'без поступлений', this)" class="element">без поступлений</span>
+                            <span onclick="store.setField('entrance_status', 1, 'частично', this)" class="element">частично</span>
+                            <span onclick="store.setField('entrance_status', 2, 'полностью', this)" class="element">полностью</span>
+                            <span onclick="store.setField('entrance_status', 0, 'без поступлений', this)" class="element">без поступлений</span>
                         </div>
                     </div>
                     <button type="button" onclick="store.setField('entrance_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>
