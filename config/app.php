@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\AppProviderStoreService;
+
 return [
 
     'name' => env('APP_NAME', 'Laravel'),
@@ -18,7 +20,7 @@ return [
 
     'locale' => 'ru',
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'ru',
 
     'faker_locale' => 'en_US',
 
@@ -72,8 +74,7 @@ return [
 
         Barryvdh\Debugbar\ServiceProvider::class,
 
-        \App\Providers\AppProviderStoreService::class
-
+        AppProviderStoreService::class
     ],
 
     /*

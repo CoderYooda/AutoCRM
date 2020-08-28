@@ -67,7 +67,13 @@ if(!function_exists('convertPHPSizeToBytes')) {
 
 if(!function_exists('correct_price')) {
     function correct_price($price) {
-        return number_format($price, 2, ',', ' ');
+        return number_format((float)$price, 2, '.', ' ');
+    }
+}
+
+if(!function_exists('decimal_price')) {
+    function decimal_price($price) {
+        return number_format((float)$price, 2, '.', '');
     }
 }
 
@@ -116,6 +122,7 @@ if(!function_exists('num2str')) {
      * @param int $type
      * @return string
      */
+
     function num2str($num, $type = 0)
     {
         $nul = 'ноль';
@@ -134,7 +141,8 @@ if(!function_exists('num2str')) {
             array('миллиард', 'милиарда', 'миллиардов', 0),
         );
         //
-        list($rub, $kop) = explode('.', sprintf("%015.2f", floatval($num)));
+
+        list($rub, $kop) = explode(',', sprintf("%015.2f", floatval($num)));
         $out = array();
         if (intval($rub) > 0) {
             foreach (str_split($rub, 3) as $uk => $v) { // by 3 symbols
@@ -152,6 +160,7 @@ if(!function_exists('num2str')) {
         } else $out[] = $nul;
         if($type != 2) $out[] = morph(intval($rub), $unit[1][0], $unit[1][1], $unit[1][2]); // rub
         if($type == 2 || $type == 0) $out[] = $kop . ' ' . morph($kop, $unit[0][0], $unit[0][1], $unit[0][2]); // kop
+
         return trim(preg_replace('/ {2,}/', ' ', join(' ', $out)));
     }
 }

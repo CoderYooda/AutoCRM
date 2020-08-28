@@ -62,7 +62,7 @@
                 </div>
                 <div class="form-group">
                     <label for="comment">Комментарий</label>
-                    <textarea style="resize: none;" class="form-control w-100" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
+                    <textarea style="resize: none; height: 60px;" class="form-control w-100" name="comment" id="comment" cols="30" rows="5">@if(isset($moneymove)){{ $moneymove->comment }}@endif</textarea>
                 </div>
             </div>
         </div>

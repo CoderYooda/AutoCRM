@@ -39,8 +39,6 @@ class ClientOrdersController extends Controller
             }
             $total_complited = true;
 
-
-
             foreach ($client_order->articles as $article) {
                 if (!$article->complited) {
                     $total_complited = false;

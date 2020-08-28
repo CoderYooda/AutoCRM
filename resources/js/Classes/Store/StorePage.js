@@ -1,5 +1,14 @@
 import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
+import entranceMethods from "./tabs/EntranceMethods";
+import providerStoresMethods from "./tabs/ProviderStoreMethods";
+import documentMethods from "./tabs/DocumentMethods";
+
+const classes = {
+    entranceMethods,
+    providerStoresMethods,
+    documentMethods
+};
 
 
 class storePage{
@@ -128,6 +137,113 @@ class storePage{
             window.isXHRloading = false;
         });
     };
+
+    setArticleCartAmount(element) {
+        let amount = Number(element.value);
+        this.changeArticleCartAmount(element, amount);
+    }
+
+    incrementArticleCartAmount(element) {
+        let target_element = element.closest('tr');
+        let input_element = target_element.querySelector('input');
+
+        let value = Number(input_element.value);
+
+        this.changeArticleCartAmount(element, value + 1);
+    }
+
+    decrementArticleCartAmount(element) {
+        let target_element = element.closest('tr');
+        let input_element = target_element.querySelector('input');
+
+        let value = Number(input_element.value);
+
+        this.changeArticleCartAmount(element, value - 1);
+    }
+
+    changeArticleCartAmount(element, count) {
+
+        let target_element = element.closest('tr');
+        let input_element = target_element.querySelector('input');
+
+        let current_count = Number(input_element.value);
+
+        if(count < 1) {
+            target_element.querySelector('.add-to-cart').classList.remove('d-none');
+            target_element.querySelector('.edit-cart-count').classList.add('d-none');
+        }
+
+        if(count < 0 && current_count <= 0 || count > 0 && current_count >= 999) return;
+
+        input_element.value = count;
+
+        this.debouneArticleCartAmount(element, count);
+    }
+
+    saveArticleCartAmount(element, count) {
+
+        let target_element = element.closest('tr');
+
+        let service_input = document.querySelector('[name="service_key"]');
+
+        let index = -1;
+
+        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
+            if(this.items[i].index == target_element.id) index = target_element.id;
+        }
+
+        let data = {
+            provider_key: service_input.value,
+            article: this.search,
+            product: this.items[index],
+            count: count
+        };
+
+        axios.post('/provider_stores/cart/set', data)
+            .then(response => {
+                dd(response);
+            })
+            .catch(response => {
+                dd(response);
+            });
+    }
+
+    addToCart(element) {
+        let target_element = element.closest('tr');
+
+        let service_input = document.querySelector('[name="service_key"]');
+
+        target_element.querySelector('.add-to-cart').classList.add('d-none');
+        target_element.querySelector('.edit-cart-count').classList.remove('d-none');
+
+        let input = target_element.querySelector('input');
+        this.addInputCountMask(input);
+
+        input.value = '1';
+
+        let index = -1;
+
+        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
+            console.log(i, this.items[i].index, target_element.id, this.items[i].index == target_element.id);
+            if(this.items[i].index == target_element.id) index = i;
+        }
+
+        console.log(index, target_element.id, this.items[index]);
+
+        let data = {
+            provider_key: service_input.value,
+            article: this.search,
+            product: this.items[index]
+        };
+
+        axios.post('/provider_stores/cart/add', data)
+            .then(response => {
+               dd(response);
+            })
+            .catch(response => {
+                dd(response);
+            });
+    }
 
     removePartner(id, type){
         this[type].splice(this[type].indexOf(id));
@@ -421,6 +537,20 @@ class storePage{
                 {title:"Сумма", field:"wsumm", width:130, align:"left", formatter:priceFormatter}
             ];
         }
+        else if(object.active_tab === 'documents'){
+            object.contextDop = 'document';
+            object.parametr = 'document';
+
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Название", field:"name", width:150},
+                {title:"Менеджер", field:"manager_id", width:150},
+                {title:"Дата", field:"created_at", width:150},
+            ];
+        }
         return columns;
     }
 
@@ -564,10 +694,20 @@ class storePage{
             })
             .then(response => {
 
+                let data = response.data;
+
+                this.items = data.stores;
+
                 element.classList.remove('fa-angle-down');
                 element.classList.add('fa-angle-up');
 
-                target_element.querySelector('tbody').innerHTML = response.data.html;
+                target_element.querySelector('tbody').innerHTML = data.html;
+
+                let inputs = document.querySelectorAll('.provider-cart-input');
+
+                inputs.forEach(input => {
+                    this.addInputCountMask(input);
+                });
             })
             .catch(response => {
                 console.log(response);
@@ -586,6 +726,14 @@ class storePage{
             //Очищаем внутренний список
             target_element.querySelector('tbody').innerHTML = '';
         }
+    }
+
+    addInputCountMask(element) {
+        IMask(element, {
+            mask: IMask.MaskedRange,
+            from: 0,
+            to: 999
+        });
     }
 
     initTableData() {
@@ -742,11 +890,16 @@ class storePage{
                 }
                 else if(object.contextDop == 'product') {
                     items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать ценников', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
-                }
-                else if(object.contextDop == 'refund') {
-                    items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('cheques-simple', id);} }));
+
+                    items.push(new ContextualItem({
+                        label: 'Печать ценников', onClick: () => {
+
+                            let ids = window.helper.pluck(object.selectedData, 'id');
+
+                            window.openDialog('chequeDialog', '&products='+ids);
+                        },
+                        shortcut: 'Ctrl+A'
+                    }));
                 }
 
                 items.push(new ContextualItem({
@@ -844,6 +997,10 @@ class storePage{
         if(object.active_tab == 'store'){
             object.loadCategory(this.root_category, true, true);
         }
+
+        this.debouneArticleCartAmount = helper.debounce((element, count) => {
+            this.saveArticleCartAmount(element, count);
+        }, 200);
 
         let events = [
             'ProductStored',
@@ -967,6 +1124,21 @@ class storePage{
                 },
             });
         }
+
+        let model_names = {
+            store: 'store',
+            entrance: 'entrance',
+            provider_stores: 'providerStores',
+            provider_orders: 'providerOrders',
+            entrance_refunds: 'entranceRefunds',
+            refund: 'refund',
+            client_orders: 'clientOrders',
+            documents: 'document'
+        };
+
+        let model_name = model_names[this.active_tab] + 'Methods';
+
+        this.model = new classes[model_name]();
     }
 
     prepareParams(){

@@ -5,17 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WarrantRequest;
 use App\Models\Cashbox;
 use App\Models\DdsArticle;
-use App\Models\ProviderOrder;
-use App\Models\Refund;
-use App\Models\Shipment;
-use App\Models\Statistic;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Partner;
 use App\Http\Controllers\UserActionsController as UA;
-use Illuminate\Support\Facades\Gate;
 use stdClass;
 use Auth;
 
@@ -23,28 +18,22 @@ class WarrantController extends Controller
 {
     public static function warrantDialog($request)
     {
-        $tag = 'warrantDialog';
-
-        if($request['warrant_id']){
-            $warrant = Warrant::where('id', (int)$request['warrant_id'])->first();
-            $tag .= $warrant->id;
-        } else {
-            $warrant = null;
-        }
+        $warrant = Warrant::find($request['warrant_id']);
+        $tag = 'warrantDialog' . ($warrant->id ?? '');
 
         $data = new stdClass();
 
-        if($request['partner_id']){
-            $partner = Partner::owned()->where('id', $request['partner_id'])->first();
-            if($partner){
+        if($request['partner_id']) {
+            $partner = Partner::find($request['partner_id']);
+            if($partner) {
                 $data->partner_selected = $partner;
             }
         }
 
-        if($request['ostatok']){
+        if($request['ostatok']) {
             $data->summ = $request['ostatok'];
         }
-        if($request['reason']){
+        if($request['reason']) {
             $data->reason = $request['reason'];
         }
 
@@ -55,19 +44,19 @@ class WarrantController extends Controller
                 'sale_of_goods' => 2,
                 'receipt_of_goods' => 4,
                 'pay_to_provider' => 5,
-                'receipt_of_funds' => 11,
+                'receipt_of_funds' => 9,
             ];
 
             $dds_type_id = $types[$request['warrant_type']];
 
             if($dds_type_id !== null){
-                $data->dds_article = DdsArticle::owned()->where('id', $dds_type_id)->first();
+                $data->dds_article = DdsArticle::find($dds_type_id);
+
+//                dd($data);
             }
         }
 
-        $cashbox = Auth::user()->company()->first()->cashboxes()->first();
-
-        $data->cashbox = $cashbox;
+        $data->cashbox = Auth::user()->company->cashboxes->first();
 
         return response()->json([
             'tag' => $tag,
@@ -77,18 +66,14 @@ class WarrantController extends Controller
 
     public function getSideInfo(Request $request)
     {
-        $warrant = Warrant::owned()->where('id', $request['id'])->first();
-        $partner = $warrant->partner()->first();
+        $warrant = Warrant::find($request['id']);
+        $partner = $warrant->partner;
         $comment = $warrant->comment;
 
-        if($request->expectsJson()){
-            return response()->json([
-                'info' => view(get_template() . '.warrant.contact-card', compact( 'partner','request', 'warrant'))->render(),
-                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
-            ], 200);
-        }
-
-        return redirect()->back();
+        return response()->json([
+            'info' => view(get_template() . '.warrant.contact-card', compact( 'partner','request', 'warrant'))->render(),
+            'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
+        ], 200);
     }
 
     public function tableData(Request $request)
@@ -102,7 +87,7 @@ class WarrantController extends Controller
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать возвраты' : 'Создавать возвраты');
 
-        $request['company_id'] = Auth::user()->company()->first()->id;
+        $request['company_id'] = Auth::user()->company->id;
 
         if($request['do_date'] == null){
             $request['do_date'] = Carbon::now();
@@ -129,11 +114,11 @@ class WarrantController extends Controller
             //$correct_summ = doubleval($warrant->summ) - doubleval($request['summ']);
 
             if($warrant->isIncoming){
-                $warrant->partner()->first()->subtraction($warrant->summ);
-                $warrant->cashbox()->first()->subtraction($warrant->summ);
-            } else{
-                $warrant->partner()->first()->addition($warrant->summ);
-                $warrant->cashbox()->first()->addition($warrant->summ);
+                $warrant->partner->subtraction($warrant->summ);
+                $warrant->cashbox->subtraction($warrant->summ);
+            } else {
+                $warrant->partner->addition($warrant->summ);
+                $warrant->cashbox->addition($warrant->summ);
             }
         }
         else {

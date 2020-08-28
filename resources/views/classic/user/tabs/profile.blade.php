@@ -34,7 +34,7 @@
                             {{ $user->outputName() }}
                         @endif
                         <div class="category">Категория: {{ $user->category->name }}</div>
-                        <div class="balance">Баланс: {{ $user->balance }} руб.</div>
+                        <div class="balance">Баланс: {{ correct_price($user->balance) }} руб.</div>
                     </h2>
                 </div>
 

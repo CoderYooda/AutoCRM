@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\ProviderService\Providers;
+namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
 use App\Rules\CheckApiDataForServices;
@@ -164,5 +164,10 @@ class ArmTek implements ProviderInterface
         if(!in_array($fields['sales_organization'], $vkorgs_list)) return false;
 
         return $result['STATUS'] == 200;
+    }
+
+    public function sendOrder(array $products): bool
+    {
+        // TODO: Implement sendOrder() method.
     }
 }

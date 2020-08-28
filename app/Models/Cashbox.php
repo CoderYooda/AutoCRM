@@ -35,9 +35,9 @@ class Cashbox extends Model
 
         if($warrant){
             if($warrant->isIncoming){
-                return '+' . sprintf("%.2f", $warrant->summ) . ' (' . $warrant->ddsarticle()->first()->name . ')';
+                return '+' . decimal_price($warrant->summ) . ' (' . $warrant->ddsarticle->name . ')';
             } else {
-                return '-' . sprintf("%.2f", $warrant->summ) . ' (' . $warrant->ddsarticle()->first()->name . ')';
+                return '-' . decimal_price($warrant->summ) . ' (' . $warrant->ddsarticle->name . ')';
             }
         } else {
             return 0;

@@ -29,6 +29,9 @@ import vehicleDialog from "./Vehicle/VehicleDialog";
 import storeImportDialog from "./Store/StoreImportDialog";
 import entranceRefundDialog from "./EntranceRefund/EntranceRefundDialog";
 import selectEntranceDialog from "./Entrance/SelectEntranceDialog";
+import chequeDialog from "./Cheque/ChequeDialog";
+import providerCartDialog from "./ProviderCart/ProviderCartDialog";
+import documentDialog from "./Document/DocumentDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -81,7 +84,10 @@ const classes = {
     vehicleDialog,
     storeImportDialog,
     entranceRefundDialog,
-    selectEntranceDialog
+    selectEntranceDialog,
+    chequeDialog,
+    providerCartDialog,
+    documentDialog
 };
 
 const pages = {
@@ -123,7 +129,7 @@ class Helper{
 }
 
     pluck(objs, name) {
-        var sol = [];
+        let sol = [];
         for(var i in objs){
             if(objs[i].hasOwnProperty(name)){
                 sol.push(objs[i][name]);
@@ -299,7 +305,7 @@ class Helper{
         return tabs;
     }
 
-        printDocument(doc, id, data = null, landscape = false){
+    printDocument(doc, id, data = null, landscape = false){
         axios({
             method: 'POST',
             url: '/document',

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\ProviderService\Providers;
+namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
@@ -149,5 +149,10 @@ class Mikado implements ProviderInterface
         }
 
         return true;
+    }
+
+    public function sendOrder(array $products): bool
+    {
+        // TODO: Implement sendOrder() method.
     }
 }

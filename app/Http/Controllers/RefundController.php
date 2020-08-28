@@ -20,12 +20,25 @@ class RefundController extends Controller
     public static function refundDialog($request)
     {
         $refund = Refund::find($request['refund_id']);
+        $shipment = null;
 
         $tag = 'refundDialog' . ($refund->id ?? '');
 
+        $refunded_count = [];
+
+        if($refund) {
+            foreach ($refund->shipment->articles as $product) {
+                if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
+                $refunded_count[$product->id] += $product->pivot->refunded_count;
+            }
+
+            $shipment = $refund->shipment;
+        }
+
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund' , 'request'))->render()
+            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'refunded_count'))->render()
         ]);
     }
 
@@ -50,10 +63,11 @@ class RefundController extends Controller
 
     public function fresh(Refund $refund, Request $request)
     {
+        $shipment = $refund->shipment;
         $request['fresh'] = true;
         $class = 'refundDialog' . $refund->id;
         $inner = true;
-        $content = view(get_template() . '.refund.dialog.form_refund', compact( 'refund','class', 'inner', 'request'))->render();
+        $content = view(get_template() . '.refund.dialog.form_refund', compact( 'refund', 'shipment','class', 'inner', 'request'))->render();
         return response()->json([
             'html' => $content,
             'target' => $class,

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\ProviderService\Providers;
+namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
@@ -68,10 +68,12 @@ class Trinity implements ProviderInterface
 
         foreach ($items['data'] as $store) {
 
-            preg_match_all('/\d+/', $store['deliverydays'], $days)[0];
+            if(!strlen($store['bid'])) continue;
 
-            $days_min = $days[0];
-            $days_max = $days[1] ?? 9999;
+            preg_match_all('/\d+/', $store['deliverydays'], $days);
+
+            $days_min = $days[0][0];
+            $days_max = $days[0][1] ?? 9999;
 
             $results[] = [
                 'name' => $store['stock'],
@@ -80,6 +82,13 @@ class Trinity implements ProviderInterface
                 'days_max' => $days_max,
                 'delivery' => $store['deliverydays'],
                 'price' => $store['price'],
+                'delivery_info' => [
+                    'key' => $store['bid'],
+                    'manufacturer' => $store['producer'],
+                    'name' => $store['caption'],
+                    'price' => $store['price'],
+                    'stock' => $store['stock']
+                ]
             ];
         }
 
@@ -127,6 +136,9 @@ class Trinity implements ProviderInterface
     protected function query($url, $context, $asArray = true)
     {
         try {
+
+            $url .= (strpos($url, 'cart/saveGoods') !== false ? '?v=2' : '');
+
             $data = file_get_contents($url, false, $context);
         }
         catch (\Exception $exception) {
@@ -147,7 +159,55 @@ class Trinity implements ProviderInterface
 
         $this->api_key = $fields['api_key'];
 
+        //Если эксепшен не был выкинут, то пропускаем
         $this->searchBrandsCount('k1279');
+
+        return true;
+    }
+
+    public function sendOrder(array $products): bool
+    {
+        foreach ($products as $product) {
+
+            $emptyClass = new stdClass();
+            $emptyClass->internal_id = $product->id;
+            $emptyClass->bid = $product->delivery_key;
+            $emptyClass->code = $product->article;
+            $emptyClass->producer = $product->manufacturer;
+//            $emptyClass->caption = 'Фильтр масляный';
+//            $emptyClass->supplier_id = 'УТ0002790';
+            $emptyClass->stock = $product->stock;
+            $emptyClass->price = $product->price;
+            $emptyClass->saled_price = $product->price + sum_percent($product->price, 20);
+            $emptyClass->quantity = $product->count;
+            $emptyClass->comment = 'тестовый заказ через API';
+//            $emptyClass->deliverydays = '0/2';
+            $emptyClass->minOrderCount = '1';
+
+            $orders[] = $emptyClass;
+        }
+
+        $params = [
+            'parts' => $orders
+        ];
+
+        $url = $this->host . 'cart/saveGoods';
+
+        $results = $this->query($url, $this->createParams($params), true);
+
+        //----------------------------------------------------------------------------------------------
+
+        $idList = collect($results['data'])->collapse()->toArray();
+
+        $params = [
+            'IDs' => $idList
+        ];
+
+        $url = $this->host . 'cart/confirm';
+
+        $results = $this->query($url, $this->createParams($params), true);
+
+        dd($results);
 
         return true;
     }

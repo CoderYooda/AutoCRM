@@ -57,9 +57,9 @@ class StatisticController extends Controller
             ['name' => 'Долги поставщикам', 'field_name' => 'debtPartnerOrder', 'color' => '#FE5000', 'per' => 'месяц'],
             ['name' => 'Недоплаты по заказам клиентов', 'field_name' => 'underpaymentsClientOrder', 'color' => '#5CA4E8', 'per' => 'месяц'],
             ['name' => 'Недоплаты по продажам', 'field_name' => 'underpaymentsShipment', 'color' => '#FFD541', 'per' => 'месяц'],
-            ['name' => 'Ежедневный остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0', 'per' => 'сутки'],
+            ['name' => 'Остаток в кассах', 'field_name' => 'cashboxBalance', 'color' => '#1AAFD0', 'per' => 'сутки'],
             ['name' => 'Валовая прибыль', 'field_name' => 'grossProfit', 'color' => '#7E7BE9', 'per' => 'месяц'],
-            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E', 'per' => 'сутки'],
+            ['name' => 'ROI', 'field_name' => 'roi', 'color' => '#22B66E', 'per' => 'сутки']
         ];
 
         $graph_data = $this->getGraphData($request);

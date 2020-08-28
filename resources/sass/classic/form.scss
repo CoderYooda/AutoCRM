@@ -334,6 +334,10 @@ Switch
     overflow: hidden!important;
 }
 
+.text-ov-hidden {
+    text-overflow: ellipsis;
+}
+
 .b_grad::after {
     background: transparent;
     background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
@@ -740,6 +744,11 @@ button:disabled {
         transform: scale(-1, 1);
     }
 }
+
+.text-success {
+    color: green;
+}
+
 .font-weight-bolder {
     font-weight: bolder!important;
 }
@@ -773,6 +782,7 @@ button:disabled {
 
 
 .item-title{
+    white-space: nowrap;
     font-size: 12px;
     display: block;
     height: 20px;
@@ -869,9 +879,6 @@ button:disabled {
 .pointer{
     cursor: pointer!important;
 }
-.d-flex{
-    display: flex!important;
-}
 .select-list-modal i{
     font-size: 19px;
 }
@@ -938,6 +945,9 @@ button:disabled {
 }
 .flex-3{
     flex: 3!important;
+}
+.flex-4{
+    flex: 4!important;
 }
 #user_index_page .name_edit.is-invalid{
     border-bottom: 1px solid #e3342f!important;

@@ -259,7 +259,8 @@ class clientorderDialog extends Modal{
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;
         let itogo = this.root_dialog.querySelector('input[name=itogo]').value;
-        let ostatok = this.root_dialog.querySelector('input[name=ostatok]').value;
+        let ostatok = Number(this.root_dialog.querySelector('input[name=ostatok]').value);
+        let summ = Number(this.root_dialog.querySelector('input[name=summ]').value);
         let id = this.root_dialog.querySelector('input[name=id]').value;
         let refer = 'ClientOrder';
         let refer_id = this.root_dialog.querySelector('input[name=id]').value;
@@ -283,7 +284,7 @@ class clientorderDialog extends Modal{
             params += '&refer='+refer;
         }
         if(ostatok != null){
-            params += '&ostatok='+Math.abs(ostatok);
+            params += '&ostatok='+(ostatok - summ);
         }
         if(refer_id != null){
             params += '&refer_id='+refer_id;
@@ -536,16 +537,16 @@ class clientorderDialog extends Modal{
 
     changeOrderStatus(element) {
 
-        let target_element = this.current_dialog.querySelector('#return_money');
+        // let target_element = this.current_dialog.querySelector('#return_money');
 
-        console.log(element.options[element.selectedIndex].value);
-
-        if(element.options[element.selectedIndex].value == 'canceled') {
-            target_element.classList.remove('d-none');
-        }
-        else {
-            target_element.classList.add('d-none');
-        }
+        // console.log(element.options[element.selectedIndex].value);
+        //
+        // if(element.options[element.selectedIndex].value == 'canceled') {
+        //     target_element.classList.remove('d-none');
+        // }
+        // else {
+        //     target_element.classList.add('d-none');
+        // }
     }
 
     getPriceFromServer(id, input) {

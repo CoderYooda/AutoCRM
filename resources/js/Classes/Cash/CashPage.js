@@ -155,6 +155,7 @@ class cashPage{
                 {title:"Касса", field:"cashbox", width:130, align:"left"},
                 {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
             ];
+
         } else if(object.active_tab === 'cashmove'){
             object.contextDop = 'moneymove';
             object.parametr = 'moneymove';
@@ -263,11 +264,12 @@ class cashPage{
 
                 items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
 
-                if(object.contextDop !== 'warrant') {
+                if(object.contextDop == 'warrant') {
                     items.push(new ContextualItem({type: 'seperator'}));
-                    items.pust(new ContextualItem({
+
+                    items.push(new ContextualItem({
                         label: 'Печать', onClick: () => {
-                            window.helper.printDocument((data.isIncoming ? 'in-warrant' : 'out-warrant'), id)
+                            helper.printDocument((data.type == 'Приходный ордер' ? 'in-warrant' : 'out-warrant'), id)
                         }, shortcut: 'Что то'
                     }));
                 }

@@ -1,10 +1,10 @@
 <tr
-{{--    @dd($product)--}}
+{{--    @dd(decimal_price($product->price))--}}
 
         data-id="{{ $product->id }}"
         data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->count)) {{$product->count}} @else 0 @endif"
-        data-price="@if(isset($shipment)) {{ sprintf("%.2f", $product->price) }}  @else {{ 0 /* TODO RRC*/ }} @endif"
-        data-total="@if(isset($product->total)) {{ sprintf("%.2f", $product->total) }} @else 0.00 @endif"
+        data-price="@if(isset($shipment)) {{ decimal_price($product->price) }}  @else {{ 0 /* TODO RRC*/ }} @endif"
+        data-total="@if(isset($product->total)) {{ decimal_price($product->total) }} @else 0.00 @endif"
         class="product_list_elem" id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
     <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>
@@ -19,41 +19,16 @@
     </td>
 
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem"
-               @if(isset($shipment)) value="{{ sprintf("%.2f", $product->price) }}"  @else value="{{ $product->getPrice() }}" @endif
-               type="number" min="0" step="0.1" @if(isset($shipment) && ($shipment->clientorder || $shipment->hasRelations())) disabled @endif ></td>
+               @if(isset($shipment))
+                    value="{{ decimal_price($product->price) }}"
+               @else
+                    value="{{ decimal_price($product->getPrice()) }}"
+               @endif
+               type="text"></td>
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm"
-               @if(isset($product->total)) value="{{ sprintf("%.2f", $product->total) }}"@else value="{{ $product->getPrice() }}" @endif
-               disabled type="number"></td>
+               @if(isset($product->total)) value="{{ decimal_price($product->total) }}"@else value="{{ $product->getPrice() }}" @endif
+               disabled type="text"></td>
     <td>
-        @if(isset($request) && $request['refer'] != null)
-            <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
-        @else
-            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
-        @endif
+        <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
     </td>
 </tr>
-
-
-{{--<tr--}}
-{{--    data-id="{{ $product->article_id }}"--}}
-{{--    data-count="{{ $product->count }}"--}}
-{{--    data-price="{{ sprintf("%.2f", $product->price) }}"--}}
-{{--    data-total="{{ $product->total }}"--}}
-{{--    class="product_list_elem" id="product_selected_{{ $product->article_id }}">--}}
-
-{{--    <input name="products[{{ $product->article_id }}][id]" value="{{ $product->article_id }}" type="hidden" >--}}
-
-{{--    <td title="{{ $product->name }}"><span style="max-width: 350px;" class="product_list_element_name">{{ $product->name }}</span></td>--}}
-
-{{--    <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>--}}
-
-{{--    <td><input onclick="this.select();" name="products[{{ $product->article_id }}][count]" class="form-control form-control-sm count_elem" value="{{$product->count}}" type="number"  min="0" step="1" @if(isset($shipment) && $shipment->hasRelations()) disabled @endif></td>--}}
-
-{{--    <td>{{ $product->getEntrancesCount() }}</td>--}}
-
-{{--    <td><input onclick="this.select();" name="products[{{ $product->article_id }}][price]" class="form-control form-control-sm price_elem" value="{{ isset($shipment) ? sprintf("%.2f", $product->price) : $product->getPrice() }}" type="number" min="0" step="0.1" @if(isset($shipment) && ($shipment->clientorder || $shipment->hasRelations())) disabled @endif ></td>--}}
-
-{{--    <td><input name="products[{{ $product->article_id }}][total_price]" class="form-control form-control-sm" value="{{ isset($shipment) ? sprintf("%.2f", $product->total) : $product->getPrice() }}"disabled type="number"></td>--}}
-
-{{--    <td><button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->article_id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button></td>--}}
-{{--</tr>--}}

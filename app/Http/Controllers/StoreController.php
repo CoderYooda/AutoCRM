@@ -203,6 +203,11 @@ class StoreController extends Controller
         return view(get_template() . '.provider_stores.index', compact('request', 'services', 'company'));
     }
 
+    public static function documentsTab(Request $request)
+    {
+        return view(get_template() . '.documents.index', compact('request'));
+    }
+
     public static function storeTab($request)
     {
         $page = 'Склад';

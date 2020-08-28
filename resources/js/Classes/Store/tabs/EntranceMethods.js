@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 class entranceMethods{
 
     search(a, b, c){
@@ -5,4 +6,15 @@ class entranceMethods{
     }
 
 }
+=======
+class entranceMethods {
+
+    constructor() {
+        console.log('Методы поступления инициализированы.')
+    }
+
+
+}
+
+>>>>>>> origin/test_prod
 export default entranceMethods;

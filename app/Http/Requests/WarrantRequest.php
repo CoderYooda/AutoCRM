@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ClientOrder;
+use App\Models\EntranceRefund;
+use http\Client;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -33,6 +36,13 @@ class WarrantRequest extends FormRequest
             }
 
             $this->max_summ = (double)$model->itogo - (double)$model->wsumm;
+
+            if(get_class($model) == ClientOrder::class && !$this->isIncoming) {
+                $this->max_summ = (double)$model->wsumm;
+            }
+            elseif(get_class($model) == EntranceRefund::class) {
+                $this->max_summ = $model->getTotalPrice() - $model->wsumm;
+            }
         }
     }
 

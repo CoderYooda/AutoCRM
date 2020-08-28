@@ -24,7 +24,7 @@ Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePa
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
-Route::view('/test', 'cheques.simple');
+//Route::view('/test', 'cheques.thermal-printer58');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
@@ -94,6 +94,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     });
 
     Route::namespace('API')->group(function () {
+
+        Route::post('/provider_stores/cart/add', 'ProviderStoreController@addCart')->name('ProviderCartAdd');
+        Route::post('/provider_stores/cart/set', 'ProviderStoreController@setCart')->name('ProviderCartSet');
+        Route::post('/provider_stores/cart/order', 'ProviderStoreController@orderCart')->name('ProviderCartOrder');
+
         Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
         Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
         Route::get('/provider_stores/armtek/sales_organization', 'ProviderStoreController@getArmTekSerialSales')->name('getArmTekSerialSales');
@@ -104,7 +109,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Продажи
     Route::get('/shipment/events', 'ShipmentController@events')->name('ShipmentEvents');// Строгое название
-    Route::post('/shipment/store', 'ShipmentController@store')->name('StoreShipment');// Строгое название
+    Route::middleware('throttle:5,1')->post('/shipment/store', 'ShipmentController@store')->name('StoreShipment');// Строгое название
     Route::post('/shipment/{shipment}/get_products', 'ShipmentController@getShipmentProducts')->name('GetShipmentProducts');
     Route::post('/shipment/search', 'ShipmentController@search')->name('ShipmentPageSearch');
     Route::post('/shipment/{id}/delete', 'ShipmentController@delete')->name('DeleteShipment');
@@ -258,7 +263,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
     #Документы
-    Route::any('/document', 'DocumentsController@document')->name('Document');
+    Route::any('/document', 'DocumentController@document')->name('Document');
+    Route::get('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
+    Route::post('/documents', 'DocumentController@store')->name('DocumentStore');
 
     #Отчеты
     Route::get('/report', 'SmsController@index')->name('ReportIndex');// Строгое название

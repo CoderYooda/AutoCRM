@@ -43,13 +43,16 @@ class ShipmentController extends Controller
             $shipment->id = null;
             $shipment->partner = $clientorder->partner;
             $shipment->clientorder_id = $clientorder->id;
-            $shipment->articles = $preselect_articles;
+            $shipment->articles = $clientorder->articles;
 
             $itogo = 0;
+
             foreach($shipment->articles as $article){
-                $total_of_article =  $article->count * $article->price;
-                $itogo += $total_of_article;
-                $article->total = $total_of_article;
+                $article->price = $article->pivot->price;
+                $article->count = $article->pivot->count;
+                $article->total = $article->pivot->total;
+
+                $itogo += $article->total;
             }
 
             $shipment->summ = $shipment->itogo = $itogo;
@@ -75,20 +78,20 @@ class ShipmentController extends Controller
     private static function selectShipmentInner($request)
     {
         $class = 'selectShipmentDialog';
-        $query = Shipment::where('company_id', Auth::user()->company->id)
-            ->when($request['string'], function ($q) use ($request) {
+        $shipments = Shipment::with('articles')->where('company_id', Auth::user()->company->id)
+            ->when(isset($request['string']), function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
+            ->when(isset($request['hide_paid']), function ($q) {
+                $q->whereRaw('wsumm = itogo');
+
+                $q->whereHas('articles', function (Builder $query) {
+                    $query->whereRaw('refunded_count < count');
+                });
+            })
             ->orderBy('created_at', 'DESC')
-            ->limit(30);
-
-        if($request['hide_paid']) {
-            $query->whereHas('articles', function (Builder $query) {
-                $query->whereRaw('count != refunded_count');
-            });
-        }
-
-        $shipments = $query->get();
+            ->limit(30)
+            ->get();
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 
@@ -120,7 +123,7 @@ class ShipmentController extends Controller
 
         return response()->json([
             'id' => $shipment->id,
-            'items_html' => view(get_template() . '.refund.dialog.products_element', compact('products', 'refunded_count', 'request'))->render(),
+            'items_html' => view(get_template() . '.refund.dialog.products_element', compact('products', 'shipment', 'refunded_count', 'request'))->render(),
             'items' => $products,
             'partner' => $shipment->partner->outputName(),
             'balance' => $shipment->partner->balance,
@@ -252,7 +255,7 @@ class ShipmentController extends Controller
                 }
 
                 #Очищаем article_shipment
-                $shipment->articles()->delete();
+                $shipment->articles()->sync([]);
             }
 
             foreach ($products as $product) {
