@@ -13,14 +13,13 @@ use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Comment\Doc;
 use stdClass;
 
 class DocumentController extends Controller
 {
     public function store(StoreRequest $request)
     {
-
-
         return response()->json([
             'type' => 'success',
             'message' => 'Документ успешно создан.'
@@ -48,38 +47,57 @@ class DocumentController extends Controller
         $field = null;
         $dir = null;
 
-        if(isset($request['sorters'])){
+        if(isset($request['sorters'])) {
             $field = $request['sorters'][0]['field'];
             $dir = $request['sorters'][0]['dir'];
         }
 
-        if($field === null && $dir === null){
+        if($field === null && $dir === null) {
             $field = 'created_at';
             $dir = 'DESC';
         }
 
-        if($request['dates_range'] !== null){
+        if($request['dates_range'] !== null) {
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
 
-        if($request['client'] == null){
-            $request['client'] = [];
-        }
+        $document_filter = DocumentType::find($request['document_filter']);
 
-        return Document::where('company_id', Auth::user()->company_id)
-            ->when($request['client'] != null, function($query) use ($request) {
-                $query->whereIn('partner_id', $request['client']);
+        $documents = Document::with('manager')->where('company_id', Auth::user()->company_id)
+            ->when($request['accountable'] != null, function($query) use ($request) {
+                $query->whereIn('manager_id', $request['accountable']);
+            })
+            ->when($request->search, function ($query) use($request) {
+                $query->where('barcode', $request->search);
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->when($document_filter != null, function ($query) use($document_filter) {
+                $query->where('name', $document_filter->name);
             })
             ->when($field && $dir, function ($query) use ($field, $dir) {
                 $query->orderBy($field, $dir);
             })
             ->paginate($size);
+
+        foreach ($documents as $key => $document) {
+            $documents[$key]['manager_name'] = $document->manager->fio;
+        }
+
+        return response()->json(['data' => $documents]);
+    }
+
+    public function getPartnerSideInfo(Request $request)
+    {
+        $document = Document::find($request->id);
+
+        return response()->json([
+            'info' => view(get_template() . '.documents.contact-card', compact( 'document','request'))->render(),
+        ], 200);
     }
 
     public function document(Request $request)
@@ -134,8 +152,9 @@ class DocumentController extends Controller
             $view_name .= $types[$request->id];
         }
 
-        $view = view($view_name, compact('request'))
-            ->with('company', Auth::user()->company);
+        $company = Auth::user()->company;
+
+        $view = view($view_name);
 
         if($request->doc == 'cheque') {
 
@@ -164,48 +183,84 @@ class DocumentController extends Controller
         }
         else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 
-            $selected_products = json_decode($request->data);
+            $shipment = Shipment::with('company', 'partner')->find($request->id);
 
-            $sorted_products = [
-                'price_without_nds' => 0,
-                'price_with_nds' => 0,
-                'nds' => 0
-            ];
+            $data = [];
 
-            foreach($selected_products as $product) {
-                $sorted_products[$product->id] = [
-                    'count' => $product->count,
-                    'price_with_nds' => $product->price,
-                    'price_without_nds' => $product->price - ($product->price / 100 * 20),
-                    'nds' => ($product->price / 100 * 20)
-                ];
+            //Документ
+            $data['id'] = $request->id;
+            $data['created_at'] = $shipment->created_at->format('d.m.Y');
 
-                $total_price = ($product->price * $product->count);
+            $data['manager_name'] = Auth::user()->partner->official_name;
+
+            //Компания
+            $data['company_name'] = $company->official_name;
+            $data['legal_address'] = $company->legal_address;
+            $data['inn'] = $company->inn;
+            $data['kpp'] = $company->kpp;
+            $data['is_company'] = $company->is_company;
+            $data['owner'] = $company->owner;
+            $data['auditor'] = $company->auditor;
+            $data['bank'] = $company->bank;
+            $data['cs'] = $company->cs;
+            $data['rs'] = $company->rs;
+
+            //Партнёр
+            $data['partner_name'] = $shipment->partner->official_name;
+            $data['partner_address'] =  $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address;
+            $data['partner_inn'] = $shipment->partner->inn;
+            $data['partner_kpp'] = $shipment->partner->kpp;
+            $data['partner_type'] = $shipment->partner->type;
+            $data['partner_cut_surname'] = $shipment->partner->cur_surname;
+
+            //Продукты
+            $data['products'] = json_decode($request->data, true);
+
+            $products = Article::whereIn('id', array_column($data['products'], 'id'))->get();
+
+            $data['products']['price_without_nds'] = 0;
+            $data['products']['price_with_nds'] = 0;
+            $data['products']['nds'] = 0;
+
+            foreach($data['products'] as $key => $product) {
+
+                if(!isset($product['id'])) continue;
+
+                $db_product = $products->where('id', $product['id'])->first();
+
+                $data['products'][$key]['name'] = $db_product->name;
+                $data['products'][$key]['article'] = $db_product->article;
+
+                $data['products'][$key]['price_with_nds'] = $product['price'];
+                $data['products'][$key]['price_without_nds'] = $product['price'] - ($product['price'] / 100 * 20);
+                $data['products'][$key]['nds'] = ($product['price'] / 100 * 20);
+
+                $total_price = ($product['price'] * $product['count']);
                 $nds = ($total_price / 100 * 20);
 
-                $sorted_products['price_without_nds'] += $total_price - $nds;
-                $sorted_products['price_with_nds'] += $total_price;
-                $sorted_products['nds'] += $nds;
+                $data['products']['price_without_nds'] += $total_price - $nds;
+                $data['products']['price_with_nds'] += $total_price;
+                $data['products']['nds'] += $nds;
             }
 
-            $view->with('products', Article::whereIn('id', array_keys($sorted_products))->get())
-                ->with('sorted_products', $sorted_products)
-                ->with('shipment', Shipment::with('company')->find($request->id));
+            $data['view'] = $view_name;
+
+            $view->with('data', $data);
         }
 
         if(isset($names[$request->doc]['id'])) {
 
             $document_data = $names[$request->doc];
 
-            $user = Auth::user();
+            $partner = Auth::user()->partner;
 
             $document = Document::create([
-                'company_id' => $user->company_id,
+                'company_id' => $partner->company->id,
                 'name' => DocumentType::find($document_data['id'])->name,
-                'manager_id' => $user->id,
+                'manager_id' => $partner->id,
                 'documentable_id' => $request['id'],
                 'documentable_type' => $document_data['class'],
-                'data' => json_encode($request->all()),
+                'data' => json_encode($view->getData())
             ]);
 
             $barcode = '9991' . sprintf('%09d', $document->id);
@@ -214,5 +269,14 @@ class DocumentController extends Controller
         }
 
         return $view;
+    }
+
+    public function show(Document $document)
+    {
+        $data = json_decode($document['data'], true);
+
+        $view_name = $data['data']['view'];
+
+        return view($view_name)->with('data', $data['data']);
     }
 }

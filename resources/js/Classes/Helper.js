@@ -305,6 +305,16 @@ class Helper{
         return tabs;
     }
 
+    openDocument(id) {
+        axios.get('/documents/' + id)
+            .then(response => {
+                this.showDocument(response);
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
+
     printDocument(doc, id, data = null, landscape = false){
         axios({
             method: 'POST',
@@ -314,41 +324,44 @@ class Helper{
                 id: id,
                 data: data
             }
-        }).then(function (response) {
-            var printContents = response.data;
-
-            var css = '@page { size: landscape; }',
-                head = document.head || document.getElementsByTagName('head')[0],
-                style = document.createElement('style');
-
-            style.type = 'text/css';
-            style.media = 'print';
-
-            if (style.styleSheet){
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            if(landscape === true) {
-                head.appendChild(style);
-            }
-
-            let unprinted = document.getElementById('unprinted');
-            let printed = document.getElementById('printed');
-            printed.innerHTML = printContents;
-
-            setTimeout(()=> {
-                window.print();
-                unprinted.classList.remove('hide');
-                printed.innerHTML = '';
-                let print_style = document.querySelector('style[media="print"]');
-                if(print_style){
-                    print_style.remove();
-                }
-            }, 700);
-
+        }).then(response => {
+            this.showDocument(response, landscape);
         });
+    }
+
+    showDocument(response, landscape = false) {
+        let printContents = response.data;
+
+        let css = '@page { size: landscape; }',
+            head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+
+        style.type = 'text/css';
+        style.media = 'print';
+
+        if (style.styleSheet){
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+
+        if(landscape === true) {
+            head.appendChild(style);
+        }
+
+        let unprinted = document.getElementById('unprinted');
+        let printed = document.getElementById('printed');
+        printed.innerHTML = printContents;
+
+        setTimeout(()=> {
+            window.print();
+            unprinted.classList.remove('hide');
+            printed.innerHTML = '';
+            let print_style = document.querySelector('style[media="print"]');
+            if(print_style){
+                print_style.remove();
+            }
+        }, 700);
     }
 
     insertParam(elem, key, value)

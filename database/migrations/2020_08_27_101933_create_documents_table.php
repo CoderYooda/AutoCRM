@@ -17,12 +17,12 @@ class CreateDocumentsTable extends Migration
             $table->foreign('company_id')->on('companies')->references('id')->onDelete('cascade');
 
             $table->unsignedBigInteger('manager_id');
-            $table->foreign('manager_id')->on('users')->references('id')->onDelete('cascade');
+            $table->foreign('manager_id')->on('partners')->references('id')->onDelete('cascade');
 
             $table->unsignedBigInteger('documentable_id');
             $table->string('documentable_type');
 
-            $table->text('data');
+            $table->longText('data');
 
             $table->timestamps();
         });
