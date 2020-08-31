@@ -20,10 +20,11 @@ class DatabaseSeeder extends Seeder
         $this->call(DayOffTypeSeed::class);
 
         $this->call(AdministratorSeed::class);
-        $this->call(PermissionSeed::class);
-        $this->call(SettingsSeed::class);
 
-        $this->call(VehicleSeed::class);
+        $this->call(PermissionSeed::class);
+
+        //$this->call(SettingsSeed::class);
+        //$this->call(VehicleSeed::class);
 
         //$this->call(WarrantSeed::class);
         //$this->call(MoneymoveSeed::class);

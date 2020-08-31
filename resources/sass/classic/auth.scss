@@ -152,7 +152,7 @@ body {
 }
 .form-group {
     margin-bottom: 30px !important;
-    padding-right: 34px;
+    //padding-right: 34px;
 }
 .form-group label {
     font-size: 16px;
@@ -161,6 +161,14 @@ body {
     letter-spacing: 0.04em;
     margin-bottom: 10px;
 }
+#info{
+    border: 2px solid red;
+    padding: 15px;
+    background: red;
+    color: #fff;
+    margin: 10px 0;
+}
+
 
 .login-policy {
     line-height: 22px;

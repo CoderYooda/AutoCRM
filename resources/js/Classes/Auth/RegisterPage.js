@@ -124,6 +124,9 @@ class registerPage{
                         el.parentNode.appendChild(node);
                     }
                 }
+            } else if(error.response && error.response.data.service_message){
+                document.getElementById('info').innerHTML = error.response.data.service_message;
+                document.getElementById('info').classList.remove('hide');
             }
         }).finally(function () {
         });

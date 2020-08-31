@@ -402,15 +402,7 @@ class PartnerController extends Controller
             $field = 'id';
             $dir = 'DESC';
         }
-        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name'))->select(
-            'partners.id',
-            'partners.created_at',
-            'partners.company_id',
-            'partners.balance',
-            'partners.created_at as date',
-            'basePhone as phone',
-            'cat.name as category'
-        )
+        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name, partners.id, partners.fio, partners.companyName, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category'))
             ->leftJoin('categories as cat', 'cat.id', '=', 'partners.category_id')
 //            ->from(DB::raw('
 //                partners
@@ -437,7 +429,6 @@ class PartnerController extends Controller
             ->orderBy($field, $dir)
             ->paginate($size);
 //        ->toSql();
-//        dd($partners);
 
         return $partners;
     }

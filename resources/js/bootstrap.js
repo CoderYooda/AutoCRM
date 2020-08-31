@@ -116,6 +116,9 @@ window.axios.interceptors.response.use(function (response) {
             window.notification.notify( error.response.data.type, error.response.data.message);
         }
     }
+    if (error.response.status === 419) {
+        window.location.href = "/login";
+    }
     if (error.response.status === 403) {
         if(error.response.data.type == "gateClosed"){
             window.notification.notify( 'error', error.response.data.message);

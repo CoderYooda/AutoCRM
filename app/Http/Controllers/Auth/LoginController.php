@@ -97,6 +97,7 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
+            $user->resetCurrentStore();
             if($request->expectsJson()){
                 $request->session()->regenerate();
                 $this->clearLoginAttempts($request);
@@ -127,5 +128,7 @@ class LoginController extends Controller
             return view('auth.login');
         }
     }
+
+
 
 }

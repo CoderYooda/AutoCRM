@@ -126,7 +126,15 @@ class Helper{
         if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')
             block.classList.add('show');
         }
-}
+    }
+
+    closeModal(elem, event){
+        let block = elem;
+        let container = block.querySelector('.dropdown_container');
+        if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')
+            block.classList.add('show');
+        }
+    }
 
     pluck(objs, name) {
         let sol = [];

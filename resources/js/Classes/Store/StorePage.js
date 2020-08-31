@@ -1137,8 +1137,12 @@ class storePage{
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
+        try {
+            this.model = new classes[model_name]();
+        } catch (e) {
+            dd(e);
+        }
 
-        this.model = new classes[model_name]();
     }
 
     prepareParams(){
