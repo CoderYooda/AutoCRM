@@ -870,25 +870,10 @@ class storePage{
 
                     items.push(new ContextualItem({type:'seperator'}));
 
-                    let products = row.getData().articles;
-
-                    let data = {};
-
-                    Object.values(products).forEach((value, index) => {
-                        data[index] = {
-                            id: value.id,
-                            count: value.pivot.count,
-                            price: value.pivot.price,
-                            total: value.pivot.count * value.pivot.price
-                        };
-                    });
-
-                    data = JSON.stringify(data);
-
                     items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + id);} }));
                     items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id, data, true);} }));
-                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id, data);} }));
+                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id);} }));
+                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id);} }));
                 }
                 else if(object.contextDop == 'clientorder') {
                     items.push(new ContextualItem({type:'seperator'}));

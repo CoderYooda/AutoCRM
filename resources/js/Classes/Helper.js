@@ -32,6 +32,7 @@ import selectEntranceDialog from "./Entrance/SelectEntranceDialog";
 import chequeDialog from "./Cheque/ChequeDialog";
 import providerCartDialog from "./ProviderCart/ProviderCartDialog";
 import documentDialog from "./Document/DocumentDialog";
+import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -87,7 +88,8 @@ const classes = {
     selectEntranceDialog,
     chequeDialog,
     providerCartDialog,
-    documentDialog
+    documentDialog,
+    selectClientOrderDialog
 };
 
 const pages = {
@@ -138,7 +140,7 @@ class Helper{
         return sol;
     }
 
-    initDialogMethods(){
+    initDialogMethods(resp){
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){
             [].forEach.call(dialogs, function(elem) {
@@ -147,7 +149,7 @@ class Helper{
 
                     var classname = elem.id.replace(/[^a-zA-Z]/g, '');
                     try {
-                        window[elem.id] = new classes[classname](elem);
+                        window[elem.id] = new classes[classname](elem, resp.data);
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
                         console.error(err);
@@ -475,6 +477,10 @@ class Helper{
             .catch(response => {
                 dd(response);
             });
+    }
+
+    getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] == value);
     }
 }
 export default Helper;

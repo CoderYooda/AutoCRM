@@ -79,7 +79,7 @@ class Shipment extends Model
         return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')
             ->withPivot('count', 'refunded_count', 'entrance_id', 'price', 'total')
             ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, articles.id as id, price')
-            ->groupBy('article_id');
+            ->groupBy(['article_id']);
     }
 
     public function store()

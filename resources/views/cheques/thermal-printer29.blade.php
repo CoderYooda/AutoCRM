@@ -17,7 +17,7 @@
 
                 @if($product->barcode)
                     <div class="flex-1">
-                        <img style="padding: 2%;width: 100%;display: block;" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($product->barcode) !!}" alt="barcode"   />
+                        <img style="padding: 2%;width: 100%;display: block;" src="data:image/png;base64,{!! getBarCodePNG($product->barcode) !!}" alt="barcode"   />
                     </div>
                 @endif
 

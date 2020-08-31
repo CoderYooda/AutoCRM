@@ -42,7 +42,10 @@
     </script>
     <![endif]>
 </head>
-<body link=blue vlink="#954F72">
+<body style="position:relative;" link=blue vlink="#954F72">
+
+<img style="width: 60mm; height: 6mm; right: -60mm; float:right; top: 15mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+
 <table border=0 cellpadding=0 cellspacing=0 width=3595 style='border-collapse:
  collapse;table-layout:fixed;width:2696pt'>
     <col class=xl65 width=12 span=88 style='mso-width-source:userset;mso-width-alt:

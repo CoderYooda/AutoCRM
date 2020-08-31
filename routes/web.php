@@ -24,7 +24,17 @@ Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePa
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
-//Route::view('/test', 'cheques.thermal-printer58');
+Route::get('/test', function () {
+    $document = \App\Models\Document::all()->last();
+
+    $data = json_decode($document['data'], true);
+
+    $view_name = $data['data']['view'];
+
+    return view($view_name)
+        ->with('data', $data['data'])
+        ->with('barcode', $document->barcode);
+});
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
@@ -128,6 +138,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/clientorder/{client_order}/fresh', 'ClientOrdersController@fresh')->name('FreshClientOrder');
     Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
     Route::post('/client_orders/side_info', 'ClientOrdersController@getSideInfo')->name('GetClientOrderSideInfo');
+    Route::get('/client_orders/{clientOrder}/select', 'ClientOrdersController@select')->name('SelectClientOrder');
 
     #Заказы Поставщикам
     Route::post('/providerorder/store', 'ProviderOrdersController@store')->name('StoreProviderOrder');// Строгое название

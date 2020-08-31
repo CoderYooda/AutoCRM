@@ -9,15 +9,6 @@ use Milon\Barcode\DNS1D;
 
 class BarcodeController extends Controller
 {
-    public static function getBArCodeSVG($code)
-    {
-        return DNS1D::getBarcodeSVG($code, "C39");
-    }
-    public static function getBarCodePNG($code)
-    {
-        return DNS1D::getBarcodePNG($code, "C39");
-    }
-
     public static function barcodeDialog($request){
         $articles = Article::where('barcode', $request['upc'])
             ->orWhere('barcode_local', $request['upc'])

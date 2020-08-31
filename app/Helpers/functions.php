@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Milon\Barcode\DNS1D;
 
 if(!function_exists('get_template')) {
     function get_template($template = 'default')
@@ -78,11 +79,6 @@ if(!function_exists('decimal_price')) {
 }
 
 if(!function_exists('sum_percent')) {
-    /**
-     * @param $sum
-     * @param $percent
-     * @return float
-     */
     function sum_percent($sum, $percent) {
         return $sum / 100 * $percent;
     }
@@ -91,6 +87,20 @@ if(!function_exists('sum_percent')) {
 if(!function_exists('sum_cents')) {
     function sum_cents($price) {
         return explode('.', $price)[1] ?? 0;
+    }
+}
+
+if(!function_exists('getBarcodePNG')) {
+    function getBarcodePNG($code)
+    {
+        return DNS1D::getBarcodePNG($code, "C39");
+    }
+}
+
+if(!function_exists('getBarcodeSVG')) {
+    function getBarcodeSVG($code)
+    {
+        return DNS1D::getBarcodeSVG($code, "C39");
     }
 }
 

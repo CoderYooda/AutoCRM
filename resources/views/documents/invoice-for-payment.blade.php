@@ -38,6 +38,8 @@
     <![endif]>
 </head>
 
+<img style="width: 70mm; height: 6mm; right: 0; top: 38.5mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+
 <body link=blue vlink=purple>
 
 <table border=0 cellpadding=0 cellspacing=0 width=712 style='border-collapse:
@@ -130,9 +132,10 @@
         <td colspan=4 class=xl86 style='border-left:none'>Цена</td>
         <td colspan=5 class=xl87 style='border-left:none'>Сумма</td>
     </tr>
+
     @foreach($data['products'] as $product)
 
-        @continue(!isset($product['id']))
+        @continue(!is_array($product))
 
         <tr height=15 style='height:11.25pt'>
             <td height=15 style='height:11.25pt'></td>
@@ -144,7 +147,9 @@
             <td colspan=4 class=xl84 style='border-left:none'>{{ correct_price($product['price_with_nds']) }}</td>
             <td colspan=5 class=xl80 style='border-left:none'>{{ correct_price($product['price_with_nds'] * $product['count']) }}</td>
         </tr>
+
     @endforeach
+
     <tr height=9 style='mso-height-source:userset;height:6.95pt'>
         <td height=9 style='height:6.95pt'></td>
         <td class=xl62>&nbsp;</td>
@@ -245,9 +250,9 @@
         <td class=xl67></td>
         <td class=xl67></td>
         <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
         <td colspan=5 class=xl66>В том числе НДС:</td>
+        <td class=xl67></td>
+        <td class=xl67></td>
         <td colspan=5 class=xl77>{{ correct_price($data['products']['nds']) }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>
@@ -278,8 +283,8 @@
         <td class=xl67></td>
         <td class=xl67></td>
         <td class=xl67></td>
-        <td class=xl67></td>
         <td colspan=5 class=xl66>Всего к оплате:</td>
+        <td class=xl67></td>
         <td colspan=5 class=xl77>{{ correct_price($data['products']['price_with_nds']) }}</td>
     </tr>
     <tr height=17 style='height:12.75pt'>

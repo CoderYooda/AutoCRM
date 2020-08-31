@@ -5,7 +5,7 @@
     </div>
     @if(isset($product) && $product->barcode != null)
         <div class="form-group">
-            <img style="max-width: 100%" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($product->barcode) !!}" alt="barcode"   />
+            <img style="max-width: 100%" src="data:image/png;base64,{!! getBarCodePNG($product->barcode) !!}" alt="barcode"   />
         </div>
     @endif
     <div class="form-group">
@@ -14,7 +14,7 @@
     </div>
     @if(isset($product) && $product->barcode_local != null)
         <div class="form-group">
-            <img style="max-width: 100%" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($product->barcode_local) !!}" alt="barcode"   />
+            <img style="max-width: 100%" src="data:image/png;base64,{!! getBarCodePNG($product->barcode_local) !!}" alt="barcode"   />
         </div>
     @endif
     <div class="form-group">
@@ -23,7 +23,7 @@
     </div>
     @if(isset($product) && $product->storeCode != null)
         <div class="form-group">
-            <img style="max-width: 100%" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($product->storeCode) !!}" alt="barcode"   />
+            <img style="max-width: 100%" src="data:image/png;base64,{!! getBarCodePNG($product->storeCode) !!}" alt="barcode"   />
         </div>
     @endif
 </div>

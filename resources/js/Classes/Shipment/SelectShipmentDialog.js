@@ -29,9 +29,7 @@ class selectShipmentDialog  extends Modal{
         });
 
         let focused = document.getElementById('select_shipment_dialog_focused');
-        if(focused){
-            focused.focus();
-        }
+        if(focused) focused.focus();
     }
 
     searchInit(){
@@ -53,7 +51,9 @@ class selectShipmentDialog  extends Modal{
     search(object){
         //var string = el.value;
 
-        if (isXHRloading) { return; } window.isXHRloading = true;
+        if (isXHRloading) return;
+
+        window.isXHRloading = true;
 
         let data = {};
         data.inner = true;

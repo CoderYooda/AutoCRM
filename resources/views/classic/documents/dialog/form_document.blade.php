@@ -15,14 +15,14 @@
             @foreach($documents as  $document)
                 <div onclick="{{ $class }}.select(this)" class="form-group focuseable pointer mb-0 p-10">
                     <span>{{ ($loop->index + 1) }}. {{ $document->name }}</span>
-                    <input class="d-none" type="radio" name="document_id" value="{{ $document->id }}" />
+                    <input class="d-none" type="radio" name="document_type" value="{{ $loop->index }}" />
                 </div>
             @endforeach
         </div>
 
         <div class="modal-footer">
             <button type="button" class="button white" onclick="window.{{ $class }}.finitaLaComedia()">Закрыть</button>
-            <button type="button" class="button primary pull-right" onclick="{{$class}}.save(this)">Создать</button>
+{{--            <button type="button" class="button primary pull-right" onclick="{{$class}}.save(this)">Создать</button>--}}
         </div>
 
         <div class="system_message">

@@ -5,7 +5,7 @@
 
 
     <div class="form-group p-3 white mb-0 b-b-accent">
-        <img style="width: 100%" src="data:image/png;base64,{!! \App\Http\Controllers\BarcodeController::getBarCodePNG($request['upc']) !!}" alt="barcode"   />
+        <img style="width: 100%" src="data:image/png;base64,{!! getBarCodePNG($request['upc']) !!}" alt="barcode"   />
         <span>{{ $request['upc'] }}</span>
     </div>
 

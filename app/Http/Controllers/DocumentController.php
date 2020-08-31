@@ -18,14 +18,6 @@ use stdClass;
 
 class DocumentController extends Controller
 {
-    public function store(StoreRequest $request)
-    {
-        return response()->json([
-            'type' => 'success',
-            'message' => 'Документ успешно создан.'
-        ]);
-    }
-
     public static function dialog(Request $request)
     {
         $class = 'documentDialog';
@@ -36,7 +28,8 @@ class DocumentController extends Controller
 
         return response()->json([
             'tag' => $class,
-            'html' => $view->render()
+            'html' => $view->render(),
+            'documents' => $documents
         ]);
     }
 
@@ -156,6 +149,10 @@ class DocumentController extends Controller
 
         $view = view($view_name);
 
+        $data = [];
+
+        $data['view'] = $view_name;
+
         if($request->doc == 'cheque') {
 
             $products = Article::with('supplier')->whereIn('id', $request->data['ids'])->get();
@@ -175,8 +172,44 @@ class DocumentController extends Controller
             $view->with('products', $products)
                 ->with('full_count', $full_count);
         }
+        else if($request->doc == 'client-order') {
+            $clientOrder = ClientOrder::find($request->id);
+
+            $data['company_name'] = $company->official_name;
+            $data['id'] = $request->id;
+
+            $data['partner_name'] = $clientOrder->partner->outputName();
+            $data['phone'] = $clientOrder->phone;
+            $data['summ'] = $clientOrder->summ;
+            $data['discount'] = $clientOrder->discount;
+            $data['inpercents'] = $clientOrder->inpercents;
+            $data['itogo'] = $clientOrder->itogo;
+            $data['created_at'] = $clientOrder->created_at->format('d.m.Y');
+
+            $data['products'] = [];
+
+            foreach ($clientOrder->articles->load('supplier') as $product) {
+
+                $data['products'][$product->id]['name'] = $product->name;
+                $data['products'][$product->id]['article'] = $product->article;
+                $data['products'][$product->id]['manufacturer'] = $product->supplier->name;
+                $data['products'][$product->id]['count'] = $product->pivot->count;
+                $data['products'][$product->id]['price'] = $product->pivot->price;
+                $data['products'][$product->id]['total'] = $product->pivot->total;
+            }
+        }
         else if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {
-            $view->with('warrant', Warrant::find($request->id));
+
+            $warrant = Warrant::find($request->id);
+
+            $data['company_name'] = $company->official_name;
+            $data['id'] = $request->id;
+            $data['created_at'] = $warrant->created_at->format('d.m.Y');
+            $data['summ'] = $warrant->summ;
+            $data['partner_name'] = $warrant->partner->official_name;
+            $data['reason'] = $warrant->reason;
+            $data['wsumm'] = $warrant->wsumm;
+            $data['nds'] = $warrant->payable->nds;
         }
         else if($request->doc == 'defective-act') {
             $view->with('refund', Refund::find($request->id));
@@ -184,8 +217,6 @@ class DocumentController extends Controller
         else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 
             $shipment = Shipment::with('company', 'partner')->find($request->id);
-
-            $data = [];
 
             //Документ
             $data['id'] = $request->id;
@@ -213,40 +244,30 @@ class DocumentController extends Controller
             $data['partner_type'] = $shipment->partner->type;
             $data['partner_cut_surname'] = $shipment->partner->cur_surname;
 
-            //Продукты
-            $data['products'] = json_decode($request->data, true);
-
-            $products = Article::whereIn('id', array_column($data['products'], 'id'))->get();
-
             $data['products']['price_without_nds'] = 0;
             $data['products']['price_with_nds'] = 0;
             $data['products']['nds'] = 0;
 
-            foreach($data['products'] as $key => $product) {
+            foreach($shipment->articles as $key => $product) {
 
-                if(!isset($product['id'])) continue;
+                $data['products'][$key]['name'] = $product->name;
+                $data['products'][$key]['article'] = $product->article;
+                $data['products'][$key]['count'] = $product->count;
 
-                $db_product = $products->where('id', $product['id'])->first();
+                $data['products'][$key]['price_with_nds'] = $product->price;
+                $data['products'][$key]['price_without_nds'] = $product->price - ($product->price / 100 * 20);
+                $data['products'][$key]['nds'] = ($product->price / 100 * 20);
 
-                $data['products'][$key]['name'] = $db_product->name;
-                $data['products'][$key]['article'] = $db_product->article;
-
-                $data['products'][$key]['price_with_nds'] = $product['price'];
-                $data['products'][$key]['price_without_nds'] = $product['price'] - ($product['price'] / 100 * 20);
-                $data['products'][$key]['nds'] = ($product['price'] / 100 * 20);
-
-                $total_price = ($product['price'] * $product['count']);
+                $total_price = ($product->price * $product->count);
                 $nds = ($total_price / 100 * 20);
 
                 $data['products']['price_without_nds'] += $total_price - $nds;
                 $data['products']['price_with_nds'] += $total_price;
                 $data['products']['nds'] += $nds;
             }
-
-            $data['view'] = $view_name;
-
-            $view->with('data', $data);
         }
+
+        $view->with('data', $data);
 
         if(isset($names[$request->doc]['id'])) {
 
@@ -266,6 +287,8 @@ class DocumentController extends Controller
             $barcode = '9991' . sprintf('%09d', $document->id);
 
             $document->update(['barcode' => $barcode]);
+
+            $view->with('barcode', $barcode);
         }
 
         return $view;
@@ -277,6 +300,8 @@ class DocumentController extends Controller
 
         $view_name = $data['data']['view'];
 
-        return view($view_name)->with('data', $data['data']);
+        return view($view_name)
+            ->with('data', $data['data'])
+            ->with('barcode', $document->barcode);
     }
 }

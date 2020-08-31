@@ -177,11 +177,12 @@
             </div>
         </div>
         <div class="modal-footer">
-            @if(isset($warrant))
-            <button type="button" class="button mr-15" onclick="window.helper.printDocument('{{ $warrant->isIncoming ? 'in-warrant' : 'out-warrant' }}', {{ $warrant->id }})" >Печать</button>
-            @endif
             <button type="button" class="button white" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
-            <button type="submit" class="button pull-right" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
+            @if(isset($warrant))
+                <button type="button" class="button pull-right" onclick="window.helper.printDocument('{{ $warrant->isIncoming ? 'in-warrant' : 'out-warrant' }}', {{ $warrant->id }})" >Печать</button>
+            @else
+                <button type="submit" class="button pull-right" onclick="window.{{ $class }}.save(this)" >Сохранить</button>
+            @endif
         </div>
         <div class="system_message">
 
