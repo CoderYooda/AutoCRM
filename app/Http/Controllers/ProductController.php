@@ -318,13 +318,16 @@ class ProductController extends Controller
 
                 $store->articles()->syncWithoutDetaching($article->id);
 
-                $article->stores()->updateExistingPivot($store->id, [
+                $pivot_data = [
                     'storage_zone' => $storage['storage_zone'],
                     'storage_rack' => $storage['storage_rack'],
                     'storage_vertical' => $storage['storage_vertical'],
-                    'storage_horizontal' => $storage['storage_horizontal'],
-                    'retail_price' => $storage['retail_price']
-                ]);
+                    'storage_horizontal' => $storage['storage_horizontal']
+                ];
+                if(isset($storage['retail_price'])){
+                    $pivot_data['retail_price'] = $storage['retail_price'];
+                }
+                $article->stores()->updateExistingPivot($store->id, $pivot_data);
             }
         }
 

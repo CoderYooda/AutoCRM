@@ -175,7 +175,7 @@ class shipmentDialog extends Modal{
     save(elem){
         window.event.preventDefault();
         if(window.isXHRloading) return;
-
+        let object = this;
         window.axform.send(elem, (resp) => {
             if(resp.status == 200) {
                 let root_id = this.root_dialog.id;
@@ -190,7 +190,7 @@ class shipmentDialog extends Modal{
                     drag_dialog.tag = 'shipmentDialog' + resp.data.id;
                     window.helper.initDialogMethods();
                     // this.finitaLaComedia(true);
-                    this.getPayment();
+                    object.getPayment();
                 });
             }
         });
