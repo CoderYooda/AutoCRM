@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\DocumentType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         $lang = config('app.locale');
 
         setlocale(LC_ALL, $lang . '.UTF-8');
-        setlocale(LC_NUMERIC,  'en.UTF-8');
+        setlocale(LC_NUMERIC, 'en.UTF-8');
         Carbon::setLocale($lang);
 
         Gate::before(function ($user, $ability) {
@@ -38,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Warrant::observe(\App\Observers\WarrantObserver::class);
         \App\Models\Entrance::observe(\App\Observers\EntranceObserver::class);
         \App\Models\Cashbox::observe(\App\Observers\CashboxObserver::class);
+
+        \View::composer([get_template() . '.documents.index'], function ($view) {
+            $view->with('documentsTypes', DocumentType::all());
+        });
 
         Blade::directive('hide', function ($expression) {
             return "<?php if($expression) echo (\"style='display: none!important;'\"); ?>";

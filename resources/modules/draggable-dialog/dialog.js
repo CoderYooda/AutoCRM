@@ -68,7 +68,7 @@ window.openDialog = function(tag, params = null, reload = false) {
         if(!alreadyOpened(resp.data.tag) || reload){
             closeDialog(null, resp.data.tag);
             appendDialog(resp.data, resp.data.tag);
-            window.helper.initDialogMethods();
+            window.helper.initDialogMethods(resp);
         }
     }).finally(function(){
         window.isXHRloading = false;

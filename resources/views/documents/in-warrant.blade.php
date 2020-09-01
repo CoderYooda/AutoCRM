@@ -470,6 +470,9 @@
         PADDING-RIGHT: 0px
     }</style>
 <hr><p></p><p></p>
+
+<img style="width: 60mm; height: 6mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+
 <table style="HEIGHT: 0px; WIDTH: 0px" cellspacing="0">
     <colgroup>
         <col width="7">
@@ -510,7 +513,7 @@
         <td class="R0C8" colspan="9"><span style="WHITE-SPACE: nowrap">Утверждена&nbsp;постановлением&nbsp;Госкомстата&nbsp;России&nbsp;от&nbsp;18.08.98&nbsp;№&nbsp;88</span>
         </td>
         <td class="R0C9"><span></span></td>
-        <td class="R1C11" colspan="5">{{ $company->official_name }}</td>
+        <td class="R1C11" colspan="5">{{ $data['company_name'] }}</td>
         <td><span></span></td>
         <td></td>
     </tr>
@@ -587,7 +590,7 @@
         </td>
         <td class="R4C12" colspan="4">
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span
-                    style="WHITE-SPACE: nowrap">{{ $warrant->id }}</span></div>
+                    style="WHITE-SPACE: nowrap">{{ $data['id'] }}</span></div>
         </td>
         <td>
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
@@ -601,7 +604,7 @@
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
         </td>
         <td class="R5C1" colspan="5">
-            <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%">{{ $company->official_name }}</div>
+            <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%">{{ $data['company_name'] }}</div>
         </td>
         <td class="R4C6">
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span
@@ -618,7 +621,7 @@
         </td>
         <td class="R5C12" colspan="4">
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span
-                    style="WHITE-SPACE: nowrap">{{ $warrant->created_at }}</span></div>
+                    style="WHITE-SPACE: nowrap">{{ $data['created_at'] }}</span></div>
         </td>
         <td>
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
@@ -723,7 +726,7 @@
             <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span></span></div>
         </td>
         <td class="R8C11" rowspan="3" colspan="5">
-            <div style="OVERFLOW: hidden; HEIGHT: 41px; WIDTH: 100%">{{ $warrant->partner->official_name }}</div>
+            <div style="OVERFLOW: hidden; HEIGHT: 41px; WIDTH: 100%">{{ $data['partner_name'] }}</div>
         </td>
         <td>
             <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span></span></div>
@@ -797,8 +800,8 @@
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
-        <td class="R11C5" colspan="2"><span style="WHITE-SPACE: nowrap">{{ $warrant->id }}</span></td>
-        <td class="R11C5" colspan="2"><span style="WHITE-SPACE: nowrap; font-size: 10px;">{{ $warrant->created_at }}</span></td>
+        <td class="R11C5" colspan="2"><span style="WHITE-SPACE: nowrap">{{ $data['id'] }}</span></td>
+        <td class="R11C5" colspan="2"><span style="WHITE-SPACE: nowrap; font-size: 10px;">{{ $data['created_at'] }}</span></td>
         <td class="R7C9"><span></span></td>
         <td rowspan="2">
             <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Основание</span>
@@ -885,7 +888,7 @@
         </td>
         <td class="R13C11" rowspan="3" colspan="5">
             <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span
-                    style="background-color: transparent; font-size: 8pt;">{{ $warrant->reason }} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+                    style="background-color: transparent; font-size: 8pt;">{{ $data['reason'] }} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
             </div>
             <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span></span></div>
         </td>
@@ -987,7 +990,7 @@
         </td>
         <td class="R17C6">
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span
-                    style="WHITE-SPACE: nowrap">{{ correct_price($warrant->summ) }}</span></div>
+                    style="WHITE-SPACE: nowrap">{{ correct_price($data['summ']) }}</span></div>
         </td>
         <td class="R17C3">
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
@@ -1004,7 +1007,7 @@
         </td>
         <td class="R5C12" colspan="4">
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span
-                    style="WHITE-SPACE: nowrap">{{ correct_price($warrant->summ) }}</span></div>
+                    style="WHITE-SPACE: nowrap">{{ correct_price($data['summ']) }}</span></div>
         </td>
         <td>
             <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
@@ -1061,10 +1064,10 @@
     <tr class="R0">
         <td><span></span></td>
         <td><span style="WHITE-SPACE: nowrap">Принято&nbsp;от:</span></td>
-        <td class="R19C2" colspan="7"><span style="WHITE-SPACE: nowrap">{{ $warrant->partner->official_name }}</span></td>
+        <td class="R19C2" colspan="7"><span style="WHITE-SPACE: nowrap">{{ $data['partner_name'] }}</span></td>
         <td class="R0C9"><span></span></td>
         <td class="R19C11" rowspan="3" colspan="5">
-            <div style="OVERFLOW: hidden; HEIGHT: 40px; WIDTH: 100%">{{ num2str($warrant->summ) }}</div>
+            <div style="OVERFLOW: hidden; HEIGHT: 40px; WIDTH: 100%">{{ num2str($data['summ']) }}</div>
         </td>
         <td><span></span></td>
         <td></td>
@@ -1126,13 +1129,13 @@
             <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
         </td>
         <td class="R22C1" rowspan="2" colspan="8">
-            <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%">{{ $warrant->reason }}<span></span></div>
+            <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%">{{ $data['reason'] }}<span></span></div>
             <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%">
                 <table cellspacing="0"
                        style="background-color: rgb(255, 255, 255); font-size: 10.6667px; width: 0px; height: 0px;">
                     <tbody>
                     <tr class="R0">
-                        <td class="R19C2">{{ $warrant->reason }}</td>
+                        <td class="R19C2">{{ $data['reason'] }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -1150,7 +1153,7 @@
         <td><span></span></td>
         <td class="R0C9"><span></span></td>
         <td class="R19C11" rowspan="3" colspan="5">
-            <div style="OVERFLOW: hidden; HEIGHT: 42px; WIDTH: 100%">НДС ({{ $warrant->payable->nds ?? 20 }}%) {{ sum_percent($warrant->summ, 20) }} руб.</div>
+            <div style="OVERFLOW: hidden; HEIGHT: 42px; WIDTH: 100%">НДС ({{ $data['nds'] ?? 20 }}%) {{ sum_percent($data['summ'], 20) }} руб.</div>
         </td>
         <td><span></span></td>
         <td></td>
@@ -1173,7 +1176,7 @@
     <tr class="R0">
         <td><span></span></td>
         <td class="R19C11" rowspan="3" colspan="8">
-            <div style="OVERFLOW: hidden; HEIGHT: 40px; WIDTH: 100%">{{ num2str($warrant->summ) }}</div>
+            <div style="OVERFLOW: hidden; HEIGHT: 40px; WIDTH: 100%">{{ num2str($data['summ']) }}</div>
         </td>
         <td class="R0C9"><span></span></td>
         <td><span></span></td>
@@ -1212,7 +1215,7 @@
         <td><span></span></td>
         <td class="R27C9"><span></span></td>
         <td><span></span></td>
-        <td class="R27C12" colspan="4"><span style="WHITE-SPACE: nowrap">{{ $warrant->created_at }}</span></td>
+        <td class="R27C12" colspan="4"><span style="WHITE-SPACE: nowrap">{{ $data['created_at'] }}</span></td>
         <td><span></span></td>
         <td></td>
     </tr>
@@ -1272,7 +1275,7 @@
     <tr class="R0">
         <td><span></span></td>
         <td class="R22C12"><span style="WHITE-SPACE: nowrap">В&nbsp;том&nbsp;числе:</span></td>
-        <td class="R19C2" colspan="7"><span style="WHITE-SPACE: nowrap">НДС ({{ $warrant->payable->nds ?? 20 }}%) {{ sum_percent($warrant->summ, 20) }} руб.</span>
+        <td class="R19C2" colspan="7"><span style="WHITE-SPACE: nowrap">НДС ({{ $data['nds'] ?? 20 }}%) {{ sum_percent($data['summ'], 20) }} руб.</span>
         </td>
         <td class="R0C9"><span></span></td>
         <td class="R29C11" colspan="7"><span style="WHITE-SPACE: nowrap">М.П.&nbsp;(штампа)</span></td>

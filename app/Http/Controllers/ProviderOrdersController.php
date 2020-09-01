@@ -387,7 +387,7 @@ class ProviderOrdersController extends Controller
         $provider_orders = ProviderOrder::where('provider_orders.company_id', Auth::user()->company_id)
             ->leftJoin('partners as partner', 'partner.id', '=', 'provider_orders.partner_id')
             ->leftJoin('partners as manager', 'manager.id', '=', 'provider_orders.manager_id')
-            ->select('provider_orders.*', 'partner.fio', 'partner.foundstring as p_foundstring', 'manager.foundstring as m_foundstring', 'manager.fio', 'partner.companyName as partner_name', 'manager.fio as manager_name')
+            ->select(DB::raw('provider_orders.*, partner.fio, partner.foundstring as p_foundstring, manager.foundstring as m_foundstring, manager.fio, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
             ->when(is_array($request['provider']), function($query) use ($request) {
                 $query->whereIn('provider_orders.partner_id', $request['provider']);
             })

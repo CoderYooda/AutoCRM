@@ -2,9 +2,12 @@ import Modal from "../Modal/Modal";
 
 class documentDialog extends Modal{
 
-    constructor(dialog){
+    constructor(dialog, data){
         super(dialog);
         console.log('Окно документа инициализировано');
+
+        this.documents = data.documents;
+
         this.init();
     }
 
@@ -36,24 +39,37 @@ class documentDialog extends Modal{
 
     select(element) {
 
-        let input_element = this.current_dialog.querySelectorAll('.focuseable');
+        let block_element = this.current_dialog.querySelectorAll('.focuseable');
 
-        input_element.forEach(input => {
-            input.classList.remove('selected');
+        block_element.forEach(block => {
+            block.classList.remove('selected');
         });
 
         element.classList.add('selected');
 
-        element.querySelector('input').checked = true;
+        let input_element = element.querySelector('input');
+
+        input_element.checked = true;
+
+        let document = this.documents[input_element.value];
+
+        openDialog(document.dialog, '&refer=' + this.current_dialog.id);
     }
 
-    save(element) {
+    selectShipment(shipment_id) {
 
-        window.axform.send(element, (response) => {
-            if(response.status === 200) {
-                //
-            }
-        });
+        let id = this.current_dialog.querySelector('.selected input').value;
+
+        helper.printDocument(this.documents[id].print, shipment_id);
+
+        window.selectShipmentDialog.finitaLaComedia(true);
+
+        this.finitaLaComedia(true);
+    }
+
+    selectClientOrder(clientorder_id)
+    {
+        console.log(clientorder_id);
     }
 }
 export default documentDialog;

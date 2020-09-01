@@ -331,21 +331,10 @@ class ShipmentController extends Controller
 
     public static function getShipments($request)
     {
-
         $size = isset($request['size']) ? $request['size'] : 30;
 
-        $field = null;
-        $dir = null;
-
-        if(isset($request['sorters'])){
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-
-        if($field === null && $dir === null){
-            $field = 'created_at';
-            $dir = 'DESC';
-        }
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
 
         if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
@@ -354,22 +343,17 @@ class ShipmentController extends Controller
             $request['dates'] = $dates;
         }
 
-        if($request['client'] == null){
-            $request['client'] = [];
-        }
-
-        return Shipment::with('articles')->withoutGlobalScopes()->select(DB::raw('
+        return Shipment::select(DB::raw('
                 shipments.*, shipments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' ₽\')) as discount, shipments.summ as price, shipments.itogo as total
             '))
                 ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
-                ->where('shipments.company_id', Auth::user()->company()->first()->id)
+                ->where('shipments.company_id', Auth::user()->company_id)
                 ->when($request['client'] != null, function($query) use ($request) {
                     $query->whereIn('shipments.partner_id', $request['client']);
                 })
                 ->when($request['dates_range'] != null, function($query) use ($request) {
                     $query->whereBetween('shipments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
                 })
-                ->groupBy('shipments.id')
                 ->orderBy($field, $dir)
                 ->paginate($size);
 

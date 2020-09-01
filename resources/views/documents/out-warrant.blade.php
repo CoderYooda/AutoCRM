@@ -315,6 +315,9 @@
     <hr>
     <p></p>
     <p></p>
+
+    <img style="width: 60mm; height: 6mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+
     <table style="HEIGHT: 0px; WIDTH: 0px" cellspacing="0">
         <colgroup>
             <col width="7">
@@ -356,7 +359,7 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span></span></div>
             </td>
             <td class="R2C1" colspan="7">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%">{{ $company->official_name }}</div>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%">{{ $data['company_name'] }}</div>
             </td>
             <td class="R2C8">
                 <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">Форма&nbsp;по&nbsp;ОКУД</span>
@@ -490,11 +493,11 @@
                 </div>
             </td>
             <td class="R8C6" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->id }}</span>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $data['id'] }}</span>
                 </div>
             </td>
             <td class="R8C8" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->created_at }}</span>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $data['created_at'] }}</span>
                 </div>
             </td>
             <td>
@@ -580,7 +583,7 @@
                 </div>
             </td>
             <td class="R12C2" colspan="2">
-                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ correct_price($warrant->summ) }}</span>
+                <div style="OVERFLOW: hidden; HEIGHT: 27px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ correct_price($data['summ']) }}</span>
                 </div>
             </td>
             <td class="R12C8">
@@ -602,7 +605,7 @@
                 </div>
             </td>
             <td class="R13C2" colspan="8">
-                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $warrant->partner->official_name }}</span>
+                <div style="OVERFLOW: hidden; HEIGHT: 24px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ $data['partner_name'] }}</span>
                 </div>
             </td>
             <td>
@@ -627,7 +630,7 @@
         <tr class="R1">
             <td><span></span></td>
             <td><span style="WHITE-SPACE: nowrap">Основание</span></td>
-            <td class="R15C2" colspan="8"><span>{{ $warrant->reason }}</span></td>
+            <td class="R15C2" colspan="8"><span>{{ $data['reason'] }}</span></td>
             <td></td>
         </tr>
         <tr class="R16">
@@ -639,7 +642,7 @@
                 </div>
             </td>
             <td class="R16C2" colspan="8">
-                <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ num2str($warrant->summ) }}</span>
+                <div style="OVERFLOW: hidden; HEIGHT: 23px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">{{ num2str($data['wsumm']) }}</span>
                 </div>
             </td>
             <td>
@@ -815,7 +818,7 @@
                         style="WHITE-SPACE: nowrap">Получил</span></div>
             </td>
             <td class="R25C2">
-                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="position: absolute;">{{ num2str($warrant->summ, 1) }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="position: absolute;">{{ num2str($data['summ'], 1) }}</span></div>
             </td>
             <td class="R25C2">
                 <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
@@ -875,7 +878,7 @@
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%">руб.</div>
             </td>
             <td class="R4C1">
-                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span>{{ sum_cents($warrant->summ) }}</span></div>
+                <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%"><span>{{ sum_cents($data['summ']) }}</span></div>
             </td>
             <td class="R27C7">
                 <div style="OVERFLOW: hidden; HEIGHT: 16px; WIDTH: 100%">коп.</div>

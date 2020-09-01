@@ -50,7 +50,6 @@ class providerOrderDialog extends Modal{
         });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
-            console.warn("Warrant повесили");
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
                 let root_id = object.root_dialog.id;
@@ -181,7 +180,7 @@ class providerOrderDialog extends Modal{
                     delete window.dialogs[root_id];
                     window.dialogs['providerorderDialog' + resp.data.id] = drag_dialog;
                     drag_dialog.tag = 'providerorderDialog' + resp.data.id;
-                    window.helper.initDialogMethods();
+                    window.helper.initDialogMethods(resp);
                 });
             }
         });

@@ -13,11 +13,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use function foo\func;
 
 class ProviderStoreController extends Controller
 {
-    public function tableData(Request $request, Providers $providers, Cart $cart)
+    public function tableData(Request $request, Providers $providers)
     {
         $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
 

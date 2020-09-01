@@ -11,7 +11,15 @@ class DialogController extends Controller
 {
     public function openDialogByTag($tag, Request $request)
     {
+//        $dialogs = [
+//            'selectClientOrder' => ClientOrdersController::selectDialog($request),
+//            'documentDialog' => DocumentController::dialog($request),
+//        ];
+
         switch ($tag) {
+            case 'selectClientOrder':
+                $dialog = ClientOrdersController::selectDialog($request);
+                break;
             case 'documentDialog':
                 $dialog = DocumentController::dialog($request);#
                 break;

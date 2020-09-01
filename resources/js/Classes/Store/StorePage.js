@@ -547,7 +547,7 @@ class storePage{
                     }},
                 {title:"№", field:"id", width:80},
                 {title:"Название", field:"name", width:150},
-                {title:"Менеджер", field:"manager_id", width:150},
+                {title:"Менеджер", field:"manager_name", width:150},
                 {title:"Дата", field:"created_at", width:150},
             ];
         }
@@ -857,32 +857,35 @@ class storePage{
 
                 let id = row.getData().id;
 
-                items.push(new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
-                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
+                if(object.contextDop != 'document') {
+                    items.push(new ContextualItem({
+                        label: 'Открыть', onClick: () => {
+                            openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)
+                        }, shortcut: 'Что то'
+                    }));
+                    items.push(new ContextualItem({
+                        label: 'Редактировать', onClick: () => {
+                            openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)
+                        }, shortcut: 'Что то'
+                    }));
+                }
+
+                if(object.contextDop == 'document') {
+                    items.push(new ContextualItem({
+                        label: 'Открыть', onClick: () => {
+                            window.helper.openDocument(id);
+                        }, shortcut: 'Что то'
+                    }));
+                }
 
                 if(object.contextDop == 'shipment') {
 
                     items.push(new ContextualItem({type:'seperator'}));
 
-                    let products = row.getData().articles;
-
-                    let data = {};
-
-                    Object.values(products).forEach((value, index) => {
-                        data[index] = {
-                            id: value.id,
-                            count: value.pivot.count,
-                            price: value.pivot.price,
-                            total: value.pivot.count * value.pivot.price
-                        };
-                    });
-
-                    data = JSON.stringify(data);
-
                     items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + id);} }));
                     items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id, data, true);} }));
-                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id, data);} }));
+                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id);} }));
+                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id);} }));
                 }
                 else if(object.contextDop == 'clientorder') {
                     items.push(new ContextualItem({type:'seperator'}));
@@ -938,11 +941,11 @@ class storePage{
                         data: data
                     }).then(function (resp) {
                         let addsCard = document.getElementById('adds-card');
-                        if(addsCard){
+                        if(addsCard) {
                             addsCard.classList.remove('hide');
                         }
                         document.getElementById('contact_block').innerHTML = resp.data.info;
-                        document.getElementById('comment_block').innerHTML = resp.data.comment;
+                        if(resp.data.comment) document.getElementById('comment_block').innerHTML = resp.data.comment;
                         //console.log(resp);
                     }).catch(function (error) {
                         console.log(error);
@@ -975,6 +978,7 @@ class storePage{
         if(object.client !== null){data.client = object.client;}
         if(object.pay_status !== null){data.pay_status = object.pay_status;}
         if(object.entrance_status !== null){data.entrance_status = object.entrance_status;}
+        if(object.document_filter !== null){data.document_filter = object.document_filter;}
         if(object.clientorder_status !== null){data.clientorder_status = object.clientorder_status;}
         if(object.provider !== []){data.provider = object.provider;}
         if(object.dates_range !== null){data.dates_range = object.dates_range;}

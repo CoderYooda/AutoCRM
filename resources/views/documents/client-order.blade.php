@@ -1,5 +1,3 @@
-@php $client_order = \App\Http\Controllers\ClientOrdersController::getSingleClientOrder($request) @endphp
-
 <style type="text/css">
     tr.R0 {
         height: 13pt;
@@ -490,7 +488,10 @@
         overflow: hidden;
     }
 </style>
-<table style="width:0px; height:0px; width: 100% " cellspacing="0">
+
+<img style="width: 40%; position: absolute; right: 0;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+
+<table style="height:0px; width: 100% " cellspacing="0">
     <colgroup>
         <col width="7">
         <col width="35">
@@ -511,7 +512,7 @@
     <tbody>
     <tr class="R0">
         <td><span></span></td>
-        <td class="R0C1" colspan="6"><span style="white-space:nowrap">ПОСТАВЩИК:&nbsp;&nbsp;{{ Auth::user()->company->name }}</span></td>
+        <td class="R0C1" colspan="6"><span style="white-space:nowrap">ПОСТАВЩИК:&nbsp;&nbsp;{{ $data['company_name'] }}</span></td>
         <td class="R0C7"><span></span></td>
         <td class="R0C7"><span></span></td>
         <td colspan="2" rowspan="3" align="LEFT" valign="TOP"><img src="" alt="" style="margin-left:1pt;margin-top:0pt;"></td>
@@ -555,7 +556,7 @@
     <tr class="R3">
         <td><span></span></td>
         <td class="R3C1"><span></span></td>
-        <td class="R3C2" colspan="9"><span style="white-space:nowrap">Заказ клиента&nbsp;№&nbsp;{{ $client_order->id }}</span></td>
+        <td class="R3C2" colspan="9"><span style="white-space:nowrap">Заказ клиента&nbsp;№&nbsp;{{ $data['id'] }}</span></td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
@@ -582,8 +583,8 @@
     </tr>
     <tr class="R0">
         <td><span></span></td>
-        <td class="R5C1" colspan="3">Заказчик: {{ $client_order->partner->outputName() }} </td>
-        <td class="R5C1" colspan="6">телефон: {{ $client_order->phone }}</td>
+        <td class="R5C1" colspan="3">Заказчик: {{ $data['partner_name'] }} </td>
+        <td class="R5C1" colspan="6">телефон: {{ $data['phone'] }}</td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
@@ -676,7 +677,7 @@
     <tr class="R16">
         <td><span></span></td>
         <td><span></span></td>
-        <td class="R16C2" colspan="14"><span style="white-space:nowrap">Расходная&nbsp;накладная&nbsp;к&nbsp;заказу клиента&nbsp;№&nbsp;&nbsp;{{ $client_order->id }}</span></td>
+        <td class="R16C2" colspan="14"><span style="white-space:nowrap">Расходная&nbsp;накладная&nbsp;к&nbsp;заказу клиента&nbsp;№&nbsp;&nbsp;{{ $data['id'] }}</span></td>
     </tr>
     </tbody>
 </table>
@@ -690,14 +691,14 @@
         <td class="R5C1" colspan="3">Цена за шт.</td>
         <td class="R5C1" colspan="3">Цена итого</td>
     </tr>
-    @foreach($client_order->articles as $article)
+    @foreach($data['products'] as $product)
         <tr class="R0">
-            <td class="R5C1" colspan="4">{{ $article->name }}</td>
-            <td class="R5C1" colspan="2">{{ $article->article }}</td>
-            <td class="R5C1" colspan="2">{{ $article->supplier->name }}</td>
-            <td class="R5C1" colspan="2">{{ $article->pivot->count }}</td>
-            <td class="R5C1" colspan="3">{{ $article->pivot->price }}</td>
-            <td class="R5C1" colspan="3">{{ $article->pivot->total }}</td>
+            <td class="R5C1" colspan="4">{{ $product['name'] }}</td>
+            <td class="R5C1" colspan="2">{{ $product['article'] }}</td>
+            <td class="R5C1" colspan="2">{{ $product['manufacturer'] }}</td>
+            <td class="R5C1" colspan="2">{{ $product['count'] }}</td>
+            <td class="R5C1" colspan="3">{{ $product['price'] }}</td>
+            <td class="R5C1" colspan="3">{{ $product['total'] }}</td>
         </tr>
     @endforeach
     </tbody>
@@ -869,7 +870,7 @@
         <td><span></span></td>
         <td class="R58C7" colspan="8"><span style="white-space:nowrap">Итого&nbsp;:</span></td>
         <td class="R58C9"></td>
-        <td class="R58C10">{{ $client_order->summ }}</td>
+        <td class="R58C10">{{ $data['summ'] }}</td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
@@ -879,8 +880,8 @@
     <tr class="R0">
         <td><span></span></td>
         <td class="R58C7" colspan="8"><span style="white-space:nowrap">Скидка&nbsp;:</span></td>
-        <td class="R58C9">{{ $client_order->discount }}@if($client_order->inpercents) % @else р @endif</td>
-        <td class="R58C10"> {{ $client_order->summ - $client_order->itogo }}</td>
+        <td class="R58C9">{{ $data['discount'] . (' ' . $data['inpercents'] ? '%' : 'р')  }}</td>
+        <td class="R58C10"> {{ $data['summ'] - $data['itogo'] }}</td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
@@ -891,7 +892,7 @@
         <td><span></span></td>
         <td class="R58C7" colspan="8"><span style="white-space:nowrap">Итого&nbsp;по&nbsp;заказу клиента&nbsp;:</span></td>
         <td class="R58C9"></td>
-        <td class="R58C10">{{ $client_order->itogo }}</td>
+        <td class="R58C10">{{ $data['itogo'] }}</td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
@@ -918,7 +919,7 @@
     </tr>
     <tr class="R0">
         <td><span></span></td>
-        <td class="R60C1" colspan="10">Всего по заказу клиента: {{ num2str($client_order->itogo) }}</td>
+        <td class="R60C1" colspan="10">Всего по заказу клиента: {{ num2str($data['itogo']) }}</td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
@@ -966,8 +967,8 @@
     </tr>
     <tr class="R0">
         <td><span></span></td>
-        <td class="R68C1" colspan="2"><span style="white-space:nowrap">Дата:&nbsp;{{ $client_order->onlyData() }}</span></td>
-        <td class="R62C3" colspan="8"><span style="white-space:nowrap">Заказчик&nbsp;______________________&nbsp;/{{ $client_order->partner()->first()->outputName() }}/</span></td>
+        <td class="R68C1" colspan="2"><span style="white-space:nowrap">Дата:&nbsp;{{ $data['created_at'] }}</span></td>
+        <td class="R62C3" colspan="8"><span style="white-space:nowrap">Заказчик&nbsp;______________________&nbsp;/{{ $data['partner_name'] }}/</span></td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>

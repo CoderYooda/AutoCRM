@@ -351,6 +351,21 @@ class ClientOrdersController extends Controller
 
     }
 
+    public static function selectDialog(Request $request)
+    {
+        $clientOrders = ClientOrder::all();
+
+        $tag = 'selectClientOrder';
+
+        $view = view(get_template() . '.client_orders.dialog.select_client_order', compact('clientOrders', 'request'))
+            ->with('class', $tag);
+
+        return response()->json([
+            'html' => $view->render(),
+            'tag' => $tag
+        ]);
+    }
+
     public function getClientOrdersProducts(ClientOrder $clientOrder)
     {
         return response()->json(['products' => $clientOrder->articles]);
@@ -446,17 +461,6 @@ class ClientOrdersController extends Controller
         } else {
             return redirect()->back();
         }
-    }
-
-    public static function getSingleClientOrder($request)
-    {
-        $client_order = ClientOrder::owned()->where(function ($q) use ($request) {
-            if (isset($request['id']) && $request['id'] !== 'null') {
-                $q->where('id', $request['id']);
-            }
-        })->first();
-
-        return $client_order;
     }
 
 //    public function delete($id)

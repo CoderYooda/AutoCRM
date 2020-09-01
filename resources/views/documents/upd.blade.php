@@ -42,7 +42,10 @@
     </script>
     <![endif]>
 </head>
-<body link=blue vlink="#954F72">
+<body style="position:relative;" link=blue vlink="#954F72">
+
+<img style="width: 60mm; height: 6mm; right: -60mm; float:right; top: 15mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+
 <table border=0 cellpadding=0 cellspacing=0 width=3595 style='border-collapse:
  collapse;table-layout:fixed;width:2696pt'>
     <col class=xl65 width=12 span=88 style='mso-width-source:userset;mso-width-alt:
@@ -238,9 +241,9 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
 передаточный документ</span></a></td>
         <td colspan=9 class=xl111 style='border-left:none'>Счет-фактура N<span
                 style='mso-spacerun:yes'> </span></td>
-        <td colspan=7 class=xl112>{{ $shipment->id ?? 'Не указан' }}</td>
+        <td colspan=7 class=xl112>{{ $data['id'] ?? 'Не указан' }}</td>
         <td colspan=2 class=xl113>от</td>
-        <td colspan=10 class=xl112>{{ $shipment->created_at->format('d.m.Y') ?? 'Не указан' }}</td>
+        <td colspan=10 class=xl112>{{ $data['created_at'] ?? 'Не указан' }}</td>
         <td colspan=4 class=xl65>(1)</td>
         <td colspan=45 rowspan=3 class=xl114 width=540 style='width:405pt'>Приложение
             N 1 к постановлению Правительства Российской Федерации от 26 декабря 2011
@@ -263,7 +266,7 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Продавец</td>
         <td colspan=58 class=xl75>
-            {{ $company->official_name ?? '---' }}
+            {{ $data['company_name'] ?? '---' }}
         </td>
         <td colspan=3 class=xl67>(2)</td>
     </tr>
@@ -273,7 +276,7 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
         <td colspan=2 class=xl104>1</td>
         <td colspan=2 class=xl105 style='border-left:none'> </td>
         <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $company->legal_address ?? '---' }}</td>
+        <td colspan=58 class=xl103>{{ $data['legal_address'] ?? '---' }}</td>
         <td colspan=3 class=xl67>(2а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -282,7 +285,7 @@ width:72pt'><br>
             1 - счет-фактура и передаточный документ (акт) <br>
             2 - передаточный документ (акт)</td>
         <td colspan=16 class=xl102 style='border-left:none'>ИНН/КПП продавца</td>
-        <td colspan=58 class=xl103>{{ $company->inn ?? '________' }} / {{ $company->kpp ?? '________' }}</td>
+        <td colspan=58 class=xl103>{{ $data['inn'] ?? '________' }} / {{ $data['kpp'] ?? '________' }}</td>
         <td colspan=3 class=xl67>(2б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -308,18 +311,19 @@ width:72pt'><br>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Покупатель</td>
-        <td colspan=58 class=xl75>{{ $shipment->partner->official_name }}</td>
+        <td colspan=58 class=xl75>{{ $data['partner_name'] }}</td>
         <td colspan=3 class=xl67>(6)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address }}</td>
+        <td colspan=58 class=xl103>{{ $data['partner_address'] ?? '' }}</td>
+{{--        <td colspan=58 class=xl103>{{ $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address }}</td>--}}
         <td colspan=3 class=xl67>(6а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>ИНН/КПП
             покупателя</td>
-        <td colspan=58 class=xl103>{{ $shipment->partner->inn ?? '________' }} / {{ $shipment->partner->kpp ?? '________' }}</td>
+        <td colspan=58 class=xl103>{{ $data['partner_inn'] ?? '________' }} / {{ $data['partner_kpp'] ?? '________' }}</td>
         <td colspan=3 class=xl67>(6б)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -399,35 +403,38 @@ none;width:18pt'>код</td>
         <td colspan=7 class=xl93 width=84 style='border-left:none;width:63pt'>10а</td>
         <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>11</td>
     </tr>
-    @foreach($products as $product)
-    <tr height=16 style='mso-height-source:userset;height:12.0pt'>
-        <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
-        <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>
-        <td colspan=12 class=xl96 width=144 style='width:108pt'>{{ $product->name }}</td>
-        <td colspan=3 class=xl93 width=36 style='width:27pt'>---</td>
-        <td colspan=2 class=xl92 style='border-left:none'>796</td>
-        <td colspan=6 class=xl92 style='border-left:none'>шт</td>
-        <td colspan=4 class=xl97 style='border-left:none'>{{ $sorted_products[$product->id]['count'] }}</td>
-        <td colspan=5 class=xl91 style='border-left:none'>{{ correct_price($sorted_products[$product->id]['price_without_nds']) }}</td>
-        <td colspan=7 class=xl91 style='border-left:none'>{{ correct_price($sorted_products[$product->id]['price_without_nds'] * $sorted_products[$product->id]['count']) }}</td>
-        <td colspan=4 class=xl91 style='border-left:none'>без акциза</td>
-        <td colspan=4 class=xl91 style='border-left:none'>20%</td>
-        <td colspan=6 class=xl91 style='border-left:none'>{{ correct_price($sorted_products[$product->id]['nds'] * $sorted_products[$product->id]['count']) }}</td>
-        <td colspan=7 class=xl91 style='border-left:none'>{{ correct_price($sorted_products[$product->id]['price_with_nds'] * $sorted_products[$product->id]['count']) }}</td>
-        <td colspan=4 class=xl92 style='border-left:none'>---</td>
-        <td colspan=7 class=xl92 style='border-left:none'>---</td>
-        <td colspan=6 class=xl92 style='border-left:none'>---</td>
-    </tr>
+    @foreach($data['products'] as $product_id => $product)
+
+        @continue(!isset($product['id']))
+
+        <tr height=16 style='mso-height-source:userset;height:12.0pt'>
+            <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
+            <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>
+            <td colspan=12 class=xl96 width=144 style='width:108pt'>{{ $product['name'] }}</td>
+            <td colspan=3 class=xl93 width=36 style='width:27pt'>---</td>
+            <td colspan=2 class=xl92 style='border-left:none'>796</td>
+            <td colspan=6 class=xl92 style='border-left:none'>шт</td>
+            <td colspan=4 class=xl97 style='border-left:none'>{{ $product['count'] }}</td>
+            <td colspan=5 class=xl91 style='border-left:none'>{{ correct_price($product['price_without_nds']) }}</td>
+            <td colspan=7 class=xl91 style='border-left:none'>{{ correct_price($product['price_without_nds'] * $product['count']) }}</td>
+            <td colspan=4 class=xl91 style='border-left:none'>без акциза</td>
+            <td colspan=4 class=xl91 style='border-left:none'>20%</td>
+            <td colspan=6 class=xl91 style='border-left:none'>{{ correct_price($product['nds'] * $product['count']) }}</td>
+            <td colspan=7 class=xl91 style='border-left:none'>{{ correct_price($product['price_with_nds'] * $product['count']) }}</td>
+            <td colspan=4 class=xl92 style='border-left:none'>---</td>
+            <td colspan=7 class=xl92 style='border-left:none'>---</td>
+            <td colspan=6 class=xl92 style='border-left:none'>---</td>
+        </tr>
     @endforeach
 
     <tr height="16" style="mso-height-source:userset;height:12.0pt">
         <td colspan="2" height="16" class="xl93" width="24" style="height:12.0pt;width:18pt">&nbsp;</td>
         <td colspan="6" class="xl94" width="72" style="border-left:none;width:54pt">&nbsp;</td>
         <td colspan="32" class="xl95" width="384" style="width:288pt">Всего к оплате</td>
-        <td colspan="7" class="xl91" style="border-left:none">{{ correct_price($sorted_products['price_without_nds']) }}</td>
+        <td colspan="7" class="xl91" style="border-left:none">{{ correct_price($data['products']['price_without_nds']) }}</td>
         <td colspan="8" class="xl91" style="border-left:none">Х</td>
-        <td colspan="6" class="xl91" style="border-left:none">{{ correct_price($sorted_products['nds']) }}</td>
-        <td colspan="7" class="xl91" style="border-left:none">{{ correct_price($sorted_products['price_with_nds']) }}</td>
+        <td colspan="6" class="xl91" style="border-left:none">{{ correct_price($data['products']['nds']) }}</td>
+        <td colspan="7" class="xl91" style="border-left:none">{{ correct_price($data['products']['price_with_nds']) }}</td>
         <td colspan="4" class="xl92" style="border-left:none">&nbsp;</td>
         <td colspan="7" class="xl92" style="border-left:none">&nbsp;</td>
         <td colspan="6" class="xl92" style="border-left:none">&nbsp;</td>
@@ -447,13 +454,15 @@ none;width:18pt'>код</td>
         </td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $data['is_company'] ? $company['owner'] : '' }}</td>
+{{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>--}}
         <td colspan="16" class="xl81" width="192" style="width:144pt">Главный бухгалтер
             <br>
             или иное уполномоченное лицо</td>
         <td colspan="6" class="xl88" width="72" style="width:54pt">&nbsp;</td>
         <td class="xl68" width="12" style="width:9pt"></td>
-        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>
+        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $data['is_company'] ? $data['auditor'] : '' }}</td>
+{{--        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>--}}
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=3 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
@@ -475,7 +484,8 @@ none;width:18pt'>код</td>
             предприниматель</td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$data['is_company'] ? $data['company_name'] : '---' }}</td>
+{{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>--}}
         <td colspan=3 class=xl81 width=36 style='width:27pt'></td>
         <td colspan=35 class=xl83 width=420 style='width:315pt'>&nbsp;</td>
     </tr>
@@ -497,7 +507,7 @@ none;width:18pt'>код</td>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=22 height=15 class=xl65 style='height:11.25pt'>Основание передачи
             (сдачи) / получения (приемки)</td>
-        <td colspan=60 class=xl83 width=720 style='width:540pt'>Счёт №{{ $shipment->id ?? 'Не указано' }}</td>
+        <td colspan=60 class=xl83 width=720 style='width:540pt'>Счёт №{{ $data['id'] ?? 'Не указано' }}</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[8]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -533,14 +543,15 @@ none;width:18pt'>код</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ auth()->user()->partner->cut_surname ?? '' }}</td>
+        <td colspan=14 class=xl75>{{ $data['manager_name'] ?? '' }}</td>
         <td colspan=3 class=xl76>[10]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=13 class=xl79>&nbsp;</td>
         <td class=xl67></td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->cur_surname : $shipment->partner->cur_surname }}</td>
+        <td colspan=14 class=xl75>{{ $data['partner_cut_surname'] }}</td>
+{{--        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->cur_surname : $shipment->partner->cur_surname }}</td>--}}
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[15]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -657,10 +668,10 @@ none;width:18pt'>код</td>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
 
-            @if($company->is_company)
-                {{ $company->name }}, ИНН {{ $company->inn ?? '________' }}, КПП {{ $company->kpp ?? '________' }}
+            @if($data['is_company'])
+                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
             @else
-                {{ $company->name ?? '' }}
+                {{ $data['company_name'] ?? '' }}
             @endif
 
         </td>
@@ -668,10 +679,10 @@ none;width:18pt'>код</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=39 class=xl75>
 
-            @if($shipment->partner->type == 2)
-                {{ $shipment->partner->companyName }}, ИНН {{ $shipment->partner->inn ?? '________' }}, КПП {{ $shipment->partner->kpp ?? '________' }}
-            @elseif($shipment->partner->type == 1)
-                {{ $shipment->partner->fio }}
+            @if($data['partner_type'] == 2)
+                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
+            @elseif($data['partner_type'] == 1)
+                {{ $data['partner_fio'] }}
             @else
                 Частное лицо
             @endif

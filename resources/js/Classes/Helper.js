@@ -32,6 +32,7 @@ import selectEntranceDialog from "./Entrance/SelectEntranceDialog";
 import chequeDialog from "./Cheque/ChequeDialog";
 import providerCartDialog from "./ProviderCart/ProviderCartDialog";
 import documentDialog from "./Document/DocumentDialog";
+import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -87,7 +88,8 @@ const classes = {
     selectEntranceDialog,
     chequeDialog,
     providerCartDialog,
-    documentDialog
+    documentDialog,
+    selectClientOrderDialog
 };
 
 const pages = {
@@ -146,7 +148,7 @@ class Helper{
         return sol;
     }
 
-    initDialogMethods(){
+    initDialogMethods(resp = null){
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){
             [].forEach.call(dialogs, function(elem) {
@@ -155,7 +157,12 @@ class Helper{
 
                     var classname = elem.id.replace(/[^a-zA-Z]/g, '');
                     try {
-                        window[elem.id] = new classes[classname](elem);
+                        if(resp){
+                            window[elem.id] = new classes[classname](elem, resp.data);
+                        } else {
+                            window[elem.id] = new classes[classname](elem);
+                        }
+
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
                         console.error(err);
@@ -313,6 +320,16 @@ class Helper{
         return tabs;
     }
 
+    openDocument(id) {
+        axios.get('/documents/' + id)
+            .then(response => {
+                this.showDocument(response);
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
+
     printDocument(doc, id, data = null, landscape = false){
         axios({
             method: 'POST',
@@ -322,41 +339,44 @@ class Helper{
                 id: id,
                 data: data
             }
-        }).then(function (response) {
-            var printContents = response.data;
-
-            var css = '@page { size: landscape; }',
-                head = document.head || document.getElementsByTagName('head')[0],
-                style = document.createElement('style');
-
-            style.type = 'text/css';
-            style.media = 'print';
-
-            if (style.styleSheet){
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            if(landscape === true) {
-                head.appendChild(style);
-            }
-
-            let unprinted = document.getElementById('unprinted');
-            let printed = document.getElementById('printed');
-            printed.innerHTML = printContents;
-
-            setTimeout(()=> {
-                window.print();
-                unprinted.classList.remove('hide');
-                printed.innerHTML = '';
-                let print_style = document.querySelector('style[media="print"]');
-                if(print_style){
-                    print_style.remove();
-                }
-            }, 700);
-
+        }).then(response => {
+            this.showDocument(response, landscape);
         });
+    }
+
+    showDocument(response, landscape = false) {
+        let printContents = response.data;
+
+        let css = '@page { size: landscape; }',
+            head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+
+        style.type = 'text/css';
+        style.media = 'print';
+
+        if (style.styleSheet){
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+
+        if(landscape === true) {
+            head.appendChild(style);
+        }
+
+        let unprinted = document.getElementById('unprinted');
+        let printed = document.getElementById('printed');
+        printed.innerHTML = printContents;
+
+        setTimeout(()=> {
+            window.print();
+            unprinted.classList.remove('hide');
+            printed.innerHTML = '';
+            let print_style = document.querySelector('style[media="print"]');
+            if(print_style){
+                print_style.remove();
+            }
+        }, 700);
     }
 
     insertParam(elem, key, value)
@@ -470,6 +490,10 @@ class Helper{
             .catch(response => {
                 dd(response);
             });
+    }
+
+    getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] == value);
     }
 }
 export default Helper;
