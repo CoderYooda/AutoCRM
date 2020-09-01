@@ -66,7 +66,21 @@ class Trinity implements ProviderInterface
 
         $results = [];
 
-        foreach ($items['data'] as $store) {
+        foreach ($items['data'] as $key => $item) {
+
+            $items['data'][$key]['index'] = $key;
+
+            $items['data'][$key]['hash_info'] = [
+                'stock' => $item['stock'],
+                'manufacturer' => $item['producer'],
+                'article' => $article,
+                'days' => $item['deliverydays'],
+                'price' => $item['price']
+            ];
+
+        }
+
+        foreach ($items['data'] as $key => $store) {
 
             if(!strlen($store['bid'])) continue;
 
@@ -76,19 +90,17 @@ class Trinity implements ProviderInterface
             $days_max = $days[0][1] ?? 9999;
 
             $results[] = [
+                'index' => $key,
                 'name' => $store['stock'],
                 'code' => $store['code'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
                 'delivery' => $store['deliverydays'],
                 'price' => $store['price'],
-                'delivery_info' => [
-                    'key' => $store['bid'],
-                    'manufacturer' => $store['producer'],
-                    'name' => $store['caption'],
-                    'price' => $store['price'],
-                    'stock' => $store['stock']
-                ]
+                'manufacturer' => $store['producer'],
+                'model' => $store,
+                'stock' => $store['stock'],
+                'hash' => md5($store['stock'] . $store['producer'] . $article . $store['deliverydays'] . $store['price'])
             ];
         }
 

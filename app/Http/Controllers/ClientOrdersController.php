@@ -7,6 +7,7 @@ use App\Models\ClientOrder;
 use App\Models\Partner;
 use App\Models\Store;
 use App\Models\Supplier;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -353,11 +354,19 @@ class ClientOrdersController extends Controller
 
     public static function selectDialog(Request $request)
     {
-        $clientOrders = ClientOrder::all();
+        $clientOrders = ClientOrder::owned()
+            ->when($request->search, function (Builder $query) use($request) {
+                $query->where('id', 'like', "%{$request->search}%");
+            })
+            ->paginate(15);
 
-        $tag = 'selectClientOrder';
+        $tag = 'selectClientOrderDialog';
 
-        $view = view(get_template() . '.client_orders.dialog.select_client_order', compact('clientOrders', 'request'))
+        $isInner = $request->has('page') || $request->has('search');
+
+        $view_name = get_template() . '.client_orders.dialog.' . ($isInner ? 'select_client_order_inner' : 'select_client_order');
+
+        $view = view($view_name, compact('clientOrders', 'request'))
             ->with('class', $tag);
 
         return response()->json([

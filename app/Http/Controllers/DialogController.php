@@ -12,122 +12,72 @@ class DialogController extends Controller
     public function openDialogByTag($tag, Request $request)
     {
         $dialogs = [
-            'selectClientOrder' => ClientOrdersController::selectDialog($request),
-            'documentDialog' => DocumentController::dialog($request),
+            //Warrant
+            'warrantDialog'             => [WarrantController::class, 'warrantDialog'],
+            'selectWarrant'             => [WarrantController::class, 'selectDialog'],
+            //ClientOrder
+            'selectClientOrder'         => [ClientOrdersController::class, 'selectDialog'],
+            'clientorderDialog'         => [ClientOrdersController::class, 'clientorderDialog'],
+            //Document
+            'documentDialog'            => [DocumentController::class, 'dialog'],
+            //Cart
+            'ProviderCartDialog'        => [ProviderStoreController::class, 'ProviderCartDialog'],
+            //Supplier
+            'selectSupplier'            => [SupplierController::class, 'selectSupplierDialog'],
+            'supplierDialog'            => [SupplierController::class, 'supplierDialog'],
+            //Cheque
+            'chequeDialog'              => [ProductController::class, 'chequeDialog'],
+            //Category
+            'categoryDialog'            => [CategoryController::class, 'categoryDialog'],
+            'selectCategory'            => [CategoryController::class, 'selectCategoryDialog'],
+            //Product
+            'productDialog'             => [ProductController::class, 'productDialog'],
+            'selectProduct'             => [ProductController::class, 'selectProductDialog'],
+            //Partner
+            'partnerDialog'             => [PartnerController::class, 'partnerDialog'],
+            'selectPartner'             => [PartnerController::class, 'selectPartnerDialog'],
+            //Cashbox
+            'selectCashbox'             => [CashboxController::class, 'selectCashboxDialog'],
+            'cashboxDialog'             => [CashboxController::class, 'cashboxDialog'],
+            //Ddsarticle
+            'selectDdsarticle'          => [DdsarticleController::class, 'selectDdsarticleDialog'],
+            'ddsarticleDialog'          => [DdsarticleController::class, 'ddsarticleDialog'],
+            //MoneyMove
+            'moneymoveDialog'           => [MoneyMoveController::class, 'moneymoveDialog'],
+            //Store
+            'storeDialog'               => [StoreController::class, 'storeDialog'],
+            'storeImportDialog'         => [StoreController::class, 'storeImportDialog'],
+            //Entrance
+            'entranceDialog'            => [EntranceController::class, 'entranceDialog'],
+            'selectEntranceDialog'      => [EntranceController::class, 'selectEntranceDialog'],
+            'entranceRefundDialog'      => [EntranceRefundController::class, 'entranceRefundDialog'],
+            //Barcode
+            'barcodeDialog'             => [BarcodeController::class, 'barcodeDialog'],
+            //Shipment
+            'selectShipment'            => [ShipmentController::class, 'selectShipmentDialog'],
+            'shipmentDialog'            => [ShipmentController::class, 'shipmentDialog'],
+            //Refund
+            'refundDialog'              => [RefundController::class, 'refundDialog'],
+            //ProviderOrder
+            'providerorderDialog'       => [ProviderOrdersController::class, 'providerorderDialog'],
+            'selectProviderOrderDialog' => [ProviderOrdersController::class, 'selectProviderOrderDialog'],
+            //Adjustment
+            'adjustmentDialog'          => [AdjustmentController::class, 'adjustmentDialog'],
+            //Schedule
+            'scheduletemplateDialog'    => [ScheduleController::class, 'scheduleTemplateDialog'],
+            //Role
+            'roleDialog'                => [RoleController::class, 'roleDialog'],
+            //Vehicle
+            'vehicleDialog'             => [VehicleController::class, 'vehicleDialog']
         ];
 
-        switch ($tag) {
-            case 'selectClientOrder':
-                $dialog = ClientOrdersController::selectDialog($request);
-                break;
-            case 'documentDialog':
-                $dialog = DocumentController::dialog($request);#
-                break;
-            case 'ProviderCartDialog':
-                $dialog = ProviderStoreController::ProviderCartDialog($request);#
-                break;
-            case 'selectSupplier':
-                $dialog = SupplierController::selectSupplierDialog($request);#
-                break;
-            case 'chequeDialog':
-                $dialog = ProductController::chequeDialog($request);
-                break;
-            case 'supplierDialog':
-                $dialog = SupplierController::supplierDialog($request);#
-                break;
-            case 'categoryDialog':
-                $dialog = CategoryController::categoryDialog($request);#
-                break;
-            case 'selectCategory':
-                $dialog = CategoryController::selectCategoryDialog($request);#
-                break;
-            case 'productDialog':
-                $dialog = ProductController::productDialog($request);#
-                break;
-            case 'selectProduct':
-                $dialog = ProductController::selectProductDialog($request);#
-                break;
-            case 'partnerDialog':
-                $dialog = PartnerController::partnerDialog($request);#
-                break;
-            case 'selectPartner':
-                $dialog = PartnerController::selectPartnerDialog($request);#
-                break;
-            case 'selectCashbox':
-                $dialog = CashboxController::selectCashboxDialog($request);#
-                break;
-            case 'selectDdsarticle':
-                $dialog = DdsarticleController::selectDdsarticleDialog($request); #
-                break;
-            case 'cashboxDialog':
-                $dialog = CashboxController::cashboxDialog($request);#
-                break;
-            case 'moneymoveDialog':
-                $dialog = MoneyMoveController::moneymoveDialog($request);#
-                break;
-            case 'storeDialog':
-                $dialog = StoreController::storeDialog($request);  //////
-                break;
-            case 'storeImportDialog':
-                $dialog = StoreController::storeImportDialog($request);  //////
-                break;
-            case 'ddsarticleDialog':
-                $dialog = DdsarticleController::ddsarticleDialog($request); #
-                break;
-            case 'entranceDialog':
-                $dialog = EntranceController::entranceDialog($request); #
-                break;
-            case 'selectEntranceDialog':
-                $dialog = EntranceController::selectEntranceDialog($request); /////
-                break;
-            case 'entranceRefundDialog':
-                $dialog = EntranceRefundController::entranceRefundDialog($request); #
-                break;
-            case 'warrantDialog':
-                $dialog = WarrantController::warrantDialog($request); #
-                break;
-            case 'barcodeDialog':
-                $dialog = BarcodeController::barcodeDialog($request); /////
-                break;
-            case 'selectShipment':
-                $dialog = ShipmentController::selectShipmentDialog($request); /////
-                break;
-            case 'shipmentDialog':
-                $dialog = ShipmentController::shipmentDialog($request); #
-                break;
-            case 'clientorderDialog':
-                $dialog = ClientOrdersController::clientorderDialog($request); #
-                break;
-//            case 'selectTransactionDialog':
-//                $dialog = TransactionController::selectTransactionDialog($request); #
-//                break;
-            case 'refundDialog':
-                $dialog = RefundController::refundDialog($request); #
-                break;
-            case 'providerorderDialog':
-                $dialog = ProviderOrdersController::providerorderDialog($request); #
-                break;
-            case 'selectProviderOrderDialog':
-                $dialog = ProviderOrdersController::selectProviderOrderDialog($request); #
-                break;
-            case 'adjustmentDialog':
-                $dialog = AdjustmentController::adjustmentDialog($request); #
-                break;
-            case 'scheduletemplateDialog':
-                $dialog = ScheduleController::scheduleTemplateDialog($request); #
-                break;
-            case 'roleDialog':
-                $dialog = RoleController::roleDialog($request); #
-                break;
-            case 'vehicleDialog':
-                $dialog = VehicleController::vehicleDialog($request); #
-                break;
-        }
-
-        if(!isset($dialog)){
+        if (!in_array($tag, array_keys($dialogs))) {
             return response()->json(['message' => 'Диалоговое окно не может быть вызвано'], 500);
         }
 
-        return $dialogs[$tag];
+        $class = $dialogs[$tag][0];
+        $method = $dialogs[$tag][1];
+
+        return $class::$method($request);
     }
 }

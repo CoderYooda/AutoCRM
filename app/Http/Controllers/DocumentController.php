@@ -123,7 +123,7 @@ class DocumentController extends Controller
             ],
             'defective-act' => [
                 'view' => 'documents.defective-act',
-                'id' => 7,
+                'id' => 3,
                 'class' => stdClass::class
             ],
             'cheque' => ['view' => 'cheques.'],
@@ -212,7 +212,14 @@ class DocumentController extends Controller
             $data['nds'] = $warrant->payable->nds;
         }
         else if($request->doc == 'defective-act') {
-            $view->with('refund', Refund::find($request->id));
+            $products = Article::whereIn('id', $request->data)->get();
+
+            foreach ($products as $product) {
+                $data['products'][$product->id]['name'] = $product->name;
+            }
+
+            $data['created_at'] = Carbon::now()->format('d.m.Y');
+
         }
         else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
 

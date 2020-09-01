@@ -14,7 +14,7 @@
         <div class="p-10">
             @foreach($documents as  $document)
                 <div onclick="{{ $class }}.select(this)" class="form-group focuseable pointer mb-0 p-10">
-                    <span>{{ ($loop->index + 1) }}. {{ $document->name }}</span>
+                    <span>{{ $document->name }}</span>
                     <input class="d-none" type="radio" name="document_type" value="{{ $loop->index }}" />
                 </div>
             @endforeach

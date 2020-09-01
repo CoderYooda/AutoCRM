@@ -76,20 +76,43 @@ class Mikado implements ProviderInterface
 
         $items = collect($items['List']['Code_List_Row']);
 
-        $items = $items->where('Brand', $brand);
+        $items = $items->where('Brand', $brand)->toArray();
 
         $results = [];
 
-        foreach ($items as $item) {
+        foreach ($items as $key => $item) {
+
+            if($item['CodeType'] == 'Analog') continue;
+
+            $items[$key]['index'] = $key;
+
+            $items[$key]['hash_info'] = [
+                'stock' => $item['ZakazCode'],
+                'manufacturer' => $item['Supplier'],
+                'article' => $article,
+                'days' => $item['Srock'],
+                'price' => $item['PriceRUR']
+            ];
+
+        }
+
+        foreach ($items as $key => $item) {
+
+            if($item['CodeType'] == 'Analog') continue;
 
             $delivery_days = (int)preg_replace('/[^0-9]/', '', $item['Srock'] ?? '0');
 
             $results[] = [
+                'index' => $key,
                 'name' => $item['Supplier'],
                 'code' => $item['ZakazCode'],
                 'days_min' => $delivery_days,
                 'delivery' => $delivery_days,
                 'price' => $item['PriceRUR'],
+                'model' => $item,
+                'stock' => $item['ZakazCode'],
+                'manufacturer' => $item['Supplier'],
+                'hash' => md5($item['ZakazCode'] . $item['Supplier'] . $article . $item['Srock'] . $item['PriceRUR'])
             ];
         }
 

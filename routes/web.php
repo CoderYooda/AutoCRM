@@ -139,6 +139,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
     Route::post('/client_orders/side_info', 'ClientOrdersController@getSideInfo')->name('GetClientOrderSideInfo');
     Route::get('/client_orders/{clientOrder}/select', 'ClientOrdersController@select')->name('SelectClientOrder');
+    Route::get('/clientorders', 'ClientOrdersController@selectDialog')->name('GetClientOrders');
 
     #Заказы Поставщикам
     Route::post('/providerorder/store', 'ProviderOrdersController@store')->name('StoreProviderOrder');// Строгое название
@@ -169,6 +170,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
     Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
     Route::post('/warrant/side_info', 'WarrantController@getSideInfo')->name('GetWarrantSideInfo');
+    Route::get('/warrants', 'WarrantController@selectDialog')->name('GetWarrants');
 
     #Возвраты
     Route::post('/refund/store', 'RefundController@store')->name('StoreRefund');// Строгое название

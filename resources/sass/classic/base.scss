@@ -2484,3 +2484,20 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 }
+
+.page-item {
+    color: #6c757d;
+    cursor: auto;
+    background-color: #fff;
+
+    border-color: #dee2e6;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+
+    padding: 3px;
+
+    &:last-child {
+        border-right: 1px solid;
+    }
+}
