@@ -1,4 +1,4 @@
-<div id="selectClientOrder" class="dialog" style="width:600px;">
+<div id="selectClientOrderDialog" class="dialog" style="width:600px;">
 
     <div class="titlebar">Выбор заказа клиента</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
@@ -8,13 +8,7 @@
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif
-            @if($request['target'])
-                <input id="target" type="hidden" name="target" value="{{ $request['target'] }}">
-            @endif
-            @if($request['category_id'])
-                <input id="category_id" type="hidden" name="category_id" value="{{ $request['category_id'] }}">
-            @endif
-            <input id="selectclient_order_search" type="text" class="form-control search" placeholder="Поиск продаж" required="">
+            <input id="search" name="search" type="text" class="form-control search" placeholder="Поиск продаж" required>
         </form>
     </div>
     <div id="client_order_list">

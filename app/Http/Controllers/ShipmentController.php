@@ -259,7 +259,6 @@ class ShipmentController extends Controller
             }
 
             foreach ($products as $product) {
-
                 $count = $request['products'][$product->id]['count'];
                 $price = $request['products'][$product->id]['price'];
 
@@ -315,6 +314,19 @@ class ShipmentController extends Controller
         }
 
         DB::commit();
+
+        #Перенос Warrant ов с заказа на продажу, если продажа следствие заказа клиента
+        if($shipment->clientOrder){
+            $warrants = $shipment->clientOrder->load('warrants')->warrants;
+            foreach($warrants as $warrant){
+                $warrant->reason = 'Оплата отгрузки по заказу №' . $shipment->clientOrder->id;
+                $warrant->payable_type = get_class($shipment);
+                $warrant->payable_type = get_class($shipment);
+                $warrant->payable_id = $shipment->id;
+                $warrant->save();
+            }
+        }
+        #Конец перенос
 
         return response()->json([
             'message' => $this->message,

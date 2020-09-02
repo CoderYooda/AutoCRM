@@ -1,10 +1,10 @@
 import Modal from "../Modal/Modal";
 
-class selectClientOrderDialog extends Modal {
+class selectWarrantDialog extends Modal {
 
     constructor(dialog) {
         super(dialog);
-        console.log('Окно выбора заказа клиента инициализировано');
+        console.log('Окно выбора ордера инициализировано');
         this.init();
     }
 
@@ -20,7 +20,7 @@ class selectClientOrderDialog extends Modal {
             this.debounceSearch();
         });
 
-        document.addEventListener('ClientOrderSelected', event => {
+        document.addEventListener('WarrantSelected', () => {
             this.finitaLaComedia(true);
         });
     }
@@ -28,20 +28,22 @@ class selectClientOrderDialog extends Modal {
     search(page = null) {
 
         let search_input = this.current_dialog.querySelector('[name="search"]');
+        let warrant_input = this.current_dialog.querySelector('[name="isIncoming"]');
         let refer_input = this.current_dialog.querySelector('[name="refer"]');
 
-        let url = page == null ? '/clientorders' : page;
+        let url = page == null ? '/warrants' : page;
 
         axios.get(url, {
             params: {
                 search: search_input.value,
+                isIncoming: warrant_input.value,
                 refer: refer_input.value
             }
         })
             .then(response => {
                 let data = response.data;
 
-                let list_element = this.current_dialog.querySelector('#search_client_order_results');
+                let list_element = this.current_dialog.querySelector('#search_warrant_results');
 
                 list_element.innerHTML = data.html;
             });
@@ -49,4 +51,4 @@ class selectClientOrderDialog extends Modal {
     }
 }
 
-export default selectClientOrderDialog;
+export default selectWarrantDialog;

@@ -69,7 +69,7 @@
             <div class="item-tag tag hide">
             </div>
         </div>
-        @if(isset($shipment) && $shipment->id != NULL && $shipment->clientOrder == NULL )
+        @if(isset($shipment) && $shipment->id != NULL )
             <div class="modal-alt-header">
                 <span class="item-title _500">Оплачено</span>
                 <div class="item-except @if($shipment->wsumm >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">

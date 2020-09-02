@@ -31,7 +31,9 @@
 
                     @endforelse
 
-                    <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>
+{{--                    @if(count($services))--}}
+{{--                        <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>--}}
+{{--                    @endif--}}
 
                 </div>
 

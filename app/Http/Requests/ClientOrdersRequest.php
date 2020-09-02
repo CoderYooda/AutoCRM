@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\ProductController;
+use App\Models\Supplier;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -29,6 +31,11 @@ class ClientOrdersRequest extends FormRequest
             'products.new.*.article' => ['required', 'string', 'max:64'],
             'products.new.*.new_supplier_name' => ['required', 'string', 'max:64']
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+
     }
 
     protected function failedValidation(Validator $validator)

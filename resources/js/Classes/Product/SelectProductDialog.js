@@ -19,7 +19,7 @@ class SelectProductDialog extends Modal{
         }
         this.searchInit();
         this.markAsAdded();
-        // this.init();
+        this.init();
     }
 
     loadCategory(category_id, clean_search = null, update_data = null){
@@ -65,6 +65,10 @@ class SelectProductDialog extends Modal{
         // if(focused){
         //     focused.focus();
         // }
+
+        document.addEventListener('ProductsSelected', event => {
+            this.finitaLaComedia(true);
+        });
     }
 
     searchInit()

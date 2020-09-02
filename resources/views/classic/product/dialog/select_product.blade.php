@@ -26,6 +26,11 @@
     </div>
     <div class="modal-footer">
         <button class="button white" onclick="closeDialog(event)">Закрыть</button>
+
+        @if($request->refer == 'documentDialog')
+            <button class="button primary pull-right" onclick="documentDialog.acceptProducts()">Печать</button>
+        @endif
+
     </div>
     <div class="system_message"></div>
 </div>

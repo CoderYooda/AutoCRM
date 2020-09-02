@@ -33,6 +33,7 @@ import chequeDialog from "./Cheque/ChequeDialog";
 import providerCartDialog from "./ProviderCart/ProviderCartDialog";
 import documentDialog from "./Document/DocumentDialog";
 import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
+import selectWarrantDialog from "./Warrant/SelectWarrantDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -89,7 +90,8 @@ const classes = {
     chequeDialog,
     providerCartDialog,
     documentDialog,
-    selectClientOrderDialog
+    selectClientOrderDialog,
+    selectWarrantDialog
 };
 
 const pages = {

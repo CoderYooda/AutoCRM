@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\ShipmentController;
+use App\Http\Requests\ShipmentsRequest;
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
@@ -90,6 +92,25 @@ class ClientOrder extends Model
     {
         $articles = $this->articles()->wherePivot('shipped_count', '>', '0')->get();
         return $articles ? $articles->pluck('id') : [];
+    }
+
+    public function makeShipped(){
+        $shipmnetController = new ShipmentController();
+        $request = new ShipmentsRequest();
+        $products = [];
+        foreach($this->articles as $article){
+            $products[$article->id]['id'] = $article->id;
+            $products[$article->id]['count'] = $article->pivot->count;
+            $products[$article->id]['price'] = $article->pivot->price;
+        }
+        $request['partner_id'] = $this->partner_id;
+        $request['store_id'] = $this->store_id;
+        $request['discount'] = $this->discount;
+        $request['inpercents'] = $this->inpercents;
+        $request['comment'] = '';
+        $request['products'] = $products;
+        $request['clientorder_id'] = $this->id;
+        $shipmnetController->store($request);
     }
 
     public function IsAllProductsShipped()
