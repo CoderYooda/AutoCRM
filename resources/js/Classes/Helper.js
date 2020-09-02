@@ -151,7 +151,7 @@ class Helper{
 
                     var classname = elem.id.replace(/[^a-zA-Z]/g, '');
                     try {
-                        window[elem.id] = new classes[classname](elem, resp.data);
+                        window[elem.id] = new classes[classname](elem, resp);
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
                         console.error(err);

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdjustmentRequest;
+use App\Http\Requests\Adjustments\SearchRequest;
 use App\Models\Adjustment;
-use App\Models\ClientOrder;
+use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use Illuminate\Support\Facades\DB;
@@ -17,19 +18,37 @@ class AdjustmentController extends Controller
 {
     public static function adjustmentDialog($request)
     {
-        $tag = 'adjustmentDialog';
-        if($request['adjustment_id']){
-            $adjustment = Adjustment::where('id', (int)$request['adjustment_id'])->first();
-            $tag .= $adjustment->id;
-        } else {
-            $adjustment = null;
-        }
+        $adjustment = Adjustment::find($request->adjustment_id);
 
-        $stores = Store::where('company_id', Auth::user()->id)->get();
+        $tag = 'adjustmentDialog' . ($adjustment->id ?? '');
+
+        $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact( 'adjustment',  'request'))
+            ->with('class', $tag);
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores',  'request'))->render()
+            'html' => $view->render()
+        ]);
+    }
+
+    public function search(SearchRequest $request)
+    {
+        $article = Article::find($request->product_id);
+
+        $company = Auth::user()->company;
+
+        $entrances = DB::table('article_entrance')
+            ->where([
+                'company_id' => $company->id,
+                'article_id' => $request->product_id
+            ])
+            ->get();
+
+        $view = view(get_template() . '.adjustments.dialog.product_elements', compact('entrances'));
+
+        return response()->json([
+            'html' => $view->render(),
+            'entrances' => $entrances
         ]);
     }
 

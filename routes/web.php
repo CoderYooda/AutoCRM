@@ -159,6 +159,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/adjustment/{id}/delete', 'AdjustmentController@delete')->name('DeleteAdjustment');
     Route::get('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
     Route::post('/adjustment/side_info', 'AdjustmentController@getSideInfo')->name('GetPartnerSideInfo');
+    Route::get('/adjustments/search', 'AdjustmentController@search')->name('SearchAdjustment');
 
     #Касса
     Route::get('/cash', 'CashController@index')->name('CashIndex');// Строгое название

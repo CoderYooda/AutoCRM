@@ -2501,3 +2501,23 @@ input:-moz-placeholder { /* Firefox 18- */
         border-right: 1px solid;
     }
 }
+
+.adjustment_dialog {
+
+    table {
+
+        tr:hover {
+            td {
+                background: #EAF6FF;
+            }
+        }
+
+        td {
+            background: #F7F7F7;
+
+            &:hover {
+                background: black;
+            }
+        }
+    }
+}

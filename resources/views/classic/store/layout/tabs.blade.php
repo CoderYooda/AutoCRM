@@ -46,14 +46,14 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'client_orders', 'target' => 'ajax-tab-content']) }}">Заказы клиентов</a>
             </li>
         @endcan
+        @can('Смотреть корректировки')
+            <li id="adjustment-tab" data-tab="adjustment" class="@if($request['active_tab'] == 'adjustment') active @endif">
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}">Корректировки</a>
+            </li>
+        @endcan
         <li id="documents-tab" data-tab="documents" class="@if($request['active_tab'] == 'documents') active @endif">
             <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'documents', 'target' => 'ajax-tab-content']) }}">Документы</a>
         </li>
-{{--        @can('Смотреть корректировки')--}}
-{{--            <li id="adjustment-tab" data-tab="adjustment" class="@if($request['active_tab'] == 'adjustment') active @endif">--}}
-{{--                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}">Корректировки</a>--}}
-{{--            </li>--}}
-{{--        @endcan--}}
     </ul>
     <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 </div>
