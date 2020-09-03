@@ -98,9 +98,17 @@
             </div>
         @endif
 
-        @if($client_order && $client_order->status === 'active' && ($client_order->wsumm != $client_order->itogo))
-            <div class="modal-alt-header">
+        @if($client_order && ($client_order->wsumm != $client_order->itogo))
+            <div class="modal-alt-header ">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
+            </div>
+        @endif
+
+        @if($client_order && $client_order->isShipped)
+            <div class="modal-alt-header ml-auto">
+                <div class="evotor_ico">
+                    <span class="payed">ОТГРУЖЕНО</span>
+                </div>
             </div>
         @endif
 
@@ -240,10 +248,10 @@
                 <div class="col-sm-6 form-group no-pl intabs @if(!isset($client_order)) hide @endif">
                     <div class="b-b nav-active-bg">
                         <ul class="nav nav-tabs" id="cl_tabs">
-                            <li class="nav-item active">
+                            <li class="nav-item ">
                                 <a class="nav-link" href="#tab4" data-toggle="tab" data-target="#tab4">SMS сообщения</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a class="nav-link" href="#tab5" data-toggle="tab" data-target="#tab5">Платежи</a>
                             </li>
                             <li class="nav-item">
@@ -253,8 +261,8 @@
                     </div>
 
                     <div class="tab-content p-0" >
-                        <div class="tab-pane active" id="tab4">
-                            @if(isset($client_order))
+                        <div class="tab-pane" id="tab4">
+                            @if(isset($client_order) && !$client_order->isShipped)
                                 <div class="d-flex flex-column flex" id="chat-list">
                                     <div class="hover">
                                         <div class="pt-3 pb-3">
@@ -301,7 +309,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="tab-pane" id="tab5" data-simplebar style="height: 192px">
+                        <div class="tab-pane active" id="tab5" data-simplebar style="height: 192px">
                             <div class="list-group">
                                 @if(isset($client_order))
                                     @forelse($client_order->warrants as $warrant)
@@ -390,12 +398,14 @@
             </div>
         </div>
         <div class="modal-footer" style="white-space: nowrap">
+            @if(!isset($client_order) || isset($client_order) && !$client_order->isShipped)
             <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Добавить товар</button>
+            @endif
 {{--            <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Быстрый товар</button>--}}
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
 
-            @if(!$client_order || $client_order && $client_order->status !== 'canceled')
+            @if(!$client_order || $client_order && $client_order->status !== 'canceled' && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
             @endif
@@ -404,8 +414,8 @@
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
 
-            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled')
-                <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
+            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled' && !$client_order->isShipped)
+                <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
             @endif
 
 

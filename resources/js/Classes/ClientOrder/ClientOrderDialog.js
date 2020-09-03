@@ -496,6 +496,20 @@ class clientorderDialog extends Modal{
         window.openDialog('shipmentDialog', '&refer=shipmentDialog' + '&clientorder_id=' + this.id);
     }
 
+    makeShipped(elem){
+        if(window.isXHRloading) return;
+        window.axform.send(elem, (resp) => {
+            if(resp.status == 200){
+                if(resp.data &&  resp.data.shipment_id){
+                    this.finitaLaComedia(true);
+                    window.openDialog('shipmentDialog', '&shipment_id=' + resp.data.shipment_id);
+                }
+            }
+
+
+        }, null, {shipping:1});
+    }
+
     openSelectPartnermodal(){
         window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=7');
     }

@@ -129,6 +129,12 @@ class ClientOrdersController extends Controller
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
+        if($client_order && $client_order->isShipped){
+            return response()->json([
+                'system_message' => ['Действия с заказом запрещены, заказ был отгружен']
+            ], 422);
+        }
+
         #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
         if( $client_order->IsAnyProductShipped()) {
             $has_missed_article = false;
@@ -260,13 +266,16 @@ class ClientOrdersController extends Controller
 
         $client_order->save();
 
-        $client_order->makeShipped();   
         #Отнимаем со склада товары из заказа
 
 //        $client_order->partner()->first()
 //            ->subtraction($client_order->itogo);
 
-
+        if($request->shipping){
+            $response = $client_order->makeShipped();
+            $client_order->setShiped();
+            return response()->json($response['data'], $response['status']);
+        }
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => $this->message,
@@ -277,6 +286,13 @@ class ClientOrdersController extends Controller
             return redirect()->back();
         }
     }
+
+//    public function makeShipped(Request $request){
+//        $client_order = ClientOrder::owned()->find($request->id);
+//
+//
+//        return response()->json($response['data'], $response['status']);
+//    }
 
     public function load(Request $request)
     {

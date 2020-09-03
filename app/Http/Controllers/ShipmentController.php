@@ -19,7 +19,6 @@ class ShipmentController extends Controller
     public static function shipmentDialog(Request $request)
     {
         $clientorder = null;
-
         if($request->clientorder_id) {
             $clientorder = ClientOrder::find((int)$request->clientorder_id);
             if(!$clientorder){
@@ -263,6 +262,10 @@ class ShipmentController extends Controller
                 $price = $request['products'][$product->id]['price'];
 
                 $entrances_id = $product->incrementToEntrance($count);
+
+                if($shipment->clientOrder){
+                    $shipment->clientOrder->increaseShippedCount($product->id, $count);
+                }
 
                 foreach ($entrances_id as $entrance_id => $entrance_count) {
 

@@ -110,7 +110,22 @@ class ClientOrder extends Model
         $request['comment'] = '';
         $request['products'] = $products;
         $request['clientorder_id'] = $this->id;
-        $shipmnetController->store($request);
+        $response = $shipmnetController->store($request);
+        if(!$response->isOk() && $response->getData('messages') != null){
+            $status = 422;
+            $data = $response->getData('messages');
+        } else {
+            $status = 200;
+            $data =  [
+                'shipment_id' => $response->getData()->id,
+                'type' => 'success',
+                'message' => 'Отгружено'
+            ];
+        }
+        return [
+            'status' => $status,
+            'data' => $data
+        ];
     }
 
     public function IsAllProductsShipped()
@@ -136,6 +151,11 @@ class ClientOrder extends Model
     {
         $count = $this->getShippedCount($article_id) + (int)$amount;
         $this->setShippedCount($article_id, $count);
+    }
+
+    public function setShiped(){
+        $this->isShipped = true;
+        $this->save();
     }
 
     public function decreaseShippedCount($article_id, $amount)
