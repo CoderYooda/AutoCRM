@@ -1,21 +1,26 @@
 @if(!isset($inner) || !$inner)
-    <div id="adjustmentDialog{{$adjustment->id ?? ''}}" @isset($adjustment) data-id="{{$adjustment->id}}" @endif class="dialog adjustment_dialog" style="width:500px;">
+    <div id="adjustmentDialog{{$adjustment->id ?? ''}}" @isset($adjustment) data-id="{{ $adjustment->id }}" @endif class="dialog adjustment_dialog" style="width:500px;">
 @endif
         <div class="titlebar">{{ isset($adjustment) ? ('Корректировка №' . $adjustment->id) : ('Новая корректировка') }}</div>
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
-        <form class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
+        <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
 
             <div class="box-body">
                 @csrf
+
                 <input type="hidden" name="id" value="{{ $adjustment->id ?? '' }}">
 
                 <div class="form-group w-100">
                     <button type="button" onclick="{{ $class }}.selectProduct()" name="product_id" class="form-control text-left button_select">Выбор продукта</button>
                 </div>
 
-                <div id="table-list">
-                    @include(get_template() . '.adjustments.dialog.product_elements')
+                <div data-simplebar class="w-100" style="height: 300px;">
+                    <div id="table-list" class="d-flex flex-column w-100">
+                        @if(count($entrances))
+                            @include(get_template() . '.adjustments.dialog.product_elements')
+                        @endif
+                    </div>
                 </div>
 
             </div>

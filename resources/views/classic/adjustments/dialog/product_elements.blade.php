@@ -1,41 +1,66 @@
-@if(isset($entrances) && count($entrances))
-    <div data-simplebar class="text-center" style="height: 300px;">
-        <table cellspacing="0" class="w-100">
 
-            <thead>
-            <th>Поступление</th>
-            <th>Артикул</th>
-            <th>Количество</th>
-            <th>Реализовано</th>
-            </thead>
 
-            <tbody>
+<div id="article_{{ $article->id }}">
 
-            @foreach($entrances as $entrance)
+    <div class="p-5" style="background: #F7F7F7">
 
-                <tr>
-                    <td>{{ $entrance->entrance_id }}</td>
-                    <td>{{ $entrance->article_id }}</td>
-                    <td class="all-center">
-                        <div style="width: 60px;">
-                            <input type="text" class="form-control text-center" name="products[]" value="{{ $entrance->count }}" />
-                        </div>
-                    </td>
-                    <td>{{ $entrance->released_count }}</td>
-                </tr>
+        <span>{{ $article->name }}</span>
 
-            @endforeach
+        <div class="float-right d-flex">
 
-            </tbody>
+            <div onclick="{{ $class }}.removeProduct({{ $article->id }})" class="store_arrow_bg pointer mr-10">
+                <i class="fa fa-trash fa-5" aria-hidden="true"></i>
+            </div>
 
-        </table>
+            <div onclick="{{ $class }}.showEntrances(this, {{ $article->id }})" class="store_arrow_bg pointer">
+                <i class="fa fa-angle-down fa-5" aria-hidden="true"></i>
+            </div>
+
+        </div>
+
     </div>
 
-@else
+    <div id="product_selected_{{ $article->id }}" class="d-none">
 
-    <div class="all-center flex-column">
-        <div class="out_of_search"></div>
-        <span>Результат поиска пуст</span>
+        @if(isset($entrances) && count($entrances))
+
+            <div class="text-center">
+                <table cellspacing="0" class="w-100">
+
+                    <thead>
+                        <th>Поступление</th>
+                        <th>Количество</th>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach($entrances as $entrance)
+
+                            <tr>
+                                <td>{{ $entrance->entrance_id }}</td>
+                                <td class="all-center">
+                                    <div style="width: 60px;">
+                                        <input type="text" class="form-control text-center" name="products[{{ $entrance->entrance_id }}][{{ $article->id }}]" value="{{ $entrance->count - $entrance->released_count }}" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        @else
+
+            <div class="all-center flex-column">
+                <div class="out_of_search"></div>
+                <span>Результат поиска пуст</span>
+            </div>
+
+        @endif
+
     </div>
 
-@endif
+</div>

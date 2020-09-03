@@ -2504,6 +2504,17 @@ input:-moz-placeholder { /* Firefox 18- */
 
 .adjustment_dialog {
 
+    span {
+
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 300px;
+    }
+
     table {
 
         tr:hover {
