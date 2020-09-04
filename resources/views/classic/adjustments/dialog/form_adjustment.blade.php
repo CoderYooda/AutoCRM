@@ -12,13 +12,15 @@
                 <input type="hidden" name="id" value="{{ $adjustment->id ?? '' }}">
 
                 <div class="form-group w-100">
-                    <button type="button" onclick="{{ $class }}.selectProduct()" name="product_id" class="form-control text-left button_select">Выбор продукта</button>
+                    <button type="button" onclick="{{ $class }}.selectProduct()" name="product_id" class="form-control text-left button_select" @if($adjustment) disabled @endif>Выбор продукта</button>
                 </div>
 
                 <div data-simplebar class="w-100" style="height: 300px;">
                     <div id="table-list" class="d-flex flex-column w-100">
-                        @if(count($entrances))
-                            @include(get_template() . '.adjustments.dialog.product_elements')
+                        @if(count($articles))
+                            @foreach($articles as $article_id => $articleAttributes)
+                                @include(get_template() . '.adjustments.dialog.product_elements')
+                            @endforeach
                         @endif
                     </div>
                 </div>

@@ -1,18 +1,16 @@
-
-
-<div id="article_{{ $article->id }}">
+<div id="article_{{ $article_id }}" class="element">
 
     <div class="p-5" style="background: #F7F7F7">
 
-        <span>{{ $article->name }}</span>
+        <span>{{ $articleAttributes['name'] }}</span>
 
         <div class="float-right d-flex">
 
-            <div onclick="{{ $class }}.removeProduct({{ $article->id }})" class="store_arrow_bg pointer mr-10">
+            <div onclick="{{ $class }}.removeProduct({{ $article_id }})" class="store_arrow_bg pointer mr-10 @isset($adjustment) d-none @endisset">
                 <i class="fa fa-trash fa-5" aria-hidden="true"></i>
             </div>
 
-            <div onclick="{{ $class }}.showEntrances(this, {{ $article->id }})" class="store_arrow_bg pointer">
+            <div onclick="{{ $class }}.showEntrances(this, {{ $article_id }})" class="store_arrow_bg pointer toggled">
                 <i class="fa fa-angle-down fa-5" aria-hidden="true"></i>
             </div>
 
@@ -20,46 +18,97 @@
 
     </div>
 
-    <div id="product_selected_{{ $article->id }}" class="d-none">
+    <div id="product_selected_{{ $article_id }}" class="d-none">
 
-        @if(isset($entrances) && count($entrances))
+{{--        @if(count($articleAttributes['entrances']))--}}
 
-            <div class="text-center">
+            <div>
                 <table cellspacing="0" class="w-100">
 
                     <thead>
-                        <th>Поступление</th>
-                        <th>Количество</th>
+                        <th>{{ isset($adjustment) ? 'Отклонение' : 'Количество' }}</th>
+                        <th>Цена</th>
+                        <th>Дата</th>
                     </thead>
 
                     <tbody>
 
-                        @foreach($entrances as $entrance)
+                        @if(count($articleAttributes['entrances']))
 
-                            <tr>
-                                <td>{{ $entrance->entrance_id }}</td>
-                                <td class="all-center">
-                                    <div style="width: 60px;">
-                                        <input type="text" class="form-control text-center" name="products[{{ $entrance->entrance_id }}][{{ $article->id }}]" value="{{ $entrance->count - $entrance->released_count }}" />
-                                    </div>
-                                </td>
-                            </tr>
+                            @foreach($articleAttributes['entrances'] as $entrance_id => $attributes)
 
-                        @endforeach
+                                <tr>
+
+                                    <td>
+                                        @isset($adjustment)
+                                            <span>{{ $attributes['deviation_count'] }}</span>
+                                        @else
+                                            <div style="width: 60px;">
+                                                <input type="text" class="form-control text-center" name="products[{{ $entrance_id }}][{{ $article_id }}][count]" value="{{ $attributes['count'] - $attributes['released_count'] }}" />
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @isset($adjustment)
+                                            <span>{{ $attributes['deviation_price'] }}</span>
+                                        @else
+                                            <div style="width: 60px;">
+                                                <input type="text" class="form-control text-center" name="products[{{ $entrance_id }}][{{ $article_id }}][price]" value="{{ $attributes['price'] }}" />
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        <span>{{ $attributes['created_at'] }}</span>
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        @endif
+
+                        <tr id="new_correct_{{ $article_id }}" class="d-none">
+                            <td>
+                                <div style="width: 60px;">
+                                    <input type="text" class="form-control text-center" name="products[new][{{ $article_id }}][count]" disabled value="1" />
+                                </div>
+                            </td>
+                            <td class="d-flex">
+                                <div style="width: 60px;">
+                                    <input type="text" class="form-control text-center" name="products[new][{{ $article_id }}][price]" disabled value="100" />
+                                </div>
+                                <div onclick="{{ $class }}.removeField(this)" class="store_arrow_bg pointer mr-10">
+                                    <i class="fa fa-trash fa-5" aria-hidden="true"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <span>{{ date('d.m.Y') }}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3">
+                                <div class="all-center p-10">
+                                    <button type="button" class="button primary" onclick="{{ $class }}.addField(this, {{ $article_id }})">Добавить позицию</button>
+                                </div>
+                            </td>
+                        </tr>
 
                     </tbody>
 
                 </table>
             </div>
 
-        @else
+{{--        @else--}}
 
-            <div class="all-center flex-column">
-                <div class="out_of_search"></div>
-                <span>Результат поиска пуст</span>
-            </div>
+{{--            <div class="all-center flex-column">--}}
+{{--                <div class="out_of_search"></div>--}}
+{{--                <span>Результат поиска пуст</span>--}}
+{{--            </div>--}}
 
-        @endif
+{{--        @endif--}}
 
     </div>
 

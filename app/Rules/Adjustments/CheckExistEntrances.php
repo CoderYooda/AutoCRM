@@ -18,6 +18,8 @@ class CheckExistEntrances implements Rule
     {
         $entrance_id = (int)explode('.', $attribute)[1];
 
+        if($entrance_id == 'new') return true;
+
         return DB::table('article_entrance')->where([
             'company_id' => Auth::user()->company_id,
             'entrance_id' => $entrance_id

@@ -2517,6 +2517,8 @@ input:-moz-placeholder { /* Firefox 18- */
 
     table {
 
+        text-align: center;
+
         tr:hover {
             td {
                 background: #EAF6FF;
@@ -2524,6 +2526,11 @@ input:-moz-placeholder { /* Firefox 18- */
         }
 
         td {
+
+            div {
+                margin: 0 auto;
+            }
+
             background: #F7F7F7;
 
             &:hover {

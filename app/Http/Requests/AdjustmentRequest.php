@@ -20,7 +20,8 @@ class AdjustmentRequest extends FormRequest
         return [
             'products' => ['required'],
             'products.*' => [new CheckExistEntrances, new CheckExistArticles],
-            'products.*.*' => ['required', 'between:0,999']
+            'products.*.*.count' => ['required', 'between:0,999'],
+            'products.*.*.price' => ['required', 'between:0,999999']
         ];
     }
 

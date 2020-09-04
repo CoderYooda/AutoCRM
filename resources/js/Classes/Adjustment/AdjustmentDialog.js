@@ -22,6 +22,69 @@ class adjustmentDialog extends Modal{
         target_element.classList.toggle('d-none');
         i_element.classList.toggle('fa-angle-down');
         i_element.classList.toggle('fa-angle-up');
+
+        let list_element = this.current_dialog.querySelector('#table-list');
+
+        list_element.querySelectorAll('.element').forEach(item => {
+
+            let target_item = item.lastElementChild;
+
+            if(target_item != target_element) {
+
+                let i_target = item.querySelector('.toggled').firstElementChild;
+
+                target_item.classList.add('d-none');
+                i_target.classList.add('fa-angle-down');
+                i_target.classList.remove('fa-angle-up');
+            }
+        });
+    }
+
+    addField(element, product_id) {
+
+        let target_element = this.current_dialog.querySelector('#new_correct_' + product_id);
+
+        target_element.classList.remove('d-none');
+
+        target_element.querySelectorAll('input').forEach(input => input.disabled = false);
+
+        element.closest('tr').classList.add('d-none');
+
+
+        // let body_element = element.closest('tbody');
+        //
+        // let tr_element = body_element.querySelector('tr');
+        //
+        // let tr_copy = tr_element.cloneNode(true);
+        //
+        // let product_name = 'products[new][' + product_id + ']';
+        //
+        // let current_count = body_element.querySelectorAll('[name^="' + product_name + '"]:not([disabled])').length;
+        //
+        // if(current_count >= 3) {
+        //     window.notification.notify( 'error', 'Максимальное кол-во добавленных полей: 3.');
+        //     return;
+        // }
+        //
+        // let input_element = tr_copy.querySelector('input');
+        //
+        // input_element.name = product_name;
+        // input_element.disabled = false;
+        //
+        // tr_copy.classList.remove('d-none');
+        //
+        // element.closest('tr').before(tr_copy);
+    }
+
+    removeField(element) {
+
+        element.closest('tr').classList.add('d-none');
+
+        let tbody_element = element.closest('tbody');
+
+        tbody_element.lastElementChild.classList.remove('d-none');
+
+        // element.closest('tr').remove();
     }
 
     removeProduct(product_id) {
