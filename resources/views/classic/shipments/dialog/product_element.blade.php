@@ -29,6 +29,7 @@
                @if(isset($product->total)) value="{{ decimal_price($product->total) }}"@else value="{{ $product->getPrice() }}" @endif
                disabled type="text"></td>
     <td>
-        <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+
+            <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
     </td>
 </tr>

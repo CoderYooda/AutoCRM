@@ -105,10 +105,38 @@ class clientorderDialog extends Modal{
 
         this.loadItemsIfExists();
 
-        // let focused = document.getElementById('clientorder_dialog_focused');
-        // if(focused){
-        //     focused.focus();
-        // }
+        document.addEventListener('click', function(e){
+            let elem = document.getElementById('templates');
+            if(elem) {
+                if(e.target.id != 'sms_field'){
+                    if (!elem.contains(e.target)) {
+                        elem.classList.remove('show');
+                        elem.classList.add('hide');
+                    }
+                }
+            }
+        });
+    }
+
+    toggleSMSTemplatesBlock(){
+
+        let template = document.getElementById('templates');
+
+        if(template.classList.contains('hide')){
+            template.classList.remove('hide');
+            template.classList.add('show');
+        } else {
+            template.classList.remove('show');
+            template.classList.add('hide');
+        }
+    }
+
+    pickText(elem){
+        dd(elem.innerText);
+        let input = document.getElementById('sms_field');
+        let text = elem.innerText;
+        input.value = text;
+
     }
 
     scanOperation(product_id){
