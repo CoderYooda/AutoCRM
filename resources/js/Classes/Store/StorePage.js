@@ -3,6 +3,7 @@ import Sortable from "sortablejs";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
 import documentMethods from "./tabs/DocumentMethods";
+import Tabs from "../../Tools/Tabs";
 
 const classes = {
     entranceMethods,
@@ -884,6 +885,18 @@ class storePage{
                     items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('client-order', id);} }));
                 }
                 else if(object.contextDop == 'product') {
+                    items.push(new ContextualItem({type:'seperator'}));
+
+                    items.push(new ContextualItem({
+                        label: 'Создать заявку поставщику', onClick: () => {
+
+                            let ids = JSON.stringify(window.helper.pluck(object.selectedData, 'id'));
+
+                            openDialog('providerorderDialog', '&products=' + ids);
+                        },
+                        shortcut: 'Ctrl+A'
+                    }));
+
                     items.push(new ContextualItem({type:'seperator'}));
 
                     items.push(new ContextualItem({

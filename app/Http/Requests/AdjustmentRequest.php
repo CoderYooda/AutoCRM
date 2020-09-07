@@ -18,10 +18,11 @@ class AdjustmentRequest extends FormRequest
     public function rules()
     {
         return [
+            'comment' => ['string', 'max:1024'],
             'products' => ['required'],
             'products.*' => [new CheckExistEntrances, new CheckExistArticles],
             'products.*.*.count' => ['required', 'between:0,999'],
-            'products.*.*.price' => ['required', 'between:0,999999']
+            'products.*.*.price' => ['required', 'between:0,' . PHP_FLOAT_MAX]
         ];
     }
 

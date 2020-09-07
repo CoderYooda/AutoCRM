@@ -78,6 +78,7 @@ class partnerDialog extends Modal{
 
     setRole(element, role) {
         this.current_dialog.querySelector('[name="role"]').value = element.innerText;
+        this.current_dialog.querySelector('#button_role').innerText = element.innerText;
     }
 
     save(elem){

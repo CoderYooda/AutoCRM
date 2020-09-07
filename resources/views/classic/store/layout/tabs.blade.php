@@ -11,11 +11,11 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}">База товаров</a>
             </li>
         @endcan
-{{--            @can('Смотреть заявки поставщикам')--}}
+        @can('Смотреть склады поставщиков')
             <li id="provider_stores" data-tab="provider_stores" class="@if($request['active_tab'] == 'provider_stores') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_stores', 'target' => 'ajax-tab-content']) }}">Склады поставщиков</a>
             </li>
-{{--            @endcan--}}
+        @endcan
         @can('Смотреть заявки поставщикам')
             <li id="provider_orders-tab" data-tab="provider_orders" class="@if($request['active_tab'] == 'provider_orders') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_orders', 'target' => 'ajax-tab-content']) }}">Заявки поставщикам</a>
@@ -26,11 +26,11 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'entrance', 'target' => 'ajax-tab-content']) }}">Поступления</a>
             </li>
         @endcan
-        {{--        @can('Смотреть поступления')--}}
-        <li id="entrance_refunds-tab" data-tab="entrance_refunds" class="@if($request['active_tab'] == 'entrance_refunds') active @endif">
-            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'entrance_refunds', 'target' => 'ajax-tab-content']) }}">Возвраты поступлений</a>
-        </li>
-        {{--        @endcan--}}
+        @can('Смотреть возвраты поступлений')
+            <li id="entrance_refunds-tab" data-tab="entrance_refunds" class="@if($request['active_tab'] == 'entrance_refunds') active @endif">
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'entrance_refunds', 'target' => 'ajax-tab-content']) }}">Возвраты поступлений</a>
+            </li>
+        @endcan
         @can('Смотреть продажи')
             <li id="shipments-tab" data-tab="shipments" class="@if($request['active_tab'] == 'shipments') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'shipments', 'target' => 'ajax-tab-content']) }}">Продажи</a>
@@ -51,9 +51,11 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'adjustment']) }}">Корректировки</a>
             </li>
         @endcan
-        <li id="documents-tab" data-tab="documents" class="@if($request['active_tab'] == 'documents') active @endif">
-            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'documents', 'target' => 'ajax-tab-content']) }}">Документы</a>
-        </li>
+        @can('Смотреть документы')
+            <li id="documents-tab" data-tab="documents" class="@if($request['active_tab'] == 'documents') active @endif">
+                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'documents', 'target' => 'ajax-tab-content']) }}">Документы</a>
+            </li>
+        @endcan
     </ul>
     <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 </div>

@@ -1,5 +1,6 @@
 import Sortable from "sortablejs";
 import Modal from "../Modal/Modal";
+import Tabs from "../../Tools/Tabs";
 
 class adjustmentDialog extends Modal{
 
@@ -11,6 +12,12 @@ class adjustmentDialog extends Modal{
 
     init() {
         this.items = [];
+
+        this.linked();
+    }
+
+    linked() {
+        new Tabs('adjustment_tabs');
     }
 
     showEntrances(element, article_id) {

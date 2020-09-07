@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\PermissionController;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
@@ -13,12 +14,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use function foo\func;
 
 class ProviderStoreController extends Controller
 {
     public function tableData(Request $request, Providers $providers, Cart $cart)
     {
+        PermissionController::canByPregMatch('Смотреть склады поставщиков');
+
         $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
 
         $counts = [];
@@ -175,6 +177,8 @@ class ProviderStoreController extends Controller
 
     public static function ProviderCartDialog(Request $request)
     {
+        PermissionController::canByPregMatch('Создавать заявки поставщикам');
+
         $class = 'providerCartDialog';
 
         $user_id = Auth::id();

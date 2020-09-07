@@ -28,7 +28,7 @@ class AdjustmentController extends Controller
             $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
             $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('article_entrance_id'))->get();
 
-            $articleNames = Article::whereIn('id', $articleEntrances->pluck('article_id'))->get();
+            $articleNames = Article::with('supplier')->whereIn('id', $articleEntrances->pluck('article_id'))->get();
 
             foreach ($articleEntrances as $articleEntrance) {
 
@@ -36,9 +36,10 @@ class AdjustmentController extends Controller
                 $adjustmentArticleEntrance = $adjustmentArticleEntrances->where('article_entrance_id', $articleEntrance->id)->first();
 
                 $articles[$article_id]['name'] = $articleNames->find($article_id)->name;
+                $articles[$article_id]['manufacturer'] = $articleNames->find($article_id)->supplier->name;
 
                 $articles[$article_id]['entrances'][$articleEntrance->entrance_id] = [
-                    'created_at' => $articleEntrance->created_at->format('d.m.Y'),
+                    'created_at' => $articleEntrance->created_at,
                     'deviation_price' => $adjustmentArticleEntrance->price,
                     'deviation_count' => $adjustmentArticleEntrance->count,
                     'price'          => $articleEntrance->price,
@@ -75,6 +76,7 @@ class AdjustmentController extends Controller
 
         $articleAttributes = [
             'name' => $article->name,
+            'manufacturer' => $article->supplier->name,
             'entrances' => []
         ];
 

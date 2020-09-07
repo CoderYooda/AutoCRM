@@ -29,7 +29,10 @@ class PermissionController extends Controller
 			'History' => 'История',
 			'Refund' => 'Возврат',
 			'Payment' => 'Оплата',
-            'Statistic' => 'Статистика'
+            'Statistic' => 'Статистика',
+            'Document' => 'Документы',
+            'ProviderStore' => 'Склады поставщиков',
+            'EntranceRefund' => 'Возвраты поступлений'
 		];
 		if(isset($role) && $role != null){
 			$role_permissions = $role->permissions;
@@ -60,7 +63,7 @@ class PermissionController extends Controller
             );
         }
     }
-	
+
 	public static function closedResponse($message){
 		return response()->json([
 			'type' => 'gateClosed',

@@ -1360,6 +1360,10 @@ input:-moz-placeholder { /* Firefox 18- */
     margin-right: 0!important;
 }
 
+.pt-10 {
+    padding-top: 10px !important;
+}
+
 .pl-10{
     padding-left: 10px!important;
 }
@@ -2504,37 +2508,95 @@ input:-moz-placeholder { /* Firefox 18- */
 
 .adjustment_dialog {
 
+    #adjustment_tabs {
+        border-bottom: 1px solid #E7E8EC;
+    }
+
+    form {
+
+        .tab {
+            display: none !important;
+
+            &.active {
+                display: block !important;
+            }
+        }
+    }
+
+    .tab_links {
+
+        a {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 16px;
+            letter-spacing: 0.06em;
+
+            /* доп цвет текста */
+
+            color: #656565;
+
+            &.active {
+                color: #009AE8;
+                border-bottom: 3px solid #009AE8;
+                padding-bottom: 5px;
+            }
+        }
+    }
+
     span {
 
         display: inline-block;
         vertical-align: middle;
-        line-height: 32px;
+        line-height: 40px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        max-width: 300px;
     }
 
-    table {
-
-        text-align: center;
+    #table-list > table {
+        margin-left: 15px;
+        margin-right: 15px;
+        th {
+            padding-bottom: 5px;
+        }
 
         tr:hover {
-            td {
-                background: #EAF6FF;
+            td div {
+                background: #F7F7F7;
             }
+        }
+
+        tr:first-child > td {
+            border-top: 1px solid #E3E4E8;
         }
 
         td {
 
-            div {
-                margin: 0 auto;
+            padding: 0 !important;
+            margin: 0 !important;
+
+            white-space: nowrap; /* Отменяем перенос текста */
+            border-bottom: 1px solid #E3E4E8;
+            &:first-child > div {
+                padding-left: 15px;
+                margin-left: -15px;
+            }
+            &:last-child > div {
+                padding-right: 15px;
+                margin-right: -15px;
+
+                img {
+                    margin-top: 6px;
+                }
             }
 
-            background: #F7F7F7;
+            div {
+                height: 40px;
+                //background: #F7F7F7;
 
-            &:hover {
-                background: black;
+
             }
         }
     }

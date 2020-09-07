@@ -86,15 +86,6 @@ class PartnerController extends Controller
             }
         }
 
-//        if($request['partner_select']){
-//            $partner_select = (int)$request['partner_select'];
-//            $partner = Partner::where('company_id', Auth::user()->id)->where('id', $partner_select)->first();
-//            $tag = 'partnerDialog' . $partner->id;
-//        } else {
-//            $partner = null;
-//            $tag = 'partnerDialog';
-//        }
-
         $stores = Store::owned()->get();
 
         //Если указан партнер, то его категорию, если нет, то категорию в которой находимся, если нет, то стандартную
@@ -301,7 +292,9 @@ class PartnerController extends Controller
 
     private static function selectPartnerInner($request){
         $class = 'selectPartnerDialog';
+
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
+
         $partners = Partner::with('phones')
             ->when($request['string'], function($q) use ($request){
                 $q->where('foundstring', 'LIKE', '%' . str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
@@ -309,10 +302,11 @@ class PartnerController extends Controller
             ->when(!$request['string'] && $request['category_id'], function($q) use ($request){
                 $q->where('category_id', $request['category_id']);
             })
-            ->where('company_id', Auth::user()->company()->first()->id)
+            ->where('company_id', Auth::user()->company->id)
             ->orderBy('created_at', 'ASC')
             ->limit(30)
             ->get();
+
         $categories = CategoryController::getModalCategories(self::$root_category, $request);
 
         $view = $request['inner'] ? 'select_partner_inner' : 'select_partner';
