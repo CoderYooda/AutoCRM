@@ -130,7 +130,15 @@ class Helper{
         if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')
             block.classList.add('show');
         }
-}
+    }
+
+    closeModal(elem, event){
+        let block = elem;
+        let container = block.querySelector('.dropdown_container');
+        if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')
+            block.classList.add('show');
+        }
+    }
 
     pluck(objs, name) {
         let sol = [];
@@ -142,7 +150,7 @@ class Helper{
         return sol;
     }
 
-    initDialogMethods(resp){
+    initDialogMethods(resp = null){
         let dialogs = document.getElementsByClassName('dialog');
         if(dialogs){
             [].forEach.call(dialogs, function(elem) {
@@ -151,7 +159,11 @@ class Helper{
 
                     var classname = elem.id.replace(/[^a-zA-Z]/g, '');
                     try {
-                        window[elem.id] = new classes[classname](elem, resp);
+                        if(resp){
+                            window[elem.id] = new classes[classname](elem, resp.data);
+                        } else {
+                            window[elem.id] = new classes[classname](elem);
+                        }
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
                         console.error(err);

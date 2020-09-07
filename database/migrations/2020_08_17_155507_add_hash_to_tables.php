@@ -37,7 +37,7 @@ class AddHashToTables extends Migration
             $table->string('payed_at')->nullable();
         });
 
-        foreach (Cashbox::all() as $cashbox) {
+        foreach (Cashbox::get() as $cashbox) {
             $cashbox->generateUuid();
         }
     }

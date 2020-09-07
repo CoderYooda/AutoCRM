@@ -207,6 +207,7 @@ class ProductController extends Controller
         }
 
         $stores = Store::owned()->get();
+
         $category = Category::find($category_select);
 
         return response()->json([
@@ -317,13 +318,16 @@ class ProductController extends Controller
 
                 $store->articles()->syncWithoutDetaching($article->id);
 
-                $article->stores()->updateExistingPivot($store->id, [
+                $pivot_data = [
                     'storage_zone' => $storage['storage_zone'],
                     'storage_rack' => $storage['storage_rack'],
                     'storage_vertical' => $storage['storage_vertical'],
-                    'storage_horizontal' => $storage['storage_horizontal'],
-                    'retail_price' => $storage['retail_price']
-                ]);
+                    'storage_horizontal' => $storage['storage_horizontal']
+                ];
+                if(isset($storage['retail_price'])){
+                    $pivot_data['retail_price'] = $storage['retail_price'];
+                }
+                $article->stores()->updateExistingPivot($store->id, $pivot_data);
             }
         }
 
@@ -350,23 +354,9 @@ class ProductController extends Controller
 
     public static function getArticles(Request $request, $manufacture_selected = null)
     {
-        $size = (int)$request['size'] ?? 30;
-
-        $field = null;
-        $dir = null;
-
-        if (isset($request['sorters'])) {
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-        if ($field === null && $dir === null) {
-            $field = 'id';
-            $dir = 'ASC';
-        }
-
         $company_id = Auth::user()->company_id;
 
-        $query = Article::with('supplier')
+        return Article::with('supplier')
             ->where('company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
@@ -382,9 +372,7 @@ class ProductController extends Controller
 //                $q->where('fapi_id', $request['manufacture_id']);
             })
             ->where('deleted_at', null) #fix soft delete
-            ->orderBy($field, $dir);
-
-        return $query->get();
+            ->get();
     }
 
     public static function searchByArticleAndBrand($articles)

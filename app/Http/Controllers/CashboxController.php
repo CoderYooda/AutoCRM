@@ -131,6 +131,38 @@ class CashboxController extends Controller
 
         return response()->json([
             'id' => $returnIds,
+            'event' => 'CashboxFresh',
+            'message' => $this->message
+        ], $this->status);
+    }
+
+    public function restore($id, Request $request)
+    {
+        if(!Gate::allows('Редактировать настройки')){
+            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+        }
+
+        $returnIds = null;
+        $cashbox = Cashbox::where('id', $id)->withTrashed()->first();
+        $this->message = 'Касса восстановлена';
+        $returnIds = $cashbox->id;
+        $this->status = 200;
+        if($cashbox->company->id != Auth::user()->company->id){
+            $this->message = 'Вам не разрешено удалять эту кассу';
+            $this->status = 422;
+        }
+        if($this->status == 200){
+            if(!$cashbox->restore()){
+                $this->message = 'Ошибка зависимотей. Обратитесь к администратору';
+                $this->status = 500;
+            }
+        }
+
+        UA::makeUserAction($cashbox, 'restore');
+
+        return response()->json([
+            'id' => $returnIds,
+            'event' => 'CashboxFresh',
             'message' => $this->message
         ], $this->status);
     }

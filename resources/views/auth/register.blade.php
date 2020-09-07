@@ -63,7 +63,7 @@
                             <div class="form-group">
                                 <label>Код смс</label>
                                 <div class="sms-wrap">
-                                    <input onkeydown="window.register.typeSms(this)" maxlength="5" class="form-control text-center register-number-confirm" type="text">
+                                    <input name="sms_box" onkeydown="window.register.typeSms(this)" maxlength="5" class="form-control text-center register-number-confirm" type="text">
                                     <span class="sms-link" onclick="window.register.sendSMSAgain()">Повторно отправить смс</span>
                                 </div>
                                 <span class="sms-desc">На Ваш номер выслан SMS-код для подтверждения телефона. Он придет в течение минуты.</span>
@@ -71,9 +71,6 @@
                         </div>
                     </div>
                     <div id="info" class="box-color danger pos-rlt hide">
-                        <div class="box-body">
-                            b-danger
-                        </div>
                     </div>
 
 

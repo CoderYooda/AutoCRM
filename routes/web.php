@@ -139,6 +139,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
     Route::post('/client_orders/side_info', 'ClientOrdersController@getSideInfo')->name('GetClientOrderSideInfo');
     Route::get('/client_orders/{clientOrder}/select', 'ClientOrdersController@select')->name('SelectClientOrder');
+    Route::post('/client_orders/makeshipped', 'ClientOrdersController@makeShipped')->name('MakeDhippedClientOrder');
     Route::get('/clientorders', 'ClientOrdersController@selectDialog')->name('GetClientOrders');
 
     #Заказы Поставщикам
@@ -191,6 +192,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Кассовые аппараты
     Route::post('/cashbox/new', 'CashboxController@store')->name('StoreCashbox');
     Route::post('/cashbox/{id}/delete', 'CashboxController@delete')->name('DeleteCashbox');
+    Route::post('/cashbox/{id}/restore', 'CashboxController@restore')->name('RestoreCashbox');
     Route::post('/cashbox/{id}/select', 'CashboxController@select')->name('SelectCashbox');
     Route::post('/cashbox/dialog/search', 'CashboxController@dialogSearch')->name('CashboxDialogSearch');
 

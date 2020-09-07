@@ -11,11 +11,16 @@ const classes = {
     documentMethods
 };
 
+
 class storePage{
 
     constructor(){
         console.log('страница склада инициализировано');
         this.init();
+    }
+
+    searcher(){
+        this.model.search(arguments);
     }
 
     baseParams(){
@@ -740,10 +745,17 @@ class storePage{
         let object = this;
         let table_container = document.getElementById('table-container');
         let height = 500;
+        let cleanHeight = height - 125;
+        let tableHeight = height - 55;
         if(table_container) {
             height = table_container.offsetHeight;
+            cleanHeight = height - 86;
+            tableHeight = height;
+            if(this.active_tab == 'store'){
+                cleanHeight = height - 140;
+                tableHeight = height - 55;
+            }
         }
-        let cleanHeight = height - 110;
         let elements = cleanHeight / 44;
 
         object.table = new Tabulator("#" + this.getCurrentActiveTab() + "-table", {
@@ -778,7 +790,7 @@ class storePage{
             selectable:true,
             selectableRangeMode:"click",
             resizableColumns:false,
-            height:height-55,
+            height:tableHeight,
             pagination:"remote",
             layout:"fitColumns",
             ajaxSorting:true,
@@ -910,21 +922,21 @@ class storePage{
                     }));
                 }
 
-                // items.push(new ContextualItem({
-                //     label: 'Удалить', onClick: () => {
-                //         window.entity.remove(object.contextDop, row.getData().id, object)
-                //     },
-                //     shortcut: 'Ctrl+A'
-                // }));
-                //
-                // if (object.selectedData.length) {
-                //     items.push(new ContextualItem({
-                //         label: 'Удалить выделенные', onClick: () => {
-                //             window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)
-                //         },
-                //         shortcut: 'Ctrl+A'
-                //     }));
-                // }
+                items.push(new ContextualItem({
+                    label: 'Удалить', onClick: () => {
+                        window.entity.remove(object.contextDop, row.getData().id, object)
+                    },
+                    shortcut: 'Ctrl+A'
+                }));
+
+                if (object.selectedData.length) {
+                    items.push(new ContextualItem({
+                        label: 'Удалить выделенные', onClick: () => {
+                            window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)
+                        },
+                        shortcut: 'Ctrl+A'
+                    }));
+                }
 
                 object.tableContextual = null;
                 object.tableContextual = new Contextual({
@@ -1146,8 +1158,12 @@ class storePage{
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
+        try {
+            this.model = new classes[model_name]();
+        } catch (e) {
+            dd(e);
+        }
 
-        this.model = new classes[model_name]();
     }
 
     prepareParams(){

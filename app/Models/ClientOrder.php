@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\ShipmentController;
+use App\Http\Requests\ShipmentsRequest;
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
@@ -92,6 +94,40 @@ class ClientOrder extends Model
         return $articles ? $articles->pluck('id') : [];
     }
 
+    public function makeShipped(){
+        $shipmnetController = new ShipmentController();
+        $request = new ShipmentsRequest();
+        $products = [];
+        foreach($this->articles as $article){
+            $products[$article->id]['id'] = $article->id;
+            $products[$article->id]['count'] = $article->pivot->count;
+            $products[$article->id]['price'] = $article->pivot->price;
+        }
+        $request['partner_id'] = $this->partner_id;
+        $request['store_id'] = $this->store_id;
+        $request['discount'] = $this->discount;
+        $request['inpercents'] = $this->inpercents;
+        $request['comment'] = '';
+        $request['products'] = $products;
+        $request['clientorder_id'] = $this->id;
+        $response = $shipmnetController->store($request);
+        if(!$response->isOk() && $response->getData('messages') != null){
+            $status = 422;
+            $data = $response->getData('messages');
+        } else {
+            $status = 200;
+            $data =  [
+                'shipment_id' => $response->getData()->id,
+                'type' => 'success',
+                'message' => 'Отгружено'
+            ];
+        }
+        return [
+            'status' => $status,
+            'data' => $data
+        ];
+    }
+
     public function IsAllProductsShipped()
     {
         foreach($this->articles as $article){
@@ -115,6 +151,11 @@ class ClientOrder extends Model
     {
         $count = $this->getShippedCount($article_id) + (int)$amount;
         $this->setShippedCount($article_id, $count);
+    }
+
+    public function setShiped(){
+        $this->isShipped = true;
+        $this->save();
     }
 
     public function decreaseShippedCount($article_id, $amount)

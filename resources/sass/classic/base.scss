@@ -78,6 +78,23 @@ h2{
     font-size: 11px;
     text-align: center;
 }
+#templates{
+    position: absolute;
+    background: #fff;
+    border: 1px solid #bababa;
+    top: 31px;
+    width: 100%;
+    z-index: 100;
+    padding: 10px;
+}
+
+#templates .template_elem:hover{
+    background: #eee;
+}
+#templates .template_elem{
+    border-bottom: 1px solid #bababa;
+    cursor: pointer;
+}
 
 .storage_store_container{
     overflow: hidden;
@@ -197,9 +214,27 @@ h2{
 }
 
 /*Header*/
+.sms-table > td{
+    border-bottom: 1px solid #eee;
+    padding: 0 5px;
+}
+.scroll_optimize{
+    width: calc(100% + 26px);
+    margin-left: -13px;
+    padding: 0 13px;
+}
 .evotor_ico{
     position: relative;
     height: 22px;
+}
+.trashed{
+    opacity: 0.45;
+}
+.trashed:hover{
+    opacity: 1;
+    .trashed_action{
+        display: block;
+    }
 }
 .evotor_ico .payed_logo{
     background-image: url(/images/icons/evotor.png);

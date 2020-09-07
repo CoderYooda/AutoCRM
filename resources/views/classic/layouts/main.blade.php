@@ -142,7 +142,7 @@
                                 <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}">Мои услуги</a>
 
                                 @canany(['Смотреть настройки'])
-                                    <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">
+                                    <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}" onclick="window.helper.closeModal(this, event)">
                                         Настройки
                                     </a>
                                 @endcanany
@@ -167,7 +167,11 @@
 
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
-                                {!! \App\Http\Controllers\UserController::getAllUsersList() !!}
+                                <div data-simplebar style="height:calc(100vh - 200px);width: 43vw;">
+
+                                    {!! \App\Http\Controllers\UserController::getAllUsersList() !!}
+                                </div>
+
                             </div>
                         </li>
                         @endcan
@@ -261,7 +265,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="version">version <br>{{ env('VERSION', '0.0.0') }}</div>
+                        <div class="version">version <br>{{ env('VERSION', '0.0.0') }} - {{ Auth::user()->current_store }}</div>
                     </div>
                 </div>
                 <div id="ajax-content">

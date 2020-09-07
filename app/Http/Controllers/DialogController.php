@@ -11,6 +11,7 @@ class DialogController extends Controller
 {
     public function openDialogByTag($tag, Request $request)
     {
+
         $dialogs = [
             //Warrant
             'warrantDialog'             => [WarrantController::class, 'warrantDialog'],

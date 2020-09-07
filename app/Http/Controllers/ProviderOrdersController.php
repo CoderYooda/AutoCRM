@@ -391,27 +391,30 @@ class ProviderOrdersController extends Controller
             $request['dates'] = $dates;
         }
 
-        $provider_orders = ProviderOrder::owned()->with('partner', 'manager')
+        $provider_orders = ProviderOrder::where('provider_orders.company_id', Auth::user()->company_id)
+            ->leftJoin('partners as partner', 'partner.id', '=', 'provider_orders.partner_id')
+            ->leftJoin('partners as manager', 'manager.id', '=', 'provider_orders.manager_id')
+            ->select(DB::raw('provider_orders.*, partner.fio, partner.foundstring as p_foundstring, manager.foundstring as m_foundstring, manager.fio, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
             ->when(is_array($request['provider']), function($query) use ($request) {
-                $query->whereHas('partner', function($query) use ($request){
-                    $query->whereIn('id', $request['provider']);
-                });
+                $query->whereIn('provider_orders.partner_id', $request['provider']);
             })
             ->when(is_array($request['accountable']), function($query) use ($request) {
-                $query->whereHas('manager', function($query) use ($request){
-                    $query->whereIn('id', $request['accountable']);
-                });
+                $query->whereIn('manager_id', $request['accountable']);
             })
             ->when($request['search'] != null, function($query) use ($request) {
-                $query->where('id', 'like', '%'.$request['search'].'%')
-                    ->orWhereHas('partner', function($query) use ($request){
-                        $query->where('company_id', Auth::user()->company_id)
-                            ->where(function($q) use ($request){
-                                $q->where('fio', 'like', '%'.$request['search'].'%')
-                                    ->orWhere('companyName', 'like', '%'.$request['search'].'%')
-                                    ->orWhere('foundstring', 'like', '%'.$request['search'].'%');
-                            });
-                    });
+                $query->where('provider_orders.id', 'like', '%'.$request['search'].'%')
+                    ->orWhere('partner.foundstring', 'like', '%'.$request['search'].'%')
+                    ->orWhere('manager.foundstring', 'like', '%'.$request['search'].'%');
+
+
+//                    ->orWhereHas('partner', function($query) use ($request){
+//                        $query->where('company_id', Auth::user()->company_id)
+//                            ->where(function($q) use ($request){
+//                                $q->where('fio', 'like', '%'.$request['search'].'%')
+//                                    ->orWhere('companyName', 'like', '%'.$request['search'].'%')
+//                                    ->orWhere('foundstring', 'like', '%'.$request['search'].'%');
+//                            });
+//                    });
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]),
@@ -426,10 +429,10 @@ class ProviderOrdersController extends Controller
             ->orderBy($field, $dir)
             ->paginate($size);
 
-        foreach ($provider_orders as $provider_order) {
-            $provider_order['manager_name'] = $provider_order->manager->official_name;
-            $provider_order['partner_name'] = $provider_order->partner->official_name;
-        }
+//        foreach ($provider_orders as $provider_order) {
+//            $provider_order['manager_name'] = $provider_order->manager->official_name;
+//            $provider_order['partner_name'] = $provider_order->partner->official_name;
+//        }
 
         return $provider_orders;
     }

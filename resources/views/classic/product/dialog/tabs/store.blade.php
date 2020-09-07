@@ -8,6 +8,7 @@
         </tr>
         </thead>
         <tbody>
+        {{--{{ dd($stores) }}--}}
         @foreach($stores as $store)
             <tr>
                 <td>

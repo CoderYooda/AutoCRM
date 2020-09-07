@@ -98,9 +98,17 @@
             </div>
         @endif
 
-        @if($client_order && $client_order->status === 'active' && ($client_order->wsumm != $client_order->itogo))
-            <div class="modal-alt-header">
+        @if($client_order && ($client_order->wsumm != $client_order->itogo))
+            <div class="modal-alt-header ">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
+            </div>
+        @endif
+
+        @if($client_order && $client_order->isShipped)
+            <div class="modal-alt-header ml-auto">
+                <div class="evotor_ico">
+                    <span class="payed">ОТГРУЖЕНО</span>
+                </div>
             </div>
         @endif
 
@@ -131,7 +139,7 @@
                     <div class="form-group row row-sm">
                         <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заказчик</label>
                         <div class="col-sm-9">
-                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === 'canceled') disabled @endif>
+                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
                                 @if(isset($client_order) && $client_order->partner != null)
                                     {{ $client_order->partner->outputName() }}
                                 @else
@@ -144,7 +152,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Скидка</label>
                         <div class="col-sm-9 input-group">
-                            <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === 'canceled') disabled @endif>
+                            <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
                             <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span id="inpercents_text"> @if(isset($client_order) && $client_order->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
@@ -164,7 +172,7 @@
                         {{--<input type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>--}}
                         {{--</div>--}}
                         <div class="col-sm-9 input-group">
-                            <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" value="{{ $client_order->phone ?? 0 }}" @if($client_order && $client_order->status === 'canceled') disabled @endif>
+                            <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" value="{{ $client_order->phone ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
                             <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span>Номера контакта</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
@@ -221,7 +229,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Статус заказа</label>
                         <div class="col-sm-9 input-group">
-                            <select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled') disabled @endif>
+                            <select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
                                 <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
                                 <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
                                 <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
@@ -240,10 +248,10 @@
                 <div class="col-sm-6 form-group no-pl intabs @if(!isset($client_order)) hide @endif">
                     <div class="b-b nav-active-bg">
                         <ul class="nav nav-tabs" id="cl_tabs">
-                            <li class="nav-item active">
+                            <li class="nav-item ">
                                 <a class="nav-link" href="#tab4" data-toggle="tab" data-target="#tab4">SMS сообщения</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a class="nav-link" href="#tab5" data-toggle="tab" data-target="#tab5">Платежи</a>
                             </li>
                             <li class="nav-item">
@@ -253,8 +261,8 @@
                     </div>
 
                     <div class="tab-content p-0" >
-                        <div class="tab-pane active" id="tab4">
-                            @if(isset($client_order))
+                        <div class="tab-pane" id="tab4">
+                            @if(isset($client_order) && !$client_order->isShipped)
                                 <div class="d-flex flex-column flex" id="chat-list">
                                     <div class="hover">
                                         <div class="pt-3 pb-3">
@@ -284,7 +292,18 @@
                                     </div>
                                     <div class="white lt mt-auto">
                                         <div class="input-group">
-                                            <input id="sms_field" type="text" class="form-control" placeholder="SMS сообщение клиенту">
+                                            <input onfocus="{{ $class }}.toggleSMSTemplatesBlock(event)" id="sms_field" type="text" class="form-control" placeholder="SMS сообщение клиенту">
+                                            <div class="hide" id="templates">
+                                                <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                    Первый вариант текста
+                                                </div>
+                                                <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                    Второй вариант текста
+                                                </div>
+                                                <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                    Третий вариант текста
+                                                </div>
+                                            </div>
                                             <span class="input-group-append">
                                                 <button onclick="{{ $class }}.sendSMS()" class="button" type="button" id="newBtn">
                                                     <i class="fa fa-send text-success"></i>
@@ -301,7 +320,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="tab-pane" id="tab5" data-simplebar style="height: 192px">
+                        <div class="tab-pane active" id="tab5" data-simplebar style="height: 192px">
                             <div class="list-group">
                                 @if(isset($client_order))
                                     @forelse($client_order->warrants as $warrant)
@@ -390,12 +409,14 @@
             </div>
         </div>
         <div class="modal-footer" style="white-space: nowrap">
+            @if(!isset($client_order) || isset($client_order) && !$client_order->isShipped)
             <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Добавить товар</button>
+            @endif
 {{--            <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Быстрый товар</button>--}}
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
 
-            @if(!$client_order || $client_order && $client_order->status !== 'canceled')
+            @if(!$client_order || $client_order && $client_order->status !== 'canceled' && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
             @endif
@@ -404,8 +425,8 @@
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
 
-            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled')
-                <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.openShipmentModal()">Отгрузка</button>
+            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled' && !$client_order->isShipped)
+                <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
             @endif
 
 

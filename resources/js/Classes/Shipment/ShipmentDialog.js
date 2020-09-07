@@ -166,7 +166,7 @@ class shipmentDialog extends Modal{
     save(elem){
         window.event.preventDefault();
         if(window.isXHRloading) return;
-
+        let object = this;
         window.axform.send(elem, (resp) => {
             if(resp.status == 200) {
                 let root_id = this.root_dialog.id;

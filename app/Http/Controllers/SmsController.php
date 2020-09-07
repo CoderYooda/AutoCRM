@@ -62,7 +62,16 @@ class SmsController extends Controller
     public static function smsConfirmed($request)
     {
         $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
-        if($sms != null && $sms->confirmed && !$sms->isblocked){
+        if($sms != null && $sms->confirmed){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function isSmsBlocked($request){
+        $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
+        if($sms != null && $sms->isblocked){
             return true;
         } else {
             return false;

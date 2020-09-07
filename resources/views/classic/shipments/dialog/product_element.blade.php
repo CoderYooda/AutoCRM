@@ -17,6 +17,7 @@
     <td><input onclick="this.select();" name="products[{{ $product->id }}][price]" class="form-control form-control-sm price_elem" value="{{ decimal_price(isset($shipment) ? $product->price : $product->getPrice()) }}" type="text"></td>
     <td><input name="products[{{ $product->id }}][total_price]" class="form-control form-control-sm" value="{{ decimal_price(isset($shipment) ? $product->total : $product->getPrice()) }}" disabled type="text"></td>
     <td>
-        <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+
+            <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
     </td>
 </tr>

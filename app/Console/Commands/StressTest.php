@@ -43,13 +43,13 @@ class StressTest extends Command
      */
     protected $signature = 'stress:seed';
 
-    private $partners_count = 500;
-    private $count_suppliers = 500;
-    private $count_products = 123;
-    private $count_shipments = 123;
-    private $count_providerorder = 123;
-    private $count_clientorder = 123;
-    private $count_adjustments = 123;
+    private $partners_count = 60;
+    private $count_suppliers = 150;
+    private $count_products = 500;
+    private $count_shipments = 140;
+    private $count_providerorder = 200;
+    private $count_clientorder = 120;
+    private $count_adjustments = 0;
 
     /**
      * The console command description.
@@ -81,14 +81,24 @@ class StressTest extends Command
 
         $user = factory(User::class)->create(['company_id' => $company->id]);
 
-        $role = RoleController::createStartRoles($company);
+        $role = RoleController::createStartRoles($company)['main'];
+
         $user->assignRole($role);
+
         SettingsController::createCompanySettingsPack($company, $role);
 
         $store = factory(Store::class)->create(['company_id' => $company->id]);
+
+        $user->current_store = $store->id;
+        $user->save();
+
+        $user_main = $user;
+        Auth::login($user_main);
         $partner = self::createPartner($user, $company, $store);
+        Auth::logout($user_main);
 
         # Создаем фейковых партнеров
+        Auth::login($user_main);
         $count_partners = rand(10, $this->partners_count);
         $bar = $this->output->createProgressBar($count_partners);
         $bar->start();
@@ -97,9 +107,11 @@ class StressTest extends Command
             $bar->advance();
         }
         $bar->finish();
-
         # Создаем категории
+
+
         Artisan::call('categories:init', ['company' => $company->id]);
+        Auth::logout($user_main);
 
         # Создаем производителей
         $count_suppliers = rand(10, $this->count_suppliers);
@@ -126,19 +138,6 @@ class StressTest extends Command
         }
         $bar->finish();
 
-        # Создаем продажи
-        $count_shipments = rand(10, $this->count_shipments);
-        $bar = $this->output->createProgressBar($count_shipments);
-        $bar->start();
-        for($i = 0; $i < $count_shipments; $i++){
-            $user = $company->members()->inRandomOrder()->first();
-            Auth::login($user);
-            self::createShipment($company->partners()->inRandomOrder()->first(), $faker->text(250), $company);
-            Auth::logout($user);
-            $bar->advance();
-        }
-        $bar->finish();
-
         # Создаем заявки поставщику
         $count_providerorder = rand(10, $this->count_providerorder);
         $bar = $this->output->createProgressBar($count_providerorder);
@@ -153,13 +152,29 @@ class StressTest extends Command
         $bar->finish();
 
         # Создаем поступления
-        $provider_orders = ProviderOrder::owned($company)->get();
+        Auth::login($user_main);
+        $provider_orders = ProviderOrder::owned()->get();
+        Auth::logout($user_main);
         $bar = $this->output->createProgressBar($count_providerorder);
         $bar->start();
+
         foreach($provider_orders as $provider_order){
             $user = $company->members()->inRandomOrder()->first();
             Auth::login($user);
             self::createEntrance($provider_order, $faker->text(250), $company);
+            Auth::logout($user);
+            $bar->advance();
+        }
+        $bar->finish();
+
+        # Создаем продажи
+        $count_shipments = rand(10, $this->count_shipments);
+        $bar = $this->output->createProgressBar($count_shipments);
+        $bar->start();
+        for($i = 0; $i < $count_shipments; $i++){
+            $user = $company->members()->inRandomOrder()->first();
+            Auth::login($user);
+            self::createShipment($company->partners()->inRandomOrder()->first(), $faker->text(250), $company);
             Auth::logout($user);
             $bar->advance();
         }
@@ -190,19 +205,18 @@ class StressTest extends Command
             $bar->advance();
         }
         $bar->finish();
-
         # Создаем Корректировки
-        $count_adjustments = rand(10, $this->count_adjustments);
-        $bar = $this->output->createProgressBar($count_adjustments);
-        $bar->start();
-        for($i = 0; $i < $count_adjustments; $i++){
-            $user = $company->members()->inRandomOrder()->first();
-            Auth::login($user);
-            self::createAdjustment($faker->text(250), $company);
-            Auth::logout($user);
-            $bar->advance();
-        }
-        $bar->finish();
+//        $count_adjustments = rand(10, $this->count_adjustments);
+//        $bar = $this->output->createProgressBar($count_adjustments);
+//        $bar->start();
+//        for($i = 0; $i < $count_adjustments; $i++){
+//            $user = $company->members()->inRandomOrder()->first();
+//            Auth::login($user);
+//            self::createAdjustment($faker->text(250), $company);
+//            Auth::logout($user);
+//            $bar->advance();
+//        }
+//        $bar->finish();
 
     }
 
@@ -213,7 +227,7 @@ class StressTest extends Command
                 $user = factory(User::class)->make();
                 $user->company_id = $company->id;
                 $user->save();
-                $role = Role::owned($company)->where('id', $company->settings()->where('key', 'role_id')->first()->value)->first();
+                $role = Role::owned()->where('id', $company->settings()->where('key', 'role_id')->first()->value)->first();
                 $user->syncRoles([$role->id]);
 
                 $user_id = $user->id;
@@ -263,11 +277,15 @@ class StressTest extends Command
         $products_count = rand(1, 12);
 
         for($e = 0; $e < $products_count; $e++){
-            $product = Article::owned($company)->inRandomOrder()->first();
+            $product = Article::with('entrances')->owned()->whereHas('entrances', function($q){
+                $q->where('count', '>', 0);
+            })->inRandomOrder()->first();
+
             $products[$product->id]['id'] = $product->id;
-            $products[$product->id]['count'] = rand(1, 12);
+            $products[$product->id]['count'] = rand(1, $product->getCountInStoreId(Auth::user()->current_store));
             $products[$product->id]['price'] = rand(1, 2000);
         }
+
 
         $fake_request['do_date'] = $date;
         $fake_request['created_at'] = $date;
@@ -277,7 +295,6 @@ class StressTest extends Command
         $fake_request['inpercents'] = $inpercents;
         $fake_request['comment'] = $comment;
         $fake_request['products'] = $products;
-
         $shipmnetController->store($fake_request);
     }
 
@@ -293,7 +310,7 @@ class StressTest extends Command
         $products_count = rand(1, 50);
 
         for($e = 0; $e < $products_count; $e++){
-            $product = Article::owned($company)->inRandomOrder()->first();
+            $product = Article::owned()->inRandomOrder()->first();
             $products[$product->id]['id'] = $product->id;
             $products[$product->id]['count'] = rand(1, 12);
             $products[$product->id]['price'] = rand(1, 2000);
@@ -316,8 +333,9 @@ class StressTest extends Command
 
     private static function createEntrance($providerOrder, $comment, $company)
     {
-        if(!rand(0,4)){
+        if(!rand(0,2)){
             $entrance = new EntranceController();
+
             $fake_request = new EntranceRequest();
             $articles = $providerOrder->articles()->get();
             $date = Carbon::now()->addDays(rand(-365, 0));
@@ -327,6 +345,7 @@ class StressTest extends Command
             $fake_request['providerorder_id'] = $providerOrder->id;
             $fake_request['created_at'] = $date;
             $fake_request['comment'] = $comment;
+            $fake_request['invoice'] = rand(10000, 99999);
             $products = [];
             foreach($articles as $article){
                 $products[$article->id]['id'] = $article->id;
@@ -334,6 +353,7 @@ class StressTest extends Command
                 $products[$article->id]['count'] = rand(1, $article->pivot->count);
             }
             $fake_request['products'] = $products;
+
             $entrance->store($fake_request);
         } else{
             return true;
@@ -380,7 +400,7 @@ class StressTest extends Command
         $products_count = rand(1, 50);
 
         for($e = 0; $e < $products_count; $e++){
-            $product = Article::owned($company)->inRandomOrder()->first();
+            $product = Article::owned()->inRandomOrder()->first();
             $products[$product->id]['id'] = $product->id;
             $products[$product->id]['count'] = rand(1, 12);
             $products[$product->id]['price'] = rand(1, 2000);
@@ -423,7 +443,7 @@ class StressTest extends Command
             $fake_request['comment'] = $comment;
             $fake_request['created_at'] = $date;
             $products = [];
-            $articles =  Article::owned($company)->limit(rand(4, 14))->inRandomOrder()->get();
+            $articles =  Article::owned()->limit(rand(4, 14))->inRandomOrder()->get();
             foreach($articles as $article){
                 $products[$article->id]['id'] = $article->id;
                 $products[$article->id]['fact'] = rand(0,12);

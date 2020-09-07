@@ -31,6 +31,9 @@ class settingsPage{
         document.addEventListener('CashboxStored', function(e){
             object.reload();
         });
+        document.addEventListener('CashboxFresh', function(e){
+            object.reload();
+        });
         document.addEventListener('StoreStored', function(e){
             object.reload();
         });
@@ -192,7 +195,6 @@ class settingsPage{
         });
     }
 
-
     getSmsPayment(){
         let amount_input = document.getElementById('amount');
         let amount = 0;
@@ -244,6 +246,24 @@ class settingsPage{
     }
 
     freshContent(id, callback = null){
+        let object = this;
+        let data = {};
+        data.id = id;
+        window.axios({
+            method: 'post',
+            url: 'settings/base/fresh',
+            data: data,
+        }).then(function (resp) {
+            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            console.log('Вставили html');
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            callback();
+        });
+    }
+
+    freshStoreContent(id, callback = null){
         let object = this;
         let data = {};
         data.id = id;

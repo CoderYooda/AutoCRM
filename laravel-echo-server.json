@@ -1,5 +1,5 @@
 {
-	"authHost": "http://localhost/",
+	"authHost": "http://autocrm/",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{

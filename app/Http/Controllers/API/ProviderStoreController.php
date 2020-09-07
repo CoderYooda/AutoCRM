@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProviderStoreController extends Controller
 {
-    public function tableData(Request $request, Providers $providers, Cart $cart)
+    public function tableData(Request $request, Providers $providers)
     {
         PermissionController::canByPregMatch('Смотреть склады поставщиков');
 

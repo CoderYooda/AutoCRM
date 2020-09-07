@@ -7,14 +7,10 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateNewArticleddsIncomeBackmoney extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         DdsArticle::create([
+            'id' => 8,
             'name' => 'Получение средств',
             'locked' => 1,
             'company_id' => null,
@@ -23,11 +19,6 @@ class CreateNewArticleddsIncomeBackmoney extends Migration
         ]);
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         DdsArticle::where([

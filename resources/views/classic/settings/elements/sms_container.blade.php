@@ -2,26 +2,28 @@
     <div id="actions-container" class="box-content p-15 box mb-15 flex-1">
         <h2 class="mt-0 style_header mb-15">История отправленных SMS</h2>
         {{--{{ Auth::user()->getAllPermissions() }}--}}
-        <table class="table w-100">
-            <thead class="mt-10">
-            <th><div class="mb-10">SMS ID</div></th>
-            <th><div class="mb-10">Дата</div></th>
-            <th><div class="mb-10">Цена</div></th>
-            <th><div class="mb-10">Текст сообщения</div></th>
-            <th><div class="mb-10">Адресат</div></th>
-            </thead>
-            <tbody>
-            @foreach($smses as $sms)
-                <tr class="simple-row">
-                    <td>{{ $sms->sms_id }}</td>
-                    <td>{{ $sms->created_at->format('d.m.Y H:i:s') }}</td>
-                    <td>{{ $sms->cost }} ₽</td>
-                    <td>{{ $sms->message }}</td>
-                    <td>{{ phone_format($sms->phone) }}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+        <div class="scroll_optimize" data-simplebar style="height: 40vh;" >
+            <table class="table w-100">
+                <thead class="mt-10">
+                <th><div class="mb-10">SMS ID</div></th>
+                <th><div class="mb-10">Дата</div></th>
+                <th><div class="mb-10">Цена</div></th>
+                <th><div class="mb-10">Текст сообщения</div></th>
+                <th><div class="mb-10">Адресат</div></th>
+                </thead>
+                <tbody>
+                @foreach($smses as $sms)
+                    <tr class="simple-row sms-table" style="border-bottom: 1px solid #eee">
+                        <td>{{ $sms->sms_id }}</td>
+                        <td>{{ $sms->created_at->format('d.m.Y H:i:s') }}</td>
+                        <td class="no-wrap">{{ $sms->cost }} ₽</td>
+                        <td>{{ $sms->message }}</td>
+                        <td class="no-wrap">{{ phone_format($sms->phone) }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="box flex-1">
         <div class="p-15">

@@ -46,7 +46,7 @@ class AddNewRoles extends Migration
             [
                 'name' => 'Создавать возвраты поступлений',
                 'gurad_name' => 'web',
-                'model' => 'EntranceRefund',
+                'model' => 'EntranceRefund's,
                 'type' => 'create'
             ]
         ];

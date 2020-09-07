@@ -90,14 +90,14 @@ class PermissionSeed extends Seeder
         $user->assignRole($superAdmin);
 	
 	
-	    $permissions = Permission::all()->pluck('id');
-	    $role1 = Role::create(['name' => 'Руководитель', 'company_id' => 2]);
-        $role1->givePermissionTo($permissions);
-
-        $role2 = Role::create(['name' => 'Менеджер', 'company_id' => 2]);
-
-        $user = User::whereId(2)->first();
-        $user->assignRole($role1);
+//	    $permissions = Permission::all()->pluck('id');
+//	    $role1 = Role::create(['name' => 'Руководитель', 'company_id' => 2]);
+//        $role1->givePermissionTo($permissions);
+//
+//        $role2 = Role::create(['name' => 'Менеджер', 'company_id' => 2]);
+//
+//        $user = User::whereId(2)->first();
+//        $user->assignRole($role1);
     }
 }
 

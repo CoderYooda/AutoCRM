@@ -2,7 +2,6 @@
     <div class="row">
         <div class="col-sm-5 no-pr d-flex">
             <ul class="nav" id="partner_tabs" role="tablist">
-
                 <li class="nav-item fl ip ul active" role="tab">
                     <a id="tab_base{{ $class }}-tab" href="#tab_base{{ $class }}"  data-height="false" aria-controls="tab_base{{ $class }}" aria-selected="true" class="nav-link">
                         Основные

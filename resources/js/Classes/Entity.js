@@ -37,12 +37,56 @@ class Entity {
                         var element = document.getElementById(tag + '_' + resp.data.id);
 
                         if (type === 'success') {
-                            element.remove();
+                            //element.remove();
                         }
                         ;
                     } else {
                         object.table.deleteRow(resp.data.id);
                         object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                    }
+
+                    if (resp.data.event) {
+                        let event = new Event(resp.data.event, {bubbles: true});
+                        document.dispatchEvent(event);
+                        console.log("Событие " + resp.data.event + " объявлено");
+                    }
+                    notification.notify(type, resp.data.message);
+                });
+            } else {
+            }
+        });
+    };
+
+    restore(tag, id, object = null) { // Восстановление элемента списка с подтверждением
+        if (isXHRloading) {
+            return;
+        }
+        let data = {};
+        data.ids = null;
+        if (Array.isArray(id)) {
+            data.ids = id;
+            id = 'array'
+        }
+        Swal.fire({
+            title: 'Вы уверены?',
+            text: "восстановение",
+            type: 'warning',
+            animation: false,
+            showCancelButton: true,
+            cancelButtonText: 'Отменить',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Восстановить!'
+        }).then((result) => {
+            if (result.value) {
+                axios({
+                    method: 'POST',
+                    url: tag + '/' + id + '/restore',
+                    data: data,
+                }).then(function (resp) {
+                    let type = 'success';
+                    if (resp.data.type != null) {
+                        type = resp.data.type;
                     }
 
                     if (resp.data.event) {
@@ -174,7 +218,6 @@ class Entity {
             });
         }
     }
-
 
 }
 

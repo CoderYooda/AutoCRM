@@ -66,16 +66,23 @@ class RegisterController extends Controller
                     return response()->json(['messages' => $validation->errors()],422);
                 }
             }
-
             if(!SmsController::smsConfirmed($request)){
-                $sms = SmsController::sendTo($request['phone']);
-                return response()->json([
-                    'sms' => $sms,
-                    'phone' => $request['phone']
-                ],200);
+                if(SmsController::isSmsBlocked($request)){
+                    return response()->json([
+                        'status' => 'error',
+                        'service_message' => 'Слишком частая отправка сообщений. Телефон заблокирован'
+                    ],422);
+                } else {
+                    $sms = SmsController::sendTo($request['phone']);
+                    return response()->json([
+                        'sms' => $sms,
+                        'phone' => $request['phone']
+                    ],200);
+                }
             } else {
                 event(new Registered($user = $this->create($request->all())));
                 $this->guard()->login($user);
+                //$user->resetCurrentStore();
                 $redirect = '/';
                 $this->registered($request, $user) ?: $redirect = $this->redirectPath();
 
@@ -133,6 +140,9 @@ class RegisterController extends Controller
         $store->locked = 0;
         $store->name = 'Мой магазин';
         $store->save();
+
+        $user->current_store = $store->id;
+        $user->save();
 
         $cashbox = new Cashbox();
         $cashbox->company_id = $company->id;

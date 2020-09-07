@@ -125,8 +125,15 @@ class ClientOrdersController extends Controller
     public function store(ClientOrdersRequest $request)
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать заказ клиента' : 'Создавать заказ клиента');
+
         $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
         $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
+
+        if($client_order && $client_order->isShipped){
+            return response()->json([
+                'system_message' => ['Действия с заказом запрещены, заказ был отгружен']
+            ], 422);
+        }
 
         #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
         if( $client_order->IsAnyProductShipped()) {
@@ -144,6 +151,7 @@ class ClientOrdersController extends Controller
             }
         }
         #Конец проверки
+
 
         if($client_order->IsAllProductsShipped()){
             $client_order->status = 'complete';
@@ -193,6 +201,7 @@ class ClientOrdersController extends Controller
         $client_order->balance = 0;
         $client_order->itogo = 0;
         $client_order->save();
+
         UA::makeUserAction($client_order, $wasExisted ? 'fresh' : 'create');
         $store = $client_order->store()->first();
 
@@ -203,85 +212,14 @@ class ClientOrdersController extends Controller
                 $plucked_articles[] = $id;
             }
         }
+
         # Синхронизируем товары к складу
         $store->articles()->syncWithoutDetaching($plucked_articles, false);
 
         $client_order_data = [];
 
-        #### Проверка на дубли
-        $messages = [];
-        $rp = $request['products'];
-        if (isset($rp['new']) && $rp['new'] != null) {
-            foreach ($rp['new'] as $id => $product) {
-
-                if ($id === 'new') {
-                    $stock_supplier = Supplier::owned()->where('name', $product['new_supplier_name'])->first();
-                    if ($stock_supplier) {
-                        $art = ProductController::checkArticleUnique(null, $product['article'], $stock_supplier->id);
-                        if ($art !== null && $art) {
-                            $article_errors[0] = '';
-                            $supplier_errors[0] = '';
-                            $messages['products.' . $product['id'] . '.article'] = $article_errors;
-                            $messages['products.' . $product['id'] . '.new_supplier_name'] = $supplier_errors;
-                        }
-                    }
-                }
-            }
-        }
-        if (count($messages) > 0) {
-            return response()->json([
-                'messages' => $messages
-            ], 422);
-        }
-
-        #Сохраняем быстрые товары
-        if (isset($rp['new'])) {
-            foreach ($rp['new'] as $id => $product) {
-                $vcount = (int)$product['count'];
-
-                $vprice = (double)$product['price'];
-                $vtotal = $vprice * $vcount;
-                $client_order->summ += $vtotal;
-
-                $supplier_request = new Request(['new_supplier_name' => $product['new_supplier_name']]);
-
-                $supplier = SupplierController::silent_store($supplier_request);
-                //$article = ProductController::checkArticleUnique(null, $product['article'], $supplier->id);
-                $actor_product = Article::firstOrNew([
-                    'article' => $product['article'],
-                    'supplier_id' => $supplier->id,
-                    'company_id' => Auth::user()->company()->first()->id
-                ]);
-                if (!$actor_product->exists) {
-                    $actor_product->category_id = 10;
-                    $actor_product->creator_id = Auth::user()->id;
-                    $actor_product->name = $product['name'];
-                    $actor_product->save();
-
-                    $prepared_article = mb_strtolower(str_replace(' ', '', $actor_product->article));
-                    $prepared_supplier = mb_strtolower(str_replace(' ', '', $actor_product->supplier->name));
-                    $prepared_name = mb_strtolower(str_replace(' ', '', $actor_product->name));
-                    $prepared_barcode = mb_strtolower(str_replace(' ', '', $actor_product->barcode));
-
-                    $actor_product->foundstring = $prepared_article . $prepared_supplier . $prepared_barcode . $prepared_name;
-                    //
-                    $actor_product->save();
-
-                }
-                $pivot_data = [
-                    'store_id' => $client_order->store()->first()->id,
-                    'article_id' => (int)$actor_product->id,
-                    'client_order_id' => $client_order->id,
-                    'count' => (int)$vcount,
-                    'price' => (double)$vprice,
-                    'total' => (double)$vtotal
-                ];
-                $client_order_data[] = $pivot_data;
-            }
-        }
+        $rp = $request->products;
         foreach ($rp as $id => $product) {
-            if ($id !== 'new') {
-
                 $vcount = $product['count'];
 
                 if($vcount < $client_order->getShippedCount($id)){
@@ -291,25 +229,24 @@ class ClientOrdersController extends Controller
                     ], 422);
                 }
 
-                if($client_order && $client_order->getShippedCount($id)){
-                    $vprice = $client_order->getProductPriceFromClientOrder($id);
-                } else {
-                    $vprice = (double)$product['price'];
-                }
-
-                $vtotal = $vprice * $vcount;
-                $client_order->summ += $vtotal;
-                $pivot_data = [
-                    'store_id' => $client_order->store()->first()->id,
-                    'article_id' => (int)$product['id'],
-                    'client_order_id' => $client_order->id,
-                    'count' => (int)$vcount,
-                    'price' => (double)$vprice,
-                    'total' => (double)$vtotal,
-                    'shipped_count' => $client_order->getShippedCount($id)
-                ];
-                $client_order_data[] = $pivot_data;
+            if($client_order && $client_order->getShippedCount($id)){
+                $vprice = $client_order->getProductPriceFromClientOrder($id);
+            } else {
+                $vprice = (double)$product['price'];
             }
+
+            $vtotal = $vprice * $vcount;
+            $client_order->summ += $vtotal;
+            $pivot_data = [
+                'store_id' => $client_order->store()->first()->id,
+                'article_id' => (int)$product['id'],
+                'client_order_id' => $client_order->id,
+                'count' => (int)$vcount,
+                'price' => (double)$vprice,
+                'total' => (double)$vtotal,
+                'shipped_count' => $client_order->getShippedCount($id)
+            ];
+            $client_order_data[] = $pivot_data;
         }
         #Удаление всех отношений и запись новых (кастомный sync)
         $client_order->syncArticles($client_order->id, $client_order_data);
@@ -329,13 +266,16 @@ class ClientOrdersController extends Controller
 
         $client_order->save();
 
-
         #Отнимаем со склада товары из заказа
 
 //        $client_order->partner()->first()
 //            ->subtraction($client_order->itogo);
 
-
+        if($request->shipping){
+            $response = $client_order->makeShipped();
+            $client_order->setShiped();
+            return response()->json($response['data'], $response['status']);
+        }
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => $this->message,
@@ -346,6 +286,13 @@ class ClientOrdersController extends Controller
             return redirect()->back();
         }
     }
+
+//    public function makeShipped(Request $request){
+//        $client_order = ClientOrder::owned()->find($request->id);
+//
+//
+//        return response()->json($response['data'], $response['status']);
+//    }
 
     public function load(Request $request)
     {

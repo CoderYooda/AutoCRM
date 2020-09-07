@@ -32,9 +32,9 @@
                disabled type="number"></td>
     <td>
 
-{{--        @if(isset($client_order) && $client_order->getShippedCount($product->id) == 0)--}}
-                <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
-{{--        @endif--}}
+        @if(isset($client_order) && !$client_order->isShipped || !isset($client_order))
+            <button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+        @endif
     </td>
 </tr>
 

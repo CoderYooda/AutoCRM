@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Models\VehicleMark;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -146,12 +147,34 @@ class StoreController extends Controller
 
         $all_ids = $products->pluck('id')->merge($analog_products->pluck('id'));
 
-        #Сливаем коллекции для вывода
-        $products = Article::owned()->whereIn('id', $all_ids)->with('supplier')->paginate($request->size ?? 30);
+        $size = (int)$request['size'] ?? 30;
 
-        foreach ($products as $key => $product) {
-            $products[$key]['supplier_name'] = $product->supplier->name;
+        $field = null;
+        $dir = null;
+
+        if (isset($request['sorters'])) {
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
         }
+        if ($field === null && $dir === null) {
+            $field = 'id';
+            $dir = 'ASC';
+        }
+
+        #Сливаем коллекции для вывода
+        $products = Article::selectRaw('articles.*, suppliers.name as supplier_name')
+            ->where('articles.company_id', Auth::user()->company_id)
+            ->whereIn('articles.id', $all_ids)
+//            ->when($field == 'supplier_name', function (Builder $q) {
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
+//            })
+            ->orderBy($field, $dir)
+            ->paginate($size);
+
+//        foreach ($products as $key => $product) {
+//            $products[$key]['supplier_name'] = $product->supplier->name;
+//        }
+
 
         $is_barcode = $products->where('barcode', $request->search)->count() && $products->where('article', '!=', $request->search);
 

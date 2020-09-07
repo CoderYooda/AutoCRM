@@ -19,7 +19,7 @@ class partnerDialog extends Modal{
         this.addPassportMask();
         this.addNumberMasks();
         this.addLoginPhoneMask();
-
+        let object = this;
         this.current_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  (e) => {
             if (e.which === 13) {
                 this.bithdayFlatpkr.close();

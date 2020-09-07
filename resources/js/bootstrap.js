@@ -110,11 +110,14 @@ window.axios.interceptors.response.use(function (response) {
     }
     if (error.response.status === 422 || error.response.status === 200) {
 
-        console.log('123', error.response.data.message, error.response.data.type);
+        // console.log('123', error.response.data.message, error.response.data.type);
 
         if(error.response.data.message && error.response.data.type){
             window.notification.notify( error.response.data.type, error.response.data.message);
         }
+    }
+    if (error.response.status === 419) {
+        window.location.href = "/login";
     }
     if (error.response.status === 403) {
         if(error.response.data.type == "gateClosed"){

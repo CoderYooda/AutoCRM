@@ -191,7 +191,7 @@ class Article extends Model
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
-            ->withPivot('price');
+            ->withPivot('price', 'count', 'released_count');
     }
 
     public static function makeCorrectArticle(string $article)
@@ -221,8 +221,14 @@ class Article extends Model
 
     public function getStorageCode()
     {
-        $store = $this->stores->where('store_id', Auth::user()->current_store)->first();
-        return view('classic.product.storage_code', compact('store'));
+        $store = $this->stores->find(Auth::user()->current_store);
+        if($store != null){
+            return view('classic.product.storage_code', compact('store'))
+                ->with('product', $this);
+        } else {
+            return "Нет привязки";
+        }
+
     }
 
 //    public function providerorder()

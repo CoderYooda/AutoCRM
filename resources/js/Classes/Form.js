@@ -4,16 +4,26 @@ class AxForm{
         togglePreloader(elem, !boolean);
     }
 
-    send(elem, callback = null){
+    send(elem, callback = null, url = null, dataset = null){
         let object = this;
         let dialog = elem.closest(".dialog");
         window.event.preventDefault();
         let form = elem.closest("form");
         let data = new FormData(form);
+        if(dataset != null){
+            for (const [key, value] of Object.entries(dataset)) {
+                data.append(key, value);
+            }
+        }
         object.setActionButtons(false, elem);
+
+        if(url == null){
+            url = form.getAttribute("action");
+        }
+
         axios({
             method: form.getAttribute("method"),
-            url: form.getAttribute("action"),
+            url: url,
             data: data
         }).then(function (response) {
 
