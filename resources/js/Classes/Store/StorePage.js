@@ -922,6 +922,8 @@ class storePage{
                     }));
                 }
 
+                items.push(new ContextualItem({type:'seperator'}));
+
                 items.push(new ContextualItem({
                     label: 'Удалить', onClick: () => {
                         window.entity.remove(object.contextDop, row.getData().id, object)

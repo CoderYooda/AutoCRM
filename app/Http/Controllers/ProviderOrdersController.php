@@ -25,21 +25,19 @@ class ProviderOrdersController extends Controller
 
         $products = [];
 
-        if($provider_order) {
-            $products = $provider_order->articles;
-        }
-        else if($request->products) {
+        if($request->products) {
             $ids = json_decode($request->products, true);
             $products = Article::owned()->whereIn('id', $ids)->get();
         }
 
         $stores = Store::owned()->get();
 
-        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request', 'products'));
+        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'));
 
         return response()->json([
             'tag' => $tag,
-            'html' => $view->render()
+            'html' => $view->render(),
+            'products' => $products
         ]);
     }
 

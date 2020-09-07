@@ -386,11 +386,11 @@
                     <table class="table-modal" >
                         <thead class="text-muted">
                         <tr>
-                            <th width="80px">Наличие</th>
                             <th width="30%">Наименование</th>
                             <th width="10%">Артикул</th>
                             <th width="10%">Производитель</th>
                             <th width="10%" style="min-width: 60px;">Кол-во</th>
+                            <th width="10%">Наличие</th>
                             <th width="10%" style="min-width: 60px;">Отгружено</th>
                             <th width="10%" style="min-width: 100px;">Цена</th>
                             <th width="10%" style="min-width: 100px;">Всего</th>

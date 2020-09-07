@@ -133,9 +133,11 @@
                             </tr>
                             </thead>
                             <tbody class="product_list">
-                            @foreach($products as $product)
-                                @include(get_template() . '.provider_orders.dialog.product_element')
-                            @endforeach
+                            @isset($provider_order->articles)
+                                @foreach($provider_order->articles as $product)
+                                    @include(get_template() . '.provider_orders.dialog.product_element')
+                                @endforeach
+                            @endisset
                             </tbody>
                         </table>
                     </div>

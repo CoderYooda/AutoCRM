@@ -2,7 +2,7 @@ import Modal from "../Modal/Modal";
 
 class providerOrderDialog extends Modal{
 
-    constructor(dialog){
+    constructor(dialog, response){
         super(dialog);
         console.log('Окно штрихкода инициализировано');
         this.items = [];
@@ -11,6 +11,12 @@ class providerOrderDialog extends Modal{
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.refer = null;
+
+        Object.values(response.products).forEach(product_id => {
+            console.log(product_id.id);
+            window.entity.addProductToList(product_id.id, this, 'providerOrder');
+        });
+
         this.init();
     }
 
@@ -40,7 +46,6 @@ class providerOrderDialog extends Modal{
         // document.addEventListener(event, function(e){
         //     object.finitaLaComedia();
         // });
-
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
