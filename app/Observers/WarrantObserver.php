@@ -17,11 +17,12 @@ class WarrantObserver
         if($payable){
             if($warrant->isIncoming){
                 $payable->wsumm = $payable->wsumm + $warrant->summ;
-                $payable->save();
             } else {
                 $payable->wsumm = $payable->wsumm - $warrant->summ;
-                $payable->save();
             }
+
+            $payable->save();
+
             $payable->freshWsumm();
         }
     }

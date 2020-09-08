@@ -20,6 +20,8 @@ class DocumentController extends Controller
 {
     public static function dialog(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть документы');
+
         $class = 'documentDialog';
 
         $documents = DocumentType::all();
@@ -35,6 +37,8 @@ class DocumentController extends Controller
 
     public function tableData(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть документы');
+
         $size = $request['size'] ?? 30;
 
         $field = null;
@@ -95,6 +99,8 @@ class DocumentController extends Controller
 
     public function document(Request $request)
     {
+        PermissionController::canByPregMatch('Создавать документы');
+
         $names = [
             'out-warrant' => [
                 'view' => 'documents.out-warrant',

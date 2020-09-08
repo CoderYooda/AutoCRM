@@ -237,6 +237,13 @@ class Article extends Model
 //            ->withPivot('count', 'price', 'total', 'shipment_id');
 //    }
 
+    public function getCountInCurrentStore()
+    {
+        $store_id = Auth::user()->current_store;
+
+        return $this->getCountInStoreId($store_id);
+    }
+
     public function getCountInStoreId($store_id)
     {
         $response = DB::table('article_entrance')

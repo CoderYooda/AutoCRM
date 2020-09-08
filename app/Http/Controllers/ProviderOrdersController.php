@@ -18,21 +18,26 @@ class ProviderOrdersController extends Controller
 {
     public static function providerorderDialog($request)
     {
-        $tag = 'providerorderDialog';
+        $po_id = isset($request['provider_order_id']) ? $request['provider_order_id'] : $request['providerorder_id'];
+        $provider_order = ProviderOrder::where('id', (int)$po_id)->first();
 
-        if($request['provider_order_id'] || $request['providerorder_id']){
-            $po_id = isset($request['provider_order_id']) ? $request['provider_order_id'] : $request['providerorder_id'];
-            $provider_order = ProviderOrder::where('id', (int)$po_id)->first();
-            $tag .= $provider_order->id;
-        } else {
-            $provider_order = null;
+        $tag = 'providerorderDialog' . ($provider_order->id ?? '');
+
+        $products = [];
+
+        if($request->products) {
+            $ids = json_decode($request->products, true);
+            $products = Article::owned()->whereIn('id', $ids)->get();
         }
 
         $stores = Store::owned()->get();
 
+        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'));
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'))->render()
+            'html' => $view->render(),
+            'products' => $products
         ]);
     }
 

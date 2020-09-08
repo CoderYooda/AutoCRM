@@ -66,12 +66,12 @@ class Shipment extends Model
 
     public function getProductCount($product_id)
     {
-        return $this->articles()->sum('article_shipment.count');
+        return $this->articles()->where('article_id', $product_id)->sum('count');
     }
 
     public function getRefundedCount($product_id)
     {
-        return $this->articles()->sum('article_shipment.refunded_count');
+        return $this->articles()->where('article_id', $product_id)->sum('refunded_count');
     }
 
     public function articles()
@@ -127,7 +127,7 @@ class Shipment extends Model
 
     public function notRefundedArticles()
     {
-        return $this->articles()->whereRaw('article_shipment.refunded_count < article_shipment.count');
+        return $this->articles()->whereRaw('refunded_count < count');
     }
 
     public function incrementRefundedCount($article_id, $amount)

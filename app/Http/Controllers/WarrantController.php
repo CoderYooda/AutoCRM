@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WarrantRequest;
 use App\Models\Cashbox;
 use App\Models\DdsArticle;
+use App\Models\Refund;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -98,37 +99,12 @@ class WarrantController extends Controller
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);
 
-        $payable = $warrant->payable;
-        if ($payable && $warrant->exists) {
-            if ($warrant->isIncoming) {
-                $payable->wsumm = $payable->wsumm - $warrant->summ;
-                $payable->save();
-            } else {
-                $payable->wsumm = $payable->wsumm + $warrant->summ;
-                $payable->save();
-            }
-        }
+        $warrant->manager_id = Auth::user()->id;
+        $message = "Ордер создан";
+        $wasExisted = false;
 
-        if ($warrant->exists) {
-            $message = "Ордер обновлен";
-            $wasExisted = true;
-            //$correct_summ = doubleval($warrant->summ) - doubleval($request['summ']);
-
-            if ($warrant->isIncoming) {
-                $warrant->partner->subtraction($warrant->summ);
-                $warrant->cashbox->subtraction($warrant->summ);
-            } else {
-                $warrant->partner->addition($warrant->summ);
-                $warrant->cashbox->addition($warrant->summ);
-            }
-        } else {
-            $warrant->manager_id = Auth::user()->id;
-            $message = "Ордер создан";
-            $wasExisted = false;
-        }
-
-        $cashbox = Cashbox::owned()->where('id', $request['cashbox_id'])->first();
-        $partner = Partner::owned()->where('id', $request['partner_id'])->first();
+        $cashbox = Cashbox::find($request['cashbox_id']);
+        $partner = Partner::find($request['partner_id']);
 
         if ($request['isIncoming']) {
             $cashbox->addition($request['summ']);
@@ -138,11 +114,9 @@ class WarrantController extends Controller
             $partner->subtraction($request['summ']);
         }
 
-
         $warrant->fill($request->only($warrant->fields));
         $warrant->balance = $cashbox->balance;
         $warrant->created_at = $request['do_date'];
-
 
         if ($request->refer != null) {
             $refer = 'App\Models\\' . $request->refer;
@@ -162,14 +136,10 @@ class WarrantController extends Controller
 //            $warrant->$method()->syncWithoutDetaching($warrant->refer_id);
 //        }
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'message' => $message,
-                'event'   => 'WarrantStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+        return response()->json([
+            'message' => $message,
+            'event'   => 'WarrantStored',
+        ], 200);
     }
 
     public function delete($id, Request $request)

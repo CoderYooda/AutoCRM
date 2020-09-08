@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdjustmentRequest;
+use App\Http\Requests\Adjustments\SearchRequest;
 use App\Models\Adjustment;
-use App\Models\ClientOrder;
-use Illuminate\Http\Request;
+use App\Models\Article;
 use App\Models\Store;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
@@ -15,21 +16,86 @@ use Auth;
 
 class AdjustmentController extends Controller
 {
-    public static function adjustmentDialog($request)
+    public static function adjustmentDialog(Request $request)
     {
-        $tag = 'adjustmentDialog';
-        if($request['adjustment_id']){
-            $adjustment = Adjustment::where('id', (int)$request['adjustment_id'])->first();
-            $tag .= $adjustment->id;
-        } else {
-            $adjustment = null;
+        $adjustment = Adjustment::find($request->adjustment_id);
+
+        $tag = 'adjustmentDialog' . ($adjustment->id ?? '');
+
+        $articles = [];
+
+        if ($adjustment) {
+            $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
+            $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('article_entrance_id'))->get();
+
+            $articleNames = Article::with('supplier')->whereIn('id', $articleEntrances->pluck('article_id'))->get();
+
+            foreach ($articleEntrances as $articleEntrance) {
+
+                $article_id = $articleEntrance->article_id;
+                $adjustmentArticleEntrance = $adjustmentArticleEntrances->where('article_entrance_id', $articleEntrance->id)->first();
+
+                $articles[$article_id]['name'] = $articleNames->find($article_id)->name;
+                $articles[$article_id]['manufacturer'] = $articleNames->find($article_id)->supplier->name;
+
+                $articles[$article_id]['entrances'][$articleEntrance->entrance_id] = [
+                    'created_at' => $articleEntrance->created_at,
+                    'deviation_price' => $adjustmentArticleEntrance->price,
+                    'deviation_count' => $adjustmentArticleEntrance->count,
+                    'price'          => $articleEntrance->price,
+                    'count'          => $articleEntrance->count,
+                    'released_count' => $articleEntrance->released_count
+                ];
+            }
         }
 
-        $stores = Store::where('company_id', Auth::user()->id)->get();
+        $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact('adjustment', 'request', 'articles'))
+            ->with('class', $tag);
 
         return response()->json([
-            'tag' => $tag,
-            'html' => view(get_template() . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores',  'request'))->render()
+            'tag'  => $tag,
+            'html' => $view->render()
+        ]);
+    }
+
+    public function search(SearchRequest $request)
+    {
+        $class = $request->refer;
+
+        $article = Article::find($request->product_id);
+
+        $company = Auth::user()->company;
+
+        $articleEntrances = DB::table('article_entrance')
+            ->whereRaw('released_count < count')
+            ->where([
+                'company_id' => $company->id,
+                'article_id' => $article->id
+            ])
+            ->get();
+
+        $articleAttributes = [
+            'name' => $article->name,
+            'manufacturer' => $article->supplier->name,
+            'entrances' => []
+        ];
+
+        foreach ($articleEntrances as $articleEntrance) {
+
+            $articleAttributes['entrances'][$articleEntrance->entrance_id] = [
+                'created_at' => date('d.m.Y', strtotime($articleEntrance->created_at)),
+                'count' => $articleEntrance->count,
+                'price' => $articleEntrance->price,
+                'released_count' => $articleEntrance->released_count
+            ];
+        }
+
+        $view = view(get_template() . '.adjustments.dialog.product_elements', compact('class', 'articleAttributes'))
+            ->with('article_id', $article->id);
+
+        return response()->json([
+            'html'    => $view->render(),
+            'article' => $article
         ]);
     }
 
@@ -41,108 +107,87 @@ class AdjustmentController extends Controller
 
     public function store(AdjustmentRequest $request)
     {
-        PermissionController::canByPregMatch($request['id'] ? 'Редактировать корректировки' : 'Создавать корректировки');
-        $adjustment = new Adjustment();
-        $adjustment->company_id = Auth::user()->company()->first()->id;
-        $adjustment->manager_id = Auth::user()->partner()->first()->id;
-        if($request['store_id'] == null){
-            $adjustment->store_id = Auth::user()->partner()->first()->store()->first()->id;
-        }
-        $this->message = 'Корректировка сохранена';
-        $adjustment->fill($request->only($adjustment->fields));
-        $adjustment->save();
+        return DB::transaction(function () use ($request) {
 
+            $user = Auth::user();
 
-        $adjustment_data = [];
-        $store = $adjustment->store()->first();
+            $adjustment = Adjustment::create([
+                'company_id' => $user->company_id,
+                'manager_id' => $user->id,
+                'store_id'   => $user->current_store,
+                'comment'    => $request->comment
+            ]);
 
-        foreach($request['products'] as $id => $product) {
+            foreach ($request->products as $entrance_id => $articles) {
 
-            $fact = $product['fact'];
-            //$vprice = $product['price'];
+                foreach ($articles as $article_id => $count) {
 
-//            $deviation_count = $store->getArticlesCountById($id) - $fact;
-//            $deviation_price = $store->getMidPriceById($id) - $vprice;
+                    if($entrance_id != 'new') continue;
 
-//            $store->setArticleCount($id, $fact);
-//            $store->setArticleMidPrice($id, $vprice);
+                    $attributes = [
+                        'entrance_id' => $entrance_id == 'new' ? null : $entrance_id,
+                        'article_id'  => $article_id,
+                        'company_id' => $user->company_id,
+                        'store_id' => $user->current_store
+                    ];
 
-            $pivot_data = [
-                'article_id' => (int)$product['id'],
-                'store_id' => (int)$request['store_id'],
-                'adjustment_id' => $adjustment->id,
-                'prev_count' => (int)$fact /*+ $deviation_count */,
-                'count' => (int)$fact,
-                'price' => null,
-                'prev_price' => null,
-//                'deviation_count' => (int)$deviation_count,
-                'deviation_price' => null
-            ];
-            $adjustment_data[] = $pivot_data;
-        }
+                    $query = DB::table('article_entrance');
 
-        #Удаление всех отношений и запись новых (кастомный sync)
-        $adjustment->articles()->sync($adjustment_data, true);
+                    if($entrance_id == 'new') {
+                        $attributes['count'] = $count;
+                        $attributes['created_at'] = $attributes['updated_at'] = Carbon::now();
 
-        UA::makeUserAction($adjustment, 'create');
+                        $query->insert($attributes);
+                    }
+                    else {
+                        $query->where($attributes)->update(['count' => $count]);
+                    }
 
-        return response()->json([
-            'message' => $this->message,
-            'id' => $adjustment->id,
-            'event' => 'AdjustmentStored',
-        ], 200);
-    }
+                    $articleEntrance = DB::table('article_entrance')->where($attributes)->latest()->first();
 
-    public function fresh($id, Request $request)
-    {
-        $adjustment = Adjustment::where('id', (int)$id)->first();
-
-        $adjustment->articles = $adjustment->articles()->get();
-
-        $stores = Store::where('company_id', Auth::user()->id)->get();
-
-        foreach($adjustment->articles as $article){
-            $article->instock = $article->getCountInStoreId($adjustment->store_id);
-            if($article->instock >= $article->pivot->count){
-                $article->complited = true;
-            } else {
-                $article->complited = false;
+                    DB::table('adjustment_article_entrance')->insertOrIgnore([
+                        'adjustment_id'       => $adjustment->id,
+                        'article_entrance_id' => $articleEntrance->id,
+                        'count'               => $count - ($articleEntrance->count ?? 0)
+                    ]);
+                }
             }
-        }
 
-        $request['fresh'] = true;
-        $class = 'adjustmentDialog' . $id;
-        $inner = true;
-        $content = view(get_template() . '.adjustments.dialog.form_adjustment', compact( 'adjustment', 'stores', 'class', 'inner', 'request'))->render();
-        return response()->json([
-            'html' => $content,
-            'target' => 'adjustmentDialog' . $id,
-        ], 200);
+            PermissionController::canByPregMatch('Создавать корректировки');
+            UA::makeUserAction($adjustment, 'create');
+
+            return response()->json([
+                'id'    => $adjustment->id,
+                'event' => 'AdjustmentStored',
+            ], 200);
+        });
     }
 
-    public function delete(Request $request){
-        if(!Gate::allows('Удалять денежные операции')){
+    public function delete(Request $request)
+    {
+        if (!Gate::allows('Удалять денежные операции')) {
             return PermissionController::closedResponse('Вам запрещено это действие.');
         }
-        if($request->expectsJson()){
+        if ($request->expectsJson()) {
             return response()->json([
                 'message' => 'Удаление невозможно',
-                'type' => 'error',
+                'type'    => 'error',
             ], 200);
         } else {
             return redirect()->back();
         }
     }
 
-    public function getSideInfo(Request $request){
+    public function getSideInfo(Request $request)
+    {
 
-        $adjustment = Adjustment::owned()->where('id', $request['id'])->first();
-        $partner = $adjustment->partner()->first();
+        $adjustment = Adjustment::with('partner')->find($request['id']);
+        $partner = $adjustment->partner;
         $comment = $adjustment->comment;
-        if($request->expectsJson()){
+        if ($request->expectsJson()) {
             return response()->json([
-                'info' => view(get_template() . '.adjustments.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info'    => view(get_template() . '.adjustments.contact-card', compact('partner', 'request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
             ], 200);
         } else {
             return redirect()->back();
@@ -151,95 +196,34 @@ class AdjustmentController extends Controller
 
     public static function getAdjustments($request)
     {
-        $size = 30;
-        if(isset($request['size'])){
-            $size = (int)$request['size'];
-        }
+        $size = $request['size'] ?? 30;
 
-        $field = null;
-        $dir = null;
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
 
-        if(isset($request['sorters'])){
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-        if($field === null &&  $dir === null){
-            $field = 'created_at';
-            $dir = 'DESC';
-        }
-
-        if($request['dates_range'] !== null){
+        if ($request['dates_range'] !== null) {
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
 
-        if($request['accountable'] == null){
-            $request['accountable'] = [];
-        }
-
-        $adjustments =
-            Adjustment::select(DB::raw('
+        $adjustments = Adjustment::select(DB::raw('
                 adjustments.*, adjustments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, stores.name as store
             '))
-                ->leftJoin('partners',  'partners.id', '=', 'adjustments.manager_id')
-                ->leftJoin('stores',  'stores.id', '=', 'adjustments.store_id')
-
-                ->where('adjustments.company_id', Auth::user()->company()->first()->id)
-
-                ->when($request['accountable'] != null, function($query) use ($request) {
-                    $query->whereIn('adjustments.partner_id', $request['accountable']);
-                })
-                ->when($request['dates_range'] != null, function($query) use ($request) {
-                    $query->whereBetween('adjustments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
-                })
-                ->groupBy('adjustments.id')
-                ->orderBy($field, $dir)
-                ->paginate($size);
-
-//        select shipments.id, shipments.created_at, IF(partners.type != 2, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
-//        from shipments
-//        left join `partners` on `partners`.`id` = `shipments`.`partner_id`
-//        and `shipments`.`company_id` = 2
-//        group by `shipments`.`id`
-//        order by `created_at` desc
+            ->leftJoin('partners', 'partners.id', '=', 'adjustments.manager_id')
+            ->leftJoin('stores', 'stores.id', '=', 'adjustments.store_id')
+            ->where('adjustments.company_id', Auth::user()->company()->first()->id)
+            ->when($request['accountable'] != null, function ($query) use ($request) {
+                $query->whereIn('adjustments.partner_id', $request['accountable']);
+            })
+            ->when($request['dates_range'] != null, function ($query) use ($request) {
+                $query->whereBetween('adjustments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->groupBy('adjustments.id')
+            ->orderBy($field, $dir)
+            ->paginate($size);
 
         return $adjustments;
-
-
-
-
-//        $client_orders = Adjustment::owned()
-//            ->orderBy('created_at', 'DESC')
-//            ->where(function($q) use ($request){
-//                if(isset($request['date_start']) && $request['date_start'] != 'null' && $request['date_start'] != ''){
-//                    $q->where('do_date',  '>=',  Carbon::parse($request['date_start']));
-//                }
-//                if(isset($request['date_end']) && $request['date_end'] != 'null' && $request['date_end'] != ''){
-//                    $q->where('do_date', '<=', Carbon::parse($request['date_end']));
-//                }
-//            })
-//            ->where(function($q) use ($request){
-//                if(isset($request['search']) && $request['search'] !== 'null') {
-//                    if (mb_strlen($request['search']) === 1) {
-//                        $q->whereHas('partner', function ($q) use ($request) {
-//                            $q->where('fio', 'LIKE', $request['search'] . '%' )
-//                                ->orWhere('companyName', 'LIKE', $request['search'] . '%');
-//                        });
-//                    } else {
-//                        $q->whereHas('partner', function ($q) use ($request) {
-//                            $q->where('fio', 'LIKE', '%' . $request['search'] . '%')
-//                                ->orWhere('companyName', 'LIKE', '%' . $request['search'] . '%')
-//                                ->orWhereHas('phones', function ($query) use ($request) {
-//                                    $query->where('number', 'LIKE', '%' . $request['search'] . '%');
-//                                });
-//                        });
-//                    }
-//                }
-//            })
-//            ->paginate(16);
-
-//        return $client_orders;
     }
 }

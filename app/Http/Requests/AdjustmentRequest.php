@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Adjustments\CheckExistArticles;
+use App\Rules\Adjustments\CheckExistEntrances;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Auth;
-use Carbon\Carbon;
 
 class AdjustmentRequest extends FormRequest
 {
@@ -15,23 +15,14 @@ class AdjustmentRequest extends FormRequest
         return true;
     }
 
-    public function prepareForValidation()
-    {
-        $this['partner_id'] = Auth::user()->partner()->first()->id;
-
-        if($this['do_date'] == null){
-            $this['do_date'] = Carbon::now();
-        }
-    }
-
     public function rules()
     {
         return [
-            'partner_id' => ['required', 'exists:partners,id'],
-            'store_id' => ['required', 'exists:stores,id'],
+            'comment' => ['string', 'max:1024'],
             'products' => ['required'],
-            'products.*.fact' => ['required', 'integer', 'min:0', 'max:9999'],
-            //'products.*.deviation' => ['required', 'numeric', 'between:1,1000000.00'],
+            'products.*' => [new CheckExistEntrances, new CheckExistArticles],
+            'products.*.*.count' => ['required', 'between:0,999'],
+            'products.*.*.price' => ['required', 'between:0,' . PHP_FLOAT_MAX]
         ];
     }
 

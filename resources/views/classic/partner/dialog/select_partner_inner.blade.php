@@ -5,7 +5,7 @@
     </div>
 @endif
 
-<div class="@if(!$request->has('only_current_category'))col-sm-9 no-pl @else col-sm-12 @endif">
+<div class="@if(!$request->has('only_current_category')) col-sm-9 @else flex-1 @endif no-pl">
     @if(count($partners))
         <div class="" data-simplebar style="max-height: 400px;">
             <div class="box-body">

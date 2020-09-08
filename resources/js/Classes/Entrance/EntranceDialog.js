@@ -45,7 +45,7 @@ class createEntrance extends Modal{
         if(window.isXHRloading) return;
 
         window.axform.send(elem, (resp) => {
-            console.log(resp);
+
             if(resp.status === 200) {
                 let root_id = this.root_dialog.id;
                 this.root_dialog.querySelector('input[name=id]').value = resp.data.id;

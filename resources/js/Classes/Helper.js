@@ -164,10 +164,9 @@ class Helper{
                         } else {
                             window[elem.id] = new classes[classname](elem);
                         }
-
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
-                        console.error(err);
+                        console.log(err);
                     }
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }
