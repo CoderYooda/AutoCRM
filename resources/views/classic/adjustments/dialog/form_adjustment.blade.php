@@ -6,7 +6,7 @@
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
         <div id="adjustment_tabs" class="d-flex tab_links ml-15 mt-15 mr-15">
-            <a href="#" class="active" data-target="tab_desc" style="margin-right: 30px;">Описание</a>
+            <a href="#" class="mr-10 active" data-target="tab_desc">Описание</a>
             <a href="#" data-target="tab_products">Продукты</a>
         </div>
 
@@ -59,66 +59,41 @@
 
             <div id="tab_products" class="tab">
 
-{{--                <div class="form-group w-100">--}}
-{{--                    <button type="button" onclick="{{ $class }}.selectProduct()" name="product_id" class="form-control text-left button_select" @if($adjustment) disabled @endif>Выбор продукта</button>--}}
-{{--                </div>--}}
+                <div id="table-list" class="m-15">
 
-                <div data-simplebar class="w-100 mt-5">
-                    <div id="table-list" class="d-flex flex-column w-100">
+                    <div class="header d-flex w-100">
+                        <div class="pl-10" style="width: 20%">Артикул</div>
+                        <div style="width: 30%">Производитель</div>
+                        <div style="width: 40%">Название</div>
+                        <div style="width: 10%"></div>
+                    </div>
 
-                        <table cellspacing="0">
+                    <div data-simplebar class="body w-100" style="height: 215px;">
 
-                            <thead>
-                                <th>Артикул</th>
-                                <th>Производитель</th>
-                                <th>Название</th>
-                                <th>
-                                    <div class="pointer" style="color: #A1A1A1;">
-                                        <span>Удалить все <i class="fa fa-times" aria-hidden="true"></i></span>
+                        @if(count($articles))
+                            @foreach($articles as $article_id => $articleAttributes)
+
+                                <div class="d-flex element">
+                                    <div class="pl-10" style="width: 20%">{{ $article_id }}</div>
+                                    <div style="width: 30%">{{ $articleAttributes['manufacturer'] }}</div>
+                                    <div style="width: 40%">{{ $articleAttributes['name'] }}</div>
+                                    <div style="width: 10%">
+                                        <div class="d-flex pointer show-button" onclick="{{ $class }}.showEntrances(this, {{ $article_id }})">
+                                            <i class="fa fa-angle-down fa-5" aria-hidden="true" style="margin: 0 auto; font-size: 18px;"></i>
+                                        </div>
                                     </div>
-                                </th>
-                            </thead>
+                                </div>
 
-                            <tbody>
-                                @if(count($articles))
-                                    @foreach($articles as $article_id => $articleAttributes)
+                                @include(get_template() . '.adjustments.dialog.product_elements')
 
-                                        <tr style="height: 40px;">
-                                            <td>
-                                                <div>
-                                                    <span>{{ $article_id }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <span>{{ $articleAttributes['manufacturer'] }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <span>{{ $articleAttributes['name'] }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="p-5">
-                                                    <img class="pointer" src="{{ asset('/images/icons/edit-pen.svg') }}" style="vertical-align: middle;" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-
-                        </table>
-
-{{--                        @if(count($articles))--}}
-{{--                            @foreach($articles as $article_id => $articleAttributes)--}}
-{{--                                @include(get_template() . '.adjustments.dialog.product_elements')--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
+                            @endforeach
+                        @endif
 
                     </div>
+
                 </div>
+
+                <button class="ml-15 button-add" name="product_id" onclick="{{ $class }}.selectProduct()" @if($adjustment) disabled @endif>+ Добавить позицию</button>
 
             </div>
 

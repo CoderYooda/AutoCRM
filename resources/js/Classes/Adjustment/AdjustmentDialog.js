@@ -22,13 +22,14 @@ class adjustmentDialog extends Modal{
 
     showEntrances(element, article_id) {
 
+        let target_element = this.current_dialog.querySelector('#product_' + article_id);
         let i_element = element.querySelector('i');
-
-        let target_element = this.current_dialog.querySelector('#product_selected_' + article_id);
+        let tr_element = element.closest('tr');
 
         target_element.classList.toggle('d-none');
         i_element.classList.toggle('fa-angle-down');
         i_element.classList.toggle('fa-angle-up');
+        tr_element.classList.toggle('selected');
 
         let list_element = this.current_dialog.querySelector('#table-list');
 
@@ -38,11 +39,13 @@ class adjustmentDialog extends Modal{
 
             if(target_item != target_element) {
 
+                let tr_target = item.querySelector('tr');
                 let i_target = item.querySelector('.toggled').firstElementChild;
 
                 target_item.classList.add('d-none');
                 i_target.classList.add('fa-angle-down');
                 i_target.classList.remove('fa-angle-up');
+                tr_target.classList.remove('selected');
             }
         });
     }

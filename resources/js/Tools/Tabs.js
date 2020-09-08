@@ -6,8 +6,6 @@ class Tabs {
 
         this.ul_element = document.getElementById(element_name);
 
-        console.log(this.ul_element);
-
         this.a_elements = this.ul_element.querySelectorAll('a');
         this.tab_elements = [];
 
