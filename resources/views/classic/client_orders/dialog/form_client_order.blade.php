@@ -294,15 +294,14 @@
                                         <div class="input-group">
                                             <input onfocus="{{ $class }}.toggleSMSTemplatesBlock(event)" id="sms_field" type="text" class="form-control" placeholder="SMS сообщение клиенту">
                                             <div class="hide" id="templates">
-                                                <div class="template_elem" onclick="{{ $class }}.pickText(this)">
-                                                    Первый вариант текста
-                                                </div>
-                                                <div class="template_elem" onclick="{{ $class }}.pickText(this)">
-                                                    Второй вариант текста
-                                                </div>
-                                                <div class="template_elem" onclick="{{ $class }}.pickText(this)">
-                                                    Третий вариант текста
-                                                </div>
+                                                @if($client_order)
+                                                    <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                        Ваш заказ № {{ $client_order->id }} готов к выдаче! {{ Auth::user()->company->name }}
+                                                    </div>
+                                                    <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                        Ваш заказ № {{ $client_order->id }} был отменен! {{ Auth::user()->company->name }}
+                                                    </div>
+                                                @endif
                                             </div>
                                             <span class="input-group-append">
                                                 <button onclick="{{ $class }}.sendSMS()" class="button" type="button" id="newBtn">
