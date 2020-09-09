@@ -2639,11 +2639,15 @@ input:-moz-placeholder { /* Firefox 18- */
         .body {
 
             background: url(/images/table/table-structure.svg);
+            .position + .position.showed {
 
+            }
             .position {
 
                 &.showed {
-                    border: 1px solid #2364A0 !important;
+                    border-left: 1px solid #2364A0 !important;
+                    border-right: 1px solid #2364A0 !important;
+                    box-shadow: 0 0 0px 1px #2364A0;
 
                     .element {
                         color: white !important;
@@ -2652,10 +2656,10 @@ input:-moz-placeholder { /* Firefox 18- */
                     .element::after {
                         content: "";
                         position: absolute;
-                        height: 29px;
-                        top: 1px;
-                        left: 1px;
-                        width: calc(100% - 2px);
+                        height: 31px;
+                        top: 0px;
+                        left: 0px;
+                        width: 100%;
                         background: #2364A0 !important;
                         z-index: -1;
                     }
@@ -2663,6 +2667,13 @@ input:-moz-placeholder { /* Firefox 18- */
 
                 border-left: 1px solid #E7E8EC;
                 border-right: 1px solid #E7E8EC;
+
+                &.showed .element:hover {
+                    &:after {
+                        background: #F7F8FA;
+                        height: 31px!important;
+                    }
+                }
 
                 .element {
 
@@ -2701,7 +2712,7 @@ input:-moz-placeholder { /* Firefox 18- */
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        line-height: 30px;
+                        line-height: 31px;
 
                         input {
                             height: 30px !important;
@@ -2714,6 +2725,13 @@ input:-moz-placeholder { /* Firefox 18- */
         }
 
         .entrances {
+
+            transition: 1s;
+            margin-top: 0px;
+
+            &.closed{
+                margin-top: -300px;
+            }
 
             .children_header {
                 line-height: 31px;
@@ -2728,7 +2746,7 @@ input:-moz-placeholder { /* Firefox 18- */
                 .children_button {
                     height: 31px;
                     line-height: 28px;
-                    border-top: 1px solid #eee;
+                    border-bottom: 1px solid #e7e8ec;
                     text-align: center;
                     background: #f7f8fa;
                 }
