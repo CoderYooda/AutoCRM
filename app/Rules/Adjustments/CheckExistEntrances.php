@@ -20,10 +20,7 @@ class CheckExistEntrances implements Rule
 
         if($entrance_id == 'new') return true;
 
-        return DB::table('article_entrance')->where([
-            'company_id' => Auth::user()->company_id,
-            'entrance_id' => $entrance_id
-        ])->exists();
+        return DB::table('article_entrance')->where('id', $entrance_id)->exists();
     }
 
     public function message()

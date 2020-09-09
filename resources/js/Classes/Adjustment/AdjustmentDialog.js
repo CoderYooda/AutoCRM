@@ -127,7 +127,9 @@ class adjustmentDialog extends Modal{
 
     save(element) {
 
-        window.axform.send(element, response => {
+        let form_element = this.current_dialog.querySelector('form');
+
+        axform.send(form_element, response => {
             if(response.status === 200) {
                 this.fresh(response.data.id);
             }
@@ -135,7 +137,10 @@ class adjustmentDialog extends Modal{
     }
 
     saveAndClose(element) {
-        axform.send(element, response => {
+
+        let form_element = this.current_dialog.querySelector('form');
+
+        axform.send(form_element, response => {
             if(response.status == 200) {
                 this.finitaLaComedia(true);
             }
