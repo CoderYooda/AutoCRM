@@ -2,8 +2,6 @@ class Tabs {
 
     constructor(element_name) {
 
-        console.log(element_name);
-
         this.ul_element = document.getElementById(element_name);
 
         this.a_elements = this.ul_element.querySelectorAll('a');

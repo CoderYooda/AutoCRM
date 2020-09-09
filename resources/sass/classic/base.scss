@@ -2606,12 +2606,15 @@ input:-moz-placeholder { /* Firefox 18- */
 
     #table-list {
 
-        border: 1px solid #E7E8EC;
+        border-top: 1px solid #E7E8EC;
+        border-bottom: 1px solid #E7E8EC;
 
         .header{
             position: relative;
             border-bottom: 1px solid #e7e8ec;
             line-height: 31px;
+            border-left: 1px solid #E7E8EC;
+            border-right: 1px solid #E7E8EC;
         }
 
         .header::after {
@@ -2637,35 +2640,74 @@ input:-moz-placeholder { /* Firefox 18- */
 
             background: url(/images/table/table-structure.svg);
 
-            .element {
+            .position {
 
-                &:hover {
-                    background: #F7F8FA;
+                &.showed {
+                    border: 1px solid #2364A0 !important;
+
+                    .element {
+                        color: white !important;
+                    }
+
+                    .element::after {
+                        content: "";
+                        position: absolute;
+                        height: 29px;
+                        top: 1px;
+                        left: 1px;
+                        width: calc(100% - 2px);
+                        background: #2364A0 !important;
+                        z-index: -1;
+                    }
                 }
 
-                background: white;
+                border-left: 1px solid #E7E8EC;
+                border-right: 1px solid #E7E8EC;
 
-                border-top: 1px solid #e7e8ec;
+                .element {
 
-                &:first-child {
-                    border-top: none;
-                }
+                    position: relative;
 
-                &:last-child {
-                    //border-bottom: 1px solid #e7e8ec;
-                    border-bottom: none;
-                }
+                    &:hover {
+                        &:after {
+                            background: #F7F8FA;
+                            height: 28px;
+                        }
+                    }
 
-                div {
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    line-height: 30px;
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        height: 29px;
+                        top: 1px;
+                        left: 1px;
+                        width: calc(100% - 2px);
+                        background: white;
+                        z-index: -1;
+                    }
 
-                    input {
-                        height: 30px !important;
+                    border-top: 1px solid #e7e8ec;
+
+                    &:first-child {
+                        border-top: none;
+                    }
+
+                    &:last-child {
+                        //border-bottom: 1px solid #e7e8ec;
+                        border-bottom: none;
+                    }
+
+                    div {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                         line-height: 30px;
-                        width: 68px;
+
+                        input {
+                            height: 30px !important;
+                            line-height: 30px;
+                            width: 68px;
+                        }
                     }
                 }
             }
@@ -2678,13 +2720,14 @@ input:-moz-placeholder { /* Firefox 18- */
                 height: 31px;
                 border-top: none;
                 border-bottom: 1px solid #e7e8ec;
+                background: #f7f8fa;
             }
 
             .children_body {
 
                 .children_button {
                     height: 31px;
-                    line-height: 31px;
+                    line-height: 28px;
                     border-top: 1px solid #eee;
                     text-align: center;
                     background: #f7f8fa;
@@ -2695,8 +2738,21 @@ input:-moz-placeholder { /* Firefox 18- */
                     line-height: 31px;
                     height: 31px;
 
+                    border-bottom: 1px solid #e7e8ec;
+
+                    &:last-child {
+                        border-bottom: unset;
+                    }
+
                     div {
                         line-height: 30px;
+
+                        img {
+                            cursor: pointer;
+                            float: right;
+                            margin-top: 9px;
+                            margin-right: 14px;
+                        }
 
                         input {
                             height: 24px;
@@ -2704,6 +2760,7 @@ input:-moz-placeholder { /* Firefox 18- */
                             margin: 3px 0;
                             display: block;
                             border-radius: 0;
+                            width: 105px;
                         }
                     }
                 }

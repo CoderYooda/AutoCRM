@@ -39,7 +39,7 @@ class AdjustmentController extends Controller
                 $articles[$article_id]['manufacturer'] = $articleNames->find($article_id)->supplier->name;
 
                 $articles[$article_id]['entrances'][$articleEntrance->entrance_id] = [
-                    'created_at' => $articleEntrance->created_at,
+                    'created_at' => date('d.m.Y', strtotime($articleEntrance->created_at)),
                     'deviation_price' => $adjustmentArticleEntrance->price,
                     'deviation_count' => $adjustmentArticleEntrance->count,
                     'price'          => $articleEntrance->price,
@@ -90,7 +90,7 @@ class AdjustmentController extends Controller
             ];
         }
 
-        $view = view(get_template() . '.adjustments.dialog.product_elements', compact('class', 'articleAttributes'))
+        $view = view(get_template() . '.adjustments.dialog.includes.product_element', compact('class', 'articleAttributes'))
             ->with('article_id', $article->id);
 
         return response()->json([
@@ -180,13 +180,14 @@ class AdjustmentController extends Controller
 
     public function getSideInfo(Request $request)
     {
+        $adjustment = Adjustment::find($request->id);
 
-        $adjustment = Adjustment::with('partner')->find($request['id']);
-        $partner = $adjustment->partner;
+        $manager = $adjustment->manager;
         $comment = $adjustment->comment;
+
         if ($request->expectsJson()) {
             return response()->json([
-                'info'    => view(get_template() . '.adjustments.contact-card', compact('partner', 'request'))->render(),
+                'info'    => view(get_template() . '.adjustments.contact-card', compact('manager', 'request'))->render(),
                 'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
             ], 200);
         } else {

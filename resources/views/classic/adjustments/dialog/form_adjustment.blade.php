@@ -1,65 +1,67 @@
 @if(!isset($inner) || !$inner)
-    <div id="adjustmentDialog{{$adjustment->id ?? ''}}" @isset($adjustment) data-id="{{ $adjustment->id }}" @endif class="dialog adjustment_dialog" style="width:844px; height: 450px;">
+    <div id="adjustmentDialog{{$adjustment->id ?? ''}}" @isset($adjustment) data-id="{{ $adjustment->id }}" @endif class="dialog adjustment_dialog" style="width:844px;">
 @endif
         <div class="titlebar">{{ isset($adjustment) ? ('Корректировка №' . $adjustment->id) : ('Новая корректировка') }}</div>
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-        <div id="adjustment_tabs" class="d-flex tab_links ml-15 mt-15 mr-15">
+        <div id="adjustment_tabs" class="d-flex tab_links" style="margin: 10px 22px 10px 22px;">
             <a href="#" class="mr-10 active" data-target="tab_desc">Описание</a>
             <a href="#" data-target="tab_products">Продукты</a>
         </div>
 
-        <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST" style="height: 295px;">
+        <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
 
             @csrf
 
             <input type="hidden" name="id" value="{{ $adjustment->id ?? '' }}">
 
-            <div id="tab_desc" class="box-body tab active">
+            <div id="tab_desc" class="tab active" style="height: 295px;">
+                <div style="padding: 0 22px;">
 
-                <div class="d-flex">
+                    <div class="d-flex">
 
-                    <div class="flex-1">
+                        <div class="flex-1">
 
-                        <div class="form-group d-flex flex-column">
-                            <label>Менеджер</label>
-                            <span>{{ $adjustment ? $adjustment->manager->fio : auth()->user()->partner->fio }}</span>
+                            <div class="form-group d-flex flex-column">
+                                <label>Менеджер</label>
+                                <span>{{ $adjustment ? $adjustment->manager->fio : auth()->user()->partner->fio }}</span>
+                            </div>
+
                         </div>
 
-                    </div>
+                        <div class="flex-2">
 
-                    <div class="flex-2">
-
-                        <div class="form-group">
-                            <label>Комментарий</label>
-                            @if($adjustment)
-                                @if($adjustment->comment)
-                                    <p class="m-0">{{ $adjustment->comment }}</p>
-                                @else
-                                    <div class="p-15" style="background: #F7F7F7; border-radius: 4px;">
-                                        <div class="text-center">
-                                            <div>
-                                                <img src="{{ asset('/images/dialog/empty_comment.svg') }}" />
+                            <div class="form-group">
+                                <label>Комментарий</label>
+                                @if($adjustment)
+                                    @if($adjustment->comment)
+                                        <p class="m-0">{{ $adjustment->comment }}</p>
+                                    @else
+                                        <div class="p-15" style="background: #F7F7F7; border-radius: 4px;">
+                                            <div class="text-center">
+                                                <div>
+                                                    <img src="{{ asset('/images/dialog/empty_comment.svg') }}" />
+                                                </div>
+                                                <div>Комментарий отсутствует</div>
                                             </div>
-                                            <div>Комментарий отсутствует</div>
                                         </div>
-                                    </div>
+                                    @endif
+                                @else
+                                    <textarea class="form-control resize-none" style="height: 60px;"></textarea>
                                 @endif
-                            @else
-                                <textarea class="form-control resize-none" style="height: 60px;"></textarea>
-                            @endif
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
-
             </div>
 
-            <div id="tab_products" class="tab">
+            <div id="tab_products" class="tab" style="height: 295px;">
 
-                <div id="table-list" class="m-15">
+                <div id="table-list" style="margin: 0 22px 10px 22px;">
 
                     <div class="header d-flex w-100">
                         <div class="pl-10" style="width: 20%">Артикул</div>
@@ -68,39 +70,32 @@
                         <div style="width: 10%"></div>
                     </div>
 
-                    <div data-simplebar class="body w-100" style="height: 215px;">
+                    <div data-simplebar class="body w-100" style="height: 216px;">
 
-                        @if(count($articles))
-                            @foreach($articles as $article_id => $articleAttributes)
+                        <div id="product-list">
 
-                                <div class="d-flex element">
-                                    <div class="pl-10" style="width: 20%">{{ $article_id }}</div>
-                                    <div style="width: 30%">{{ $articleAttributes['manufacturer'] }}</div>
-                                    <div style="width: 40%">{{ $articleAttributes['name'] }}</div>
-                                    <div style="width: 10%">
-                                        <div class="d-flex pointer show-button" onclick="{{ $class }}.showEntrances(this, {{ $article_id }})">
-                                            <i class="fa fa-angle-down fa-5" aria-hidden="true" style="margin: 0 auto; font-size: 18px;"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                            @if(count($articles))
+                                @foreach($articles as $article_id => $articleAttributes)
 
-                                @include(get_template() . '.adjustments.dialog.product_elements')
+                                    @include(get_template() . '.adjustments.dialog.includes.product_element')
 
-                            @endforeach
-                        @endif
+                                @endforeach
+                            @endif
+
+                        </div>
 
                     </div>
 
                 </div>
 
-                <button class="ml-15 button-add" name="product_id" onclick="{{ $class }}.selectProduct()" @if($adjustment) disabled @endif>+ Добавить позицию</button>
+                <button class="button-add" style="margin-left: 22px;" name="product_id" onclick="{{ $class }}.selectProduct()" @if($adjustment) disabled @endif>+ Добавить позицию</button>
 
             </div>
 
         </form>
 
 
-        <div class="modal-footer">
+        <div class="modal-footer" style="height: 58px;">
 
             <button class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
 
