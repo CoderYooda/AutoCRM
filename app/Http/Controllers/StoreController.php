@@ -324,11 +324,26 @@ class StoreController extends Controller
             }
         }
         else {
-
             #Парсим файл txt или csv формата
 
             if (($handle = fopen($file, 'r')) !== FALSE) {
                 while (($row = fgetcsv($handle, 1000, ';')) !== FALSE) {
+
+
+                    //dd(mb_detect_encoding((string)$row[0], 'UTF-8, ISO-8859-1, WINDOWS-1252, WINDOWS-1251' , true));
+
+                    $str = iconv(mb_detect_encoding((string)$row[0], 'UTF-8, ISO-8859-1, WINDOWS-1252, WINDOWS-1251', true), "UTF-8", (string)$row[0]);
+
+
+                    dd($str);
+
+
+//                    if ($encoding != 'UTF-8') {
+//                        $string = iconv($encoding, 'UTF-8', (string)$row[0]);
+//                    }
+
+                   // dd($string);
+
                     $products[] = [
                         'name' => (string)$row[0] ?? '',
                         'manufacturer' => (string)$row[1],
@@ -345,12 +360,13 @@ class StoreController extends Controller
                 fclose($handle);
             }
         }
-
         $params = [
             'store' => Store::find($request->id),
             'user_id' => Auth::id(),
             'company_id' => Auth::user()->company->id,
         ];
+
+        dd($products);
 
         $this->dispatch(new StoreImportProduct($params, $products));
 
