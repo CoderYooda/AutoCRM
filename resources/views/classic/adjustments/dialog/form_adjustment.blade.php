@@ -1,131 +1,101 @@
 @if(!isset($inner) || !$inner)
-    <div id="adjustmentDialog{{$adjustment->id ?? ''}}" @isset($adjustment) data-id="{{ $adjustment->id }}" @endif class="dialog adjustment_dialog" style="width:844px; height: 450px;">
+    <div id="adjustmentDialog{{$adjustment->id ?? ''}}" @isset($adjustment) data-id="{{ $adjustment->id }}" @endif class="dialog adjustment_dialog" style="width:844px;">
 @endif
         <div class="titlebar">{{ isset($adjustment) ? ('Корректировка №' . $adjustment->id) : ('Новая корректировка') }}</div>
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-        <div id="adjustment_tabs" class="d-flex tab_links ml-15 mt-15 mr-15">
-            <a href="#" class="active" data-target="tab_desc" style="margin-right: 30px;">Описание</a>
+        <div id="adjustment_tabs" class="d-flex tab_links" style="margin: 10px 22px 10px 22px;">
+            <a href="#" class="mr-10 active" data-target="tab_desc">Описание</a>
             <a href="#" data-target="tab_products">Продукты</a>
         </div>
 
-        <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST" style="height: 295px;">
+        <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
 
             @csrf
 
             <input type="hidden" name="id" value="{{ $adjustment->id ?? '' }}">
 
-            <div id="tab_desc" class="box-body tab active">
+            <div id="tab_desc" class="tab active" style="height: 295px;">
+                <div style="padding: 0 22px;">
 
-                <div class="d-flex">
+                    <div class="d-flex">
 
-                    <div class="flex-1">
+                        <div class="flex-1">
 
-                        <div class="form-group d-flex flex-column">
-                            <label>Менеджер</label>
-                            <span>{{ $adjustment ? $adjustment->manager->fio : auth()->user()->partner->fio }}</span>
+                            <div class="form-group d-flex flex-column">
+                                <label>Менеджер</label>
+                                <span>{{ $adjustment ? $adjustment->manager->fio : auth()->user()->partner->fio }}</span>
+                            </div>
+
                         </div>
 
-                    </div>
+                        <div class="flex-2">
 
-                    <div class="flex-2">
-
-                        <div class="form-group">
-                            <label>Комментарий</label>
-                            @if($adjustment)
-                                @if($adjustment->comment)
-                                    <p class="m-0">{{ $adjustment->comment }}</p>
-                                @else
-                                    <div class="p-15" style="background: #F7F7F7; border-radius: 4px;">
-                                        <div class="text-center">
-                                            <div>
-                                                <img src="{{ asset('/images/dialog/empty_comment.svg') }}" />
+                            <div class="form-group">
+                                <label>Комментарий</label>
+                                @if($adjustment)
+                                    @if($adjustment->comment)
+                                        <p class="m-0">{{ $adjustment->comment }}</p>
+                                    @else
+                                        <div class="p-15" style="background: #F7F7F7; border-radius: 4px;">
+                                            <div class="text-center">
+                                                <div>
+                                                    <img src="{{ asset('/images/dialog/empty_comment.svg') }}" />
+                                                </div>
+                                                <div>Комментарий отсутствует</div>
                                             </div>
-                                            <div>Комментарий отсутствует</div>
                                         </div>
-                                    </div>
+                                    @endif
+                                @else
+                                    <textarea class="form-control resize-none" style="height: 60px;"></textarea>
                                 @endif
-                            @else
-                                <textarea class="form-control resize-none" style="height: 60px;"></textarea>
-                            @endif
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
-
             </div>
 
-            <div id="tab_products" class="tab">
+            <div id="tab_products" class="tab" style="height: 295px;">
 
-{{--                <div class="form-group w-100">--}}
-{{--                    <button type="button" onclick="{{ $class }}.selectProduct()" name="product_id" class="form-control text-left button_select" @if($adjustment) disabled @endif>Выбор продукта</button>--}}
-{{--                </div>--}}
+                <div id="table-list" style="margin: 0 22px 10px 22px;">
 
-                <div data-simplebar class="w-100 mt-5">
-                    <div id="table-list" class="d-flex flex-column w-100">
+                    <div class="header d-flex w-100">
+                        <div class="pl-10" style="width: 20%">Артикул</div>
+                        <div style="width: 30%">Производитель</div>
+                        <div style="width: 40%">Название</div>
+                        <div style="width: 10%"></div>
+                    </div>
 
-                        <table cellspacing="0">
+                    <div data-simplebar class="body w-100" style="height: 216px;">
 
-                            <thead>
-                                <th>Артикул</th>
-                                <th>Производитель</th>
-                                <th>Название</th>
-                                <th>
-                                    <div class="pointer" style="color: #A1A1A1;">
-                                        <span>Удалить все <i class="fa fa-times" aria-hidden="true"></i></span>
-                                    </div>
-                                </th>
-                            </thead>
+                        <div id="product-list">
 
-                            <tbody>
-                                @if(count($articles))
-                                    @foreach($articles as $article_id => $articleAttributes)
+                            @if(count($articles))
+                                @foreach($articles as $article_id => $articleAttributes)
 
-                                        <tr style="height: 40px;">
-                                            <td>
-                                                <div>
-                                                    <span>{{ $article_id }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <span>{{ $articleAttributes['manufacturer'] }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <span>{{ $articleAttributes['name'] }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="p-5">
-                                                    <img class="pointer" src="{{ asset('/images/icons/edit-pen.svg') }}" style="vertical-align: middle;" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
+                                    @include(get_template() . '.adjustments.dialog.includes.product_element')
 
-                        </table>
+                                @endforeach
+                            @endif
 
-{{--                        @if(count($articles))--}}
-{{--                            @foreach($articles as $article_id => $articleAttributes)--}}
-{{--                                @include(get_template() . '.adjustments.dialog.product_elements')--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
+                        </div>
 
                     </div>
+
                 </div>
+
+                <button class="button-add" style="margin-left: 22px;" name="product_id" onclick="{{ $class }}.selectProduct()" @if($adjustment) disabled @endif>+ Добавить позицию</button>
 
             </div>
 
         </form>
 
 
-        <div class="modal-footer">
+        <div class="modal-footer" style="height: 58px;">
 
             <button class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
 

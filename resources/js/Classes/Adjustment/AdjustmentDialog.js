@@ -22,27 +22,29 @@ class adjustmentDialog extends Modal{
 
     showEntrances(element, article_id) {
 
+        let position_element = element.closest('.position');
         let i_element = element.querySelector('i');
+        let entrance_element = position_element.querySelector('.entrances');
 
-        let target_element = this.current_dialog.querySelector('#product_selected_' + article_id);
-
-        target_element.classList.toggle('d-none');
+        entrance_element.classList.toggle('d-none');
+        position_element.classList.toggle('showed');
         i_element.classList.toggle('fa-angle-down');
         i_element.classList.toggle('fa-angle-up');
 
         let list_element = this.current_dialog.querySelector('#table-list');
 
-        list_element.querySelectorAll('.element').forEach(item => {
+        list_element.querySelectorAll('.position').forEach(item => {
 
-            let target_item = item.lastElementChild;
+            if(item != position_element) {
 
-            if(target_item != target_element) {
-
-                let i_target = item.querySelector('.toggled').firstElementChild;
-
-                target_item.classList.add('d-none');
+                let i_target = item.querySelector('i');
                 i_target.classList.add('fa-angle-down');
                 i_target.classList.remove('fa-angle-up');
+
+                let entrance_target = item.querySelector('.entrances');
+                entrance_target.classList.add('d-none');
+
+                item.classList.remove('showed');
             }
         });
     }
@@ -55,43 +57,20 @@ class adjustmentDialog extends Modal{
 
         target_element.querySelectorAll('input').forEach(input => input.disabled = false);
 
-        element.closest('tr').classList.add('d-none');
-
-
-        // let body_element = element.closest('tbody');
-        //
-        // let tr_element = body_element.querySelector('tr');
-        //
-        // let tr_copy = tr_element.cloneNode(true);
-        //
-        // let product_name = 'products[new][' + product_id + ']';
-        //
-        // let current_count = body_element.querySelectorAll('[name^="' + product_name + '"]:not([disabled])').length;
-        //
-        // if(current_count >= 3) {
-        //     window.notification.notify( 'error', 'Максимальное кол-во добавленных полей: 3.');
-        //     return;
-        // }
-        //
-        // let input_element = tr_copy.querySelector('input');
-        //
-        // input_element.name = product_name;
-        // input_element.disabled = false;
-        //
-        // tr_copy.classList.remove('d-none');
-        //
-        // element.closest('tr').before(tr_copy);
+        element.classList.add('d-none');
     }
 
     removeField(element) {
 
-        element.closest('tr').classList.add('d-none');
+        let target_element = element.closest('.children_element');
 
-        let tbody_element = element.closest('tbody');
+        target_element.classList.add('d-none');
 
-        tbody_element.lastElementChild.classList.remove('d-none');
+        let target_body = element.closest('.children_body');
 
-        // element.closest('tr').remove();
+        let button_element = target_body.querySelector('.children_button');
+
+        button_element.classList.remove('d-none');
     }
 
     removeProduct(product_id) {
@@ -131,11 +110,11 @@ class adjustmentDialog extends Modal{
 
                     let data = response.data;
 
-                    let list_element = this.current_dialog.querySelector('#table-list');
+                    let list_element = this.current_dialog.querySelector('#product-list');
 
                     let html = helper.createElementFromHTML(data.html);
 
-                    list_element.append(html);
+                    list_element.appendChild(html);
                 })
                 .catch(response => console.log(response));
         }
