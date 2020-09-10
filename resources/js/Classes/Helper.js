@@ -132,7 +132,7 @@ class Helper{
         }
     }
 
-    closeModal(elem, event){
+    closeModal(elem, event = null){
         let block = elem;
         let container = block.querySelector('.dropdown_container');
         if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')

@@ -329,21 +329,6 @@ class StoreController extends Controller
             if (($handle = fopen($file, 'r')) !== FALSE) {
                 while (($row = fgetcsv($handle, 1000, ';')) !== FALSE) {
 
-
-                    //dd(mb_detect_encoding((string)$row[0], 'UTF-8, ISO-8859-1, WINDOWS-1252, WINDOWS-1251' , true));
-
-                    $str = iconv(mb_detect_encoding((string)$row[0], 'UTF-8, ISO-8859-1, WINDOWS-1252, WINDOWS-1251', true), "UTF-8", (string)$row[0]);
-
-
-                    dd($str);
-
-
-//                    if ($encoding != 'UTF-8') {
-//                        $string = iconv($encoding, 'UTF-8', (string)$row[0]);
-//                    }
-
-                   // dd($string);
-
                     $products[] = [
                         'name' => (string)$row[0] ?? '',
                         'manufacturer' => (string)$row[1],
@@ -351,7 +336,7 @@ class StoreController extends Controller
                         'categories' => explode(',', $row[3] ?? []),
                         'warehouse' => explode(',', $row[4] ?? []),
                         'count' => (int)$row[5] ?? 0,
-//                        'midprice' => (float)$row[6] ?? 0.0,
+                        'price' => (float)$row[6] ?? 0.0,
                         'barcode_manufacturer' => (string)$row[7] ?? '',
                         'barcode_warehouse' => (string)$row[8] ?? ''
                     ];
@@ -365,8 +350,6 @@ class StoreController extends Controller
             'user_id' => Auth::id(),
             'company_id' => Auth::user()->company->id,
         ];
-
-        dd($products);
 
         $this->dispatch(new StoreImportProduct($params, $products));
 
