@@ -1,10 +1,6 @@
-//new Modal// window._ = require('lodash');
 
 try {
     window.Popper = require('popper.js').default;
-    //window.Tooltip = require('tooltip-js').default;
-    //window.$ = window.jQuery = require('jquery');
-    //require('bootstrap');
 } catch (e) {}
 
 window.notification = require('notification-js/src/notification.js');
@@ -23,19 +19,9 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = '*';
-
 let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
-    // XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
-    // XMLHttpRequest.prototype.open   = function () {
-    //     this.origOpen.apply(this, arguments);
-    //     this.setRequestHeader('X-CSRF-TOKEN', token.content);
-    //     this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    //     this.setRequestHeader('Accept', 'application/json');
-    // };
-    //
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-
 } else {
     console.warn('CSRF токен не выдан, возможно Вы не авторизованы в системе');
 }
@@ -49,35 +35,27 @@ axios.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-// setInterval(function(){
-//     document.getElementById('xhr').value = window.isXHRloading;
-// }, 50);
-
-// var dialog_html = document.getElementById('system_dialog');
-// if(dialog_html){
-//     window.system_dialog = new window.bootstrap.Modal();
-// }
 setInterval(function () {
-    let date = new Date();
-    let hours = null;
-    let minutes = null;
-    let seconds = null;
-    if(date.getHours().toString().length < 2){hours = '0' + date.getHours();} else {hours = date.getHours();}
-    if(date.getMinutes().toString().length < 2){minutes = '0' + date.getMinutes();} else {minutes = date.getMinutes();}
-    if(date.getSeconds().toString().length < 2){seconds = '0' + date.getSeconds();} else {seconds = date.getSeconds();}
-    let time = document.getElementById('current_time');
-    if(time !== null){
-        document.querySelector('#current_time .h').innerHTML = hours;
-        document.querySelector('#current_time .m').innerHTML = minutes;
-        document.querySelector('#current_time .s').innerHTML = seconds;
+    if(document.querySelector('#current_time')){
+        let date = new Date();
+        let hours = null;
+        let minutes = null;
+        let seconds = null;
+        if(date.getHours().toString().length < 2){hours = '0' + date.getHours();} else {hours = date.getHours();}
+        if(date.getMinutes().toString().length < 2){minutes = '0' + date.getMinutes();} else {minutes = date.getMinutes();}
+        if(date.getSeconds().toString().length < 2){seconds = '0' + date.getSeconds();} else {seconds = date.getSeconds();}
+        let time = document.getElementById('current_time');
+        if(time !== null){
+            document.querySelector('#current_time .h').innerHTML = hours;
+            document.querySelector('#current_time .m').innerHTML = minutes;
+            document.querySelector('#current_time .s').innerHTML = seconds;
+        }
     }
 }, 1000);
 
 window.togglePreloader = function togglePreloader(element, status) {
     let classList = element.classList;
-
     if(!classList.contains('preloader-block')) classList.add('preloader-block');
-
     status ? classList.add('active') : classList.remove('active');
 };
 
@@ -131,17 +109,8 @@ window.axios.interceptors.response.use(function (response) {
 
 });
 
-
 window.ih =  window.innerHeight;
 window.iw =  window.innerWidth;
-
-// let notifications = document.getElementById('new_dialog');
-// let options = {
-//     backdrop: true,
-//     keyboard: true,
-// };
-// window.notifications = new bootstrap.Modal(notifications, options);
-
 
 window.fakeCounter = 0;
 
@@ -149,9 +118,6 @@ axios({
     method: 'GET',
     url: '/islogged'
 }).then(function (resp) {
-
-    //console.log(resp.data.auth);
-
     if(!resp.data.auth){
         window.isLogged = false;
         return false;
@@ -171,7 +137,6 @@ window.addEventListener('resize', function(){
 });
 
 window.addEventListener('mousemove', function(e){
-    // console.warn('Мышка двигае');
     window.mousex =  e.clientX;
     window.mousey =  e.clientY;
 });
@@ -193,4 +158,14 @@ document.addEventListener('click', function (e){
             div.parentElement.classList.remove('show');
         }
     });
+});
+
+document.addEventListener('keyup', function (e){
+    console.log(e);
+    if(e.keyCode == 27){
+        var divs = document.getElementsByClassName('dropdown_container');
+        [].forEach.call(divs, function(div){
+            div.parentElement.classList.remove('show');
+        });
+    }
 });

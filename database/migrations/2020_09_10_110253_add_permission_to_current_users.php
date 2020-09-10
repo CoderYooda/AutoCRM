@@ -1,17 +1,16 @@
 <?php
 
-use App\Models\Document;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Spatie\Permission\Models\Permission;
+use App\Models\Role as LRole;
+use Spatie\Permission\Models\Role;
 
-class AddNewRoles extends Migration
+class AddPermissionToCurrentUsers extends Migration
 {
-    public function up()
-    {
-        $roles = [
+    private $roles = [
             [
                 'name' => 'Смотреть документы',
                 'guard_name' => 'web',
@@ -27,44 +26,53 @@ class AddNewRoles extends Migration
 
             [
                 'name' => 'Смотреть склады поставщиков',
-                'guard_name' => 'web',
+                'gurad_name' => 'web',
                 'model' => 'ProviderStore',
                 'type' => 'read'
             ],
             [
                 'name' => 'Создавать заявки поставщикам через корзину',
-                'guard_name' => 'web',
+                'gurad_name' => 'web',
                 'model' => 'ProviderStore',
                 'type' => 'create'
             ],
 
             [
                 'name' => 'Смотреть возвраты поступлений',
-                'guard_name' => 'web',
+                'gurad_name' => 'web',
                 'model' => 'EntranceRefund',
                 'type' => 'read'
             ],
             [
                 'name' => 'Создавать возвраты поступлений',
-                'guard_name' => 'web',
+                'gurad_name' => 'web',
                 'model' => 'EntranceRefund',
                 'type' => 'create'
             ]
         ];
 
-        Permission::whereIn('name', array_column($roles, 'name'))->delete();
 
-        foreach($roles as $role){
-            Permission::create($role);
+    public function up()
+    {
+        $perms = Permission::whereIn('name', array_column($this->roles, 'name'))->pluck('id');
+        $roles = Role::where('name', 'Руководитель')->get();
+        foreach ($roles as $role){
+            $role->givePermissionTo($perms);
         }
-
-
     }
 
     public function down()
     {
-        DB::table('permissions')->where('model', 'Document')->delete();
-        DB::table('permissions')->where('model', 'ProviderStore')->delete();
-        DB::table('permissions')->where('model', 'EntranceRefund')->delete();
+//        $users = User::all();
+//
+//        $perms = Permission::whereIn('name', array_column($this->roles, 'name'))->pluck('id');
+//
+//        foreach ($users as $user){
+//            if($user->hasRole('Руководитель')){
+//                $role = $user->roles()->first();
+//                $role->revokePermissionTo($perms);
+//            }
+//        }
     }
+
 }
