@@ -5,7 +5,7 @@
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-        <div id="adjustment_tabs" class="d-flex tab_links" style="margin: 10px 22px 10px 22px;">
+        <div id="adjustment_tabs" class="d-flex tab_links" style="margin: 0 22px 10px 22px;">
             <a href="#" class="mr-10 active" data-target="tab_desc">Описание</a>
             <a href="#" data-target="tab_products">Продукты</a>
         </div>
@@ -64,10 +64,10 @@
                 <div id="table-list" style="margin: 0 22px 10px 22px;">
 
                     <div class="header d-flex w-100">
-                        <div class="pl-10" style="width: 20%">Артикул</div>
-                        <div style="width: 30%">Производитель</div>
-                        <div style="width: 40%">Название</div>
-                        <div style="width: 10%"></div>
+                        <div class="pl-10" style="width: 15%">Артикул</div>
+                        <div style="width: 23%">Производитель</div>
+                        <div style="width: 57%">Название</div>
+                        <div></div>
                     </div>
 
                     <div data-simplebar class="body w-100" style="height: 216px;">

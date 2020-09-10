@@ -97,7 +97,7 @@ class StoreImportProduct implements ShouldQueue
             'warehouse' => ['array'],
             'warehouse.*' => ['string', 'max:2'],
             'count' => ['integer', 'between:0,1000000'],
-//            'midprice' => ['numeric', 'between::0,1000000'],
+            'price' => ['numeric', 'between::0,1000000'],
             'barcode_manufacturer' => ['string'],
             'barcode_warehouse' => ['string']
         ]);
@@ -131,7 +131,7 @@ class StoreImportProduct implements ShouldQueue
             ]);
         }
 
-        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier' => $supplier->name], [
+        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
             'fapi_id' => $fapi_id,
             'name' => $attributes['name'],
             'creator_id' => $user_id,
@@ -142,6 +142,17 @@ class StoreImportProduct implements ShouldQueue
             'foundstring' => Article::makeFoundString($attributes['name'] . $attributes['article'] . $attributes['manufacturer'] . $attributes['barcode_manufacturer']),
         ]);
 
+        DB::table('article_entrance')->insert([
+            'article_id' => $article->id,
+            'entrance_id' => null,
+            'company_id' => $company_id,
+            'store_id' => $store->id,
+            'count' => $attributes['count'],
+            'price' => $attributes['price'],
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
         if(!$article->wasRecentlyCreated) {
             return 'duplicates';
         }
@@ -150,8 +161,7 @@ class StoreImportProduct implements ShouldQueue
         $store->articles()->syncWithoutDetaching($article->id);
 
         $article->stores()->updateExistingPivot($store->id, [
-            'count' => $attributes['count'],
-//            'midprice' => $attributes['midprice'],
+            'retail_price' => $attributes['price'],
             'storage_zone' => $attributes['warehouse'][0] ?? '',
             'storage_rack' => $attributes['warehouse'][1] ?? '',
             'storage_vertical' => $attributes['warehouse'][2] ?? '',

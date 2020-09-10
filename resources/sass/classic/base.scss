@@ -2561,27 +2561,29 @@ input:-moz-placeholder { /* Firefox 18- */
     .tab_links {
 
         a {
+
             font-family: Roboto;
             font-style: normal;
-            font-weight: 500;
-            font-size: 14px;
-            line-height: 16px;
+            font-weight: normal;
+            font-size: 13px;
+            line-height: 40px;
+            display: flex;
+            align-items: center;
+            text-align: center;
             letter-spacing: 0.06em;
 
-            /* доп цвет текста */
+            border-bottom: 3px solid transparent;
 
             color: #656565;
 
             &.active {
                 color: #000000;
                 border-bottom: 3px solid #009AE8;
-                padding-bottom: 5px;
             }
         }
 
         a:not(.active):hover {
             border-bottom: 3px solid #C5D0DB;
-            padding-bottom: 5px;
         }
     }
 
@@ -2779,6 +2781,10 @@ input:-moz-placeholder { /* Firefox 18- */
                             display: block;
                             border-radius: 0;
                             width: 105px;
+
+                            &.is-invalid {
+                                border: 1px solid red !important;
+                            }
                         }
                     }
                 }

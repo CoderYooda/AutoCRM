@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Adjustments\CheckEntranceNewCount;
 use App\Rules\Adjustments\CheckExistArticles;
 use App\Rules\Adjustments\CheckExistEntrances;
 use Illuminate\Contracts\Validation\Validator;
@@ -21,7 +22,7 @@ class AdjustmentRequest extends FormRequest
             'comment' => ['string', 'max:1024'],
             'products' => ['required'],
             'products.*' => [new CheckExistEntrances, new CheckExistArticles],
-            'products.*.*.count' => ['required', 'between:0,999'],
+            'products.*.*.count' => ['required', 'between:0,999', new CheckEntranceNewCount],
             'products.*.*.price' => ['required', 'between:0,' . PHP_FLOAT_MAX]
         ];
     }

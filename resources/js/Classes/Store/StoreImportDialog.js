@@ -93,14 +93,14 @@ class storeImportDialog extends Modal{
         let name_input = this.current_dialog.querySelector('#file-name');
 
         file_input.click();
-        name_input.value = '';
+        name_input.innerText = 'Название файла';
     }
 
     changeFile(element) {
 
         let input = this.current_dialog.querySelector('#file-name');
 
-        input.value = element.files[0].name;
+        input.innerText = element.files[0].name;
     }
 
     selectStore(element, store_id) {

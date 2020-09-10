@@ -25,6 +25,7 @@ class AdjustmentController extends Controller
         $articles = [];
 
         if ($adjustment) {
+
             $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
             $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('article_entrance_id'))->get();
 
@@ -36,15 +37,17 @@ class AdjustmentController extends Controller
                 $adjustmentArticleEntrance = $adjustmentArticleEntrances->where('article_entrance_id', $articleEntrance->id)->first();
 
                 $articles[$article_id]['name'] = $articleNames->find($article_id)->name;
+                $articles[$article_id]['article'] = $articleNames->find($article_id)->article;
                 $articles[$article_id]['manufacturer'] = $articleNames->find($article_id)->supplier->name;
 
                 $articles[$article_id]['entrances'][$articleEntrance->entrance_id] = [
-                    'created_at' => date('d.m.Y', strtotime($articleEntrance->created_at)),
+                    'id'              => $articleEntrance->id,
+                    'created_at'      => date('d.m.Y', strtotime($articleEntrance->created_at)),
                     'deviation_price' => $adjustmentArticleEntrance->price,
                     'deviation_count' => $adjustmentArticleEntrance->count,
-                    'price'          => $articleEntrance->price,
-                    'count'          => $articleEntrance->count,
-                    'released_count' => $articleEntrance->released_count
+                    'price'           => $articleEntrance->price,
+                    'count'           => $articleEntrance->count,
+                    'released_count'  => $articleEntrance->released_count
                 ];
             }
         }
@@ -75,17 +78,19 @@ class AdjustmentController extends Controller
             ->get();
 
         $articleAttributes = [
-            'name' => $article->name,
+            'name'         => $article->name,
             'manufacturer' => $article->supplier->name,
-            'entrances' => []
+            'article' => $article->article,
+            'entrances'    => []
         ];
 
         foreach ($articleEntrances as $articleEntrance) {
 
             $articleAttributes['entrances'][$articleEntrance->entrance_id] = [
-                'created_at' => date('d.m.Y', strtotime($articleEntrance->created_at)),
-                'count' => $articleEntrance->count,
-                'price' => $articleEntrance->price,
+                'id'             => $articleEntrance->id,
+                'created_at'     => date('d.m.Y', strtotime($articleEntrance->created_at)),
+                'count'          => $articleEntrance->count,
+                'price'          => $articleEntrance->price,
                 'released_count' => $articleEntrance->released_count
             ];
         }
@@ -120,35 +125,45 @@ class AdjustmentController extends Controller
 
             foreach ($request->products as $entrance_id => $articles) {
 
-                foreach ($articles as $article_id => $count) {
-
-                    if($entrance_id != 'new') continue;
-
-                    $attributes = [
-                        'entrance_id' => $entrance_id == 'new' ? null : $entrance_id,
-                        'article_id'  => $article_id,
-                        'company_id' => $user->company_id,
-                        'store_id' => $user->current_store
-                    ];
+                foreach ($articles as $article_id => $params) {
 
                     $query = DB::table('article_entrance');
 
-                    if($entrance_id == 'new') {
-                        $attributes['count'] = $count;
-                        $attributes['created_at'] = $attributes['updated_at'] = Carbon::now();
+                    $articleEntranceId = $entrance_id;
 
-                        $query->insert($attributes);
-                    }
-                    else {
-                        $query->where($attributes)->update(['count' => $count]);
+                    if ($articleEntranceId == 'new') {
+
+                        if($params['count'] == 0) continue;
+
+                        $attributes = [
+                            'entrance_id' => null,
+                            'article_id'  => $article_id,
+                            'company_id'  => $user->company_id,
+                            'store_id'    => $user->current_store,
+                            'price'       => $params['price'],
+                            'count'       => $params['count'],
+                            'created_at'  => Carbon::now(),
+                            'updated_at'  => Carbon::now()
+                        ];
+
+                        $articleEntranceId = $query->insertGetId($attributes);
                     }
 
-                    $articleEntrance = DB::table('article_entrance')->where($attributes)->latest()->first();
+                    $articleEntrance = DB::table('article_entrance')->find($articleEntranceId);
+
+                    if($entrance_id != 'new') {
+                        $query->where('id', $entrance_id)->update([
+                            'count' => $params['count'],
+                            'price' => $params['price'],
+                            'updated_at' => Carbon::now()
+                        ]);
+                    }
 
                     DB::table('adjustment_article_entrance')->insertOrIgnore([
                         'adjustment_id'       => $adjustment->id,
-                        'article_entrance_id' => $articleEntrance->id,
-                        'count'               => $count - ($articleEntrance->count ?? 0)
+                        'article_entrance_id' => $articleEntranceId,
+                        'count'               => $params['count'] - ($articleEntrance->count ?? 0),
+                        'price'               => $params['price'] - ($articleEntrance->price ?? 0),
                     ]);
                 }
             }
