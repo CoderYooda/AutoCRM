@@ -2,11 +2,6 @@
 <tr class="product_list_elem @if(isset($client_order) && $product->pivot->shipped_count == $product->pivot->count) shipped @endif"
     id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
-    <td>
-        @if(isset($product->instock))
-            <span class="pos-rlt text-sm mr-2 no-wrap">{{ $product->instock }} шт.</span>
-        @endif
-    </td>
     <td title="{{ $product->name }}" style="max-width: 350px"><span class="product_list_element_name">{{ $product->name }}</span></td>
 
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
@@ -17,6 +12,10 @@
                @if($request['count'] != null) value="{{$request['count']}}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                @if(isset($client_order) && $client_order->status === 'canceled') disabled @endif
                type="number" ></td>
+
+    <td>
+        <span class="pos-rlt text-sm mr-2 no-wrap">{{ $product->getCountInCurrentStore()}} шт.</span>
+    </td>
 
     <td><input name="products[{{ $product->id }}][shipped]" class="form-control form-control-sm "
                @if(isset($client_order)) value="{{ $product->pivot->shipped_count }}" @else value="0" @endif

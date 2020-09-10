@@ -20,7 +20,7 @@
                                 <img src="{{ asset('images/icons/statistic-question.svg') }}" alt="">
                             </label>
                             <div class="input-group mb-5">
-                                <input type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="form-control pointer phone_input" placeholder="Название файла">
+                                <button type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="form-control text-left button_select" style="color: #9e9e9e;">Название файла</button>
                                 <button onclick="{{ $class }}.openFileSelector()" class="button primary ml-15">Обзор...</button>
                             </div>
                             <div class="ml-15 mt-10">
@@ -70,7 +70,7 @@
                                     <div style="width: 100px;">Номер строки</div>
                                     <div class="ml-15">Артикул</div>
                                 </div>
-                                <div class="pl-15" id="duplicate-list">
+                                <div data-simplebar class="pl-15" id="duplicate-list" style="height: 140px;">
 
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                                     <div style="width: 100px;">Номер строки</div>
                                     <div class="ml-15">Артикул</div>
                                 </div>
-                                <div class="pl-15" id="error-list">
+                                <div data-simplebar class="pl-15" id="error-list" style="height: 140px;">
 
                                 </div>
                             </div>

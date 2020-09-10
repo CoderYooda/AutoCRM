@@ -4,6 +4,9 @@
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>
     <div class="modal-header">
         <form class="flex d-flex w-100">
+            @if($request['only_current_category'])
+                <input type="hidden" name="only_current_category" value="1">
+            @endif
             @if($request['refer'])
                 <input id="refer" type="hidden" name="refer" value="{{ $request['refer'] }}">
             @endif

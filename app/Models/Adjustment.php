@@ -15,39 +15,21 @@ class Adjustment extends Model
     ];
 
     public $fields = [
-        'partner_id',
+        'manager_id',
         'company_id',
-        'do_date',
         'store_id',
-        'comment',
-        'created_at'
+        'comment'
     ];
 
     protected $guarded = [];
 
-    public function articles()
+    public function manager()
     {
-        return $this->belongsToMany('App\Models\Article', 'article_adjustment', 'adjustment_id', 'article_id')
-            ->withPivot('prev_count', 'prev_price', 'count', 'price');
-    }
-
-    public function partner()
-    {
-        return $this->belongsTo('App\Models\Partner', 'partner_id');
+        return $this->belongsTo(Partner::class, 'manager_id');
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store', 'store_id');
-    }
-
-    public function normalizedData()
-    {
-        return $this->created_at->format('d.m.Y (H:i)');
-    }
-
-    public function onlyData()
-    {
-        return $this->created_at->format('d.m.Y H:i');
+        return $this->belongsTo(Store::class);
     }
 }

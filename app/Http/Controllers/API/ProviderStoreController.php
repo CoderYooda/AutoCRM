@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\PermissionController;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
@@ -18,6 +19,8 @@ class ProviderStoreController extends Controller
 {
     public function tableData(Request $request, Providers $providers)
     {
+        PermissionController::canByPregMatch('Смотреть склады поставщиков');
+
         $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
 
         $counts = [];
@@ -174,6 +177,8 @@ class ProviderStoreController extends Controller
 
     public static function ProviderCartDialog(Request $request)
     {
+        PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');
+
         $class = 'providerCartDialog';
 
         $user_id = Auth::id();

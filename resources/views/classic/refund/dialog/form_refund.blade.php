@@ -1,13 +1,6 @@
 @if(!$request['fresh'])
-    <div
-        @if(isset($refund) && $refund->id != NULL)
-        @php $class = 'refundDialog' . $refund->id @endphp
-        id="refundDialog{{$refund->id}}" @if($refund) data-id="{{$refund->id}}" @endif
-        @else
-        @php $class = 'refundDialog' @endphp
-        id="refundDialog"
-        @endif
-        class="dialog refund_dialog " style="width:880px">
+    <div id="refundDialog{{ $refund->id ?? ''}}" @if($refund) data-id="{{$refund->id}}"
+         @endif class="dialog refund_dialog " style="width:880px">
         @endif
         <div class="titlebar">{{ $refund ? ('Возврат №' . $refund->id) : 'Новый возврат' }}</div>
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
@@ -38,7 +31,7 @@
                     <span class="item-title _500">Итого</span>
                     <div class="item-except font-weight-bolder h-1x">
                         <span id="itogo_price">
-                            @if(isset($refund) && $refund->summ != NULL)
+                            @if(isset($refund) && $refund->summ != null)
                                 {{ $refund->summ }}
                             @else 0.0 @endif
                         </span> р
@@ -46,29 +39,25 @@
                     <div class="item-tag tag hide">
                     </div>
                 </div>
-                @if(isset($refund) && $refund->id != NULL)
+                @if(isset($refund) && $refund->id != null)
                     <div class="modal-alt-header">
                         <span class="item-title _500">Возвращено</span>
-                        <div
-                            class="item-except @if($refund->wsumm >= $refund->itogo) text-success @endif font-weight-bolder h-1x">
-                    <span>
-                        {{ decimal_price($refund->wsumm) }} р / <span
-                            id="payed_price">{{ $refund->summ }}</span> р
-                    </span>
+                        <div class="item-except @if($refund->wsumm >= $refund->itogo) text-success @endif font-weight-bolder h-1x">
+                            <span>{{ decimal_price(abs($refund->wsumm)) }} р / <span id="payed_price">{{ $refund->summ }}</span> р</span>
                         </div>
                         <div class="item-tag tag hide">
                         </div>
                     </div>
                 @endif
             @endif
-            @if(isset($refund) && $refund->id != NULL && (-$refund->wsumm > $refund->summ))
+            @if(isset($refund) && $refund->id != null && (-$refund->wsumm > $refund->summ))
                 <div class="modal-alt-header">
                     <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату
                     </button>
                 </div>
             @endif
 
-            @if(isset($refund) && $refund->id != NULL && (-$refund->wsumm < $refund->summ) )
+            @if(isset($refund) && $refund->id != null && (-$refund->wsumm < $refund->summ) )
                 <div class="modal-alt-header">
                     <button onclick="{{ $class }}.getBackPayment()" class="button warning uppercase-btn">Вернуть
                         средства
@@ -83,7 +72,7 @@
             <div class="box-body">
                 @csrf
 
-                @if(isset($refund) && $refund->id != NULL)
+                @if(isset($refund) && $refund->id != null)
                     <input type="hidden" name="id" value="{{ $refund->id }}">
                 @else
                     <input type="hidden" name="id" value="">
@@ -143,7 +132,8 @@
                         <div class="form-group row row-sm">
                             <div class="col-sm-12">
                                 <textarea placeholder="Комментарий" style="resize: none;height: 128px;"
-                                          class="form-control" name="comment" cols="30" @isset($refund) disabled @endisset
+                                          class="form-control" name="comment" cols="30" @isset($refund) disabled
+                                          @endisset
                                           rows="5">@if($refund){{ $refund->comment ?? 'Комментария нет' }} @endif</textarea>
                             </div>
                         </div>
@@ -167,11 +157,11 @@
                             </tr>
                             </thead>
                             <tbody class="product_list">
-                                @isset($refund->articles)
-                                    @foreach($refund->articles as $product)
-                                        @include(get_template() . '.refund.dialog.product_element')
-                                    @endforeach
-                                @endisset
+                            @isset($refund->articles)
+                                @foreach($refund->articles as $product)
+                                    @include(get_template() . '.refund.dialog.product_element')
+                                @endforeach
+                            @endisset
                             </tbody>
                         </table>
                     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,78 +15,59 @@ use App\Models\Role as LRole;
 
 class RoleController extends Controller
 {
-	public static function getRoles($request)
-	{
-		$roles = Role::where('company_id', Auth::user()->company->id)->get();
+    public static function getRoles($request)
+    {
+        return Role::where('company_id', Auth::user()->company->id)->get();
+    }
 
-		return $roles;
-	}
+    public function store(RoleRequest $request)
+    {
+        $ids = [];
 
-	public function store(RoleRequest $request)
-	{
-		$ids = [];
-		if(isset($request['perms'] )){
-			foreach($request['perms'] as $id => $perm){
-				$ids[] = $id;
-			}
-		}
+        if (isset($request['perms'])) {
+            foreach ($request['perms'] as $id => $perm) {
+                $ids[] = $id;
+            }
+        }
 
-		$role = Role::firstOrNew(['id' => $request['id']]);
-		$this->status = 200;
-		if($role->exists){
-			$this->message = 'Роль обновлена';
-		} else {
-			$this->message = 'Роль создана';
-		}
-		$role->company_id = Auth::user()->company->id;
-		$role->name = $request['name'];
-		$role->save();
-		$role->syncPermissions($ids);
+        $role = Role::updateOrCreate([
+            'id'         => $request->id,
+            'company_id' => Auth::user()->company->id
+        ], ['name' => $request->name]);
 
-		if($request->expectsJson()){
-			return response()->json([
-				'message' => $this->message,
-				'event' => 'RoleStored',
-			], $this->status);
-		} else {
-			return redirect()->back();
-		}
-	}
+        $role->syncPermissions($ids);
 
-	public function assignRoleToUser(Request $request)
-	{
-		$user = User::owned()->where('id', $request['user_id'])->first();
-		$role = Role::where('company_id', Auth::user()->company()->first()->id)->where('id', $request['role_id'])->first();
+        return response()->json([
+            'message' => $role->exists ? 'Роль обновлена' : 'Роль создана',
+            'event'   => 'RoleStored',
+        ], 200);
+    }
 
-		$user->syncRoles([$role->id]);
+    public function assignRoleToUser(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $role = Role::find($request->role_id);
 
-		if($request->expectsJson()){
-			return response()->json([
-				'message' => 'Роль назначена пользователю',
-				'event' => 'RoleAssigned',
-			], 200);
-		} else {
-			return redirect()->back();
-		}
-	}
+        $user->syncRoles([$role->id]);
 
-	public static function roleDialog($request)
-	{
-		$tag = 'roleDialog';
-		if ($request['role_id']) {
-			$tag .= $request['role_id'];
-			$role = Role::where('id', (int)$request['role_id'])->first();
-		} else {
-			$role = NULL;
-		}
+        return response()->json([
+            'message' => 'Роль назначена пользователю',
+            'event'   => 'RoleAssigned',
+        ], 200);
+    }
 
-		$permissions = PermissionController::getPermissionArray($role);
+    public static function roleDialog($request)
+    {
+        $role = Role::find($request->role_id);
+        $tag = 'roleDialog' . ($role->id ?? '');
 
-		return response()->json([
-			'tag' => $tag,
-			'html' => view(get_template() . '.role.dialog.form_role', compact('request', 'role', 'permissions'))->render()
-		]);
-	}
+        $permissions = PermissionController::getPermissionArray($role);
+
+        return response()->json([
+            'tag'  => $tag,
+            'html' => view(get_template() . '.role.dialog.form_role', compact('request', 'role', 'permissions'))->render()
+        ]);
+    }
 
     public function delete($id)
     {
@@ -94,32 +76,64 @@ class RoleController extends Controller
         $role = LRole::owned()->where('id', $id)->first();
         $this->message = 'Роль удалена';
         $returnIds = $role->id;
-        if($role->company()->first()->id != Auth::user()->company()->first()->id){
+
+        if ($role->company->id != Auth::user()->company_id) {
             $this->message = 'Вам не разрешено удалять контакт';
             $this->status = 422;
         }
+
         $role->delete();
         UA::makeUserAction($role, 'delete');
 
         $this->status = 200;
 
-
         return response()->json([
-            'id' => $returnIds,
+            'id'      => $returnIds,
             'message' => $this->message
         ], $this->status);
     }
 
-	public static function createStartRoles($company)
-	{
-		$role = LRole::create(['name' => 'Руководитель', 'company_id' => $company->id]);
-		$role2 = LRole::create(['name' => 'Менеджер', 'company_id' => $company->id]);
-        $role2->givePermissionTo(Permission::whereIn('id' , [2,3, 6,7,14,15,18,19,22,23,26,29,36,37,39,40,41,44,48])->get());
-        $roles['main'] = $role;
-        $roles['default'] = $role2;
-		$permissions = Permission::all()->pluck('id');
-		$role->givePermissionTo($permissions);
+    public static function createStartRoles(Company $company)
+    {
+        $director_role = LRole::create(['name' => 'Руководитель', 'company_id' => $company->id]);
+        $manager_role = LRole::create(['name' => 'Менеджер', 'company_id' => $company->id]);
 
-		return $roles;
-	}
+        $manager_roles = [
+            'Смотреть категории',
+            'Создавать категории',
+            'Смотреть товары',
+            'Создавать товары',
+            'Смотреть поступления',
+            'Создавать поступления',
+            'Смотреть продажи',
+            'Создавать продажи',
+            'Смотреть заказ клиента',
+            'Создавать заказ клиента',
+            'Смотреть корректировки',
+            'Создавать денежные операции',
+            'Смотреть контакты',
+            'Создавать контакты',
+            'Редактировать контакты',
+            'Смотреть возвраты',
+            'Создавать возвраты',
+            'Смотреть планировщик',
+            'Смотреть историю',
+            'Смотреть документы',
+            'Создавать документы',
+            'Смотреть склады поставщиков',
+            'Создавать заявки поставщикам через корзину',
+            'Смотреть возвраты поступлений',
+            'Создавать возвраты поступлений'
+        ];
+
+        $roleIds = Permission::whereIn('name', $manager_roles)->pluck('id');
+
+        $manager_role->givePermissionTo($roleIds);
+        $roles['main'] = $director_role;
+        $roles['default'] = $manager_role;
+        $permissions = Permission::all()->pluck('id');
+        $director_role->givePermissionTo($permissions);
+
+        return $roles;
+    }
 }

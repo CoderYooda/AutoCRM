@@ -17,6 +17,8 @@ class EntranceRefundController extends Controller
 {
     public function store(EntranceRefundStoreRequest $request)
     {
+        PermissionController::canByPregMatch('Создавать возвраты поступлений');
+
         $entrance = Entrance::with('articles')->find($request->entrance_id);
 
         $errors = [];
@@ -107,6 +109,8 @@ class EntranceRefundController extends Controller
 
     public static function entranceRefundDialog(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть возвраты поступлений');
+
         $entrance_refund = EntranceRefund::find($request['entrance_refund_id']);
         $class = 'entranceRefundDialog' . ($entrance_refund->id ?? '');
 
@@ -139,6 +143,8 @@ class EntranceRefundController extends Controller
 
     public function tableData(Request $request)
     {
+        PermissionController::canByPregMatch('Смотреть возвраты поступлений');
+
         $entrance_refunds = self::getEntranceRefunds($request);
 
         return response()->json(['data' => $entrance_refunds]);

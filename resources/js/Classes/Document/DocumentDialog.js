@@ -2,7 +2,10 @@ import Modal from "../Modal/Modal";
 
 class documentDialog extends Modal {
 
-    constructor(dialog, data) {
+    constructor(dialog, response) {
+
+        let data = response.data;
+
         super(dialog);
         console.log('Окно документа инициализировано');
 

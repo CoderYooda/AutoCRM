@@ -132,7 +132,7 @@ class Helper{
         }
     }
 
-    closeModal(elem, event){
+    closeModal(elem, event = null){
         let block = elem;
         let container = block.querySelector('.dropdown_container');
         if(container && !container.classList.contains('.show')){ //!event.target.closest('.dropdown_container')
@@ -164,10 +164,9 @@ class Helper{
                         } else {
                             window[elem.id] = new classes[classname](elem);
                         }
-
                     } catch (err) {
                         window.helper.log(classname + " - Такого конструктора не существует");
-                        console.error(err);
+                        console.log(err);
                     }
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }

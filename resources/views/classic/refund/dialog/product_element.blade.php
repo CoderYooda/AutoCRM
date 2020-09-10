@@ -1,6 +1,6 @@
 <tr
     data-id="{{ $product->id }}"
-    data-count="{{$product->pivot->count }}"
+    data-count="{{ isset($refund) ? $product->pivot->count : $shipment->getProductCount($product->id) - $shipment->getRefundedCount($product->id) }}"
     data-price="{{ $product->pivot->price }}"
     data-total="{{ decimal_price($product->pivot->total) }}"
     class="product_list_elem" id="product_selected_{{ $product->id }}">

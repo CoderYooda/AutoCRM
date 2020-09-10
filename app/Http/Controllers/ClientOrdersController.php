@@ -26,12 +26,11 @@ class ClientOrdersController extends Controller
 
             $co_id = isset($request['client_order_id']) ? $request['client_order_id'] : $request['clientorder_id'];
 
-            $client_order = ClientOrder::where('id', (int)$co_id)->first();
+            $client_order = ClientOrder::find((int)$co_id);
 
             $client_order->articles = $client_order->articles()->get();
 
             foreach ($client_order->articles as $article) {
-                $article->instock = $article->getCountInStoreId($client_order->store_id);
                 if ($article->instock >= $article->pivot->count) {
                     $article->complited = true;
                 } else {

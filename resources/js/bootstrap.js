@@ -144,10 +144,17 @@ window.addEventListener('mousemove', function(e){
 document.addEventListener('click', function (e){
     var divs = document.getElementsByClassName('dropdown_container');
     [].forEach.call(divs, function(div){
-        if (div !== (e.target)
-            && !div.contains(e.target)
-            && !div.parentElement.contains(e.target)
+
+        let click_element = e.target;
+
+        if (div !== (click_element)
+            && !div.contains(click_element)
+            && !div.parentElement.contains(click_element)
         ) {
+            div.parentElement.classList.remove('show');
+        }
+
+        if(click_element.classList.contains('element')) {
             div.parentElement.classList.remove('show');
         }
     });

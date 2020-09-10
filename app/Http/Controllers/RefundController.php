@@ -17,7 +17,7 @@ use function foo\func;
 
 class RefundController extends Controller
 {
-    public static function refundDialog($request)
+    public static function refundDialog(Request $request)
     {
         $refund = Refund::find($request['refund_id']);
         $shipment = null;
@@ -35,10 +35,12 @@ class RefundController extends Controller
             $shipment = $refund->shipment;
         }
 
+        $view = view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'refunded_count'))
+            ->with('class', $tag);
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'refunded_count'))->render()
+            'html' => $view->render()
         ]);
     }
 
@@ -100,7 +102,6 @@ class RefundController extends Controller
 
             $refund->fill($request->only($refund->fields));
             $refund->partner_id = $shipment->partner_id;
-            $refund->summ = 0;
             $refund->save();
 
             $store = $shipment->store;
@@ -141,6 +142,10 @@ class RefundController extends Controller
                 ];
             }
 
+            $total_summ = collect($refund_data)->sum('total');
+
+            $refund->update(['summ' => $total_summ]);
+
             #Запись новых отношений
             $refund->articles()->sync($refund_data);
 
@@ -159,10 +164,7 @@ class RefundController extends Controller
 
     public static function getRefunds($request)
     {
-        $size = 30;
-        if (isset($request['size'])) {
-            $size = (int)$request['size'];
-        }
+        $size = $request['size'] ?? 30;
 
         $field = null;
         $dir = null;

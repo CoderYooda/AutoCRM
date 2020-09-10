@@ -1,207 +1,177 @@
 import Sortable from "sortablejs";
 import Modal from "../Modal/Modal";
+import Tabs from "../../Tools/Tabs";
 
 class adjustmentDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
         console.log('Окно Корректировки инициализировано');
-        this.store_id = null;
-        this.items = [];
         this.init();
     }
 
-    checkInStock(){
-        console.log('Проверка наличия');
-        let object = this;
+    init() {
+        this.items = [];
 
-        object.store_id = parseInt(object.root_dialog.querySelector('select[name=store_id]').value);
-
-
-        let items = [];
-        [].forEach.call(object.items, function(elem){
-            items.push(elem.id)
-        });
-
-        let data = {};
-        data.store_id = object.store_id;
-        data.ids = items;
-
-        window.axios({
-            method: 'post',
-            url: 'store/checkstock',
-            data: data,
-        }).then(response => {
-
-            for(var index in response.data.items) {
-               let item = response.data.items[index];
-                document.getElementById('uc_' + item.id).value = item.count;
-            }
-
-            // response.data.items.forEach.call(response.data.items, function(elem){
-            //     console.log(elem);
-            // });
-
-            // console.log(response);
-            // this.data = response.data;
-            // this.data.forEach((item) => {
-            //     document.getElementById('uc_' + item.id).value = item.count;
-            // });
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            //callback();
-        });
+        this.linked();
     }
 
-    init(){
-        let object = this;
+    linked() {
+        new Tabs('adjustment_tabs');
+    }
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
-            if (e.which == 13) {
-                e.preventDefault();
-                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+    showEntrances(element, article_id) {
+
+        let position_element = element.closest('.position');
+        let i_element = element.querySelector('i');
+        let entrance_element = position_element.querySelector('.entrances');
+
+        entrance_element.classList.toggle('d-none');
+        position_element.classList.toggle('showed');
+        i_element.classList.toggle('fa-angle-down');
+        i_element.classList.toggle('fa-angle-up');
+
+        let list_element = this.current_dialog.querySelector('#table-list');
+
+        list_element.querySelectorAll('.position').forEach(item => {
+
+            if(item != position_element) {
+
+                let i_target = item.querySelector('i');
+                i_target.classList.add('fa-angle-down');
+                i_target.classList.remove('fa-angle-up');
+
+                let entrance_target = item.querySelector('.entrances');
+                entrance_target.classList.add('d-none');
+
+                item.classList.remove('showed');
             }
         });
     }
 
-    save(elem){
-        if(window.isXHRloading) return;
-        let object = this;
-        elem.setAttribute('disabled', true);
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) {
-                let root_id = object.root_dialog.id;
-                object.root_dialog.querySelector('input[name=id]').value = resp.data.id;
-                object.root_dialog.setAttribute('id', 'adjustmentDialog' + resp.data.id);
-                object.root_dialog.setAttribute('data-id', resp.data.id);
-                object.freshContent(resp.data.id, function (){
-                    delete window[root_id];
-                    let drag_dialog = window.dialogs[root_id];
-                    delete window.dialogs[root_id];
-                    window.dialogs['adjustmentDialog' + resp.data.id] = drag_dialog;
-                    drag_dialog.tag = 'adjustmentDialog' + resp.data.id;
-                    window.helper.initDialogMethods();
-                });
-            }s
-            elem.setAttribute('disabled', false);
+    addField(element, product_id) {
+
+        let target_element = this.current_dialog.querySelector('#new_correct_' + product_id);
+
+        target_element.classList.remove('d-none');
+
+        target_element.querySelectorAll('input').forEach(input => input.disabled = false);
+
+        element.classList.add('d-none');
+    }
+
+    removeField(element) {
+
+        let target_element = element.closest('.children_element');
+
+        target_element.classList.add('d-none');
+
+        let target_body = element.closest('.children_body');
+
+        let button_element = target_body.querySelector('.children_button');
+
+        button_element.classList.remove('d-none');
+    }
+
+    removeProduct(product_id) {
+        let target_element = this.current_dialog.querySelector('#article_' + product_id);
+        target_element.remove();
+
+        product_id = parseInt(product_id);
+
+        this.items.forEach((item, index) => {
+            if(item.id == product_id) delete this.items[index];
         });
     }
 
-    saveAndClose(elem){
-        if(window.isXHRloading) return;
-        let object = this;
-        window.axform.send(elem, function(resp){
-            if(resp.status === 200) object.finitaLaComedia(true);
-        });
+    selectProduct() {
+        openDialog('selectProduct', '&refer=' + this.current_dialog.id);
     }
 
-    recalculate(){
+    addProduct(element) {
 
-    };
+        let product_id = element.dataset.article_id;
 
-    freshContent(id, callback = null){
-        let object = this;
+        element.classList.toggle('already_selected');
 
-        //var store_id = this.store_obj.value;
+        if(element.classList.contains('already_selected')) {
 
-        let data = {};
-        //data.store_id = store_id;
-        if(object.refer){
-            data.refer = object.refer;
-        }
-
-        window.axios({
-            method: 'post',
-            url: 'adjustment/' + id + '/fresh',
-            data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            //object.addPhoneMask();
-            console.log('Вставили html');
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            callback();
-        });
-    }
-
-    scanOperation(product_id){
-        this.addProduct(product_id);
-    }
-
-    addProduct(elem_or_id, refer = null){
-        let object = this;
-        window.entity.addProductToList(elem_or_id, this, 'adjustment');
-        if(refer != null){
-            object.refer = refer;
-        }
-    };
-
-    openProductmodal(){
-        let store_id = this.root_dialog.querySelector('select[name=store_id]').value;
-        window.openDialog('selectProduct', '&refer=' + this.root_dialog.id + '&store_id=' + store_id);
-    }
-
-    addItem(elem, tag){
-        let object = this;
-        let product_list = this.root_dialog.querySelector('.product_list');
-        this.items.push(elem);
-
-        try{
             window.selectProductDialog.markAsAdded();
-        }catch (e) {
-            console.log(e);
+
+            axios.get('/adjustments/search', {
+                params: {
+                    product_id: product_id,
+                    refer: this.current_dialog.id
+                }
+            })
+                .then(response => {
+
+                    this.items.push({ id: parseInt(product_id) });
+
+                    let data = response.data;
+
+                    let list_element = this.current_dialog.querySelector('#product-list');
+
+                    let html = helper.createElementFromHTML(data.html);
+
+                    list_element.appendChild(html);
+                })
+                .catch(response => console.log(response));
         }
+        else {
 
-        product_list.insertAdjacentHTML('afterbegin', elem.html);
-
-        window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + tag);
-        let inputs = item.getElementsByTagName('input');
-
-        [].forEach.call(inputs, function(elem){
-            var fn = window.helper.debounce(function(e) {
-                object.recalculate(e);
-            }, 50);
-            elem.addEventListener("keydown", fn);
-            elem.addEventListener("paste", fn);
-            elem.addEventListener("delete", fn);
-        });
-        this.checkInStock();
-        this.recalculate();
+            let target_element = this.current_dialog.querySelector('#article_' + product_id);
+            target_element.remove();
+        }
     }
 
-    removeItem(id, tag = null){
+    save(element) {
 
-        let object = this;
-        [].forEach.call(object.items, function(item){
+        let form_element = this.current_dialog.querySelector('form');
 
-            if(item.id === id){
-                object.items.splice(
-                    object.items.indexOf(item), 1
-                );
+        axform.send(form_element, response => {
+            if(response.status === 200) {
+                this.fresh(response.data.id);
             }
         });
-        if(tag !== null){
-            id = id + '_' + tag;
-        }
-        let product = this.root_dialog.querySelector('#product_selected_' + id).remove();
-        object.recalculate();
     }
 
-    initLists(){
-        let available_list = document.querySelector('#available_list');
-        new Sortable(available_list, {
-            group: {
-                name: 'shared',
-                put: 'false'
-            },
-            sort: false,
-            animation: 0,
-            ghostClass: 'blue-background-class'
+    saveAndClose(element) {
+
+        let form_element = this.current_dialog.querySelector('form');
+
+        axform.send(form_element, response => {
+            if(response.status == 200) {
+                this.finitaLaComedia(true);
+            }
         });
     }
 
+    fresh(id) {
+        let root_id = this.root_dialog.id;
+
+        this.root_dialog.querySelector('input[name=id]').value = id;
+        this.root_dialog.setAttribute('id', 'adjustmentDialog' + id);
+        this.root_dialog.setAttribute('data-id', id);
+
+        axios.get('/dialog_adjustmentDialog_open', {
+            params: {
+                adjustment_id: id,
+                inner: 1
+            }
+        })
+            .then(response => {
+                this.current_dialog.innerHTML = response.data.html;
+                delete window[root_id];
+                let drag_dialog = window.dialogs[root_id];
+                delete window.dialogs[root_id];
+                window.dialogs['adjustmentDialog' + id] = drag_dialog;
+                drag_dialog.tag = 'adjustmentDialog' + id;
+                window.helper.initDialogMethods();
+            })
+            .catch(response => {
+                console.log(response);
+            });
+    }
 }
 export default adjustmentDialog;

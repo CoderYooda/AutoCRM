@@ -132,10 +132,12 @@ class clientorderDialog extends Modal{
     }
 
     pickText(elem){
-        dd(elem.innerText);
+        let template = document.getElementById('templates');
         let input = document.getElementById('sms_field');
         let text = elem.innerText;
         input.value = text;
+        template.classList.remove('show');
+        template.classList.add('hide');
 
     }
 

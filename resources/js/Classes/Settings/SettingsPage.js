@@ -287,7 +287,7 @@ class settingsPage{
         if(this.active_tab === 'services') {
             this.initServiceProviderModal();
 
-            new Tabs('settings_services_tabs');
+            new Tabs('adjustment_tabs');
         }
         else if(this.active_tab === 'requisites') {
             let button_element = document.querySelector('#ajax-tab-content button[class~="active"]');

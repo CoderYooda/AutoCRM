@@ -3,6 +3,7 @@ import Sortable from "sortablejs";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
 import documentMethods from "./tabs/DocumentMethods";
+import Tabs from "../../Tools/Tabs";
 
 const classes = {
     entranceMethods,
@@ -848,7 +849,11 @@ class storePage{
                 });
             },
             rowDblClick:function(e, row){
-                openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
+
+                let id = row.getData().id;
+
+                if(object.contextDop == 'document') window.helper.openDocument(id);
+                else openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)
             },
             rowContext:function(e, row){
                 e.preventDefault();
@@ -895,6 +900,18 @@ class storePage{
                     items.push(new ContextualItem({type:'seperator'}));
 
                     items.push(new ContextualItem({
+                        label: 'Создать заявку поставщику', onClick: () => {
+
+                            let ids = JSON.stringify(window.helper.pluck(object.selectedData, 'id'));
+
+                            openDialog('providerorderDialog', '&products=' + ids);
+                        },
+                        shortcut: 'Ctrl+A'
+                    }));
+
+                    items.push(new ContextualItem({type:'seperator'}));
+
+                    items.push(new ContextualItem({
                         label: 'Печать ценников', onClick: () => {
 
                             let ids = window.helper.pluck(object.selectedData, 'id');
@@ -904,6 +921,8 @@ class storePage{
                         shortcut: 'Ctrl+A'
                     }));
                 }
+
+                items.push(new ContextualItem({type:'seperator'}));
 
                 items.push(new ContextualItem({
                     label: 'Удалить', onClick: () => {

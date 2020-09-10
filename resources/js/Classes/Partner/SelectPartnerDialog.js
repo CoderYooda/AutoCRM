@@ -133,6 +133,12 @@ class selectPartnerDialog  extends Modal{
             data.target = object.root_dialog.querySelector("#target").value;
         }
 
+        let current_category_element = this.current_dialog.querySelector('[name="only_current_category"]');
+
+        if(current_category_element) {
+            data.only_current_category = 1;
+        }
+
 
         window.axios({
             method: 'post',

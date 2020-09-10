@@ -367,7 +367,7 @@ class refundDialog extends Modal{
     }
 
     recalculate(){
-        dd(1);
+
         var object = this;
         this.items.forEach(function(elem){
             object.recalculateItem(elem.id);
