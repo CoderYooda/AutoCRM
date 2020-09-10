@@ -229,7 +229,7 @@ class ProviderOrdersController extends Controller
 
     public function store(ProviderOrdersRequest $request)
     {
-        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам');
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам через корзину');
 
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 

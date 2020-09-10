@@ -177,7 +177,7 @@ class ProviderStoreController extends Controller
 
     public static function ProviderCartDialog(Request $request)
     {
-        PermissionController::canByPregMatch('Создавать заявки поставщикам');
+        PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');
 
         $class = 'providerCartDialog';
 
