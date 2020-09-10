@@ -8,6 +8,7 @@
 /public/dependencies
 /public/storage
 /public/mix-manifest.json
+/public/.htaccess
 /vendor
 .env
 .env.backup
