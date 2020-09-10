@@ -82,7 +82,7 @@ class RegisterController extends Controller
             } else {
                 event(new Registered($user = $this->create($request->all())));
                 $this->guard()->login($user);
-                //$user->resetCurrentStore();
+
                 $redirect = '/';
                 $this->registered($request, $user) ?: $redirect = $this->redirectPath();
 

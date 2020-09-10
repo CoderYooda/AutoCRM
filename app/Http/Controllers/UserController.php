@@ -254,10 +254,8 @@ class UserController extends Controller
     }
 
     public function authByUser(Request $request){
-        $user = User::where('id', $request->id)->first();
+        $user = User::find($request->id);
         Auth::loginUsingId($user->id, TRUE);
         Session::flush();
-        Session::put('store_id', $user->getStoreFirst()->id);
-
     }
 }
