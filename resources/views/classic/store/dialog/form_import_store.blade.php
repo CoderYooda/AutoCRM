@@ -20,7 +20,7 @@
                                 <img src="{{ asset('images/icons/statistic-question.svg') }}" alt="">
                             </label>
                             <div class="input-group mb-5">
-                                <button type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="form-control text-left button_select" style="color: #9e9e9e;">Название файла</button>
+                                <input type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="pointer form-control text-left button_select" placeholder="Название файла" readonly />
                                 <button onclick="{{ $class }}.openFileSelector()" class="button primary ml-15">Обзор...</button>
                             </div>
                             <div class="ml-15 mt-10">
@@ -60,36 +60,40 @@
                     <div id="result-inputs" class="d-none">
                         <div class="form-group">
                             <label>Дубликаты</label>
-                            <div onclick="{{ $class }}.showInfoList('duplicate-list')" class="input-group">
+                            <div onclick="{{ $class }}.showInfoList(this)" class="input-group">
                                 <button type="button" class="form-control button-list">
                                     Просмотр дубликатов <i class="fa fa-chevron-down" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <div class="box pb-15 d-none">
-                                <div class="button-list-title d-flex p-15">
+                            <div class="box pb-15 list d-none">
+                                <div class="button-list-title d-flex p-10">
                                     <div style="width: 100px;">Номер строки</div>
                                     <div class="ml-15">Артикул</div>
                                 </div>
-                                <div data-simplebar class="pl-15" id="duplicate-list" style="height: 140px;">
+                                <div data-simplebar class="w-100 p-10 pt-0" style="height: 100px;">
+                                    <div class="w-100" id="duplicate-list">
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label>Ошибки</label>
-                            <div onclick="{{ $class }}.showInfoList('error-list')" class="input-group">
+                            <div onclick="{{ $class }}.showInfoList(this)" class="input-group">
                                 <button type="button" class="form-control button-list">
                                     Просмотр ошибок <i class="fa fa-chevron-down" aria-hidden="true"></i>
                                 </button>
                             </div>
                             <div class="box pb-15 d-none">
-                                <div class="button-list-title d-flex p-15">
+                                <div class="button-list-title d-flex p-10">
                                     <div style="width: 100px;">Номер строки</div>
                                     <div class="ml-15">Артикул</div>
                                 </div>
-                                <div data-simplebar class="pl-15" id="error-list" style="height: 140px;">
+                                <div data-simplebar class="w-100 p-10 pt-0" style="height: 100px;">
+                                    <div class="w-100" id="error-list">
 
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -40,7 +40,7 @@ class AdjustmentController extends Controller
                 $articles[$article_id]['article'] = $articleNames->find($article_id)->article;
                 $articles[$article_id]['manufacturer'] = $articleNames->find($article_id)->supplier->name;
 
-                $articles[$article_id]['entrances'][$articleEntrance->entrance_id] = [
+                $articles[$article_id]['entrances'][$articleEntrance->id] = [
                     'id'              => $articleEntrance->id,
                     'created_at'      => date('d.m.Y', strtotime($articleEntrance->created_at)),
                     'deviation_price' => $adjustmentArticleEntrance->price,
@@ -86,7 +86,7 @@ class AdjustmentController extends Controller
 
         foreach ($articleEntrances as $articleEntrance) {
 
-            $articleAttributes['entrances'][$articleEntrance->entrance_id] = [
+            $articleAttributes['entrances'][$articleEntrance->id] = [
                 'id'             => $articleEntrance->id,
                 'created_at'     => date('d.m.Y', strtotime($articleEntrance->created_at)),
                 'count'          => $articleEntrance->count,
@@ -115,10 +115,11 @@ class AdjustmentController extends Controller
         return DB::transaction(function () use ($request) {
 
             $user = Auth::user();
+            $partner = Auth::user()->partner;
 
             $adjustment = Adjustment::create([
-                'company_id' => $user->company_id,
-                'manager_id' => $user->id,
+                'company_id' => $partner->company_id,
+                'manager_id' => $partner->id,
                 'store_id'   => $user->current_store,
                 'comment'    => $request->comment
             ]);
@@ -138,7 +139,7 @@ class AdjustmentController extends Controller
                         $attributes = [
                             'entrance_id' => null,
                             'article_id'  => $article_id,
-                            'company_id'  => $user->company_id,
+                            'company_id'  => $partner->company_id,
                             'store_id'    => $user->current_store,
                             'price'       => $params['price'],
                             'count'       => $params['count'],

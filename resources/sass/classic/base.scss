@@ -2119,7 +2119,6 @@ input:-moz-placeholder { /* Firefox 18- */
     width: 92.5%;
     position: absolute;
     z-index: 999;
-    height: 200px;
     margin-top: 1px;
 }
 
@@ -2775,6 +2774,7 @@ input:-moz-placeholder { /* Firefox 18- */
                         }
 
                         input {
+
                             height: 24px;
                             line-height: 24px;
                             margin: 3px 0;

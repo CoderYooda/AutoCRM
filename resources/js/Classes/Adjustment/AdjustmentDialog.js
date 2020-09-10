@@ -119,9 +119,7 @@ class adjustmentDialog extends Modal{
                 .catch(response => console.log(response));
         }
         else {
-
-            let target_element = this.current_dialog.querySelector('#article_' + product_id);
-            target_element.remove();
+            this.removeProduct(product_id);
         }
     }
 

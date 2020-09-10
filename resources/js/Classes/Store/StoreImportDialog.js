@@ -59,8 +59,6 @@ class storeImportDialog extends Modal{
             html += '</div>';
         });
 
-        console.log(html);
-
         let duplicate_list = this.current_dialog.querySelector('#duplicate-list');
 
         duplicate_list.innerHTML = html;
@@ -75,8 +73,6 @@ class storeImportDialog extends Modal{
             html += '   <div class="ml-15">' + item.article + '</div>';
             html += '</div>';
         });
-
-        console.log(html);
 
         let error_list = this.current_dialog.querySelector('#error-list');
 
@@ -93,14 +89,14 @@ class storeImportDialog extends Modal{
         let name_input = this.current_dialog.querySelector('#file-name');
 
         file_input.click();
-        name_input.innerText = 'Название файла';
+        name_input.value = 'Название файла';
     }
 
     changeFile(element) {
 
         let input = this.current_dialog.querySelector('#file-name');
 
-        input.innerText = element.files[0].name;
+        input.value = element.files[0].name;
     }
 
     selectStore(element, store_id) {
@@ -135,6 +131,12 @@ class storeImportDialog extends Modal{
         axios.post( '/store/import', formData, config)
         .then(response => {
             console.log('file upload success');
+
+            let element = this.current_dialog.querySelector('#progressbar');
+            element.value = 0;
+
+            let element_text = this.current_dialog.querySelector('#info-text');
+            element_text.innerText = 'Обработано на 0%';
         })
         .catch(response => {
             elements.classList.remove('d-none');
@@ -158,13 +160,11 @@ class storeImportDialog extends Modal{
         element_text.innerText = 'Загружено на ' + percent + '%';
     }
 
-    showInfoList(element_id) {
-        let element_list = this.current_dialog.querySelector('#' + element_id).parentElement;
+    showInfoList(element) {
 
-        if(element_list.classList.contains('d-none')) {
-            element_list.classList.remove('d-none');
-        }
-        else element_list.classList.add('d-none');
+        let element_list = element.closest('.form-group').querySelector('.list');
+
+        element_list.classList.toggle('d-none');
     }
 
 

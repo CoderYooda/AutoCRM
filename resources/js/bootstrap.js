@@ -161,7 +161,7 @@ document.addEventListener('click', function (e){
 });
 
 document.addEventListener('keyup', function (e){
-    console.log(e);
+
     if(e.keyCode == 27){
         var divs = document.getElementsByClassName('dropdown_container');
         [].forEach.call(divs, function(div){

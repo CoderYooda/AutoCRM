@@ -9,7 +9,7 @@
 
     <div class="children_body">
 
-        @foreach($articleAttributes['entrances'] as $entrance_id => $entrance)
+        @foreach($articleAttributes['entrances'] as $id => $entrance)
 
             <div class="children_element d-flex">
                 <div class="pl-10" style="width: 15%">{{ $entrance['created_at'] }}</div>

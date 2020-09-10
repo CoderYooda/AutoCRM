@@ -22,8 +22,8 @@ class AdjustmentRequest extends FormRequest
             'comment' => ['string', 'max:1024'],
             'products' => ['required'],
             'products.*' => [new CheckExistEntrances, new CheckExistArticles],
-            'products.*.*.count' => ['required', 'between:0,999', new CheckEntranceNewCount],
-            'products.*.*.price' => ['required', 'between:0,' . PHP_FLOAT_MAX]
+            'products.*.*.count' => ['required', 'integer', 'between:0,999', new CheckEntranceNewCount],
+            'products.*.*.price' => ['required', 'numeric', 'between:0,' . PHP_INT_MAX]
         ];
     }
 
