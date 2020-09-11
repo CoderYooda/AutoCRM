@@ -183,7 +183,7 @@
                                        @else checked @endif
                                        onclick="{{ $class }}.setNDS();">
                                 <i class="dark-white"></i>
-                                - включена в стоимость
+                                - включен в стоимость
                             </label>
                         </div>
                     </div>

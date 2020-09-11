@@ -16,9 +16,9 @@ class SystemMessages{
             backdrop: true,
             keyboard: true,
         };
-
-        this.modal = new bootstrap.Modal(modal_html, options);
-
+        if(modal_html){
+            this.modal = new bootstrap.Modal(modal_html, options);
+        }
     }
 
     loadMessages(){
