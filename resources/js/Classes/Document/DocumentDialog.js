@@ -4,12 +4,12 @@ class documentDialog extends Modal {
 
     constructor(dialog, response) {
 
-        let data = response.data;
-
         super(dialog);
         console.log('Окно документа инициализировано');
 
-        this.documents = data.documents;
+        this.documents = response.documents;
+
+        console.log(this.documents);
 
         this.init();
     }
@@ -53,7 +53,9 @@ class documentDialog extends Modal {
 
         input_element.checked = true;
 
-        let document = this.documents[input_element.value];
+        let document = this.documents[Number.parseInt(input_element.value)];
+
+        console.log(document);
 
         let params = '&refer=' + this.current_dialog.id;
 
