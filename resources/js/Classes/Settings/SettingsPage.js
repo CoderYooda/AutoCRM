@@ -51,8 +51,6 @@ class settingsPage{
             });
         }
 
-        this.addNumberMasks();
-
         this.linked();
     }
 
@@ -287,7 +285,7 @@ class settingsPage{
         if(this.active_tab === 'services') {
             this.initServiceProviderModal();
 
-            new Tabs('adjustment_tabs');
+            // new Tabs('adjustment_tabs');
         }
         else if(this.active_tab === 'requisites') {
             let button_element = document.querySelector('#ajax-tab-content button[class~="active"]');
@@ -295,6 +293,8 @@ class settingsPage{
             setTimeout(() => {
                 button_element.click();
             }, 300)
+
+            this.addNumberMasks();
         }
     }
 
@@ -465,6 +465,7 @@ class settingsPage{
             let elements = document.getElementsByName(name);
 
             elements.forEach(element => {
+
                 window.IMask(element, {
                     mask: inputs[name],
                     lazy: true

@@ -11,16 +11,12 @@
 
             @foreach($product->entrances as $entrance)
 
-                @foreach($entrance->articles as $product)
-
-                    <tr>
-                        <td>{{ $entrance->id }}</td>
-                        <td>{{ $entrance->partner->official_name }}</td>
-                        <td>{{ $product->pivot->count }}</td>
-                        <td>{{ $product->pivot->created_at }}</td>
-                    </tr>
-
-                @endforeach
+                <tr>
+                    <td>{{ $entrance->id }}</td>
+                    <td>{{ $entrance->partner->official_name }}</td>
+                    <td>{{ $entrance->articles->find($product->id)->pivot->count }}</td>
+                    <td>{{ $entrance->articles->find($product->id)->pivot->created_at }}</td>
+                </tr>
 
             @endforeach
 

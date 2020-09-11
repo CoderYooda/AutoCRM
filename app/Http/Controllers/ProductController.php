@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\Providers\TrinityController;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class ProductController extends Controller

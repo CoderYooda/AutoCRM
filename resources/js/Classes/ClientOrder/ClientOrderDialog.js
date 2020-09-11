@@ -478,7 +478,7 @@ class clientorderDialog extends Modal{
         var object = this;
         window.axios({
             method: 'post',
-            url: 'partner/'+ id +'/select',
+            url: '/partner/'+ id +'/select',
             data: {refer:this.root_dialog.id}
         }).then(function (resp) {
             object.touch();
