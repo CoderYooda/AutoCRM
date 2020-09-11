@@ -97,40 +97,35 @@ class DocumentController extends Controller
         ], 200);
     }
 
-    public function document(Request $request)
+    public static function document(Request $request)
     {
         PermissionController::canByPregMatch('Создавать документы');
 
         $names = [
             'out-warrant' => [
                 'view' => 'documents.out-warrant',
-                'id' => 6,
+                'name' => 'Расходный кассовый ордер',
                 'class' => Warrant::class
             ],
             'in-warrant' => [
                 'view' => 'documents.in-warrant',
-                'id' => 5,
+                'name' => 'Приходный кассовый ордер',
                 'class' => Warrant::class
             ],
             'client-order' => [
                 'view' => 'documents.client-order',
-                'id' => 4,
+                'name' => 'Заказ клиента',
                 'class' => ClientOrder::class
             ],
             'shipment-score' => [
                 'view' => 'documents.invoice-for-payment',
-                'id' => 1,
+                'name' => 'Счёт на оплату',
                 'class' => Shipment::class
             ],
             'shipment-upd' => [
                 'view' => 'documents.upd',
-                'id' => 2,
+                'name' => 'Универсальный передаточный документ',
                 'class' => Shipment::class
-            ],
-            'defective-act' => [
-                'view' => 'documents.defective-act',
-                'id' => 3,
-                'class' => stdClass::class
             ],
             'cheque' => ['view' => 'cheques.'],
             'statistic-result' => ['view' => 'documents.statistic-result']
@@ -282,7 +277,7 @@ class DocumentController extends Controller
 
         $view->with('data', $data);
 
-        if(isset($names[$request->doc]['id'])) {
+        if(isset($names[$request->doc]['name'])) {
 
             $document_data = $names[$request->doc];
 
@@ -290,7 +285,7 @@ class DocumentController extends Controller
 
             $document = Document::create([
                 'company_id' => $partner->company->id,
-                'name' => DocumentType::find($document_data['id'])->name,
+                'name' => DocumentType::where('name', $document_data['name'])->first()->name,
                 'manager_id' => $partner->id,
                 'documentable_id' => $request['id'],
                 'documentable_type' => $document_data['class'],

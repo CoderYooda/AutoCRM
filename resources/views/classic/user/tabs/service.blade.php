@@ -9,7 +9,7 @@
                 @if(Auth::user()->company->blocked)
                     <span class="system_balance"> Компания "{{ Auth::user()->company->name }}" заблокирована. Для активации выберите тариф или свяжитесь с администратором</span>
                 @else
-                    <span class="system_balance pr-15">Состояние записи: <b>Активно</b>. Дней до отключения: <b>{{ Auth::user()->company->payed_days }}</b></span>
+                    <span class="system_balance pr-15">Состояние записи: <b>Активно</b>. Дата отключения: <b>{{ Auth::user()->company->getPayedDays() }}</b></span>
                 @endif
             </div>
         </div>

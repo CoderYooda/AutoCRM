@@ -54,7 +54,7 @@ class Payment extends Model
                     $company->sms_balance += $this->add_balance;
                 } else {
                     $company->increment('balance', $this->add_balance);
-                    $company->increment('payed_days', $this->add_days);
+                    $company->increment('payed_days', $this->add_days * 86400);
                 }
 
             }
@@ -63,7 +63,7 @@ class Payment extends Model
                     $company->decrement('sms_balance', $this->add_balance);
                 } else {
                     $company->decrement('balance', $this->add_balance);
-                    $company->decrement('payed_days', $this->add_days);
+                    $company->decrement('payed_days', $this->add_days * 86400);
                 }
             }
             $company->save();

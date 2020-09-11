@@ -2,28 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\API\AnalogController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Requests\ProductRequest;
 use App\Model\Catalog\Product;
-use App\Models\Adjustment;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\ProviderOrder;
-use App\Models\Shipment;
 use App\Models\Store;
 use App\Models\Supplier;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Http\Controllers\HelpController as HC;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Auth;
-use phpDocumentor\Reflection\Types\Collection;
-use sngrl\SphinxSearch\SphinxSearch;
 use App\Http\Controllers\Providers\TrinityController;
-use Illuminate\Support\Facades\Gate;
 use stdClass;
 
 class ProductController extends Controller
@@ -188,8 +177,6 @@ class ProductController extends Controller
 
     public static function productDialog($request)
     {
-        PermissionController::canByPregMatch('Смотреть товары');
-
         $tag = 'productDialog';
 
         if ($request['product_id']) {

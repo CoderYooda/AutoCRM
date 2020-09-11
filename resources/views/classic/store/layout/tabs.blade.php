@@ -6,11 +6,9 @@
 
 <div id="left_menu_draggable" class="side-menu">
     <ul class="nav">
-        @can('Смотреть товары')
-            <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif">
-                <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}">База товаров</a>
-            </li>
-        @endcan
+        <li id="store-tab" data-tab="store" data-default="true" class="@if($request['active_tab'] == 'store' || $request['active_tab'] == null) active @endif">
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'store', 'target' => 'ajax-tab-content']) }}">База товаров</a>
+        </li>
         @can('Смотреть склады поставщиков')
             <li id="provider_stores" data-tab="provider_stores" class="@if($request['active_tab'] == 'provider_stores') active @endif">
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'provider_stores', 'target' => 'ajax-tab-content']) }}">Склады поставщиков</a>

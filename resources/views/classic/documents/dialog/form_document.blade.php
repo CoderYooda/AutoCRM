@@ -1,4 +1,4 @@
-<div id="documentDialog" class="dialog" style="width:300px;">
+<div id="documentDialog" class="dialog" style="width:330px;">
     <div class="titlebar">Создание документа</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>

@@ -55,8 +55,6 @@ class documentDialog extends Modal {
 
         let document = this.documents[Number.parseInt(input_element.value)];
 
-        console.log(document);
-
         let params = '&refer=' + this.current_dialog.id;
 
         params += '&isIncoming=' + (document.print == 'in-warrant' ? 1 : 0);
@@ -67,6 +65,9 @@ class documentDialog extends Modal {
     }
 
     selectShipment(shipment_id) {
+
+        console.log(shipment_id);
+
         this.print(shipment_id, 'ShipmentSelected');
     }
 

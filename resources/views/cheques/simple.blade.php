@@ -10,14 +10,16 @@
     @foreach($products as $product)
         @for($i = $product->count - 1; $i != -1; $i--)
 
-            <div style="width: 25%; position:relative; height: calc((100vh / 4) - 3px); float: left; display: inline-block;" >
+            <div style="width: 25%; position:relative; height: calc(100vh / 4); float: left; display: inline-block;" >
 
                 <div class="w-100 h-100 text-center">
 
                     <div class="border-left h-100 border-right white">
-                        <div class="w-100 h-32-text border-top border-bottom">{{ auth()->user()->company->official_name }}</div>
+                        <div class="w-100 all-center border-top border-bottom ov-hidden" style="height: 46px;">
+                            <span>{{ auth()->user()->company->official_name }}</span>
+                        </div>
 
-                        <div style="height: calc(100% - 119px);"><b>{{ $product->name }}</b></div>
+                        <div style="height: calc(100% - 135px);"><b>{{ $product->name }}</b></div>
 
                         <div class="border-top"><b>{{ $product->price }} руб.</b></div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 class Company extends Model
 {
     protected $guarded = [];
+
+    public function getPayedDays()
+    {
+        return mb_ucfirst(Carbon::createFromTimestamp($this->payed_days)->diffForHumans());
+    }
 
     public function members()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CompanyHasPayedDays;
 use App\Http\Middleware\StoreLimit;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -19,7 +20,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\TrustProxies::class,
+        \App\Http\Middleware\TrustProxies::class
     ];
 
     /**
@@ -62,7 +63,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'banned' => \App\Http\Middleware\banned::class,
-        'superAdmin' => \App\Http\Middleware\SuperAdmin::class
+        'superAdmin' => \App\Http\Middleware\SuperAdmin::class,
+        'hasPayedDays' => CompanyHasPayedDays::class
     ];
 
     /**
