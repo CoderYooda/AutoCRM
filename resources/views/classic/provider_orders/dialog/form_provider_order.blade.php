@@ -1,4 +1,4 @@
-@php $stores = App\models\Store::owned()->get(); @endphp
+@php $stores = App\Models\Store::owned()->get(); @endphp
 @if(!isset($inner) || !$inner)
     <div
         @if(isset($provider_order) && $provider_order->id != NULL)
