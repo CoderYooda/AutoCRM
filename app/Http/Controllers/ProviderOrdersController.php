@@ -195,9 +195,7 @@ class ProviderOrdersController extends Controller
 
     public function fresh($id, Request $request)
     {
-        $provider_order = ProviderOrder::where('id', (int)$id)->first();
-
-        $provider_order->articles = $provider_order->articles()->get();
+        $provider_order = ProviderOrder::find($id);
 
         foreach($provider_order->articles as $article){
             $article->instock = $article->getCountInStoreId($provider_order->store_id);
@@ -224,12 +222,13 @@ class ProviderOrdersController extends Controller
         return response()->json([
             'html' => $content,
             'target' => 'providerorderDialog' . $id,
-        ], 200);
+            'products' => []
+        ]);
     }
 
     public function store(ProviderOrdersRequest $request)
     {
-        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам через корзину');
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам');
 
         $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 

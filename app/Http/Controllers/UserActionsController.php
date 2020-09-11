@@ -107,7 +107,7 @@ class UserActionsController extends Controller
         $target = HC::selectTarget();
         $actions = self::getActions($request);
         $system_messages = SM::getMessages($request);
-        $members = Auth::user()->company()->first()->members()->get();
+        $members = Auth::user()->company->members;
         $messages = null;
         $actionsView = view(get_template() . '.history.actions', compact('actions'))->render();
         $membersView = view(get_template() . '.history.actions', compact('actions'))->render();
@@ -151,52 +151,51 @@ class UserActionsController extends Controller
         switch ($action){
             case 'create':
                 $type = 'create';
-                $message_text = 'Создал';
+                $message_text = 'Создание';
                 break;
             case 'fresh':
                 $type = 'fresh';
-                $message_text = 'Обновил';
+                $message_text = 'Обновление';
                 break;
             case 'delete':
                 $type = 'delete';
-                $message_text = 'Удалил';
+                $message_text = 'Удаление';
                 break;
             case 'restore':
                 $type = 'restore';
-                $message_text = 'Восстановил';
+                $message_text = 'Восстановление';
                 break;
             default:
-                $message_text = 'Отредактировал';
+                $message_text = 'Редактирование';
                 break;
         }
 
         $className = class_basename($model);
 
-        $model_text = null;
-        switch ($className){
-            case 'Partner': $model_text = 'контакт'; break;
-            case 'ProviderOrder': $model_text = 'заявку поставщику'; break;
-            case 'Warrant': $model_text = 'финансовую операций'; break;
-            case 'Cashbox': $model_text = 'кассовый аппарат'; break;
-            case 'Entrance': $model_text = 'поступление'; break;
-            case 'Adjustment': $model_text = 'корректировку'; break;
-            case 'Article': $model_text = 'товар'; break;
-            case 'Category': $model_text = 'категорию'; break;
-            case 'ClientOrder': $model_text = 'заказ клиента'; break;
-            case 'Company': $model_text = 'компанию'; break;
-            case 'DdsArticle': $model_text = 'статью ддс'; break;
-            case 'Order': $model_text = 'заказ'; break;
-            case 'MoneyMoves': $model_text = 'движение средств'; break;
-            case 'Salary': $model_text = 'оплату труда'; break;
-            case 'Setting': $model_text = 'настройку'; break;
-            case 'Shipment': $model_text = 'продажу'; break;
-            case 'Sms': $model_text = 'смс'; break;
-            case 'Store': $model_text = 'магазин'; break;
-            case 'Supplier': $model_text = 'производитель'; break;
-            case 'Refund': $model_text = 'возврат'; break;
-            case 'User': $model_text = 'пользователя'; break;
-            case 'EntranceRefund': $model_text = 'возврат поставщику'; break;
-        }
+        $modelTexts = [
+            'Partner' => 'контакта',
+            'ProviderOrder' => 'заявки поставщику',
+            'Warrant' => 'финансовой операции',
+            'Cashbox' => 'кассового аппарата',
+            'Entrance' => 'поступления',
+            'Adjustment' => 'корректировки',
+            'Article' => 'товара',
+            'Category' => 'категории',
+            'ClientOrder' => 'заказа клиента',
+            'Company' => 'компании',
+            'DdsArticle' => 'статьи ддс',
+            'Order' => 'заказа',
+            'MoneyMoves' => 'движения средств',
+            'Salary' => 'оплаты труда',
+            'Setting' => 'настройки',
+            'Shipment' => 'продажи',
+            'Sms' => 'смс',
+            'Store' => 'магазина',
+            'Supplier' => 'производителя',
+            'Refund' => 'возврата',
+            'User' => 'пользователя',
+            'EntranceRefund' => 'возврата поставщику'
+        ];
 
         UserAction::create([
             'user_id' => Auth::id(),
@@ -204,7 +203,7 @@ class UserActionsController extends Controller
             'model' => $className,
             'type' => $type,
             'model_id' => $model->id,
-            'message' => $message_text . ' ' . $model_text . ' #' . $model->id,
+            'message' => ($message_text . ' ' . $modelTexts[$className] . ' #' . $model->id)
         ]);
     }
 }

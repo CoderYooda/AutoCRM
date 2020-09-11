@@ -12,10 +12,12 @@ class providerOrderDialog extends Modal{
         this.itogo = 0.0;
         this.refer = null;
 
-        Object.values(response.products).forEach(product_id => {
-            console.log(product_id.id);
-            window.entity.addProductToList(product_id.id, this, 'providerOrder');
-        });
+        if(response.products != undefined) {
+            Object.values(response.products).forEach(product_id => {
+                console.log(product_id.id);
+                window.entity.addProductToList(product_id.id, this, 'providerOrder');
+            });
+        }
 
         this.init();
     }

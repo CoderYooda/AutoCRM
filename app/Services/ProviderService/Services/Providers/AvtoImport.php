@@ -129,7 +129,13 @@ class AvtoImport implements ProviderInterface
             $context['http']['content'] = http_build_query($params);
         }
 
-        $result = file_get_contents($full_path, null, stream_context_create($context));
+        try {
+            $result = file_get_contents($full_path, null, stream_context_create($context));
+        }
+        catch (\Exception $exception)
+        {
+            dd($exception->getMessage());
+        }
 
         $result = (array)json_decode($result);
 
