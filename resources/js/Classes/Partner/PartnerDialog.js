@@ -126,16 +126,19 @@ class partnerDialog extends Modal{
             input.value = resp.data.id;
             select.innerHTML = str;
 
+            let role_element = this.current_dialog.querySelector('.role_select_cont').parentElement;
+
+            this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
+            role_element.classList.add('hide');
+            role_element.querySelector('input').disabled = true;
+
             //Показываем вкладку с транспортом
             if(resp.data.id === 7) {
                 this.current_dialog.querySelector('#vehicle_tab').classList.remove('d-none');
             }
-            else if(resp.data.id === 5) {
-                this.current_dialog.querySelector('.role_select_cont').parentElement.classList.remove('hide');
-            }
-            else {
-                this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
-                this.current_dialog.querySelector('.role_select_cont').parentElement.classList.add('hide');
+            if(resp.data.id === 5) {
+                role_element.classList.remove('hide');
+                role_element.querySelector('input').disabled = false;
             }
 
             window.notification.notify( 'success', 'Категория выбрана');

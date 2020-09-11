@@ -4,12 +4,13 @@
 
 use App\Model;
 use App\Models\Company;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(Company::class, function (Faker $faker) {
     return [
         'name' => $faker->company,
         'blocked' => rand(0, 100) == 1 ? true : false,
-        'payed_days' => rand(0, 880),
+        'payed_days' => Carbon::now()->timestamp + (86400 * 14),
     ];
 });

@@ -2490,16 +2490,11 @@ input:-moz-placeholder { /* Firefox 18- */
 
 #documentDialog {
     span {
-        font-family: Roboto;
         font-style: normal;
-        font-weight: normal;
-        font-size: 12px;
         line-height: 18px;
-        /* identical to box height, or 150% */
-
         letter-spacing: 0.0015em;
-
         color: #404040;
+        font-size: 14px;
     }
 
     .selected {

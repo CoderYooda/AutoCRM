@@ -9,6 +9,7 @@ use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -124,7 +125,7 @@ class RegisterController extends Controller
 
         $company = new Company();
         $company->name = 'Новая компания';
-        $company->payed_days = 14;
+        $company->payed_days = Carbon::now()->timestamp + (86400 * 14);
         $company->save();
 
         $user->company()->associate($company);

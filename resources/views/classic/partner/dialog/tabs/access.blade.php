@@ -36,7 +36,7 @@
             <label>Роль</label>
 
             <div class="dropdown role_select_cont" onclick="window.helper.openModal(this, event)">
-                <input id="role" name="role" type="hidden" value="{{ $partner->user->roles[0]->id ?? 'Не выбрано' }}" class="form-control role_selector pointer" >
+                <input id="role" name="role" type="hidden" value="{{ $partner->user->roles[0]->id ?? 'Не выбрано' }}" class="form-control role_selector pointer" @if(!$partner || $partner && $partner->category->name != 'Сотрудники') disabled @endif>
                 <button id="button_role" type="button" class="category_select form-control text-left button_select">{{ $partner->user->roles[0]->id ?? 'Не выбрано' }}</button>
                 <div class="dropdown_container">
                     <div class="arrow"></div>

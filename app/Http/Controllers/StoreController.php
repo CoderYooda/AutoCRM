@@ -33,7 +33,6 @@ class StoreController extends Controller
 {
     public function index(StoreGetRequest $request)
     {
-        PermissionController::canByPregMatch('Смотреть товары');
         // точка входа в страницу
         $page_title = 'Склад';
 
@@ -72,7 +71,6 @@ class StoreController extends Controller
     public static function getAllowedPage()
     {
         $tabs = [
-            'store' => 'Смотреть товары',
             'provider_orders' => 'Смотреть заявки поставщикам',
             'entrance' => 'Смотреть поступления',
             'shipments' => 'Смотреть продажи',
@@ -211,7 +209,6 @@ class StoreController extends Controller
     public static function storeTab($request)
     {
         $page = 'Склад';
-        PermissionController::canByPregMatch('Смотреть товары');
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';

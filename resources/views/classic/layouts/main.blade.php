@@ -45,7 +45,7 @@
                             </a>
                         </li>
                         @else
-                        @canany(['Смотреть товары','Смотреть заявки поставщикам','Смотреть поступления','Смотреть продажи','Смотреть заказ клиента','Смотреть корректировки'])
+                        @canany(['Смотреть заявки поставщикам','Смотреть поступления','Смотреть продажи','Смотреть заказ клиента','Смотреть корректировки'])
                         <li id="store_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('StoreIndex', \App\Http\Controllers\StoreController::getAllowedPage()) }}">
                                 Склад
@@ -139,7 +139,7 @@
                                 <div class="arrow"></div>
 
                                 <a class="element ajax-nav" href="{{ route('UserIndex') }}">Личный кабинет</a>
-                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service']) }}">Мои услуги</a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'service']) }}">Мои услуги</a>
 
                                 @canany(['Смотреть настройки'])
                                     <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}" onclick="window.helper.closeModal(this, event)">
@@ -148,7 +148,7 @@
                                 @endcanany
 
                                 @if(auth()->user()->partner->category_id == 7)
-                                    <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'vehicles']) }}">Гараж</a>
+                                    <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'vehicles']) }}">Гараж</a>
                                 @endif
 
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
