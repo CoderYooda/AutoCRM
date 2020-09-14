@@ -53,7 +53,8 @@ import loginPage from "./Auth/LoginPage";
 import passwordresetPage from "./Auth/ResetPage";
 import statisticPage from "./Statistic/StatisticPage";
 import statisticshowPage from "./Statistic/StatisticShowPage";
-import admindashboardPage from "./Admin/AdminDashboard";
+import adminPage from "./Admin/AdminPage";
+import companyDialog from "./Admin/Company/CompanyDialog";
 
 const classes = {
     entranceDialog,
@@ -91,7 +92,8 @@ const classes = {
     providerCartDialog,
     documentDialog,
     selectClientOrderDialog,
-    selectWarrantDialog
+    selectWarrantDialog,
+    companyDialog
 };
 
 const pages = {
@@ -113,7 +115,7 @@ const pages = {
     passwordresetPage,
     statisticPage,
     statisticshowPage,
-    admindashboardPage
+    adminPage
 };
 
 class Helper{

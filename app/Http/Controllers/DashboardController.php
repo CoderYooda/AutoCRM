@@ -21,10 +21,4 @@ class DashboardController extends Controller
             return view(get_template() . '.dashboard.statistic', compact('products', 'request'));
         }
     }
-
-    public static function getAllUsers()
-    {
-        $users = User::all();
-        return $users;
-    }
 }

@@ -10,7 +10,7 @@
                 </span>
             </div>
             <div id="table-container" class="box box-content">
-                <div id="provider_orders-table" ></div>
+                <div id="provider_orders-table"></div>
             </div>
         </div>
         <div class="content-rightside">
