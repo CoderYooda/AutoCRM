@@ -8,7 +8,7 @@
 
             <div class="search-panel box mb-15">
                 <div class="search-field-container w-100">
-                    <input onclick="{{ $class }}.debounceSearch()" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+                    <input onclick="{{ $class }}.debounceSearch()" id="search" name="search" placeholder="Поиск по компаниям" class="input w-100" value="{{ request('search') }}" type="text">
                 </div>
             </div>
 

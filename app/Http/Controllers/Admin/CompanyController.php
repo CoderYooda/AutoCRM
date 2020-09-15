@@ -51,10 +51,14 @@ class CompanyController extends Controller
 
     public static function tableData(Request $request)
     {
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
+
         $companies = Company::when(strlen($request->search), function (Builder $q) use ($request) {
             $q->where('name', 'like', "%{$request->search}%")
                 ->orWhere('id', 'like', "%{$request->search}%");
         })
+            ->orderBy($field, $dir)
             ->paginate($request->size);
 
         foreach ($companies as $key => &$company) {

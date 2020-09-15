@@ -31,6 +31,9 @@ class UserController extends Controller
 
     public static function tableData(Request $request)
     {
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
+
         $users = User::when(strlen($request->search), function (Builder $q) use ($request) {
             $q->where('id', 'like', "%{$request->search}%")
                 ->orWhere('name', 'like', "%{$request->search}%")
@@ -39,6 +42,10 @@ class UserController extends Controller
             ->when($request->has('company_id'), function (Builder $query) use ($request) {
                 $query->where('company_id', $request->company_id);
             })
+            ->whereHas('partner', function (Builder $query) {
+                $query->where('category_id', 5);
+            })
+            ->orderBy($field, $dir)
             ->paginate($request->size);
 
         return response()->json([

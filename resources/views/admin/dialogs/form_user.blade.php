@@ -39,7 +39,7 @@
                 <div class="form-group">
                     <label>Роль</label>
                     <div class="input-group mb-3">
-                        <input type="text" onclick="this.select();" name="phone" value="{{ $user->roles->first()->name }}" class="form-control" placeholder="Роль" disabled />
+                        <input type="text" onclick="this.select();" name="phone" value="{{ $user->roles->first()->name ?? 'Без роли' }}" class="form-control" placeholder="Роль" disabled />
                     </div>
                 </div>
 

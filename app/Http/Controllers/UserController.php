@@ -242,22 +242,18 @@ class UserController extends Controller
         return view('template.interface.user.head')->render();
     }
 
-    public static function getAllUsersList()
-    {
-        if(!Gate::allows('Суперадмин')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        } else {
-            $users = User::all();
-            $list = view(get_template() . '.system.admin_userlist', compact('users'))->render();
-            return $list;
-        }
-    }
-
     public function authByUser(Request $request){
-        $user = User::where('id', $request->id)->first();
+
+        $current_user = Auth::user();
+
+        $user = User::find($request->id);
         Auth::loginUsingId($user->id, TRUE);
         Session::flush();
+
         Session::put('store_id', $user->getStoreFirst()->id);
 
+        if($current_user->roles->first()->name == 'Суперадмин') {
+            Session::put('auth_from_id', $current_user->id);
+        }
     }
 }

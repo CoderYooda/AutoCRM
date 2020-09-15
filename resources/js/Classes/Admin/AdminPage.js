@@ -1,4 +1,5 @@
 import selectCompanyDialog from "../Company/SelectCompanyDialog";
+import {Contextual, ContextualItem} from "../Contentual";
 
 class adminPage{
 
@@ -36,7 +37,7 @@ class adminPage{
         this.table.setData(this.url_search, this.prepareDataForTable());
     }
 
-    removeCompany(element) {
+    removeCompany(element = null) {
         let list_element = document.querySelector('#company_list');
 
         let filter_element = list_element.firstElementChild;
@@ -45,6 +46,10 @@ class adminPage{
 
         this.filter_company_id = null;
         this.table.setData(this.url_search, this.prepareDataForTable());
+    }
+
+    clearCompanyList() {
+        this.removeCompany();
     }
 
     linked(){
@@ -142,7 +147,24 @@ class adminPage{
                 openDialog(this.contextDop + 'Dialog', '&' + this.parametr + '=' + id);
             },
             rowContext: (e, row) => {
-                //
+                e.preventDefault();
+
+                if(this.contextDop != 'user') return;
+
+                let items = [];
+
+                let id = row.getData().id;
+
+                items.push(new ContextualItem({
+                    label: 'Войти от имени пользователя', onClick: () => {
+                        system.authByUser(id);
+                    }, shortcut: 'Что то'
+                }));
+
+                new Contextual({
+                    isSticky: false,
+                    items:items,
+                });
             },
             tableBuilt: () => {
                 //

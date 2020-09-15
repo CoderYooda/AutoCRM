@@ -24,8 +24,6 @@ class selectCompanyDialog extends Modal {
 
         let selected_company = null;
 
-        console.log(company_id, this.companies);
-
         Object.values(this.companies).forEach((company, index) => {
             if(company.id == company_id) selected_company = company;
         });
