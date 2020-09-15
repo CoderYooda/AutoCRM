@@ -66,25 +66,6 @@ class SystemMessageController extends Controller
         }
     }
 
-    public function sendSystenMessageTo(Request $request)
-    {
-        $system_message = new SM();
-        $system_message->user_id = 1;
-        $system_message->reciever_id = $request->user_id;
-        $system_message->type = 'test';
-        $system_message->message = $request->message;
-        $system_message->save();
-
-        event(
-            new SystemMessage($system_message)
-        );
-
-        return response()->json([
-            'message' => 'Сообщение отправлено',
-            'type' => 'success'
-        ]);
-    }
-
     public function load()
     {
         $messages = self::getMessagesAside();

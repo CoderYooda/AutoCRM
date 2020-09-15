@@ -17,7 +17,7 @@ class DashboardController extends Controller
         // точка входа в страницу
         $page_title = 'Панель управления';
 
-        $class = 'admindashboard';
+        $class = 'admin';
 
         // цель динамической подгрузки
         $target = HC::selectTarget();
@@ -65,36 +65,15 @@ class DashboardController extends Controller
 
     public function tableData(Request $request)
     {
-        if($request->active_tab == 'companies') {
+        $methods = [
+            'companies' => CompanyController::class,
+            'users' => UserController::class
+        ];
 
-            $companies = Company::when(strlen($request->search), function (Builder $q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('id', 'like', "%{$request->search}%");
-            })
-                ->paginate($request->size);
-
-            foreach ($companies as $key => &$company) {
-                $company->payed_days = Carbon::createFromTimestamp($company->payed_days)->format('d.m.Y');
-                if (!strlen($company->name)) $company->name = "Новая компания";
-            }
-
-            return response()->json([
-                'data' => $companies
-            ]);
-        }
-        else if($request->active_tab == 'users') {
-
-            $users = User::when(strlen($request->search), function (Builder $q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('id', 'like', "%{$request->search}%");
-            })
-                ->paginate($request->size);
-
-            return response()->json([
-                'data' => $users
-            ]);
+        if(!in_array($request->active_tab, array_keys($methods))) {
+            return response()->json('no content', 404);
         }
 
-        return response()->json('no content', 404);
+        return $methods[$request->active_tab]::tableData($request);
     }
 }

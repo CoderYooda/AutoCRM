@@ -1,12 +1,8 @@
 class AxForm{
 
-    setActionButtons(boolean, elem){
-        togglePreloader(elem, !boolean);
-    }
-
     send(elem, callback = null, url = null, dataset = null){
 
-        this.setActionButtons(true, elem);
+        togglePreloader(elem, true);
 
         let object = this;
         let dialog = elem.closest(".dialog");
@@ -142,7 +138,7 @@ class AxForm{
             // }
             if(callback != null) callback(error.response);
         }).finally(() => {
-            object.setActionButtons(false, elem);
+            togglePreloader(elem, false);
         });
     }
 }

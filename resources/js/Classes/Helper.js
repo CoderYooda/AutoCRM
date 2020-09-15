@@ -55,6 +55,8 @@ import statisticPage from "./Statistic/StatisticPage";
 import statisticshowPage from "./Statistic/StatisticShowPage";
 import adminPage from "./Admin/AdminPage";
 import companyDialog from "./Admin/Company/CompanyDialog";
+import userDialog from "./Admin/User/UserDialog";
+import selectCompanyDialog from "./Company/SelectCompanyDialog";
 
 const classes = {
     entranceDialog,
@@ -93,7 +95,9 @@ const classes = {
     documentDialog,
     selectClientOrderDialog,
     selectWarrantDialog,
-    companyDialog
+    companyDialog,
+    userDialog,
+    selectCompanyDialog
 };
 
 const pages = {

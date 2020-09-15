@@ -1,3 +1,5 @@
+import selectCompanyDialog from "../Company/SelectCompanyDialog";
+
 class adminPage{
 
     constructor(){
@@ -14,7 +16,35 @@ class adminPage{
         this.contextDop = null;
         this.parametr = null;
 
+        this.filter_company_id = null;
+
         this.linked();
+    }
+
+    selectCompany(company) {
+
+        document.dispatchEvent(new Event('CompanySelected', {bubbles: true}));
+
+        let list_element = document.querySelector('#company_list');
+
+        let filter_element = list_element.firstElementChild;
+
+        filter_element.classList.remove('d-none');
+        filter_element.querySelector('.name').innerText = company.name;
+
+        this.filter_company_id = company.id;
+        this.table.setData(this.url_search, this.prepareDataForTable());
+    }
+
+    removeCompany(element) {
+        let list_element = document.querySelector('#company_list');
+
+        let filter_element = list_element.firstElementChild;
+
+        filter_element.classList.add('d-none');
+
+        this.filter_company_id = null;
+        this.table.setData(this.url_search, this.prepareDataForTable());
     }
 
     linked(){
@@ -26,23 +56,6 @@ class adminPage{
         console.log(this.active_tab, this.url_search);
 
         this.initTableData();
-    }
-
-    sendSystemMessage()
-    {
-        let data = {};
-        data.user_id = document.getElementById('message_to').value;
-        data.message = document.getElementById('message').value;
-
-        window.axios({
-            method: 'post',
-            url: 'system_message/send',
-            data: data
-        }).then(function (resp) {
-            console.log(resp);
-        }).catch(function (error) {
-            console.log(error);
-        });
     }
 
     search() {
@@ -147,6 +160,8 @@ class adminPage{
         data.view_as = "json";
         //data.target = "ajax-table-admin";
         data.page = 1;
+
+        if(this.filter_company_id != null) data.company_id = this.filter_company_id;
 
         let search_element = document.querySelector('#search');
         data.search = search_element.value;

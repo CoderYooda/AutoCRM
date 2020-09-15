@@ -319,9 +319,14 @@ Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChan
 Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUser');
 
 #Коморка разработчиков
-Route::prefix('admin')->middleware(['web', 'auth', 'superAdmin'])->namespace('Admin')->group(function () {
-    Route::get('/', 'DashboardController@index')->name('AdminDashboard');
-    Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('AdminDashboardTable');
-    Route::post('/system_message/send', 'SystemMessageController@sendSystenMessageTo')->name('AdminSendMessage');
+Route::prefix('admin')->middleware(['web', 'auth', 'superAdmin'])->namespace('Admin')->name('Admin')->group(function () {
+    Route::get('/', 'DashboardController@index')->name('Dashboard');
+    Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('DashboardTable');
+
+    Route::post('/companies/{company}/update', 'CompanyController@update')->name('UpdateCompany');
+    Route::get('/companies/search', 'CompanyController@selectDialog')->name('SearchCompany');
+
+    Route::post('/users/{user}/update', 'UserController@update')->name('UpdateUser');
+    Route::post('/system_message/send', 'UserController@sendSystemMessageTo')->name('SendMessage');
 });
 
