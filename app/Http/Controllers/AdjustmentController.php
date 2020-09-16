@@ -154,11 +154,13 @@ class AdjustmentController extends Controller
 
                     if($entrance_id != 'new') {
                         $query->where('id', $entrance_id)->update([
-                            'count' => $params['count'],
+                            'count' => ($articleEntrance->released_count + $params['count']),
                             'price' => $params['price'],
                             'updated_at' => Carbon::now()
                         ]);
                     }
+
+//                    dd($articleEntrance->count, $articleEntrance->released_count,  $params['count'], (($articleEntrance->count - $articleEntrance->released_count) + $params['count']));
 
                     DB::table('adjustment_article_entrance')->insertOrIgnore([
                         'adjustment_id'       => $adjustment->id,

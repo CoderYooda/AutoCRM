@@ -170,6 +170,7 @@ class SettingsController extends Controller
         Setting::create(['name' => 'Расчётный день', 'company_id' => $company->id, 'model' => null, 'type' => 'number', 'key' => 'day_id', 'value' => '1']);
         Setting::create(['name' => 'Способ расчета себестоимости товаров', 'company_id' => $company->id, 'model' => 'RRC',  'type' => 'select', 'key' => 'rrc_name', 'value' => 'fifo']);
         Setting::create(['name' => 'Источник цены', 'company_id' => $company->id, 'model' => 'PriceSource',  'type' => 'select', 'key' => 'price_source', 'value' => 'retail']);
+        Setting::create(['name' => 'Интернет магазин', 'company_id' => $company->id, 'model' => 'ShopEnabled',  'type' => 'select', 'key' => 'shop_enabled', 'value' => '0']);
     }
 
     public function baseStore(Request $request)

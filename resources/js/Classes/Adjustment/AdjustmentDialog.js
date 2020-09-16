@@ -82,6 +82,8 @@ class adjustmentDialog extends Modal{
         this.items.forEach((item, index) => {
             if(item.id == product_id) delete this.items[index];
         });
+
+        window.notification.notify( 'success', 'Продукт успешно удалён.');
     }
 
     selectProduct() {
@@ -115,6 +117,8 @@ class adjustmentDialog extends Modal{
                     let html = helper.createElementFromHTML(data.html);
 
                     list_element.appendChild(html);
+
+                    window.notification.notify( 'success', 'Продукт успешно добавлен.');
                 })
                 .catch(response => console.log(response));
         }
@@ -130,6 +134,8 @@ class adjustmentDialog extends Modal{
         axform.send(form_element, response => {
             if(response.status === 200) {
                 this.fresh(response.data.id);
+
+                window.notification.notify( 'success', 'Корректировка была сохранена.');
             }
         });
     }
@@ -140,6 +146,8 @@ class adjustmentDialog extends Modal{
 
         axform.send(form_element, response => {
             if(response.status == 200) {
+                window.notification.notify( 'success', 'Корректировка была сохранена.');
+
                 this.finitaLaComedia(true);
             }
         });

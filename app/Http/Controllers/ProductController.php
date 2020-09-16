@@ -194,13 +194,15 @@ class ProductController extends Controller
             $category_select = 2;
         }
 
+        $company = Auth::user()->company;
+
         $stores = Store::owned()->get();
 
         $category = Category::find($category_select);
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'stores', 'request'))->render()
         ]);
     }
 

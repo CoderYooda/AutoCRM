@@ -37,6 +37,8 @@ class ProductRequest extends FormRequest
             'storage_vertical' => ['string', 'max:2'],
             'storage_horizontal' => ['string', 'max:2'],
 
+            'image' => ['file', 'mimes:jpeg,png,svg', 'max:5120'],
+
             'barcode' => ['nullable', Rule::unique('articles', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)]
         ];
     }
@@ -48,6 +50,7 @@ class ProductRequest extends FormRequest
                 response()->json(['messages' => $validator->errors()], 422)
             );
         }
+
         parent::failedValidation($validator);
     }
 }

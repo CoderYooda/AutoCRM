@@ -59,15 +59,12 @@
             </button>
         </div>
     </div>
-    @if(!$product)
     <div class="form-group">
-        <label for="supplier_id">Начальные данные</label>
         @foreach($stores as $store)
-            <div>Розничная цена для магазина "{{ $store->name }}"</div>
+            <label  >Розничная цена для магазина "{{ $store->name }}"</label>
             <div class="input-group mb-3">
                 <input type="number" min="0" name="storage[{{ $store->id }}][retail_price]" class="form-control ml-0" placeholder="Розничная цена" value="@if($product){{ $product->stores->find($store->id)->pivot->retail_price ?? '0' }}@endif" >
             </div>
         @endforeach
     </div>
-    @endif
 </div>

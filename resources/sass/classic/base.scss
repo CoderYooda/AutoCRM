@@ -2787,3 +2787,12 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 }
+
+.user_dialog {
+    .tab {
+        display: none !important;
+        &.active {
+            display: block !important;
+        }
+    }
+}

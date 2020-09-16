@@ -987,11 +987,10 @@ class storePage{
         let object = this;
         let data = {};
         data.view_as = "json";
-        data.target = "ajax-table-store";
+        //data.target = "ajax-table-store";
         data.page = 1;
 
         if(object.category_id !== null){data.category_id = object.category_id.toString();}
-
         if(object.accountable !== null){data.accountable = object.accountable;}
         if(object.manufacture_id !== null){data.manufacture_id = object.manufacture_id;}
         if(object.client !== null){data.client = object.client;}
