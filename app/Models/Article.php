@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\Imageable;
 use App\Traits\OwnedTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 
 class Article extends Model
 {
-    use OwnedTrait, SoftDeletes;
+    use OwnedTrait, SoftDeletes, Imageable;
 
     public $fields = [
         'company_id',

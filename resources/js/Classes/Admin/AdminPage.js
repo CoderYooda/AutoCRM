@@ -215,7 +215,8 @@ class adminPage{
             columns = [
                 {title:"ID", field:"id", width:80, align: 'center'},
                 {title:"Имя", field:"name"},
-                {title:"Телефон", field:"phone"}
+                {title:"Телефон", field:"phone"},
+                {title:"Роль", field:"role", headerSort:false}
             ];
         }
 

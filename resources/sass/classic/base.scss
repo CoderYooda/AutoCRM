@@ -2788,11 +2788,17 @@ input:-moz-placeholder { /* Firefox 18- */
     }
 }
 
-.user_dialog {
+.form_user_dialog {
     .tab {
         display: none !important;
         &.active {
             display: block !important;
         }
+    }
+}
+
+.form_company_dialog, .form_user_dialog {
+    .simplebar-vertical {
+        right: -13px;
     }
 }

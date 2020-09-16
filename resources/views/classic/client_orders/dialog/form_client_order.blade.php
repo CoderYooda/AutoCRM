@@ -87,17 +87,6 @@
         </div>
         @endif
 
-        @if(isset($client_order) && !$client_order->isFinished())
-            <div class="modal-alt-header">
-                <span class="item-title _500">Состояние заказа</span>
-                <div class="item-except font-weight-bolder h-1x">
-                    <span id="itogo_price">@if($client_order->total_complited)Укомплектован@elseНеукомплектован@endif</span>
-                </div>
-                <div class="item-tag tag hide">
-                </div>
-            </div>
-        @endif
-
         @if($client_order && ($client_order->wsumm != $client_order->itogo))
             <div class="modal-alt-header ">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>

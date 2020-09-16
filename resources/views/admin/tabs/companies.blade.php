@@ -7,8 +7,9 @@
         <div class="box-lister" style="width: 1px!important;">
 
             <div class="search-panel box mb-15">
-                <div class="search-field-container w-100">
-                    <input onclick="{{ $class }}.debounceSearch()" id="search" name="search" placeholder="Поиск по компаниям" class="input w-100" value="{{ request('search') }}" type="text">
+                <div class="search-field-container w-100 d-flex">
+                    <input onkeyup="{{ $class }}.searchDebounce();" id="search" name="search" placeholder="Поиск по компаниям" class="input w-100" value="{{ request('search') }}" type="text">
+                    <button type="button" onclick="{{ $class }}.searchDebounce();" class="button primary ml-10">Поиск</button>
                 </div>
             </div>
 

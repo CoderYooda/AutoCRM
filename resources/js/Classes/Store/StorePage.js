@@ -397,11 +397,7 @@ class storePage{
             };
             let priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    var formatter = new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'RUB',
-                    });
-                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
                 });
             };
             columns = [
@@ -458,11 +454,7 @@ class storePage{
             object.parametr = 'refund';
             var priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    var formatter = new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'RUB',
-                    });
-                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
                 });
             };
             columns = [
@@ -480,11 +472,7 @@ class storePage{
             object.parametr = 'client_order';
             var priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    var formatter = new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'RUB',
-                    });
-                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
                 });
             };
             columns = [
@@ -518,11 +506,7 @@ class storePage{
             object.parametr = 'entrance_refund';
             var priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    var formatter = new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'RUB',
-                    });
-                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
                 });
             };
 

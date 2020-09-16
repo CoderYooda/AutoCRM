@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Session;
 
@@ -77,6 +77,10 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
+        if(Auth::user()->roles->first()->name == 'Суперадмин') {
+            return '/admin';
+        }
+
         return '/store';
     }
 

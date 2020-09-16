@@ -502,5 +502,9 @@ class Helper{
     getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] == value);
     }
+
+    numberFormat (n) {
+        return parseFloat(n).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1 ");
+    };
 }
 export default Helper;

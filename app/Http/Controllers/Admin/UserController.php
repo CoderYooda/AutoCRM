@@ -34,11 +34,12 @@ class UserController extends Controller
         $field = $request['sorters'][0]['field'] ?? 'created_at';
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
 
-        $users = User::when(strlen($request->search), function (Builder $q) use ($request) {
-            $q->where('id', 'like', "%{$request->search}%")
-                ->orWhere('name', 'like', "%{$request->search}%")
-                ->orWhere('phone', 'like', "%{$request->search}%");
-        })
+        $users = User::with('roles')
+            ->when(strlen($request->search), function (Builder $q) use ($request) {
+                $q->where('id', 'like', "%{$request->search}%")
+                    ->orWhere('name', 'like', "%{$request->search}%")
+                    ->orWhere('phone', 'like', "%{$request->search}%");
+            })
             ->when($request->has('company_id'), function (Builder $query) use ($request) {
                 $query->where('company_id', $request->company_id);
             })
@@ -47,6 +48,10 @@ class UserController extends Controller
             })
             ->orderBy($field, $dir)
             ->paginate($request->size);
+
+        foreach ($users as &$user) {
+            $user->role = $user->roles->first()->name;
+        }
 
         return response()->json([
             'data' => $users

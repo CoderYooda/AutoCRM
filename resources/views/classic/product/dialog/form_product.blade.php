@@ -83,14 +83,14 @@
                                 </span>
                             </a>
                         </li>
-{{--                        <li class="nav-item">--}}
-{{--                            <a class="nav-link" href="#{{$class}}_tab_shop" aria-controls="{{$class}}_tab_store" data-toggle="tab" data-target="#{{$class}}_tab_shop">--}}
-{{--                                Интернет-магазин--}}
-{{--                                <span class="float-right helper_danger d-none-f">--}}
-{{--                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>--}}
-{{--                                </span>--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#{{$class}}_tab_shop" aria-controls="{{$class}}_tab_store" data-toggle="tab" data-target="#{{$class}}_tab_shop">
+                                Интернет-магазин
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#{{$class}}_tab_barcode" aria-controls="{{$class}}_tab_barcode" data-toggle="tab" data-target="#{{$class}}_tab_barcode">
                                 Штрихкоды
@@ -114,7 +114,7 @@
                         @include(get_template() . '.product.dialog.tabs.base')
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')
-{{--                        @include(get_template() . '.product.dialog.tabs.online_shop')--}}
+                        @include(get_template() . '.product.dialog.tabs.online_shop')
                         @include(get_template() . '.product.dialog.tabs.entrances')
                     </div>
                 </div>

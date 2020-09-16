@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DocumentType;
 use App\Http\Controllers\PermissionController;
 use App\Http\Requests\Admin\Companies\UpdateRequest;
 use App\Models\Company;

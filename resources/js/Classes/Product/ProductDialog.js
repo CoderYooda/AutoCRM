@@ -1,4 +1,5 @@
 import Modal from '../Modal/Modal.js';
+import Tabs from "../../Tools/Tabs";
 
 class ProductDialog extends Modal {
 
@@ -32,6 +33,8 @@ class ProductDialog extends Modal {
                 object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
+
+        new Tabs('shop_tabs');
 
         ///Вешаем обрабочик на поле скидки/////////////
         this.article_input.addEventListener("keydown", fn);

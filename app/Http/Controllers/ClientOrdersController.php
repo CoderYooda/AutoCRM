@@ -28,25 +28,6 @@ class ClientOrdersController extends Controller
 
             $client_order = ClientOrder::find((int)$co_id);
 
-            $client_order->articles = $client_order->articles()->get();
-
-            foreach ($client_order->articles as $article) {
-                if ($article->instock >= $article->pivot->count) {
-                    $article->complited = true;
-                } else {
-                    $article->complited = false;
-                }
-            }
-            $total_complited = true;
-
-            foreach ($client_order->articles as $article) {
-                if (!$article->complited) {
-                    $total_complited = false;
-                }
-            }
-
-            $client_order->total_complited = $total_complited;
-
             $tag .= $client_order->id;
         } else {
             $client_order = null;
@@ -101,16 +82,6 @@ class ClientOrdersController extends Controller
 
             $article->complited = ($article->instock >= $article->pivot->count) ? true : false;
         }
-
-        $total_complited = true;
-
-        foreach ($client_order->articles as $article) {
-            if (!$article->complited) {
-                $total_complited = false;
-            }
-        }
-
-        $client_order->total_complited = $total_complited;
 
         $request['fresh'] = true;
         $class = 'clientorderDialog' . $client_order->id;

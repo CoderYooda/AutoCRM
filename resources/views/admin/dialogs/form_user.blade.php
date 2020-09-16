@@ -1,4 +1,4 @@
-<div id="{{ $class }}" class="dialog user_dialog" style="width:450px;">
+<div id="{{ $class }}" class="dialog form_user_dialog" style="width:450px;">
     <div class="titlebar">Информация о пользователе</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
@@ -11,7 +11,7 @@
             <a href="#" class="button primary ml-10" data-target="tab_message">Сообщение</a>
         </div>
 
-        <div class="m-15 pt-10" style="border-top: 1px solid #dee2e6;">
+        <div data-simplebar class="m-15 pt-10" style="border-top: 1px solid #dee2e6; height: 320px;">
 
             <div id="tab_desc" class="tab active">
 
@@ -76,14 +76,15 @@
 
             </div>
 
-            <div class="modal-footer pl-0 pr-0 pb-0">
-                <button type="button" class="button white" onclick="window.{{ $class }}.finitaLaComedia()">Закрыть</button>
-                <button type="button" class="button primary float-right" onclick="{{ $class }}.save(this);">Сохранить</button>
-            </div>
-
-            <div class="system_message">
-            </div>
-
         </div>
+
+        <div class="modal-footer">
+            <button type="button" class="button white" onclick="window.{{ $class }}.finitaLaComedia()">Закрыть</button>
+            <button type="button" class="button primary float-right" onclick="{{ $class }}.save(this);">Сохранить</button>
+        </div>
+
+        <div class="system_message">
+        </div>
+
     </form>
 </div>
