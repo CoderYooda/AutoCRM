@@ -41,8 +41,8 @@ class ProductRequest extends FormRequest
 
             'barcode' => ['nullable', Rule::unique('articles', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
 
-            'shop.name' => ['string', 'max:255'],
-            'shop.desc' => ['string', 'max:1024'],
+            'shop.name' => ['nullable', 'string', 'max:255'],
+            'shop.desc' => ['nullable', 'string', 'max:1024'],
             'shop.specifications' => ['array'],
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.product_settings.*.*' => ['accepted'],

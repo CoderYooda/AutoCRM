@@ -58,10 +58,17 @@ class Article extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function currentStore()
+    {
+        $store_id = Auth::user()->current_store;
+
+        return $this->stores->find($store_id);
+    }
+
     public function stores()
     {
         return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
+            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price', 'sp_main', 'sp_empty', 'sp_stock');
     }
 
     public function decrementFromEntrance(int $count)

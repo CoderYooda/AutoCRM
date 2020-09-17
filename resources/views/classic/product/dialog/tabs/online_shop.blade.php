@@ -19,7 +19,7 @@
                     <div class="flex-1">
                         <label class="mb-5">Основное фото</label>
                         <div style="width: 110px; height: 110px;">
-                            <img class="h-100 w-100" src="{{ $product->image_path }}"/>
+                            <img class="h-100 w-100" src="{{ $product->image_path }}" />
                         </div>
                         <label class="upload_file pointer" for="shop[image]">Файл не выбран<div></div></label>
                         <input type="file" id="shop[image]" name="shop[image]" onclick="{{ $class }}.clickFile(this);" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png,image/gif" hidden/>
@@ -85,7 +85,7 @@
                                 @foreach(['sp_empty', 'sp_stock', 'sp_main'] as $field)
                                     <div style="margin-left: auto;">
                                         <label class="custom_checkbox mb-0">
-                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" />
+                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if($product->currentStore()->find($product->id)->$field) checked @endif />
                                             <span></span>
                                         </label>
                                     </div>

@@ -303,6 +303,8 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
+                    $shop_info = $request->shop['product_settings'][$store->id];
+
                     if (Auth::user()->company->checkAccessToStore($store)) {
                         $this->status = 403;
                         $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
@@ -316,6 +318,9 @@ class ProductController extends Controller
                         'storage_rack' => $storage['storage_rack'],
                         'storage_vertical' => $storage['storage_vertical'],
                         'storage_horizontal' => $storage['storage_horizontal'],
+                        'sp_main' => $shop_info['sp_main'],
+                        'sp_empty' => $shop_info['sp_empty'],
+                        'sp_stock' => $shop_info['sp_stock']
                     ];
 
                     if(isset($storage['retail_price'])){
