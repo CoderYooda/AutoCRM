@@ -62,7 +62,6 @@ window.togglePreloader = function togglePreloader(element, status) {
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');
     window.isXHRloading = false;
-    console.log(123123);
     window.unsetPreloader();
     if(response.data.event){
         let event = new CustomEvent(response.data.event, {
@@ -175,4 +174,5 @@ document.addEventListener('keyup', function (e){
         });
     }
 });
+
 

@@ -67,3 +67,4 @@ Array.prototype.remove = function() {
 
 
 window.dd = console.log.bind(document);
+window.applySelects();

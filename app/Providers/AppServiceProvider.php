@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\DocumentType;
+use App\Models\DocumentType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;

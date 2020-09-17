@@ -351,7 +351,11 @@ class partnerDialog extends Modal{
         if(this.canAddMorePhone(div)){
             div.appendChild(node);
         }
+
+        node.querySelector('input').focus();
+
         this.addPhoneMask();
+        this.addEmailMask();
     }
 
     addNumberMasks() {
@@ -373,6 +377,16 @@ class partnerDialog extends Modal{
                 mask: inputs[name],
                 lazy: true
             });
+        });
+    }
+
+    addEmailMask() {
+
+        let element = this.current_dialog.querySelector('[name="email"]');
+
+        window.IMask(element, {
+                mask: inputs[name],
+            lazy: true
         });
     }
 

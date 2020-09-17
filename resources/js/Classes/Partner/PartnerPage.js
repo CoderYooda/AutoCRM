@@ -386,18 +386,7 @@ class partnerPage{
         };
         var priceFormatter = function(cell, formatterParams, onRendered){
             onRendered(function(){
-                cell.getElement().innerHTML = '<input disabled class="table_input" id="price_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
-                window.IMask(document.getElementById('price_' + cell.getData().id),   {
-                        mask: 'N Р',
-                        blocks: {
-                            N: {
-                                mask: Number,
-                                signed: true,
-                                thousandsSeparator: ' '
-                            }
-                        }
-                    }
-                );
+                cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
             });
         };
         let columns = [

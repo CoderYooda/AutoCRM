@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Models\Article;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Controllers\ProductController;
@@ -255,23 +256,25 @@ class CategoryController extends Controller
         return self::selectCategoryInner($request);
     }
 
-    private static function selectCategoryInner($request){
+    private static function selectCategoryInner(Request $request){
 
         $class = 'selectCategoryDialog';
 
         $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
 
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : $request['root_category'];
+
         $cats = Category::owned()
             ->where(function($q) use ($request){
                 $q->where('name', 'LIKE', '%' . $request['string'] .'%');
             })
-            ->when($request['category_id'], function($q) use ($request){
+            ->when($request['category_id'], function(Builder $q) use ($request){
                 $q->where('category_id', $request['category_id']);
             })
-            ->orderBy('created_at', 'ASC')
             ->limit(30)
             ->get();
+
+//        dd($request->all(), $cats);
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 

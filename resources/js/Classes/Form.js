@@ -1,10 +1,9 @@
 class AxForm{
 
-    setActionButtons(boolean, elem){
-        togglePreloader(elem, !boolean);
-    }
-
     send(elem, callback = null, url = null, dataset = null){
+
+        togglePreloader(elem, true);
+
         let object = this;
         let dialog = elem.closest(".dialog");
         window.event.preventDefault();
@@ -15,7 +14,6 @@ class AxForm{
                 data.append(key, value);
             }
         }
-        object.setActionButtons(false, elem);
 
         if(url == null){
             url = form.getAttribute("action");
@@ -51,7 +49,6 @@ class AxForm{
             }
             if(callback != null) callback(response);
             //rebuildLinks();
-            object.setActionButtons(true, elem);
         }).catch(function (error) {
 
             var elements = document.getElementsByClassName('is-invalid');
@@ -139,10 +136,9 @@ class AxForm{
             // if(error.response && messages){
             //
             // }
-            object.setActionButtons(true, elem);
             if(callback != null) callback(error.response);
-        }).then(function(){
-            object.setActionButtons(true, elem);
+        }).finally(() => {
+            togglePreloader(elem, false);
         });
     }
 }

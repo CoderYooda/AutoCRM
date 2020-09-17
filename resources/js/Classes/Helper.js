@@ -54,7 +54,10 @@ import loginPage from "./Auth/LoginPage";
 import passwordresetPage from "./Auth/ResetPage";
 import statisticPage from "./Statistic/StatisticPage";
 import statisticshowPage from "./Statistic/StatisticShowPage";
-import admindashboardPage from "./Admin/AdminDashboard";
+import adminPage from "./Admin/AdminPage";
+import companyDialog from "./Admin/Company/CompanyDialog";
+import userDialog from "./Admin/User/UserDialog";
+import selectCompanyDialog from "./Company/SelectCompanyDialog";
 
 const classes = {
     entranceDialog,
@@ -93,7 +96,10 @@ const classes = {
     documentDialog,
     selectClientOrderDialog,
     selectWarrantDialog,
-    salarySchemaDialog
+    salarySchemaDialog,
+    companyDialog,
+    userDialog,
+    selectCompanyDialog,
 };
 
 const pages = {
@@ -115,7 +121,7 @@ const pages = {
     passwordresetPage,
     statisticPage,
     statisticshowPage,
-    admindashboardPage
+    adminPage
 };
 
 class Helper{
@@ -498,5 +504,9 @@ class Helper{
     getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] == value);
     }
+
+    numberFormat (n) {
+        return parseFloat(n).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1 ");
+    };
 }
 export default Helper;

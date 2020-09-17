@@ -318,11 +318,17 @@ Route::get('/whoami', 'UserController@whoami');
 
 Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChannel');
 Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUser');
+Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUser');
 
 #Коморка разработчиков
-Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth', 'superAdmin']], function () {
+Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Admin')->name('Admin')->group(function () {
+    Route::get('/', 'DashboardController@index')->name('Dashboard');
+    Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('DashboardTable');
 
-    Route::get('/dashboard', 'Admin\DashboardController@dashboard')->name('AdminDashboard');
-    Route::post('/system_message/send', 'SystemMessageController@sendSystenMessageTo')->name('AdminSendMessage');
+    Route::post('/companies/{company}/update', 'CompanyController@update')->name('UpdateCompany');
+    Route::get('/companies/search', 'CompanyController@selectDialog')->name('SearchCompany');
+
+    Route::post('/users/{user}/update', 'UserController@update')->name('UpdateUser');
+    Route::post('/system_message/send', 'UserController@sendSystemMessageTo')->name('SendMessage');
 });
 

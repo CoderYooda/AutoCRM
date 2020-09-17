@@ -6,7 +6,7 @@
         id="productDialog"
         @php $class = 'productDialog' @endphp
     @endif
-    class="dialog" style="width:600px;">
+    class="dialog form_product_dialog" style="width:600px;">
     @if(isset($product) && $product->id != NULL)
         <div class="titlebar">Редактирование '{{ $product->name }}'</div>
     @else
@@ -84,6 +84,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#{{$class}}_tab_shop" aria-controls="{{$class}}_tab_store" data-toggle="tab" data-target="#{{$class}}_tab_shop">
+                                Интернет-магазин
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#{{$class}}_tab_barcode" aria-controls="{{$class}}_tab_barcode" data-toggle="tab" data-target="#{{$class}}_tab_barcode">
                                 Штрихкоды
                                 <span class="float-right helper_danger d-none-f">
@@ -106,6 +114,7 @@
                         @include(get_template() . '.product.dialog.tabs.base')
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')
+                        @include(get_template() . '.product.dialog.tabs.online_shop')
                         @include(get_template() . '.product.dialog.tabs.entrances')
                     </div>
                 </div>

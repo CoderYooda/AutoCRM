@@ -163,7 +163,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" >Сумма</label>
                 <div class="col-sm-9">
-                    <input id="warrant_dialog_focused" onkeyup="{{ $class }}.writingSumm(this)" type="text" name="summ" value="{{ $warrant->summ ?? $data->summ ?? '' }}" class="form-control" placeholder="Сумма">
+                    <input id="warrant_dialog_focused" onclick="this.select();" onkeyup="{{ $class }}.writingSumm(this)" type="text" name="summ" value="{{ $warrant->summ ?? $data->summ ?? '' }}" class="form-control" placeholder="Сумма">
                 </div>
             </div>
             <div class="form-group row">

@@ -25,7 +25,8 @@ a {
     cursor: pointer;
     outline: 0;
 }
-input[type=checkbox]{
+
+input[type=checkbox]:not(.not_default) {
     -webkit-appearance: none;
     background-color: #fafafa;
     border: 1px solid #cacece;
@@ -61,6 +62,7 @@ input[type=checkbox]:checked {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
     color: #5181b8;
 }
+
 h2{
     margin: 0px;
     line-height: 28px;
@@ -2964,6 +2966,208 @@ input:-moz-placeholder { /* Firefox 18- */
                     }
                 }
             }
+        }
+    }
+}
+
+.form_product_dialog {
+    .tab_links {
+
+        border-bottom: 1px solid #E7E8EC;
+
+        a {
+
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 13px;
+            line-height: 40px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            letter-spacing: 0.06em;
+
+            border-bottom: 3px solid transparent;
+
+            color: #656565;
+
+            &.active {
+                color: #000000;
+                border-bottom: 3px solid #009AE8;
+            }
+        }
+
+        a:not(.active):hover {
+            border-bottom: 3px solid #C5D0DB;
+        }
+    }
+
+    #tab_main {
+
+        .shop_name {
+            line-height: 15px;
+            height: auto;
+            font-size: 13px;
+        }
+
+        img {
+            border: 1px solid #E7E8EC;
+            border-bottom: 0 !important;
+        }
+
+        input[type=file] {
+            border-radius: unset !important;
+            line-height: 20px;
+        }
+
+        .upload_file {
+            border: 1px solid #E7E8EC;
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 10px;
+            line-height: 12px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.04em;
+            color: #656565;
+            height: 20px;
+            padding: 4px;
+
+            div {
+                background: url(/images/add_file.svg);
+                width: 10px;
+                height: 10px;
+                margin-left: auto;
+
+                &:hover {
+                    background: url(/images/add_file_hover.svg);
+                }
+            }
+        }
+
+        .specifications {
+            .element {
+
+                background: #FCFCFC;
+                border: 1px solid #E7E8EC;
+                padding: 10px;
+
+                .remove {
+
+                    height: 12px;
+                    width: 12px;
+
+                    background: url(/images/remove_specification.svg);
+
+                    &:hover {
+                        background: url(/images/remove_specification_hover.svg);
+                    }
+                }
+
+                span {
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 13px;
+                    line-height: 20px;
+                    display: flex;
+                    align-items: center;
+                    letter-spacing: 0.04em;
+
+                    /* Form_label_text */
+
+                    color: #656565;
+                }
+
+                input {
+                    line-height: 20px;
+                    height: 20px;
+                    border-radius: unset !important;
+                }
+            }
+        }
+    }
+
+    #tab_settings {
+        .elements {
+
+            .toggleable {
+                border-left: 1px solid #E7E8EC;
+                border-right: 1px solid #E7E8EC;
+
+                &:last-child {
+                    border-bottom: 1px solid #E7E8EC;
+                }
+            }
+
+            .element {
+                border: 1px solid #E7E8EC;
+
+                line-height: 36px;
+
+                &:last-child {
+                    border-bottom: 1px solid #E7E8EC !important;
+                }
+
+                .element-title {
+                    height: 46px;
+                    padding-right: 46px;
+                    padding-left: 15px;
+                    line-height: 46px;
+                }
+
+                i {
+                    color: #B2BDCE;
+                    font-size: 20px;
+                    position: absolute;
+                    right: 0;
+                    display: block;
+                    height: 100%;
+                    width: 46px;
+                    top: 0;
+                    text-align: center;
+                    line-height: 46px;
+                }
+            }
+        }
+    }
+}
+
+.form_user_dialog, .form_product_dialog {
+    .tab {
+        display: none !important;
+        &.active {
+            display: block !important;
+        }
+    }
+}
+
+.form_company_dialog, .form_user_dialog, .form_product_dialog {
+    .simplebar-vertical {
+        right: -13px;
+    }
+}
+
+.border-radius-none {
+    border-radius: unset !important;
+}
+
+.custom_checkbox {
+    span {
+        width: 15px;
+        height: 15px;
+        display: block;
+        background: url(/images/input_unchecked.svg);
+    }
+
+    input {
+        position: relative;
+        z-index: -9999;
+        display: none;
+
+        &:checked + span {
+            background: url(/images/input_checked.svg);
         }
     }
 }

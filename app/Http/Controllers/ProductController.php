@@ -176,23 +176,19 @@ class ProductController extends Controller
         ]);
     }
 
-    public static function productDialog($request)
+    public static function productDialog(Request $request)
     {
-        $tag = 'productDialog';
+        $product = Article::find($request['product_id']);
 
-        if ($request['product_id']) {
-            $tag .= $request['product_id'];
-            $product = Article::where('id', (int)$request['product_id'])->first();
-        } else {
+        $tag = 'productDialog' . ($product->id ?? '');
+
+        if(!$product) {
             PermissionController::canByPregMatch('Создавать товары');
-            $product = null;
         }
 
-        if ($request['category_select']) {
-            $category_select = (int)$request['category_select'];
-        } else {
-            $category_select = 2;
-        }
+        $category_select = $request['category_select'] ?? $product->category_id ?? 2;
+
+        $company = Auth::user()->company;
 
         $stores = Store::owned()->get();
 
@@ -200,7 +196,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'stores', 'request'))->render()
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'stores', 'request'))->render()
         ]);
     }
 
@@ -259,75 +255,83 @@ class ProductController extends Controller
     {
         PermissionController::canByPregMatch('Редактировать товары');
 
-        if ($request['id'] != null) { //товар редактируется
-            $compare = ['id' => $request['id']];
-        } else {
-            $compare = ['article' => $request['article'], 'supplier_id' => (int)$request['supplier_id']];
-        }
+        return DB::transaction(function () use($request) {
 
-        $existed_article = self::checkArticleUnique($request['id'], $request['article'], (int)$request['supplier_id']);
-        if ($existed_article) {
-            return response()->json([
-                'system_message' => view(get_template() . '.messages.product_already_exist', compact('existed_article'))->render(),
-            ], 422);
-        }
-
-        $supplier = Supplier::owned()->where('id', $request['supplier_id'])->first();
-
-        $article = Article::firstOrNew($compare);
-        if ($article->exists) {
-            $this->message = 'Товар обновлен';
-        } else {
-            $article->creator_id = Auth::user()->id;
-            $article->company_id = Auth::user()->company()->first()->id;
-            $this->message = 'Товар сохранён';
-        }
-
-        #Кроссы
-        $article->fapi_id = $supplier->fapi_id;
-        $article->fill($request->only($article->fields));
-        $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
-
-        $article->save();
-        $this->status = 200;
-        if($request['storage']) {
-
-            $stores = Store::whereIn('id', array_keys($request['storage']))->get();
-
-            foreach ($stores as $store) {
-
-                $storage = $request['storage'][$store->id];
-
-                if (Auth::user()->company->checkAccessToStore($store)) {
-                    $this->status = 403;
-                    $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
-                    return response()->json(['message' => $this->message], $this->status);
-                }
-
-                $store->articles()->syncWithoutDetaching($article->id);
-
-                $pivot_data = [
-                    'storage_zone' => $storage['storage_zone'],
-                    'storage_rack' => $storage['storage_rack'],
-                    'storage_vertical' => $storage['storage_vertical'],
-                    'storage_horizontal' => $storage['storage_horizontal']
-                ];
-                if(isset($storage['retail_price'])){
-                    $pivot_data['retail_price'] = $storage['retail_price'];
-                }
-                $article->stores()->updateExistingPivot($store->id, $pivot_data);
+            if ($request['id'] != null) { //товар редактируется
+                $compare = ['id' => $request['id']];
+            } else {
+                $compare = ['article' => $request['article'], 'supplier_id' => (int)$request['supplier_id']];
             }
-        }
 
-        if ($request->expectsJson()) {
+            $existed_article = self::checkArticleUnique($request['id'], $request['article'], (int)$request['supplier_id']);
+            if ($existed_article) {
+                return response()->json([
+                    'system_message' => view(get_template() . '.messages.product_already_exist', compact('existed_article'))->render(),
+                ], 422);
+            }
+
+            $supplier = Supplier::find($request['supplier_id']);
+
+            $article = Article::firstOrNew($compare);
+            if ($article->exists) {
+                $this->message = 'Товар обновлен';
+            } else {
+                $article->creator_id = Auth::id();
+                $article->company_id = Auth::user()->company_id;
+                $this->message = 'Товар сохранён';
+            }
+
+            #Кроссы
+            $article->fapi_id = $supplier->fapi_id;
+            $article->fill($request->only($article->fields));
+            $article->sp_name = $request->shop['name'];
+            $article->sp_desc = $request->shop['desc'];
+            $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
+
+            $article->save();
+
+            if($request->hasFile('shop.image')) {
+                $article->uploadImage($request->shop['image'], true, false);
+            }
+
+            $this->status = 200;
+            if($request['storage']) {
+
+                $stores = Store::whereIn('id', array_keys($request['storage']))->get();
+
+                foreach ($stores as $store) {
+
+                    $storage = $request['storage'][$store->id];
+
+                    if (Auth::user()->company->checkAccessToStore($store)) {
+                        $this->status = 403;
+                        $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
+                        return response()->json(['message' => $this->message], $this->status);
+                    }
+
+                    $store->articles()->syncWithoutDetaching($article->id);
+
+                    $pivot_data = [
+                        'storage_zone' => $storage['storage_zone'],
+                        'storage_rack' => $storage['storage_rack'],
+                        'storage_vertical' => $storage['storage_vertical'],
+                        'storage_horizontal' => $storage['storage_horizontal'],
+                    ];
+
+                    if(isset($storage['retail_price'])){
+                        $pivot_data['retail_price'] = $storage['retail_price'];
+                    }
+
+                    $article->stores()->updateExistingPivot($store->id, $pivot_data);
+                }
+            }
+
             return response()->json([
                 'message' => $this->message,
                 'event' => 'ProductStored',
             ], $this->status);
-        } else {
-            return redirect()->back();
-        }
 
+        });
     }
 
     public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе

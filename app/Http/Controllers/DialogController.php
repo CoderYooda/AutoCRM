@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\API\ProviderStoreController;
 use App\Models\Supplier;
 use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
+use \App\Http\Controllers\Admin\UserController;
 
 class DialogController extends Controller
 {
     public function openDialogByTag($tag, Request $request)
     {
         $dialogs = [
+
+            //Admin
+            'selectCompany'             => [CompanyController::class, 'selectDialog'],
+            'companyDialog'             => [CompanyController::class, 'dialog'],
+            'userDialog'                => [UserController::class, 'dialog'],
             //Warrant
             'warrantDialog'             => [WarrantController::class, 'warrantDialog'],
             'selectWarrant'             => [WarrantController::class, 'selectDialog'],

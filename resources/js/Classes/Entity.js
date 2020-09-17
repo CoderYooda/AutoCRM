@@ -37,7 +37,7 @@ class Entity {
                         var element = document.getElementById(tag + '_' + resp.data.id);
 
                         if (type === 'success') {
-                            //element.remove();
+                            element.remove();
                         }
                         ;
                     } else {

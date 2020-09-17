@@ -242,20 +242,36 @@ class UserController extends Controller
         return view('template.interface.user.head')->render();
     }
 
-    public static function getAllUsersList()
-    {
-        if(!Gate::allows('Суперадмин')){
-            return PermissionController::closedResponse('Вам запрещено это действие.');
-        } else {
-            $users = User::all();
-            $list = view(get_template() . '.system.admin_userlist', compact('users'))->render();
-            return $list;
-        }
+    public function authByUser(Request $request){
+
+        $this->loginAs($request->id, true);
     }
 
-    public function authByUser(Request $request){
-        $user = User::find($request->id);
-        Auth::loginUsingId($user->id, TRUE);
+    public function backToUser(Request $request)
+    {
+        if(!Session::has('auth_from_id')) {
+            return redirect()->back();
+        }
+
+        $user_id = Session::get('auth_from_id');
+
+        $this->loginAs($user_id);
+
+        return redirect()->route('AdminDashboard');
+    }
+
+    public function loginAs($user_id, bool $isAdmin = false)
+    {
+        $fromUser = Auth::user();
+
+        $toUser = User::find($user_id);
+
+        Auth::loginUsingId($toUser->id, TRUE);
+
         Session::flush();
+
+        Session::put('store_id', $toUser->getStoreFirst()->id);
+
+        if($isAdmin) Session::put('auth_from_id', $fromUser->id);
     }
 }

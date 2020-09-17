@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DocumentType;
+use App\Models\DocumentType;
 use App\Http\Requests\Documents\StoreRequest;
 use App\Models\Article;
 use App\Models\ClientOrder;

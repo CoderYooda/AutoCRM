@@ -24,6 +24,8 @@ class selectCategoryDialog extends Modal{
         if(focused){
             focused.focus();
         }
+
+        this.category_id = 2;
     }
 
     searchInit(){

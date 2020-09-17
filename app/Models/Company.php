@@ -16,6 +16,11 @@ class Company extends Model
         return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
     }
 
+    public function getDays()
+    {
+        return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
+    }
+
     public function members()
     {
         return $this->hasMany(User::class, 'company_id');
@@ -113,7 +118,7 @@ class Company extends Model
 
     public function getFirstCompanyMember() // TODO получать лидера компании
     {
-        return $this->members()->first();
+        return $this->members->first();
     }
 
     public function getSmsBalance()

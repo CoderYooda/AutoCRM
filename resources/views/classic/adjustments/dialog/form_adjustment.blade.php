@@ -88,7 +88,7 @@
 
                 </div>
 
-                <button class="button-add" style="margin-left: 22px;" name="product_id" onclick="{{ $class }}.selectProduct()" @if($adjustment) disabled @endif>+ Добавить позицию</button>
+                <button class="button-add pr-5 pl-5" style="margin-left: 22px;" name="product_id" onclick="{{ $class }}.selectProduct()" @if($adjustment) disabled @endif>+ Добавить позицию</button>
 
             </div>
 

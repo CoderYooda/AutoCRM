@@ -136,11 +136,7 @@ class cashPage{
             object.parametr = 'warrant';
             var priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
-                    var formatter = new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'RUB',
-                    });
-                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
+                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.'
                 });
             };
             columns = [

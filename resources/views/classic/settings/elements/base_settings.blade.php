@@ -22,6 +22,10 @@
                             @foreach(['fifo', 'lifo'] as $type)
                                 <option value="{{ $type }}" @if($type == $setting->value) selected @endif>{{ strtoupper($type) }}</option>
                             @endforeach
+                        @elseif($setting->model == 'ShopEnabled')
+                            @foreach(['Деактивирован', 'Активирован'] as $type)
+                                <option value="{{ $loop->index }}" @if($loop->index == $setting->value) selected @endif>{{ strtoupper($type) }}</option>
+                            @endforeach
                         @endif
                     </select>
                 @else

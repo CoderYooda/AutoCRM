@@ -22,10 +22,12 @@
         <link href="{{ mix('css/fonts.css') }}" rel="stylesheet">
     </head>
     <body>
+
     <input type="hidden" name="barcode_temp" id="barcode_temp">
         <div id="printed"></div>
         <div id="preloader"></div>
         <div id="unprinted" class="app">
+
             <header class="app-header">
                 <div class="app-logo">
                     {{ config('app.name', 'Laravel') }}
@@ -151,30 +153,17 @@
                                     <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'vehicles']) }}">Гараж</a>
                                 @endif
 
+                                @if(session()->has('auth_from_id'))
+                                    <a class="element" href="{{ route('backToUser') }}">
+                                        Вернуться в адм. панель
+                                    </a>
+                                @endif
+
                                 <a class="element" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                     Выход
                                 </a>
                             </div>
                         </li>
-                        @can('СуперАдмин')
-                        <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
-                            <span class="d-flex align-items-center p-10" href="">
-                                <span class="avatar w-32 mr-3">
-                                    <img src="{{ asset('images/noavatar.png') }}" alt="...">
-                                </span>
-                                Админ
-                            </span>
-
-                            <div class="dropdown_container">
-                                <div class="arrow"></div>
-                                <div data-simplebar style="height:calc(100vh - 200px);width: 43vw;">
-
-                                    {!! \App\Http\Controllers\UserController::getAllUsersList() !!}
-                                </div>
-
-                            </div>
-                        </li>
-                        @endcan
                     </ul>
                 </div>
             </header>
