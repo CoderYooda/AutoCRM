@@ -6,7 +6,7 @@
         id="productDialog"
         @php $class = 'productDialog' @endphp
     @endif
-    class="dialog" style="width:600px;">
+    class="dialog form_product_dialog" style="width:600px;">
     @if(isset($product) && $product->id != NULL)
         <div class="titlebar">Редактирование '{{ $product->name }}'</div>
     @else

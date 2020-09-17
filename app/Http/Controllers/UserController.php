@@ -244,16 +244,34 @@ class UserController extends Controller
 
     public function authByUser(Request $request){
 
-        $current_user = Auth::user();
+        $this->loginAs($request->id, true);
+    }
 
-        $user = User::find($request->id);
-        Auth::loginUsingId($user->id, TRUE);
+    public function backToUser(Request $request)
+    {
+        if(!Session::has('auth_from_id')) {
+            return redirect()->back();
+        }
+
+        $user_id = Session::get('auth_from_id');
+
+        $this->loginAs($user_id);
+
+        return redirect()->route('AdminDashboard');
+    }
+
+    public function loginAs($user_id, bool $isAdmin = false)
+    {
+        $fromUser = Auth::user();
+
+        $toUser = User::find($user_id);
+
+        Auth::loginUsingId($toUser->id, TRUE);
+
         Session::flush();
 
-        Session::put('store_id', $user->getStoreFirst()->id);
+        Session::put('store_id', $toUser->getStoreFirst()->id);
 
-        if($current_user->roles->first()->name == 'Суперадмин') {
-            Session::put('auth_from_id', $current_user->id);
-        }
+        if($isAdmin) Session::put('auth_from_id', $fromUser->id);
     }
 }

@@ -176,23 +176,17 @@ class ProductController extends Controller
         ]);
     }
 
-    public static function productDialog($request)
+    public static function productDialog(Request $request)
     {
-        $tag = 'productDialog';
+        $product = Article::find($request['product_id']);
 
-        if ($request['product_id']) {
-            $tag .= $request['product_id'];
-            $product = Article::find($request['product_id']);
-        } else {
+        $tag = 'productDialog' . ($product->id ?? '');
+
+        if(!$product) {
             PermissionController::canByPregMatch('Создавать товары');
-            $product = null;
         }
 
-        if ($request['category_select']) {
-            $category_select = (int)$request['category_select'];
-        } else {
-            $category_select = $product->category_id ?? 2;
-        }
+        $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
         $company = Auth::user()->company;
 
@@ -290,12 +284,14 @@ class ProductController extends Controller
             #Кроссы
             $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
+            $article->sp_name = $request->shop['name'];
+            $article->sp_desc = $request->shop['desc'];
             $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
 
             $article->save();
 
-            if($request->hasFile('image')) {
-                $article->uploadImage($request->image, true, false);
+            if($request->hasFile('shop.image')) {
+                $article->uploadImage($request->shop['image'], true, false);
             }
 
             $this->status = 200;

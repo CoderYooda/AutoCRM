@@ -3,7 +3,6 @@
 
 namespace App\Traits;
 
-
 use App\Models\System\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +16,11 @@ trait Imageable
         return $this->morphOne(Image::class, 'imageable');
     }
 
+    public function getImagePathAttribute()
+    {
+        return $this->image != null ? Storage::url($this->image->url) : asset('/images/product-placeholder.svg');
+    }
+
     public function uploadImage(UploadedFile $uploadedFile, $thumb = false, $watermark = false)
     {
         $directory = 'public/images';
@@ -24,6 +28,8 @@ trait Imageable
         $path = $uploadedFile->storePublicly($directory);
 
         $filename = explode('/', $path)[2];
+
+        $this->removeImage();
 
         if ($thumb) {
 
@@ -49,8 +55,8 @@ trait Imageable
     public function removeImage()
     {
         //TODO CHECK
-        Storage::disk('public')->delete($this->image->url);
-        Storage::disk('public')->delete($this->image->thumb_url);
+        Storage::delete($this->image->url);
+        Storage::delete($this->image->thumb_url);
 
         $this->image()->delete();
     }

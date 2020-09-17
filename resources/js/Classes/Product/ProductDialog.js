@@ -34,12 +34,19 @@ class ProductDialog extends Modal {
             }
         });
 
-        new Tabs('shop_tabs');
+        this.field_id = 1;
 
         ///Вешаем обрабочик на поле скидки/////////////
         this.article_input.addEventListener("keydown", fn);
         this.article_input.addEventListener("paste", fn);
         this.article_input.addEventListener("delete", fn);
+
+        this.linked();
+    }
+
+    linked()
+    {
+        new Tabs('shop_tabs');
     }
 
     save(elem) {
@@ -48,6 +55,58 @@ class ProductDialog extends Modal {
         window.axform.send(elem, (e) => {
             if (e.status === 200) this.finitaLaComedia(true);
         });
+    }
+
+    clickFile(element) {
+        let target_element = this.current_dialog.querySelector('.upload_file');
+
+        target_element.innerHTML = 'Файл не выбран <div></div>';
+    }
+
+    changeFile(element) {
+
+        let target_element = this.current_dialog.querySelector('.upload_file');
+
+        target_element.innerHTML = element.files[0].name + '<div></div>';
+    }
+
+    addSpecificationField(element) {
+
+        let list_element = this.current_dialog.querySelector('.specifications');
+
+        let copy_element = list_element.querySelector('.copy').cloneNode(true);
+
+        copy_element.classList.remove('d-none');
+
+        let input_elements = copy_element.querySelectorAll('input');
+
+        input_elements.forEach((input, index) => {
+
+            if(index == 0) input.name = 'shop[specifications][' + this.field_id + '][name]';
+            if(index == 1) input.name = 'shop[specifications][' + this.field_id + '][desc]';
+
+            input.disabled = false;
+        });
+
+        this.field_id++;
+
+        list_element.append(copy_element);
+    }
+
+    removeSpecification(element) {
+        let target_element = element.closest('.element');
+
+        target_element.remove();
+    }
+
+    toggleShopSettings(element, store_id) {
+
+        element.classList.toggle('fa-angle-down');
+        element.classList.toggle('fa-angle-up');
+
+        let target_element = this.current_dialog.querySelector('#toggle_' + store_id);
+
+        target_element.classList.toggle('d-none');
     }
 
     fapiSearch() {

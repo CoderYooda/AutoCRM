@@ -154,7 +154,7 @@
                                 @endif
 
                                 @if(session()->has('auth_from_id'))
-                                    <a class="element" onclick="event.preventDefault(); system.authByUser({{ session('auth_from_id') }})">
+                                    <a class="element" href="{{ route('backToUser') }}">
                                         Вернуться в адм. панель
                                     </a>
                                 @endif

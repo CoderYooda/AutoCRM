@@ -39,7 +39,14 @@ class ProductRequest extends FormRequest
 
             'image' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:5120'],
 
-            'barcode' => ['nullable', Rule::unique('articles', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)]
+            'barcode' => ['nullable', Rule::unique('articles', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
+
+            'shop.name' => ['string', 'max:255'],
+            'shop.desc' => ['string', 'max:1024'],
+            'shop.specifications' => ['array'],
+            'shop.specifications.*.*' => ['string', 'max:255'],
+            'shop.product_settings.*.*' => ['accepted'],
+            'shop.image' => ['file', 'mimes:jpeg,bmp,png', 'max:5120']
         ];
     }
 

@@ -29,11 +29,11 @@
         <div class="actions">
 
             @can('Создавать категории')
-                <button onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
+                <button type="button" onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
             @endcan
 
             @can('Создавать товары')
-                <button onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
+                <button type="button" onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
             @endcan
 
         </div>
