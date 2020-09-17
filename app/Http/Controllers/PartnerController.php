@@ -212,8 +212,25 @@ class PartnerController extends Controller
             Vehicle::whereIn('id', $request->vehicle_ids)->update(['partner_id' => $partner->id]);
         }
 
-        if($request->expectsJson()){
+        # Сохранение зарплатных настроек
+        $salary_schemas = [];
+        $elems = 0;
 
+        DB::table('salary_schemas_partner')->where('partner_id', $partner->id)->delete();
+        if($request->salary && count($request->salary)){
+            foreach($request->salary as $salary_schema){
+                //$salary_schemas[$elems]['h_m_value'] = 0;
+                $salary_schemas[$elems] = $salary_schema;
+                $salary_schemas[$elems]['partner_id'] = $partner->id;
+                if(!isset($salary_schemas[$elems]['h_m_value']) || $salary_schemas[$elems]['h_m_value'] == null){
+                    $salary_schemas[$elems]['h_m_value'] = 0;
+                }
+                $elems++;
+            }
+            DB::table('salary_schemas_partner')->insert($salary_schemas);
+        }
+
+        if($request->expectsJson()){
             return response()->json([
                 'message' => $message,
                 //'container' => 'ajax-table-partner',

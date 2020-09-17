@@ -47,7 +47,7 @@
                         @else
                         @canany(['Смотреть заявки поставщикам','Смотреть поступления','Смотреть продажи','Смотреть заказ клиента','Смотреть корректировки'])
                         <li id="store_link" class="top-nav-item" >
-                            <a class="header-tab ajax-nav" href="{{ route('StoreIndex', \App\Http\Controllers\StoreController::getAllowedPage()) }}">
+                            <a class="header-tab ajax-nav" href="{{ route('StoreIndex', 'store') }}">
                                 Склад
                             </a>
                         </li>

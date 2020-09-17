@@ -65,7 +65,7 @@
                     <input type="hidden" name="id" value="">
                 @endif
                 <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($provider_order)){{ $provider_order->partner()->first()->id }}@endif">
-                <div class="row row-sm">
+                <div class="row row-sm mb-10">
                     <div class="col-sm-6">
                         <div class="form-group row row-sm">
                             <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <textarea placeholder="Комментарий" style="resize: none;height: 80px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
+                        <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                     </div>
                 </div>
                 <div class="form-group">

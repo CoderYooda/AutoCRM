@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import Sortable from "sortablejs";
 
 class partnerDialog extends Modal{
 
@@ -37,7 +38,7 @@ class partnerDialog extends Modal{
         }, 50);
 
         let clipboard = new window.clipboardJS('.fa-clipboard');
-
+        this.initSchema();
         clipboard.on('success', (e) => {
             notification.notify('success', 'VIN успешно скопирован.');
         });
@@ -110,6 +111,28 @@ class partnerDialog extends Modal{
 
     openSelectCategoryDialog(category_selected = null){
         window.openDialog('selectCategory', '&refer=' + this.current_dialog.id + '&category_id=' + category_selected + '&root_category=' + this.root_category);
+    }
+
+    openSalarySchemaModal(){
+        window.openDialog('salarySchemaDialog', '&refer=' + this.current_dialog.id);
+    }
+
+    addSalarySchema(id, value){
+        window.axios({
+            method: 'get',
+            url: 'salary/'+ id +'/get',
+            data: {refer:this.current_dialog.id}
+        }).then((resp) => {
+
+            let container = this.current_dialog.getElementsByClassName('schema_stored')[0];
+            let node = helper.createElementFromHTML(resp.data.html);
+            container.appendChild(node);
+
+        }).catch(function (error) {
+            console.log(error);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
     }
 
     selectCategory(id){
@@ -485,6 +508,44 @@ class partnerDialog extends Modal{
             elem.closest('.phone').remove();
 
         }
+    }
+
+    initSchema(){
+        let object = this;
+        let list = this.current_dialog.querySelector('.schema_stored');
+        new Sortable(list, {
+            handle: '.handle', // handle's class
+            animation: 150,
+            group: 'shared',
+            ghostClass: 'blue-background-class',
+            direction: 'vertical',
+            filter: ".js-remove, .js-edit",
+            onFilter: function (evt) {
+                var item = evt.item,
+                    ctrl = evt.target;
+
+                if (Sortable.utils.is(ctrl, ".js-remove")) {  // Click on remove button
+                    item.parentNode.removeChild(item); // remove sortable item
+                    //console.log(123123);
+                }
+                else if (Sortable.utils.is(ctrl, ".js-edit")) {  // Click on edit link
+                    // ...
+                }
+            },
+            onAdd: function(evt){
+                //object.itemIncome(evt)
+            },
+        });
+        // let available_list = document.querySelector('#available_list');
+        // new Sortable(available_list, {
+        //     group: {
+        //         name: 'shared',
+        //         put: 'false'
+        //     },
+        //     sort: false,
+        //     animation: 0,
+        //     ghostClass: 'blue-background-class'
+        // });
     }
 }
 export default partnerDialog;

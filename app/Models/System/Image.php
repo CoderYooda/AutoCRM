@@ -13,7 +13,6 @@ class Image extends Model
 {
     protected $guarded = [];
 
-
     public function uploader()
     {
         return $this->hasOne('App\Models\User', 'upload_by');
@@ -21,7 +20,6 @@ class Image extends Model
 
     public static function uploadImage($image, $path = null, $thumb = null, $watermark = null, $rank = null)
     {
-
         $base_path = '/files/images/';
 
         if ($path != NULL) {

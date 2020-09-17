@@ -470,13 +470,12 @@ h5{
     flex: 1;
 }
 .partner-balance{
-    line-height: 13px;
+    line-height: 14px;
     font-size: 12px;
     display: block;
-    color: #495057;
-    padding: 2px 10px;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
+    color: inherit;
+    padding: 0px 10px;
+    border: 1px solid #e7e8ec;
     text-transform: lowercase;
     text-align: center;
     margin-bottom: 0px;
@@ -562,18 +561,22 @@ h5{
 
 }
 
-.form-group {
-    margin-bottom: 1rem;
+.form-group:not(:last-child) {
+    margin-bottom: 10px;
 }
 label {
     font-weight: 500;
-    font-size: inherit;
+    font-size: 13px;
     display: inline-block;
-    margin-bottom: .5rem;
+    margin-bottom: 8px;
+    height: 22px;
+    line-height: 22px;
+    color: #404040;
 }
 label.label-sm{
     margin-bottom: 0;
-    line-height: 32px;
+    height: 30px;
+    line-height: 30px;
 }
 .input-group {
     position: relative;
@@ -597,7 +600,8 @@ label.label-sm{
     color: #5b88bd;
     margin: 0;
     float: right;
-    line-height: 22px;
+    line-height: 22px!important;
+    height: 22px!important;
     padding: 0px 6px;
 }
 .right-remove:hover{
@@ -617,23 +621,24 @@ label.label-sm{
     color: #c7aeae;
 }
 .form-control {
-    border-color: hsla(210,8%,51%,.2);
-    border-radius: .25rem;
-    color: inherit;
+    //border-color: hsla(210,8%,51%,.2);
+    border-color: #E7E8EC;
+    //border-radius: .25rem;
+    //color: inherit;
+    color: #656565;
 }
 .form-control {
     display: block;
     width: 100%;
-    height: 32px;
-    padding: 5px 10px;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 1.6;
-    color: #495057;
+    padding: 0px 8px;
+    font-size: 13px;
+    font-weight: normal;
+    //line-height: 1.6;
+    //color: #495057;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #BABABA;
-    border-radius: .25rem;
+    //border: 1px solid #BABABA;
+    //border-radius: .25rem;
     position: relative;
     -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -659,7 +664,7 @@ button:disabled {
     height: 22px;
 }
 .form-control::placeholder{
-    color: #9E9E9E;
+    color: #B4B4B4;
 }
 .button_select:after {
     font-family: FontAwesome;
@@ -675,18 +680,18 @@ button:disabled {
     color: #D7D8DB;
 }
 .form-control.is-invalid, .was-validated .form-control:invalid {
-    border-color: #e3342f;
+    border-color: #EA2E49;
     //padding-right: calc(1.6em + .75rem);
     background-repeat: no-repeat;
     background-position: right calc(.4em + .1875rem) center;
     background-size: calc(.8em + .375rem) calc(.8em + .375rem);
 }
-.form-control:focus {
+select:focus, textarea:focus, button:focus, input:focus {
     color: inherit;
-    box-shadow: 0 0 0 0.2rem rgba(83,166,250,.25);
+    box-shadow: 0 0 0px 2px rgb(45 118 168 / 0.2);
 }
-.form-control:not(.is-valid):not(.is-invalid):focus {
-    border-color: #5b73bd;
+select:not(.is-valid):not(.is-invalid):focus, textarea:not(.is-valid):not(.is-invalid):focus, button:not(.is-valid):not(.is-invalid):focus, input:not(.is-valid):not(.is-invalid):focus {
+    border-color: #2d76a8;
 }
 .filter-panel label{
     margin-bottom: 0px!important;
