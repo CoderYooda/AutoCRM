@@ -82,7 +82,7 @@ class Article extends Model
 
         $store_id = Auth::user()->current_store;
 
-        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $products = DB::table('article_entrance')
             ->where(['article_id' => $this->id, 'store_id' => $store_id])
@@ -109,7 +109,7 @@ class Article extends Model
 
         $store_id = Auth::user()->current_store;
 
-        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $products = DB::table('article_entrance')
             ->where(['article_id' => $this->id, 'store_id' => $store_id])
@@ -142,7 +142,7 @@ class Article extends Model
     {
         $company = Auth::user()->company->load('settings');
 
-        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $store_id = Auth::user()->current_store;
 
@@ -162,7 +162,7 @@ class Article extends Model
         $company = Auth::user()->company->load('settings');
 
         $price_source = $company->getSettingField('Источник цены');
-        $method_cost_of_goods = $company->getSettingField('Способ расчета себестоимости товаров');
+        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $store_id = Auth::user()->current_store;
 
