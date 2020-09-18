@@ -39,7 +39,7 @@
                         @if($field->type == 'text')
                             <input class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
                         @else
-                            <select class="form-control" name="fields[{{ $field->name }}]">
+                            <select custom_select class="form-control" name="fields[{{ $field->name }}]">
                                 @forelse($provider_service->getSelectFieldValues('sales_organization') as $text => $value)
                                     <option value="{{ $value }}" @if($service->getServiceValueByField($field->id) == $value) selected @endif>{{ $text }}</option>
                                 @empty

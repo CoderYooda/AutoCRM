@@ -673,11 +673,11 @@ button:disabled {
     position: absolute;
     top: 0;
     right: 0;
-    height: calc(1.6em + .75rem);
-    width: calc(1.6em + .75rem);
+    height: 28px;
+    width: 28px;
+    line-height: 28px;
     text-align: center;
-    line-height: calc(1.6em + .75rem);
-    color: #D7D8DB;
+    color: #b0b0b0;
 }
 .form-control.is-invalid, .was-validated .form-control:invalid {
     border-color: #EA2E49;

@@ -128,7 +128,7 @@ function appendDialog(resp, tag){
 	window.dialogs[tag].index = window.dialogs_index;
 	var node = helper.createElementFromHTML(resp.html);
 	document.getElementById(containerId).appendChild(node);
-
+    window.applySelects();
 	var position = dialogPosition(tag);
 	var dialog = document.getElementById(tag);
 	dialog.style.left = position.x + 'px';

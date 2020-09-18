@@ -1,6 +1,7 @@
 /* CoderYooda Gist https://github.com/CoderYooda */
 
 window.applySelects = function() {
+    console.log('Заменили Select');
     let x, i, j, l, ll, selElmnt, a, b, c;
     x = document.querySelectorAll('[custom_select]');
     l = x.length;
@@ -20,11 +21,20 @@ window.applySelects = function() {
                 b = document.createElement("DIV");
                 b.setAttribute("class", "select-items select-hide");
                 for (j = 0; j < ll; j++) {
+
                     c = document.createElement("DIV");
                     c.innerHTML = selElmnt.options[j].innerHTML;
+
                     c.addEventListener("click", function(e) {
-                        var y, i, k, s, h, sl, yl;
+
+
+                        let y, i, k, s, h, sl, yl;
                         s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+
+                        let evt = document.createEvent("HTMLEvents");
+                        evt.initEvent("change", false, true);
+                        s.dispatchEvent(evt);
+
                         sl = s.length;
                         h = this.parentNode.previousSibling;
                         for (i = 0; i < sl; i++) {
@@ -40,6 +50,8 @@ window.applySelects = function() {
                                 break;
                             }
                         }
+
+
                         h.click();
                     });
                     b.appendChild(c);

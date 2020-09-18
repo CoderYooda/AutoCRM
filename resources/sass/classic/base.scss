@@ -39,12 +39,12 @@ input[type=checkbox]:not(.not_default) {
 }
 textarea{
     border: 1px solid #d3d9de;
-    padding: 0 5px;
+    padding: 3px 5px!important;
 }
-input[type=checkbox]:active, input[type=checkbox]:checked:active {
+input[type=email]:active, input[type=checkbox]:active, input[type=checkbox]:checked:active {
     box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
 }
-input[type=checkbox]:disabled, input[type=checkbox]:checked:disabled{
+input[type=email]:disabled, input[type=checkbox]:checked:disabled{
     -webkit-appearance: none;
     background-color: #fafafa;
     border: 1px solid #eaeaea;
@@ -794,6 +794,7 @@ select:focus + .select-selected{
     height: 30px;
     line-height: 28px;
     position: relative;
+    width: 100%;
 }
 
 .select-items div{
@@ -833,7 +834,7 @@ input {
     box-shadow: none;
 
 }
-button {
+a.button, button {
     padding: 0px 15px;
     box-sizing: border-box;
     color: #000;
@@ -846,13 +847,30 @@ button {
     cursor: pointer;
     white-space: nowrap;
 }
+
+.tab-container a.button{
+    padding: 0px 15px;
+    line-height: 26px !important;
+    border-radius: 0 !important;
+    border: none;
+    border-bottom: 4px solid #eee;
+}
+.tab-container a.button:hover{
+    border-bottom: 4px solid #1267a0;
+}
+.tab-container a.button.active{
+    box-shadow: inset 0 -4px 10px #186ca57d;
+    border-bottom: 4px solid #1267a0;
+    background-color: #1d87cf;
+}
+
 input.sm{
     padding: 0px 5px 0px !important;
     height: 20px !important;
     line-height: 20px !important;
 }
 
-input[type='text'], input[type='number'], select{
+a.button, input[type='email'], input[type='text'], input[type='number'], select{
     height: 30px ;
     line-height: 30px;
 }

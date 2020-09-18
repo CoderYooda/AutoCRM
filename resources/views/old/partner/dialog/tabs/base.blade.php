@@ -50,7 +50,7 @@
     </div>
     <div class="form-group">
         <label>Доступ в систему</label>
-        <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
+        <select custom_select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
             @if(isset($partner))
                 <option value="1" @if(isset($partner) && $partner->access) selected @endif>Разрешен</option>
                 <option value="0" @if(isset($partner) && !$partner->access) selected @endif>Запрещен</option>

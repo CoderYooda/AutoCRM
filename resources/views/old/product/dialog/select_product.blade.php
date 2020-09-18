@@ -12,7 +12,7 @@
             @endif
             <div class="input-group">
                 {{--<span class="input-group-prepend">--}}
-                    {{--<select id="product_search_store" name="store_id" class="store_select form-control form-control-sm input-c">--}}
+                    {{--<select custom_select id="product_search_store" name="store_id" class="store_select form-control form-control-sm input-c">--}}
                         {{--<option value="">Все товары</option>--}}
                         {{--@foreach($stores as $store)--}}
                             {{--<option value="{{ $store->id }}">{{ $store->name }}</option>--}}

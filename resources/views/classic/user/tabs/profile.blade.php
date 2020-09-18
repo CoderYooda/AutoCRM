@@ -197,7 +197,7 @@
                             {{--Доступ в систему--}}
                             {{--</div>--}}
                             {{--<div class="col-sm-8">--}}
-                            {{--<select onchange="partnerDialog3.toggleAccess(this)" name="access" class="form-control input-c">--}}
+                            {{--<select custom_select onchange="partnerDialog3.toggleAccess(this)" name="access" class="form-control input-c">--}}
                             {{--<option value="1">Разрешен</option>--}}
                             {{--<option value="0" selected="">Запрещен</option>--}}
                             {{--</select>--}}

@@ -63,7 +63,7 @@
             </div>
             <div class="tab-pane" id="free">
                 <div class="form-group mr-15">
-                    <select onchange="window.scheduleTemplateDialog.changeDayType(this)" name="freeDayType" id="freeDayType" class="form-control input-c">
+                    <select custom_select onchange="window.scheduleTemplateDialog.changeDayType(this)" name="freeDayType" id="freeDayType" class="form-control input-c">
                         <option value="0">Не выбран</option>
                         @foreach($day_off_types as $day_off_type)
                             <option value="{{ $day_off_type->id }}">{{ $day_off_type->type }}</option>

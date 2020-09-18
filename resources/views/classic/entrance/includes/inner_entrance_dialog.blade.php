@@ -101,7 +101,7 @@
 
                     <div class="form-group mb-0">
                         <label>Номер накладной</label>
-                        <input class="form-control" name="invoice" value="{{ $entrance->invoice ?? '' }}" @if($entrance) disabled @endif />
+                        <input type="number" class="form-control" name="invoice" value="{{ $entrance->invoice ?? '' }}" @if($entrance) disabled @endif />
                     </div>
 
                 @else
