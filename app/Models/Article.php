@@ -58,6 +58,11 @@ class Article extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function specifications()
+    {
+        return $this->hasMany(Specification::class);
+    }
+
     public function currentStore()
     {
         $store_id = Auth::user()->current_store;

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\Providers\TrinityController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use stdClass;
 
 class ProductController extends Controller
@@ -178,7 +179,7 @@ class ProductController extends Controller
 
     public static function productDialog(Request $request)
     {
-        $product = Article::find($request['product_id']);
+        $product = Article::with('specifications')->find($request['product_id']);
 
         $tag = 'productDialog' . ($product->id ?? '');
 
@@ -196,7 +197,8 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'stores', 'request'))->render()
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'stores', 'request'))->render(),
+            'product' => $product
         ]);
     }
 
@@ -272,7 +274,7 @@ class ProductController extends Controller
 
             $supplier = Supplier::find($request['supplier_id']);
 
-            $article = Article::firstOrNew($compare);
+            $article = Article::with('specifications')->firstOrNew($compare);
             if ($article->exists) {
                 $this->message = 'Товар обновлен';
             } else {
@@ -294,22 +296,30 @@ class ProductController extends Controller
                 $article->uploadImage($request->shop['image'], true, false);
             }
 
+            if(isset($request->shop['specifications'])) {
+
+                $attributes = [];
+
+                foreach ($request->shop['specifications'] as $key => $specification) {
+                    $attributes[$key]['name'] = Str::slug($specification['label']);
+                    $attributes[$key]['label'] = $specification['label'];
+                    $attributes[$key]['value'] = $specification['value'];
+                }
+
+                $article->specifications()->delete();
+                $article->specifications()->createMany($attributes);
+            }
+
             $this->status = 200;
             if($request['storage']) {
 
-                $stores = Store::whereIn('id', array_keys($request['storage']))->get();
+                $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
 
                 foreach ($stores as $store) {
 
                     $storage = $request['storage'][$store->id];
 
-                    $shop_info = $request->shop['product_settings'][$store->id];
-
-                    if (Auth::user()->company->checkAccessToStore($store)) {
-                        $this->status = 403;
-                        $this->message = 'Магазин, в который Вы сохраняете, Вам не принадлежит';
-                        return response()->json(['message' => $this->message], $this->status);
-                    }
+                    $shop_settings = $request->shop['product_settings'][$store->id];
 
                     $store->articles()->syncWithoutDetaching($article->id);
 
@@ -318,9 +328,9 @@ class ProductController extends Controller
                         'storage_rack' => $storage['storage_rack'],
                         'storage_vertical' => $storage['storage_vertical'],
                         'storage_horizontal' => $storage['storage_horizontal'],
-                        'sp_main' => $shop_info['sp_main'],
-                        'sp_empty' => $shop_info['sp_empty'],
-                        'sp_stock' => $shop_info['sp_stock']
+                        'sp_main' => $shop_settings['sp_main'],
+                        'sp_empty' => $shop_settings['sp_empty'],
+                        'sp_stock' => $shop_settings['sp_stock']
                     ];
 
                     if(isset($storage['retail_price'])){

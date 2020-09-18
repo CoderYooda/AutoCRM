@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Controllers\SupplierController;
+use App\Models\Store;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -48,6 +49,21 @@ class ProductRequest extends FormRequest
             'shop.product_settings.*.*' => ['accepted'],
             'shop.image' => ['file', 'mimes:jpeg,bmp,png', 'max:5120']
         ];
+    }
+
+    protected function passedValidation()
+    {
+        $shop = $this['shop'];
+
+        $stores = Store::owned()->get();
+
+        foreach ($stores as $store) {
+            foreach (['sp_empty', 'sp_stock', 'sp_main'] as $field) {
+                $shop['product_settings'][$store->id][$field] = filter_var($shop['product_settings'][$store->id][$field] ?? null, FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+
+        $this['shop'] = $shop;
     }
 
     protected function failedValidation(Validator $validator)
