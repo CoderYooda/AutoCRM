@@ -3,12 +3,15 @@ import Tabs from "../../Tools/Tabs";
 
 class ProductDialog extends Modal {
 
-    constructor(dialog) {
+    constructor(dialog, response) {
         super(dialog);
         console.log('Окно создания товара инициализировано');
         this.provider_search_container = this.root_dialog.querySelector('#provider_search_container');
         this.provider_search_cont = this.root_dialog.querySelector('#provider_search_container .cont');
         this.article_input = this.root_dialog.querySelector('input[name=article]');
+
+        this.product = response.product;
+
         this.init();
     }
 
@@ -34,7 +37,7 @@ class ProductDialog extends Modal {
             }
         });
 
-        this.field_id = 1;
+        this.field_id = this.product ? this.product.specifications.length : 0;
 
         ///Вешаем обрабочик на поле скидки/////////////
         this.article_input.addEventListener("keydown", fn);
@@ -44,8 +47,9 @@ class ProductDialog extends Modal {
         this.linked();
     }
 
-    linked(){
-        new Tabs('shop_tabs');
+    linked()
+    {
+        if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');
     }
 
     save(elem) {
@@ -81,8 +85,8 @@ class ProductDialog extends Modal {
 
         input_elements.forEach((input, index) => {
 
-            if(index == 0) input.name = 'shop[specifications][' + this.field_id + '][name]';
-            if(index == 1) input.name = 'shop[specifications][' + this.field_id + '][desc]';
+            if(index == 0) input.name = 'shop[specifications][' + this.field_id + '][label]';
+            if(index == 1) input.name = 'shop[specifications][' + this.field_id + '][value]';
 
             input.disabled = false;
         });

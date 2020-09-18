@@ -3051,6 +3051,8 @@ input:-moz-placeholder { /* Firefox 18- */
             color: #656565;
             height: 20px;
             padding: 4px;
+            white-space: nowrap;
+            overflow: hidden;
 
             div {
                 background: url(/images/add_file.svg);

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -37,7 +36,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::get('/salary/{id}/get', 'SalarySchemaController@getSchemaById')->name('GetSchemaById');
 
     Route::middleware('hasPayedDays')->group(function () {
-        Route::get('/', function (){
+        Route::get('/', function () {
             $redir = Auth::user()->hasRole('Суперадмин') ? route('AdminDashboard') : route('StoreIndex');
             return redirect($redir);
         });
@@ -229,9 +228,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         #Картинки
         Route::post('/system/image_upload', 'System\ImageController@upload')->name('uploadImage');
         Route::post('/system/crop_image', 'System\ImageController@cropImage')->name('CropImage');
-//    Route::post('/remove_image', 'Stock\ImageController@remove')->name('removeImage');
-//    Route::post('/rotate_image', 'Stock\ImageController@rotateImg')->name('rotateImg');
-//    Route::post('/setindexes', 'Stock\ImageController@setIndexes')->name('setIndexes');
+        //    Route::post('/remove_image', 'Stock\ImageController@remove')->name('removeImage');
+        //    Route::post('/rotate_image', 'Stock\ImageController@rotateImg')->name('rotateImg');
+        //    Route::post('/setindexes', 'Stock\ImageController@setIndexes')->name('setIndexes');
 
         #Календарь
         Route::get('/calendar', 'CalendarController@index')->name('CalendarIndex');
@@ -293,13 +292,13 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/settings/master/store', 'SettingsController@storeFromMaster')->name('StoreFromMaster');
         Route::post('/settings/master/close', 'SettingsController@closeSettingsMaster')->name('CloseMaster');
 
-        Route::group(['prefix' => 'ws'], function(){
-            Route::get('/check-auth', function(){
+        Route::group(['prefix' => 'ws'], function () {
+            Route::get('/check-auth', function () {
                 return response()->json([
                     'auth' => Auth::check()
                 ]);
             });
-            Route::get('/check-sub/{channel}', function($channel){
+            Route::get('/check-sub/{channel}', function ($channel) {
                 return response()->json([
                     'can' => Auth::check()
                 ]);
@@ -308,7 +307,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     });
 });
 
-Route::get('/islogged', function(){
+Route::get('/islogged', function () {
     return response()->json([
         'auth' => Auth::check()
     ]);
@@ -322,6 +321,8 @@ Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUse
 
 #Коморка разработчиков
 Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Admin')->name('Admin')->group(function () {
+
+
     Route::get('/', 'DashboardController@index')->name('Dashboard');
     Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('DashboardTable');
 
@@ -331,4 +332,3 @@ Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Ad
     Route::post('/users/{user}/update', 'UserController@update')->name('UpdateUser');
     Route::post('/system_message/send', 'UserController@sendSystemMessageTo')->name('SendMessage');
 });
-

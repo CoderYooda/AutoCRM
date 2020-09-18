@@ -35,20 +35,20 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
+        $subdomain = current(explode('.', request()->getHost()));
 
-        $this->mapWebRoutes();
-
-        //
+        if($subdomain == 'online' || $subdomain == 'test') {
+            $this->mapApiRoutes();
+            $this->mapWebRoutes();
+        }
+        else if($subdomain == 'www' || $subdomain == getenv('APP_DOMAIN')) {
+            $this->mapLandingWebRoutes();
+        }
+        else {
+            $this->mapShopWebRoutes();
+        }
     }
 
-    /**
-     * Define the "web" routes for the application.
-     *
-     * These routes all receive session state, CSRF protection, etc.
-     *
-     * @return void
-     */
     protected function mapWebRoutes()
     {
         Route::middleware('web')
@@ -56,18 +56,25 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/web.php'));
     }
 
-    /**
-     * Define the "api" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
-     * @return void
-     */
     protected function mapApiRoutes()
     {
         Route::prefix('api')
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapShopWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/shop.php'));
+    }
+
+    protected function mapLandingWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/landing.php'));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Controllers\SupplierController;
+use App\Models\Store;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -41,13 +42,28 @@ class ProductRequest extends FormRequest
 
             'barcode' => ['nullable', Rule::unique('articles', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
 
-            'shop.name' => ['string', 'max:255'],
-            'shop.desc' => ['string', 'max:1024'],
+            'shop.name' => ['nullable', 'string', 'max:255'],
+            'shop.desc' => ['nullable', 'string', 'max:1024'],
             'shop.specifications' => ['array'],
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.product_settings.*.*' => ['accepted'],
             'shop.image' => ['file', 'mimes:jpeg,bmp,png', 'max:5120']
         ];
+    }
+
+    protected function passedValidation()
+    {
+        $shop = $this['shop'];
+
+        $stores = Store::owned()->get();
+
+        foreach ($stores as $store) {
+            foreach (['sp_empty', 'sp_stock', 'sp_main'] as $field) {
+                $shop['product_settings'][$store->id][$field] = filter_var($shop['product_settings'][$store->id][$field] ?? null, FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+
+        $this['shop'] = $shop;
     }
 
     protected function failedValidation(Validator $validator)

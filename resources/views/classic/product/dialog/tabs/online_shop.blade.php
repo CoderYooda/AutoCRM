@@ -19,7 +19,7 @@
                     <div class="flex-1">
                         <label class="mb-5">Основное фото</label>
                         <div style="width: 110px; height: 110px;">
-                            <img class="h-100 w-100" src="{{ $product->image_path }}"/>
+                            <img class="h-100 w-100" src="{{ $product->image_path ?? asset('/images/product-placeholder.svg') }}" />
                         </div>
                         <label class="upload_file pointer" for="shop[image]">Файл не выбран<div></div></label>
                         <input type="file" id="shop[image]" name="shop[image]" onclick="{{ $class }}.clickFile(this);" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png,image/gif" hidden/>
@@ -45,13 +45,35 @@
                             </div>
 
                             <div class="ml-15">
-                                <input type="text" name="" class="form-control" placeholder="Вяскость" disabled>
+                                <input type="text" name="" class="form-control" placeholder="Вязкость" disabled>
                                 <input type="text" name="" class="form-control mt-5" placeholder="5W40" disabled>
                             </div>
 
                             <div class="remove pointer ml-10" onclick="{{ $class }}.removeSpecification(this);"></div>
 
                         </div>
+
+                        @isset($product->specifications)
+                            @foreach($product->specifications as $specification)
+
+                                <div class="element d-flex">
+
+                                    <div>
+                                        <span>Наименование</span>
+                                        <span class="mt-5">Значение</span>
+                                    </div>
+
+                                    <div class="ml-15">
+                                        <input type="text" name="shop[specifications][{{ $loop->index }}][label]" class="form-control" placeholder="Вязкость" value="{{ $specification->label }}">
+                                        <input type="text" name="shop[specifications][{{ $loop->index }}][value]" class="form-control mt-5" placeholder="5W40" value="{{ $specification->value }}">
+                                    </div>
+
+                                    <div class="remove pointer ml-10" onclick="{{ $class }}.removeSpecification(this);"></div>
+
+                                </div>
+
+                            @endforeach
+                        @endisset
 
                     </div>
                 </div>
@@ -74,7 +96,7 @@
                         <div id="toggle_{{ $store->id }}" class="toggleable d-flex p-10 d-none">
 
                             <div class="flex-2 d-flex flex-column">
-                                @foreach(['Показать если нет в наличии', 'Акционный товар', 'Показать на главной странице'] as $field)
+                                @foreach(['Показать, если нет в наличии', 'Акционный товар', 'Показать на главной странице'] as $field)
                                     <div>
                                         <span>{{ $field }}</span>
                                     </div>
@@ -85,7 +107,7 @@
                                 @foreach(['sp_empty', 'sp_stock', 'sp_main'] as $field)
                                     <div style="margin-left: auto;">
                                         <label class="custom_checkbox mb-0">
-                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" />
+                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if($product && $product->stores->find($store->id)->pivot->$field) checked @endif />
                                             <span></span>
                                         </label>
                                     </div>
