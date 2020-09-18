@@ -7,10 +7,13 @@
                 {{--<span class="system_balance pr-15">Баланс: <b>{{ number_format(Auth::user()->company->balance, 2, ',', ' ')  }} <sup>₽</sup></b></span> |--}}
 
                 @if(Auth::user()->company->blocked)
-                    <span class="system_balance"> Компания "{{ Auth::user()->company->name }}" заблокирована. Для активации выберите тариф или свяжитесь с администратором</span>
+                    <span class="system_balance"> Компания "{{ Auth::user()->company->name }}" заблокирована. Для активации свяжитесь с администратором</span>
+                @elseif(Auth::user()->company->payed_days < Carbon\Carbon::now()->timestamp)
+                    <span class="system_balance"> Компания "{{ Auth::user()->company->name }}" заблокирована. Для активации выберите тариф</span>
                 @else
-                    <span class="system_balance pr-15">Состояние записи: <b>Активно</b>. Дата отключения: <b>{{ Auth::user()->company->getPayedDays() }}</b></span>
+                    <span class="system_balance pr-15">Состояние записи: <b>Активно</b>. До отключения: <b>{{ Auth::user()->company->getPayedDays() }} дн.</b></span>
                 @endif
+
             </div>
         </div>
     </div>

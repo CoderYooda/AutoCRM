@@ -34,6 +34,7 @@ import providerCartDialog from "./ProviderCart/ProviderCartDialog";
 import documentDialog from "./Document/DocumentDialog";
 import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 import selectWarrantDialog from "./Warrant/SelectWarrantDialog";
+import salarySchemaDialog from "./Salary/salarySchemaDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -95,9 +96,10 @@ const classes = {
     documentDialog,
     selectClientOrderDialog,
     selectWarrantDialog,
+    salarySchemaDialog,
     companyDialog,
     userDialog,
-    selectCompanyDialog
+    selectCompanyDialog,
 };
 
 const pages = {

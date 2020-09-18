@@ -3,6 +3,7 @@ require('./variables');                                             // Стар�
 require('./bootstrap');                                             // Стартовая инициализация
 require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
 require('./navigation');                                            // Навигация XHR
+require('./select');                                            // Селекты
 require('./vue');
 
 window.Tabulator = require('tabulator-tables');
@@ -66,3 +67,4 @@ Array.prototype.remove = function() {
 
 
 window.dd = console.log.bind(document);
+window.applySelects();

@@ -1,23 +1,14 @@
 .button{
-    padding: 8px 16px 7px;
     margin: 0;
     font-size: 12.5px;
     display: inline-block;
-    zoom: 1;
-    cursor: pointer;
     white-space: nowrap;
     outline: none;
+    border: none;
     vertical-align: top;
-    line-height: 15px;
     text-align: center;
     text-decoration: none;
-    background-color: #1F98E9;
-    border: 1px solid transparent;
-    color: #fff;
     border-radius: 4px;
-    box-sizing: border-box;
-    height: 32px;
-    font-family: "Segoe UI" !important;
 }
 .uppercase-btn{
     font-size: 10px;
@@ -42,21 +33,30 @@
     color: #fff;
 }
 
-.button.primary:focus:not(:active) {
-    background-color: #1F98E9;
-    color: #fff;
-    box-shadow: 0 0 0 2px rgba(31, 152, 233, 0.25);
+.button.preloader-block{
+    width: 30px;
+    border-radius: 50%;
+    overflow: hidden;
 }
-button .active .button.primary, .button.primary:active, .button.primary.active{
-    background-color: #0e7fca!important;
-    padding-top: 9px;
-    padding-bottom: 6px;
+
+.button:focus {
+    box-shadow: 0 0 0px 2px rgb(45 118 168 / 0.2);
 }
+.active .button, .button:active, .button.active{
+    padding-top: 1px;
+    padding-bottom: 0px;
+}
+//button .active .button.primary, .button.primary:active, .button.primary.active{
+//    background-color: #0e7fca!important;
+//    padding-top: 9px;
+//    padding-bottom: 6px;
+
+
 
 .button.white {
     background-color: #fff;
-    color: #2d76a8;
-    border: 1px solid #2d76a8;
+    color: #878787;
+    border: 1px solid #E7E8EC;
 }
 .button.yellow {
     background-color: #38ff20;
@@ -71,17 +71,19 @@ button .active .button.primary, .button.primary:active, .button.primary.active{
 }
 
 .button.white:focus:not(:active) {
-    background-color: #fff;
-    color: #1f98e9;
-    box-shadow: 0 0 0 2px rgba(31, 152, 233, 0.25);
-    border: 1px solid #1F98E9;
+    background-color: #E7E8EC;
+    color: #878787;
+    //box-shadow: 0 0 0 2px rgba(31, 152, 233, 0.25);
+    border: 1px solid #D8D8D8;
+}
+.button.white:hover {
+    background: #f5f5f5;
 }
 .button.white:active {
-    background-color: #fff;
-    color: #0F8CDF;
-    padding-top: 9px;
-    padding-bottom: 6px;
-    border: 1px solid #0F8CDF;
+    background-color: #E7E8EC;
+    color: #878787;
+    padding-top: 1px;
+    border: 1px solid #D8D8D8;
 }
 
 
@@ -100,8 +102,7 @@ button .active .button.primary, .button.primary:active, .button.primary.active{
 }
 .button.success:active {
     background-color: #38B722;
-    padding-top: 9px;
-    padding-bottom: 6px;
+    padding-top: 1px;
 }
 
 .button.is-invalid{

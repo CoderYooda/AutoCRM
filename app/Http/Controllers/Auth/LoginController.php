@@ -101,7 +101,7 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
-            $user->resetCurrentStore();
+
             if($request->expectsJson()){
                 $request->session()->regenerate();
                 $this->clearLoginAttempts($request);
@@ -133,6 +133,11 @@ class LoginController extends Controller
         }
     }
 
-
+    public function authenticated(Request $request, $user)
+    {
+        if(!$user->current_store) {
+            $user->update(['current_store' => $this->partner->store_id]);
+        }
+    }
 
 }

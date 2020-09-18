@@ -37,17 +37,6 @@ class User extends Authenticatable
         return $this->partner()->first()->store()->first();
     }
 
-
-    public function resetCurrentStore(){
-        if($this->current_store == 0){
-            $this->current_store = $this->partner->store_id;
-            if($this->save()){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function attachToCompany($company)
     {
         $this->update(['company_id' => $company->id]);

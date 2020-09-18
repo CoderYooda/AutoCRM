@@ -118,8 +118,6 @@ class selectPartnerDialog  extends Modal{
     }
 
     search(object){
-        //var string = el.value;
-
         if (isXHRloading) { return; } window.isXHRloading = true;
 
         let data = {};

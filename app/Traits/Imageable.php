@@ -55,6 +55,9 @@ trait Imageable
     public function removeImage()
     {
         //TODO CHECK
+        if(!$this->image()->exists()){
+            return;
+        }
         Storage::delete($this->image->url);
         Storage::delete($this->image->thumb_url);
 

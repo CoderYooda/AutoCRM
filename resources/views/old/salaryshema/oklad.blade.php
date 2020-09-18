@@ -1,4 +1,4 @@
-<li class="list-group-item action_hover">
+<div class="salary_item">
     <div class="box-tool action_panel">
         <ul class="nav nav-xs">
             <li class="nav-item dropdown">
@@ -21,4 +21,4 @@
         </div>
     </div>
     <span class="arrow bottom b-success"></span>
-</li>
+</div>

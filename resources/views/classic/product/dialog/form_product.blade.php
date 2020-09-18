@@ -110,7 +110,7 @@
                     </ul>
                 </div>
                 <div class="col-sm-7 no-pl">
-                    <div class="tab-content mb-3 pl-8">
+                    <div class="tab-content no-pl">
                         @include(get_template() . '.product.dialog.tabs.base')
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')

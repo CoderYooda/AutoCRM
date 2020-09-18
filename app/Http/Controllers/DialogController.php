@@ -75,7 +75,9 @@ class DialogController extends Controller
             //Role
             'roleDialog'                => [RoleController::class, 'roleDialog'],
             //Vehicle
-            'vehicleDialog'             => [VehicleController::class, 'vehicleDialog']
+            'vehicleDialog'             => [VehicleController::class, 'vehicleDialog'],
+            //Salary (зарплаты)
+            'salarySchemaDialog'        => [SalarySchemaController::class, 'salarySchemaDialog']
         ];
 
         if (!in_array($tag, array_keys($dialogs))) {

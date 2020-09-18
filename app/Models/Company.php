@@ -13,7 +13,7 @@ class Company extends Model
 
     public function getPayedDays()
     {
-        return mb_ucfirst(Carbon::createFromTimestamp($this->payed_days)->diffForHumans());
+        return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
     }
 
     public function getDays()

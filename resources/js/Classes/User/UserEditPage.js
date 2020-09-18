@@ -171,42 +171,7 @@ class usereditPage{
         }
     }
 
-    initSchema(){
-        let object = this;
-        let list = document.querySelector('#shema_stored');
-        new Sortable(list, {
-            group: 'shared',
-            animation: 0,
-            ghostClass: 'blue-background-class',
-            direction: 'vertical',
-            filter: ".js-remove, .js-edit",
-            onFilter: function (evt) {
-                var item = evt.item,
-                    ctrl = evt.target;
 
-                if (Sortable.utils.is(ctrl, ".js-remove")) {  // Click on remove button
-                    item.parentNode.removeChild(item); // remove sortable item
-                    //console.log(123123);
-                }
-                else if (Sortable.utils.is(ctrl, ".js-edit")) {  // Click on edit link
-                    // ...
-                }
-            },
-            onAdd: function(evt){
-                object.itemIncome(evt)
-            },
-        });
-        let available_list = document.querySelector('#available_list');
-        new Sortable(available_list, {
-            group: {
-                name: 'shared',
-                put: 'false'
-            },
-            sort: false,
-            animation: 0,
-            ghostClass: 'blue-background-class'
-        });
-    }
 
     // linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
     //     this.active_tab = window.helper.findGetParameter('active_tab');

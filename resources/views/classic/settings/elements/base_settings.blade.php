@@ -9,7 +9,7 @@
             <div class="form-group w-350 mt-5">
                 <label>{{ $setting->name }}</label>
                 @if($setting->type == 'select')
-                    <select class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
+                    <select custom_select class="form-control input-c" name="{{ $setting->key }}" id="{{ $setting->key }}">
                         @if($setting->model == 'Role')
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}" @if($setting->value == $role->id) selected @endif>{{ $role->name }}</option>

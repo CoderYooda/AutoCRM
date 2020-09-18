@@ -25,7 +25,6 @@ class Image extends Model
 
     public static function uploadImage($image, $path = null, $thumb = null, $watermark = null, $rank = null)
     {
-
         $base_path = '/files/images/';
 
         if ($path != NULL) {

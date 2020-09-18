@@ -46,7 +46,7 @@ class ProductDialog extends Modal {
 
         this.linked();
     }
-
+    
     linked()
     {
         if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');

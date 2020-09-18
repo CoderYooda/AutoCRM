@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('login', 'Auth\LoginController@login');
+Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 // Registration Routes...
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
@@ -34,6 +34,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/user/password/save', 'UserController@passwordStore')->name('UserPassStore');
 
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
+    Route::get('/salary/{id}/get', 'SalarySchemaController@getSchemaById')->name('GetSchemaById');
 
     Route::middleware('hasPayedDays')->group(function () {
         Route::get('/', function (){

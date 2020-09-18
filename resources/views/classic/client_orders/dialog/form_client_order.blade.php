@@ -285,16 +285,22 @@
                                             <div class="hide" id="templates">
                                                 @if($client_order)
                                                     <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                        Ваш заказ № {{ $client_order->id }} укомплектован! К оплате {{ decimal_price( $client_order->itogo - $client_order->wsumm)}} р. {{ Auth::user()->company->name }}
+                                                    </div>
+                                                    <div class="template_elem" onclick="{{ $class }}.pickText(this)">
+                                                        Ваш заказ № {{ $client_order->id }} принят! {{ Auth::user()->company->name }}
+                                                    </div>
+                                                    <div class="template_elem" onclick="{{ $class }}.pickText(this)">
                                                         Ваш заказ № {{ $client_order->id }} готов к выдаче! {{ Auth::user()->company->name }}
                                                     </div>
                                                     <div class="template_elem" onclick="{{ $class }}.pickText(this)">
-                                                        Ваш заказ № {{ $client_order->id }} был отменен! {{ Auth::user()->company->name }}
+                                                        Ваш заказ № {{ $client_order->id }} был отменен. {{ Auth::user()->company->name }}
                                                     </div>
                                                 @endif
                                             </div>
                                             <span class="input-group-append">
                                                 <button onclick="{{ $class }}.sendSMS()" class="button" type="button" id="newBtn">
-                                                    <i class="fa fa-send text-success"></i>
+                                                    <i class="fa fa-send"></i>
                                                 </button>
                                             </span>
                                         </div>

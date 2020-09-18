@@ -218,8 +218,6 @@ class UserController extends Controller
 
     public function getChannel(){ //Выделение канала для сокет вещания
 
-        //dd(Auth::check());
-
         if(Auth::check()){
             $user = Auth::user();
 
@@ -235,7 +233,6 @@ class UserController extends Controller
                 'channels' => []
             ]);
         }
-
     }
 
     public static function headerUser(){
@@ -269,9 +266,9 @@ class UserController extends Controller
         Auth::loginUsingId($toUser->id, TRUE);
 
         Session::flush();
-
         Session::put('store_id', $toUser->getStoreFirst()->id);
 
         if($isAdmin) Session::put('auth_from_id', $fromUser->id);
+
     }
 }

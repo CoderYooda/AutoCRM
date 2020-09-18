@@ -96,6 +96,7 @@ const ajaxRequest = new (function () {
             oPageInfo.class = resp.data.class;
 
             document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            window.applySelects();
             //document.getElementById(resp.data.target).innerHTML = resp.data.html;
             if (bUpdateURL) {
                 history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);

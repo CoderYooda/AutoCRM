@@ -11,7 +11,7 @@
                     @endif
                 </div>
                 <form method="POST" action="{{ route('login') }}">
-                    @csrf
+                    {{--@csrf--}}
                     <div class="text-left">
                         <div class="form-group  @error('phone') is-invalid @enderror">
                             <label>Номер телефона</label>
