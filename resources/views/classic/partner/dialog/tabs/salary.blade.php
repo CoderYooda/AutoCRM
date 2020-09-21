@@ -13,4 +13,8 @@
             </div>
         </div>
         <button type="button" class="button mt-10" onclick="window.{{ $class }}.openSalarySchemaModal()">Добавить настройку</button>
+
+        @if($partner)
+            {{ $partner->getSalaryToday() }}
+        @endif
 </div>

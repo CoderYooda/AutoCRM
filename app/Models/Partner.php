@@ -200,4 +200,29 @@ class Partner extends Model
         return true;
     }
 
+    public function getShipmentsByPeriod(){
+        
+    }
+
+
+
+    public function getSalaryToday(){
+        $salarySettings = $this->salarySchemas;
+        $summ = 0;
+
+        foreach($salarySettings as $setting){
+            switch ($setting->template){
+                case 'percent_from_shipments':
+                    $pfs_summ = self::calculatePFS();
+
+            }
+            return $setting->template;
+        }
+        //dd($salarySettings);
+    }
+
+    private function calculatePFS(){ //Percent From Shipment
+        $this-
+    }
+
 }
