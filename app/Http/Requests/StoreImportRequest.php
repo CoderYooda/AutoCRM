@@ -15,8 +15,8 @@ class StoreImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'exists:stores,id'],
-            'file' => ['required', 'file', 'mimes:csv,txt,xml', 'max:' . convertPHPSizeToBytes(ini_get('upload_max_filesize')), new EncodeRule()]
+            'store_id' => ['required', 'exists:stores,id'],
+            'file' => ['required', 'file', 'mimes:csv,txt,xml', 'max:' . convertPHPSizeToBytes(ini_get('upload_max_filesize')), new EncodeRule()],
         ];
     }
 }

@@ -58,6 +58,7 @@ import adminPage from "./Admin/AdminPage";
 import companyDialog from "./Admin/Company/CompanyDialog";
 import userDialog from "./Admin/User/UserDialog";
 import selectCompanyDialog from "./Company/SelectCompanyDialog";
+import shopPage from "./Shop/ShopPage";
 
 const classes = {
     entranceDialog,
@@ -121,7 +122,8 @@ const pages = {
     passwordresetPage,
     statisticPage,
     statisticshowPage,
-    adminPage
+    adminPage,
+    shopPage,
 };
 
 class Helper{
@@ -176,6 +178,9 @@ class Helper{
                         window.helper.log(classname + " - Такого конструктора не существует");
                         console.log(err);
                     }
+
+                    window.applySelects();
+
                     //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
                 }
             });

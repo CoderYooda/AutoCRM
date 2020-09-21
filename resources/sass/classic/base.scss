@@ -794,6 +794,7 @@ select:focus + .select-selected{
     height: 30px;
     line-height: 28px;
     position: relative;
+    width: 100%;
 }
 
 .select-items div{
@@ -3171,5 +3172,11 @@ input:-moz-placeholder { /* Firefox 18- */
         &:checked + span {
             background: url(/images/input_checked.svg);
         }
+    }
+}
+
+.contacts-shop-page {
+    .butt_del_append {
+        line-height: normal !important;
     }
 }

@@ -85,11 +85,13 @@ class storeImportDialog extends Modal{
 
         event.preventDefault();
 
-        let file_input = this.current_dialog.querySelector('[name=file]');
+        let file_input = this.current_dialog.querySelector('[type=file]');
         let name_input = this.current_dialog.querySelector('#file-name');
 
+        file_input.value = null;
         file_input.click();
-        name_input.value = 'Название файла';
+
+        name_input.value = '';
     }
 
     changeFile(element) {
@@ -99,24 +101,7 @@ class storeImportDialog extends Modal{
         input.value = element.files[0].name;
     }
 
-    selectStore(element, store_id) {
-        let input_id = this.current_dialog.querySelector('[name=id]');
-
-        input_id.value = store_id;
-
-        let button_name = this.current_dialog.querySelector('#store-name');
-        button_name.value = element.innerText;
-    }
-
     save(save_element) {
-
-        event.preventDefault();
-
-        save_element.disabled = true;
-
-        let element = this.current_dialog.querySelector('#form-import');
-
-        let formData = new FormData(element);
 
         const config = {
             onUploadProgress: progressEvent => this.uploadProgress(progressEvent)
@@ -128,23 +113,23 @@ class storeImportDialog extends Modal{
         let progressbar_element = this.current_dialog.querySelector('#progressbar');
         progressbar_element.parentElement.classList.remove('d-none');
 
-        axios.post( '/store/import', formData, config)
-        .then(response => {
-            console.log('file upload success');
+        window.axform.send(save_element, (response) => {
+            if(response.status == 200) {
+                console.log('file upload success');
 
-            let element = this.current_dialog.querySelector('#progressbar');
-            element.value = 0;
+                let element = this.current_dialog.querySelector('#progressbar');
+                element.value = 0;
 
-            let element_text = this.current_dialog.querySelector('#info-text');
-            element_text.innerText = 'Обработано на 0%';
-        })
-        .catch(response => {
-            elements.classList.remove('d-none');
-            save_element.disabled = false;
-        })
-        .then(() => {
+                let element_text = this.current_dialog.querySelector('#info-text');
+                element_text.innerText = 'Обработано на 0%';
+            }
+            else {
+                progressbar_element.parentElement.classList.add('d-none');
 
-        });
+                elements.classList.remove('d-none');
+                save_element.disabled = false;
+            }
+        }, null, null, config);
     }
 
     uploadProgress(event) {

@@ -1,6 +1,6 @@
 class AxForm{
 
-    send(elem, callback = null, url = null, dataset = null){
+    send(elem, callback = null, url = null, dataset = null, config = null){
 
         togglePreloader(elem, true);
 
@@ -22,7 +22,8 @@ class AxForm{
         axios({
             method: form.getAttribute("method"),
             url: url,
-            data: data
+            data: data,
+            config: config
         }).then(function (response) {
 
             if(response.data.redirect){

@@ -343,7 +343,7 @@ class StoreController extends Controller
             }
         }
         $params = [
-            'store' => Store::find($request->id),
+            'store' => Store::find($request->store_id),
             'user_id' => Auth::id(),
             'company_id' => Auth::user()->company->id,
         ];

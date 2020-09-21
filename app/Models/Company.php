@@ -11,6 +11,11 @@ class Company extends Model
 {
     protected $guarded = [];
 
+    public function shop()
+    {
+        return $this->hasOne(Shop::class);
+    }
+
     public function getPayedDays()
     {
         return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
