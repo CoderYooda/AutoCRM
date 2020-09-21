@@ -124,7 +124,6 @@ h2{
     }
 }
 .text-muted{
-    color: #404040;
     opacity: 0.7;
 }
 
@@ -551,8 +550,8 @@ li.active .header-tab{
 .tabulator .tabulator-footer .tabulator-page {
     display: inline-block;
     margin: 0 3px;
-    padding: 5px 10px;
-    border: 1px solid #e8e9ed;
+    padding: 0px 10px;
+    border: 1px solid #E7E8EC;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.2);
 }
