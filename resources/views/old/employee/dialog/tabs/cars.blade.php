@@ -6,7 +6,7 @@
         <label class="col-sm-4 col-form-label">Модель</label>
         <div class="col-sm-8">
             <div class="input-group">
-                <select name="category_id" disabled name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
+                <select custom_select name="category_id" disabled name="category_id" class="category_select form-control input-c noarrow fake-disabled" readonly>
                     @if(isset($category))
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @elseif(isset($product))

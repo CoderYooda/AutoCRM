@@ -102,7 +102,7 @@ class SettingMaster
                 '</div>\n' +
                 '<div class="form-group">\n' +
                     '<label>Доступ к системе</label>\n' +
-                    '<select name="employees[' + (count + 1) + '][access]" class="form-control input-c">\n' +
+                    '<select custom_select name="employees[' + (count + 1) + '][access]" class="form-control input-c">\n' +
                     '<option value="1">Разрешен</option>\n' +
                     '<option value="0" selected="">Запрещен</option>\n' +
                     '</select>\n' +

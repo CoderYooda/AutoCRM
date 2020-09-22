@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="input-group mr-2" style="width: 200px;">
-                    <select id="warrant_isIncoming" name="warrant_isIncoming" class="form-control form-control-sm warrant_isIncoming">
+                    <select custom_select id="warrant_isIncoming" name="warrant_isIncoming" class="form-control form-control-sm warrant_isIncoming">
                         <option value="null" @if($request['isIncoming'] === 'null') selected @endif >Все документы</option>
                         <option value="1" @if($request['isIncoming'] === '1') selected @endif >Приходные ордера</option>
                         <option value="0" @if($request['isIncoming'] === '0') selected @endif >Расходные ордера</option>

@@ -11,7 +11,7 @@
                                 $dialogName = $modelName . 'Dialog';
                                 $dialogParams = '&' . $modelName . '_id=' . $system_message->kind_id
                             @endphp
-                            <p onclick="systemMessages.modal.hide();openDialog( '{{ $dialogName }}', '{{ $dialogParams }}' )" class="m-0 text-muted linkable">{{ $system_message->message }}</p>
+                            <p onclick="systemMessages.modal.hide();openDialog( '{{ $dialogName }}', '{{ $dialogParams }}' )" class="m-0 linkable">{{ $system_message->message }}</p>
                         @else
                             <p class="m-0 text-muted">{{ $system_message->message }}</p>
                         @endif

@@ -30,6 +30,10 @@ class partnerDialog extends Modal{
             }
         });
 
+        this.current_dialog.querySelector('#toggle_access').addEventListener('change', function(){
+           object.toggleAccess();
+        });
+
         helper.initTabs('partner_tabs');
 
         setTimeout(() => {
@@ -453,7 +457,7 @@ class partnerDialog extends Modal{
         });
     }
 
-    toggleAccess(elem) {
+    toggleAccess() {
         let account_data = this.current_dialog.querySelector('.account_data');
         account_data.classList.toggle('hide');
 

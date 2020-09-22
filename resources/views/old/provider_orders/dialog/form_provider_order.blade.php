@@ -148,7 +148,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3">Склад</label>
                                     <div class="col-sm-9">
-                                        <select name="store_id" class="form-control input-c">
+                                        <select custom_select name="store_id" class="form-control input-c">
                                             @foreach($stores as $store)
                                                 <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
                                             @endforeach

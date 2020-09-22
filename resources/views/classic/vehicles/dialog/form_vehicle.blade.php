@@ -32,7 +32,7 @@
 
                 <div class="form-group">
                     <label name="mark_id">Марка:</label>
-                    <select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control is-invalid">
+                    <select custom_select id="mark" onchange="{{ $tag }}.changeMark()" data-trigger class="form-control is-invalid">
                         <option value="">Не выбрано</option>
                         @foreach($marks as $mark)
                             <option @if($vehicle && $vehicle->mark_id == $mark->id) selected @endif value="{{ $mark->id }}">{{ $mark->name }}</option>
@@ -42,7 +42,7 @@
 
                 <div class="form-group">
                     <label>Модель:</label>
-                    <select onchange="{{ $tag }}.changeModel()" id="model" data-trigger class="form-control">
+                    <select custom_select onchange="{{ $tag }}.changeModel()" id="model" data-trigger class="form-control">
                         <option value="">Не выбрано</option>
                         @if(count($models))
                             @foreach($models as $model)
@@ -54,7 +54,7 @@
 
                 <div class="form-group">
                     <label>Модификация:</label>
-                    <select onchange="{{ $tag }}.changeModify()" id="modify" data-trigger class="form-control">
+                    <select custom_select onchange="{{ $tag }}.changeModify()" id="modify" data-trigger class="form-control">
                         <option value="">Не выбрано</option>
                         @if(count($modifies))
                             @foreach($modifies as $modify)

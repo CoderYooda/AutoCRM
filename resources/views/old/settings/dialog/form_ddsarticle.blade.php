@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label for="category_id">В категории</label>
                         <div class="input-group mb-3">
-                            <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
+                            <select custom_select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
                                 @if(isset($category))
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @elseif(isset($Ddsarticle))
@@ -43,7 +43,7 @@
                     </div>
                     <div class="form-group">
                         <label>Вид статьи</label>
-                        <select name="dds_types_id" class="form-control input-c">
+                        <select custom_select name="dds_types_id" class="form-control input-c">
                             @foreach($ddstypes as $ddstype)
                             <option value="{{ $ddstype->id }}" @if(isset($ddsarticle) && $ddsarticle->dds_types_id == $ddstype->id) selected @endif>{{ $ddstype->name }}</option>
                             @endforeach

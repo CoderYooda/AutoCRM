@@ -137,7 +137,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Доступ к системе</label>
-                                            <select name="employees[1][access]" class="form-control input-c">
+                                            <select custom_select name="employees[1][access]" class="form-control input-c">
                                                 <option value="1">Разрешен</option>
                                                 <option value="0" selected="">Запрещен</option>
                                             </select>

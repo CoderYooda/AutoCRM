@@ -41,7 +41,7 @@
                         <div class="form-group row row-sm float-label">
                             <label class="col-sm-5">Страна</label>
                             <div class="col-sm-7">
-                                <select id="country" class="md-input form-control" name="country" onchange="window.register.changeCountry(this)" required>
+                                <select custom_select id="country" class="md-input form-control" name="country" onchange="window.register.changeCountry(this)" required>
                                     <option value="7">Россия</option>
                                     <option value="375">Беларусь</option>
                                     <option value="380">Украина</option>
@@ -132,7 +132,7 @@
                         {{--</div>--}}
 
                         {{--<div class="md-form-group float-label">--}}
-                            {{--<select id="country" class="md-input" name="country" onchange="window.register.changeCountry(this)" required>--}}
+                            {{--<select custom_select id="country" class="md-input" name="country" onchange="window.register.changeCountry(this)" required>--}}
                                 {{--<option value="7">Россия</option>--}}
                                 {{--<option value="375">Беларусь</option>--}}
                                 {{--<option value="380">Украина</option>--}}
