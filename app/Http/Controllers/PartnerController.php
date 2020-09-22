@@ -25,11 +25,6 @@ class PartnerController extends Controller
 {
     const ROOT_CATEGORY = 3;
 
-    public function _construct()
-    {
-
-    }
-
     public function index(Request $request)
     {
         PermissionController::canByPregMatch('Смотреть контакты');

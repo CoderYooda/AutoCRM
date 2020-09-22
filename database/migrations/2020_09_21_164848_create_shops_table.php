@@ -18,6 +18,7 @@ class CreateShopsTable extends Migration
             $table->string('name');
             $table->text('address_name');
             $table->string('address_coords');
+            $table->string('address_desc')->nullable();
 
             $table->timestamps();
         });

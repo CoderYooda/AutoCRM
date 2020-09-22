@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ShopController extends Controller
 {
@@ -49,27 +50,37 @@ class ShopController extends Controller
 
     public function update(UpdateRequest $request)
     {
-        $company = Auth::user()->company;
+        return DB::transaction(function () use($request) {
 
-        $shop = Shop::updateOrCreate(['company_id' => $company->id], [
-            'name' => $request->name,
-            'address_name' => $request->address_name,
-            'address_coords' => $request->address_coords
-        ]);
+            $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
+                'name' => $request->name,
+                'address_name' => $request->address_name,
+                'address_coords' => $request->address_coords,
+                'address_desc' => $request->address_desc
+            ]);
 
-//        $shop->phones()->sync([
-//
-//        ]);
+            $shop->phones()->delete();
+            $shop->phones()->createMany($request->phones);
 
-        return response()->json([
-            'type' => 'success',
-            'message' => 'Настройки успешно сохранены.'
-        ]);
+            $main_phone = $request->phones[$request->phones_main];
+            $shop->phones()->where('number', $main_phone['number'])->update(['main' => 1]);
+
+            $shop->emails()->delete();
+            $shop->emails()->createMany($request->emails);
+
+            $main_email = $request->emails[$request->emails_main];
+            $shop->emails()->where('email', $main_email['email'])->update(['main' => 1]);
+
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Настройки успешно сохранены.'
+            ]);
+        });
     }
 
     public function contactsTab(Request $request)
     {
-        $shop = Auth::user()->company->shop;
+        $shop = Shop::with('phones')->where('company_id', Auth::user()->company_id)->first();
 
         return view(get_template() . '.shop.tabs.contacts', compact('request', 'shop'));
     }

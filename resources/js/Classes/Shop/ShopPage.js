@@ -1,4 +1,5 @@
 import ymaps from 'ymaps';
+import TextEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 class shopPage {
 
@@ -6,14 +7,6 @@ class shopPage {
 
         console.log('страница интернет-магазина инициализирована');
         this.init();
-
-        this.map = null;
-
-        let start_coords = document.querySelector('[name=address_coords]').value;
-
-        this.address_coords = start_coords ? start_coords.split(",") : [55.753215, 37.622504];
-        this.address_text = document.querySelector('[name=address_name]').value;
-        this.address_placemark = null;
     }
 
     init() {
@@ -22,10 +15,84 @@ class shopPage {
 
     linked() {
 
-        this.checkActive();
+        this.active_tab = this.getCurrentActiveTab();
 
-        this.addPhoneMask();
-        this.loadYandexMapAddress();
+        if(this.active_tab == 'contacts') {
+            this.map = null;
+
+            let start_coords = document.querySelector('[name=address_coords]').value;
+
+            this.address_coords = start_coords ? start_coords.split(",") : [55.753215, 37.622504];
+            this.address_text = document.querySelector('[name=address_name]').value;
+            this.address_placemark = null;
+
+            this.loadYandexMapAddress();
+            this.addPhoneMask();
+        }
+        else if(this.active_tab == 'about') {
+
+            let editor_element = document.querySelector('#editor');
+
+            this.texteditor = TextEditor.create(editor_element, {
+                language: 'ru',
+            });
+
+            this.upload_files = [];
+        }
+
+        this.checkActive();
+    }
+
+    uploadFiles(element) {
+
+        let count_images = document.querySelectorAll('image').length;
+
+        if(count_images + element.files.length > 9) {
+            return notification.notify( 'error', 'Количество изображений не может быть больше 9.');
+        }
+
+        for (let i = 0; i < element.files.length; ++i) {
+
+            let file = element.files[i];
+
+            //Если это изображение уже было выбрано, то пропускаем
+            if(document.querySelector('.image[data-image="' + file.name + '"]')) continue;
+
+            let reader = new FileReader();
+            reader.onload = (e) => {
+
+                let copy_element = document.querySelector('.image.copy').cloneNode(true);
+
+                copy_element.querySelector('img').src = e.target.result;
+
+                copy_element.classList.remove('d-none');
+                copy_element.classList.remove('copy');
+
+                copy_element.dataset.image = file.name;
+
+                let list_element = document.querySelector('.images');
+
+                list_element.append(copy_element);
+            }
+
+            reader.readAsDataURL(file);
+
+            this.upload_files.push(file);
+        }
+
+        element.value = '';
+    }
+
+    removeImage(element) {
+        let target_element = element.closest('.image');
+
+        this.upload_files.forEach((file, index) => {
+
+            if(file.name == target_element.dataset.image) {
+                this.upload_files.splice(index, 1);
+                target_element.remove();
+            }
+        });
     }
 
     loadYandexMapAddress() {
@@ -113,11 +180,11 @@ class shopPage {
 
         node.querySelectorAll('input').forEach((input, index) => {
             if(index < 2) {
-                input.name = 'phones[num' + (count + 1) + '][' + (index == 0 ? 'number' : 'desc') + ']';
+                input.name = 'phones[' + count + '][' + (index == 0 ? 'number' : 'desc') + ']';
                 input.value = '';
             }
             else {
-                input.value = 'num' + (count + 1);
+                input.value = count;
                 input.checked = false;
             }
         })
@@ -139,11 +206,11 @@ class shopPage {
 
         node.querySelectorAll('input').forEach((input, index) => {
             if(index < 2) {
-                input.name = 'emails[num' + (count + 1) + '][' + (index == 0 ? 'number' : 'desc') + ']';
+                input.name = 'emails[' + count + '][' + (index == 0 ? 'email' : 'desc') + ']';
                 input.value = '';
             }
             else {
-                input.value = 'num' + (count + 1);
+                input.value = count;
                 input.checked = false;
             }
         })
@@ -266,11 +333,18 @@ class shopPage {
     }
 
     save(element) {
-        axform.send(element, response =>{
-            if(response.status == 200) {
-
-            }
+        axform.send(element, response => {
+            //
         });
+    }
+
+    getCurrentActiveTab(){
+        var active_tab = window.helper.findGetParameter('active_tab');
+
+        if(active_tab == null || active_tab == 'null'){
+            active_tab = 'store';
+        }
+        return active_tab;
     }
 }
 

@@ -3172,8 +3172,17 @@ input:-moz-placeholder { /* Firefox 18- */
     border-radius: unset !important;
 }
 
+#ajax-table-shop {
+    .custom_checkbox {
+        span {
+            margin-top: 7px;
+        }
+    }
+}
+
 .custom_checkbox {
     span {
+        cursor: pointer;
         width: 15px;
         height: 15px;
         display: block;
@@ -3195,4 +3204,33 @@ input:-moz-placeholder { /* Firefox 18- */
     .butt_del_append {
         line-height: normal !important;
     }
+}
+
+.ck-editor__editable_inline {
+    min-height: 150px;
+}
+
+#ajax-shop-about {
+
+    .images {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .image {
+        margin-right: 5px;
+
+        img {
+            height: 125px;
+            width: 125px;
+        }
+
+        button {
+            position: absolute;
+            left: 100px;
+            top: 5px;
+            color: black;
+        }
+    }
+
 }

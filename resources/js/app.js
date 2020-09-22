@@ -6,6 +6,8 @@ require('./navigation');                                            // Нави�
 require('./select');                                            // Селекты
 require('./vue');
 
+import "sceditor/src/sceditor";
+
 window.Tabulator = require('tabulator-tables');
 window.Swal = require('sweetalert2');
 window.flatpickr = require('flatpickr');

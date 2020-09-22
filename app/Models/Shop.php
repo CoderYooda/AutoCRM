@@ -2,17 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Emailable;
 use App\Traits\Phoneable;
 use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
 {
-    use Phoneable;
+    use Phoneable, Emailable;
 
     protected $guarded = [];
-
-    public function phoneable()
-    {
-        return $this->morphTo();
-    }
 }

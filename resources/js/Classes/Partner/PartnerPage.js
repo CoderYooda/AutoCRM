@@ -146,7 +146,6 @@ class partnerPage extends Page{
                     object.search = search.value;
                     object.page = 1;
                     object.table.setData('/partner/tabledata', object.prepareDataForTable());
-                    console.log(1);
                 }, 400);
                 search.addEventListener("keydown", searchFn);
                 search.addEventListener("paste", searchFn);

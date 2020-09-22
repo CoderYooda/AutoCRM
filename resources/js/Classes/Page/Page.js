@@ -10,7 +10,8 @@ class Page {
 
         if(target_elem){
             this.data = JSON.parse(target_elem.dataset.data);
+            target_elem.removeAttribute('data-data');
         }
     }
 }
-export default Page
+export default Page;

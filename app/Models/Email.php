@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Phone extends Model
+class Email extends Model
 {
     protected $guarded = [];
 
-    public function phoneable()
+    public function emailable()
     {
         return $this->morphTo();
     }
