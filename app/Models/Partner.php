@@ -79,6 +79,16 @@ class Partner extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
+    public function shipments()
+    {
+        return $this->hasMany(Shipment::class, 'manager_id');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'partner_id');
+    }
+
     public function phones()
     {
         return $this->belongsToMany(Phone::class, 'partner_phone');
@@ -204,25 +214,60 @@ class Partner extends Model
 
     }
 
-
-
     public function getSalaryToday(){
-        $salarySettings = $this->salarySchemas;
+
         $summ = 0;
 
-        foreach($salarySettings as $setting){
+        foreach($this->salarySchemas as $setting){
             switch ($setting->template){
                 case 'percent_from_shipments':
-                    $pfs_summ = self::calculatePFS();
+                    $pfs_summ = self::calculatePFS([
+                        Carbon::now()->format('Y-m-d') . ' 00:00:00',
+                        Carbon::now()->format('Y-m-d') . ' 23:59:59'
+                    ]);
 
+                    $summ += $pfs_summ / 100 * $setting->pivot->value;
+                    break;
+                case 'fixed':
+                    $summ = $setting->isPositive ? $summ + $setting->pivot->value : $summ - $setting->pivot->value;
+                    break;
+                case 'percent':
+                    $percent = $summ / 100 * $setting->pivot->value;
+                    $setting->isPositive ? $summ += $percent : $summ -= $percent;
+                    break;
+                case 'oklad':
+                    $hours = self::calculateOkladHours(Carbon::now()->format('Y-m-d'), [
+                        '00:00:00',
+                        '23:59:59'
+                    ]);
+                    $summ_per_hour = $setting->pivot->value / $setting->pivot->h_m_value;
+                    $summ += $summ_per_hour * $hours;
+
+                    break;
             }
-            return $setting->template;
         }
-        //dd($salarySettings);
+        return $summ;
     }
 
-    private function calculatePFS(){ //Percent From Shipment
-        //$this-
+    private function calculatePFS($period){ //Percent From Shipment Процент с продаж
+        return floatval($this->shipments()->whereBetween('created_at', $period)->sum('itogo'));
     }
 
+    private function calculateOkladHours($date, $period)
+    {
+        $schedules =  $this->schedules()
+            ->where('date', $date)
+            ->where('dayType', 'work')
+            ->where('start', '>=', $period[0])
+            ->where('end', '<=', $period[1])
+            ->get();
+
+        $hours = 0;
+
+        foreach($schedules as $schedule){
+            $hours += Carbon::parse($schedule->start)->diff(Carbon::parse($schedule->end))->h;
+        }
+
+        return $hours;
+    }
 }

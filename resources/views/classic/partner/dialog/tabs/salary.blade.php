@@ -15,6 +15,6 @@
         <button type="button" class="button mt-10" onclick="window.{{ $class }}.openSalarySchemaModal()">Добавить настройку</button>
 
         @if($partner)
-            {{ $partner->getSalaryToday() }}
+        <span>Будет начислено сегодня: </span>{{ $partner->getSalaryToday() }}
         @endif
 </div>

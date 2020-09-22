@@ -324,7 +324,7 @@ class PartnerController extends Controller
     private static function selectPartnerInner($request){
         $class = 'selectPartnerDialog';
 
-        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::ROOT_CATEGORY;
 
         $partners = Partner::with('phones')
             ->when($request['string'], function($q) use ($request){
@@ -338,7 +338,7 @@ class PartnerController extends Controller
             ->limit(30)
             ->get();
 
-        $categories = CategoryController::getModalCategories(self::$root_category, $request);
+        $categories = CategoryController::getModalCategories(self::ROOT_CATEGORY, $request);
 
         $view = $request['inner'] ? 'select_partner_inner' : 'select_partner';
 
