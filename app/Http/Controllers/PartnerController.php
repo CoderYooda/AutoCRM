@@ -23,7 +23,7 @@ use App\Models\Role;
 
 class PartnerController extends Controller
 {
-    private static $root_category = 3;
+    const ROOT_CATEGORY = 3;
 
     public function _construct()
     {
@@ -34,31 +34,39 @@ class PartnerController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть контакты');
 
-        $target = HC::selectTarget();
 	    if(!Gate::allows('Смотреть контакты')){
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
 	    }
         $categories = CategoryController::getCategories($request, 'partner');
-        $cat_info = [];
-        $cat_info['route'] = 'PartnerIndex';
-        $cat_info['params'] = ['active_tab' => 'store'];
-        $cat_info['root_id'] = 3;
-        if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(get_template() . '.partner.index', compact('request', 'categories', 'cat_info'))->render();
+        $cat_info = [
+            'route' => 'PartnerIndex',
+            'params' => [
+                'active_tab' => 'store'
+            ],
+            'root_id' => self::ROOT_CATEGORY
+        ];
+
+        $data = [123, 22];
+
+        $data = json_encode($data);
+
+        $viewName = $request->search ? 'elements.list_container' : 'index';
+
+        $view = view(get_template() . '.partner.' . $viewName, compact('request', 'categories', 'cat_info'));
+
+        $view->with('data', $data);
+
+        if($request->expectsJson()) {
+
             return response()->json([
-                'target' => 'ajax-content',
                 'page' => 'Контакты',
-                'html' => $content
+                'data' => $data,
+                'target' => $request->search ? 'ajax-table-partner' : 'ajax-content',
+                'html' => $view->render()
             ]);
-        } elseif($request->expectsJson() && $request['search'] != NULL){
-            $content = view(get_template() . '.partner.elements.list_container', compact('request', 'categories', 'cat_info'))->render();
-            return response()->json([
-                'html' => $content,
-                'target' => 'ajax-table-partner',
-            ], 200);
-        } else {
-            return view(get_template() . '.partner.index', compact('request', 'categories', 'cat_info'));
         }
+
+        return $view;
 
     }
 

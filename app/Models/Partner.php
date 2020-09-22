@@ -201,7 +201,7 @@ class Partner extends Model
     }
 
     public function getShipmentsByPeriod(){
-        
+
     }
 
 
@@ -222,7 +222,7 @@ class Partner extends Model
     }
 
     private function calculatePFS(){ //Percent From Shipment
-        $this-
+        //$this-
     }
 
 }
