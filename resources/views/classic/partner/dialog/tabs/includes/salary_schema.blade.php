@@ -3,7 +3,7 @@
     <div class="p-10" style="padding-left: 30px;">
         <input type="hidden" name="salary[{{ $index }}][salary_schema_id]" value="{{ isset($schema) ? $schema->id : 0  }}">
         <div class="title">
-            {{ $schema->name }} @if($schema->isInPercent) в процентах @else в рублях @endif <a title="удалить" href="#" onclick="this.offsetParent.remove()" class="float-right close">×</a>
+            {{ $schema->comment }} <a title="удалить" href="#" onclick="this.offsetParent.remove()" class="float-right close">×</a>
         </div>
         <div class="body">
             <div class="input_gr_sm">

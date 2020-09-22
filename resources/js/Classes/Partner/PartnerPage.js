@@ -1,8 +1,10 @@
 import {Contextual, ContextualItem} from "../Contentual";
+import Page from "../Page/Page";
 
-class partnerPage{
+class partnerPage extends Page{
 
     constructor(){
+        super('ajax-table-partner');
         console.log('страница партнера инициализировано');
         this.active = true;
         this.root_id = 'partner_index_page';
@@ -16,6 +18,7 @@ class partnerPage{
         this.active_tab = 'partner';
         this.init();
     }
+
 
     init(){
         let object = this;
@@ -105,6 +108,7 @@ class partnerPage{
     // }
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
+
         this.category_id = window.helper.findGetParameter('category_id');
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');

@@ -4,7 +4,7 @@
 
 @section('content')
     @php $class = 'partner' @endphp
-    <div id="ajax-table-warrant" class="bottom-container">
+    <div data-data="{{ $data }}" id="ajax-table-partner" class="bottom-container">
         <div class="content-menu box w-290" id="category-nav">
             @include(get_template() . '.category.aside-list')
         </div>

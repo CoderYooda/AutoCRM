@@ -1,9 +1,4 @@
-
 <div class="form-group fl ip ul">
-
-
-
-
         <label>Зарплатные настройки</label>
         <div>
 
@@ -19,4 +14,7 @@
         </div>
         <button type="button" class="button mt-10" onclick="window.{{ $class }}.openSalarySchemaModal()">Добавить настройку</button>
 
+        @if($partner)
+            {{ $partner->getSalaryToday() }}
+        @endif
 </div>

@@ -1,7 +1,8 @@
 
 <div class="form-group fl ip ul">
     <label>Доступ в систему</label>
-    <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
+    {{--onchange="{{ $class }}.toggleAccess(this)"--}}
+    <select custom_select id="toggle_access"  name="access" class="form-control input-c">
         @if(isset($partner) && $partner->user != null)
             <option value="1" @if(isset($partner) && $partner->user()->first()->banned_at == null) selected @endif>Разрешен</option>
             <option value="0" @if(isset($partner) && $partner->user()->first()->banned_at != null) selected @endif>Запрещен</option>
@@ -23,7 +24,7 @@
 <div class="account_data hide @if($partner && $partner->user) d-none @endif">
     <div class="form-group fl ip ul">
         <label>Привязать к магазину</label>
-        <select name="store_id" class="form-control input-c">
+        <select  custom_select name="store_id" class="form-control input-c">
             @foreach($stores as $store)
                 <option value="{{ $store->id }}" @if(isset($partner) && $partner->store_id == $store->id) selected @elseif(Auth::user()->partner->store_id == $store->id) selected @endif>{{ $store->name }}</option>
             @endforeach

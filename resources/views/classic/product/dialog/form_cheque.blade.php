@@ -10,7 +10,7 @@
 
 {{--        <div class="form-group">--}}
 {{--            <label>Цена</label>--}}
-{{--            <select name="price_source" class="form-control">--}}
+{{--            <select custom_select name="price_source" class="form-control">--}}
 {{--                <option value="retail">Розничная цена</option>--}}
 {{--                <option value="fifo-lifo">FIFO/LIFO</option>--}}
 {{--            </select>--}}

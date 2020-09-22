@@ -47,7 +47,7 @@
 
                             <label>Способ доставки:</label>
 
-                            <select name="delivery_type" class="form-control" style="width: 40%;">
+                            <select custom_select name="delivery_type" class="form-control" style="width: 40%;">
                                 <option value="0">Самовывоз</option>
                             </select>
 

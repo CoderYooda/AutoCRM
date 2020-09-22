@@ -82,11 +82,13 @@
                         <div class="form-group row row-sm">
                             <label for="category_id" class="col-sm-4 label-sm">Склад</label>
                             <div class="input-group col-sm-8">
-                                <select name="store_id" class="form-control input-c">
-                                    @foreach($stores as $store)
-                                        <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="w-100">
+                                    <select custom_select name="store_id" class="form-control input-c">
+                                        @foreach($stores as $store)
+                                            <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>

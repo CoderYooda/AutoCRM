@@ -3,7 +3,7 @@
     <div class="form-group">
         <label for="category_id">В категории</label>
         <div class="input-group mb-3">
-            <select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
+            <select custom_select name="category_id" disabled class="category_select form-control input-c noarrow fake-disabled" readonly>
                 @if(isset($partner))
                     <option value="{{ $partner->category()->first()->id }}">{{ $partner->category()->first()->name }}</option>
                 @elseif(isset($category))
@@ -54,7 +54,7 @@
     </div>
     <div class="form-group">
         <label>Доступ в систему</label>
-        <select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
+        <select custom_select onchange="{{ $class }}.toggleAccess(this)" name="access" class="form-control input-c">
             @if(isset($partner))
                 <option value="1" @if(isset($partner) && $partner->access) selected @endif>Разрешен</option>
                 <option value="0" @if(isset($partner) && !$partner->access) selected @endif>Запрещен</option>

@@ -196,7 +196,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3" for="discount">Статус заказа</label>
                             <div class="col-sm-9 input-group">
-                                <select name="status" class="form-control" @if(!isset($client_order)) disabled="" @endif>
+                                <select custom_select name="status" class="form-control" @if(!isset($client_order)) disabled="" @endif>
                                     @if(isset($client_order))
                                     <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
                                     <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>

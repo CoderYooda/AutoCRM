@@ -57,7 +57,7 @@
                             @endif
                         </button>
 
-                        {{--<select name="out_cashbox_id" disabled class="out_cashbox_select form-control input-c noarrow fake-disabled" readonly>--}}
+                        {{--<select custom_select name="out_cashbox_id" disabled class="out_cashbox_select form-control input-c noarrow fake-disabled" readonly>--}}
                             {{--@if(isset($moneymove) && $moneymove->out_cashbox()->first() != null)--}}
                                 {{--<option value="{{ $moneymove->out_cashbox()->first()->id }}">{{ $moneymove->out_cashbox()->first()->name }}</option>--}}
                             {{--@else--}}

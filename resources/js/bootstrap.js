@@ -62,7 +62,7 @@ window.togglePreloader = function togglePreloader(element, status) {
 window.axios.interceptors.response.use(function (response) {
     document.body.classList.remove('loading');
     window.isXHRloading = false;
-    window.unsetPreloader();
+    // window.unsetPreloader();
     if(response.data.event){
         let event = new CustomEvent(response.data.event, {
             'detail' : {
@@ -79,7 +79,7 @@ window.axios.interceptors.response.use(function (response) {
     }
     return response;
 }, function (error) {
-    window.unsetPreloader();
+    // window.unsetPreloader();
     if (error.response.status === 401) {
         window.location.href = "/login";
     }
@@ -106,12 +106,13 @@ window.axios.interceptors.response.use(function (response) {
 
 });
 
-window.unsetPreloader = function(){
-    let blocks = document.getElementsByClassName('preloader-block');
-    [].forEach.call(blocks, function(elem){
-        window.togglePreloader(elem, false);
-    });
-};
+// window.unsetPreloader = function(){
+//     let blocks = document.getElementsByClassName('preloader-block');
+//     [].forEach.call(blocks, function(elem){
+//         console.log(elem);
+//         elem.classList.remove('preloader-block');
+//     });
+// };
 
 
 window.ih =  window.innerHeight;

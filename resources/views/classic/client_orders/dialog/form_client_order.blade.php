@@ -218,7 +218,7 @@
                     <div class="form-group row row-sm">
                         <label class="col-sm-3" for="discount">Статус заказа</label>
                         <div class="col-sm-9 input-group">
-                            <select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
+                            <select custom_select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
                                 <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
                                 <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
                                 <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>

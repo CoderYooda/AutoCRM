@@ -193,7 +193,8 @@ class Helper{
         return txt.value;
     }
 
-    initPageMethods(){
+    initPageMethods(infoClass = null, resp = null){
+
         let classNameStr = window.location.pathname.substring(1);
         classNameStr = classNameStr.split('/');
 
@@ -210,14 +211,14 @@ class Helper{
             if(!window[className]) {
                 //Теперь ошибки будет показывать, проще ориентироваться
                 // try {
-                    window[className] = new pages[className + 'Page']();
+                    window[className] = new pages[className + 'Page'](resp);
                 // } catch (err) {
                 //     window.helper.log(className + " - Такого конструктора не существует: " + err.name + "(" + err.message + ")");
                 // }
             } else {
                 // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
                 try {
-                    window[className].linked();
+                    window[className].linked(resp);
                 } catch (err) {
                     console.warn(err);
                 }

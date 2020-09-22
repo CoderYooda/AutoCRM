@@ -41,7 +41,7 @@
 
             <div class="form-group">
                 <label>Вид статьи</label>
-                <select name="dds_types_id" class="form-control input-c">
+                <select custom_select name="dds_types_id" class="form-control input-c">
                     @foreach($ddstypes as $ddstype)
                     <option value="{{ $ddstype->id }}" @if(isset($ddsarticle) && $ddsarticle->dds_types_id == $ddstype->id) selected @endif>{{ $ddstype->name }}</option>
                     @endforeach

@@ -111,7 +111,7 @@ const ajaxRequest = new (function () {
                     li.classList.add('active');
                 }
             });
-            rebuildLinks();
+            rebuildLinks(resp);
             document.dispatchEvent(new Event('ajaxLoaded', {bubbles: true}));
             removePreloaders();
             window.isXHRloading = false;
@@ -159,7 +159,7 @@ const ajaxRequest = new (function () {
         }
     }
 
-    function init () {
+    function init (resp = null) {
         oPageInfo.title = document.title;
         history.replaceState(oPageInfo, oPageInfo.title, oPageInfo.url);
         for (var oLink, nIdx = 0, nLen = document.links.length; nIdx < nLen; document.links[nIdx++].onclick = processLink);
@@ -168,7 +168,7 @@ const ajaxRequest = new (function () {
         //     partner.init();
         // }
 
-        window.helper.initPageMethods(oPageInfo.class);
+        window.helper.initPageMethods(oPageInfo.class, resp);
 
 
         //window.helper.log('Ссылки переработаны');
