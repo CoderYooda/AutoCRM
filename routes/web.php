@@ -257,6 +257,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
         Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 
+        #Выплаты зарплат
+        Route::get('/salarypayments', 'SalaryPayments@index')->name('SalaryPaymentsIndex');// Строгое название
+
         #Сервисы
         Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
         Route::post('/services/{service}/save', 'ServiceController@save')->name('ServiceSave');

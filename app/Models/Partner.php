@@ -214,39 +214,68 @@ class Partner extends Model
 
     }
 
-    public function getSalaryToday(){
+    public function getSalary($date){
+
+        $date = Carbon::parse($date);
 
         $summ = 0;
+        $salary_data = [];
 
         foreach($this->salarySchemas as $setting){
             switch ($setting->template){
                 case 'percent_from_shipments':
                     $pfs_summ = self::calculatePFS([
-                        Carbon::now()->format('Y-m-d') . ' 00:00:00',
-                        Carbon::now()->format('Y-m-d') . ' 23:59:59'
+                        $date->format('Y-m-d') . ' 00:00:00',
+                        $date->format('Y-m-d') . ' 23:59:59'
                     ]);
 
-                    $summ += $pfs_summ / 100 * $setting->pivot->value;
-                    break;
-                case 'fixed':
-                    $summ = $setting->isPositive ? $summ + $setting->pivot->value : $summ - $setting->pivot->value;
+                    $pre_summ = $pfs_summ / 100 * $setting->pivot->value;
+
+                    $summ += $pre_summ;
+
+                    $salary_data[] = [
+                        'company_id' => $this->company_id,
+                        'partner_id' => $this->id,
+                        'date' => Carbon::now(),
+                        'summ' => $pre_summ,
+                        'comment' => 'awdawd'
+                    ];
+
                     break;
                 case 'percent':
                     $percent = $summ / 100 * $setting->pivot->value;
-                    $setting->isPositive ? $summ += $percent : $summ -= $percent;
+
+                    $pre_summ = $setting->isPositive ? $percent : -$percent;
+                    $summ += $pre_summ;
+                    $salary_data[] = [
+                        'company_id' => $this->company_id,
+                        'partner_id' => $this->id,
+                        'date' => Carbon::now(),
+                        'summ' => $pre_summ,
+                        'comment' => 'awdawd'
+                    ];
                     break;
                 case 'oklad':
-                    $hours = self::calculateOkladHours(Carbon::now()->format('Y-m-d'), [
+                case 'fixed':
+                    $hours = self::calculateOkladHours($date->format('Y-m-d'), [
                         '00:00:00',
                         '23:59:59'
                     ]);
                     $summ_per_hour = $setting->pivot->value / $setting->pivot->h_m_value;
-                    $summ += $summ_per_hour * $hours;
 
+                    $pre_summ = $setting->isPositive ? $summ_per_hour * $hours : -$summ_per_hour * $hours;
+                    $summ += $pre_summ;
+                    $salary_data[] = [
+                        'company_id' => $this->company_id,
+                        'partner_id' => $this->id,
+                        'date' => Carbon::now(),
+                        'summ' => $pre_summ,
+                        'comment' => 'awdawd'
+                    ];
                     break;
             }
         }
-        return $summ;
+        return [$summ, $salary_data];
     }
 
     private function calculatePFS($period){ //Percent From Shipment Процент с продаж

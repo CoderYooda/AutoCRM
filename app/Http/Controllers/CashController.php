@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Models\SalaryPayments;
 use App\Models\Warrant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -78,5 +79,21 @@ class CashController extends Controller
             return view(get_template() . '.cashmove.elements.table_container', compact('request'));
         }
         return view(get_template() . '.cashmove.index', compact('request'));
+    }
+
+    public static function salarypaymentsTab($request)
+    {
+//        if(!Gate::allows('Смотреть денежные перемещения')){
+//            return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
+//        }
+
+        $data = SalaryPaymentsController::getSalaryPayments($request);
+
+        $data = json_encode($data->toArray());
+
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){
+            return view(get_template() . '.salaryPayments.elements.table_container', compact('request', 'data'));
+        }
+        return view(get_template() . '.salaryPayments.index', compact('request', 'data'));
     }
 }

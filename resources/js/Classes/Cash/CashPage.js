@@ -1,8 +1,11 @@
 import {Contextual, ContextualItem} from "../Contentual";
+import {Table, TableItem} from "../BBTable";
+import Page from "../Page/Page";
 
-class cashPage{
+class cashPage extends Page{
 
     constructor(){
+        super('ajax-table-salarypayments');
         console.log('страница денег инициализировано');
         this.active = true;
         this.active_tab = window.helper.findGetParameter('active_tab');
@@ -22,7 +25,7 @@ class cashPage{
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.active_tab = window.helper.findGetParameter('active_tab');
-        this.initTableData();
+        //this.initTableData();
         this.initDatesFilter();
         this.checkActive();
     }
@@ -90,6 +93,23 @@ class cashPage{
             object.prepareParams();
             object.reload();
         });
+
+        this.table = new Table({
+            container: 'salaryPayments',
+            data: this.data,
+           // class: this,
+            header: [
+                {min_with: 100, width: 100, name: 'ID'},
+                {min_with: 100, width: 'auto', name: 'Сотрудник'},
+                {min_with: 100, width: 200, name: 'Начисление'},
+                {min_with: 100, width: 200, name: 'Дата'},
+                {min_with: 100, width: 200, name: 'Коментарий'},
+            ],
+        });
+
+        //this.table
+
+
     }
 
     clearList(type, container){

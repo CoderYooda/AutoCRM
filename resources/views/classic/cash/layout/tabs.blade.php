@@ -16,6 +16,11 @@
                 <a class="ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'cashmove', 'target' => 'ajax-tab-content']) }}">Перемещения</a>
             </li>
         @endcan
+        {{--@can('Смотреть денежные перемещения')--}}
+            <li id="salarypayments-tab" data-tab="salarypayments" class="@if($request['active_tab'] == 'salarypayments') active @endif">
+                <a class="ajax-nav" href="{{ route('CashIndex', ['active_tab' => 'salarypayments', 'target' => 'ajax-tab-content']) }}">Выплаты зарплат</a>
+            </li>
+        {{--@endcan--}}
     </ul>
     <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 </div>
