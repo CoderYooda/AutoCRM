@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\Shop\UpdateAboutRequest;
+use App\Http\Requests\Shop\UpdateDeliveryRequest;
 use App\Http\Requests\Shop\UpdateRequest;
-use App\Models\Company;
+use App\Http\Requests\Shop\UpdateSettingsRequest;
+use App\Http\Requests\Shop\UpdateWarrantyRequest;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +36,9 @@ class ShopController extends Controller
 
         $view->with('class', $class);
 
+        $shop = Shop::with('phones', 'aboutImages', 'sliderImages')->where('company_id', Auth::user()->company_id)->first();
+        $view->with('shop', $shop);
+
         if (class_basename($view) == "JsonResponse") {
             return $view;
         }
@@ -41,6 +47,7 @@ class ShopController extends Controller
             return response()->json([
                 'target' => $target,
                 'page' => $page_title,
+                'shop' => $shop,
                 'html' => $view->render()
             ]);
         }
@@ -78,11 +85,70 @@ class ShopController extends Controller
         });
     }
 
+    public function updateAbout(UpdateAboutRequest $request)
+    {
+        $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
+            'about_desc' => $request->about_desc
+        ]);
+
+        if($request->delete_image_ids != null) {
+
+            foreach ($request->delete_image_ids as $image_id) {
+                $shop->removeImageById($image_id);
+            }
+        }
+
+        $files = [];
+
+        if($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $fileParams = $shop->uploadImage($file);
+
+                $image = $shop->aboutImages()->create($fileParams);
+
+                $files[] = $image;
+            }
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Настройки успешно сохранены.',
+            'files' => $files
+        ]);
+    }
+
+    public function updateDelivery(UpdateDeliveryRequest $request)
+    {
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
+            'delivery_desc' => $request->delivery_desc
+        ]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Настройки успешно сохранены.'
+        ]);
+    }
+
+    public function updateWarranty(UpdateWarrantyRequest $request)
+    {
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
+            'warranty_desc' => $request->warranty_desc
+        ]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Настройки успешно сохранены.'
+        ]);
+    }
+
+    public function updateSettings(UpdateSettingsRequest $request)
+    {
+        dd($request->all());
+    }
+
     public function contactsTab(Request $request)
     {
-        $shop = Shop::with('phones')->where('company_id', Auth::user()->company_id)->first();
-
-        return view(get_template() . '.shop.tabs.contacts', compact('request', 'shop'));
+        return view(get_template() . '.shop.tabs.contacts', compact('request'));
     }
 
     public function aboutTab(Request $request)

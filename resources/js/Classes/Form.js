@@ -1,18 +1,25 @@
 class AxForm{
 
-    send(elem, callback = null, url = null, dataset = null, config = null){
+    send(elem, callback = null, url = null, dataset = null, config = null, files = null){
+
+        window.event.preventDefault();
 
         togglePreloader(elem, true);
 
-        let object = this;
         let dialog = elem.closest(".dialog");
-        window.event.preventDefault();
         let form = elem.closest("form");
         let data = new FormData(form);
+
         if(dataset != null){
             for (const [key, value] of Object.entries(dataset)) {
                 data.append(key, value);
             }
+        }
+
+        if(files){
+            files.forEach((file, index) => {
+                data.append('files[' + index + ']', file);
+            });
         }
 
         if(url == null){
@@ -20,6 +27,9 @@ class AxForm{
         }
 
         axios({
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
             method: form.getAttribute("method"),
             url: url,
             data: data,

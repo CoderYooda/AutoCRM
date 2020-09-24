@@ -3053,15 +3053,15 @@ input:-moz-placeholder { /* Firefox 18- */
             white-space: nowrap;
             overflow: hidden;
 
+            &:hover > div {
+                background: url(/images/add_file_hover.svg);
+            }
+
             div {
                 background: url(/images/add_file.svg);
                 width: 10px;
                 height: 10px;
                 margin-left: auto;
-
-                &:hover {
-                    background: url(/images/add_file_hover.svg);
-                }
             }
         }
 
@@ -3210,7 +3210,7 @@ input:-moz-placeholder { /* Firefox 18- */
     min-height: 150px;
 }
 
-#ajax-shop-about {
+#ajax-shop-about, #ajax-shop-settings {
 
     .images {
         display: flex;
@@ -3218,11 +3218,25 @@ input:-moz-placeholder { /* Firefox 18- */
     }
 
     .image {
+
+        &.upload {
+
+            height: 125px;
+            width: 125px;
+
+            background: url(/images/upload-placeholder.svg);
+
+            &:hover {
+                background: url(/images/upload-placeholder-hover.svg);
+            }
+        }
+
         margin-right: 5px;
 
         img {
             height: 125px;
             width: 125px;
+            object-fit: contain;
         }
 
         button {
@@ -3233,4 +3247,52 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 
+}
+
+#ajax-shop-settings {
+
+    .image_main {
+
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .custom_checkbox {
+        margin-bottom: 0;
+        line-height: 0;
+        height: auto;
+        position: absolute;
+        margin-left: 10px;
+        margin-top: 4px;
+    }
+
+    .upload_file {
+        border: 1px solid #E7E8EC;
+        border-top: unset;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 10px;
+        line-height: 12px;
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.04em;
+        color: #656565;
+        height: 20px;
+        padding: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+
+        &:hover > div {
+            background: url(/images/add_file_hover.svg);
+        }
+
+        div {
+            background: url(/images/add_file.svg);
+            width: 10px;
+            height: 10px;
+            margin-left: auto;
+        }
+    }
 }

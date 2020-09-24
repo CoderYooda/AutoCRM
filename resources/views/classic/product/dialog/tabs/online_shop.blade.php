@@ -107,7 +107,7 @@
                                 @foreach(['sp_empty', 'sp_stock', 'sp_main'] as $field)
                                     <div style="margin-left: auto;">
                                         <label class="custom_checkbox mb-0">
-                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if($product && $product->stores->find($store->id)->pivot->$field) checked @endif />
+                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if($product && $product->stores->find($store->id) != null && $product->stores->find($store->id)->pivot->$field) checked @endif />
                                             <span></span>
                                         </label>
                                     </div>

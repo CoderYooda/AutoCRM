@@ -1,5 +1,6 @@
 import ymaps from 'ymaps';
 import TextEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import Croppr from "croppr";
 
 class shopPage {
 
@@ -15,9 +16,14 @@ class shopPage {
 
     linked() {
 
+        this.upload_files = [];
+        this.deleted_files = [];
+
+        this.loadCroppModal();
+
         this.active_tab = this.getCurrentActiveTab();
 
-        if(this.active_tab == 'contacts') {
+        if (this.active_tab == 'contacts') {
             this.map = null;
 
             let start_coords = document.querySelector('[name=address_coords]').value;
@@ -28,27 +34,193 @@ class shopPage {
 
             this.loadYandexMapAddress();
             this.addPhoneMask();
-        }
-        else if(this.active_tab == 'about') {
+        } else if (this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
 
             let editor_element = document.querySelector('#editor');
 
-            this.texteditor = TextEditor.create(editor_element, {
+            TextEditor.create(editor_element, {
                 language: 'ru',
-            });
-
-            this.upload_files = [];
+            })
+                .then(newEditor => {
+                    this.texteditor = newEditor
+                });
+        }
+        else if(this.active_tab == 'settings') {
+            this.addSubdomainMask();
+            this.addEmailMask();
         }
 
         this.checkActive();
+    }
+
+    loadCroppModal()
+    {
+        let myModal = document.getElementById('croppr_dialog');
+        let options = {
+            backdrop: true,
+            keyboard: true,
+        }
+
+        this.crop_modal = new bootstrap.Modal(myModal, options);
+    }
+
+    changeFile(input){
+
+        let data = new FormData();
+
+        data.append('image[]', input.files[0]);
+        data.append('refer', 'shop');
+
+        axios({
+            method: 'POST',
+            url: '/system/image_upload',
+            data: data
+        }).then((response) => {
+
+            let sizes = {
+                image_logotype: [52, 52],
+                image_header: [1920, 220],
+                image_background: [1920, 500]
+            };
+
+            let size = sizes[input.id];
+
+            document.getElementById('croppr-container').innerHTML = '';
+            let crop = document.createElement('img');
+            crop.setAttribute("src", response.data.images[0].url);
+            crop.setAttribute("id", 'croppr');
+
+            document.getElementById('croppr-container').appendChild(crop);
+
+            document.querySelector('#croppr_dialog .save').setAttribute('onclick', 'shop.cropImage(window.cropdata);');
+            document.querySelector('#croppr_dialog .reload').setAttribute('onclick', 'shop.anotherPicture();');
+
+            input.value = '';
+
+            let croppr = new Croppr('#croppr', {
+                startSize: [100, 100, '%'],
+                minSize: [size[0], size[1], 'px'],
+                aspectRatio: size[1] / size[0],
+                onCropStart: function(){
+                    // document.getElementById('crop_form_modal').classList.add('moving');
+                    // document.getElementById('modal-container').classList.add('freeze');
+                    // clearTimeout(window.freezeTimer);
+                },
+                onCropEnd: (value) => {
+                    window.cropdata = {'url':response.data.images[0].url, 'filename':response.data.images[0].filename, 'coords' : value, 'target': input.id};
+                    // document.getElementById('crop_form_modal').classList.remove('moving');
+                    // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
+                },
+                onInitialize: (instance) => {
+                    this.crop_modal.show();
+                    setTimeout(() => {
+                        let w = document.getElementsByClassName('croppr-image')[0].clientWidth;
+                        let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
+                        let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
+                        let orig_h = document.getElementsByClassName('croppr-image')[0].naturalHeight;
+
+                        croppr.options.minSize = {
+                            width: size[0] / ( orig_w / w ),
+                            height: size[1] / ( orig_h / h )
+                        }
+                        croppr.options.maxSize = {
+                            width: size[0] / ( orig_w / w ),
+                            height: size[1] / ( orig_h / h )
+                        }
+                        instance.moveTo(w/2, h/2);
+
+                        instance.resizeTo(size[0] / ( orig_w / w ), size[1] / ( orig_h / h));
+
+                    }, 100);
+
+                    window.cropdata = {
+                        'url': response.data.images[0].url,
+                        'filename': response.data.images[0].filename,
+                        'coords': instance.getValue(),
+                        'target': input.id
+                    };
+                }
+            });
+
+            // $('#pick-button').hide();
+            // $('#save-button').show();
+            // $('#another-button').show();
+
+        }).catch(function(response){
+            dd(response);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+
+    }
+
+    cropImage(cropdata){
+        axios({
+            method: 'POST',
+            url: '/system/crop_image',
+            data: cropdata
+        }).then(response => {
+
+            let file = response.data.file;
+
+            let file_element = document.querySelector('[name="' + window.cropdata.target + '"]');
+            let image_element = file_element.closest('div').querySelector('.image_main');
+
+            image_element.src = file.image_path;
+            file_element.value = file.id;
+
+            this.crop_modal.hide();
+
+        }).catch(response => {
+            dd(response);
+        }).finally(() => {
+            window.isXHRloading = false;
+        });
+    }
+
+    addEmailMask()
+    {
+        let email_elements = document.querySelectorAll('[type="email"]');
+
+        //TODO добавить email маску
+
+        // email_elements.forEach(element => {
+        //     IMask(element, {
+        //             mask: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        //         }
+        //     );
+        // });
+    }
+
+    addSubdomainMask()
+    {
+        let element = document.querySelector('[name="subdomain"]');
+
+        IMask(element, {
+                mask: 'NAME.bbcrm.ru',
+                prepare: function (str) {
+                    return str.toLowerCase();
+                },
+                lazy: false,
+                blocks: {
+                    NAME: {
+                        mask: /^[0-9a-zA-Z]+$/
+                    }
+                }
+            }
+        );
+    }
+
+    selectFiles(element) {
+        element.querySelector('input').click();
     }
 
     uploadFiles(element) {
 
         let count_images = document.querySelectorAll('image').length;
 
-        if(count_images + element.files.length > 9) {
-            return notification.notify( 'error', 'Количество изображений не может быть больше 9.');
+        if (count_images + element.files.length > 9) {
+            return notification.notify('error', 'Количество изображений не может быть больше 9.');
         }
 
         for (let i = 0; i < element.files.length; ++i) {
@@ -56,12 +228,14 @@ class shopPage {
             let file = element.files[i];
 
             //Если это изображение уже было выбрано, то пропускаем
-            if(document.querySelector('.image[data-image="' + file.name + '"]')) continue;
+            if (document.querySelector('.image[data-image="' + file.name + '"]')) continue;
 
             let reader = new FileReader();
             reader.onload = (e) => {
 
                 let copy_element = document.querySelector('.image.copy').cloneNode(true);
+
+                copy_element.querySelector('input').name = 'image_url[' + file.name + ']';
 
                 copy_element.querySelector('img').src = e.target.result;
 
@@ -86,13 +260,22 @@ class shopPage {
     removeImage(element) {
         let target_element = element.closest('.image');
 
+        let is_local = false;
+
         this.upload_files.forEach((file, index) => {
 
-            if(file.name == target_element.dataset.image) {
+            if (file.name == target_element.dataset.image) {
                 this.upload_files.splice(index, 1);
-                target_element.remove();
+
+                is_local = true;
             }
         });
+
+        if(!is_local) {
+            this.deleted_files.push(element.dataset.id);
+        }
+
+        target_element.remove();
     }
 
     loadYandexMapAddress() {
@@ -146,7 +329,7 @@ class shopPage {
                     this.createPlacemark(maps, this.address_coords);
                 })
 
-                if(this.address_coords) {
+                if (this.address_coords) {
                     this.createPlacemark(maps, this.address_coords);
                 }
 
@@ -156,18 +339,18 @@ class shopPage {
 
     createPlacemark(maps, position) {
 
-        if(this.address_placemark != null) this.map.geoObjects.remove(this.address_placemark);
+        if (this.address_placemark != null) this.map.geoObjects.remove(this.address_placemark);
 
         document.querySelector('[name=address_coords]').value = this.address_coords;
 
         this.address_placemark = new maps.Placemark(position, {
-                // iconContent: this.address_text,
-                balloonContent: this.address_text
+            // iconContent: this.address_text,
+            balloonContent: this.address_text
         }, {
-                preset: "islands#redDotIconWithCaption",
-                // Балун будем открывать и закрывать кликом по иконке метки.
-                hideIconOnBalloonOpen: false
-            });
+            preset: "islands#redDotIconWithCaption",
+            // Балун будем открывать и закрывать кликом по иконке метки.
+            hideIconOnBalloonOpen: false
+        });
 
         this.map.geoObjects.add(this.address_placemark);
     }
@@ -179,11 +362,10 @@ class shopPage {
         let node = document.querySelector('.phone').cloneNode(true);
 
         node.querySelectorAll('input').forEach((input, index) => {
-            if(index < 2) {
+            if (index < 2) {
                 input.name = 'phones[' + count + '][' + (index == 0 ? 'number' : 'desc') + ']';
                 input.value = '';
-            }
-            else {
+            } else {
                 input.value = count;
                 input.checked = false;
             }
@@ -205,11 +387,10 @@ class shopPage {
         let node = document.querySelector('.email').cloneNode(true);
 
         node.querySelectorAll('input').forEach((input, index) => {
-            if(index < 2) {
+            if (index < 2) {
                 input.name = 'emails[' + count + '][' + (index == 0 ? 'email' : 'desc') + ']';
                 input.value = '';
-            }
-            else {
+            } else {
                 input.value = count;
                 input.checked = false;
             }
@@ -320,10 +501,11 @@ class shopPage {
         return true;
     }
 
-    checkActive(){
+    checkActive() {
+
         let className = window.location.pathname.substring(1);
         let link = document.getElementById('shop_link');
-        if(className === 'shop'){
+        if (className === 'shop') {
             link.classList.add('active');
             this.active = true;
         } else {
@@ -332,17 +514,110 @@ class shopPage {
         }
     }
 
-    save(element) {
+    saveContacts(element) {
+
         axform.send(element, response => {
-            //
+            if (response.status == 200) {
+                //
+            }
         });
     }
 
-    getCurrentActiveTab(){
-        var active_tab = window.helper.findGetParameter('active_tab');
+    saveSettings(element) {
 
-        if(active_tab == null || active_tab == 'null'){
-            active_tab = 'store';
+        let dataset = {
+            about_desc: this.texteditor.getData(),
+            delete_image_ids: this.deleted_files
+        };
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+
+                this.replaceUploadedImages(response.data.files);
+
+                this.deleted_files = [];
+                this.upload_files = [];
+            }
+        }, null, dataset, null, this.upload_files);
+    }
+
+    saveAbout(element) {
+
+        let dataset = {
+            about_desc: this.texteditor.getData(),
+            delete_image_ids: this.deleted_files
+        };
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+
+                this.replaceUploadedImages(response.data.files);
+
+                this.deleted_files = [];
+                this.upload_files = [];
+            }
+        }, null, dataset, null, this.upload_files);
+    }
+
+    saveDelivery(element) {
+
+        let dataset = {
+            delivery_desc: this.texteditor.getData(),
+        };
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        }, null, dataset);
+    }
+
+    saveWarranty(element) {
+
+        let dataset = {
+            warranty_desc: this.texteditor.getData(),
+        };
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        }, null, dataset);
+    }
+
+    replaceUploadedImages(files) {
+
+        let image_elements = document.querySelectorAll('.image');
+
+        image_elements.forEach(element => {
+           if(element.dataset.image != null) {
+               element.remove();
+           }
+        });
+
+        let list_element = document.querySelector('.images');
+
+        Object.values(files).forEach(file => {
+
+            let copy_element = document.querySelector('.image.copy').cloneNode(true);
+
+            copy_element.querySelector('img').src = file.image_path;
+
+            copy_element.classList.remove('d-none');
+            copy_element.classList.remove('copy');
+
+            copy_element.dataset.id = file.id;
+
+            list_element.append(copy_element);
+        });
+    }
+
+    getCurrentActiveTab() {
+
+        let active_tab = window.helper.findGetParameter('active_tab');
+
+        if (active_tab == null || active_tab == 'null') {
+            active_tab = 'contacts';
         }
         return active_tab;
     }

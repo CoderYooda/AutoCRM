@@ -11,16 +11,6 @@ use Intervention\Image\Facades\Image as ImageInt;
 
 trait Imageable
 {
-    public function image()
-    {
-        return $this->morphOne(Image::class, 'imageable');
-    }
-
-    public function getImagePathAttribute()
-    {
-        return $this->image != null ? Storage::url($this->image->url) : asset('/images/product-placeholder.svg');
-    }
-
     public function uploadImage(UploadedFile $uploadedFile, $thumb = false, $watermark = false)
     {
         $directory = 'public/images';
@@ -28,8 +18,6 @@ trait Imageable
         $path = $uploadedFile->storePublicly($directory);
 
         $filename = explode('/', $path)[2];
-
-        $this->removeImage();
 
         if ($thumb) {
 
@@ -41,26 +29,45 @@ trait Imageable
             $thumb_img->save(storage_path('/app/public/images/') . 'thumb_' . $filename);
         }
 
-        return $this->image()->create([
+        return [
             'mime' => $uploadedFile->getClientMimeType(),
             'size' => $uploadedFile->getSize(),
             'filename' => $filename,
             'url' => $path,
             'thumb_url' => $thumb ? ($directory . '/thumb_' . $filename) : '',
             'hash' => md5(str_random(22)),
-            'uploader_id' => Auth::id(),
-        ]);
+            'uploader_id' => Auth::id()
+        ];
     }
 
     public function removeImage()
     {
         //TODO CHECK
-        if(!$this->image()->exists()){
-            return;
-        }
-        Storage::delete($this->image->url);
-        Storage::delete($this->image->thumb_url);
 
-        $this->image()->delete();
+        Storage::delete($this->image->url);
+        if($this->image->thumb_url) Storage::delete($this->image->thumb_url);
+
+        $this->image->delete();
+    }
+
+    public function removeImageById($image_id)
+    {
+        $image = Image::find($image_id);
+
+        Storage::delete($image->url);
+        if($image->thumb_url) Storage::delete($image->thumb_url);
+
+        $image->delete();
+    }
+
+    public function removeImages()
+    {
+        foreach ($this->images as $image) {
+
+            Storage::delete($image->url);
+            if($image->thumb_url) Storage::delete($image->thumb_url);
+        }
+
+        $this->images()->delete();
     }
 }

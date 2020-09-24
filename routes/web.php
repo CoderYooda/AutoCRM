@@ -294,6 +294,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         Route::get('/shop', 'ShopController@index')->name('ShopIndex');
         Route::post('/shop', 'ShopController@update')->name('ShopUpdate');
+        Route::post('/shop/about', 'ShopController@updateAbout')->name('ShopUpdateAbout');
+        Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
+        Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
+        Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
 
         Route::group(['prefix' => 'ws'], function () {
             Route::get('/check-auth', function () {

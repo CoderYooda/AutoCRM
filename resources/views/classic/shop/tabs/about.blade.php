@@ -10,18 +10,22 @@
 
         <div class="box w-100 m-15 p-15">
 
-            <div class="form-group">
-                <label>Описание компании</label>
-                <div id="editor"></div>
-            </div>
+            <form action="{{ route('ShopUpdateAbout') }}" method="POST">
 
-            <div class="form-group">
+                <div class="form-group">
+                    <label>Описание компании</label>
+                    <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
+                </div>
 
-                <label>Фотографии</label>
+                <div class="form-group">
 
-                <div class="d-flex">
+                    <label>Фотографии</label>
 
-                    <div class="flex-3 images">
+                    <div class="images">
+
+                        <div class="image upload pointer" onclick="{{ $class }}.selectFiles(this);">
+                            <input type="file" class="d-none" onchange="{{ $class }}.uploadFiles(this);" multiple accept="image/jpeg,image/png,image/gif">
+                        </div>
 
                         <div class="image relative copy d-none">
 
@@ -32,24 +36,29 @@
                             <img src=""  alt=""/>
                         </div>
 
-                    </div>
+                        @if($shop)
+                            @foreach($shop->aboutImages as $image)
 
-                    <div class="flex-1 box p-5 ml-10 text-center">
+                                <div class="image relative">
 
-                        <div>Максимальное кол-во изображений: 9.</div>
-                        <div>Доступные форматы: jpeg, png, gif.</div>
+                                    <button data-id="{{ $image->id }}" type="button" class="right-remove" onclick="{{ $class }}.removeImage(this);">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
 
-                        <input type="file" name="images" onchange="{{ $class }}.uploadFiles(this);" multiple accept="image/jpeg,image/png,image/gif">
+                                    <img src="{{ $image->image_path }}"  alt="" />
+                                </div>
 
+                            @endforeach
+                        @endif
                     </div>
 
                 </div>
 
-            </div>
+                <div>
+                    <button type="button" onclick="{{ $class }}.saveAbout(this);" class="button primary">Сохранить</button>
+                </div>
 
-            <div>
-                <button type="button" class="button primary float-right">Сохранить</button>
-            </div>
+            </form>
 
         </div>
 
