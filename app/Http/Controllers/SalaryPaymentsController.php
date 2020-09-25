@@ -39,6 +39,11 @@ class SalaryPaymentsController extends Controller
 //
 //    }
 
+    public function tableData(Request $request)
+    {
+        return self::getSalaryPayments($request);
+    }
+
     public static function createPayment($data)
     {
         $payment = SalaryPayments::insert($data);

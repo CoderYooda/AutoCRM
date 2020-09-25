@@ -1,5 +1,43 @@
 .bbtable-container{
     overflow: hidden;
+    position: relative;
+    height: 100%;
+    background: #fff;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    .paginator {
+        position: absolute;
+        bottom: 0;
+        height: 30px;
+        width: 100%;
+        z-index: 99999;
+        background: #fff;
+        border-top: 1px solid #E7E8EC;
+        padding: 0px 2px;
+        button{
+            height: 22px !important;
+            line-height: 22px !important;
+            padding: 0px 6px;
+            margin: 4px 2px;
+            &.active{
+                background: #2d76a8;
+                border: 1px solid #185f8f;
+                color: #fff;
+            }
+            &.disabled{
+                opacity: 0.5;
+            }
+        }
+
+    }
+    .hover{
+        position: absolute;
+        width: 100%;
+        height: 29px;
+        z-index: 9000;
+        pointer-events: none;
+        background: #2d76a8;
+        opacity: 0.2;
+    }
     .bbtable-header{
         display: flex;
         height: 40px;
@@ -18,6 +56,9 @@
                 height: 32px;
                 line-height: 32px;
                 padding-right: 32px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             &.checkbox{
                 width: 30px;
@@ -48,39 +89,47 @@
         }
     }
     .bbtable-body {
-        border-top: 1px solid #eee;
+        border-top: 1px solid #E7E8EC;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         vertical-align: bottom;
         font-weight: 500;
         overflow-y: scroll;
-        margin-right: -16px;
-
+        margin-right: -17px;
+        height: 0px;
         .body-elem {
             height: 29px;
             line-height: 29px;
             display: flex;
             cursor: pointer;
             position: relative;
+            &:hover::before{
+                content: '';
+                position: absolute;
+            }
             &.selected{
-                background: #848484 !important;
+                background: #5181b8 !important;
                 color: #fff;
                 &::before{
                     content: "";
-                    border-top: 1px solid #ffffff;
-                    border-bottom: 2px solid #fff;
+                    border-top: none;
+                    border-bottom: 1px solid #2d76a8;
                     position: absolute;
                     right: 0;
                     bottom: 0;
                     left: 0;
                     z-index: 3;
                     height: 100%;
+                    pointer-events: none;
+                }
+                &::after{
+                    border-top: none;
                 }
             }
-            &::after{
+            &:not(:last-child)::after{
                 content: '';
-                border-top: 1px solid #e6e6e6;
+                border-top: 1px solid #E7E8EC;
                 position: absolute;
                 right: 0;
                 bottom: 0;
@@ -98,6 +147,33 @@
                     flex: unset;
                     text-align: center;
                     padding: 0px 7px;
+                    input{
+                        position: absolute;
+                        z-index: -1;
+                        opacity: 0;
+                    }
+                    label{
+                        padding: 0;
+                        margin: 0;
+                        height: 100%;
+                        display: flex;
+                        text-align: center;
+                    }
+                    input+label{
+                        display: inline-flex;
+                        align-items: center;
+                        user-select: none;
+                    }
+                    input+label::before {
+                        content: "";
+                        width: 15px;
+                        height: 15px;
+                        border: 1px solid #E7E8EC;
+                    }
+                    input:checked+label::before {
+                        background: #5181B8 url(/images/icons/check.svg) center no-repeat;
+                        border: none;
+                    }
                 }
                 .title{
                     white-space: nowrap;

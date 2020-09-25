@@ -259,6 +259,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Выплаты зарплат
         Route::get('/salarypayments', 'SalaryPayments@index')->name('SalaryPaymentsIndex');// Строгое название
+        Route::post('/salarypayments/tabledata', 'SalaryPaymentsController@tableData')->name('SalaryPaymentsTableData');
 
         #Сервисы
         Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');

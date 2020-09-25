@@ -97,18 +97,16 @@ class cashPage extends Page{
         this.table = new Table({
             container: 'salaryPayments',
             data: this.data,
-           // class: this,
+            url: '/salarypayments/tabledata',
+            start_sort: 'DESC',
             header: [
-                {min_with: 100, width: 100, name: 'ID'},
-                {min_with: 100, width: 'auto', name: 'Сотрудник'},
-                {min_with: 100, width: 200, name: 'Начисление'},
-                {min_with: 100, width: 200, name: 'Дата'},
-                {min_with: 100, width: 200, name: 'Коментарий'},
+                {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 'auto', name: 'Сотрудник', table_name: 'name'},
+                {min_with: 100, width: 200, name: 'Начисление', table_name: 'summ'},
+                {min_with: 100, width: 200, name: 'Дата', table_name: 'date'},
+                {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
             ],
         });
-
-        //this.table
-
 
     }
 
