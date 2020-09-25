@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
 {
-    use Phoneable, Emailable, Imageable;
+    use Phoneable, Imageable;
 
     protected $guarded = [];
 
@@ -21,7 +21,7 @@ class Shop extends Model
 
     public function sliderImages()
     {
-        return $this->belongsToMany(Image::class, 'shop_images_slider');
+        return $this->belongsToMany(Image::class, 'shop_images_slider')->withPivot('target_url');
     }
 
     public function logotypeImage()
@@ -37,5 +37,15 @@ class Shop extends Model
     public function backgroundImage()
     {
         return $this->hasOne(Image::class, 'id', 'image_background_id');
+    }
+
+    public function contactEmails()
+    {
+        return $this->belongsToMany(Email::class, 'shop_emails_contact');
+    }
+
+    public function orderEmails()
+    {
+        return $this->belongsToMany(Email::class, 'shop_emails_order');
     }
 }

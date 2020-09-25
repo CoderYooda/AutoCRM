@@ -2,7 +2,9 @@
 
 namespace App\Rules;
 
+use App\Models\Shop;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class SubdomainRule implements Rule
 {
@@ -10,11 +12,13 @@ class SubdomainRule implements Rule
     {
         $params = explode('.', $value);
 
-        $params[0] = '';
+        $subdomain = current($params);
+
+        return !Shop::where('subdomain', $subdomain)->where('company_id', '!=', Auth::user()->company_id)->exists();
     }
 
     public function message()
     {
-        return 'The validation error message.';
+        return 'Данное поддоменное имя уже занято.';
     }
 }

@@ -14,6 +14,8 @@ class UpdateAboutRequest extends FormRequest
             $this['delete_image_ids'] = explode(',', $this['delete_image_ids']);
         }
 
+        $this['image_ids'] = explode(',', $this['image_ids']);
+
         return true;
     }
 
@@ -21,8 +23,8 @@ class UpdateAboutRequest extends FormRequest
     {
         return [
             'about_desc' => ['required', 'string', 'max:255'],
-            'images' => ['array'],
-            'images.*' => ['file', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'image_ids' => ['array'],
+            'image_ids.*' => ['exists:images,id'],
             'delete_image_ids' => ['nullable', 'array'],
             'delete_image_ids.*' => ['integer', 'exists:images,id']
         ];

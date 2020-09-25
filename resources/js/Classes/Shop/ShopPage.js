@@ -163,7 +163,7 @@ class shopPage {
 
             let file = response.data.file;
 
-            let file_element = document.querySelector('[name="' + window.cropdata.target + '"]');
+            let file_element = document.querySelector('[name="' + window.cropdata.target + '_id"]');
             let image_element = file_element.closest('div').querySelector('.image_main');
 
             image_element.src = file.image_path;
@@ -227,34 +227,82 @@ class shopPage {
 
             let file = element.files[i];
 
-            //Если это изображение уже было выбрано, то пропускаем
-            if (document.querySelector('.image[data-image="' + file.name + '"]')) continue;
+            let data = new FormData();
+            data.append('image[]', file);
 
-            let reader = new FileReader();
-            reader.onload = (e) => {
+            axios({
+                method: 'POST',
+                url: '/system/image_upload',
+                data: data
+            }).then(response => {
+
+                let image = response.data.images[0];
 
                 let copy_element = document.querySelector('.image.copy').cloneNode(true);
 
-                copy_element.querySelector('input').name = 'image_url[' + file.name + ']';
+                copy_element.querySelector('img').src = image.url;
 
-                copy_element.querySelector('img').src = e.target.result;
+                copy_element.querySelector('button').dataset.id = image.id;
 
                 copy_element.classList.remove('d-none');
                 copy_element.classList.remove('copy');
 
-                copy_element.dataset.image = file.name;
-
                 let list_element = document.querySelector('.images');
 
                 list_element.append(copy_element);
-            }
 
-            reader.readAsDataURL(file);
+            }).catch(function(response){
+                dd(response);
+            }).finally(function () {
 
-            this.upload_files.push(file);
+            });
+
+
+
+            // //Если это изображение уже было выбрано, то пропускаем
+            // if (document.querySelector('.image[data-image="' + file.name + '"]')) continue;
+            //
+            // let reader = new FileReader();
+            // reader.onload = (e) => {
+            //
+            //     let copy_element = document.querySelector('.image.copy').cloneNode(true);
+            //
+            //     copy_element.querySelector('img').src = e.target.result;
+            //
+            //     copy_element.classList.remove('d-none');
+            //     copy_element.classList.remove('copy');
+            //
+            //     copy_element.dataset.image = file.name;
+            //
+            //     let list_element = document.querySelector('.images');
+            //
+            //     list_element.append(copy_element);
+            //
+            //     this.upload_files.push(file);
+            //
+            //     this.freshInputIndexes();
+            // }
+            //
+            // reader.readAsDataURL(file);
         }
 
         element.value = '';
+    }
+
+    freshInputIndexes()
+    {
+        let image_elements = document.querySelectorAll('.image');
+
+        image_elements.forEach((element, index) => {
+
+            if(index > 1) {
+
+                element.querySelector('input').name = 'image_url[' + (index - 2)  + ']';
+                element.querySelector('input').dataset.error = 'image_url[' + (index - 2)  + ']';
+
+                element.querySelector('img').dataset.index = (index - 2);
+            }
+        });
     }
 
     removeImage(element) {
@@ -353,6 +401,12 @@ class shopPage {
         });
 
         this.map.geoObjects.add(this.address_placemark);
+    }
+
+    toggleSupplierOffers(element) {
+        let select_element = element.closest('.form-group').querySelector('.select_supplier');
+
+        select_element.classList.toggle('d-none');
     }
 
     addPhone(element) {
@@ -525,38 +579,61 @@ class shopPage {
 
     saveSettings(element) {
 
-        let dataset = {
-            about_desc: this.texteditor.getData(),
-            delete_image_ids: this.deleted_files
+        let image_ids = [];
+        let image_urls = [];
+
+        let image_elements = document.querySelectorAll('.image');
+
+        image_elements.forEach((element, index) => {
+
+            if(index > 1) {
+
+                let image_id = element.querySelector('button').dataset.id;
+                let target_url = element.querySelector('input').value;
+
+                image_ids.push(image_id);
+                image_urls.push(target_url);
+            }
+        });
+
+        let data = {
+            image_ids: image_ids,
+            image_urls: image_urls
         };
 
         axform.send(element, response => {
             if (response.status == 200) {
-
-                this.replaceUploadedImages(response.data.files);
-
-                this.deleted_files = [];
-                this.upload_files = [];
+                //
             }
-        }, null, dataset, null, this.upload_files);
+        }, null, data);
     }
 
     saveAbout(element) {
 
-        let dataset = {
-            about_desc: this.texteditor.getData(),
-            delete_image_ids: this.deleted_files
+        let image_ids = [];
+
+        let image_elements = document.querySelectorAll('.image');
+
+        image_elements.forEach((element, index) => {
+
+            if(index > 1) {
+
+                let image_id = element.querySelector('button').dataset.id;
+
+                image_ids.push(image_id);
+            }
+        });
+
+        let data = {
+            image_ids: image_ids,
+            about_desc: this.texteditor.getData()
         };
 
         axform.send(element, response => {
             if (response.status == 200) {
-
-                this.replaceUploadedImages(response.data.files);
-
-                this.deleted_files = [];
-                this.upload_files = [];
+                //
             }
-        }, null, dataset, null, this.upload_files);
+        }, null, data);
     }
 
     saveDelivery(element) {
@@ -583,33 +660,6 @@ class shopPage {
                 //
             }
         }, null, dataset);
-    }
-
-    replaceUploadedImages(files) {
-
-        let image_elements = document.querySelectorAll('.image');
-
-        image_elements.forEach(element => {
-           if(element.dataset.image != null) {
-               element.remove();
-           }
-        });
-
-        let list_element = document.querySelector('.images');
-
-        Object.values(files).forEach(file => {
-
-            let copy_element = document.querySelector('.image.copy').cloneNode(true);
-
-            copy_element.querySelector('img').src = file.image_path;
-
-            copy_element.classList.remove('d-none');
-            copy_element.classList.remove('copy');
-
-            copy_element.dataset.id = file.id;
-
-            list_element.append(copy_element);
-        });
     }
 
     getCurrentActiveTab() {

@@ -89,8 +89,6 @@ class ImageController extends Controller
 
     public function cropImage(Request $request)
     {
-        $user = Auth::user();
-
         $img = ImageInt::make(public_path($request['url']));
 
         $img->crop($request['coords']['width'], $request['coords']['height'], $request['coords']['x'], $request['coords']['y']);

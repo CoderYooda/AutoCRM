@@ -17,6 +17,16 @@
                     <div id="editor">{!! $shop->warranty_desc ?? '' !!}</div>
                 </div>
 
+                <div class="form-group">
+                    <label>SEO Заголовок</label>
+                    <textarea name="seo_warranty_title" class="form-control resize-none" rows="4" placeholder="Заголовок">{{ $shop->seo_warranty_title }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>SEO Описание</label>
+                    <textarea name="seo_warranty_desc" class="form-control resize-none" rows="4" placeholder="Описание">{{ $shop->seo_warranty_desc }}</textarea>
+                </div>
+
                 <div>
                     <button type="button" onclick="{{ $class }}.saveWarranty(this);" class="button primary">Сохранить</button>
                 </div>

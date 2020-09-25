@@ -114,14 +114,22 @@ class AxForm{
                         }
                         iteration++;
                     });
+
+                    console.log(error_prepared);
+
                     try{
                         var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
                     } catch (e) {
-                        var el = null
+                        var el = null;
                     }
 
                     if(el === null){
-                        var el = elem.closest('form').querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+
+                        var el = elem.closest('form').querySelector('[data-error="' + error_prepared + '"]');
+
+                        if(el == null) {
+                            var el = elem.closest('form').querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+                        }
                     }
 
                     if(el !== null && el.closest(".tab-pane")){

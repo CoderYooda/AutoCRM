@@ -45,7 +45,7 @@
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>
 
-                                    <img src="{{ $image->image_path }}"  alt="" />
+                                    <img src="{{ $image->url }}"  alt="" />
                                 </div>
 
                             @endforeach
