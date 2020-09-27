@@ -53,7 +53,7 @@ class SalaryPaymentsController extends Controller
     public static function getSalaryPayments($request)
     {
 
-        $size = 30;
+        $size = 5;
         if(isset($request['size'])){
             $size = (int)$request['size'];
         }

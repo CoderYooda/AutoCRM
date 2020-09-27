@@ -28,6 +28,11 @@ class cashPage extends Page{
         //this.initTableData();
         this.initDatesFilter();
         this.checkActive();
+
+        let container = 'ajax-table-' + this.active_tab;
+
+        this.readData(container);
+        this.table.draw(this.active_tab, this.data);
     }
 
     removePartner(id, type){
@@ -72,7 +77,7 @@ class cashPage extends Page{
 
     init(){
         let object = this;
-        object.linked();
+
 
         object.initSearch();
         // document.addEventListener('ajaxLoaded', function(e){
@@ -99,6 +104,9 @@ class cashPage extends Page{
             data: this.data,
             url: '/salarypayments/tabledata',
             start_sort: 'DESC',
+            row_dblclick: function(id){
+              alert(id);
+            },
             header: [
                 {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
                 {min_with: 100, width: 'auto', name: 'Сотрудник', table_name: 'name'},
@@ -107,7 +115,7 @@ class cashPage extends Page{
                 {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
             ],
         });
-
+        object.linked();
     }
 
     clearList(type, container){

@@ -2,21 +2,11 @@ class Table {
 
     constructor(options){
         this.elem = document.getElementById(options.container);
-
-
         this.data = options.data;
         this.url = options.url;
         this.header = options.header;
-        this.isSelectable = true;
-        this.draw();
-        this.bodyContainer;
-        this.last_selected = null;
-        this.start_sort = options.start_sort;
-
-
-
         this.sorters = {};
-
+        this.start_sort = options.start_sort;
         this.header.forEach((elem) =>{
             this.sorters[elem.table_name] = {
                 field: elem.table_name,
@@ -24,13 +14,30 @@ class Table {
                 active: false
             }
         });
+        this.row_dblclick = options.row_dblclick;
+
+        this.isSelectable = true;
+        this.bodyContainer;
+        this.last_selected = null;
+
+
+
+
+
 
         this.request = {};
         //dd(this.data);
     }
 
-    draw(){
+    draw(elem = null, data = null){
+        if(elem){
+            this.elem = document.getElementById(elem);
+        }
+        if(data){
+            this.data = data;
+        }
         if(this.elem){
+            dd('Отрисовали таблицу');
             this.elem.innerHTML = '';
             this.elem.style.height = '100%';
             this.total_height = this.elem.clientHeight;
@@ -92,6 +99,10 @@ class Table {
                 this.selectItem(bodyElem.getAttribute('data-index'));
             });
 
+            bodyElem.addEventListener('dblclick', (e) => {
+                this.row_dblclick(elem.id);
+            });
+
             bodyElem.addEventListener('mouseenter', (e) => {
                 this.moveHoverTo(bodyElem.getAttribute('data-index'));
             });
@@ -103,9 +114,21 @@ class Table {
                     let checkbox = document.createElement('input');
                     checkbox.setAttribute('type', 'checkbox');
                     checkbox.setAttribute('id', 'check_' + elem.id);
+                    checkbox.setAttribute('data-id', elem.id);
+                    checkbox.setAttribute('data-check_index', index);
                     checkbox.setAttribute('name', 'check_' + elem.id);
+
+                    checkbox.addEventListener('change', (e) => {
+                        index = parseInt(checkbox.getAttribute('data-check_index'));
+                        if(!checkbox.checked){
+                            this.markAsUnselect(index)
+                        } else {
+                            this.markAsSelect(index);
+                        }
+                    });
+
                     let label = document.createElement('label');
-                    label.setAttribute('for', 'check_' + elem.id)
+                    label.setAttribute('for', 'check_' + elem.id);
                     cell.appendChild(checkbox);
                     cell.appendChild(label);
                 bodyElem.appendChild(cell);
@@ -139,12 +162,13 @@ class Table {
 
     selectItem(index){
         index = parseInt(index);
+        let row = this.bodyContainer.querySelector('[data-index="' + index + '"]');
+
         if(!window.ctrl_pressed && !window.shift_pressed){
             this.unselectAll();
         }
 
         if(window.ctrl_pressed){
-            let row = this.bodyContainer.querySelector('[data-index="' + index + '"]');
             if(row.classList.contains('selected')){
                 this.markAsUnselect(index)
             } else {
@@ -153,9 +177,6 @@ class Table {
         } else {
             this.markAsSelect(index);
         }
-
-
-
 
         if(window.shift_pressed && this.last_selected != null){
             let indexes = [];
@@ -177,7 +198,7 @@ class Table {
     }
 
     markAsSelect(index){
-        let row = this.bodyContainer.querySelector('[data-index="' + index + '"]');
+        let row = this.elem.querySelector('[data-index="' + index + '"]');
         if(!row.classList.contains('selected')){
             row.classList.add('selected');
         }
@@ -206,13 +227,31 @@ class Table {
         if(this.isSelectable){
             let header_elem = document.createElement('div');
             header_elem.className = 'header-elem checkbox';
+
             let checkbox = document.createElement('input');
             checkbox.setAttribute('type', 'checkbox');
+            checkbox.setAttribute('id', 'check_all');
+            checkbox.setAttribute('name', 'check_all');
+            checkbox.addEventListener('change', (e) => {
+                let checkboxes = this.elem.querySelectorAll('input[type="checkbox"]:not([name="check_all"])');
+                [].forEach.call(checkboxes, function(checkbox_out){
+                    checkbox_out.checked = checkbox.checked;
+                    let evt = document.createEvent("HTMLEvents");
+                    evt.initEvent("change", false, true);
+                    checkbox_out.dispatchEvent(evt);
+                });
+            });
+
+
+            let label = document.createElement('label');
+            label.setAttribute('for', 'check_all');
             header_elem.appendChild(checkbox);
+            header_elem.appendChild(label);
+
             header.appendChild(header_elem);
         }
-
         this.header.forEach((elem) =>{
+
             let header_elem = document.createElement('div');
             header_elem.className = 'header-elem';
             header_elem.setAttribute('data-field', elem.table_name);
@@ -227,7 +266,7 @@ class Table {
                 } else {
                     this.sorters[field].dir = 'ASC'
                 }
-
+                this.sorters[field].active = true;
                 this.request.sorters = [
                     {
                         field:field,
@@ -235,17 +274,18 @@ class Table {
                     }
                 ];
                 for (const [key, value] of Object.entries(this.sorters)) {
-                    this.sorters[key].active = false
+                    if(key !== field){
+                        this.sorters[key].active = false;
+                        this.sorters[key].dir = this.start_sort;
+                    }
                 }
-
-
                 this.freshData();
             });
 
             title.className = 'title';
             title.innerText = elem.name;
 
-            if(elem.width == 'auto'){
+            if(elem.width === 'auto'){
                 header_elem.style.flex = 1;
             } else {
                 header_elem.style.width = elem.width + 'px';
@@ -260,12 +300,16 @@ class Table {
 
             let arrow = document.createElement('div');
             arrow.className = 'arrow';
-            dd(this.sorters);
-            // if(this.sorters[elem.table_name].dir === "DESC"){
-            //     arrow.classList.add('up');
-            // } else {
-            //     arrow.classList.add('down');
-            // }
+
+            if(this.sorters[elem.table_name].dir === "ASC"){
+                arrow.classList.add('up');
+            } else {
+                arrow.classList.add('down');
+            }
+
+            if(this.sorters[elem.table_name].active === true){
+                arrow.classList.add('active');
+            }
 
             header_elem.appendChild(arrow);
 
@@ -276,8 +320,6 @@ class Table {
         return header;
     }
 
-
-
     drawPaginator(){
         let paginator = document.createElement('div');
         paginator.className = 'paginator';
@@ -285,7 +327,7 @@ class Table {
             let firstButton = document.createElement('button');
             firstButton.innerText = 'Первая';
             firstButton.setAttribute('data-page', 1);
-            if(this.data.current_page == 1){
+            if(this.data.current_page === 1){
                 firstButton.classList.add('disabled');
             } else {
                 firstButton.addEventListener('click', (e) => {
@@ -296,7 +338,7 @@ class Table {
             let lastButton = document.createElement('button');
             lastButton.innerText = 'Последняя';
             lastButton.setAttribute('data-page', this.data.last_page);
-            if(this.data.current_page == this.data.last_page){
+            if(this.data.current_page === this.data.last_page){
                 lastButton.classList.add('disabled');
             } else {
                 lastButton.addEventListener('click', (e) => {
@@ -364,7 +406,7 @@ class Table {
         paginate_array.forEach((page) => {
             let pageButt = document.createElement('button');
             pageButt.innerText = page;
-            if(page == this.data.current_page){
+            if(page === this.data.current_page){
                 pageButt.classList.add('active');
             }
             pageButt.setAttribute('data-page', page);

@@ -7,10 +7,18 @@ class Page {
 
     readData(target = null){
         let target_elem = document.getElementById(target);
-
+        dd("Прочитали дату");
         if(target_elem){
-            this.data = JSON.parse(target_elem.dataset.data);
-            target_elem.removeAttribute('data-data');
+            let data;
+            if(target_elem.hasAttribute('data-data')){
+                data = target_elem;
+            } else {
+                data = target_elem.querySelector('[data-data]');
+            }
+            if(data && data.dataset.data){
+                this.data = JSON.parse(data.dataset.data);
+                data.removeAttribute('data-data');
+            }
         }
     }
 }

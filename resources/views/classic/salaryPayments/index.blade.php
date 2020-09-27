@@ -1,61 +1,9 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? get_template() . '.layouts.TabXHR' : get_template() . '.cash.layout.tabs')
 @section('tab')
-    <div data-data="{{ $data }}" id="ajax-table-salarypayments" class="bottom-container full-box-cont">
+    <div id="ajax-table-salarypayments" class="bottom-container full-box-cont">
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
-                <div id="salaryPayments" >
-                    {{--<div class="bbtable-container">--}}
-                        {{--<div class="bbtable-header">--}}
-                            {{--<div class="header-elem checkbox"><input type="checkbox"></div>--}}
-                            {{--<div class="header-elem">--}}
-                                {{--<div class="title">Модель</div>--}}
-                                {{--<div class="arrow up active"></div>--}}
-                            {{--</div>--}}
-                            {{--<div class="header-elem">--}}
-                                {{--<div class="title">Артикул</div>--}}
-                                {{--<div class="arrow down active"></div>--}}
-                            {{--</div>--}}
-                            {{--<div class="header-elem">--}}
-                                {{--<div class="title">Производитель</div>--}}
-                                {{--<div class="arrow up"></div>--}}
-                            {{--</div>--}}
-                            {{--<div class="header-elem">--}}
-                                {{--<div class="title">Дата</div>--}}
-                                {{--<div class="arrow up"></div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-
-                        {{--<div class="bbtable-body">--}}
-                            {{--@for($i = 10; $i > 0; $i--)--}}
-                                {{--<div class="body-elem">--}}
-                                    {{--<div class="cell checkbox"><input type="checkbox"></div>--}}
-                                    {{--<div class="cell">--}}
-                                        {{--<div class="title">--}}
-                                            {{--DSJKA-23-FDW--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="cell">--}}
-                                        {{--<div class="title">--}}
-                                            {{--DSJKA-23-FDW--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="cell">--}}
-                                        {{--<div class="title">--}}
-                                            {{--DSJKA-23-FDW--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="cell">--}}
-                                        {{--<div class="title">--}}
-                                            {{--DSJKA-23-FDW--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-
-                                {{--</div>--}}
-                            {{--@endfor--}}
-                        {{--</div>--}}
-
-                    {{--</div>--}}
-                </div>
+                <div data-data="{{ $data }}" id="salarypayments"></div>
                 <div id="salarypayments-table" ></div>
             </div>
         </div>
