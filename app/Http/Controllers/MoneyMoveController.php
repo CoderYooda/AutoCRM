@@ -153,7 +153,7 @@ class MoneyMoveController extends Controller
             $request['dates'] = $dates;
         }
         if($field === null &&  $dir === null){
-            $field = 'created_at';
+            $field = 'date';
             $dir = 'DESC';
         }
 
@@ -164,12 +164,10 @@ class MoneyMoveController extends Controller
             $request['any'] = [];
         }
 
-        $moneymoves = MoneyMoves::select(DB::raw('money_move.*, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.type = 0, manager.fio, manager.companyName) as manager'))
-            ->from(DB::raw('money_move
-            left join cashboxes as cashbox_in on cashbox_in.id = money_move.in_cashbox_id
-            left join cashboxes as cashbox_out on cashbox_out.id = money_move.out_cashbox_id
-            left join partners as manager on manager.id = money_move.manager_id
-            '))
+        $moneymoves = MoneyMoves::select(DB::raw('money_move.id, money_move.created_at as date, cashbox_in.name as cin, cashbox_out.name as cout, IF(manager.type > 2, manager.companyName, manager.fio) as manager, money_move.comment, money_move.summ'))
+            ->leftJoin('cashboxes as cashbox_in',  'cashbox_in.id', '=', 'money_move.in_cashbox_id')
+            ->leftJoin('cashboxes as cashbox_out',  'cashbox_out.id', '=', 'money_move.out_cashbox_id')
+            ->leftJoin('partners as manager',  'manager.id', '=', 'money_move.manager_id')
 
             ->when($request['partner'] != [], function($query) use ($request) {
                 $query->whereIn('money_move.manager_id', $request['partner']);
@@ -187,6 +185,10 @@ class MoneyMoveController extends Controller
 
             //dd($moneymoves);
             ->paginate($size);
+
+        foreach ($moneymoves as $moneymove){
+            $moneymove->date = Carbon::parse($moneymove->date)->format('d.m.Y H:i');
+        }
 
         return $moneymoves;
     }

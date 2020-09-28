@@ -5,17 +5,13 @@ class Table {
         this.data = options.data;
         this.url = options.url;
         this.header = options.header;
-        this.sorters = {};
         this.start_sort = options.start_sort;
-        this.header.forEach((elem) =>{
-            this.sorters[elem.table_name] = {
-                field: elem.table_name,
-                dir: this.start_sort,
-                active: false
-            }
-        });
         this.row_dblclick = options.row_dblclick;
-
+        this.context_menu = options.context_menu;
+        this.sorters = {};
+        this.contexted = null;
+        this.context_top = 0;
+        this.body_scroll = 0;
         this.isSelectable = true;
         this.bodyContainer;
         this.last_selected = null;
@@ -29,6 +25,26 @@ class Table {
         //dd(this.data);
     }
 
+    setHeader(header){
+        this.header = header;
+        this.header.forEach((elem) =>{
+            this.sorters[elem.table_name] = {
+                field: elem.table_name,
+                dir: this.start_sort,
+                active: false
+            }
+        });
+        return true;
+    }
+    setContextMenu(context_menu){
+        this.context_menu = context_menu;
+        return true;
+    }
+    setBblClick(row_dblclick){
+        this.row_dblclick = row_dblclick;
+        return true;
+    }
+
     draw(elem = null, data = null){
         if(elem){
             this.elem = document.getElementById(elem);
@@ -37,7 +53,6 @@ class Table {
             this.data = data;
         }
         if(this.elem){
-            dd('Отрисовали таблицу');
             this.elem.innerHTML = '';
             this.elem.style.height = '100%';
             this.total_height = this.elem.clientHeight;
@@ -51,9 +66,26 @@ class Table {
             });
             body.style.height = this.total_height - 70 + 'px';
             container.appendChild(this.drawHover());
+            container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
             this.elem.appendChild(container);
             this.insertElems();
+
+
+            document.addEventListener('click', (e) => {
+                let element = e.target;
+                let close = true;
+                do {
+                    if (element.classList && element.classList.contains('context')) {
+                        close = false;
+                    }
+                    element = element.parentNode;
+                } while (element);
+                if(close){
+                    this.elem.querySelector('#context').style.left = '-300px';
+                }
+
+            });
         } else {
             console.log("Не указан контейнер");
         }
@@ -107,6 +139,46 @@ class Table {
                 this.moveHoverTo(bodyElem.getAttribute('data-index'));
             });
 
+            bodyElem.addEventListener('contextmenu', (e) => {
+                this.contexted = parseInt(bodyElem.getAttribute('data-id'));
+                e.preventDefault();
+                let context = this.elem.querySelector('#context');
+
+                if(!bodyElem.classList.contains('selected')){
+                    this.unselectAll();
+                    this.markAsSelect(bodyElem.getAttribute('data-index'));
+                }
+
+                let tableX = e.clientX - this.elem.getBoundingClientRect().left + window.scrollX;
+                let tableY = e.clientY - this.elem.getBoundingClientRect().top + window.scrollY;
+                this.context_top = tableY;
+
+                if(context.offsetHeight + e.clientY + 100 >= window.innerHeight){
+                    tableY -= context.offsetHeight;
+                }
+
+                this.body_scroll = this.bodyContainer.scrollTop;
+                context.style.top = tableY + 'px';
+                context.style.left = tableX + 'px';
+
+
+
+                let selected = this.getSelectedIDs();
+
+
+
+                let only_group = context.querySelectorAll('[data-group="true"]');
+                only_group.forEach((elem) => {
+                    if(selected.length <= 1){
+                        elem.classList.add('hide');
+                    } else {
+                        elem.classList.remove('hide');
+                    }
+                });
+
+
+            });
+
 
             if(this.isSelectable) {
                 let cell = document.createElement('div');
@@ -138,7 +210,7 @@ class Table {
             for (const [key, value] of Object.entries(elem)) {
                 let cell = document.createElement('div');
                 cell.className = 'cell';
-                 if(this.header[count].width == 'auto'){
+                 if(this.header[count].width === 'auto'){
                     cell.style.flex = 1;
                 } else {
                     cell.style.width = this.header[count].width + 'px';
@@ -309,6 +381,7 @@ class Table {
 
             if(this.sorters[elem.table_name].active === true){
                 arrow.classList.add('active');
+                header_elem.classList.add('active');
             }
 
             header_elem.appendChild(arrow);
@@ -425,6 +498,12 @@ class Table {
     drawBody(){
         this.bodyContainer = document.createElement('div');
         this.bodyContainer.className = 'bbtable-body';
+        this.bodyContainer.addEventListener('scroll', (e) => {
+
+           let context = this.elem.querySelector('#context');
+
+           context.style.top = this.context_top - this.bodyContainer.scrollTop + this.body_scroll + 'px';
+        });
         return this.bodyContainer;
     }
 
@@ -432,6 +511,50 @@ class Table {
         this.hover = document.createElement('div');
         this.hover.className = 'hover';
         return this.hover;
+    }
+
+    drawContext(){
+        this.context = document.createElement('div');
+        this.context.className = 'context';
+        this.context.setAttribute('id', 'context');
+
+        this.context_menu.forEach((item) => {
+            let context_item = document.createElement('div');
+            context_item.classList.add('context_item');
+
+            if(item.only_group){
+                context_item.setAttribute('data-group', 'true');
+            }
+
+
+            context_item.addEventListener('click', (e) => {
+                let selects = this.getSelectedIDs();
+                item.action({
+                    contexted: this.contexted,
+                    selected: selects
+                });
+                this.context.style.left = '-300px';
+            });
+
+            let title = document.createElement('div');
+            title.classList.add('title');
+            title.innerHTML = item.name;
+            context_item.appendChild(title);
+            this.context.appendChild(context_item);
+        });
+
+        return this.context;
+    }
+
+    getSelectedIDs(){
+        let selected = this.elem.querySelectorAll('.body-elem.selected');
+        let ids = [];
+
+        selected.forEach((elem) => {
+            ids.push(parseInt(elem.getAttribute('data-id')));
+        });
+
+        return ids;
     }
 
 }

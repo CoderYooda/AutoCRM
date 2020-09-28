@@ -182,7 +182,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         #Движение средств между кассами
         Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название
         Route::post('/cashmove/search', 'MoneyMoveController@search')->name('MoneyMovePageSearch');
-        Route::get('/cashmove/tabledata', 'MoneyMoveController@tableData')->name('MoneyMoveData');
+        Route::post('/cashmove/tabledata', 'MoneyMoveController@tableData')->name('MoneyMoveData');
         Route::post('/cashmove/side_info', 'MoneyMoveController@getSideInfo')->name('MoneyMoveSideInfo');
         Route::post('/moneymove/{id}/delete', 'MoneyMoveController@delete')->name('DeleteMoneyMove');
         #Касса

@@ -53,7 +53,7 @@ class SalaryPaymentsController extends Controller
     public static function getSalaryPayments($request)
     {
 
-        $size = 5;
+        $size = 40;
         if(isset($request['size'])){
             $size = (int)$request['size'];
         }
@@ -76,7 +76,7 @@ class SalaryPaymentsController extends Controller
         }
 
 
-        $payments = SalaryPayments::select(DB::raw('salary_payments.id, IF(partners.type != 2, partners.fio, partners.companyName) as name,  salary_payments.summ, salary_payments.date, salary_payments.comment'))
+        $payments = SalaryPayments::select(DB::raw('salary_payments.id, IF(partners.type < 3, partners.fio, partners.companyName) as name,  salary_payments.summ, salary_payments.date, salary_payments.comment'))
             ->leftJoin('partners',  'partners.id', '=', 'salary_payments.partner_id')
             ->where('salary_payments.company_id', Auth::user()->company_id)
             ->orderBy($field, $dir)

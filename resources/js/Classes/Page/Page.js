@@ -7,7 +7,6 @@ class Page {
 
     readData(target = null){
         let target_elem = document.getElementById(target);
-        dd("Прочитали дату");
         if(target_elem){
             let data;
             if(target_elem.hasAttribute('data-data')){

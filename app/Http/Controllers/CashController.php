@@ -75,10 +75,14 @@ class CashController extends Controller
 	    if(!Gate::allows('Смотреть денежные перемещения')){
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
 	    }
+
+        $data = MoneyMoveController::getMoneymoves($request);
+        $data = json_encode($data->toArray());
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){
-            return view(get_template() . '.cashmove.elements.table_container', compact('request'));
+            return view(get_template() . '.cashmove.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.cashmove.index', compact('request'));
+        return view(get_template() . '.cashmove.index', compact('request', 'data'));
     }
 
     public static function salarypaymentsTab($request)
@@ -88,7 +92,6 @@ class CashController extends Controller
 //        }
 
         $data = SalaryPaymentsController::getSalaryPayments($request);
-
         $data = json_encode($data->toArray());
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-cashmove'){

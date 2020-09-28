@@ -4,7 +4,6 @@
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
                 <div data-data="{{ $data }}" id="salarypayments"></div>
-                <div id="salarypayments-table" ></div>
             </div>
         </div>
         <div class="content-rightside">

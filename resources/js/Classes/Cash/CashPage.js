@@ -32,6 +32,55 @@ class cashPage extends Page{
         let container = 'ajax-table-' + this.active_tab;
 
         this.readData(container);
+
+        this.table = new Table({
+            container: this.active_tab,
+            data: this.data,
+            url: '/' + this.active_tab + '/tabledata',
+            start_sort: 'DESC'
+        });
+
+        let header, context_menu, dbl_click;
+
+        if(this.active_tab === 'cashmove'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 150, name: 'Дата', table_name: 'date'},
+                {min_with: 150, width: 'auto', name: 'Откуда', table_name: 'cin'},
+                {min_with: 150, width: 'auto', name: 'Куда', table_name: 'cout'},
+                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager'},
+                {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
+                {min_with: 100, width: 200, name: 'Сумма', table_name: 'summ'},
+            ];
+            context_menu = [
+                {name:'Открыть1', action: function(data){dd(data);}},
+                {name:'Открыть1', action: function(data){dd(data);}},
+                {name:'Удалить', action: function(data){dd(data);}},
+                {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){alert(id)};
+
+        } else if(this.active_tab === 'salarypayments'){
+            header = [
+                {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 'auto', name: 'Сотрудник', table_name: 'name'},
+                {min_with: 100, width: 200, name: 'Начисление', table_name: 'summ'},
+                {min_with: 100, width: 200, name: 'Дата', table_name: 'date'},
+                {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
+            ];
+            context_menu = [
+                {name:'Открыть', action: function(data){dd(data);}},
+                {name:'Открыть', action: function(data){dd(data);}},
+                {name:'Удалить', action: function(data){dd(data);}},
+                {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){alert(id + 22)};
+        }
+
+        this.table.setHeader(header);
+        this.table.setContextMenu(context_menu);
+        this.table.setBblClick(dbl_click);
+
         this.table.draw(this.active_tab, this.data);
     }
 
@@ -76,10 +125,7 @@ class cashPage extends Page{
     };
 
     init(){
-        let object = this;
-
-
-        object.initSearch();
+        this.initSearch();
         // document.addEventListener('ajaxLoaded', function(e){
         //     object.checkActive();
         //     //object.chartInit();
@@ -99,23 +145,7 @@ class cashPage extends Page{
             object.reload();
         });
 
-        this.table = new Table({
-            container: 'salaryPayments',
-            data: this.data,
-            url: '/salarypayments/tabledata',
-            start_sort: 'DESC',
-            row_dblclick: function(id){
-              alert(id);
-            },
-            header: [
-                {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
-                {min_with: 100, width: 'auto', name: 'Сотрудник', table_name: 'name'},
-                {min_with: 100, width: 200, name: 'Начисление', table_name: 'summ'},
-                {min_with: 100, width: 200, name: 'Дата', table_name: 'date'},
-                {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
-            ],
-        });
-        object.linked();
+        this.linked();
     }
 
     clearList(type, container){

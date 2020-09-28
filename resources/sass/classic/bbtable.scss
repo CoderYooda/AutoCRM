@@ -7,6 +7,7 @@
 
     .checkbox{
         width: 30px;
+        min-width: 30px;
         flex: unset;
         text-align: center;
         padding: 0px 7px;
@@ -72,6 +73,28 @@
         background: #2d76a8;
         opacity: 0.2;
     }
+    .context{
+        position: absolute;
+        left: -300px;
+        border: 1px solid #e7e8ec;
+        background: #fff;
+        z-index: 99999;
+        padding: 2px;
+        box-shadow: 2px 4px 9px #00000061;
+        min-width: 180px;
+        .context_item{
+            width: 100%;
+            padding: 2px 10px;
+            cursor: pointer;
+            color: #0000009c;
+        }
+        .context_item:not(.hide):not(:last-child){
+            border-bottom: 1px solid #e7e8ec;
+        }
+        .context_item:hover{
+            background: #fafafa;
+        }
+    }
     .bbtable-header{
         display: flex;
         height: 40px;
@@ -81,6 +104,10 @@
         text-overflow: ellipsis;
         vertical-align: bottom;
         font-weight: 500;
+        z-index: 1000;
+        position: absolute;
+        background: #fff;
+        width: 100%;
         .header-elem{
             padding: 4px;
             cursor: pointer;
@@ -94,6 +121,10 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+            &.active{
+                color: #5181b8;
+            }
+
             &.checkbox{
                 width: 30px;
                 flex: unset;
@@ -132,6 +163,7 @@
         overflow-y: scroll;
         margin-right: -17px;
         height: 0px;
+        margin-top: 40px;
         .body-elem {
             height: 29px;
             line-height: 29px;
