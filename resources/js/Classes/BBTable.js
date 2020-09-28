@@ -12,17 +12,11 @@ class Table {
         this.contexted = null;
         this.context_top = 0;
         this.body_scroll = 0;
+        this.slug = options.slug;
         this.isSelectable = true;
         this.bodyContainer;
         this.last_selected = null;
-
-
-
-
-
-
         this.request = {};
-        //dd(this.data);
     }
 
     setHeader(header){
@@ -42,6 +36,10 @@ class Table {
     }
     setBblClick(row_dblclick){
         this.row_dblclick = row_dblclick;
+        return true;
+    }
+    setSlug(slug){
+        this.slug = slug;
         return true;
     }
 
@@ -70,7 +68,6 @@ class Table {
             container.appendChild(this.drawPaginator());
             this.elem.appendChild(container);
             this.insertElems();
-
 
             document.addEventListener('click', (e) => {
                 let element = e.target;
@@ -119,13 +116,14 @@ class Table {
 
     insertElems(){
         let index = 0;
+
         this.data.data.forEach((elem) => {
             let bodyElem = document.createElement('div');
             bodyElem.className = 'body-elem';
             bodyElem.setAttribute('id', 'line_' + elem.id);
-            // bodyElem.setAttribute('onclick', 'alert(123)');
             bodyElem.setAttribute('data-id', elem.id);
             bodyElem.setAttribute('data-index', index);
+            bodyElem.setAttribute('data-data', JSON.stringify(elem));
 
             bodyElem.addEventListener('click', (e) => {
                 this.selectItem(bodyElem.getAttribute('data-index'));
@@ -140,7 +138,7 @@ class Table {
             });
 
             bodyElem.addEventListener('contextmenu', (e) => {
-                this.contexted = parseInt(bodyElem.getAttribute('data-id'));
+                this.contexted = JSON.parse(bodyElem.getAttribute('data-data'));
                 e.preventDefault();
                 let context = this.elem.querySelector('#context');
 
@@ -161,11 +159,7 @@ class Table {
                 context.style.top = tableY + 'px';
                 context.style.left = tableX + 'px';
 
-
-
                 let selected = this.getSelectedIDs();
-
-
 
                 let only_group = context.querySelectorAll('[data-group="true"]');
                 only_group.forEach((elem) => {
@@ -175,10 +169,7 @@ class Table {
                         elem.classList.remove('hide');
                     }
                 });
-
-
             });
-
 
             if(this.isSelectable) {
                 let cell = document.createElement('div');
@@ -207,25 +198,28 @@ class Table {
             }
 
             let count = 0;
-            for (const [key, value] of Object.entries(elem)) {
+
+            this.header.forEach((header_elem) => {
+
                 let cell = document.createElement('div');
                 cell.className = 'cell';
-                 if(this.header[count].width === 'auto'){
+
+                if(header_elem.width === 'auto'){
                     cell.style.flex = 1;
                 } else {
-                    cell.style.width = this.header[count].width + 'px';
+                    cell.style.width = header_elem.width + 'px';
                 }
-                if(this.header[count].min_with){
-                    cell.style.minWidth = this.header[count].min_with + 'px';
+                if(header_elem.min_with){
+                    cell.style.minWidth = header_elem.min_with + 'px';
                 }
 
                 let title = document.createElement('div');
                 title.className = 'title';
-                title.innerText = value;
+                title.innerText = elem[header_elem.table_name];
                 cell.appendChild(title);
                 bodyElem.appendChild(cell);
                 count++;
-            }
+            });
             index++;
             this.bodyContainer.appendChild(bodyElem);
         });
@@ -295,11 +289,9 @@ class Table {
     drawHeader(){
         let header = document.createElement('div');
         header.className = 'bbtable-header';
-
         if(this.isSelectable){
             let header_elem = document.createElement('div');
             header_elem.className = 'header-elem checkbox';
-
             let checkbox = document.createElement('input');
             checkbox.setAttribute('type', 'checkbox');
             checkbox.setAttribute('id', 'check_all');
@@ -313,26 +305,19 @@ class Table {
                     checkbox_out.dispatchEvent(evt);
                 });
             });
-
-
             let label = document.createElement('label');
             label.setAttribute('for', 'check_all');
             header_elem.appendChild(checkbox);
             header_elem.appendChild(label);
-
             header.appendChild(header_elem);
         }
         this.header.forEach((elem) =>{
-
             let header_elem = document.createElement('div');
             header_elem.className = 'header-elem';
             header_elem.setAttribute('data-field', elem.table_name);
             let title = document.createElement('div');
-
             header_elem.addEventListener('click', (e) => {
-
                 let field = header_elem.getAttribute('data-field');
-
                 if(this.sorters[field].dir === 'ASC'){
                     this.sorters[field].dir = 'DESC'
                 } else {
@@ -353,10 +338,8 @@ class Table {
                 }
                 this.freshData();
             });
-
             title.className = 'title';
             title.innerText = elem.name;
-
             if(elem.width === 'auto'){
                 header_elem.style.flex = 1;
             } else {
@@ -365,38 +348,27 @@ class Table {
             if(elem.min_with){
                 header_elem.style.minWidth = elem.min_with + 'px';
             }
-
-
-
             header_elem.appendChild(title);
-
             let arrow = document.createElement('div');
             arrow.className = 'arrow';
-
             if(this.sorters[elem.table_name].dir === "ASC"){
                 arrow.classList.add('up');
             } else {
                 arrow.classList.add('down');
             }
-
             if(this.sorters[elem.table_name].active === true){
                 arrow.classList.add('active');
                 header_elem.classList.add('active');
             }
-
             header_elem.appendChild(arrow);
-
             header.appendChild(header_elem);
         });
-
-
         return header;
     }
 
     drawPaginator(){
         let paginator = document.createElement('div');
         paginator.className = 'paginator';
-
             let firstButton = document.createElement('button');
             firstButton.innerText = 'Первая';
             firstButton.setAttribute('data-page', 1);
@@ -407,7 +379,6 @@ class Table {
                     this.setRequest('page', firstButton.getAttribute('data-page'));
                 });
             }
-
             let lastButton = document.createElement('button');
             lastButton.innerText = 'Последняя';
             lastButton.setAttribute('data-page', this.data.last_page);
@@ -418,7 +389,6 @@ class Table {
                     this.setRequest('page', lastButton.getAttribute('data-page'));
                 });
             }
-
             let backButton = document.createElement('button');
             backButton.innerText = 'Назад';
             let backPage = this.data.current_page - 1;
@@ -430,7 +400,6 @@ class Table {
                     this.setRequest('page', backButton.getAttribute('data-page'));
                 });
             }
-
             let forwardButton = document.createElement('button');
             forwardButton.innerText = 'Вперёд';
             let forwardPage = this.data.current_page + 1;
@@ -442,22 +411,15 @@ class Table {
                     this.setRequest('page', forwardButton.getAttribute('data-page'));
                 });
             }
-
-
         paginator.appendChild(firstButton);
         paginator.appendChild(backButton);
-
-
-
         let paginate_array = [];
-
         let prev_array = [];
         for (let i = 1; i < 2; i++) {
             if(i > 0 && i <= this.data.last_page){
                 prev_array.push(i);
             }
         }
-
         let pages_array = [];
         for (let i = this.data.current_page - 2; i < this.data.current_page + 2; i++) {
             if(i > 0 && i <= this.data.last_page){
@@ -470,12 +432,9 @@ class Table {
                 last_array.push(i);
             }
         }
-
         paginate_array = paginate_array.concat(prev_array).unique();
         paginate_array = paginate_array.concat(pages_array).unique();
         paginate_array = paginate_array.concat(last_array).unique();
-
-
         paginate_array.forEach((page) => {
             let pageButt = document.createElement('button');
             pageButt.innerText = page;
@@ -486,10 +445,8 @@ class Table {
             pageButt.addEventListener('click', (e) => {
                 this.setRequest('page', pageButt.getAttribute('data-page'));
             });
-
             paginator.appendChild(pageButt);
         });
-
         paginator.appendChild(forwardButton);
         paginator.appendChild(lastButton);
         return paginator;
@@ -499,9 +456,7 @@ class Table {
         this.bodyContainer = document.createElement('div');
         this.bodyContainer.className = 'bbtable-body';
         this.bodyContainer.addEventListener('scroll', (e) => {
-
            let context = this.elem.querySelector('#context');
-
            context.style.top = this.context_top - this.bodyContainer.scrollTop + this.body_scroll + 'px';
         });
         return this.bodyContainer;
@@ -517,16 +472,12 @@ class Table {
         this.context = document.createElement('div');
         this.context.className = 'context';
         this.context.setAttribute('id', 'context');
-
         this.context_menu.forEach((item) => {
             let context_item = document.createElement('div');
             context_item.classList.add('context_item');
-
             if(item.only_group){
                 context_item.setAttribute('data-group', 'true');
             }
-
-
             context_item.addEventListener('click', (e) => {
                 let selects = this.getSelectedIDs();
                 item.action({
@@ -535,25 +486,21 @@ class Table {
                 });
                 this.context.style.left = '-300px';
             });
-
             let title = document.createElement('div');
             title.classList.add('title');
             title.innerHTML = item.name;
             context_item.appendChild(title);
             this.context.appendChild(context_item);
         });
-
         return this.context;
     }
 
     getSelectedIDs(){
         let selected = this.elem.querySelectorAll('.body-elem.selected');
         let ids = [];
-
         selected.forEach((elem) => {
             ids.push(parseInt(elem.getAttribute('data-id')));
         });
-
         return ids;
     }
 

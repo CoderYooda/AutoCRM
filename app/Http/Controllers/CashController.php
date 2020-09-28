@@ -63,10 +63,14 @@ class CashController extends Controller
 	    if(!Gate::allows('Смотреть денежные операции')){
 		    return PermissionController::closedResponse('Вам запрещено просматривать этот раздел, для получения доступа обратитесь к администратору.');
 	    }
+
+        $data = WarrantController::getWarrants($request);
+        $data = json_encode($data->toArray());
+
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-warrant'){
-            return view(get_template() . '.warrant.elements.table_container', compact('request'));
+            return view(get_template() . '.warrant.elements.table_container', compact('request', 'data'));
         } else {
-            return view(get_template() . '.warrant.index', compact('request'));
+            return view(get_template() . '.warrant.index', compact('request', 'data'));
         }
     }
 

@@ -40,7 +40,7 @@ class cashPage extends Page{
             start_sort: 'DESC'
         });
 
-        let header, context_menu, dbl_click;
+        let header, context_menu, dbl_click, slug;
 
         if(this.active_tab === 'cashmove'){
             header = [
@@ -53,13 +53,13 @@ class cashPage extends Page{
                 {min_with: 100, width: 200, name: 'Сумма', table_name: 'summ'},
             ];
             context_menu = [
-                {name:'Открыть1', action: function(data){dd(data);}},
-                {name:'Открыть1', action: function(data){dd(data);}},
-                {name:'Удалить', action: function(data){dd(data);}},
-                {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+                {name:'Редактировать', action: function(data){openDialog('moneymoveDialog', '&cashmove_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('moneymoveDialog', '&cashmove_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){alert(id)};
-
+            dbl_click = function(id){openDialog('moneymoveDialog', '&cashmove_id=' + id)};
+            slug = 'cashmove';
         } else if(this.active_tab === 'salarypayments'){
             header = [
                 {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
@@ -71,15 +71,36 @@ class cashPage extends Page{
             context_menu = [
                 {name:'Открыть', action: function(data){dd(data);}},
                 {name:'Открыть', action: function(data){dd(data);}},
-                {name:'Удалить', action: function(data){dd(data);}},
-                {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){alert(id + 22)};
+            slug = 'salarypayments';
+        } else if(this.active_tab === 'warrant'){
+            header = [
+                {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 200, name: 'Дата', table_name: 'date'},
+                {min_with: 100, width: 200, name: 'Тип', table_name: 'type'},
+                {min_with: 100, width: 'auto', name: 'Контакт', table_name: 'partner'},
+                {min_with: 100, width: 200, name: 'Статья', table_name: 'dds'},
+                {min_with: 100, width: 200, name: 'Касса', table_name: 'cashbox'},
+                {min_with: 100, width: 200, name: 'Сумма', table_name: 'summ'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('warrantDialog', '&warrant_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('warrantDialog', '&warrant_id=' + data.contexted.id)}},
+                {name:'Печать', action: function(data){helper.printDocument((data.contexted.type === 'Приходный ордер' ? 'in-warrant' : 'out-warrant'), data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('warrantDialog', '&warrant_id=' + id)};
+            slug = 'warrant';
         }
 
         this.table.setHeader(header);
         this.table.setContextMenu(context_menu);
         this.table.setBblClick(dbl_click);
+        this.table.setSlug(slug);
 
         this.table.draw(this.active_tab, this.data);
     }
@@ -126,14 +147,6 @@ class cashPage extends Page{
 
     init(){
         this.initSearch();
-        // document.addEventListener('ajaxLoaded', function(e){
-        //     object.checkActive();
-        //     //object.chartInit();
-        //     object.load();
-        // });
-
-        //object.searchInit();
-        //object.initDates();
 
         document.addEventListener('WarrantStored', function(e){
             object.prepareParams();
@@ -151,7 +164,7 @@ class cashPage extends Page{
     clearList(type, container){
         this[type] = [];
         document.getElementById(container).innerHTML = '';
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.table.freshData();
         window.notification.notify( 'success', 'Поле очищено');
     }
 
@@ -169,8 +182,7 @@ class cashPage extends Page{
                 } else {
                     object.dates_range = null;
                 }
-                //object.reload();
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                this.table.freshData();
             }
         });
     }
@@ -178,7 +190,7 @@ class cashPage extends Page{
     resetDate(){
         this.dates_range = null;
         this.page = 1;
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        //fresh
         this.dates.clear();
         window.notification.notify( 'success', 'Дата очищена');
     }
