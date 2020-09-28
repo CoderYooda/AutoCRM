@@ -286,8 +286,8 @@ class ProductController extends Controller
             #Кроссы
             $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
-            $article->sp_name = $request->shop['name'];
-            $article->sp_desc = $request->shop['desc'];
+            $article->sp_name = $request->shop['name'] ?? '';
+            $article->sp_desc = $request->shop['desc'] ?? '';
             $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
 
             $article->save();

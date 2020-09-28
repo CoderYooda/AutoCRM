@@ -112,16 +112,6 @@ class ImageController extends Controller
             'thumb_url' => 'public/images/thumb_' . $name . '.' . $img->extension
         ]);
 
-        //TODO адаптировать не только под юзера
-//        $user->partner->update([
-//            'avatar_id' => $imageobject->id,
-//            'pic_id' => $imageobject->id
-//        ]);
-
-//        if (self::removeCurrrentType($user, 'avatar')) {
-//            $user->avatar()->sync([$file_base->id => ['type' => 'avatar']]);
-//        }
-
         return response()->json([
             'status' => 'success',
             'message'=> 'Фото профиля обновлено!',

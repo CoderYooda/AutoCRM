@@ -34,7 +34,7 @@ class User extends Authenticatable
     }
 
     public function getStoreFirst(){
-        return $this->partner()->first()->store()->first();
+        return $this->partner->store()->first();
     }
 
     public function attachToCompany($company)

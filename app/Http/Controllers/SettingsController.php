@@ -248,8 +248,14 @@ class SettingsController extends Controller
                 $partner->fio = $employee['fio'];
                 $partner->save();
 
-                $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
-                $partner->phones()->sync($phones->pluck('id'));
+                $phones = [
+                    [
+                        'number' => $employee['phone'],
+                        'main' => true
+                    ]
+                ];
+
+                $partner->upsertPhones($phones);
 
                 if($employee['access']){
                     $password = rand(10000, 99999);
@@ -281,6 +287,13 @@ class SettingsController extends Controller
                 $partner->fio = $partn['fio'];
                 $partner->companyName = $partn['companyName'];
                 $partner->save();
+
+                $phones = [
+                    [
+                        'number' => $employee['phone'],
+                        'main' => false
+                    ]
+                ];
 
                 $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
                 $partner->phones()->sync($phones->pluck('id'));

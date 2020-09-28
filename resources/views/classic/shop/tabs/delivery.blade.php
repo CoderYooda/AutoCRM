@@ -14,17 +14,19 @@
 
                 <div class="form-group">
                     <label>Способы оплаты и доставки</label>
-                    <div id="editor">{!! $shop->delivery_desc ?? '' !!}</div>
+                    <div data-error="delivery_desc">
+                        <div id="editor">{!! $shop->delivery_desc ?? '' !!}</div>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label>SEO Заголовок</label>
-                    <textarea name="seo_delivery_title" class="form-control resize-none" rows="4" placeholder="Заголовок">{{ $shop->seo_delivery_title }}</textarea>
+                    <textarea name="seo_delivery_title" class="form-control resize-none" rows="4" placeholder="Заголовок">{{ $shop->seo_delivery_title ?? '' }}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label>SEO Описание</label>
-                    <textarea name="seo_delivery_desc" class="form-control resize-none" rows="4" placeholder="Описание">{{ $shop->seo_delivery_desc }}</textarea>
+                    <textarea name="seo_delivery_desc" class="form-control resize-none" rows="4" placeholder="Описание">{{ $shop->seo_delivery_desc ?? '' }}</textarea>
                 </div>
 
                 <div>

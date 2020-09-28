@@ -110,7 +110,7 @@ class ProviderStoreController extends Controller
             'http' => [
                 'method' => 'GET',
                 'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode("WEBCFIRE.VOSTOK@MAIL.RU:ng2pP4R1zZz") . "\r\n", //TODO change account data
+                    . 'Authorization: Basic '. base64_encode("{$request->login}:{$request->password}") . "\r\n",
             ],
         ]));
 

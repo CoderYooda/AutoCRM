@@ -8,7 +8,9 @@ use App\Http\Requests\Shop\UpdateDeliveryRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
 use App\Http\Requests\Shop\UpdateWarrantyRequest;
+use App\Models\Order;
 use App\Models\Shop;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -108,6 +110,41 @@ class ShopController extends Controller
                 'message' => 'Настройки успешно сохранены.'
             ]);
         });
+    }
+
+    public function tableData(Request $request)
+    {
+        $size = $request['size'] ?? 30;
+
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
+
+        if($request['dates_range'] !== null){
+            $dates = explode('|', $request['dates_range']);
+            $dates[0] .= ' 00:00:00';
+            $dates[1] .= ' 23:59:59';
+            $request['dates'] = $dates;
+        }
+
+        $orders = Order::with('partner')
+            ->where('company_id', Auth::user()->company_id)
+//            ->when($request['client'] != null, function($query) use ($request) {
+//                $query->whereIn('shipments.partner_id', $request['client']);
+//            })
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('created_at', [ Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1]) ]);
+            })
+            ->orderBy($field, $dir)
+            ->paginate($size);
+
+        foreach ($orders as &$order) {
+            $order['partner_name'] = $order->partner->official_name;
+            $order['status'] = $order->getStatusName();
+        }
+
+        return response()->json([
+            'data' => $orders
+        ]);
     }
 
     public function updateAbout(UpdateAboutRequest $request)

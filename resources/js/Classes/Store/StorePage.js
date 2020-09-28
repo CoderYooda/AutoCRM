@@ -3,12 +3,14 @@ import Sortable from "sortablejs";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
 import documentMethods from "./tabs/DocumentMethods";
+import shopOrdersMethods from "./tabs/ShopOrdersMethods";
 import Tabs from "../../Tools/Tabs";
 
 const classes = {
     entranceMethods,
     providerStoresMethods,
-    documentMethods
+    documentMethods,
+    shopOrdersMethods
 };
 
 
@@ -504,7 +506,7 @@ class storePage{
         else if(object.active_tab === 'entrance_refunds'){
             object.contextDop = 'entranceRefund';
             object.parametr = 'entrance_refund';
-            var priceFormatter = function(cell, formatterParams, onRendered){
+            let priceFormatter = function(cell, formatterParams, onRendered){
                 onRendered(function(){
                     cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
                 });
@@ -536,6 +538,28 @@ class storePage{
                 {title:"Дата", field:"created_at", width:150},
             ];
         }
+        else if(object.active_tab === 'shop_orders'){
+            object.contextDop = 'order';
+            object.parametr = 'order';
+
+            let priceFormatter = function(cell, formatterParams, onRendered){
+                onRendered(function(){
+                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
+                });
+            };
+
+            columns = [
+                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
+                        cell.getRow().toggleSelect();
+                    }},
+                {title:"№", field:"id", width:80},
+                {title:"Статус", field:"status", width:150},
+                {title:"Заказчик", field:"partner_name", width:150},
+                {title:"Итого", field:"total_price", width:150, formatter:priceFormatter},
+                {title:"Дата", field:"created_at", width:150},
+            ];
+        }
+
         return columns;
     }
 
@@ -857,7 +881,7 @@ class storePage{
                             openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)
                         }, shortcut: 'Что то'
                     }));
-                }
+                }shop_orders_id
 
                 if(object.contextDop == 'document') {
                     items.push(new ContextualItem({
@@ -1139,10 +1163,12 @@ class storePage{
             entrance_refunds: 'entranceRefunds',
             refund: 'refund',
             client_orders: 'clientOrders',
-            documents: 'document'
+            documents: 'document',
+            shop_orders: 'shopOrders'
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
+
         try {
             this.model = new classes[model_name]();
         } catch (e) {

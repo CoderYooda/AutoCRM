@@ -28,6 +28,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
+    Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 
     Route::get('/user/password/edit', 'UserController@passwordEdit')->name('UserPassChange');
     Route::post('/user/password/save', 'UserController@passwordStore')->name('UserPassStore');
@@ -263,9 +264,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/services/{service}/toggle', 'ServiceController@toggle')->name('ServiceToggle');
         Route::post('/services/updateSort', 'ServiceController@updateSort')->name('ServiceUpdateSort');
 
-        #Телефоны
-        Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
-
         #Документы
         Route::any('/document', 'DocumentController@document')->name('Document');
         Route::get('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
@@ -298,6 +296,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
         Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
         Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+
+        Route::get('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
 
         Route::group(['prefix' => 'ws'], function () {
             Route::get('/check-auth', function () {

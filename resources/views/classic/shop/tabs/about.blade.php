@@ -14,7 +14,9 @@
 
                 <div class="form-group">
                     <label>Описание компании</label>
-                    <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
+                    <div data-error="about_desc">
+                        <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
+                    </div>
                 </div>
 
                 <div class="form-group">

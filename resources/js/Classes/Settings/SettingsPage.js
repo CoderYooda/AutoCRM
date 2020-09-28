@@ -93,12 +93,14 @@ class settingsPage{
 
             select_element.innerHTML = '';
 
-            let login = document.querySelector('[name="fields[login]"]');
+            let login = document.querySelector('[name="fields[login]"]').value;
             let password = input.value;
 
             axios.get('/provider_stores/armtek/sales_organization', {
-                    login: login,
-                    password: password
+                    params: {
+                        login: login,
+                        password: password
+                    }
                 })
                 .then(response => {
 

@@ -96,12 +96,6 @@ class Company extends Model
         return $this->hasMany(Setting::class, 'company_id');
     }
 
-    public function checkAccessToStore($store)
-    {
-        //TODO check
-        return ($store == null || $this->stores()->find($store->id) == NULL);
-    }
-
     public function getSettingField($field)
     {
         return $this->settings->where('name', $field)->first()->value;
@@ -134,15 +128,5 @@ class Company extends Model
     public function decrementSmsBalance($amount)
     {
         return $this->decrement('sms_balance', $amount);
-    }
-
-    public function inviteUser($user)
-    {
-        //TODO check
-        $user->update(['company_id' => $this->id]);
-
-//        $user->company_id = $this->id;
-//        $user->save();
-        return 1;
     }
 }

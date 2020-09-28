@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Controllers\HelpController;
 use App\Models\System\Image;
 use App\Traits\OwnedTrait;
+use App\Traits\Phoneable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,7 @@ use Auth;
 
 class Partner extends Model
 {
-    use OwnedTrait, SoftDeletes;
+    use OwnedTrait, SoftDeletes, Phoneable;
 
     protected $guarded = [];
 

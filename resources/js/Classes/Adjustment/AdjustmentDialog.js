@@ -13,10 +13,6 @@ class adjustmentDialog extends Modal{
     init() {
         this.items = [];
 
-        this.linked();
-    }
-
-    linked() {
         new Tabs('adjustment_tabs');
     }
 

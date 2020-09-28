@@ -191,6 +191,11 @@ class StoreController extends Controller
         return response()->json($response);
     }
 
+    public function shop_ordersTab(Request $request)
+    {
+        return view(get_template() . '.shop_orders.index', compact('request'));
+    }
+
     public function provider_storesTab(Request $request)
     {
         /** @var Company $company */

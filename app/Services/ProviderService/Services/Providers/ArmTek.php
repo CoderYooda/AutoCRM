@@ -72,17 +72,39 @@ class ArmTek implements ProviderInterface
 
         $items = $this->query('/ws_search/search', $params, 'POST');
 
+        foreach ($items['RESP'] as $key => &$item) {
+
+            $item['index'] = $key;
+
+            $item['hash_info'] = [
+                'stock' => $item['KEYZAK'],
+                'manufacturer' => $item['BRAND'],
+                'article' => $article,
+                'days' => $item['DLVDT'],
+                'price' => $item['PRICE']
+            ];
+
+        }
+
         $results = [];
 
-        foreach ($items['RESP'] as $item) {
+        foreach ($items['RESP'] as $key => $item) {
 
             $delivery_timestamp = Carbon::parse($item['DLVDT']);
 
+            $delivery_days = Carbon::now()->diffInDays($delivery_timestamp);
+
             $results[] = [
-                'name' => $item['RVALUE'],
+                'index' => $key,
+                'name' => $item['KEYZAK'],
                 'code' => $item['ARTID'],
-                'delivery' => Carbon::now()->diffInDays($delivery_timestamp),
+                'delivery' => $delivery_days,
+                'days_min' => $delivery_days,
                 'price' => $item['PRICE'],
+                'manufacturer' => $item['BRAND'],
+                'stock' => $item['KEYZAK'],
+                'model' => $item,
+                'hash' => md5($item['KEYZAK'] . $item['BRAND'] . $article . $item['DLVDT'] . $item['PRICE'])
             ];
         }
 

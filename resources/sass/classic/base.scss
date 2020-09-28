@@ -3296,3 +3296,129 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 }
+
+div.is-invalid {
+    border: 1px solid red;
+}
+
+
+.new_dialog {
+
+    .add_product_button {
+        background: #FFFFFF;
+        border: 1px solid #E7E8EC;
+        border-radius: 4px;
+        margin-top: 15px;
+    }
+
+    .element-item {
+        border-left: 1px solid #E7E8EC;
+        border-right: 1px solid #E7E8EC;
+        border-bottom: 1px solid #E7E8EC;
+        line-height: 30px;
+        display: flex;
+
+        div {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            input {
+                line-height: 24px;
+                height: 24px;
+                margin-top: 3px;
+                margin-bottom: 3px;
+                width: 80%;
+            }
+        }
+    }
+
+    .table_header {
+        position: relative;
+        border-top: 1px solid #e7e8ec;
+        border-bottom: 1px solid #e7e8ec;
+        line-height: 31px;
+        border-left: 1px solid #E7E8EC;
+        border-right: 1px solid #E7E8EC;
+        display: flex;
+
+        &::after {
+            content: "";
+            position: absolute;
+            height: 29px;
+            top: 1px;
+            left: 1px;
+            width: calc(100% - 2px);
+            background: #F7F8FA;
+            z-index: -1;
+        }
+    }
+
+    .tab_links {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #E7E8EC;
+        padding-left: 10px;
+
+        a {
+            &:first-child {
+                margin-top: 10px;
+            }
+
+            &:last-child {
+                margin-bottom: 10px;
+            }
+
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 13px;
+            line-height: 33px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.04em;
+            width: 140px;
+            padding-left: 10px;
+
+            color: #404040;
+
+            &:hover {
+                background: #F0F0F3;
+                border-right: 3px solid #B7B7B7;
+            }
+
+            &.active {
+                color: white;
+                background: #0289CE;
+                border-right: 3px solid #005E8E;
+            }
+        }
+    }
+
+    .tabs_content {
+        .tab {
+            display: none;
+
+            &.active {
+                display: block;
+            }
+        }
+    }
+
+    .form-group-flex {
+
+        display: flex;
+        margin-bottom: 10px;
+
+        label {
+            width: 140px;
+            line-height: 30px;
+            height: 30px;
+            margin-bottom: unset;
+        }
+
+        span {
+            line-height: 30px;
+        }
+    }
+}
