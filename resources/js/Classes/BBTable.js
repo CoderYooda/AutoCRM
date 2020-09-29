@@ -17,6 +17,9 @@ class Table {
         this.bodyContainer;
         this.last_selected = null;
         this.request = {};
+        window.addEventListener('resize', (e)=>{
+            // dd(this.elem);
+        })
     }
 
     setHeader(header){
@@ -50,24 +53,35 @@ class Table {
         if(data){
             this.data = data;
         }
+
         if(this.elem){
             this.elem.innerHTML = '';
             this.elem.style.height = '100%';
+            this.elem.style.width = this.elem.offsetWidth + 'px';
             this.total_height = this.elem.clientHeight;
             let container = document.createElement('div');
             container.className = 'bbtable-container';
             container.appendChild(this.drawHeader());
-            let body = this.drawBody();
-            container.appendChild(body);
-            body.addEventListener('mouseleave', (e) => {
+            this.body = this.drawBody();
+            container.appendChild(this.body);
+            this.body.addEventListener('mouseleave', (e) => {
                 this.elem.querySelector('.hover').style.top = '-60px';
             });
-            body.style.height = this.total_height - 70 + 'px';
+            //this.body.style.height = this.total_height - 70 + 'px';
+            this.body.style.height = 'calc(100% - 70px)';
             container.appendChild(this.drawHover());
             container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
             this.elem.appendChild(container);
             this.insertElems();
+
+            window.addEventListener('resize', (e) => {
+                this.elem.style.width = '1px';
+                this.elem.style.height = '1px';
+
+                this.elem.style.width = this.elem.parentElement.offsetWidth + 'px';
+                this.elem.style.height = this.elem.parentElement.offsetHeight + 'px';
+            });
 
             document.addEventListener('click', (e) => {
                 let element = e.target;

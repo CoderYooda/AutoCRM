@@ -1045,8 +1045,7 @@ class storePage extends Page{
 
         document.addEventListener('ClientOrderStored', function(e){
             if(object.active){
-                object.prepareParams();
-                object.reload();
+                this.table.reload();
             }
         });
 
@@ -1170,7 +1169,7 @@ class storePage extends Page{
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
-                {min_with: 150, width: 'auto', name: 'Артикул', table_name: 'article'},
+                {min_with: 150, width: 200, name: 'Артикул', table_name: 'article'},
                 {min_with: 150, width: 200, name: 'Бренд', table_name: 'supplier'},
             ];
             context_menu = [
