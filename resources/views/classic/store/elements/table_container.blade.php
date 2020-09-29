@@ -11,37 +11,37 @@
     </div>
 @endcan
 
-<div class="box-lister" style="width: 1px!important;">
+<div class="box-lister">
 
-    <div class="search-panel box mb-15">
-        <div class="search-field-container w-100">
-            <input onclick="store.showBrands()" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
-            <div class="box" onmouseleave="this.style.display = 'none';">
-                <div class="store-title">
-                    Выберите производителя:
-                </div>
-                <div id="store-list" class="store-list">
+    <div class="box h-100 d-flex" style="flex-direction: column">
+        <div class="search-panel box mb-15">
+            <div class="search-field-container w-100">
+                <input onclick="store.showBrands()" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
+                <div class="box" onmouseleave="this.style.display = 'none';">
+                    <div class="store-title">
+                        Выберите производителя:
+                    </div>
+                    <div id="store-list" class="store-list">
 
+                    </div>
                 </div>
             </div>
+
+            <div class="actions">
+
+                @can('Создавать категории')
+                    <button type="button" onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
+                @endcan
+
+                @can('Создавать товары')
+                    <button type="button" onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
+                @endcan
+
+            </div>
         </div>
-
-        <div class="actions">
-
-            @can('Создавать категории')
-                <button type="button" onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
-            @endcan
-
-            @can('Создавать товары')
-                <button type="button" onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
-            @endcan
-
-        </div>
-    </div>
-
-    <div class="box h-100">
         <div class="box-header" id="breadcrumbs-nav"></div>
-        <div id="table-container" class="box-content h-100">
+        {{--class="box-content h-100"--}}
+        <div id="table-container" class="flex-1">
             <div data-data="{{ $data }}" id="storeTable"></div>
         </div>
     </div>

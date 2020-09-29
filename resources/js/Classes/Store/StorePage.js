@@ -1,5 +1,6 @@
 import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
+import storeMethods from "./tabs/StoreMethods";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
 import documentMethods from "./tabs/DocumentMethods";
@@ -8,6 +9,7 @@ import {Table} from "../BBTable";
 import Page from "../Page/Page";
 
 const classes = {
+    storeMethods,
     entranceMethods,
     providerStoresMethods,
     documentMethods
@@ -1152,15 +1154,41 @@ class storePage extends Page{
             dd(e);
         }
 
+
+        let container = 'ajax-table-' + this.active_tab;
         this.readData(container);
 
         this.table = new Table({
-            container: this.active_tab,
+            container: this.active_tab + 'Table',
             data: this.data,
             url: '/' + this.active_tab + '/tabledata',
             start_sort: 'DESC'
         });
+        let header, context_menu, dbl_click, slug;
 
+        if(this.active_tab === 'store'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
+                {min_with: 150, width: 'auto', name: 'Артикул', table_name: 'article'},
+                {min_with: 150, width: 200, name: 'Бренд', table_name: 'supplier'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('moneymoveDialog', '&moneymove_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('moneymoveDialog', '&moneymove_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        }
+
+        this.table.setHeader(header);
+        this.table.setContextMenu(context_menu);
+        this.table.setBblClick(dbl_click);
+        this.table.setSlug(slug);
+
+        this.table.draw(this.active_tab + 'Table', this.data);
     }
 
     prepareParams(){

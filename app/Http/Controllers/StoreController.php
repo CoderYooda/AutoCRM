@@ -113,6 +113,7 @@ class StoreController extends Controller
 
     public function tableData(StoreGetRequest $request)
     {
+
         $analogues = [];
         $manufactures = [];
         $analog_articles = [];
@@ -147,31 +148,31 @@ class StoreController extends Controller
 
         $size = (int)$request['size'] ?? 30;
 
-        $field = null;
-        $dir = null;
-
-        if (isset($request['sorters'])) {
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-        if ($field === null && $dir === null) {
-            $field = 'id';
-            $dir = 'ASC';
-        }
-
-        #Сливаем коллекции для вывода
-        $products = Article::selectRaw('articles.*, suppliers.name as supplier_name')
-            ->where('articles.company_id', Auth::user()->company_id)
-            ->whereIn('articles.id', $all_ids)
-//            ->when($field == 'supplier_name', function (Builder $q) {
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
-//            })
-            ->orderBy($field, $dir)
-            ->paginate($size);
-
-//        foreach ($products as $key => $product) {
-//            $products[$key]['supplier_name'] = $product->supplier->name;
+//        $field = null;
+//        $dir = null;
+//
+//        if (isset($request['sorters'])) {
+//            $field = $request['sorters'][0]['field'];
+//            $dir = $request['sorters'][0]['dir'];
 //        }
+//        if ($field === null && $dir === null) {
+//            $field = 'id';
+//            $dir = 'ASC';
+//        }
+
+//        #Сливаем коллекции для вывода
+//        $products = Article::selectRaw('articles.*, suppliers.name as supplier_name')
+//            ->where('articles.company_id', Auth::user()->company_id)
+//            ->whereIn('articles.id', $all_ids)
+////            ->when($field == 'supplier_name', function (Builder $q) {
+//            ->leftJoin('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
+////            })
+//            ->orderBy($field, $dir)
+//            ->paginate($size);
+//
+////        foreach ($products as $key => $product) {
+////            $products[$key]['supplier_name'] = $product->supplier->name;
+////        }
 
 
         $is_barcode = $products->where('barcode', $request->search)->count() && $products->where('article', '!=', $request->search);
@@ -182,7 +183,7 @@ class StoreController extends Controller
         }
 
         $response = [
-            'data' => $products,
+            'data' => ProductController::getArticles($request),
             'manufacturers' => $manufactures,
             'analogues' => $analogues,
             'info' => $info
@@ -209,6 +210,8 @@ class StoreController extends Controller
     public static function storeTab($request)
     {
         $page = 'Склад';
+
+
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';

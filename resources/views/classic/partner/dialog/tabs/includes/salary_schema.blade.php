@@ -18,7 +18,7 @@
                 </div>
             @endif
             <div class="input_gr_sm">
-                <textarea class="w-100 comment" placeholder="Коментарий" name="salary[{{ $index }}][comment]" id="" cols="30" rows="10">{{ isset($schema->pivot) ? $schema->pivot->comment : ''  }}</textarea>
+                <textarea class="w-100 comment" placeholder="Комментарий" name="salary[{{ $index }}][comment]" id="" cols="30" rows="10">{{ isset($schema->pivot) ? $schema->pivot->comment : ''  }}</textarea>
             </div>
         </div>
     </div>

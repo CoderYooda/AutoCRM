@@ -286,8 +286,8 @@ class ProductController extends Controller
             #Кроссы
             $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
-            $article->sp_name = $request->shop['name'];
-            $article->sp_desc = $request->shop['desc'];
+            $article->sp_name = $request->shop['name'] ?? '';
+            $article->sp_desc = $request->shop['desc'] ?? '';
             $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
 
             $article->save();
@@ -361,10 +361,29 @@ class ProductController extends Controller
 
     public static function getArticles(Request $request, $manufacture_selected = null)
     {
+
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'id';
+            $dir = 'DESC';
+        }
+
         $company_id = Auth::user()->company_id;
 
-        return Article::with('supplier')
-            ->where('company_id', $company_id)
+        $articles = Article::selectRaw('articles.*, supplier.name as supplier')
+            ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
+            ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
             })
@@ -379,7 +398,10 @@ class ProductController extends Controller
 //                $q->where('fapi_id', $request['manufacture_id']);
             })
             ->where('deleted_at', null) #fix soft delete
-            ->get();
+            ->orderBy($field, $dir)
+            ->paginate($size);
+
+        return $articles;
     }
 
     public static function searchByArticleAndBrand($articles)

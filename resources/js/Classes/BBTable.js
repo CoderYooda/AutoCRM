@@ -115,6 +115,10 @@ class Table {
         return this.request[key];
     }
 
+    setData(){
+        dd("DATA SETTED");
+    }
+
     freshData(){
         let object = this;
         window.axios({
@@ -122,7 +126,12 @@ class Table {
             url: this.url,
             data: this.request,
         }).then(function (resp) {
-           object.data = resp.data;
+            if(resp.data.current_page){
+                object.data = resp.data;
+            }else if(resp.data.data.current_page){
+                object.data = resp.data.data;
+            }
+
            object.draw();
         }).catch(function (error) {
             console.log(error);
