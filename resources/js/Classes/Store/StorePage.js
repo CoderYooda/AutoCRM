@@ -1040,7 +1040,8 @@ class storePage{
             'AdjustmentStored',
             'ShipmentStored',
             'WarrantStored',
-            'EntranceRefundStored'
+            'EntranceRefundStored',
+            'OrderStored'
         ];
 
         // //Поиск

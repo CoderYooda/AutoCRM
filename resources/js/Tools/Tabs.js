@@ -4,7 +4,7 @@ class Tabs {
 
         this.ul_element = document.getElementById(element_name);
 
-        this.a_elements = this.ul_element.querySelectorAll('a');
+        this.a_elements = this.ul_element.querySelectorAll('[data-target]');
         this.tab_elements = [];
 
         let tabs_names = [];

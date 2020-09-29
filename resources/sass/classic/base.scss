@@ -832,6 +832,10 @@ input {
     outline: none;
     box-shadow: none;
 
+    &:disabled {
+        cursor: not-allowed;
+    }
+
 }
 a.button, button {
     padding: 0px 15px;
@@ -3301,6 +3305,25 @@ div.is-invalid {
     border: 1px solid red;
 }
 
+.w-5 {
+    width: 5%;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.w-25 {
+    width: 25%;
+}
+
+.w-30 {
+    width: 30%;
+}
 
 .new_dialog {
 
@@ -3322,6 +3345,23 @@ div.is-invalid {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+
+            &.remove_button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                div {
+                    cursor: pointer;
+                    width: 12px;
+                    height: 12px;
+                    background: url(/images/remove_specification.svg);
+
+                    &:hover {
+                        background: url(/images/remove_specification_hover.svg);
+                    }
+                }
+            }
 
             input {
                 line-height: 24px;
@@ -3360,7 +3400,7 @@ div.is-invalid {
         border-right: 1px solid #E7E8EC;
         padding-left: 10px;
 
-        a {
+        span {
             &:first-child {
                 margin-top: 10px;
             }

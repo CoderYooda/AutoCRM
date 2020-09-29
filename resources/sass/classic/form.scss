@@ -615,6 +615,11 @@ label.label-sm{
 [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
     cursor: pointer;
 }
+
+button:disabled, textarea:disabled {
+    cursor: not-allowed;
+}
+
 .no-items-text{
     text-align: center;
     font-weight: 600;

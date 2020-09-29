@@ -22,7 +22,7 @@ class shipmentDialog extends Modal{
     addProduct(elem_or_id, refer = null){
         let object = this;
         window.entity.addProductToList(elem_or_id, this, 'shipment');
-        if(refer != null){
+        if(refer != null) {
             object.refer = refer;
         }
     };

@@ -156,8 +156,17 @@ class Article extends Model
         return $count_info->count - $count_info->released_count;
     }
 
+    public function getCount()
+    {
+        return $this->pivot->count ?? 1;
+    }
+
     public function getPrice(int $count = 1)
     {
+        if(isset($this->pivot->price)) {
+            return $this->pivot->price;
+        }
+
         /** @var Company $company */
         $company = Auth::user()->company->load('settings');
 

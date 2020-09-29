@@ -99,7 +99,7 @@ class ProductController extends Controller
     {
         if ($request['data'] != null && count($request['data']) > 0) {
             if ($request['type'] == 'providerorder') {
-                $providerorder = ProviderOrder::owned()->where('id', $request['providerorder_id'])->first();
+                $providerorder = ProviderOrder::find($request['providerorder_id']);
                 $products = $providerorder->articles()->whereIn('article_id', array_column($request['data'], 'id'))->get();
                 foreach ($products as $product) {
                     foreach ($request['data'] as $item) {
@@ -122,58 +122,36 @@ class ProductController extends Controller
 
         }
 
+        $product = Article::find($request['article_id']);
 
-        if ($request['type'] && $request['type'] == 'clientOrder_quick') {
-
-        } else {
-            $article = Article::find($request['article_id']);
-
-            if (!$article) {
-                return response()->json([
-                    'message' => 'Товар не найден, возможно он был удалён',
-                ], 422);
-            }
-            if (!$article->canUserTake()) {
-                return response()->json([
-                    'message' => 'Доступ к этому товару запрещен.',
-                ], 422);
-            }
+        if (!$product) {
+            return response()->json([
+                'message' => 'Товар не найден, возможно он был удалён',
+            ], 422);
         }
 
-        if ($request['type'] && $request['type'] === 'shipment') {
-            $product = $article;
-
-            $content = view(get_template() . '.shipments.dialog.product_element', compact('product','request'))->render();
-
-        } elseif ($request['type'] && $request['type'] === 'clientOrder') {
-            $product = $article;
-            $content = view(get_template() . '.client_orders.dialog.product_element', compact('product','request'))->render();
-
-        } elseif ($request['type'] && $request['type'] === 'providerOrder') {
-            $product = $article;
-            $content = view(get_template() . '.provider_orders.dialog.product_element', compact('product', 'request'))->render();
-
-        } elseif ($request['type'] && $request['type'] === 'clientOrder_quick') {
-            $product = new StdClass();
-            $product->id = $request['article_id'];
-            $product->count = $request['count'];
-            $product->price = 0;
-            $product->total = 0;
-            $content = view(get_template() . '.client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
-
-        } elseif ($request['type'] && $request['type'] == 'adjustment') {
-            $product = $article;
-            $content = view(get_template() . '.adjustments.dialog.product_element', compact('product', 'request'))->render();
-
-        } else {
-            $product = $article;
-
-            $content = view(get_template() . '.entrance.dialog.product_element', compact('product', 'request'))->render();
-
+        if (!$product->canUserTake()) {
+            return response()->json([
+                'message' => 'Доступ к этому товару запрещен.',
+            ], 422);
         }
+
+        $paths = [
+            'shipment' => '.shipments.dialog.product_element',
+            'clientOrder' => '.client_orders.dialog.product_element',
+            'providerOrder' => '.provider_orders.dialog.product_element',
+            'adjustment' => '.adjustments.dialog.product_element',
+            'order' => '.shop_orders.dialog.product_element'
+        ];
+
+        //Берем путь из массива или если нет, то стандартный
+        $path = $paths[$request['type']] ?? '.entrance.dialog.product_element';
+
+        $content = view(get_template() . $path, compact('product', 'request'));
+
         return response()->json([
             'product' => $product,
-            'html' => $content
+            'html' => $content->render()
         ]);
     }
 

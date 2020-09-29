@@ -9,14 +9,19 @@ Carbon::setToStringFormat('d.m.Y H:i');
 
 class Order extends Model
 {
-    public static $statues = [
-        0 => 'Ожидает подтверждения',
-        1 => 'Подтверждён'
-    ];
-
+    protected $table = 'orders';
     protected $guarded = [];
 
-    protected $table = 'orders';
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
+
+    public static $statues = [
+        0 => 'Ожидает подтверждения',
+        1 => 'Подтверждён',
+        2 => 'Отменён'
+    ];
 
     public function partner()
     {
@@ -25,7 +30,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Article::class, 'order_articles', 'order_id', 'article_id');
+        return $this->belongsToMany(Article::class, 'order_articles', 'order_id', 'article_id')->withPivot('price', 'count');
     }
 
     public function getStatusName()

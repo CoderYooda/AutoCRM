@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
 use App\Http\Requests\Shop\UpdateDeliveryRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
 use App\Http\Requests\Shop\UpdateWarrantyRequest;
+use App\Models\ClientOrder;
 use App\Models\Order;
 use App\Models\Shop;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -110,6 +113,18 @@ class ShopController extends Controller
                 'message' => 'Настройки успешно сохранены.'
             ]);
         });
+    }
+
+    public function getSideInfo(Request $request)
+    {
+        $order = Order::find($request->id);
+
+        $comment = $order->comment;
+
+        return response()->json([
+            'info' => view(get_template() . '.shop_orders.contact-card', compact('request', 'order'))->render(),
+            'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render()
+        ], 200);
     }
 
     public function tableData(Request $request)
@@ -245,30 +260,59 @@ class ShopController extends Controller
         });
     }
 
-    private function removeSelectedImages(Shop $shop, Request $request)
+    public function store(StoreRequest $request)
     {
-        if($request->delete_image_ids != null) {
+        return DB::transaction(function () use($request) {
 
-            foreach ($request->delete_image_ids as $image_id) {
-                $shop->removeImageById($image_id);
+            /** @var User $user */
+            $user = Auth::user();
+
+            /** @var Order $order */
+            $order = Order::find($request->order_id);
+
+            /** @var ClientOrder $clientOrder */
+            $clientOrder = null;
+
+            $products = (array)$request->products;
+
+            if($request->status == 1) {
+
+                $order->products()->sync($products);
+
+                $totalPrice = 0;
+
+                foreach ($products as &$product) {
+                    $product['total'] = $product['price'] * $product['count'];
+                    $product['store_id'] = $user->current_store;
+
+                    $totalPrice += $product['total'];
+                }
+
+                $clientOrder = ClientOrder::create([
+                    'company_id' => $user->company_id,
+                    'manager_id' => $user->partner->id,
+                    'partner_id' => $order->partner->id,
+                    'store_id' => $user->current_store,
+                    'phone' => $order->phone,
+                    'comment' => $order->comment,
+                    'summ' => $totalPrice,
+                    'itogo' => $totalPrice
+                ]);
+
+                $clientOrder->articles()->sync($products);
             }
-        }
-    }
 
-    private function uploadRequestFiles(Shop $shop, Request $request)
-    {
-        $files = [];
+            $order->update([
+                'comment' => $request->comment,
+                'status' => $request->status,
+                'clientorder_id' => $clientOrder->id ?? null
+            ]);
 
-        if($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $fileParams = $shop->uploadImage($file);
-
-                $image = $shop->aboutImages()->create($fileParams);
-
-                $files[] = $image;
-            }
-        }
-
-        return $files;
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Заказ успешно ' . ($request->status == 1 ? 'подтверждён' : 'отменён') . '.',
+                'event' => 'OrderStored'
+            ], 200);
+        });
     }
 }
