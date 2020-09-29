@@ -88,9 +88,31 @@ class Table {
         }
     }
 
-    setRequest(key, value){
-        this.request[key] = value;
-        this.freshData();
+    setRequest(key, value, fresh = true, push = false){
+        if(push){
+            if(this.request[key]){
+                this.request[key].push(value);
+            } else {
+                this.request[key] = [];
+                this.request[key].push(value);
+            }
+        } else {
+            this.request[key] = value;
+        }
+        if(fresh){
+            this.freshData();
+        }
+    }
+
+    removeFromRequest(key, value, fresh = true){
+        this.request[key].remove(value);
+        if(fresh){
+            this.freshData();
+        }
+    }
+
+    getRequest(key){
+        return this.request[key];
     }
 
     freshData(){
@@ -130,7 +152,9 @@ class Table {
             });
 
             bodyElem.addEventListener('dblclick', (e) => {
-                this.row_dblclick(elem.id);
+                if(this.row_dblclick){
+                    this.row_dblclick(elem.id);
+                }
             });
 
             bodyElem.addEventListener('mouseenter', (e) => {
@@ -138,37 +162,39 @@ class Table {
             });
 
             bodyElem.addEventListener('contextmenu', (e) => {
-                this.contexted = JSON.parse(bodyElem.getAttribute('data-data'));
-                e.preventDefault();
-                let context = this.elem.querySelector('#context');
+                if(this.context_menu.length > 0){
+                    this.contexted = JSON.parse(bodyElem.getAttribute('data-data'));
+                    e.preventDefault();
+                    let context = this.elem.querySelector('#context');
 
-                if(!bodyElem.classList.contains('selected')){
-                    this.unselectAll();
-                    this.markAsSelect(bodyElem.getAttribute('data-index'));
-                }
-
-                let tableX = e.clientX - this.elem.getBoundingClientRect().left + window.scrollX;
-                let tableY = e.clientY - this.elem.getBoundingClientRect().top + window.scrollY;
-                this.context_top = tableY;
-
-                if(context.offsetHeight + e.clientY + 100 >= window.innerHeight){
-                    tableY -= context.offsetHeight;
-                }
-
-                this.body_scroll = this.bodyContainer.scrollTop;
-                context.style.top = tableY + 'px';
-                context.style.left = tableX + 'px';
-
-                let selected = this.getSelectedIDs();
-
-                let only_group = context.querySelectorAll('[data-group="true"]');
-                only_group.forEach((elem) => {
-                    if(selected.length <= 1){
-                        elem.classList.add('hide');
-                    } else {
-                        elem.classList.remove('hide');
+                    if(!bodyElem.classList.contains('selected')){
+                        this.unselectAll();
+                        this.markAsSelect(bodyElem.getAttribute('data-index'));
                     }
-                });
+
+                    let tableX = e.clientX - this.elem.getBoundingClientRect().left + window.scrollX;
+                    let tableY = e.clientY - this.elem.getBoundingClientRect().top + window.scrollY;
+                    this.context_top = tableY;
+
+                    if(context.offsetHeight + e.clientY + 100 >= window.innerHeight){
+                        tableY -= context.offsetHeight;
+                    }
+
+                    this.body_scroll = this.bodyContainer.scrollTop;
+                    context.style.top = tableY + 'px';
+                    context.style.left = tableX + 'px';
+
+                    let selected = this.getSelectedIDs();
+
+                    let only_group = context.querySelectorAll('[data-group="true"]');
+                    only_group.forEach((elem) => {
+                        if(selected.length <= 1){
+                            elem.classList.add('hide');
+                        } else {
+                            elem.classList.remove('hide');
+                        }
+                    });
+                }
             });
 
             if(this.isSelectable) {

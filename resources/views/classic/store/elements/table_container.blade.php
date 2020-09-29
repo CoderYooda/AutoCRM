@@ -42,7 +42,7 @@
     <div class="box h-100">
         <div class="box-header" id="breadcrumbs-nav"></div>
         <div id="table-container" class="box-content h-100">
-            <div id="store-table"></div>
+            <div data-data="{{ $data }}" id="storeTable"></div>
         </div>
     </div>
 </div>

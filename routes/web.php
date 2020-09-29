@@ -168,7 +168,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
         Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
         Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
-        Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
+        Route::post('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
         Route::post('/warrant/side_info', 'WarrantController@getSideInfo')->name('GetWarrantSideInfo');
         Route::get('/warrants', 'WarrantController@selectDialog')->name('GetWarrants');
 

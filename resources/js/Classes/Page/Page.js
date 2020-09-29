@@ -1,8 +1,10 @@
 class Page {
-    constructor(target){
-        this.target = target;
-        this.data = null;
-        this.readData(this.target);
+    constructor(target = null){
+        if(target){
+            this.target = target;
+            this.data = null;
+            this.readData(this.target);
+        }
     }
 
     readData(target = null){

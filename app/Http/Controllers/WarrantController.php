@@ -231,16 +231,15 @@ class WarrantController extends Controller
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
-
-        return Warrant::select(DB::raw('
+        $warrants = Warrant::select(DB::raw('
                 warrants.created_at, warrants.created_at as date, warrants.id as id, IF(warrants.isIncoming = 1, "Приходный ордер","Расходный ордер") as type, IF(partners.type != 2, partners.fio,partners.companyName) as partner, dds_articles.name as dds, cashboxes.name as cashbox, warrants.summ
             '))
             ->leftJoin('partners', 'partners.id', '=', 'warrants.partner_id')
             ->leftJoin('dds_articles', 'dds_articles.id', '=', 'warrants.ddsarticle_id')
             ->leftJoin('cashboxes', 'cashboxes.id', '=', 'warrants.cashbox_id')
             ->where('warrants.company_id', Auth::user()->company->id)
-            ->when($request['isIncoming'] != null, function ($query) use ($request) {
-                $query->where('warrants.isIncoming', (int)$request['isIncoming']);
+            ->when($request['isIncoming'] !== null, function ($query) use ($request) {
+                $query->where('warrants.isIncoming', (bool)$request['isIncoming']);
             })
             ->when($request['partner'] != null, function ($query) use ($request) {
                 $query->whereIn('warrants.partner_id', $request['partner']);
@@ -254,6 +253,12 @@ class WarrantController extends Controller
             ->groupBy('warrants.id')
             ->orderBy($field, $dir)
             ->paginate($size);
+
+        foreach ($warrants as $warrant){
+            $warrant->date = Carbon::parse($warrant->date)->format('d.m.Y H:i');
+        }
+
+        return $warrants;
     }
 
     public static function getIncomeCount($request)

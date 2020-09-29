@@ -65,9 +65,10 @@ class SalaryPaymentsController extends Controller
             $field = $request['sorters'][0]['field'];
             $dir = $request['sorters'][0]['dir'];
         }
-        if($request['dates_range'] !== null){
+        if($request['dates_range'] !== null) {
             $dates = explode('|', $request['dates_range']);
-            //dd(Carbon::parse($dates[0]));
+            $dates[0] .= ' 00:00:00';
+            $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
         if($field === null &&  $dir === null){
@@ -79,6 +80,12 @@ class SalaryPaymentsController extends Controller
         $payments = SalaryPayments::select(DB::raw('salary_payments.id, IF(partners.type < 3, partners.fio, partners.companyName) as name,  salary_payments.summ, salary_payments.date, salary_payments.comment'))
             ->leftJoin('partners',  'partners.id', '=', 'salary_payments.partner_id')
             ->where('salary_payments.company_id', Auth::user()->company_id)
+            ->when($request['dates_range'] != null && $request['dates_range'] != 'null', function ($query) use ($request) {
+                $query->whereBetween('salary_payments.date', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->when($request['partner'] != null, function ($query) use ($request) {
+                $query->whereIn('salary_payments.partner_id', $request['partner']);
+            })
             ->orderBy($field, $dir)
             ->paginate($size);
 //        ->toSql();
