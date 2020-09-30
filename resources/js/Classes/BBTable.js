@@ -34,7 +34,7 @@ class Table {
                 }
                 element = element.parentNode;
             } while (element);
-            if(close){
+            if(close && this.elem){
                 this.elem.querySelector('#context').style.left = '-300px';
             }
 
@@ -140,7 +140,6 @@ class Table {
     }
 
     freshData(){
-        dd(this.request);
         window.axios({
             method: 'post',
             url: this.url,

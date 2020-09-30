@@ -1,0 +1,32 @@
+$base-content-width: 1288px;
+
+body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #fff;
+}
+.container{
+    width: $base-content-width;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.header{
+    .header-top{
+        height: 40px;
+        background: #FAFAFA;
+        border-bottom: 1px solid #EBEBEB;
+    }
+    .header-mid{
+        height: 116px;
+    }
+    .header-bottom{
+        height: 46px;
+        background: #272727;
+    }
+}
+.content{
+
+}
+
