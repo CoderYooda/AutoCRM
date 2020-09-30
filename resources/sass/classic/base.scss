@@ -836,6 +836,10 @@ input {
         cursor: not-allowed;
     }
 
+    &.is-invalid {
+        border: 1px solid red;
+    }
+
 }
 a.button, button {
     padding: 0px 15px;

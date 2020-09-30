@@ -72,11 +72,9 @@ class ArmTek implements ProviderInterface
 
         $items = $this->query('/ws_search/search', $params, 'POST');
 
-        foreach ($items['RESP'] as $key => &$item) {
+        foreach ($items['RESP'] as $key => $item) {
 
-            $item['index'] = $key;
-
-            $item['hash_info'] = [
+            $items['RESP'][$key]['hash_info'] = [
                 'stock' => $item['KEYZAK'],
                 'manufacturer' => $item['BRAND'],
                 'article' => $article,

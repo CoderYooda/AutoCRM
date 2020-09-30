@@ -71,8 +71,6 @@ class AvtoImport implements ProviderInterface
 
         foreach ($items as $key => $item) {
 
-            $items[$key]->index = $key;
-
             $items[$key]->hash_info = [
                 'stock' => $item->supplierCode,
                 'manufacturer' => $item->brand,

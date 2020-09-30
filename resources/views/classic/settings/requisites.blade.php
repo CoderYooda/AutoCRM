@@ -61,7 +61,7 @@
                         <input name="actual_address" type="text" class="form-control" placeholder="Ваш фактический адрес" value="{{ !$company->is_company ? $company->actual_address : '' }}">
                     </div>
 
-                    <div class="form-group mt-15">
+                    <div class="form-group mt-15 mb-10">
                         <label>Руководитель организации</label>
                         <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя организации" value="{{ !$company->is_company ? $company->owner : '' }}">
                     </div>

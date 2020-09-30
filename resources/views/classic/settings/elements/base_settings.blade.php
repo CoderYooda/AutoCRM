@@ -34,7 +34,7 @@
             </div>
         @endforeach
         @can('Редактировать настройки')
-            <button type="button" onclick="{{ $class }}.saveBaseSettingsForm(this, event)" class="button m-t">Сохранить</button>
+            <button type="button" onclick="{{ $class }}.saveBaseSettingsForm(this, event)" class="button primary m-t">Сохранить</button>
         @endcan
     </form>
 </div>

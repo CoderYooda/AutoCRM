@@ -23,7 +23,11 @@ class Company extends Model
 
     public function getDays()
     {
-        return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
+        $days = (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
+
+        if($days < 0) $days = 0;
+
+        return $days;
     }
 
     public function members()

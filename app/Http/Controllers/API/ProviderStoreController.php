@@ -136,7 +136,7 @@ class ProviderStoreController extends Controller
         return response()->json([
             'type' => 'success',
             'message' => 'Кол-во было изменено.'
-        ], 200);
+        ]);
     }
 
     public function orderCart(Providers $providers, OrderCartRequest $request)

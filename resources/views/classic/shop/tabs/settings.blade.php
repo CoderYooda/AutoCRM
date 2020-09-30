@@ -78,7 +78,7 @@
                             <label>Выберите поставщика для работы с проценкой</label>
                             <select custom_select name="supplier_id">
                                 @foreach(auth()->user()->company->getActiveServicesByCategory() as $service)
-                                    <option @if($shop->supplier_id == $service->id) selected @endif value="{{ $service->id }}">{{ $service->name }}</option>
+                                    <option @if($shop && $shop->supplier_id == $service->id) selected @endif value="{{ $service->id }}">{{ $service->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -105,7 +105,7 @@
 
                         <label class="upload_file pointer" for="image_logotype">Файл не выбран<div></div></label>
                         <input type="file" id="image_logotype" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
-                        <input type="hidden" name="image_logotype_id" value="{{ $shop->logotypeImage->id }}">
+                        <input type="hidden" name="image_logotype_id" value="{{ $shop->logotypeImage->id ?? '' }}">
                     </div>
 
                     <div class="flex-3 ml-10">
@@ -117,7 +117,7 @@
 
                         <label class="upload_file pointer" for="image_header">Файл не выбран<div></div></label>
                         <input type="file" id="image_header" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
-                        <input type="hidden" name="image_header_id" value="{{ $shop->headerImage->id }}">
+                        <input type="hidden" name="image_header_id" value="{{ $shop->headerImage->id ?? '' }}">
                     </div>
 
                 </div>
@@ -131,7 +131,7 @@
 
                     <label class="upload_file pointer" for="image_background">Файл не выбран<div></div></label>
                     <input type="file" id="image_background" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
-                    <input type="hidden" name="image_background_id" value="{{ $shop->backgroundImage->id }}">
+                    <input type="hidden" name="image_background_id" value="{{ $shop->backgroundImage->id ?? '' }}">
                 </div>
 
                 <div class="form-group">
@@ -151,7 +151,7 @@
 
                             <img src=""  alt=""/>
 
-                            <input type="text" name="" style="width: 125px;" placeholder="Ссылка">
+                            <input type="text" style="width: 125px;" placeholder="Ссылка">
                         </div>
 
                         @if($shop)
@@ -165,7 +165,7 @@
 
                                     <img data-index="{{ $loop->index }}" src="{{ $image->url }}"  alt="" />
 
-                                    <input type="text" data-error="image_url[{{ $loop->index }}]" name="image_url[{{ $loop->index }}]" class="form-control" style="width: 125px;" placeholder="Ссылка" value="{{ $image->pivot->target_url }}" />
+                                    <input type="text" data-error="image_urls[{{ $loop->index }}]" name="image_urls[{{ $loop->index }}]" class="form-control" style="width: 125px;" placeholder="Ссылка" value="{{ $image->pivot->target_url }}" />
                                 </div>
 
                             @endforeach
@@ -178,12 +178,12 @@
 
                 <div class="form-group">
                     <label>URL адрес</label>
-                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain }}">
+                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? '' }}">
                 </div>
 
                 <div class="form-group">
                     <label>Свой домен</label>
-                    <input type="text" name="domain" data-error="domain" class="form-control" placeholder="www.пример.рф" value="{{ $shop->domain }}">
+                    <input type="text" name="domain" data-error="domain" class="form-control" placeholder="www.пример.рф" value="{{ $shop->domain ?? '' }}">
                 </div>
 
                 <div class="form-group">

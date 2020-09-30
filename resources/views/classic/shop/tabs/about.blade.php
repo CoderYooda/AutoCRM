@@ -56,6 +56,16 @@
 
                 </div>
 
+                <div class="form-group">
+                    <label>SEO Заголовок</label>
+                    <textarea name="seo_about_title" class="form-control resize-none" rows="4" placeholder="Заголовок">{{ $shop->seo_about_title ?? '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>SEO Описание</label>
+                    <textarea name="seo_about_desc" class="form-control resize-none" rows="4" placeholder="Описание">{{ $shop->seo_about_desc ?? '' }}</textarea>
+                </div>
+
                 <div>
                     <button type="button" onclick="{{ $class }}.saveAbout(this);" class="button primary">Сохранить</button>
                 </div>

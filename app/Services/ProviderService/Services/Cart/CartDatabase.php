@@ -21,6 +21,8 @@ class Cart implements CartInterface
     {
         $hash = md5($product['hash_info']['stock'] . $product['hash_info']['manufacturer'] . $article . $product['hash_info']['days'] . $product['hash_info']['price']);
 
+
+
         $values = [
             'user_id' => $this->user_id,
             'provider_key' => $provider_key,

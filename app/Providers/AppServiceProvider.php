@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Models\DocumentType;
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +43,16 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Warrant::observe(\App\Observers\WarrantObserver::class);
         \App\Models\Entrance::observe(\App\Observers\EntranceObserver::class);
         \App\Models\Cashbox::observe(\App\Observers\CashboxObserver::class);
+        Order::observe(OrderObserver::class);
+
+        \View::composer([get_template() . '.documents.index'], function ($view) {
+            $view->with('documentsTypes', DocumentType::all());
+        });
+
+        \View::composer([get_template() . '.store.layout.tabs'], function ($view) {
+            $orders_count = Order::where('company_id', Auth::user()->company_id)->where('status', 0)->count();
+            $view->with('orders_count', $orders_count);
+        });
 
         \View::composer([get_template() . '.documents.index'], function ($view) {
             $view->with('documentsTypes', DocumentType::all());

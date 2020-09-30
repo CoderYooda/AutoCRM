@@ -16,9 +16,6 @@ class shopPage {
 
     linked() {
 
-        this.upload_files = [];
-        this.deleted_files = [];
-
         this.loadCroppModal();
 
         this.active_tab = this.getCurrentActiveTab();
@@ -251,79 +248,23 @@ class shopPage {
 
                 list_element.append(copy_element);
 
+                this.freshImagesIndexes();
+
             }).catch(function(response){
                 dd(response);
             }).finally(function () {
 
             });
-
-
-
-            // //Если это изображение уже было выбрано, то пропускаем
-            // if (document.querySelector('.image[data-image="' + file.name + '"]')) continue;
-            //
-            // let reader = new FileReader();
-            // reader.onload = (e) => {
-            //
-            //     let copy_element = document.querySelector('.image.copy').cloneNode(true);
-            //
-            //     copy_element.querySelector('img').src = e.target.result;
-            //
-            //     copy_element.classList.remove('d-none');
-            //     copy_element.classList.remove('copy');
-            //
-            //     copy_element.dataset.image = file.name;
-            //
-            //     let list_element = document.querySelector('.images');
-            //
-            //     list_element.append(copy_element);
-            //
-            //     this.upload_files.push(file);
-            //
-            //     this.freshInputIndexes();
-            // }
-            //
-            // reader.readAsDataURL(file);
         }
 
         element.value = '';
     }
 
-    freshInputIndexes()
-    {
-        let image_elements = document.querySelectorAll('.image');
-
-        image_elements.forEach((element, index) => {
-
-            if(index > 1) {
-
-                element.querySelector('input').name = 'image_url[' + (index - 2)  + ']';
-                element.querySelector('input').dataset.error = 'image_url[' + (index - 2)  + ']';
-
-                element.querySelector('img').dataset.index = (index - 2);
-            }
-        });
-    }
-
     removeImage(element) {
         let target_element = element.closest('.image');
-
-        let is_local = false;
-
-        this.upload_files.forEach((file, index) => {
-
-            if (file.name == target_element.dataset.image) {
-                this.upload_files.splice(index, 1);
-
-                is_local = true;
-            }
-        });
-
-        if(!is_local) {
-            this.deleted_files.push(element.dataset.id);
-        }
-
         target_element.remove();
+
+        this.freshImagesIndexes();
     }
 
     loadYandexMapAddress() {
@@ -582,18 +523,15 @@ class shopPage {
         let image_ids = [];
         let image_urls = [];
 
-        let image_elements = document.querySelectorAll('.image');
+        let image_elements = document.querySelectorAll('.image:not(.copy):not(.upload)');
 
-        image_elements.forEach((element, index) => {
+        image_elements.forEach(element => {
 
-            if(index > 1) {
+            let image_id = element.querySelector('button').dataset.id;
+            let target_url = element.querySelector('input').value;
 
-                let image_id = element.querySelector('button').dataset.id;
-                let target_url = element.querySelector('input').value;
-
-                image_ids.push(image_id);
-                image_urls.push(target_url);
-            }
+            image_ids.push(image_id);
+            image_urls.push(target_url);
         });
 
         let data = {
@@ -670,6 +608,19 @@ class shopPage {
             active_tab = 'contacts';
         }
         return active_tab;
+    }
+
+    freshImagesIndexes()
+    {
+        let image_elements = document.querySelectorAll('.image:not(.copy):not(.upload)');
+
+        image_elements.forEach((element, index) => {
+
+            console.log(element, element.querySelector('img'), element.querySelector('input'));
+
+            element.querySelector('img').dataset.index = index;
+            element.querySelector('input').dataset.error = 'image_urls[' + index + ']';
+        });
     }
 }
 

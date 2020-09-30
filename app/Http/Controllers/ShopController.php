@@ -93,7 +93,9 @@ class ShopController extends Controller
                 'name' => $request->name,
                 'address_name' => $request->address_name,
                 'address_coords' => $request->address_coords,
-                'address_desc' => $request->address_desc
+                'address_desc' => $request->address_desc,
+                'seo_contacts_title' => $request->seo_contacts_title,
+                'seo_contacts_desc' => $request->seo_contacts_desc
             ]);
 
             $shop->phones()->delete();
@@ -165,7 +167,9 @@ class ShopController extends Controller
     public function updateAbout(UpdateAboutRequest $request)
     {
         $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
-            'about_desc' => $request->about_desc
+            'about_desc' => $request->about_desc,
+            'seo_about_title' => $request->seo_about_title,
+            'seo_about_desc' => $request->seo_about_desc
         ]);
 
         $images = [];

@@ -1,4 +1,4 @@
-<div class="tab-pane p-3" id="{{$class}}_tab_shop">
+<div class="tab-pane p-3" id="{{ $class }}_tab_shop">
 
     @if($company->getSettingField('Интернет магазин'))
 
@@ -107,7 +107,7 @@
                                 @foreach(['sp_empty', 'sp_stock', 'sp_main'] as $field)
                                     <div style="margin-left: auto;">
                                         <label class="custom_checkbox mb-0">
-                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if($product && $product->stores->find($store->id) != null && $product->stores->find($store->id)->pivot->$field) checked @endif />
+                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if(!$product && $loop->first || $product && $product->stores->find($store->id) != null && $product->stores->find($store->id)->pivot->$field) checked @endif />
                                             <span></span>
                                         </label>
                                     </div>
@@ -126,7 +126,7 @@
 
     @else
 
-        <div>Активируйте интернет-магазин в <a class="ajax-nav" href="http://bbcrm/settings?active_tab=index">настройках</a>.</div>
+        <div>Активируйте интернет-магазин в <a class="ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">настройках</a>.</div>
         <div>Это бесплатно.</div>
 
     @endif

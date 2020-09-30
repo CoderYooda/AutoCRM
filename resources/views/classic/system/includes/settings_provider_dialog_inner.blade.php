@@ -37,7 +37,7 @@
 
                     <div class="form-group">
                         @if($field->type == 'text')
-                            <input class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
+                            <input type="text" class="form-control" name="fields[{{ $field->name }}]" onchange="settings.changeValue(this)" placeholder="{{ $field->placeholder }}" value="{{ $service->getServiceValueByField($field->id) }}">
                         @else
                             <select custom_select class="form-control" name="fields[{{ $field->name }}]">
                                 @forelse($provider_service->getSelectFieldValues('sales_organization') as $text => $value)
@@ -52,7 +52,7 @@
                 @endforeach
 
                 <div class="form-group text-center mb-0">
-                    <button type="button" onclick="settings.toggleService(this, {{ $service->id }})" class="button preloader-block">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
+                    <button type="button" onclick="settings.toggleService(this, {{ $service->id }})" class="button preloader-block primary">{{ $company->isServiceProviderActive($service->key) ? 'Деактивировать' : 'Активировать' }}</button>
                 </div>
 
             </div>
@@ -66,7 +66,7 @@
 
     <div class="modal-footer" style="height: 60px;">
         <button type="button" class="button float-left" data-dismiss="modal">Закрыть</button>
-        <button type="button" onclick="settings.saveService(this)" class="button float-right preloader-block">Сохранить</button>
+        <button type="button" onclick="settings.saveService(this)" class="button primary float-right preloader-block">Сохранить</button>
     </div>
 
 </form>

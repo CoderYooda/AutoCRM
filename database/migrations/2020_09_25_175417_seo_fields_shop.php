@@ -13,6 +13,11 @@ class SeoFieldsShop extends Migration
             $table->text('seo_delivery_desc')->nullable();
             $table->text('seo_warranty_title')->nullable();
             $table->text('seo_warranty_desc')->nullable();
+
+            $table->text('seo_contacts_title')->nullable();
+            $table->text('seo_contacts_desc')->nullable();
+            $table->text('seo_about_title')->nullable();
+            $table->text('seo_about_desc')->nullable();
         });
     }
 
@@ -23,6 +28,11 @@ class SeoFieldsShop extends Migration
             $table->dropColumn('seo_delivery_desc');
             $table->dropColumn('seo_warranty_title');
             $table->dropColumn('seo_warranty_desc');
+
+            $table->dropColumn('seo_contacts_title');
+            $table->dropColumn('seo_contacts_desc');
+            $table->dropColumn('seo_about_title');
+            $table->dropColumn('seo_about_desc');
         });
     }
 }

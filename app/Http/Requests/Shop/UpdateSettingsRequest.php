@@ -22,8 +22,11 @@ class UpdateSettingsRequest extends FormRequest
         if(!isset($this['show_empty'])) $this['show_empty'] = 0;
         if(!isset($this['supplier_offers'])) $this['supplier_offers'] = 0;
 
-        $this['image_ids'] = explode(',', $this['image_ids']);
-        $this['image_urls'] = explode(',', $this['image_urls']);
+        if($this['image_ids'] == null) $this['image_ids'] = [];
+        else $this['image_ids'] = explode(',', $this['image_ids']);
+
+        if($this['image_urls'] == null) $this['image_urls'] = [];
+        else $this['image_urls'] = explode(',', $this['image_urls']);
 
         return true;
     }
@@ -38,9 +41,9 @@ class UpdateSettingsRequest extends FormRequest
             'storage_days' => ['required', 'integer', 'between:7,31'],
             'supplier_id' => ['exists:services,id'],
             'supplier_percent' => ['integer', 'between:5,1000'],
-            'image_logotype_id' => ['exists:images,id'],
-            'image_header_id' => ['exists:images,id'],
-            'image_background_id' => ['exists:images,id'],
+            'image_logotype_id' => ['nullable', 'exists:images,id'],
+            'image_header_id' => ['nullable', 'exists:images,id'],
+            'image_background_id' => ['nullable', 'exists:images,id'],
             'image_ids' => ['array'],
             'image_ids.*' => ['exists:images,id'],
             'image_urls' => ['array'],

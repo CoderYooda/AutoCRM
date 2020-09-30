@@ -224,14 +224,9 @@ class storePage{
 
         input.value = '1';
 
-        let index = -1;
+        let index = parseInt(target_element.id);
 
-        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
-            console.log(i, this.items[i].index, target_element.id, this.items[i].index == target_element.id);
-            if(this.items[i].index == target_element.id) index = i;
-        }
-
-        console.log(index, target_element.id, this.items[index]);
+        console.log(this.items[index]);
 
         let data = {
             provider_key: service_input.value,
@@ -645,7 +640,7 @@ class storePage{
 
     showManufactureStores(element, manufacturer, sort = null) {
 
-        let is_desc = true;
+        let is_desc = false;
 
         let target_element = document.getElementById('brand_context_' + manufacturer);
 
@@ -706,6 +701,8 @@ class storePage{
                 let data = response.data;
 
                 this.items = data.stores;
+
+                console.log(this.items);
 
                 element.classList.remove('fa-angle-down');
                 element.classList.add('fa-angle-up');

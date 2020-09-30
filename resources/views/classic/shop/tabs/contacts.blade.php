@@ -24,7 +24,7 @@
                             @foreach($shop->phones as $phone)
                                 <div class="input-group mb-10 phone">
                                     <input type="text" name="phones[{{ $loop->index }}][number]" class="form-control phone_input mr-5" placeholder="Номер телефона" value="{{ $phone->number }}">
-                                    <input type="text" name="phones[{{ $loop->index }}][desc]" class="form-control mr-5" placeholder="Укажите, чей контакт Вы хотите добавить" value="{{ $phone->desc }}">
+                                    <input type="text" name="phones[{{ $loop->index }}][desc]" class="form-control mr-5" placeholder="Например: Бухгалтерия" value="{{ $phone->desc }}">
                                     <label data-error="phones_main" class="custom_checkbox">
                                         <input type="radio" class="not_default" name="phones_main" @if($phone->main) checked @endif value="{{ $loop->index }}" />
                                         <span></span>
@@ -39,7 +39,7 @@
                         @else
                             <div class="input-group mb-10 phone">
                                 <input type="text" name="phones[0][number]" class="form-control phone_input mr-5" placeholder="Номер телефона">
-                                <input type="text" name="phones[0][desc]" class="form-control mr-5" placeholder="Укажите, чей контакт Вы хотите добавить">
+                                <input type="text" name="phones[0][desc]" class="form-control mr-5" placeholder="Например: Бухгалтерия">
                                 <label data-error="phones_main" class="custom_checkbox">
                                     <input type="radio" class="not_default" name="phones_main" checked value="0" />
                                     <span></span>
@@ -61,7 +61,7 @@
                             @foreach($shop->contactEmails as $email)
                                 <div class="input-group mb-10 email">
                                     <input type="text" name="emails[{{ $loop->index }}][email]" class="form-control email_input mr-5" placeholder="Email адрес" value="{{ $email->email }}">
-                                    <input type="text" name="emails[{{ $loop->index }}][desc]" class="form-control mr-5" placeholder="Укажите, чей контакт Вы хотите добавить" value="{{ $email->desc }}">
+                                    <input type="text" name="emails[{{ $loop->index }}][desc]" class="form-control mr-5" placeholder="Например: Отдел кадров" value="{{ $email->desc }}">
                                     <label data-error="emails_main" class="custom_checkbox">
                                         <input type="radio" class="not_default" name="emails_main"  />
                                         <span></span>
@@ -76,7 +76,7 @@
                         @else
                             <div class="input-group mb-10 email">
                                 <input type="text" name="emails[0][email]" class="form-control email_input mr-5" placeholder="Email адрес">
-                                <input type="text" name="emails[0][desc]" class="form-control mr-5" placeholder="Укажите, чей контакт Вы хотите добавить">
+                                <input type="text" name="emails[0][desc]" class="form-control mr-5" placeholder="Например: Отдел кадров">
                                 <label data-error="emails_main" class="custom_checkbox">
                                     <input type="radio" class="not_default" name="emails_main" checked value="0" />
                                     <span></span>
@@ -93,9 +93,9 @@
 
                 <div class="form-group">
 
-                    <label>Адрес</label>
+                    <label>Адрес торговой точки</label>
 
-                    <input name="address_name" class="form-control" type="text" placeholder="Адрес" id="suggest" value="{{ $shop->address_name ?? '' }}">
+                    <input name="address_name" class="form-control" type="text" placeholder="Адрес торговой точки" id="suggest" value="{{ $shop->address_name ?? '' }}">
                     <input name="address_desc" type="text" class="form-control mt-5" placeholder="Примечание, к примеру: Вход с левой стороны здания" value="{{ $shop->address_desc ?? '' }}" />
                     <input type="hidden" name="address_coords" value="{{ $shop->address_coords ?? '' }}">
 
@@ -103,6 +103,16 @@
 
                     </div>
 
+                </div>
+
+                <div class="form-group">
+                    <label>SEO Заголовок</label>
+                    <textarea name="seo_contacts_title" class="form-control resize-none" rows="4" placeholder="Заголовок">{{ $shop->seo_contacts_title ?? '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>SEO Описание</label>
+                    <textarea name="seo_contacts_desc" class="form-control resize-none" rows="4" placeholder="Описание">{{ $shop->seo_contacts_desc ?? '' }}</textarea>
                 </div>
 
                 <div class="form-group">
