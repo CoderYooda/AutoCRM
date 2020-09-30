@@ -217,15 +217,17 @@ class StoreController extends Controller
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 2;
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : $cat_info['root_id'];
+        $breadcrumbs = CategoryController::loadBreadcrumbs($request);
 
         $data = ProductController::getArticles($request);
         $data = json_encode($data->toArray());
 
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
-            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request', 'data'));
+            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request', 'data', 'breadcrumbs'));
         }
         $trinity = null; #TODO
-        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data'));
+        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data', 'breadcrumbs'));
     }
 
     public static function entrance_refundsTab($request)

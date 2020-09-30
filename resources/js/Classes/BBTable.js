@@ -17,9 +17,28 @@ class Table {
         this.bodyContainer;
         this.last_selected = null;
         this.request = {};
-        window.addEventListener('resize', (e)=>{
-            // dd(this.elem);
-        })
+        window.addEventListener('resize', (e) => {
+            this.elem.style.width = '1px';
+            this.elem.style.height = '1px';
+
+            this.elem.style.width = this.elem.parentElement.offsetWidth + 'px';
+            this.elem.style.height = this.elem.parentElement.offsetHeight + 'px';
+        });
+
+        document.addEventListener('click', (e) => {
+            let element = e.target;
+            let close = true;
+            do {
+                if (element.classList && element.classList.contains('context')) {
+                    close = false;
+                }
+                element = element.parentNode;
+            } while (element);
+            if(close){
+                this.elem.querySelector('#context').style.left = '-300px';
+            }
+
+        });
     }
 
     setHeader(header){
@@ -58,6 +77,7 @@ class Table {
             this.elem.innerHTML = '';
             this.elem.style.height = '100%';
             this.elem.style.width = this.elem.offsetWidth + 'px';
+            this.elem.style.height = this.elem.parentElement.offsetHeight + 'px';
             this.total_height = this.elem.clientHeight;
             let container = document.createElement('div');
             container.className = 'bbtable-container';
@@ -67,36 +87,12 @@ class Table {
             this.body.addEventListener('mouseleave', (e) => {
                 this.elem.querySelector('.hover').style.top = '-60px';
             });
-            //this.body.style.height = this.total_height - 70 + 'px';
             this.body.style.height = 'calc(100% - 70px)';
             container.appendChild(this.drawHover());
             container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
             this.elem.appendChild(container);
             this.insertElems();
-
-            window.addEventListener('resize', (e) => {
-                this.elem.style.width = '1px';
-                this.elem.style.height = '1px';
-
-                this.elem.style.width = this.elem.parentElement.offsetWidth + 'px';
-                this.elem.style.height = this.elem.parentElement.offsetHeight + 'px';
-            });
-
-            document.addEventListener('click', (e) => {
-                let element = e.target;
-                let close = true;
-                do {
-                    if (element.classList && element.classList.contains('context')) {
-                        close = false;
-                    }
-                    element = element.parentNode;
-                } while (element);
-                if(close){
-                    this.elem.querySelector('#context').style.left = '-300px';
-                }
-
-            });
         } else {
             console.log("Не указан контейнер");
         }
@@ -115,6 +111,7 @@ class Table {
         }
         if(fresh){
             this.freshData();
+
         }
     }
 
@@ -129,24 +126,34 @@ class Table {
         return this.request[key];
     }
 
+    setDatas(data = null){
+        if(data && data.current_page){
+            this.data = data;
+            this.draw();
+        } else {
+            dd('неверный формат данных');
+        }
+    }
+
     setData(){
-        dd("DATA SETTED");
+
     }
 
     freshData(){
-        let object = this;
+        dd(this.request);
         window.axios({
             method: 'post',
             url: this.url,
             data: this.request,
-        }).then(function (resp) {
+        }).then( (resp) => {
+
             if(resp.data.current_page){
-                object.data = resp.data;
+                this.data = resp.data;
             }else if(resp.data.data.current_page){
-                object.data = resp.data.data;
+                this.data = resp.data.data;
             }
 
-           object.draw();
+           this.draw();
         }).catch(function (error) {
             console.log(error);
         }).then(function () {

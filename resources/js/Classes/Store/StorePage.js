@@ -257,40 +257,41 @@ class storePage extends Page{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-    loadBreadcrumbs(category_id, root_category){
-
-        let object = this;
-        window.isXHRloading = true;
-        // window.helper.insertParamUrl('category_id', category_id);
-        // window.helper.insertParamUrl('search', 'null');
-        object.category_id = category_id;
-        //document.getElementById("search").value = '';;
-        //object.table.setData('/tableproductdata', object.prepareDataForTable());
-        let data = {};
-        data.category_id = category_id;
-        data.root_category = root_category;
-        data.search = object.search;
-        window.axios({
-            async:true,
-            method: 'post',
-            url: '/category/breadcrumbs',
-            data: data
-        }).then((resp) => {
-            if(this.search != null) {
-                document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
-            }
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            window.isXHRloading = false;
-        });
-    }
+    // loadBreadcrumbs(category_id, root_category){
+    //
+    //     let object = this;
+    //     window.isXHRloading = true;
+    //     // window.helper.insertParamUrl('category_id', category_id);
+    //     // window.helper.insertParamUrl('search', 'null');
+    //     object.category_id = category_id;
+    //     //document.getElementById("search").value = '';;
+    //     //object.table.setData('/tableproductdata', object.prepareDataForTable());
+    //     let data = {};
+    //     data.category_id = category_id;
+    //     data.root_category = root_category;
+    //     data.search = object.search;
+    //     window.axios({
+    //         async:true,
+    //         method: 'post',
+    //         url: '/category/breadcrumbs',
+    //         data: data
+    //     }).then((resp) => {
+    //         if(this.search != null) {
+    //             document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
+    //         }
+    //     }).catch(function (error) {
+    //         console.log(error);
+    //     }).then(function () {
+    //         window.isXHRloading = false;
+    //     });
+    // }
 
     loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
         if(clean_search != null && clean_search){
             document.getElementById("search").value = '';
             object.search = '';
+            this.table.setRequest('search', null, false);
             window.helper.insertParamUrl('search', '');
         }
 
@@ -311,13 +312,14 @@ class storePage extends Page{
                 method: 'post',
                 url: '/category/loadview',
                 data: data
-            }).then(function (resp) {
+            }).then((resp) =>  {
                 category_block.innerHTML = resp.data.html;
-                if(!object.search){
-                    object.loadBreadcrumbs(category_id, object.root_category);
+                if(resp && resp.data){
+                    this.table.setRequest('category_id', data.category_id, false);
+                    this.table.setDatas(JSON.parse(resp.data.data));
                 }
-                if(update_data != null && update_data){
-                    object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                if(!object.search){
+                    document.getElementById('breadcrumbs-nav').innerHTML = resp.data.breadcrumbs;
                 }
                 object.initCategoryContextual();
             }).catch(function (error) {
@@ -1006,7 +1008,7 @@ class storePage extends Page{
         });
         object.linked();
         if(object.active_tab === 'store'){
-            object.loadCategory(this.root_category, true, true);
+            //object.loadCategory(this.root_category, true, true);
         }
 
         this.debouneArticleCartAmount = helper.debounce((element, count) => {
@@ -1036,10 +1038,9 @@ class storePage extends Page{
         // }
 
 
-        events.forEach(event => {
-            document.addEventListener(event, function(e){
-                object.prepareParams();
-                object.reload();
+        events.forEach((event) => {
+            document.addEventListener(event, (e) => {
+                this.table.freshData();
             });
         });
 
@@ -1173,8 +1174,8 @@ class storePage extends Page{
                 {min_with: 150, width: 200, name: 'Бренд', table_name: 'supplier'},
             ];
             context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('moneymoveDialog', '&moneymove_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('moneymoveDialog', '&moneymove_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
@@ -1231,21 +1232,16 @@ class storePage extends Page{
         }
     }
 
-    showBrands() {
-        if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
-    }
+    // showBrands() {
+    //     if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
+    // }
 
     searchInit() {
-        var object = this;
-        var searchFn;
+        let object = this;
+        let searchFn;
         let search_field = document.getElementById("search");
         if(search_field){
             searchFn = window.helper.debounce((e) => {
-                this.manufacture_show = true;
-                let manufacturer_list = document.querySelector('.search-field-container > .box');
-                if(manufacturer_list){
-                    manufacturer_list.style.display = 'none';
-                }
 
                 object.search = search_field.value;
                 window.helper.insertParamUrl('search', search_field.value);
@@ -1253,16 +1249,16 @@ class storePage extends Page{
                 if(object.search == ''){
                     object.category_id = object.root_category;
                 }
-                if(object.table) {
+                if(this.table) {
                     window.helper.insertParamUrl('category_id', 'null');
-                    object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                    this.table.setRequest('category_id', null, false);
+                    this.table.setRequest('search', object.search, false);
+
                     object.loadCategory(object.category_id);
                 }
                 else {
                     this.searchProviderStores();
                 }
-                //object.page = 1;
-                //object.reload(e);
             }, 400);
             search_field.addEventListener("keydown", searchFn);
             search_field.addEventListener("paste", searchFn);
