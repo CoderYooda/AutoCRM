@@ -1,15 +1,40 @@
 $base-content-width: 1288px;
+$default-font-size: 14px;
 
+@font-face {
+    font-family: 'Open Sans';
+    src: local('Open Sans'), local('OpenSans'), url('/fonts/opensans.woff2') format('woff2'), url('/fonts/opensans.woff') format('woff'), url('/fonts/opensans.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url('/fonts/opensanssemibold.woff2') format('woff2'), url('/fonts/opensanssemibold.woff') format('woff'), url('/fonts/opensanssemibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+*{
+    box-sizing: content-box;
+}
 body{
     margin: 0;
     padding: 0;
     width: 100%;
     background: #fff;
+    font-family: 'Open Sans';
+    font-size: $default-font-size;
 }
 .container{
     width: $base-content-width;
-    height: 100%;
     margin: 0 auto;
+    height: 100%;
+}
+
+.float-r{
+    float:right!important;
+}
+.pr-50{
+    padding-right: 50px!important;
 }
 
 .header{
@@ -17,16 +42,48 @@ body{
         height: 40px;
         background: #FAFAFA;
         border-bottom: 1px solid #EBEBEB;
+        .mini-card{
+            display: inline-block;
+        }
     }
     .header-mid{
         height: 116px;
+        .logo-container{
+            width: 270px;
+            .company-name{
+                margin-left: 20px;
+                line-height: 20px;
+            }
+        }
     }
     .header-bottom{
         height: 46px;
         background: #272727;
     }
 }
-.content{
-
+.mini-card{
+    height: 20px;
+    position: relative;
+    line-height: 20px;
+    font-weight: 600;
+    padding: 10px 0;
+    &::before{
+        content: "";
+        height: 100%;
+        width: 20px;
+        position: absolute;
+        top: 0;
+    }
+    &.pin::before{
+        background: url("/images/shop/pin.svg") center no-repeat;
+    }
+    &.phone::before{
+        background: url("/images/shop/phone.svg") center no-repeat;
+    }
+    &.mail::before{
+        background: url("/images/shop/mail.svg") center no-repeat;
+    }
+    span{
+        margin-left: 30px;
+    }
 }
-
