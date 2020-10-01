@@ -223,4 +223,29 @@ class Trinity implements ProviderInterface
 
         return true;
     }
+
+    public function getPickupAddresses(): array
+    {
+        // TODO: Implement getPickupAddresses() method.
+    }
+
+    public function getDeliveryToAddresses(): array
+    {
+        // TODO: Implement getDeliveryToAddresses() method.
+    }
+
+    public function getPaymentTypes(): array
+    {
+        // TODO: Implement getPaymentTypes() method.
+    }
+
+    public function getDeliveryTypes(): array
+    {
+        // TODO: Implement getDeliveryTypes() method.
+    }
+
+    public function getDateOfShipment(): array
+    {
+        // TODO: Implement getDateOfShipment() method.
+    }
 }

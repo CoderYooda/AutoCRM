@@ -21,8 +21,6 @@ class Cart implements CartInterface
     {
         $hash = md5($product['hash_info']['stock'] . $product['hash_info']['manufacturer'] . $article . $product['hash_info']['days'] . $product['hash_info']['price']);
 
-
-
         $values = [
             'user_id' => $this->user_id,
             'provider_key' => $provider_key,
@@ -95,6 +93,11 @@ class Cart implements CartInterface
         ];
 
         return DB::table($this->table)->where($values)->exists();
+    }
+
+    public function removeProductById($id)
+    {
+        return DB::table('providers_cart')->where('id', $id)->delete();
     }
 
     public function removeProduct($provider, $delivery_key, $manufacturer, $article)

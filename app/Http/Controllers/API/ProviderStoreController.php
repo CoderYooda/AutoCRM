@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\PermissionController;
+use App\Http\Requests\DeleteCartRequest;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
+use App\Models\User;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services;
@@ -139,13 +141,32 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function orderCart(Providers $providers, OrderCartRequest $request)
+    public function deleteCart(Cart $cart, DeleteCartRequest $request)
     {
-        dd($request->all());
+        $cart->removeProductById($request->id);
 
-        $user_id = Auth::id();
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Позиция успешно удалена.'
+        ]);
+    }
 
-        $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
+    public function resetCart(Cart $cart)
+    {
+        $cart->clear();
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Корзина успешно очищена.'
+        ]);
+    }
+
+    public function orderCart(Cart $cart, Providers $providers, OrderCartRequest $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $ordersCollection = $cart->getProducts();
 
         $ordersKeys = $ordersCollection->pluck('provider_key')->unique('provider_key')->toArray();
 
@@ -157,15 +178,25 @@ class ProviderStoreController extends Controller
 
         /** @var ProviderInterface $provider */
         foreach ($providers->activated() as $provider) {
-            $key = $provider->getServiceKey();
+            $provider_key = $provider->getServiceKey();
 
-            if(!in_array($key, $ordersKeys)) continue;
+            if(!in_array($provider_key, $ordersKeys)) continue;
 
-            $provider->sendOrder($orders[$key]);
+            $data = [
+                'orders' => $orders[$provider_key],
+                'comment' => $request->comment,
+                'delivery_type_id' => $request->delivery_type_id,
+                'payment_type_id' => $request->payment_type_id,
+                'pickup_address_id' => $request->pickup_address_id,
+                'delivery_address_id' => $request->delivery_address_id,
+                'date_shipment_id' => $request->date_shipment_id,
+            ];
+
+            $provider->sendOrder($data);
 
             DB::table('providers_cart')->where([
-                'user_id' => $user_id,
-                'provider_key' => $key
+                'user_id' => $user->id,
+                'provider_key' => $provider_key
             ])->delete();
         }
 
@@ -175,26 +206,61 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public static function ProviderCartDialog(Request $request)
+    public static function providerCartDialog(Request $request)
     {
+        $providers = app(Providers::class);
+        $cart = app(Cart::class);
+
         PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');
 
         $class = 'providerCartDialog';
 
-        $user_id = Auth::id();
+        $ordersCollection = $cart->getProducts();
 
-        $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
+        $deliveryInfo = [];
+
+        /** @var ProviderInterface $provider */
+        foreach ($providers->activated() as $provider) {
+            $service_key = $provider->getServiceKey();
+
+            $deliveryInfo[$service_key] = [
+                'Список способов доставки' => [
+                    'params' => $provider->getDeliveryTypes(),
+                    'field' => 'delivery_type_id'
+                ],
+                'Список способов оплаты' => [
+                    'params' => $provider->getPaymentTypes(),
+                    'field' => 'payment_type_id'
+                ],
+                'Список офисов самовывоза' => [
+                    'params' => $provider->getPickupAddresses(),
+                    'field' => 'pickup_address_id'
+                ],
+                'Список адресов доставки' => [
+                    'params' => $provider->getDeliveryToAddresses(),
+                    'field' => 'delivery_address_id'
+                ],
+                'Список дат отгрузки' => [
+                    'params' => $provider->getDateOfShipment(),
+                    'field' => 'date_shipment_id'
+                ]
+            ];
+        }
 
         $orders = [];
+
+        $total_price = 0;
 
         foreach ($ordersCollection as $order) {
 
             $order->data = json_decode($order->data);
 
             $orders[$order->provider_key][] = $order;
+
+            $total_price += $order->data->hash_info->price * $order->count;
         }
 
-        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders'));
+        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders', 'total_price', 'deliveryInfo'));
 
         return response()->json([
             'tag' => $class,

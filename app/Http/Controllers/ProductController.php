@@ -157,7 +157,7 @@ class ProductController extends Controller
 
     public static function productDialog(Request $request)
     {
-        $product = Article::with('specifications')->find($request['product_id']);
+        $product = Article::with('specifications', 'entrances', 'stores')->find($request['product_id']);
 
         $tag = 'productDialog' . ($product->id ?? '');
 
@@ -169,13 +169,11 @@ class ProductController extends Controller
 
         $company = Auth::user()->company;
 
-        $stores = Store::owned()->get();
-
         $category = Category::find($category_select);
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'stores', 'request'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request'))->render(),
             'product' => $product
         ]);
     }

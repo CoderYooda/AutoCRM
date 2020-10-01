@@ -76,6 +76,23 @@ class Article extends Model
             ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price', 'sp_main', 'sp_empty', 'sp_stock');
     }
 
+    public function getStorageZone($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_zone : '';
+    }
+    public function getStorageRack($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_rack : '';
+    }
+    public function getStorageVert($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_vertical : '';
+    }
+    public function getStorageHor($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_horizontal : '';
+    }
+
     public function decrementFromEntrance(int $count)
     {
         $company = Auth::user()->company->load('settings');
@@ -212,7 +229,7 @@ class Article extends Model
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
-            ->withPivot('price', 'count', 'released_count');
+            ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 
     public static function makeCorrectArticle(string $article)

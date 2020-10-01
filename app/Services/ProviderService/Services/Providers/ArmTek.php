@@ -74,6 +74,8 @@ class ArmTek implements ProviderInterface
 
         foreach ($items['RESP'] as $key => $item) {
 
+            $items['RESP'][$key]['index'] = $key;
+
             $items['RESP'][$key]['hash_info'] = [
                 'stock' => $item['KEYZAK'],
                 'manufacturer' => $item['BRAND'],
@@ -93,7 +95,7 @@ class ArmTek implements ProviderInterface
             $delivery_days = Carbon::now()->diffInDays($delivery_timestamp);
 
             $results[] = [
-                'index' => $key,
+                'index' => $item['index'],
                 'name' => $item['KEYZAK'],
                 'code' => $item['ARTID'],
                 'delivery' => $delivery_days,
@@ -188,6 +190,31 @@ class ArmTek implements ProviderInterface
 
     public function sendOrder(array $products): bool
     {
-        // TODO: Implement sendOrder() method.
+        return true;
+    }
+
+    public function getPickupAddresses(): array
+    {
+        return [];
+    }
+
+    public function getDeliveryToAddresses(): array
+    {
+        return [];
+    }
+
+    public function getPaymentTypes(): array
+    {
+        return [];
+    }
+
+    public function getDeliveryTypes(): array
+    {
+        return [];
+    }
+
+    public function getDateOfShipment(): array
+    {
+        return [];
     }
 }

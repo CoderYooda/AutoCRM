@@ -84,7 +84,7 @@
 
                 <div class="elements mt-15">
 
-                    @foreach($stores as $store)
+                    @foreach($product->stores as $store)
 
                         <div class="element relative">
                             <div class="element-title">

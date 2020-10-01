@@ -30,7 +30,7 @@ class DialogController extends Controller
             //Document
             'documentDialog'            => [DocumentController::class, 'dialog'],
             //Cart
-            'ProviderCartDialog'        => [ProviderStoreController::class, 'ProviderCartDialog'],
+            'ProviderCartDialog'        => [ProviderStoreController::class, 'providerCartDialog'],
             //Supplier
             'selectSupplier'            => [SupplierController::class, 'selectSupplierDialog'],
             'supplierDialog'            => [SupplierController::class, 'supplierDialog'],

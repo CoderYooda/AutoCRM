@@ -211,6 +211,10 @@ class storePage{
             });
     }
 
+    registerProviderOrder(element) {
+        window.openDialog('ProviderCartDialog');
+    }
+
     addToCart(element) {
         let target_element = element.closest('tr');
 
@@ -224,7 +228,13 @@ class storePage{
 
         input.value = '1';
 
-        let index = parseInt(target_element.id);
+        let element_index = parseInt(target_element.id);
+
+        let index = -1;
+
+        this.items.forEach((model, array_index) => {
+            if(model.index == element_index) index = array_index;
+        });
 
         console.log(this.items[index]);
 
