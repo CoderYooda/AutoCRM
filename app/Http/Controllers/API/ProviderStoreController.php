@@ -29,9 +29,7 @@ class ProviderStoreController extends Controller
         $manufacturers = [];
         $errors = [];
 
-        foreach ($providers->activated() as $provider) {
-
-            $service_key = $provider->getServiceKey();
+        foreach ($providers->activated() as $service_key => $provider) {
 
             try {
                 $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
@@ -108,17 +106,31 @@ class ProviderStoreController extends Controller
     {
         $url = "http://ws.armtek.ru/api/ws_user/getUserVkorgList?format=json";
 
-        $result = file_get_contents($url, null, stream_context_create([
-            'http' => [
-                'method' => 'GET',
-                'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode("{$request->login}:{$request->password}") . "\r\n",
-            ],
-        ]));
+        $response = null;
 
-        $result = json_decode($result);
+        try {
 
-        return response()->json($result->RESP);
+            $response = file_get_contents($url, null, stream_context_create([
+                'http' => [
+                    'method' => 'GET',
+                    'header' => 'Content-Type: application/json' . "\r\n"
+                        . 'Authorization: Basic ' . base64_encode("{$request->login}:{$request->password}") . "\r\n",
+                ],
+            ]));
+        }
+        catch (\Exception $exception) {
+
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Ошибка авторизации: Проверьте правильность ввода логина и пароля, а так же IP адреса.'
+            ], 422);
+        }
+
+        $result = json_decode($response, true);
+
+        return response()->json([
+            'params' => $result['RESP']
+        ]);
     }
 
     public function addCart(Cart $cart, AddCartRequest $request)
@@ -173,6 +185,11 @@ class ProviderStoreController extends Controller
         $orders = [];
 
         foreach ($ordersCollection as $order) {
+
+            if(isset($request->orders[$order->id]['count'])) {
+                $order->count = $request->orders[$order->id]['count'];
+            }
+
             $orders[$order->provider_key][] = $order;
         }
 
@@ -220,10 +237,18 @@ class ProviderStoreController extends Controller
         $deliveryInfo = [];
 
         /** @var ProviderInterface $provider */
-        foreach ($providers->activated() as $provider) {
-            $service_key = $provider->getServiceKey();
+        foreach ($providers->activated() as $service_key => $provider) {
 
             $deliveryInfo[$service_key] = [
+                'Список адресов доставки' => [
+                    'params' => $provider->getDeliveryToAddresses(),
+                    'field' => 'delivery_address_id',
+                    'onclick' => 'changeDeliveryAddress'
+                ],
+                'Список офисов самовывоза' => [
+                    'params' => $provider->getPickupAddresses(),
+                    'field' => 'pickup_address_id'
+                ],
                 'Список способов доставки' => [
                     'params' => $provider->getDeliveryTypes(),
                     'field' => 'delivery_type_id'
@@ -231,14 +256,6 @@ class ProviderStoreController extends Controller
                 'Список способов оплаты' => [
                     'params' => $provider->getPaymentTypes(),
                     'field' => 'payment_type_id'
-                ],
-                'Список офисов самовывоза' => [
-                    'params' => $provider->getPickupAddresses(),
-                    'field' => 'pickup_address_id'
-                ],
-                'Список адресов доставки' => [
-                    'params' => $provider->getDeliveryToAddresses(),
-                    'field' => 'delivery_address_id'
                 ],
                 'Список дат отгрузки' => [
                     'params' => $provider->getDateOfShipment(),

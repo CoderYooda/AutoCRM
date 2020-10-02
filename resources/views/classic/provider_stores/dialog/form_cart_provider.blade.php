@@ -39,7 +39,7 @@
                                     <td>
                                         <span class="price_elem">{{ correct_price($order->data->hash_info->price) }}</span> ₽
                                     </td>
-                                    <td><input type="text" class="count_elem" name="count[{{ $order->id }}]" style="width: 60px; text-align: center;" value="{{ $order->count }}"></td>
+                                    <td><input type="text" class="count_elem" name="orders[{{ $order->id }}][count]" style="width: 60px; text-align: center;" value="{{ $order->count }}"></td>
                                     <td>
                                         <span class="total_elem">{{ correct_price($order->data->hash_info->price * $order->count) }}</span> ₽
                                         <i class="fa fa-trash ml-15 pointer" aria-hidden="true" onclick="{{ $class }}.removeProduct(this, {{ $order->id }});"></i>
@@ -61,7 +61,7 @@
                             <label>{{ $infoName }}:</label>
 
                             <div style="width: 70%;">
-                                <select custom_select name="{{ $infoParams['field'] }}">
+                                <select @isset($infoParams['onclick']) onchange="{{ $class . '.' . $infoParams['onclick'] }}(this);" @endisset custom_select name="{{ $infoParams['field'] }}">
                                     @foreach($infoParams['params'] as $id => $name)
                                         <option value="{{ $id }}">{{ $name }}</option>
                                     @endforeach

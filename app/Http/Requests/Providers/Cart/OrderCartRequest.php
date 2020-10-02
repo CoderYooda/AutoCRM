@@ -17,11 +17,13 @@ class OrderCartRequest extends FormRequest
     {
         return [
             'comment' => ['max:512'],
-            'delivery_type_id' => ['required', 'string', 'max:144'],
-            'payment_type_id' => ['required', 'string', 'max:144'],
-            'pickup_address_id' => ['required', 'string', 'max:144'],
-            'delivery_address_id' => ['required', 'string', 'max:144'],
-            'date_shipment_id' => ['required', 'string', 'max:144']
+            'delivery_type_id' => ['nullable', 'string', 'max:144'],
+            'payment_type_id' => ['nullable', 'string', 'max:144'],
+            'pickup_address_id' => ['nullable', 'string', 'max:144'],
+            'delivery_address_id' => ['nullable', 'string', 'max:144'],
+            'date_shipment_id' => ['nullable', 'string', 'max:144'],
+            'orders' => ['array'],
+            'orders.*.count' => ['required', 'between:1,99']
         ];
     }
 

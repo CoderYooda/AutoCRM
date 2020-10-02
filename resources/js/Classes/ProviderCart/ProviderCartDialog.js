@@ -85,6 +85,24 @@ class providerCartDialog extends Modal{
         IMask(element, options);
     }
 
+    changeDeliveryAddress(element) {
+
+        setTimeout(() => {
+
+            let selected_id = parseInt(element.value);
+
+            let target_element = this.current_dialog.querySelector('[name="pickup_address_id"]').closest('.form-group');
+
+            if(target_element) {
+
+                let classList = target_element.classList;
+
+                selected_id != 0 ? classList.add('d-none') : classList.remove('d-none');
+            }
+
+        }, 100);
+    }
+
     clearCart(element) {
         let tr_elements = this.current_dialog.querySelectorAll('tbody tr');
 
@@ -107,7 +125,7 @@ class providerCartDialog extends Modal{
 
         window.axform.send(element, (response) => {
             if(response.status === 200) {
-                //
+                this.finitaLaComedia(true);
             }
         });
     }

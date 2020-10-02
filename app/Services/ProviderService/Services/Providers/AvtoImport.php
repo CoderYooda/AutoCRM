@@ -3,7 +3,18 @@
 
 namespace App\Services\ProviderService\Services\Providers;
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProviderOrdersController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Requests\ProductRequest;
+use App\Http\Requests\ProviderOrdersRequest;
+use App\Http\Requests\SupplierRequest;
+use App\Models\Article;
+use App\Models\CartProviderOrder;
 use App\Models\Company;
+use App\Models\Partner;
+use App\Models\Supplier;
+use App\Models\User;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,12 +32,13 @@ class AvtoImport implements ProviderInterface
     protected $login = null;
     protected $password = null;
 
-    protected $user_id = null;
+    /** @var User $user */
+    protected $user = null;
 
     public function __construct()
     {
         $this->company = Auth::user()->company;
-        $this->user_id = Auth::id();
+        $this->user = Auth::user();
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = md5($this->company->getServiceFieldValue($this->service_key, 'password'));
@@ -232,48 +244,129 @@ class AvtoImport implements ProviderInterface
         return $results;
     }
 
+    public function getOrdersStatuses(): array
+    {
+        $numbers = CartProviderOrder::where([
+            'company_id' => $this->company->id,
+            'service_key' => $this->service_key
+        ])->pluck('number')->toArray();
+
+        $params = [
+            'orders' => $numbers
+        ];
+
+        return $this->query('orders/list/', $params, 'GET');
+    }
+
     public function sendOrder(array $data): bool
     {
-        $products = $data['products'];
-
         //Очищаем корзину от старых заказов
         $this->query('basket/clear/', [], 'POST');
 
         $orders = [];
 
-        foreach ($products as $product) {
-            $data = json_decode($product->data);
+        foreach ($data['orders'] as $order) {
+            $orderInfo = json_decode($order->data);
 
             $orders[] = [
-                'number' => $data->hash_info->article,
-                'brand' => $data->hash_info->manufacturer,
-                'supplierCode' => $data->supplierCode,
-                'itemKey' => $data->itemKey,
-                'quantity' => $product->count
+                'number' => $orderInfo->number,
+                'brand' => $orderInfo->brand,
+                'supplierCode' => $orderInfo->supplierCode,
+                'itemKey' => $orderInfo->itemKey,
+                'quantity' => $order->count
             ];
         }
 
         $params = [
-            'positions' => $orders
-        ];
-
-        $response = $this->query('basket/add/', $params, 'POST');
-
-        $params = [
+            'positions' => $orders,
             'shipmentMethod' => $data['delivery_type_id'],
             'paymentMethod' => $data['payment_type_id'],
-            'shipmentAddress' => $delivery_id,
-            'shipmentOffice' => $office_id,
-            'shipmentDate' => [],
+            'shipmentAddress' => $data['delivery_address_id'],
+            'shipmentOffice' => $data['pickup_address_id'],
+            'shipmentDate' => $data['date_shipment_id'],
             'comment' => $data['comment']
         ];
 
-//        $response = $this->query('basket/order/', $params, 'POST');
+//        $response = $this->query('orders/instant', $params, 'POST');
+//
+//        foreach ($response['orders'] as $order_id => $orderInfo) {
+//            CartProviderOrder::create([
+//                'company_id' => $this->user->company_id,
+//                'user_id' => $this->user->id,
+//                'service_key' => $this->service_key,
+//                'number' => $order_id
+//            ]);
+//        }
 //
 //        DB::table('providers_cart')->where([
-//            'user_id' => $this->user_id,
+//            'user_id' => $this->user->id,
 //            'provider_key' => $this->service_key
 //        ])->delete();
+
+        //--------- Создание заявки поставщику на складе
+
+        $products = [];
+
+        $supplierController = new SupplierController();
+        $supplierRequest = new SupplierRequest();
+
+        foreach ($data['orders'] as $order) {
+            $orderInfo = json_decode($order->data, true);
+
+            //Создание производителя
+            $supplierRequest['name'] = $orderInfo['brand'];
+
+            $supplierController->store($supplierRequest);
+            $supplier = $supplierController::$supplier;
+
+            //Создание продукта
+
+            $uniqueFields = [
+                'supplier_id' => $supplier->id,
+                'article' => $orderInfo['hash_info']['article']
+            ];
+
+            $dataFields = [
+                'company_id' => $this->company->id,
+                'category_id' => 2,
+                'creator_id' => $this->user->id,
+                'supplier_id' => $supplier->id,
+                'foundstring' => Article::makeFoundString($orderInfo['hash_info']['article'] . $supplier->name . $orderInfo['description']),
+                'article' => $orderInfo['hash_info']['article'],
+                'name' => $orderInfo['description'],
+                'fapi_id' => $supplier->fapi_id ?? null
+            ];
+
+            $product = Article::firstOrCreate($uniqueFields, $dataFields);
+
+            if(!isset($products[$product->id]['count'])) $products[$product->id]['count'] = 0;
+            if(!isset($products[$product->id]['price'])) $products[$product->id]['price'] = 0;
+
+            $products[$product->id] = [
+                'count' => $order->count,
+                'price' => $orderInfo['hash_info']['price']
+            ];
+        }
+
+        $providerPartner = Partner::firstOrCreate([
+            'company_id' => $this->company->id,
+            'category_id' => 6,
+            'store_id' => $this->user->current_store,
+            'type' => 2,
+            'comment' => 'Автоматически созданный контакт',
+            'opf' => 'ООО',
+            'companyName' => 'AvtoImport',
+        ]);
+
+        $providerController = new ProviderOrdersController();
+        $providerRequest = new ProviderOrdersRequest();
+
+        $providerRequest['products'] = $products;
+        $providerRequest['partner_id'] = $providerPartner->id;
+        $providerRequest['nds'] = 1;
+        $providerRequest['nds_included'] = 0;
+
+        $providerController->store($providerRequest);
 
         return true;
     }

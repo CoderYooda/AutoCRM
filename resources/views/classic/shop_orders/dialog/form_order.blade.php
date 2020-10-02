@@ -37,7 +37,7 @@
 
         <div class="d-flex">
 
-            <div id="order_tabs" class="tabs_links tab_links">
+            <div id="order_tabs" class="tab_links">
                 <span class="pointer active" data-target="tab_main">Основное</span>
                 <span class="pointer" data-target="tab_products">Товары</span>
             </div>

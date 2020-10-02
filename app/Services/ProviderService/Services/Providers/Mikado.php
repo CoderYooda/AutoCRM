@@ -203,4 +203,9 @@ class Mikado implements ProviderInterface
     {
         // TODO: Implement sendOrder() method.
     }
+
+    public function getOrdersStatuses(): array
+    {
+        // TODO: Implement getOrdersStatuses() method.
+    }
 }

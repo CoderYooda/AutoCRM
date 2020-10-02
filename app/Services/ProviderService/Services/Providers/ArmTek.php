@@ -217,4 +217,9 @@ class ArmTek implements ProviderInterface
     {
         return [];
     }
+
+    public function getOrdersStatuses(): array
+    {
+        // TODO: Implement getOrdersStatuses() method.
+    }
 }

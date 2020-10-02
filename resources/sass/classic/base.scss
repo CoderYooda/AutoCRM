@@ -3329,6 +3329,16 @@ div.is-invalid {
     width: 30%;
 }
 
+#ajax-table-provider_orders {
+    .tab {
+        display: none;
+
+        &.active {
+            display: flex;
+        }
+    }
+}
+
 .new_dialog {
 
     .add_product_button {

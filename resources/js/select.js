@@ -33,6 +33,7 @@ window.applySelects = function() {
 
                         let evt = document.createEvent("HTMLEvents");
                         evt.initEvent("change", false, true);
+
                         s.dispatchEvent(evt);
 
                         sl = s.length;

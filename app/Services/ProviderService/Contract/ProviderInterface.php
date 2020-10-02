@@ -29,6 +29,8 @@ interface ProviderInterface
 
     public function getSelectFieldValues(string $field_id): array;
 
+    public function getOrdersStatuses(): array;
+
     public function checkConnect(array $fields): bool;
 
     public function sendOrder(array $products): bool;

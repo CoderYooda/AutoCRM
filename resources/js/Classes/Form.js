@@ -4,7 +4,7 @@ class AxForm{
 
         window.event.preventDefault();
 
-        togglePreloader(elem, true);
+        if(elem) togglePreloader(elem, true);
 
         let dialog = elem.closest(".dialog");
         let form = elem.closest("form");
@@ -157,7 +157,7 @@ class AxForm{
             // }
             if(callback != null) callback(error.response);
         }).finally(() => {
-            togglePreloader(elem, false);
+            if(elem) togglePreloader(elem, false);
         });
     }
 }

@@ -37,6 +37,11 @@ class User extends Authenticatable
         return $this->partner->store()->first();
     }
 
+    public function getProvidersCartOrders()
+    {
+        return $this->hasOne(CartProviderOrder::class);
+    }
+
     public function attachToCompany($company)
     {
         $this->update(['company_id' => $company->id]);

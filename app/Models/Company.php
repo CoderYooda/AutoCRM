@@ -59,9 +59,7 @@ class Company extends Model
     {
         return $this->serviceproviders()
             ->where('category_id', $category_id)
-            ->whereHas('serviceproviders', function (Builder $query) {
-                $query->where('enabled', 1);
-            })
+            ->where('enabled', 1)
             ->orderBy('sort')
             ->get();
     }

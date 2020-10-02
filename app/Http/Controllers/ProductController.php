@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Model\Catalog\Product;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\ProviderOrder;
@@ -12,14 +11,15 @@ use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Auth;
-use App\Http\Controllers\Providers\TrinityController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use stdClass;
 
 class ProductController extends Controller
 {
     private static $root_category = 2;
+
+    /** @var Article $product */
+    public static $product = null;
 
     public static function chequeDialog(Request $request)
     {
@@ -167,13 +167,15 @@ class ProductController extends Controller
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
+        $stores = $product->stores ?? Store::owned()->get();
+
         $company = Auth::user()->company;
 
         $category = Category::find($category_select);
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores'))->render(),
             'product' => $product
         ]);
     }
@@ -258,6 +260,8 @@ class ProductController extends Controller
                 $article->company_id = Auth::user()->company_id;
                 $this->message = 'Товар сохранён';
             }
+
+            self::$product = $article;
 
             #Кроссы
             $article->fapi_id = $supplier->fapi_id;

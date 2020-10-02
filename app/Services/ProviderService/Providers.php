@@ -25,7 +25,10 @@ class Providers
         $providers = [];
 
         foreach ($this->providers as $provider) {
-            if($provider->isActivated()) $providers[] = $provider;
+
+            $provider_key = $provider->getServiceKey();
+
+            if($provider->isActivated()) $providers[$provider_key] = $provider;
         }
 
         return $providers;

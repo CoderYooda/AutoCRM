@@ -244,7 +244,7 @@ class ProviderOrdersController extends Controller
             }
 
             #Отнимаем с баланса контакта
-            $provider_order->partner()->first()->subtraction($provider_order->itogo);
+            $provider_order->partner->subtraction($provider_order->itogo);
 
             $this->message = 'Заказ поставщику обновлен';
 

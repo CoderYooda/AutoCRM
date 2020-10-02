@@ -93,32 +93,35 @@ class settingsPage{
 
             select_element.innerHTML = '';
 
+            togglePreloader(select_element, true);
+
             let login = document.querySelector('[name="fields[login]"]').value;
             let password = input.value;
 
             axios.get('/provider_stores/armtek/sales_organization', {
-                    params: {
-                        login: login,
-                        password: password
-                    }
-                })
+                params: {
+                    login: login,
+                    password: password
+                }
+            })
                 .then(response => {
-
                     let data = response.data;
 
-                    Object.keys(data).forEach(key => {
-
-                        let value = data[key];
+                    Object.values(data.params).forEach(item => {
 
                         let option_element = document.createElement('option');
-                        option_element.value = value.VKORG;
-                        option_element.innerText = value.PROGRAM_NAME;
+
+                        option_element.value = item.VKORG;
+                        option_element.innerText = item.PROGRAM_NAME;
 
                         select_element.add(option_element);
                     });
                 })
                 .catch(response => {
                     console.log(response);
+                })
+                .finally(response => {
+                    togglePreloader(select_element, false);
                 });
         }
     }

@@ -9,7 +9,7 @@
         </thead>
         <tbody>
         {{--{{ dd($stores) }}--}}
-        @foreach($product->stores as $store)
+        @foreach($stores as $store)
             <tr>
                 <td>
                     {{ $store->name }}

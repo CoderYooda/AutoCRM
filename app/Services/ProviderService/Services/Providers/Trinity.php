@@ -248,4 +248,9 @@ class Trinity implements ProviderInterface
     {
         // TODO: Implement getDateOfShipment() method.
     }
+
+    public function getOrdersStatuses(): array
+    {
+        // TODO: Implement getOrdersStatuses() method.
+    }
 }
