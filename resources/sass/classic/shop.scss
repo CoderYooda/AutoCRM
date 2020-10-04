@@ -338,6 +338,9 @@ body{
         object-fit: contain;
         margin-top: 65px;
     }
+    .popular-products{
+        width: 100%;
+    }
     .product{
         height: 460px;
         background: #fff;
@@ -594,6 +597,9 @@ body{
         .info{
 
         }
+    }
+    & > div > div > div > .product{
+        width: 100%!important;
     }
     .controls{
         position: absolute;
