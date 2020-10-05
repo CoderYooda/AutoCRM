@@ -80,8 +80,34 @@ body{
 .d-flex{
     display: flex;
 }
+.user-header-img{
+    display: none;
+}
+.user-body-img{
+    display: none;
+}
+
+.container.bg-white{
+    padding: 0 20px;
+    background: #fff;
+    //&:before{
+    //    content: "";
+    //    position: absolute;
+    //    background: #fff;
+    //    width: $base-content-width + 40px;
+    //    height: 100%;
+    //    margin: 0 auto;
+    //    left: calc(50% - (#{$base-content-width} + 40px) / 2);
+    //    z-index: -1;
+    //}
+}
 
 .header{
+
+    position: relative;
+    .header-mid{
+    }
+
     .header-top{
         height: 40px;
         background: #FAFAFA;
@@ -240,9 +266,82 @@ body{
         }
     }
 }
+/* MODALS */
+.modal-holder{
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    .modal-block{
+        width: 600px;
+        height: auto;
+        min-height: 200px;
+        background: #fff;
+        margin: auto;
+        margin-top: 100px;
+        position: relative;
+        padding: 60px;
+        h3{
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .description{
+            margin-bottom: 40px;
+        }
+        .characteristics{
+            .item{
+                display: flex;
+                margin-bottom: 15px;
+                .key{
+                    width: 180px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .item{
+                    flex: 1;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+    .modal-close{
+        background: url(/images/shop/close.svg) center no-repeat;
+        width: 24px;
+        height: 24px;
+        right: 24px;
+        top: 24px;
+        position: absolute;
+        cursor: pointer;
+    }
+}
+/* END MODALS */
 .body{
+    position: relative;
+    &:before{
+        content: "";
+        position: absolute;
+        background: #fff;
+        width: 1328px;
+        height: 100%;
+        margin: 0 auto;
+        left: calc(50% - (1288px + 40px) / 2);
+        z-index: -1;
+    }
+
+    .head-slider-container{
+        height: 440px;
+        overflow: hidden;
+    }
     .slider{
-        margin-top: 20px;
+        padding-top: 20px;
         position: relative;
         .controls{
             position: absolute;
@@ -320,7 +419,7 @@ body{
         }
     }
     .popular{
-        margin-top: 62px;
+        padding-top: 62px;
         h2{
             padding-right: 140px;
             white-space: nowrap;
@@ -358,11 +457,14 @@ body{
     }
     &.grid-4{
         display: flex;
+        max-height: 462px;
+        .popular-products{
+            border: 1px solid #E1E1E1;
+        }
         .product{
             width: 25%;
             float: left;
-            border: 1px solid #E1E1E1;
-            border-left: none;
+            border-right: 1px solid #E1E1E1;
             box-sizing: border-box;
             padding: 32px;
             position: relative;
@@ -439,9 +541,7 @@ body{
 
             }
         }
-        .product:first-child{
-            border-left:1px solid #E1E1E1;
-        }
+
         .product-name{
             text-align: center;
             line-height: 22px;
@@ -664,6 +764,32 @@ body{
         margin-left: 30px;
     }
 }
+.paginator{
+    padding: 40px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #404040;
+    .item{
+        a{
+            text-decoration: none;
+            color: #404040;
+        }
+        a:hover{
+            text-decoration: underline;
+            color: #3c3840;
+        }
+        position: relative;
+        padding-right: 10px;
+        &:not(:last-child):after{
+            content: "/";
+            position: absolute;
+            right: 0px;
+        }
+    }
+    .item:last-child{
+        color: #989898;
+    }
+}
 .footer{
     .container{
         display: flex;
@@ -751,7 +877,9 @@ body{
     }
 }
 .catalogues{
-    margin: 62px auto;
+    padding-top: 62px!important;
+    padding-bottom: 62px!important;
+    margin: 0px auto;
     .categories-container{
         display: flex;
         position: relative;
