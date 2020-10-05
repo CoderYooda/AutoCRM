@@ -3,40 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProviderOrdersRequest;
-use App\Models\Partner;
 use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Models\Store;
-use Illuminate\Support\Facades\Gate;
-use Auth;
 
 class ProviderOrdersController extends Controller
 {
     public static function providerorderDialog($request)
     {
         $po_id = isset($request['provider_order_id']) ? $request['provider_order_id'] : $request['providerorder_id'];
-        $provider_order = ProviderOrder::where('id', (int)$po_id)->first();
+        $provider_order = ProviderOrder::find((int)$po_id);
 
-        $tag = 'providerorderDialog' . ($provider_order->id ?? '');
+        $class = 'providerorderDialog' . ($provider_order->id ?? '');
 
         $products = [];
 
-        if($request->products) {
+        if ($request->products) {
             $ids = json_decode($request->products, true);
             $products = Article::owned()->whereIn('id', $ids)->get();
         }
 
         $stores = Store::owned()->get();
 
-        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'stores',  'request'));
+        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'stores', 'request', 'class'));
 
         return response()->json([
-            'tag' => $tag,
-            'html' => $view->render(),
+            'tag'      => $class,
+            'html'     => $view->render(),
             'products' => $products
         ]);
     }
@@ -52,87 +50,55 @@ class ProviderOrdersController extends Controller
     {
         $providerorders = ProviderOrder::owned()->with('articles')->orderBy('created_at', 'DESC')->limit(10)->get();
 
-        foreach ($providerorders as $key => $providerorder) {
+        $providerorders->filter(function (ProviderOrder $providerOrder) {
 
-            $product_count = 0;
+            $total_count = 0;
 
-            foreach ($providerorder->articles as $product) {
-                $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id);
-
-                $product_count += $count;
+            foreach ($providerOrder->articles as $product) {
+                $total_count += $product->pivot->count - $providerOrder->getArticleEnteredCountByPivotId($product->pivot->id);
             }
 
-            if($product_count <= 0) unset($providerorders[$key]);
-        }
+            return (bool)$total_count;
+        });
 
         return response()->json([
-            'tag' => 'selectProviderOrderDialog',
-            'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
+            'tag'  => 'selectProviderOrderDialog',
+            'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders', 'request'))->render(),
         ]);
-    }
-
-    private static function calculatePivotArticleProviderOrder($request, $product){
-        ### Рассчет товара для поступления ##########################
-        $data = [];
-
-        $vcount = $product['count'];
-        $vprice = $product['price'];
-        $vnds_percent = 20;
-
-        if($request['nds'] && !$request['nds_included']){
-            $vtotal = $vprice * $vcount;
-            $vnds = $vtotal / 100 * $vnds_percent;
-            $vtotal = $vnds + $vtotal;
-        } else if($request['nds'] && $request['nds_included']){
-            $vtotal = $vprice * $vcount;
-            $vnds = $vtotal / ( 100 + $vnds_percent ) * $vnds_percent;
-        } else {
-            $vtotal = $vprice * $vcount;
-            $vnds = 0.00;
-        }
-
-        $data = [
-            'count' => $product['count'],
-            'price' => $product['price'],
-            'total' => $vtotal,
-            'nds' => round($vnds, 2),
-            'nds_percent' => round($vnds_percent, 2),
-            'nds_included' => $request['nds_included'],
-        ];
-        return $data;
     }
 
     public function select($id, Request $request)
     {
         $providerorder = ProviderOrder::find($id);
-        if(!$providerorder){
+        if (!$providerorder) {
             return response()->json([
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
 
         return response()->json([
-            'id' => $providerorder->id,
+            'id'         => $providerorder->id,
             'items_html' => view(get_template() . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
-            'info' => view(get_template() . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
-            'name' => $providerorder->outputName()
+            'info'       => view(get_template() . '.provider_orders.contact-card', compact('providerorder', 'request'))->render(),
+            'name'       => $providerorder->outputName()
         ]);
     }
 
     public function dialogSearch(Request $request)
     {
         $providerorders = ProviderOrder::owned()
-
-        ->where('id', 'like', '%'.$request['string'].'%')
-        ->orWhereHas('partner', function($query) use ($request){
-            $query->where('company_id', Auth::user()->company_id)
-                ->where(function($q) use ($request){
-                    $q->where('fio', 'like', '%'.$request['string'].'%')
-                        ->orWhere('companyName', 'like', '%'.$request['string'].'%')
-                        ->orWhere('foundstring', 'like', '%'.$request['string'].'%');
-                });
-        })
-        ->orderBy('id', 'DESC')->limit(10)->get();
+            ->where('id', 'like', '%' . $request['string'] . '%')
+            ->orWhereHas('partner', function ($query) use ($request) {
+                $query->where('company_id', Auth::user()->company_id)
+                    ->where(function ($q) use ($request) {
+                        $q->where('fio', 'like', '%' . $request['string'] . '%')
+                            ->orWhere('companyName', 'like', '%' . $request['string'] . '%')
+                            ->orWhere('foundstring', 'like', '%' . $request['string'] . '%');
+                    });
+            })
+            ->orderBy('id', 'DESC')
+            ->limit(10)
+            ->get();
 
         $content = view(get_template() . '.provider_orders.dialog.select_providerorder_inner', compact('providerorders', 'request'))->render();
         return response()->json([
@@ -140,10 +106,11 @@ class ProviderOrdersController extends Controller
         ], 200);
     }
 
-    public function loadItems($id, Request $request){
+    public function loadItems($id, Request $request)
+    {
         $providerorder = ProviderOrder::owned()->where('id', $id)->first();
         return response()->json([
-            'html' => view('provider_orders.dialog.select_providerorder_items', compact( 'providerorder',  'request'))->render()
+            'html' => view('provider_orders.dialog.select_providerorder_items', compact('providerorder', 'request'))->render()
         ]);
     }
 
@@ -151,18 +118,18 @@ class ProviderOrdersController extends Controller
     {
         PermissionController::canByPregMatch('Удалять заявки поставщикам');
         $returnIds = null;
-        if($id == 'array'){
+        if ($id == 'array') {
             $provider_orders = ProviderOrder::whereIn('id', $request['ids']);
             $this->message = 'Заказы поставщику удалены';
             $returnIds = $provider_orders->get()->pluck('id');
-            foreach($provider_orders->get() as $provider_order){
-                if($provider_order->entrances()->count() > 0){
+            foreach ($provider_orders->get() as $provider_order) {
+                if ($provider_order->entrances()->count() > 0) {
                     return response()->json([
-                        'type' => 'error',
+                        'type'    => 'error',
                         'message' => 'Заявка не может быть удалена, имеются поступившие товары'
                     ], 200);
                 } else {
-                    if($provider_order->delete()){
+                    if ($provider_order->delete()) {
                         #Отнимаем с баланса контакта
                         $provider_order->partner()->first()->subtraction($provider_order->itogo);
                         UA::makeUserAction($provider_order, 'delete');
@@ -173,13 +140,13 @@ class ProviderOrdersController extends Controller
             $provider_order = ProviderOrder::where('id', $id)->first();
             $this->message = 'Заказ поставщику удален';
             $returnIds = $provider_order->id;
-            if($provider_order->entrances()->count() > 0){
+            if ($provider_order->entrances()->count() > 0) {
                 return response()->json([
-                    'type' => 'error',
+                    'type'    => 'error',
                     'message' => 'Заявка не может быть удалена, имеются поступившие товары'
                 ], 200);
-            } else{
-                if($provider_order->delete()){
+            } else {
+                if ($provider_order->delete()) {
                     #Отнимаем с баланса контакта
                     $provider_order->partner()->first()->subtraction($provider_order->itogo);
                     UA::makeUserAction($provider_order, 'delete');
@@ -188,7 +155,7 @@ class ProviderOrdersController extends Controller
         }
 
         return response()->json([
-            'id' => $returnIds,
+            'id'      => $returnIds,
             'message' => $this->message
         ], 200);
     }
@@ -197,9 +164,9 @@ class ProviderOrdersController extends Controller
     {
         $provider_order = ProviderOrder::find($id);
 
-        foreach($provider_order->articles as $article){
+        foreach ($provider_order->articles as $article) {
             $article->instock = $article->getCountInStoreId($provider_order->store_id);
-            if($article->instock >= $article->count){
+            if ($article->instock >= $article->count) {
                 $article->complited = true;
             } else {
                 $article->complited = false;
@@ -207,8 +174,8 @@ class ProviderOrdersController extends Controller
         }
         $total_complited = true;
 
-        foreach($provider_order->articles as $article){
-            if(!$article->complited){
+        foreach ($provider_order->articles as $article) {
+            if (!$article->complited) {
                 $total_complited = false;
             }
         }
@@ -218,10 +185,10 @@ class ProviderOrdersController extends Controller
         $request['fresh'] = true;
         $class = 'providerorderDialog' . $id;
         $inner = true;
-        $content = view(get_template() . '.provider_orders.dialog.form_provider_order', compact( 'provider_order', 'class', 'request', 'inner'))->render();
+        $content = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'class', 'request', 'inner'))->render();
         return response()->json([
-            'html' => $content,
-            'target' => 'providerorderDialog' . $id,
+            'html'     => $content,
+            'target'   => 'providerorderDialog' . $id,
             'products' => []
         ]);
     }
@@ -230,145 +197,143 @@ class ProviderOrdersController extends Controller
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам');
 
-        $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
+        return DB::transaction(function () use ($request) {
+            $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
-        $request['do_date'] = Carbon::now();
+            $request['do_date'] = Carbon::now();
 
-        if($provider_order->exists){
-            $store = Store::owned()->where('id', $request['store_id'])->first();
+            if ($provider_order) {
+                $errors = [];
 
-            if($store->id !== $provider_order->store->id){
-                foreach($provider_order->entrances as $entrance){
-                    $entrance->migrateInStore($store);
+                foreach ($request->products as $index => $product) {
+
+                    if(!isset($product['pivot_id'])) continue;
+
+                    $enteredCount = $provider_order->getArticleEnteredCountByPivotId($product['pivot_id']);
+
+                    if ($enteredCount > $product) {
+                        $errors['products.' . $index . '.count'] = 'Кол-во в заявке не может быть меньше чем поступивших товаров.';
+                    }
+                }
+
+                if (count($errors)) {
+                    if ($request->expectsJson()) {
+                        return response()->json(['messages' => $errors], 422);
+                    }
                 }
             }
 
-            #Отнимаем с баланса контакта
-            $provider_order->partner->subtraction($provider_order->itogo);
+            if ($provider_order->exists) {
+                $store = Store::find($request['store_id']);
 
-            $this->message = 'Заказ поставщику обновлен';
+                if ($store->id !== $provider_order->store->id) {
+                    foreach ($provider_order->entrances as $entrance) {
+                        $entrance->migrateInStore($store);
+                    }
+                }
 
-            $wasExisted = true;
-        } else {
-            $provider_order->company_id = Auth::user()->company()->first()->id;
-            $provider_order->manager_id = Auth::user()->partner()->first()->id;
-            $this->message = 'Заказ поставщику сохранен';
-            $wasExisted = false;
-        }
-        $provider_order->fill($request->only($provider_order->fields));
-        $provider_order->summ = 0;
-        $provider_order->balance = 0;
-        $provider_order->itogo = 0;
-        $provider_order->save();
+                #Отнимаем с баланса контакта
+                $provider_order->partner->subtraction($provider_order->itogo);
 
-        UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
+                $this->message = 'Заказ поставщику обновлен';
 
-        $provider_order_pivot_data = [];
+                $wasExisted = true;
+            } else {
+                $provider_order->company_id = Auth::user()->company_id;
+                $provider_order->manager_id = Auth::user()->partner->id;
+                $this->message = 'Заказ поставщику сохранен';
+                $wasExisted = false;
+            }
+            $provider_order->fill($request->only($provider_order->fields));
+            $provider_order->summ = 0;
+            $provider_order->balance = 0;
+            $provider_order->itogo = 0;
+            $provider_order->save();
 
-        $errors = [];
+            UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
 
-        foreach($request['products'] as $id => $product) {
+            foreach ($request['products'] as $product) {
 
-            $vcount = $product['count'];
+                $count = $product['count'];
+                $price = $product['price'];
+                $total = $price * $count;
 
-            $entred_count = $provider_order->getArticleEntredCount($id);
+                $provider_order->summ += $total;
 
-            if($entred_count > $vcount){
-                $errors['products.' . $id . '.count'] = 'Кол-во в заявке не может быть меньше чем поступивших товаров.';
+                $nds_percent = 20;
+                $nds = 0.00;
+
+                if ($request['nds']) {
+                    $nds = $total / (100 + $nds_percent);
+                    if ($request['nds_included']) $nds *= $nds_percent;
+                }
+
+                $params = [
+                    'article_id'        => $product['id'],
+                    'provider_order_id' => $provider_order->id,
+                    'count'             => $product['count'],
+                    'price'             => $product['price'],
+                    'total'             => $total,
+                    'nds'               => round($nds, 2),
+                    'nds_percent'       => round($nds_percent, 2),
+                    'nds_included'      => $request['nds_included'],
+                ];
+
+                DB::table('article_provider_orders')->updateOrInsert(['id' => ($product['pivot_id'] ?? null)], $params);
+
+                foreach ($provider_order->entrances as $entrance) {
+                    $entrance->freshPriceByArticleId($product['id'], $total);
+                }
             }
 
-            $vprice = $product['price'];
+            $provider_order->freshWsumm();
 
-            $vtotal = $vprice * $vcount;
-
-            $provider_order->summ += $vtotal;
-            //$actor_product = Article::where('id', $product['id'])->first();
-
-            //$article_provider_order = $provider_order->articles()->where('article_id', $product['id'])->count();
-
-            ### Пересчёт кол-ва с учетом предидущего поступления #######################################
-            #$store->articles()->syncWithoutDetaching($actor_product->id);
-            #$beforeCount = $entrance->getArticlesCountById($actor_product->id);
-            #$count - Текущее кол-во на складе в наличии
-            #############################################################################################
-
-            $pivot_data = self::calculatePivotArticleProviderOrder($request, $product);
-
-            $provider_order_pivot_data[$id] = $pivot_data;
-
-//            if($article_provider_order > 0){
-//                $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);
-//            } else {
-//                $provider_order->articles()->save($actor_product, $pivot_data);
-//            }
-
-            foreach($provider_order->entrances()->get() as $entrance){
-                $entrance->freshPriceByArticleId($product['id'], $vprice);
+            if ($request['inpercents']) {
+                $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
+            } else {
+                if ($request['discount'] >= $provider_order->summ) {
+                    $request['discount'] = $provider_order->summ;
+                }
+                if ($request['discount'] <= 0) {
+                    $request['discount'] = 0;
+                }
+                $provider_order->discount = $request['discount'];
+                $provider_order->itogo = $provider_order->summ - $request['discount'];
             }
 
-            $store = Store::where('id', $request['store_id'])->first();
-//            $store->recalculateMidprice($product['id']);
+            #Добавляем к балансу контакта
+            $provider_order->partner->addition($provider_order->itogo);
 
-        }
-        $provider_order->freshWsumm();
+            $provider_order->summ = $provider_order->articles()->sum('total');
 
+            $provider_order->save();
 
-        if(count($errors) > 0){
-            if($request->expectsJson()){
-                return response()->json(['messages' => $errors], 422);
-            }
-        }
-
-        # Синхронизируем товары к заявке
-        $provider_order->articles()->sync($provider_order_pivot_data);
-
-        if($request['inpercents']){
-            $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
-        } else {
-            if($request['discount'] >= $provider_order->summ){
-                $request['discount'] = $provider_order->summ;
-            }
-            if($request['discount'] <= 0){
-                $request['discount'] = 0;
-            }
-            $provider_order->discount = $request['discount'];
-            $provider_order->itogo = $provider_order->summ - $request['discount'];
-        }
-
-        #Добавляем к балансу контакта
-        $provider_order->partner()->first()->addition($provider_order->itogo);
-
-        $provider_order->summ = $provider_order->articles()->sum('total');
-
-        $provider_order->save();
-
-        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
-                'id' => $provider_order->id,
-                'event' => 'ProviderOrderStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+                'id'      => $provider_order->id,
+                'event'   => 'ProviderOrderStored',
+            ]);
+        });
     }
 
-    public function getPartnerSideInfo(Request $request){
+    public function getPartnerSideInfo(Request $request)
+    {
 
         $provider_order = ProviderOrder::owned()->where('id', $request['id'])->first();
         $partner = $provider_order->partner()->first();
         $comment = $provider_order->comment;
-        if($request->expectsJson()){
+        if ($request->expectsJson()) {
             return response()->json([
-                'info' => view(get_template() . '.provider.contact-card', compact( 'partner','request'))->render(),
-                'comment' => view(get_template() . '.helpers.comment', compact( 'comment','request'))->render(),
+                'info'    => view(get_template() . '.provider.contact-card', compact('partner', 'request'))->render(),
+                'comment' => view(get_template() . '.helpers.comment', compact('comment', 'request'))->render(),
             ], 200);
         } else {
             return redirect()->back();
         }
     }
 
-    public function getProviderOrderProducts($id){
+    public function getProviderOrderProducts($id)
+    {
         $provider_order = ProviderOrder::where('id', $id)->first();
 
         return response()->json([
@@ -381,7 +346,7 @@ class ProviderOrdersController extends Controller
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
         $size = $request['size'] ? (int)$request['size'] : 30;
 
-        if($request['dates_range'] !== null){
+        if ($request['dates_range'] !== null) {
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
@@ -392,16 +357,16 @@ class ProviderOrdersController extends Controller
             ->leftJoin('partners as partner', 'partner.id', '=', 'provider_orders.partner_id')
             ->leftJoin('partners as manager', 'manager.id', '=', 'provider_orders.manager_id')
             ->select(DB::raw('provider_orders.*, partner.fio, partner.foundstring as p_foundstring, manager.foundstring as m_foundstring, manager.fio, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
-            ->when(is_array($request['provider']), function($query) use ($request) {
+            ->when(is_array($request['provider']), function ($query) use ($request) {
                 $query->whereIn('provider_orders.partner_id', $request['provider']);
             })
-            ->when(is_array($request['accountable']), function($query) use ($request) {
+            ->when(is_array($request['accountable']), function ($query) use ($request) {
                 $query->whereIn('manager_id', $request['accountable']);
             })
-            ->when($request['search'] != null, function($query) use ($request) {
-                $query->where('provider_orders.id', 'like', '%'.$request['search'].'%')
-                    ->orWhere('partner.foundstring', 'like', '%'.$request['search'].'%')
-                    ->orWhere('manager.foundstring', 'like', '%'.$request['search'].'%');
+            ->when($request['search'] != null, function ($query) use ($request) {
+                $query->where('provider_orders.id', 'like', '%' . $request['search'] . '%')
+                    ->orWhere('partner.foundstring', 'like', '%' . $request['search'] . '%')
+                    ->orWhere('manager.foundstring', 'like', '%' . $request['search'] . '%');
 
 
 //                    ->orWhereHas('partner', function($query) use ($request){
@@ -413,14 +378,14 @@ class ProviderOrdersController extends Controller
 //                            });
 //                    });
             })
-            ->when($request['dates_range'] != null, function($query) use ($request) {
+            ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]),
                     Carbon::parse($request['dates'][1])]);
             })
-            ->when($request['pay_status'] != null, function($query) use ($request) {
+            ->when($request['pay_status'] != null, function ($query) use ($request) {
                 $query->where('pays', $request['pay_status']);
             })
-            ->when($request['entrance_status'] != null, function($query) use ($request) {
+            ->when($request['entrance_status'] != null, function ($query) use ($request) {
                 $query->where('incomes', $request['entrance_status']);
             })
             ->orderBy($field, $dir)

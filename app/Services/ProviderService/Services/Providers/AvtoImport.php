@@ -13,6 +13,7 @@ use App\Models\Article;
 use App\Models\CartProviderOrder;
 use App\Models\Company;
 use App\Models\Partner;
+use App\Models\ProviderOrder;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Services\ProviderService\Contract\ProviderInterface;
@@ -310,6 +311,9 @@ class AvtoImport implements ProviderInterface
         $supplierController = new SupplierController();
         $supplierRequest = new SupplierRequest();
 
+        $totalPrice = 0;
+        $totalCount = 0;
+
         foreach ($data['orders'] as $order) {
             $orderInfo = json_decode($order->data, true);
 
@@ -339,13 +343,14 @@ class AvtoImport implements ProviderInterface
 
             $product = Article::firstOrCreate($uniqueFields, $dataFields);
 
-            if(!isset($products[$product->id]['count'])) $products[$product->id]['count'] = 0;
-            if(!isset($products[$product->id]['price'])) $products[$product->id]['price'] = 0;
-
-            $products[$product->id] = [
+            $products[] = [
+                'id' => $product->id,
                 'count' => $order->count,
                 'price' => $orderInfo['hash_info']['price']
             ];
+
+            $totalPrice += $orderInfo['hash_info']['price'] * $order->count;
+            $totalCount += $order->count;
         }
 
         $providerPartner = Partner::firstOrCreate([
@@ -358,15 +363,31 @@ class AvtoImport implements ProviderInterface
             'companyName' => 'AvtoImport',
         ]);
 
-        $providerController = new ProviderOrdersController();
-        $providerRequest = new ProviderOrdersRequest();
+        $providerOrder = ProviderOrder::create([
+            'company_id' => $this->company->id,
+            'store_id' => $this->user->current_store,
+            'partner_id' => $providerPartner->id,
+            'manager_id' => $this->user->partner->id,
+            'nds' => 1,
+            'nds_included' => 1,
+            'itogo' => $totalPrice
+        ]);
 
-        $providerRequest['products'] = $products;
-        $providerRequest['partner_id'] = $providerPartner->id;
-        $providerRequest['nds'] = 1;
-        $providerRequest['nds_included'] = 0;
+        foreach ($products as $product) {
 
-        $providerController->store($providerRequest);
+            $totalPrice = ($product['price'] * $product['count']);
+
+            DB::table('article_provider_orders')->insert([
+                'article_id' => $product['id'],
+                'provider_order_id' => $providerOrder->id,
+                'count' => $product['count'],
+                'price' => $product['price'],
+                'total' => $totalPrice,
+                'nds' => ($totalPrice / 100) * 20,
+                'nds_percent' => 20,
+                'nds_included' => 1
+            ]);
+        }
 
         return true;
     }

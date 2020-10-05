@@ -7,6 +7,7 @@ use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ProviderOrder extends Model
 {
@@ -40,13 +41,25 @@ class ProviderOrder extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
-            ->withPivot('count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
+            ->withPivot('id', 'count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
+    }
+
+    public function getArticleCountByPivotId($id)
+    {
+        $product = $this->articles()->wherePivot('id', $id)->first();
+
+        return $product->pivot->count;
+    }
+
+    public function getArticleEnteredCountByPivotId($id)
+    {
+        return DB::table('article_entrance')->where('provider_pivot_id', $id)->sum('count');
     }
 
     public function getArticleCount($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
-        return $article != null ? $article->pivot->count : 0;
+        return $article->pivot->count ?? 0;
     }
 
     public function getPlanArticleCount()

@@ -45,7 +45,7 @@ class Entrance extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
-            ->withPivot('count', 'price', 'released_count');
+            ->withPivot('id', 'count', 'price', 'released_count', 'provider_pivot_id');
     }
 
     public static function decrementReleasedCount(int $entrance_id, int $article_id, int $count)

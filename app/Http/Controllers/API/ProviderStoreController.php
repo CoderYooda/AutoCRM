@@ -210,11 +210,6 @@ class ProviderStoreController extends Controller
             ];
 
             $provider->sendOrder($data);
-
-            DB::table('providers_cart')->where([
-                'user_id' => $user->id,
-                'provider_key' => $provider_key
-            ])->delete();
         }
 
         return response()->json([

@@ -3317,6 +3317,10 @@ div.is-invalid {
     width: 10%;
 }
 
+.w-15 {
+    width: 15%;
+}
+
 .w-20 {
     width: 20%;
 }
@@ -3354,6 +3358,10 @@ div.is-invalid {
         border-bottom: 1px solid #E7E8EC;
         line-height: 30px;
         display: flex;
+
+        &:first-child {
+            border-top: 1px solid #e7e8ec;
+        }
 
         div {
             overflow: hidden;

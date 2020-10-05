@@ -16,21 +16,9 @@ class ProviderOrdersRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if($this['nds'] === null) {
-            $this['nds'] = false;
-        }
-        else {
-            $this['nds'] = true;
-        }
-
-        if($this['nds_included'] === null) {
-            $this['nds_included'] = false;
-        }
-        else {
-            $this['nds_included'] = true;
-        }
-
-        if($this['locked'] === null){$this['locked'] = false;}
+        $this['nds'] = $this['nds'] ?? false;
+        $this['nds_included'] = $this['nds_included'] ?? false;
+        $this['locked'] = $this['locked'] ?? false;
     }
 
     public function rules()
@@ -38,8 +26,10 @@ class ProviderOrdersRequest extends FormRequest
         return [
             'partner_id' => ['required', 'exists:partners,id'],
             'products' => ['required'],
+            'products.*.id' => ['required', 'exists:articles,id'],
+            'products.*.pivot_id' => ['exists:article_provider_orders,id'],
             'products.*.count' => ['required', 'integer', 'min:0', 'max:9999'],
-            'products.*.price' => ['numeric', 'between:1,1000000.00'],
+            'products.*.price' => ['numeric', 'between:1,1000000'],
         ];
     }
 

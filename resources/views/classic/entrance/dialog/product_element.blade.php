@@ -1,9 +1,20 @@
+@php
+
+    $index = $product->pivot->id;
+    $price = $product->pivot->price;
+    $entered_count = $providerorder->getArticleEnteredCountByPivotId($product->pivot->provider_pivot_id ?? $product->pivot->id);
+    $total_count = $providerorder->getArticleCountByPivotId($product->pivot->provider_pivot_id ?? $product->pivot->id);
+    $count = $providerorder ? $product->pivot->count : ($total_count - $entered_count);
+
+@endphp
+
 <tr
     data-id="{{ $product->id }}"
-    data-count="@if($request['count'] != null) {{$request['count']}} @elseif(isset($product->pivot->count)) {{$product->pivot->count}} @else 0 @endif"
-    data-price="@if(isset($entrance)) {{ decimal_price($product->pivot->price) }}  @else {{ 0 /* TODO RRC */ }} @endif"
+    data-count="{{ $count }}"
+    data-price="{{ decimal_price($price) }}"
     class="product_list_elem" id="product_selected_{{ $product->id }}">
-    <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
+
+    <input name="products[{{ $index }}][id]" value="{{ $product->id }}" type="hidden" >
 
     <td title="{{ $product->name }}">
         <span style="max-width: 350px;" class="product_list_element_name">
@@ -14,29 +25,23 @@
         </span>
     </td>
 
-    <td>
-        <div class="compressed" style="width: 100px;">{{ $product->article }}</div>
-    </td>
+    <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
 
     <td>
         @if(!isset($entrance))
-            <input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm count_elem" value="{{ $product->pivot->count }}" type="number"  min="0" step="1">
+            <input onclick="this.select();" name="products[{{ $index }}][count]" class="form-control form-control-sm count_elem" value="{{ $count }}" type="number"  min="0" step="1">
         @else
-            {{ $product->pivot->count }}
+            {{ $count }}
         @endif
     </td>
 
-    <td>
-        {{ $entrance->providerorder->getArticleEntredCount($product->id) }} / {{ $entrance->providerorder->getArticlesCountById($product->id) }}
-    </td>
+    <td>{{ $entered_count }} / {{ $total_count }}</td>
 
-    <td>
-        {{ decimal_price($product->pivot->price * $product->pivot->count) }}
-    </td>
+    <td>{{ decimal_price($price * $count) }}</td>
 
     <td>
         @if(!isset($entrance))
-        <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
+            <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
         @endif
     </td>
 </tr>
