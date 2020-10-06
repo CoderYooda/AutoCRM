@@ -15,46 +15,48 @@ if (token) {
 /* USER IMAGES*/
 let header = document.querySelector('.header');
     if(document.querySelector('[rel=headImage]')){
-        header.style.background = 'url(' + document.querySelector('[rel=headImage]').getAttribute('href') + ') bottom repeat';
+        header.style.background = 'url(' + document.querySelector('[rel=headImage]').getAttribute('href') + ') bottom center repeat';
     }
 let body = document.querySelector('.body');
     if(document.querySelector('[rel=bodyImage]')){
-        body.style.background = 'url(' + document.querySelector('[rel=bodyImage]').getAttribute('href') + ') center repeat';
+        body.style.background = 'url(' + document.querySelector('[rel=bodyImage]').getAttribute('href') + ') top center repeat';
     }
 /* ENDUSER IMAGES*/
 
 /* SLIDERS */
-window.headSlider = new BBSlider({
-    selector: '.head-slider-container',
-    duration: 600,
-    easing: 'ease-out',
-    perPage: 1,
-    startIndex: 0,
-    draggable: true,
-    multipleDrag: true,
-    threshold: 20,
-    loop: true,
-    rtl: false,
-    onInit: () => {
-    },
-    onChange: () => {activatePin()},
-});
-
-let pinsContainer = document.querySelector('.pins-container');
-if(pinsContainer){
-    let slideIndex = 0;
-    window.headSlider.innerElements.forEach((elem) => {
-        let pin = document.createElement('div');
-        pin.classList.add('pin');
-        pin.onclick = function(){
-            window.headSlider.goTo(this.getAttribute('data-slide-id'));
-            activatePin();
-        };
-        pin.setAttribute('data-slide-id', slideIndex);
-        pinsContainer.appendChild(pin);
-        slideIndex++;
+let head_slider = document.querySelector('.head-slider-container');
+if(head_slider){
+    window.headSlider = new BBSlider({
+        selector: '.head-slider-container',
+        duration: 600,
+        easing: 'ease-out',
+        perPage: 1,
+        startIndex: 0,
+        draggable: true,
+        multipleDrag: true,
+        threshold: 20,
+        loop: true,
+        rtl: false,
+        onInit: () => {
+        },
+        onChange: () => {activatePin()},
     });
-    activatePin();
+    let pinsContainer = document.querySelector('.pins-container');
+    if(pinsContainer){
+        let slideIndex = 0;
+        window.headSlider.innerElements.forEach((elem) => {
+            let pin = document.createElement('div');
+            pin.classList.add('pin');
+            pin.onclick = function(){
+                window.headSlider.goTo(this.getAttribute('data-slide-id'));
+                activatePin();
+            };
+            pin.setAttribute('data-slide-id', slideIndex);
+            pinsContainer.appendChild(pin);
+            slideIndex++;
+        });
+        activatePin();
+    }
 }
 
 function activatePin(){
@@ -67,6 +69,9 @@ function activatePin(){
         activePin.classList.add('active');
     }
 }
+
+
+
 
 let pop_products = document.querySelector('.popular-products');
 if(pop_products){
@@ -91,6 +96,58 @@ if(pop_products){
         controls.style.display = 'none';
     }
 }
+
+let gallery = document.querySelector('.photos-container');
+if(gallery){
+    if(gallery.querySelectorAll('.photo').length > 4){
+        window.gallerySlider = new BBSlider({
+            selector: '.photos-container',
+            duration: 600,
+            easing: 'ease-out',
+            perPage: 4,
+            startIndex: 0,
+            draggable: true,
+            multipleDrag: true,
+            threshold: 20,
+            loop: true,
+            rtl: false,
+            onInit: () => {
+            },
+            onChange: () => {activateGalleryPin();},
+        });
+        let pinsContainer = document.querySelector('.pins-container');
+        if(pinsContainer){
+            let slideIndex = 0;
+            window.gallerySlider.innerElements.forEach((elem) => {
+                let pin = document.createElement('div');
+                pin.classList.add('pin');
+                pin.onclick = function(){
+                    window.gallerySlider.goTo(this.getAttribute('data-slide-id'));
+                    activateGalleryPin();
+                };
+                pin.setAttribute('data-slide-id', slideIndex);
+                pinsContainer.appendChild(pin);
+                slideIndex++;
+            });
+            activateGalleryPin();
+        }
+    } else {
+        let controls = gallery.parentElement.querySelector('.controls');
+        controls.style.display = 'none';
+    }
+}
+function activateGalleryPin(){
+    let activePin = document.querySelector('[data-slide-id="' + window.gallerySlider.currentSlide + '"]');
+    let pins = document.querySelectorAll('.pin');
+    pins.forEach((elem) => {
+        elem.classList.remove('active');
+    });
+    if(activePin){
+        activePin.classList.add('active');
+    }
+}
+
+
 /* END SLIDERS */
 
 
@@ -137,5 +194,27 @@ window.closeModal = function(elem){
     elem.remove();
 };
 
+let map = document.querySelector('.map');
+if(map){
+    ymaps.ready(function () {
+        window.myMap = new ymaps.Map('map', {
+                center: window.coordinates,
+                zoom: 9
+            }, {
+                searchControlProvider: 'yandex#search'
+            });
+
+            // Создаём макет содержимого.
+            //  let MyIconContentLayout = ymaps.templateLayoutFactory.createClass(
+            //     '<div style="color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
+            // );
+
+            let myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+                hintContent: 'Собственный значок метки',
+                balloonContent: 'Это красивая метка'
+            });
+        myMap.geoObjects.add(myPlacemark)
+    });
+}
 
 

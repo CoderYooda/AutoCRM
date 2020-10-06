@@ -78,7 +78,10 @@ body{
     padding-right: 50px!important;
 }
 .d-flex{
-    display: flex;
+    display: flex!important;
+}
+.flex-1{
+    flex: 1!important;
 }
 .user-header-img{
     display: none;
@@ -102,6 +105,7 @@ body{
     //}
 }
 
+
 .header{
 
     position: relative;
@@ -124,6 +128,10 @@ body{
             width: 270px;
             height: 52px;
             .company-name{
+                a{
+                    text-decoration: none;
+                    color: #404040;
+                }
                 line-height: 20px;
                 width: 126px;
                 display: block;
@@ -208,7 +216,7 @@ body{
                     float: right;
                     margin: 13px 0px;
                     margin-right: 14px;
-                    margin-left: 4px;
+                    margin-left: -4px;
                     border-radius: 50% 50% 50% 0%;
                     text-align: center;
                     line-height: 24px;
@@ -764,8 +772,101 @@ body{
         margin-left: 30px;
     }
 }
+
+.in-category{
+    padding: 62px 20px!important;
+    .in-category-container{
+        display: flex;
+        .left-menu-container{
+            width: 322px;
+            ul{
+                list-style: none;
+                margin: 0;
+                border: 1px solid #E1E1E1;
+                border-right: 0;
+                padding: 32px 0;
+                li{
+                    display: block;
+                    width: 100%;
+                    height: 56px;
+                    line-height: 56px;
+                    padding-left: 32px;
+                    box-sizing: border-box;
+                    &:hover, &.active{
+                        color: #fff;
+                        background: #272727;
+                        a{
+                            color: #fff;
+                        }
+                    }
+                    a{
+                        text-decoration: none;
+                        color: #404040;
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.contacts{
+    padding: 62px 20px!important;
+    .title{
+
+    }
+    .contacts-container{
+        display: flex;
+        .info-block{
+            width: 520px;
+            .store-name{
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+            .address{
+                margin-bottom: 15px;
+            }
+            .mail-phone-container{
+                .item{
+                    display: flex;
+                    margin-bottom: 15px;
+                    .key{
+                        flex: 1;
+                        font-weight: 600;
+                        color: #989898;
+                    }
+                    .value{
+                        flex: 1;
+                        a{
+                            display: block;
+                            margin-bottom: 7px;
+                            text-decoration: none;
+                            color: #272727;
+                            font-weight: 700;
+                        }
+                        a:hover{
+                            color: #E23414;
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+        }
+        .map-holder{
+            flex: 1;
+            .map{
+                height: 100%;
+                min-height: 400px;
+            }
+        }
+    }
+}
 .paginator{
     padding: 40px 0;
+    padding-bottom: 0;
     font-size: 14px;
     font-weight: 600;
     color: #404040;
@@ -876,6 +977,9 @@ body{
         }
     }
 }
+.ov-hidden{
+    overflow: hidden!important;
+}
 .catalogues{
     padding-top: 62px!important;
     padding-bottom: 62px!important;
@@ -917,6 +1021,117 @@ body{
             color: #989898;
             font-weight: 700;
             text-decoration: none;
+        }
+    }
+}
+.universal-text{
+    padding-bottom: 62px!important;
+    padding-top: 62px!important;
+    .text{
+    }
+}
+.about{
+    padding-bottom: 62px!important;
+    padding-top: 62px!important;
+    .text{
+        padding-right: 50px;
+        width: 525px;
+    }
+    .main_picture{
+        width: 500px;
+        img{
+            height: 100%;
+            width: 100%;
+            max-width: 500px;
+            max-height: 400px;
+            object-fit: contain;
+            display: block;
+        }
+    }
+}
+.photo-gallery{
+    padding-bottom: 60px!important;
+    .photos-container{
+        max-height: 310px;
+        overflow: hidden;
+        & > div > div .photo{
+            max-width: unset;
+        }
+    }
+    .photos{
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    .photo{
+        margin: 0px 10px;
+        max-width: calc(25% - 20px);
+        float: left;
+        img{
+            width: 100%;
+            height: 100%;
+            display: block;
+            margin: auto;
+            object-fit: contain;
+        }
+    }
+    .controls{
+        width: 300px;
+        margin: 0 auto;
+        margin-top: 20px;
+        position: relative;
+        display: flex;
+        .control-item{
+            background: url(/images/shop/chevron.svg) center no-repeat;
+            width: 52px;
+            height: 50px;
+            cursor: pointer;
+            &.left{
+            }
+            &.right{
+                transform: rotateY(180deg);
+            }
+            &.active, &:hover{
+                background: url(/images/shop/chevron-hover.svg) center no-repeat;
+            }
+        }
+    }
+    .pins-container{
+        bottom: 20px;
+        display: flex;
+        width: 200px;
+        .pin{
+            height: 16px;
+            width: 380px;
+            cursor: pointer;
+            padding: 17px 0px;
+            position: relative;
+            &.active:after{
+                content: "";
+                position: absolute;
+                height: 8px;
+                width: 16px;
+                background: #E23414;
+                left: calc(50% - 8px);
+                top: calc(50% - 4px);
+            }
+            &:hover:not(.active):after{
+                content: "";
+                position: absolute;
+                height: 6px;
+                width: 16px;
+                background: #E23414;
+                left: calc(50% - 8px);
+                top: calc(50% - 3px);
+            }
+            &:after{
+                content: "";
+                position: absolute;
+                height: 4px;
+                width: 16px;
+                background: #EEEEEE;
+                left: calc(50% - 8px);
+                top: calc(50% - 2px);
+            }
         }
     }
 }

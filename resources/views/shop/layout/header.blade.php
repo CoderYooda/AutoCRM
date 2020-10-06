@@ -15,8 +15,10 @@
     <div class="header-mid">
         <div class="container bg-white d-flex">
             <div class="logo-container header-elem">
-                <div class="logo"></div>
-                <h1 class="company-name">Название вашей компании</h1>
+                <a href="/shop/index">
+                    <div class="logo"></div>
+                </a>
+                <h1 class="company-name"><a href="/shop/index">Название вашей компании</a></h1>
             </div>
             <div class="search-container header-elem">
                 <div class="search-box">
@@ -41,11 +43,11 @@
         </div>
         <div class="container bg-white">
             <div class="main-menu">
-                <a href="javasctipt:void(0)" title="Каталог продукции" class="menu-item catalogue">Каталог продукции</a>
-                <a href="javasctipt:void(0)" title="Каталог продукции" class="menu-item">о компании</a>
-                <a href="javasctipt:void(0)" title="Каталог продукции" class="menu-item">оплата и доставка</a>
-                <a href="javasctipt:void(0)" title="Каталог продукции" class="menu-item">гарантия и возврат</a>
-                <a href="javasctipt:void(0)" title="Каталог продукции" class="menu-item">контакты</a>
+                <a href="/shop/index?page=catalogue" title="Каталог продукции" class="menu-item catalogue">Каталог продукции</a>
+                <a href="/shop/index?page=about" title="Каталог продукции" class="menu-item">о компании</a>
+                <a href="/shop/index?page=deliver" title="Каталог продукции" class="menu-item">оплата и доставка</a>
+                <a href="/shop/index?page=refund" title="Каталог продукции" class="menu-item">гарантия и возврат</a>
+                <a href="/shop/index?page=contacts" title="Каталог продукции" class="menu-item">контакты</a>
             </div>
         </div>
     </div>

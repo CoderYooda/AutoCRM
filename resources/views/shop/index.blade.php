@@ -83,7 +83,7 @@
                 <div class="description">
                     <div class="title">Название категории</div>
                     <div class="link">
-                        <a title="Название категории сюда" href="javascript:void(0)">Перейти</a>
+                        <a title="Название категории сюда" href="/shop/index?page=category">Перейти</a>
                     </div>
                 </div>
                 <div class="photo">
