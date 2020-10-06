@@ -259,6 +259,9 @@
                         <div class="version">version <br>{{ env('VERSION', '0.0.0') }} - {{ Auth::user()->current_store }}</div>
                     </div>
                 </div>
+
+                <input type="hidden" id="copy_text" value="" />
+
                 <div id="ajax-content">
                     @yield('content')
                 </div>

@@ -66,7 +66,7 @@
                         <div class="row row-sm mb-10">
                             <div class="col-sm-6">
                                 <div class="form-group-flex">
-                                    <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
+                                    <label class="col-sm-4 label-sm">Поставщик</label>
                                     <div class="input-group col-sm-8">
                                         <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
                                             @if(isset($provider_order) && $provider_order->partner()->first() != null)
@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group-flex">
-                                    <label for="category_id" class="col-sm-4 label-sm">Склад</label>
+                                    <label class="col-sm-4 label-sm">Склад</label>
                                     <div class="input-group col-sm-8">
                                         <div class="w-100">
                                             <select custom_select name="store_id" class="form-control input-c">
@@ -91,7 +91,7 @@
                                 </div>
 
                                 <div class="form-group-flex">
-                                    <label for="category_id" class="col-sm-4 label-sm">Комментарий</label>
+                                    <label class="col-sm-4 label-sm">Комментарий</label>
                                     <div class="input-group col-sm-8">
                                         <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                                     </div>
@@ -101,6 +101,31 @@
                     </div>
 
                     <div id="tab_products" class="tab">
+
+                        <div class="mb-15">
+                            <b>Список приходных номенклатур</b>
+                            <div class="pull-right checkbox">
+                                <b class="pr-2">НДС:</b>
+                                <label class="ui-check mb-0 pr-2">
+                                    <input name="nds" type="checkbox" value="1"
+                                           @if(isset($provider_order) && $provider_order->nds) checked
+                                           @elseif(isset($provider_order) && !$provider_order->nds)
+                                           @else checked @endif
+                                           onclick="{{ $class }}.setNDS();">
+                                    <i class="dark-white"></i>
+                                    - есть
+                                </label>
+                                <label class="ui-check mb-0">
+                                    <input name="nds_included" type="checkbox" value="1"
+                                           @if(isset($provider_order) && $provider_order->nds_included) checked
+                                           @elseif(isset($provider_order) && !$provider_order->nds_included)
+                                           @else checked @endif
+                                           onclick="{{ $class }}.setNDS();">
+                                    <i class="dark-white"></i>
+                                    - включен в стоимость
+                                </label>
+                            </div>
+                        </div>
 
                         <div class="table_header">
                             <div class="w-30 pl-10">Наименование</div>
@@ -113,7 +138,7 @@
                             <div class="w-5"></div>
                         </div>
 
-                        <div data-simplebar style="height: 124px;">
+                        <div data-simplebar class="table-simplebar">
                             <div class="element-list">
                                 @isset($provider_order->articles)
                                     @foreach($provider_order->articles as $product)
@@ -124,57 +149,6 @@
                         </div>
 
                         <button type="button" class="button add_product_button mb-15" onclick="{{ $class }}.openProductmodal();">Добавить товар</button>
-
-{{--                        <div class="form-group">--}}
-{{--                            <div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>--}}
-{{--                                <div class="pull-right checkbox">--}}
-{{--                                    <b class="pr-2">НДС:</b>--}}
-{{--                                    <label class="ui-check mb-0 pr-2">--}}
-{{--                                        <input name="nds" type="checkbox" value="1"--}}
-{{--                                               @if(isset($provider_order) && $provider_order->nds) checked--}}
-{{--                                               @elseif(isset($provider_order) && !$provider_order->nds)--}}
-{{--                                               @else checked @endif--}}
-{{--                                               onclick="{{ $class }}.setNDS();">--}}
-{{--                                        <i class="dark-white"></i>--}}
-{{--                                        - есть--}}
-{{--                                    </label>--}}
-{{--                                    <label class="ui-check mb-0">--}}
-{{--                                        <input name="nds_included" type="checkbox" value="1"--}}
-{{--                                               @if(isset($provider_order) && $provider_order->nds_included) checked--}}
-{{--                                               @elseif(isset($provider_order) && !$provider_order->nds_included)--}}
-{{--                                               @else checked @endif--}}
-{{--                                               onclick="{{ $class }}.setNDS();">--}}
-{{--                                        <i class="dark-white"></i>--}}
-{{--                                        - включен в стоимость--}}
-{{--                                    </label>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            --}}
-{{--                            <div data-simplebar style="max-height: 150px;">--}}
-{{--                                <table class="table-modal" >--}}
-{{--                                    <thead class="text-muted">--}}
-{{--                                    <tr>--}}
-{{--                                        <th width="30%">Наименование</th>--}}
-{{--                                        <th width="10%">Артикул</th>--}}
-{{--                                        <th width="10%" style="min-width: 60px;">Кол-во</th>--}}
-{{--                                        <th width="10%" style="min-width: 100px;">Цена</th>--}}
-{{--                                        <th width="10%" style="min-width: 70px;">НДС, %</th>--}}
-{{--                                        <th width="10%" style="min-width: 100px;">НДС</th>--}}
-{{--                                        <th width="10%" style="min-width: 100px;">Итого</th>--}}
-{{--                                        <th width="10%"></th>--}}
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody class="product_list">--}}
-{{--                                    @isset($provider_order->articles)--}}
-{{--                                        @foreach($provider_order->articles as $product)--}}
-{{--                                            @include(get_template() . '.provider_orders.dialog.product_element')--}}
-{{--                                        @endforeach--}}
-{{--                                    @endisset--}}
-{{--                                    </tbody>--}}
-{{--                                </table>--}}
-{{--                            </div>--}}
-{{--                            --}}
-{{--                        </div>--}}
 
                     </div>
 

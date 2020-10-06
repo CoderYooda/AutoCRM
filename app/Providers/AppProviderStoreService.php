@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Providers;
+use App\Services\ProviderService\Services\Cart\CartDatabase;
+use App\Services\ProviderService\Services\Providers\AutoRus;
 use App\Services\ProviderService\Services\Providers\Mikado;
 use App\Services\ProviderService\Services\Providers\AvtoImport;
 use App\Services\ProviderService\Services\Providers\ArmTek;
@@ -21,10 +24,16 @@ class AppProviderStoreService extends ServiceProvider
             AvtoImport::class,
             ArmTek::class,
             Mikado::class,
+            AutoRus::class
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {
             return new Providers($app->tagged(ProviderInterface::class));
+        });
+
+        $this->app->singleton(CartInterface::class, function () {
+            return new CartDatabase;
+//            return Auth::check() ? new DatabaseCart : new SessionCart;
         });
     }
 

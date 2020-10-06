@@ -91,7 +91,7 @@ class providerCartDialog extends Modal{
 
             let selected_id = parseInt(element.value);
 
-            let target_element = this.current_dialog.querySelector('[name="pickup_address_id"]').closest('.form-group');
+            let target_element = element.closest('.provider').querySelector('.pickup_address_id');
 
             if(target_element) {
 
@@ -112,6 +112,8 @@ class providerCartDialog extends Modal{
 
         axios.post('/provider_stores/cart/reset')
             .then(response => {
+                let data = response.data;
+
                 window.notification.notify(data.type, data.message);
             })
             .catch(response => {

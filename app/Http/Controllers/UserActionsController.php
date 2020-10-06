@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CartProviderOrder;
-use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
 use App\Models\UserAction;

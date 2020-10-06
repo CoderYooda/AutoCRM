@@ -346,17 +346,15 @@ class providerOrderDialog extends Modal{
             let vnds = Number(nds.value);
             let vtotal = Number(total.value);
 
+            vnds_percent = 20;
+            vtotal = vprice * vcount;
+            vnds = (vtotal / 100) * vnds_percent;
+
             if(this.nds && !this.nds_included){
-                vnds_percent = 20;
-                vtotal = vprice * vcount;
-                vnds = vtotal / 100 * vnds_percent;
-                vtotal = vnds + vtotal;
+                vtotal += vnds;
             } else if(this.nds && this.nds_included){
-                vnds_percent = 20;
-                vtotal = vprice * vcount;
-                vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
+                vnds *= vnds_percent;
             } else {
-                vtotal = vprice * vcount;
                 vnds = 0.00;
                 vnds_percent = 0;
             }
@@ -369,6 +367,12 @@ class providerOrderDialog extends Modal{
         });
 
         this.setTotalPrice(total_price);
+    }
+
+    setNDS() {
+        this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
+        this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
+        this.recalculate();
     }
 }
 export default providerOrderDialog;

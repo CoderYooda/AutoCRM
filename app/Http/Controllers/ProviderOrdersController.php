@@ -50,7 +50,7 @@ class ProviderOrdersController extends Controller
     {
         $providerorders = ProviderOrder::owned()->with('articles')->orderBy('created_at', 'DESC')->limit(10)->get();
 
-        $providerorders->filter(function (ProviderOrder $providerOrder) {
+        $providerorders = $providerorders->filter(function (ProviderOrder $providerOrder) {
 
             $total_count = 0;
 

@@ -7,14 +7,15 @@ use App\Http\Requests\DeleteCartRequest;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
-use App\Models\User;
+use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services;
-use App\Services\ProviderService\Services\Cart\Cart;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProviderStoreController extends Controller
@@ -55,7 +56,7 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function getStores(Providers $providers, Request $request, Cart $cart)
+    public function getStores(Providers $providers, Request $request, CartInterface $cart)
     {
         $selected_service = $request->selected_service;
         $article = $request->article;
@@ -133,7 +134,7 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function addCart(Cart $cart, AddCartRequest $request)
+    public function addCart(CartInterface $cart, AddCartRequest $request)
     {
         $cart->addProduct($request->provider_key, $request->article, $request->product);
 
@@ -143,7 +144,7 @@ class ProviderStoreController extends Controller
         ], 200);
     }
 
-    public function setCart(Cart $cart, SetCartRequest $request)
+    public function setCart(CartInterface $cart, SetCartRequest $request)
     {
         $cart->setProductCount($request->provider_key, $request->article, $request->product, $request->count);
 
@@ -153,7 +154,7 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function deleteCart(Cart $cart, DeleteCartRequest $request)
+    public function deleteCart(CartInterface $cart, DeleteCartRequest $request)
     {
         $cart->removeProductById($request->id);
 
@@ -163,7 +164,7 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function resetCart(Cart $cart)
+    public function resetCart(CartInterface $cart)
     {
         $cart->clear();
 
@@ -173,14 +174,11 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function orderCart(Cart $cart, Providers $providers, OrderCartRequest $request)
+    public function orderCart(CartInterface $cart, Providers $providers, OrderCartRequest $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
-
         $ordersCollection = $cart->getProducts();
 
-        $ordersKeys = $ordersCollection->pluck('provider_key')->unique('provider_key')->toArray();
+        $ordersKeys = $ordersCollection->pluck('provider_key')->unique()->toArray();
 
         $orders = [];
 
@@ -194,19 +192,20 @@ class ProviderStoreController extends Controller
         }
 
         /** @var ProviderInterface $provider */
-        foreach ($providers->activated() as $provider) {
-            $provider_key = $provider->getServiceKey();
+        foreach ($providers->activated() as $provider_key => $provider) {
 
             if(!in_array($provider_key, $ordersKeys)) continue;
+
+            $providerParams = $request->providers[$provider_key];
 
             $data = [
                 'orders' => $orders[$provider_key],
                 'comment' => $request->comment,
-                'delivery_type_id' => $request->delivery_type_id,
-                'payment_type_id' => $request->payment_type_id,
-                'pickup_address_id' => $request->pickup_address_id,
-                'delivery_address_id' => $request->delivery_address_id,
-                'date_shipment_id' => $request->date_shipment_id,
+                'delivery_type_id' => $providerParams['delivery_type_id'] ?? null,
+                'payment_type_id' => $providerParams['payment_type_id'] ?? null,
+                'pickup_address_id' => $providerParams['pickup_address_id'] ?? null,
+                'delivery_address_id' => $providerParams['delivery_address_id'] ?? null,
+                'date_shipment_id' => $providerParams['date_shipment_id'] ?? null
             ];
 
             $provider->sendOrder($data);
@@ -221,7 +220,7 @@ class ProviderStoreController extends Controller
     public static function providerCartDialog(Request $request)
     {
         $providers = app(Providers::class);
-        $cart = app(Cart::class);
+        $cart = app(CartInterface::class);
 
         PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');
 
@@ -229,35 +228,42 @@ class ProviderStoreController extends Controller
 
         $ordersCollection = $cart->getProducts();
 
-        $deliveryInfo = [];
+        $KEY = 'orders.' . Auth::id();
 
-        /** @var ProviderInterface $provider */
-        foreach ($providers->activated() as $service_key => $provider) {
+        $deliveryInfo = Cache::remember($KEY, Carbon::now()->addHour(), function () use($providers) {
 
-            $deliveryInfo[$service_key] = [
-                'Список адресов доставки' => [
-                    'params' => $provider->getDeliveryToAddresses(),
-                    'field' => 'delivery_address_id',
-                    'onclick' => 'changeDeliveryAddress'
-                ],
-                'Список офисов самовывоза' => [
-                    'params' => $provider->getPickupAddresses(),
-                    'field' => 'pickup_address_id'
-                ],
-                'Список способов доставки' => [
-                    'params' => $provider->getDeliveryTypes(),
-                    'field' => 'delivery_type_id'
-                ],
-                'Список способов оплаты' => [
-                    'params' => $provider->getPaymentTypes(),
-                    'field' => 'payment_type_id'
-                ],
-                'Список дат отгрузки' => [
-                    'params' => $provider->getDateOfShipment(),
-                    'field' => 'date_shipment_id'
-                ]
-            ];
-        }
+            $deliveryInfo = [];
+
+            /** @var ProviderInterface $provider */
+            foreach ($providers->activated() as $service_key => $provider) {
+
+                $deliveryInfo[$service_key] = [
+                    'Список адресов доставки' => [
+                        'params' => $provider->getDeliveryToAddresses(),
+                        'field' => 'delivery_address_id',
+                        'onclick' => 'changeDeliveryAddress'
+                    ],
+                    'Список офисов самовывоза' => [
+                        'params' => $provider->getPickupAddresses(),
+                        'field' => 'pickup_address_id'
+                    ],
+                    'Список способов доставки' => [
+                        'params' => $provider->getDeliveryTypes(),
+                        'field' => 'delivery_type_id'
+                    ],
+                    'Список способов оплаты' => [
+                        'params' => $provider->getPaymentTypes(),
+                        'field' => 'payment_type_id'
+                    ],
+                    'Список дат отгрузки' => [
+                        'params' => $provider->getDateOfShipment(),
+                        'field' => 'date_shipment_id'
+                    ]
+                ];
+            }
+
+            return $deliveryInfo;
+        });
 
         $orders = [];
 
