@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\PermissionController;
+use App\Http\Requests\DeleteCartProviderRequest;
 use App\Http\Requests\DeleteCartRequest;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
@@ -164,6 +165,16 @@ class ProviderStoreController extends Controller
         ]);
     }
 
+    public function deleteCartProvider(CartInterface $cart, DeleteCartProviderRequest $request)
+    {
+        $cart->clearByProviderKey($request->provider_key);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Позиции успешно удалена.'
+        ]);
+    }
+
     public function resetCart(CartInterface $cart)
     {
         $cart->clear();
@@ -200,7 +211,7 @@ class ProviderStoreController extends Controller
 
             $data = [
                 'orders' => $orders[$provider_key],
-                'comment' => $request->comment,
+                'comment' => $request->comments[$provider_key],
                 'delivery_type_id' => $providerParams['delivery_type_id'] ?? null,
                 'payment_type_id' => $providerParams['payment_type_id'] ?? null,
                 'pickup_address_id' => $providerParams['pickup_address_id'] ?? null,
@@ -266,19 +277,30 @@ class ProviderStoreController extends Controller
         });
 
         $orders = [];
-
-        $total_price = 0;
+        $providersInfo = [];
 
         foreach ($ordersCollection as $order) {
 
+            $provider_key = $order->provider_key;
+
             $order->data = json_decode($order->data);
 
-            $orders[$order->provider_key][] = $order;
+            $orders[$provider_key][] = $order;
 
-            $total_price += $order->data->hash_info->price * $order->count;
+            $total = $order->data->hash_info->price * $order->count;
+
+            if(!isset($providersInfo[$provider_key]['count'])) $providersInfo[$provider_key]['count'] = 0;
+            if(!isset($providersInfo[$provider_key]['total_price'])) $providersInfo[$provider_key]['total_price'] = 0;
+            if(!isset($providersInfo[$provider_key]['positions'])) $providersInfo[$provider_key]['positions'] = 0;
+
+            $providersInfo[$provider_key]['count'] += $order->count;
+            $providersInfo[$provider_key]['total_price'] += $total;
+            $providersInfo[$provider_key]['positions'] ++;
         }
 
-        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders', 'total_price', 'deliveryInfo'));
+        $providersInfo = collect($providersInfo);
+
+        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders', 'deliveryInfo', 'providersInfo'));
 
         return response()->json([
             'tag' => $class,

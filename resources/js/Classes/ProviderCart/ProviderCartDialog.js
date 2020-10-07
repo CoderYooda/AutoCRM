@@ -31,11 +31,15 @@ class providerCartDialog extends Modal{
 
     recalculate() {
 
-        let tr_elements = this.current_dialog.querySelectorAll('tbody tr');
+        let position_elements = this.current_dialog.querySelectorAll('.table-position');
 
-        let total_price = 0;
+        let positions = {};
+        let total_prices = {};
 
-        tr_elements.forEach(element => {
+        position_elements.forEach(element => {
+
+            let provider_key = element.closest('.provider').id;
+
             let price_element = element.querySelector('.price_elem');
             let count_element = element.querySelector('.count_elem');
             let total_element = element.querySelector('.total_elem');
@@ -46,14 +50,48 @@ class providerCartDialog extends Modal{
 
             total_element.innerHTML = total.toFixed(2);
 
-            total_price += total;
+            if(isNaN(positions[provider_key])) positions[provider_key] = 0;
+            positions[provider_key]++;
+
+            if(isNaN(total_prices[provider_key])) total_prices[provider_key] = 0;
+            total_prices[provider_key] += total;
         });
 
-        this.current_dialog.querySelector('#total_price').innerHTML = total_price.toFixed(2);
+        Object.keys(positions).forEach(provider_key => {
+            let count = positions[provider_key];
+            let total = total_prices[provider_key];
+
+            let target_element = this.current_dialog.querySelector('#' + provider_key);
+
+            target_element.querySelector('#provider_positions_count').innerHTML = count;
+            target_element.querySelector('#provider_total_price').innerHTML = total.toFixed(2);
+        });
+
+        this.current_dialog.querySelector('#positions_count').innerHTML = helper.objectSum(positions).toFixed(0);
+        this.current_dialog.querySelector('#total_price').innerHTML = helper.objectSum(total_prices).toFixed(2);
+    }
+
+    removeProviderOrders(element, provider_key) {
+        let target_element = element.closest('.provider');
+
+        let data = {
+            provider_key: provider_key
+        };
+
+        axios.post('/provider_stores/cart/provider/delete', data)
+            .then(response => {
+                let data = response.data;
+                window.notification.notify(data.type, data.message);
+            })
+            .catch(response => {
+                console.log(response);
+            })
+
+        target_element.remove();
     }
 
     removeProduct(element, order_id) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table-position');
 
         let data = {
             id: order_id
@@ -62,7 +100,6 @@ class providerCartDialog extends Modal{
         axios.post('/provider_stores/cart/delete', data)
             .then(response => {
                 let data = response.data;
-
                 window.notification.notify(data.type, data.message);
             })
             .catch(response => {
@@ -103,29 +140,65 @@ class providerCartDialog extends Modal{
         }, 100);
     }
 
-    clearCart(element) {
-        let tr_elements = this.current_dialog.querySelectorAll('tbody tr');
+    togglePosition(element) {
+        let elements = this.current_dialog.querySelectorAll('.provider');
 
-        if(tr_elements.length == 0) {
+        let target_element = element.closest('.provider');
+
+        elements.forEach(provider_element => {
+
+            if(target_element == provider_element) return ;
+
+            provider_element.classList.remove('showed');
+
+            let i_element = provider_element.querySelector('i');
+
+            i_element.classList.add('fa-angle-down');
+            i_element.classList.remove('fa-angle-up');
+        });
+
+        let i_element = element.querySelector('i');
+
+        if(target_element.classList.contains('showed')) {
+            target_element.classList.remove('showed');
+
+            i_element.classList.add('fa-angle-down');
+            i_element.classList.remove('fa-angle-up');
+        }
+        else {
+            target_element.classList.add('showed');
+
+            i_element.classList.remove('fa-angle-down');
+            i_element.classList.add('fa-angle-up');
+        }
+    }
+
+    clearCart(element) {
+        let provider_elements = this.current_dialog.querySelectorAll('.provider');
+
+        if(provider_elements.length == 0) {
             return window.notification.notify('error', 'Корзина уже пуста.');
         }
 
         axios.post('/provider_stores/cart/reset')
             .then(response => {
                 let data = response.data;
-
                 window.notification.notify(data.type, data.message);
             })
             .catch(response => {
                 dd(response);
             });
 
-        tr_elements.forEach(element => element.remove());
+        provider_elements.forEach(element => element.remove());
+
+        this.recalculate();
     }
 
     send(element) {
 
-        window.axform.send(element, (response) => {
+        let form_element = this.current_dialog.querySelector('form');
+
+        window.axform.send(form_element, (response) => {
             if(response.status === 200) {
                 this.finitaLaComedia(true);
             }

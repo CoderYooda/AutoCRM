@@ -5,22 +5,18 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-class DeleteCartRequest extends FormRequest
+class DeleteCartProviderRequest extends FormRequest
 {
     public function authorize()
     {
-        $order = DB::table('providers_cart')->find($this->id);
-
-        return $order->user_id == Auth::id();
+        return true;
     }
 
     public function rules()
     {
         return [
-            'id' => ['required', 'exists:providers_cart,id']
+            'provider_key' => ['required', 'string', 'max:255']
         ];
     }
 

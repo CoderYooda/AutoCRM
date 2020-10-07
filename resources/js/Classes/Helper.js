@@ -473,6 +473,17 @@ class Helper{
         window.notification.notify( 'success', 'Скопировано в буфер');
     }
 
+    objectSum(object) {
+
+        let count = 0;
+
+        Object.values(object).forEach(value => {
+            count += parseFloat(value);
+        });
+
+        return count;
+    }
+
     objectifyForm(formArray) {
         var returnArray = {};
         for (var i = 0; i < formArray.length; i++){

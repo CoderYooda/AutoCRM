@@ -109,6 +109,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
             Route::post('/provider_stores/cart/delete', 'ProviderStoreController@deleteCart')->name('ProviderCartDelete');
             Route::post('/provider_stores/cart/reset', 'ProviderStoreController@resetCart')->name('ProviderCartReset');
             Route::post('/provider_stores/cart/order', 'ProviderStoreController@orderCart')->name('ProviderCartOrder');
+            Route::post('/provider_stores/cart/provider/delete', 'ProviderStoreController@deleteCartProvider')->name('ProviderCartDeleteProvider');
 
             Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
             Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
