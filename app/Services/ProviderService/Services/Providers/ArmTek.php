@@ -4,18 +4,15 @@
 namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
-use App\Rules\CheckApiDataForServices;
-use App\Rules\CheckServiceFieldOnValid;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Traits\CartProviderOrderCreator;
 use Carbon\Carbon;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use stdClass;
 
 class ArmTek implements ProviderInterface
 {
+    use CartProviderOrderCreator;
+
     protected $url = "http://ws.armtek.ru/api";
 
     protected $name = 'ArmTek';
@@ -71,6 +68,8 @@ class ArmTek implements ProviderInterface
         ];
 
         $items = $this->query('/ws_search/search', $params, 'POST');
+
+        if(isset($items['RESP']['MSG'])) return [];
 
         foreach ($items['RESP'] as $key => $item) {
 
@@ -188,19 +187,80 @@ class ArmTek implements ProviderInterface
         return $result['STATUS'] == 200;
     }
 
-    public function sendOrder(array $products): bool
+    public function sendOrder(array $data): bool
     {
+        $orders = [];
+
+        foreach ($data['orders'] as $order) {
+            $orderInfo = json_decode($order->data, true);
+
+            $orders[] = [
+                'PIN' => $orderInfo['PIN'],
+                'BRAND' => $orderInfo['BRAND'],
+                'KWMENG' => $order->count,
+//                'KEYZAK' => $orderInfo['KEYZAK'],
+//                'DBTYP' => 3,
+            ];
+        }
+
+        $params = [
+            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'KUNRG' => $this->getApiKunnr(),
+            'INCOTERMS' => $data['delivery_type_id'],
+            'KUNZA'  => $data['delivery_type_id'] == 1 ? $data['pickup_address_id'] : ['delivery_address_id'],
+            'TEXT_ORD' => $data['comment'],
+            'ITEMS' => $orders
+        ];
+
+        $items = $this->query('/ws_order/createTestOrder', $params, 'POST');
+
+        dd($items);
+
+        $this->createProviderOrder($data);
+
         return true;
     }
 
+    // Получение списка офисов самовывоза
     public function getPickupAddresses(): array
     {
-        return [];
+        $params = [
+            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'STRUCTURE' => 1
+        ];
+
+        $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
+
+        $pickups = $result['RESP']['STRUCTURE']['RG_TAB'][0]['EXW_TAB'];
+
+        $results = [];
+
+        foreach ($pickups as $pickup) {
+            $results[ $pickup['ID'] ] = $pickup['NAME'];
+        }
+
+        return $results;
     }
 
+    //	Получение списка адресов доставки
     public function getDeliveryToAddresses(): array
     {
-        return [];
+        $params = [
+            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'STRUCTURE' => 1
+        ];
+
+        $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
+
+        $addresses = $result['RESP']['STRUCTURE']['RG_TAB'][0]['ZA_TAB'];
+
+        $results = [];
+
+        foreach ($addresses as $address) {
+            $results[ $address['KUNNR'] ] = $address['ADRESS'];
+        }
+
+        return $results;
     }
 
     public function getPaymentTypes(): array
@@ -208,9 +268,13 @@ class ArmTek implements ProviderInterface
         return [];
     }
 
+    //	Получение списка способов доставки
     public function getDeliveryTypes(): array
     {
-        return [];
+        return [
+            '1' => 'Самовывоз',
+            '0' => 'Доставка'
+        ];
     }
 
     public function getDateOfShipment(): array
@@ -220,6 +284,6 @@ class ArmTek implements ProviderInterface
 
     public function getOrdersStatuses(): array
     {
-        // TODO: Implement getOrdersStatuses() method.
+        return [];
     }
 }

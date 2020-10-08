@@ -286,8 +286,6 @@ class ProviderOrdersController extends Controller
                 }
             }
 
-            $provider_order->freshWsumm();
-
             if ($request['inpercents']) {
                 $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
             } else {

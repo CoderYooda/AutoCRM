@@ -1,4 +1,4 @@
-@foreach($stores as $store)
+@forelse($stores as $store)
 
     <tr id="{{ $store['index'] }}">
         <td><div class="tree_image"></div></td>
@@ -23,4 +23,13 @@
             </div>
         </td>
     </tr>
-@endforeach
+
+@empty
+
+    <tr>
+        <td colspan="5">
+            <div class="text-center">Результат запроса пуст.</div>
+        </td>
+    </tr>
+
+@endforelse

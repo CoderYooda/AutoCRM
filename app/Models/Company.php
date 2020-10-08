@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
     protected $guarded = [];
+
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
 
     public function shop()
     {

@@ -163,30 +163,22 @@ class Helper{
     }
 
     initDialogMethods(resp = null){
-        let dialogs = document.getElementsByClassName('dialog');
-        if(dialogs){
-            [].forEach.call(dialogs, function(elem) {
 
-                if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
+        let dialogs = document.querySelectorAll('.dialog');
 
-                    var classname = elem.id.replace(/[^a-zA-Z]/g, '');
-                    try {
-                        if(resp){
-                            window[elem.id] = new classes[classname](elem, resp.data);
-                        } else {
-                            window[elem.id] = new classes[classname](elem);
-                        }
-                    } catch (err) {
-                        window.helper.log(classname + " - Такого конструктора не существует");
-                        console.log(err);
-                    }
+        dialogs.forEach(elem => {
 
-                    window.applySelects();
+            let classname = elem.id.replace(/[^a-zA-Z]/g, '');
 
-                    //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
-                }
-            });
-        }
+            try {
+                window[elem.id] = new classes[classname](elem, resp ? resp.data : resp);
+            } catch (err) {
+                window.helper.log(classname + " - Такого конструктора не существует");
+                console.log(err);
+            }
+
+            window.applySelects();
+        });
     }
 
     decodeHtml(html) {

@@ -42,7 +42,7 @@
 
                             <div class="form-group mb-0">
                                 <label>Комментарий</label>
-                                <textarea name="comment[{{ $provider_key }}]" class="form-control resize-none" placeholder="Комментарий" style="height: 31px;">Тестовый заказ, отмените его!</textarea>
+                                <textarea name="comments[{{ $provider_key }}]" class="form-control resize-none" placeholder="Комментарий" style="height: 31px;">Тестовый заказ, отмените его!</textarea>
                             </div>
 
                         </div>

@@ -1,3 +1,5 @@
+import Tabs from "../../Tools/Tabs";
+
 class scheduleTemplateDialog{
 
     constructor(dialog){
@@ -17,7 +19,7 @@ class scheduleTemplateDialog{
     }
 
     init(){
-
+        new Tabs('template_tabs');
     }
 
     applyTemplate()

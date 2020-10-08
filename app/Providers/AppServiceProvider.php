@@ -8,6 +8,7 @@ use App\Models\DocumentType;
 use App\Models\Entrance;
 use App\Models\Order;
 use App\Models\Partner;
+use App\Models\ProviderOrder;
 use App\Models\Shipment;
 use App\Models\User;
 use App\Models\Warrant;
@@ -16,6 +17,7 @@ use App\Observers\CompanyObserver;
 use App\Observers\EntranceObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PartnerObserver;
+use App\Observers\ProviderOrderObserver;
 use App\Observers\ShipmentObserver;
 use App\Observers\UserObserver;
 use App\Observers\WarrantObserver;
@@ -57,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         Entrance::observe(EntranceObserver::class);
         Cashbox::observe(CashboxObserver::class);
         Order::observe(OrderObserver::class);
+        ProviderOrder::observe(ProviderOrderObserver::class);
 
         \View::composer([get_template() . '.documents.index'], function ($view) {
             $view->with('documentsTypes', DocumentType::all());

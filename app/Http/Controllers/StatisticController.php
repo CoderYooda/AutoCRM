@@ -236,7 +236,7 @@ class StatisticController extends Controller
             #Добавлене в Entrance свойства 'amount' из связи, т.к в модели его нет
             if ($class == Entrance::class) {
                 foreach ($entities as $entity) {
-                    $entity['amount'] = $entity->providerorder->summ;
+                    $entity['amount'] = $entity->providerorder->summ ?? 0;
                 }
             }
 

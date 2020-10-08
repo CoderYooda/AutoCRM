@@ -142,8 +142,6 @@ class Mikado implements ProviderInterface
 
         $info = curl_getinfo($handle);
 
-        dd($result);
-
         curl_close($handle);
 
         if($info['http_code'] != 200) {

@@ -350,10 +350,8 @@ class providerOrderDialog extends Modal{
             vtotal = vprice * vcount;
             vnds = (vtotal / 100) * vnds_percent;
 
-            if(this.nds && !this.nds_included){
-                vtotal += vnds;
-            } else if(this.nds && this.nds_included){
-                vnds *= vnds_percent;
+            if(this.nds){
+                if(!this.nds_included) vtotal += vnds;
             } else {
                 vnds = 0.00;
                 vnds_percent = 0;

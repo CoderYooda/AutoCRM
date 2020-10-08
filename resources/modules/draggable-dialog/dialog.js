@@ -53,7 +53,7 @@ window.openDialog = function(tag, params = null, reload = false) {
     if(e){
         e.preventDefault();
     }
-	if (isXHRloading) { return; }
+	if (isXHRloading) return;
     window.isXHRloading = true;
     if(params != null){
         params = '?params=1' + params;
@@ -65,6 +65,11 @@ window.openDialog = function(tag, params = null, reload = false) {
         method: 'get',
         url: '/dialog_' + tag + '_open' + params
     }).then(function (resp) {
+
+        console.log(resp.data.tag);
+
+        if(typeof(resp.data.tag) == "undefined") return ;
+
         if(!alreadyOpened(resp.data.tag) || reload){
             closeDialog(null, resp.data.tag);
             appendDialog(resp.data, resp.data.tag);

@@ -34,7 +34,7 @@ class CategoryDialog extends Modal{
     }
 
     openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_id=' + category_selected);
     }
 
     save(elem){

@@ -230,7 +230,8 @@ class ProviderStoreController extends Controller
 
     public static function providerCartDialog(Request $request)
     {
-        $providers = app(Providers::class);
+        /** @var ProviderInterface[] $providers */
+        $providers = app(Providers::class)->activated();
         $cart = app(CartInterface::class);
 
         PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');
@@ -239,42 +240,34 @@ class ProviderStoreController extends Controller
 
         $ordersCollection = $cart->getProducts();
 
-        $KEY = 'orders.' . Auth::id();
+        $deliveryInfo = [];
 
-        $deliveryInfo = Cache::remember($KEY, Carbon::now()->addHour(), function () use($providers) {
+        foreach ($providers as $service_key => $provider) {
 
-            $deliveryInfo = [];
-
-            /** @var ProviderInterface $provider */
-            foreach ($providers->activated() as $service_key => $provider) {
-
-                $deliveryInfo[$service_key] = [
-                    'Список адресов доставки' => [
-                        'params' => $provider->getDeliveryToAddresses(),
-                        'field' => 'delivery_address_id',
-                        'onclick' => 'changeDeliveryAddress'
-                    ],
-                    'Список офисов самовывоза' => [
-                        'params' => $provider->getPickupAddresses(),
-                        'field' => 'pickup_address_id'
-                    ],
-                    'Список способов доставки' => [
-                        'params' => $provider->getDeliveryTypes(),
-                        'field' => 'delivery_type_id'
-                    ],
-                    'Список способов оплаты' => [
-                        'params' => $provider->getPaymentTypes(),
-                        'field' => 'payment_type_id'
-                    ],
-                    'Список дат отгрузки' => [
-                        'params' => $provider->getDateOfShipment(),
-                        'field' => 'date_shipment_id'
-                    ]
-                ];
-            }
-
-            return $deliveryInfo;
-        });
+            $deliveryInfo[$service_key] = [
+                'Список способов доставки' => [
+                    'params' => $provider->getDeliveryTypes(),
+                    'field' => 'delivery_type_id',
+                    'onclick' => 'changeDeliveryType'
+                ],
+                'Список адресов доставки' => [
+                    'params' => $provider->getDeliveryToAddresses(),
+                    'field' => 'delivery_address_id'
+                ],
+                'Список офисов самовывоза' => [
+                    'params' => $provider->getPickupAddresses(),
+                    'field' => 'pickup_address_id'
+                ],
+                'Список способов оплаты' => [
+                    'params' => $provider->getPaymentTypes(),
+                    'field' => 'payment_type_id'
+                ],
+                'Список дат отгрузки' => [
+                    'params' => $provider->getDateOfShipment(),
+                    'field' => 'date_shipment_id'
+                ]
+            ];
+        }
 
         $orders = [];
         $providersInfo = [];
@@ -282,6 +275,8 @@ class ProviderStoreController extends Controller
         foreach ($ordersCollection as $order) {
 
             $provider_key = $order->provider_key;
+
+            if(!in_array($provider_key, array_keys($providers))) continue;
 
             $order->data = json_decode($order->data);
 

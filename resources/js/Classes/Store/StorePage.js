@@ -236,8 +236,6 @@ class storePage{
             if(model.index == element_index) index = array_index;
         });
 
-        console.log(this.items[index]);
-
         let data = {
             provider_key: service_input.value,
             article: this.search,
@@ -711,8 +709,6 @@ class storePage{
                 let data = response.data;
 
                 this.items = data.stores;
-
-                console.log(this.items);
 
                 element.classList.remove('fa-angle-down');
                 element.classList.add('fa-angle-up');

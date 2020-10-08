@@ -169,7 +169,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Кассовые операции
         Route::get('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
-        Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
+        Route::middleware('requestLimit')->post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
         Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
         Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
         Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
@@ -263,7 +263,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Сервисы
         Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
-        Route::post('/services/{service}/save', 'ServiceController@save')->name('ServiceSave');
         Route::post('/services/{service}/toggle', 'ServiceController@toggle')->name('ServiceToggle');
         Route::post('/services/updateSort', 'ServiceController@updateSort')->name('ServiceUpdateSort');
 
