@@ -86,13 +86,13 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
         Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
         Route::post('/entrance/{entrance}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
-        Route::get('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
+        Route::post('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
         Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
         Route::post('/entrance/dialog/search', 'EntranceController@dialogSearch')->name('EntranceDialogSearch');
         Route::post('/entrance/{entrance}/select', 'EntranceController@select')->name('SelectEntrance');
 
         #Возвраты поступлений
-        Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
+        Route::post('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
         Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');
         Route::post('/entrance_refunds/side_info', 'EntranceRefundController@getSideInfo')->name('GetEntranceRefundSideInfo');
 
@@ -128,7 +128,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shipment/{shipment}/fresh', 'ShipmentController@fresh')->name('FreshShipment');
         Route::post('/shipment/{shipment}/select', 'ShipmentController@select')->name('SelectShipment');
         Route::post('/shipment/dialog/search', 'ShipmentController@dialogSearch')->name('ShipmentDialogSearch');
-        Route::get('/shipments/tabledata', 'ShipmentController@tableData')->name('StoreShipmentData');
+        Route::post('/shipments/tabledata', 'ShipmentController@tableData')->name('StoreShipmentData');
         Route::post('/shipments/side_info', 'ShipmentController@getSideInfo')->name('GetShipmentSideInfo');
 
         #Заказы клиентов
@@ -153,7 +153,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/providerorder/{id}/select', 'ProviderOrdersController@select')->name('SelectProviderOrder');
         Route::post('/providerorder/{id}/loaditems', 'ProviderOrdersController@loadItems')->name('LoadItemsProviderOrder');
         Route::post('/providerorder/{id}/fresh', 'ProviderOrdersController@fresh')->name('FreshProviderOrder');
-        Route::get('/provider_orders/tabledata', 'ProviderOrdersController@tableData')->name('StoreProviderOrderData');
+        Route::post('/provider_orders/tabledata', 'ProviderOrdersController@tableData')->name('StoreProviderOrderData');
         Route::post('/provider_orders/side_info', 'ProviderOrdersController@getPartnerSideInfo')->name('GetPartnerSideInfo');
 
         #Корректировки
@@ -180,7 +180,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/refund/store', 'RefundController@store')->name('StoreRefund');// Строгое название
         Route::post('/refund/search', 'RefundController@search')->name('RefundPageSearch');
         Route::post('/refund/{refund}/fresh', 'RefundController@fresh')->name('FreshRefund');
-        Route::get('/refund/tabledata', 'RefundController@tableData')->name('StoreRefundData');
+        Route::post('/refund/tabledata', 'RefundController@tableData')->name('StoreRefundData');
         Route::post('/refund/side_info', 'RefundController@getSideInfo')->name('GetRefundSideInfo');
 
         #Движение средств между кассами

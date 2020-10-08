@@ -4,7 +4,18 @@
     height: 100%;
     background: #fff;
     box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
-
+    .dragger{
+        height: 100%;
+        width: 3px;
+        right: 0;
+        top: 0;
+        border: 1px solid #e5e6ea;
+        position: absolute;
+        cursor: col-resize;
+        border-top: none;
+        border-bottom: none;
+        z-index: 100000;
+    }
     .checkbox{
         width: 30px;
         min-width: 30px;

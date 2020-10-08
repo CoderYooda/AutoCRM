@@ -91,11 +91,20 @@ class Table {
             container.appendChild(this.drawHover());
             container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
+            //container.appendChild(this.drawDragger());
             this.elem.appendChild(container);
             this.insertElems();
         } else {
             console.log("Не указан контейнер");
         }
+    }
+
+    drawDragger(){
+        let dragger = document.createElement('div');
+        dragger.className = 'dragger';
+        height = this.elem.querySelector('.bbtable-body').offsetHeight;
+        dragger.style.height = height + 'px';
+        header_elem.appendChild(dragger);
     }
 
     setRequest(key, value, fresh = true, push = false){
@@ -258,6 +267,7 @@ class Table {
 
                 let cell = document.createElement('div');
                 cell.className = 'cell';
+                cell.setAttribute('data-td', count);
 
                 if(header_elem.width === 'auto'){
                     cell.style.flex = 1;
@@ -411,10 +421,12 @@ class Table {
             } else {
                 arrow.classList.add('down');
             }
+
             if(this.sorters[elem.table_name].active === true){
                 arrow.classList.add('active');
                 header_elem.classList.add('active');
             }
+
             header_elem.appendChild(arrow);
             header.appendChild(header_elem);
         });

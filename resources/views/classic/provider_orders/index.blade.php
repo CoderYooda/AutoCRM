@@ -10,7 +10,7 @@
                 </span>
             </div>
             <div id="table-container" class="box box-content">
-                <div id="provider_orders-table"></div>
+                <div data-data="{{ $data }}" id="provider_ordersTable"></div>
             </div>
         </div>
         <div class="content-rightside">

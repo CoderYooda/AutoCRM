@@ -2,7 +2,7 @@ import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
-import documentMethods from "./tabs/DocumentMethods";
+import documentMethods from "./tabs/DocumentsMethods";
 import Tabs from "../../Tools/Tabs";
 
 const classes = {
