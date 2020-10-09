@@ -99,7 +99,7 @@ class WarrantController extends Controller
 
         $warrant = Warrant::firstOrNew(['id' => $request['id']]);
 
-        $warrant->manager_id = Auth::user()->id;
+        $warrant->manager_id = Auth::user()->partner->id;
         $message = "Ордер создан";
         $wasExisted = false;
 

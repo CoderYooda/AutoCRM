@@ -244,7 +244,7 @@ class storePage{
 
         axios.post('/provider_stores/cart/add', data)
             .then(response => {
-               dd(response);
+               // dd(response);
             })
             .catch(response => {
                 dd(response);

@@ -286,7 +286,7 @@ class StatisticController extends Controller
             }
         }
 
-        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company->id)->get();
+        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company_id)->get();
 
         foreach ($cashbox_history as $cashbox) {
             $global_data[$cashbox->date]['Ежедневный остаток в кассах'] = $cashbox->balance;
