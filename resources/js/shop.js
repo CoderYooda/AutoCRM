@@ -162,33 +162,58 @@ window.getProductInfo = function(id){
         data: data
     }).then(function (response) {
 
-        let body = document.querySelector('body');
-        let modal_holder = document.createElement('div');
-        modal_holder.classList.add('modal-holder');
-        modal_holder.addEventListener('click', (e)=>{
-           if(e.target.classList.contains('modal-holder')){
-               window.closeModal(modal_holder);
-           }
-        });
-
-        let modal_block = document.createElement('div');
-        modal_block.classList.add('modal-block');
-
-        let close_butt = document.createElement('div');
-        close_butt.classList.add('modal-close');
-        close_butt.addEventListener('click', (e) => {
-            window.closeModal(modal_holder);
-        });
-
-        modal_block.appendChild(close_butt);
-        modal_holder.appendChild(modal_block);
-
-        body.appendChild(modal_holder);
+        createModal();
 
     }).catch(function (error) {
         console.log(error)
     });
 };
+
+
+window.auth = function(){
+
+    axios({
+        method: 'GET',
+        url: '/shop/index?page=login'
+    }).then(function (response) {
+        createModal(response.data.html);
+        let auth_tab_container = document.getElementById('auth-tabs');
+        window.auth_tab = new Tab(auth_tab_container);
+
+    }).catch(function (error) {
+        console.log(error)
+    });
+};
+
+window.createModal = function(html = null){
+    let body = document.querySelector('body');
+    let modal_holder = document.createElement('div');
+    modal_holder.classList.add('modal-holder');
+    modal_holder.addEventListener('click', (e)=>{
+        if(e.target.classList.contains('modal-holder')){
+            window.closeModal(modal_holder);
+        }
+    });
+
+    let modal_block = document.createElement('div');
+    modal_block.classList.add('modal-block');
+
+    let close_butt = document.createElement('div');
+    close_butt.classList.add('modal-close');
+    close_butt.addEventListener('click', (e) => {
+        window.closeModal(modal_holder);
+    });
+
+    let container = document.createElement('div');
+    container.classList.add('modal-container');
+    container.innerHTML = html;
+
+    modal_block.appendChild(close_butt);
+    modal_block.appendChild(container);
+    modal_holder.appendChild(modal_block);
+
+    body.appendChild(modal_holder);
+}
 
 window.closeModal = function(elem){
     elem.remove();
@@ -215,6 +240,34 @@ if(map){
             });
         myMap.geoObjects.add(myPlacemark)
     });
+}
+
+class Tab {
+    constructor(container){
+        this.container = container;
+        this.tabs_buttons = container.querySelectorAll('.link-tab');
+        this.tabs = container.querySelectorAll('.container-tab');
+        console.log(this.tabs_buttons);
+        this.tabs_buttons.forEach((item) => {
+           item.addEventListener('click', ()=>{
+               this.goto(item);
+           });
+        });
+
+    }
+    goto(elem){
+        let link = elem.getAttribute('data-link');
+        this.tabs_buttons.forEach((item) => {
+            item.classList.remove('active');
+        });
+        this.tabs.forEach((item) => {
+            item.classList.remove('active');
+        });
+        let target = this.container.querySelector('[data-link="'+ link +'"]');
+        let target_tab = this.container.querySelector('[data-tag="'+ link +'"]');
+        target.classList.add('active');
+        target_tab.classList.add('active');
+    }
 }
 
 

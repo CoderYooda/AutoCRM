@@ -28,8 +28,21 @@ class TestController extends Controller
             case 'category':
                 $view = view('shop.category');
                 break;
+            case 'login':
+                $view = response()->json([
+                    'html' => view('shop.auth')->render()
+                ], 200);
+                break;
+            case 'product':
+                $view = view('shop.product');
+                break;
+            case 'garage':
+                $view = view('shop.garage');
+                break;
         }
         return $view;
     }
+
+
 
 }

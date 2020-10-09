@@ -11,7 +11,7 @@
     </div>
     <div class="in-category container bg-white">
         <div class="title">
-            <h2>Название категории</h2>
+            <h2>Название Товара</h2>
         </div>
 
         <div class="in-category-container">
@@ -77,41 +77,13 @@
                         {{--<div class="grid"></div>--}}
                     {{--</div>--}}
                 {{--</div>--}}
-                <div class="products row">
-                    @for($i = 0; $i < 8; $i++)
-                        <a href="/shop/index?page=product">
-                            <div class="product">
-                                <img class="product-img" title="сюда имя товара" src="/images/shop/product-{{ rand(0,3) }}.png" alt="">
-
-
-                                <div class="top-left-label">
-                                    @if(rand(0,1))
-                                        <div class="in-stock">В наличии</div>
-                                    @else
-                                        <div class="out-of-stock">Под заказ</div>
-                                    @endif
-                                    @if(rand(0,1))
-                                        <div class="discount">-30%</div>
-                                    @endif
-                                </div>
-
-                                <div class="name-container">
-                                    <div class="brand">VAG</div>
-                                    <div class="article">k1279</div>
-                                </div>
-                                <h3 class="product-name" title="Название товара!!!">Моторное масло</h3>
-
-                                <div class="top-right-label">
-                                    <div class="favour"></div>
-                                    {{--<div class="info" onclick="getProductInfo({{ $i }})"></div>--}}
-                                </div>
-                            </div>
-                        </a>
-                    @endfor
+                <div class="shipment">
+                    <div class="header">
+                        На нашем складе
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 @endsection

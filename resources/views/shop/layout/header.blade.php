@@ -35,8 +35,28 @@
                     <div class="icon cart"></div>
                     <div class="counter">242</div>
                 </div>
-                <div class="action">
-                    <div class="icon user"></div>
+                <div class="action" >
+                    <div onclick="window.auth()" class="icon user"></div>
+                    <div class="dropdown">
+                        <div class="name">Имя Фамилия</div>
+                        <ul>
+                            <li>
+                                <a href="javascript:void(0)">Гараж</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">Мои заказы</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">Личные данные</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">Настройки</a>
+                            </li>
+                        </ul>
+                        <div class="quit">
+                            <a href="javascript:void(0)">Выход</a>
+                        </div>
+                    </div>
                     <div class="baloon">СИ</div>
                 </div>
             </div>

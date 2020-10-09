@@ -16,8 +16,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/shop.css') }}" rel="stylesheet">
 
-    <link href="/images/shop/header_bg.png" rel="headImage">
-    <link href="/images/shop/body_bg.png" rel="bodyImage">
+    {{--<link href="/images/shop/header_bg.png" rel="headImage">--}}
+    {{--<link href="/images/shop/body_bg.png" rel="bodyImage">--}}
 </head>
     <body>
     @include('shop/layout/header')

@@ -28,7 +28,7 @@
             <h2>Популярные товары</h2>
             <div class="products grid-4">
                 <div class="popular-products">
-                    @for($i = 0; $i < 6; $i++)
+                    @for($i = 0; $i < 7; $i++)
                     <div class="product">
                         <img class="product-img" title="сюда имя товара" src="/images/shop/product-{{ rand(0,3) }}.png" alt="">
                         <h3 class="product-name" title="Название товара!!!">Моторное масло</h3>
