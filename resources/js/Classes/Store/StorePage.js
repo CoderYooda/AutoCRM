@@ -3,7 +3,13 @@ import Sortable from "sortablejs";
 import storeMethods from "./tabs/StoreMethods";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
-import documentMethods from "./tabs/DocumentMethods";
+import documentsMethods from "./tabs/DocumentsMethods";
+import providerOrdersMethods from "./tabs/ProviderOrdersMethods";
+import entranceRefundsMethods from "./tabs/EntranceRefundsMethods";
+import shipmentsMethods from "./tabs/ShipmentsMethods";
+import refundMethods from "./tabs/RefundMethods";
+import clientOrdersMethods from "./tabs/ClientOrdersMethods";
+import adjustmentMethods from "./tabs/AdjustmentMethods";
 import Tabs from "../../Tools/Tabs";
 import {Table} from "../BBTable";
 import Page from "../Page/Page";
@@ -12,7 +18,13 @@ const classes = {
     storeMethods,
     entranceMethods,
     providerStoresMethods,
-    documentMethods
+    providerOrdersMethods,
+    entranceRefundsMethods,
+    shipmentsMethods,
+    refundMethods,
+    clientOrdersMethods,
+    adjustmentMethods,
+    documentsMethods,
 };
 
 
@@ -1142,9 +1154,11 @@ class storePage extends Page{
             provider_stores: 'providerStores',
             provider_orders: 'providerOrders',
             entrance_refunds: 'entranceRefunds',
+            shipments: 'shipments',
             refund: 'refund',
             client_orders: 'clientOrders',
-            documents: 'document'
+            adjustment: 'adjustment',
+            documents: 'documents'
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
@@ -1172,6 +1186,93 @@ class storePage extends Page{
                 {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
                 {min_with: 150, width: 200, name: 'Артикул', table_name: 'article'},
                 {min_with: 150, width: 200, name: 'Бренд', table_name: 'supplier'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'provider_orders'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 150, width: 150, name: 'Оплата', table_name: 'pays'},
+                {min_with: 130, width: 200, name: 'Поступление', table_name: 'incomes'},
+                {min_with: 150, width: 200, name: 'Поставщик', table_name: 'partner_name'},
+                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'itogo'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'entrance'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 150, width: 150, name: 'Заявка', table_name: 'ordid'},
+                {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner'},
+                {min_with: 150, width: 'auto', name: 'Принимающий', table_name: 'manager'},
+                {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'entrance_refunds'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 150, width: 150, name: 'Поступление', table_name: 'entrance_id'},
+                {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner_name'},
+                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'wsumm'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'shipments'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 150, width: 200, name: 'Скидка', table_name: 'discount'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price'},
+                {min_with: 150, width: 200, name: 'Итого', table_name: 'total'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'refund'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'manager'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+
             ];
             context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},

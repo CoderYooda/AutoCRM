@@ -4,7 +4,7 @@
     <div id="ajax-table-shipments" class="bottom-container full-box-cont">
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
-                <div id="shipments-table"></div>
+                <div data-data="{{ $data }}" id="shipmentsTable"></div>
             </div>
         </div>
         <div class="content-rightside">

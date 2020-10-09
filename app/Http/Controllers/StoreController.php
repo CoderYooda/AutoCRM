@@ -232,16 +232,21 @@ class StoreController extends Controller
 
     public static function entrance_refundsTab($request)
     {
-        return view(get_template() . '.entrance_refunds.index', compact('request'));
+        $data = EntranceRefundController::getEntranceRefunds($request);
+        $data = json_encode($data->toArray());
+
+        return view(get_template() . '.entrance_refunds.index', compact('request', 'data'));
     }
 
     public static function entranceTab($request)
     {
         PermissionController::canByPregMatch('Смотреть поступления');
+        $data = EntranceController::getEntrances($request);
+        $data = json_encode($data->toArray());
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance') {
-            return view(get_template() . '.entrance.elements.table_container', compact('request'));
+            return view(get_template() . '.entrance.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.entrance.index', compact('request'));
+        return view(get_template() . '.entrance.index', compact('request', 'data'));
     }
 
     public static function providerTab($request)
@@ -258,19 +263,27 @@ class StoreController extends Controller
     public static function shipmentsTab($request)
     {
         PermissionController::canByPregMatch('Смотреть продажи');
+
+        $data = ShipmentController::getShipments($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments') {
-            return view(get_template() . '.shipments.elements.table_container', compact('request'));
+            return view(get_template() . '.shipments.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.shipments.index', compact('request'));
+        return view(get_template() . '.shipments.index', compact('request', 'data'));
     }
 
     public static function refundTab($request)
     {
         PermissionController::canByPregMatch('Смотреть возвраты');
+
+        $data = RefundController::getRefunds($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-refund') {
-            return view(get_template() . '.refund.elements.table_container', compact('request'));
+            return view(get_template() . '.refund.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.refund.index', compact('request'));
+        return view(get_template() . '.refund.index', compact('request', 'data'));
     }
 
     public static function client_ordersTab($request)
@@ -285,10 +298,14 @@ class StoreController extends Controller
     public static function provider_ordersTab($request)
     {
         PermissionController::canByPregMatch('Смотреть заявки поставщикам');
+
+        $data = ProviderOrdersController::getPoviderOrders($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider_orders') {
-            return view(get_template() . '.provider_orders.elements.table_container', compact('request'));
+            return view(get_template() . '.provider_orders.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.provider_orders.index', compact('request'));
+        return view(get_template() . '.provider_orders.index', compact('request', 'data'));
     }
 
     public static function adjustmentTab($request)
