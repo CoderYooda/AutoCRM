@@ -200,7 +200,6 @@ class Helper{
         } else {
             className = classNameStr;
         }
-
         if(className !== 'undefined') {
             if(!window[className]) {
                 //Теперь ошибки будет показывать, проще ориентироваться
@@ -212,6 +211,7 @@ class Helper{
             } else {
                 // Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
                 try {
+
                     window[className].linked(resp);
                 } catch (err) {
                     console.warn(err);

@@ -1,7 +1,7 @@
-class documentMethods {
+class documentsMethods {
     constructor() {
         console.log('Методы документов инициализированы.')
     }
 }
 
-export default documentMethods;
+export default documentsMethods;

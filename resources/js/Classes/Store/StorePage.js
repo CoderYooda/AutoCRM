@@ -1,22 +1,36 @@
 import {Contextual, ContextualItem} from "../Contentual";
 import Sortable from "sortablejs";
+import storeMethods from "./tabs/StoreMethods";
 import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
-import documentMethods from "./tabs/DocumentMethods";
-import shopOrdersMethods from "./tabs/ShopOrdersMethods";
-import Tabs from "../../Tools/Tabs";
+import documentsMethods from "./tabs/DocumentsMethods";
+import providerOrdersMethods from "./tabs/ProviderOrdersMethods";
+import entranceRefundsMethods from "./tabs/EntranceRefundsMethods";
+import shipmentsMethods from "./tabs/ShipmentsMethods";
+import refundMethods from "./tabs/RefundMethods";
+import clientOrdersMethods from "./tabs/ClientOrdersMethods";
+import adjustmentMethods from "./tabs/AdjustmentMethods";
+import {Table} from "../BBTable";
+import Page from "../Page/Page";
 
 const classes = {
+    storeMethods,
     entranceMethods,
     providerStoresMethods,
-    documentMethods,
-    shopOrdersMethods
+    providerOrdersMethods,
+    entranceRefundsMethods,
+    shipmentsMethods,
+    refundMethods,
+    clientOrdersMethods,
+    adjustmentMethods,
+    documentsMethods
 };
 
 
-class storePage{
+class storePage extends Page{
 
     constructor(){
+        super();
         console.log('страница склада инициализировано');
         this.init();
     }
@@ -257,40 +271,41 @@ class storePage{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
-    loadBreadcrumbs(category_id, root_category){
-
-        let object = this;
-        window.isXHRloading = true;
-        // window.helper.insertParamUrl('category_id', category_id);
-        // window.helper.insertParamUrl('search', 'null');
-        object.category_id = category_id;
-        //document.getElementById("search").value = '';;
-        //object.table.setData('/tableproductdata', object.prepareDataForTable());
-        let data = {};
-        data.category_id = category_id;
-        data.root_category = root_category;
-        data.search = object.search;
-        window.axios({
-            async:true,
-            method: 'post',
-            url: '/category/breadcrumbs',
-            data: data
-        }).then((resp) => {
-            if(this.search != null) {
-                document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
-            }
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            window.isXHRloading = false;
-        });
-    }
+    // loadBreadcrumbs(category_id, root_category){
+    //
+    //     let object = this;
+    //     window.isXHRloading = true;
+    //     // window.helper.insertParamUrl('category_id', category_id);
+    //     // window.helper.insertParamUrl('search', 'null');
+    //     object.category_id = category_id;
+    //     //document.getElementById("search").value = '';;
+    //     //object.table.setData('/tableproductdata', object.prepareDataForTable());
+    //     let data = {};
+    //     data.category_id = category_id;
+    //     data.root_category = root_category;
+    //     data.search = object.search;
+    //     window.axios({
+    //         async:true,
+    //         method: 'post',
+    //         url: '/category/breadcrumbs',
+    //         data: data
+    //     }).then((resp) => {
+    //         if(this.search != null) {
+    //             document.getElementById('breadcrumbs-nav').innerHTML = resp.data.html;
+    //         }
+    //     }).catch(function (error) {
+    //         console.log(error);
+    //     }).then(function () {
+    //         window.isXHRloading = false;
+    //     });
+    // }
 
     loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
         if(clean_search != null && clean_search){
             document.getElementById("search").value = '';
             object.search = '';
+            this.table.setRequest('search', null, false);
             window.helper.insertParamUrl('search', '');
         }
 
@@ -311,13 +326,14 @@ class storePage{
                 method: 'post',
                 url: '/category/loadview',
                 data: data
-            }).then(function (resp) {
+            }).then((resp) =>  {
                 category_block.innerHTML = resp.data.html;
-                if(!object.search){
-                    object.loadBreadcrumbs(category_id, object.root_category);
+                if(resp && resp.data){
+                    this.table.setRequest('category_id', data.category_id, false);
+                    this.table.setDatas(JSON.parse(resp.data.data));
                 }
-                if(update_data != null && update_data){
-                    object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                if(!object.search){
+                    document.getElementById('breadcrumbs-nav').innerHTML = resp.data.breadcrumbs;
                 }
                 object.initCategoryContextual();
             }).catch(function (error) {
@@ -1027,8 +1043,8 @@ class storePage{
             object.checkActive();
         });
         object.linked();
-        if(object.active_tab == 'store'){
-            object.loadCategory(this.root_category, true, true);
+        if(object.active_tab === 'store'){
+            //object.loadCategory(this.root_category, true, true);
         }
 
         this.debouneArticleCartAmount = helper.debounce((element, count) => {
@@ -1059,17 +1075,15 @@ class storePage{
         // }
 
 
-        events.forEach(event => {
-            document.addEventListener(event, function(e){
-                object.prepareParams();
-                object.reload();
+        events.forEach((event) => {
+            document.addEventListener(event, (e) => {
+                this.table.freshData();
             });
         });
 
         document.addEventListener('ClientOrderStored', function(e){
             if(object.active){
-                object.prepareParams();
-                object.reload();
+                this.table.reload();
             }
         });
 
@@ -1117,7 +1131,7 @@ class storePage{
         }
 
         this.initCategoryContextual();
-        this.initTableData();
+        //this.initTableData();
         this.searchInit();
         this.initDatesFilter();
         this.checkActive();
@@ -1165,10 +1179,12 @@ class storePage{
             provider_stores: 'providerStores',
             provider_orders: 'providerOrders',
             entrance_refunds: 'entranceRefunds',
+            shipments: 'shipments',
             refund: 'refund',
             client_orders: 'clientOrders',
             documents: 'document',
-            shop_orders: 'shopOrders'
+            shop_orders: 'shopOrders',
+            adjustment: 'adjustment'
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
@@ -1179,6 +1195,128 @@ class storePage{
             dd(e);
         }
 
+
+        let container = 'ajax-table-' + this.active_tab;
+        this.readData(container);
+
+        this.table = new Table({
+            container: this.active_tab + 'Table',
+            data: this.data,
+            url: '/' + this.active_tab + '/tabledata',
+            start_sort: 'DESC'
+        });
+        let header, context_menu, dbl_click, slug;
+
+        if(this.active_tab === 'store'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
+                {min_with: 150, width: 200, name: 'Артикул', table_name: 'article'},
+                {min_with: 150, width: 200, name: 'Бренд', table_name: 'supplier'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'provider_orders'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 150, width: 150, name: 'Оплата', table_name: 'pays'},
+                {min_with: 130, width: 200, name: 'Поступление', table_name: 'incomes'},
+                {min_with: 150, width: 200, name: 'Поставщик', table_name: 'partner_name'},
+                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'itogo'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'entrance'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 150, width: 150, name: 'Заявка', table_name: 'ordid'},
+                {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner'},
+                {min_with: 150, width: 'auto', name: 'Принимающий', table_name: 'manager'},
+                {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'entrance_refunds'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 150, width: 150, name: 'Поступление', table_name: 'entrance_id'},
+                {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner_name'},
+                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'wsumm'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'shipments'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 150, width: 200, name: 'Скидка', table_name: 'discount'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price'},
+                {min_with: 150, width: 200, name: 'Итого', table_name: 'total'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'refund'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'manager'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            slug = 'store';
+        }
+
+        this.table.setHeader(header);
+        this.table.setContextMenu(context_menu);
+        this.table.setBblClick(dbl_click);
+        this.table.setSlug(slug);
+
+        this.table.draw(this.active_tab + 'Table', this.data);
     }
 
     prepareParams(){
@@ -1222,21 +1360,16 @@ class storePage{
         }
     }
 
-    showBrands() {
-        if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
-    }
+    // showBrands() {
+    //     if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
+    // }
 
     searchInit() {
-        var object = this;
-        var searchFn;
+        let object = this;
+        let searchFn;
         let search_field = document.getElementById("search");
         if(search_field){
             searchFn = window.helper.debounce((e) => {
-                this.manufacture_show = true;
-                let manufacturer_list = document.querySelector('.search-field-container > .box');
-                if(manufacturer_list){
-                    manufacturer_list.style.display = 'none';
-                }
 
                 object.search = search_field.value;
                 window.helper.insertParamUrl('search', search_field.value);
@@ -1244,16 +1377,16 @@ class storePage{
                 if(object.search == ''){
                     object.category_id = object.root_category;
                 }
-                if(object.table) {
+                if(this.table) {
                     window.helper.insertParamUrl('category_id', 'null');
-                    object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                    this.table.setRequest('category_id', null, false);
+                    this.table.setRequest('search', object.search, false);
+
                     object.loadCategory(object.category_id);
                 }
                 else {
                     this.searchProviderStores();
                 }
-                //object.page = 1;
-                //object.reload(e);
             }, 400);
             search_field.addEventListener("keydown", searchFn);
             search_field.addEventListener("paste", searchFn);

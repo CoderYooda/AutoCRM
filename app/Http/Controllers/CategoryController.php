@@ -38,36 +38,39 @@ class CategoryController extends Controller
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
+        $data = null;
+
+        $request['page'] = 1;
 
         switch ($request['class']) {
             case 'store':
                 $cat_info['root_id'] = 2;
+                $data = ProductController::getArticles($request);
                 break;
             case 'partner':
                 $cat_info['root_id'] = 3;
                 break;
         }
+        $data = json_encode($data->toArray());
         $class = $request['class'];
-        if($request->expectsJson()){
 
-           $response =  [];
-           $response['html'] = view(get_template() . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : $cat_info['root_id'];
 
-           if($request['class'] == 'partner'){
-               $partners = PartnerController::getPartners($request);
-               $response['tableData'] = $partners;
-           }
+        $response = [];
+        $response['html'] = view(get_template() . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
+        $response['data'] = $data;
+        $response['breadcrumbs'] = self::loadBreadcrumbs($request);
 
-            return response()->json($response);
-        } else {
-            return redirect()->back();
+        if($request['class'] == 'partner'){
+            $partners = PartnerController::getPartners($request);
+            $response['tableData'] = $partners;
         }
+
+        return response()->json($response);
     }
 
-    public function loadBreadcrumbs(Request $request){
-
+    public static function loadBreadcrumbs(Request $request){
         self::$breadcrumbs = collect();
-
         if($request['search'] != '' ){
             $html = '<ol class="breadcrumb nav m-0"><li>Поиск по складу</li></ol>';
             return response()->json([
@@ -75,9 +78,6 @@ class CategoryController extends Controller
             ]);
         }
 
-        if($request['category_id'] === 'null' || $request['category_id'] == null  && $request['root_category'] != null){
-            $request['category_id'] = $request['root_category'];
-        }
         $html = '<ol class="breadcrumb nav m-0">';
         $category = Category::owned()->where('id', $request['category_id'])->first();
         self::rec($category, $request['root_category']);
@@ -89,20 +89,12 @@ class CategoryController extends Controller
             }
         }
         $html .= '</ol>';
-        if($request->expectsJson()){
-            return response()->json([
-                'html' => $html
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        return $html;
     }
 
     public static function rec($category, $root){
         self::$breadcrumbs->prepend($category);
-
         $parent = $category->parent()->first();
-
         if($parent != null && $parent->id != 1 && $category->id != $root){
             self::rec($parent, $root);
         }

@@ -70,7 +70,7 @@ window.applySelects = function() {
 }
 
 function closeAllSelect(elmnt) {
-    var x, y, i, xl, yl, arrNo = [];
+    let x, y, i, xl, yl, arrNo = [];
     x = document.getElementsByClassName("select-items");
     y = document.getElementsByClassName("select-selected");
     xl = x.length;

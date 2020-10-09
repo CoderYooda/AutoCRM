@@ -106,14 +106,35 @@ window.axios.interceptors.response.use(function (response) {
 
 });
 
-// window.unsetPreloader = function(){
-//     let blocks = document.getElementsByClassName('preloader-block');
-//     [].forEach.call(blocks, function(elem){
-//         console.log(elem);
-//         elem.classList.remove('preloader-block');
-//     });
-// };
+Array.prototype.unique = function() {
+    let a = this.concat();
+    for(let i = 0; i < a.length; ++i) {
+        for(let j = i + 1; j < a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+    return a;
+};
+Array.prototype.remove = function() {
+    let what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
 
+document.addEventListener('keydown', (e) => {
+    window.shift_pressed = e.shiftKey;
+    window.ctrl_pressed = e.ctrlKey;
+});
+document.addEventListener('keyup', (e) => {
+    window.shift_pressed = e.shiftKey;
+    window.ctrl_pressed = e.ctrlKey;
+});
 
 window.ih =  window.innerHeight;
 window.iw =  window.innerWidth;

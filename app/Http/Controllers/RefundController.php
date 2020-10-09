@@ -212,7 +212,7 @@ class RefundController extends Controller
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('refund.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->where('refund.company_id', Auth::user()->company()->first()->id)
+            ->where('refund.company_id', Auth::user()->company_id)
             ->groupBy('refund.id')
             ->orderBy($field, $dir)
             //->toSql();

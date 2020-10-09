@@ -20,12 +20,12 @@ class AddFieldsToSalary extends Migration
             $table->text('name')->nullable();
             $table->boolean('isInPercent')->default(false);
             $table->boolean('ishm')->default(0)->comment('Является ли почасовой');
-            $table->text('comment')->nullable()->comment('Коментарий');
+            $table->text('comment')->nullable()->comment('Комментарий');
         });
 
         Schema::table('salary_schemas_partner', function (Blueprint $table) {
             $table->integer('h_m_value')->default(40)->comment('Часов в неделю');
-            $table->text('comment')->nullable()->comment('Коментарий');
+            $table->text('comment')->nullable()->comment('Комментарий');
         });
 
         if (Schema::hasColumn('salary_schemas_partner', 'id')) {
