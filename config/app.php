@@ -1,6 +1,7 @@
 <?php
 
 use App\Providers\AppProviderStoreService;
+use App\Providers\AppShopServiceProvider;
 
 return [
 
@@ -74,7 +75,8 @@ return [
 
         Barryvdh\Debugbar\ServiceProvider::class,
 
-        AppProviderStoreService::class
+        AppProviderStoreService::class,
+        AppShopServiceProvider::class
     ],
 
     /*

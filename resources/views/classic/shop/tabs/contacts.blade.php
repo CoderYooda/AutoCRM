@@ -63,7 +63,7 @@
                                     <input type="text" name="emails[{{ $loop->index }}][email]" class="form-control email_input mr-5" placeholder="Email адрес" value="{{ $email->email }}">
                                     <input type="text" name="emails[{{ $loop->index }}][desc]" class="form-control mr-5" placeholder="Например: Отдел кадров" value="{{ $email->desc }}">
                                     <label data-error="emails_main" class="custom_checkbox">
-                                        <input type="radio" class="not_default" name="emails_main"  />
+                                        <input type="radio" class="not_default" @if($email->main) checked @endif name="emails_main" value="{{ $loop->index }}" />
                                         <span></span>
                                     </label>
                                     <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Удалить Email адрес">

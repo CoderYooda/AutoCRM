@@ -1,10 +1,9 @@
 const mix = require('laravel-mix');
 
-
 let template = 'classic';
 
 mix.js('resources/js/app.js', 'public/js');
-mix.js('resources/js/shop.js', 'public/js');
+mix.js('resources/js/Shop/shop.js', 'public/js');
 mix.sass('resources/sass/' + template + '/app.scss', 'public/css').options({ processCssUrls: false });
 mix.sass('resources/sass/' + template + '/fonts.scss', 'public/css');
 mix.sass('resources/sass/' + template + '/base.scss', 'public/css').options({ processCssUrls: false });

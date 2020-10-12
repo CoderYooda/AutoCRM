@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\System\Image;
-use App\Traits\Emailable;
 use App\Traits\Imageable;
 use App\Traits\Phoneable;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +41,11 @@ class Shop extends Model
     public function contactEmails()
     {
         return $this->belongsToMany(Email::class, 'shop_emails_contact');
+    }
+
+    public function contactEmail()
+    {
+        return $this->belongsToMany(Email::class, 'shop_emails_contact')->where('main', 1);
     }
 
     public function orderEmails()

@@ -157,7 +157,7 @@ class PartnerController extends Controller
         foreach($partner->phones as $phone){
             $phones_str .= $phone->number;
         }
-        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
+        $partner->foundstring = mb_strtolower(str_replace(['(', ')', ' ', '-', '+'], '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
         $partner->save();
 
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');

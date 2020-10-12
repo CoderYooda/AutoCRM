@@ -2,27 +2,32 @@
 
 @section('content')
 <div class="body">
-    <div class="slider container bg-white">
-        <div class="silder-content">
-            <div class="head-slider-container">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-            </div>
-            <div class="controls">
-                <div class="control-item left" onclick="window.headSlider.prev()"></div>
-                <div class="control-item right" onclick="window.headSlider.next()"></div>
-            </div>
-            <div class="pins-container">
-{{--                <div class="pin"></div>--}}
-{{--                <div class="pin"></div>--}}
-{{--                <div class="pin active"></div>--}}
-{{--                <div class="pin"></div>--}}
-{{--                <div class="pin"></div>--}}
+
+    @if(count($shop->sliderImages))
+
+        <div class="slider container bg-white">
+            <div class="silder-content">
+                <div class="head-slider-container">
+                    @foreach($shop->sliderImages as $image)
+                        <img style="display: block;" src="{{ $image->image_path }}" alt="">
+                    @endforeach
+                </div>
+                <div class="controls">
+                    <div class="control-item left" onclick="window.headSlider.prev()"></div>
+                    <div class="control-item right" onclick="window.headSlider.next()"></div>
+                </div>
+                <div class="pins-container">
+    {{--                <div class="pin"></div>--}}
+    {{--                <div class="pin"></div>--}}
+    {{--                <div class="pin active"></div>--}}
+    {{--                <div class="pin"></div>--}}
+    {{--                <div class="pin"></div>--}}
+                </div>
             </div>
         </div>
-    </div>
+
+    @endif
+
     <div class="popular container bg-white">
         <div class="title">
             <h2>Популярные товары</h2>
@@ -83,7 +88,7 @@
                 <div class="description">
                     <div class="title">Название категории</div>
                     <div class="link">
-                        <a title="Название категории сюда" href="/shop/index?page=category">Перейти</a>
+                        <a title="Название категории сюда" href="{{ route('categories.index', ['subdomain' => $shop->subdomain]) }}">Перейти</a>
                     </div>
                 </div>
                 <div class="photo">

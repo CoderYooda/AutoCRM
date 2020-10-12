@@ -18,7 +18,6 @@ Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmS
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
 
-
 #СМС
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 

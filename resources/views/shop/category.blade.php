@@ -2,13 +2,9 @@
 
 @section('content')
 <div class="body">
-    <div class="pagination container bg-white">
-        <div class="paginator">
-            <span class="item" ><a href="javascript:void(0)">Главная</a></span>
-            <span class="item" ><a href="javascript:void(0)">После главной</a></span>
-            <span class="item" >Последняя</span>
-        </div>
-    </div>
+
+    @include('shop.includes.breadcrumbs')
+
     <div class="in-category container bg-white">
         <div class="title">
             <h2>Название категории</h2>

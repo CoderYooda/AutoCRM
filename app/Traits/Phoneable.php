@@ -3,13 +3,18 @@
 namespace App\Traits;
 
 use App\Models\Phone;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 trait Phoneable
 {
     public function phones()
     {
         return $this->morphMany(Phone::class, 'phoneable');
+    }
+
+    public function phone()
+    {
+        return $this->morphOne(Phone::class, 'phoneable')->where('main', 1);
     }
 
     public function upsertPhones(array $phones, $main = null)

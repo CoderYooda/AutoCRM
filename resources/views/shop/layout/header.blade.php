@@ -2,27 +2,37 @@
     <div class="header-top">
         <div class="container">
             <div class="mini-card pin">
-                <span title="г. Белгород, Проспект Славы 150А">г. Белгород, Проспект Славы 150А</span>
+                <a href="{{ route('pages.about') }}" title="{{ $shop->address_name }}">{{ $shop->address_name }}</a>
             </div>
             <div class="mini-card float-r phone">
-                <span title="8(952)436-50-64">8(952)436-50-64</span>
+                <a href="tel: +{{ $shop->phone->number }}">{{ display_phone($shop->phone->number) }}</a>
             </div>
             <div class="mini-card float-r pr-50 mail">
-                <span title="CoderYooda@gmail.com">CoderYooda@gmail.com</span>
+                <a href="mailto:{{ $shop->contactEmail->first()->email }}" >{{ $shop->contactEmail->first()->email }}</a>
             </div>
         </div>
     </div>
     <div class="header-mid">
         <div class="container bg-white d-flex">
-            <div class="logo-container header-elem">
-                <a href="/shop/index">
-                    <div class="logo"></div>
-                </a>
-                <h1 class="company-name"><a href="/shop/index">Название вашей компании</a></h1>
+            <div class="logo-container header-elem d-flex" style="align-items: center;">
+                <div>
+                    <a href="{{ route('pages.index') }}">
+                        <div class="logo">
+                            @isset($shop->logotypeImage)
+                                <img class="w-100 h-100" src="{{ $shop->logotypeImage->image_path }}" title="{{ $shop->name }}"  alt="{{ $shop->name }}"/>
+                            @endisset
+                        </div>
+                    </a>
+                </div>
+                <div class="ml-15">
+                    <h1 class="company-name">
+                        <a href="{{ route('pages.index') }}">{{ $shop->name }}</a>
+                    </h1>
+                </div>
             </div>
             <div class="search-container header-elem">
                 <div class="search-box">
-                    <input placeholder="Пример поиска — 1744977" type="text">
+                    <input placeholder="Пример поиска — k1279" type="text">
                     <a href="javascript:void(0)" class="search-ico"></a>
                 </div>
             </div>
@@ -63,11 +73,11 @@
         </div>
         <div class="container bg-white">
             <div class="main-menu">
-                <a href="/shop/index?page=catalogue" title="Каталог продукции" class="menu-item catalogue">Каталог продукции</a>
-                <a href="/shop/index?page=about" title="Каталог продукции" class="menu-item">о компании</a>
-                <a href="/shop/index?page=deliver" title="Каталог продукции" class="menu-item">оплата и доставка</a>
-                <a href="/shop/index?page=refund" title="Каталог продукции" class="menu-item">гарантия и возврат</a>
-                <a href="/shop/index?page=contacts" title="Каталог продукции" class="menu-item">контакты</a>
+                <a href="{{ route('pages.catalogue') }}" title="Каталог продукции" class="menu-item catalogue">Каталог продукции</a>
+                <a href="{{ route('pages.about') }}" title="Каталог продукции" class="menu-item">о компании</a>
+                <a href="{{ route('pages.delivery') }}" title="Каталог продукции" class="menu-item">оплата и доставка</a>
+                <a href="{{ route('pages.warranty') }}" title="Каталог продукции" class="menu-item">гарантия и возврат</a>
+                <a href="{{ route('pages.contacts') }}" title="Каталог продукции" class="menu-item">контакты</a>
             </div>
         </div>
     </div>

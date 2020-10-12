@@ -33,6 +33,17 @@ class UpdateRequest extends FormRequest
         ];
     }
 
+    protected function passedValidation()
+    {
+        $phones = $this->phones;
+
+        foreach ($phones as &$phone) {
+            $phone['number'] = str_replace(['(', ')', ' ', '-', '+'], '', $phone['number']);
+        }
+
+        $this->phones = $phones;
+    }
+
     protected function failedValidation(Validator $validator)
     {
         if ($this->expectsJson()) {

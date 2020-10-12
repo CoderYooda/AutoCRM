@@ -1,7 +1,19 @@
-import BBSlider from '../modules/bbslider/bbslider.min';
+import BBSlider from '../../modules/bbslider/bbslider.min';
+import IMask from 'imask';
 
-/* AXIOS */
-window.axios = require('axios');
+/* Notification settings */
+notification.configProfile( 'global', {
+    behaviour: {
+        autoHide: 3,
+        limit: 5
+    },
+    animations: {
+        duration: [ 0.5, 0.5 ]
+    },
+});
+
+
+/* Axios settings */
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = '*';
 let token = document.head.querySelector('meta[name="csrf-token"]');
@@ -10,20 +22,19 @@ if (token) {
 } else {
     console.warn('CSRF токен не выдан');
 }
-/* END AXIOS */
 
 /* USER IMAGES*/
 let header = document.querySelector('.header');
-    if(document.querySelector('[rel=headImage]')){
-        header.style.background = 'url(' + document.querySelector('[rel=headImage]').getAttribute('href') + ') bottom center repeat';
-    }
+if(document.querySelector('[rel=headImage]')){
+    header.style.background = 'url(' + document.querySelector('[rel=headImage]').getAttribute('href') + ') bottom center repeat';
+}
 let body = document.querySelector('.body');
-    if(document.querySelector('[rel=bodyImage]')){
-        body.style.background = 'url(' + document.querySelector('[rel=bodyImage]').getAttribute('href') + ') top center repeat';
-    }
-/* ENDUSER IMAGES*/
+if(document.querySelector('[rel=bodyImage]')){
+    body.style.background = 'url(' + document.querySelector('[rel=bodyImage]').getAttribute('href') + ') top center repeat';
+}
 
 /* SLIDERS */
+
 let head_slider = document.querySelector('.head-slider-container');
 if(head_slider){
     window.headSlider = new BBSlider({
@@ -69,9 +80,6 @@ function activatePin(){
         activePin.classList.add('active');
     }
 }
-
-
-
 
 let pop_products = document.querySelector('.popular-products');
 if(pop_products){
@@ -147,127 +155,50 @@ function activateGalleryPin(){
     }
 }
 
+//Маска на поля
 
-/* END SLIDERS */
+let phone_element = document.querySelector('[name="phone"]');
 
+if(phone_element) {
+    IMask(phone_element, {
 
-window.getProductInfo = function(id){
+            mask: '+{7}(000)000-00-00',
+            lazy: true,
+            placeholderChar: '_',
 
-    let data = new FormData();
-    data.append('id', id);
+            dispatch: function (appended, dynamicMasked) {
+                var number = (dynamicMasked.value + appended).replace(/\D/g, '');
 
-    axios({
-        method: 'GET',
-        url: '/images/shop/test_product_response.json',
-        data: data
-    }).then(function (response) {
-
-        createModal();
-
-    }).catch(function (error) {
-        console.log(error)
-    });
-};
-
-
-window.auth = function(){
-
-    axios({
-        method: 'GET',
-        url: '/shop/index?page=login'
-    }).then(function (response) {
-        createModal(response.data.html);
-        let auth_tab_container = document.getElementById('auth-tabs');
-        window.auth_tab = new Tab(auth_tab_container);
-
-    }).catch(function (error) {
-        console.log(error)
-    });
-};
-
-window.createModal = function(html = null){
-    let body = document.querySelector('body');
-    let modal_holder = document.createElement('div');
-    modal_holder.classList.add('modal-holder');
-    modal_holder.addEventListener('click', (e)=>{
-        if(e.target.classList.contains('modal-holder')){
-            window.closeModal(modal_holder);
+                return dynamicMasked.compiledMasks.find(function (m) {
+                    return number.indexOf(m.startsWith) === 0;
+                });
+            }
         }
-    });
-
-    let modal_block = document.createElement('div');
-    modal_block.classList.add('modal-block');
-
-    let close_butt = document.createElement('div');
-    close_butt.classList.add('modal-close');
-    close_butt.addEventListener('click', (e) => {
-        window.closeModal(modal_holder);
-    });
-
-    let container = document.createElement('div');
-    container.classList.add('modal-container');
-    container.innerHTML = html;
-
-    modal_block.appendChild(close_butt);
-    modal_block.appendChild(container);
-    modal_holder.appendChild(modal_block);
-
-    body.appendChild(modal_holder);
+    );
 }
 
-window.closeModal = function(elem){
-    elem.remove();
-};
+//Яндекс карта
 
 let map = document.querySelector('.map');
 if(map){
     ymaps.ready(function () {
         window.myMap = new ymaps.Map('map', {
-                center: window.coordinates,
-                zoom: 9
-            }, {
-                searchControlProvider: 'yandex#search'
-            });
+            center: window.coordinates,
+            zoom: 9
+        }, {
+            searchControlProvider: 'yandex#search'
+        });
 
-            // Создаём макет содержимого.
-            //  let MyIconContentLayout = ymaps.templateLayoutFactory.createClass(
-            //     '<div style="color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
-            // );
+        // Создаём макет содержимого.
+        //  let MyIconContentLayout = ymaps.templateLayoutFactory.createClass(
+        //     '<div style="color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
+        // );
 
-            let myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
-                hintContent: 'Собственный значок метки',
-                balloonContent: 'Это красивая метка'
-            });
+        let myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+            hintContent: 'Собственный значок метки',
+            balloonContent: 'Это красивая метка'
+        });
         myMap.geoObjects.add(myPlacemark)
     });
 }
-
-class Tab {
-    constructor(container){
-        this.container = container;
-        this.tabs_buttons = container.querySelectorAll('.link-tab');
-        this.tabs = container.querySelectorAll('.container-tab');
-        console.log(this.tabs_buttons);
-        this.tabs_buttons.forEach((item) => {
-           item.addEventListener('click', ()=>{
-               this.goto(item);
-           });
-        });
-
-    }
-    goto(elem){
-        let link = elem.getAttribute('data-link');
-        this.tabs_buttons.forEach((item) => {
-            item.classList.remove('active');
-        });
-        this.tabs.forEach((item) => {
-            item.classList.remove('active');
-        });
-        let target = this.container.querySelector('[data-link="'+ link +'"]');
-        let target_tab = this.container.querySelector('[data-tag="'+ link +'"]');
-        target.classList.add('active');
-        target_tab.classList.add('active');
-    }
-}
-
 
