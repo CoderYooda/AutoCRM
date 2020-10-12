@@ -12,6 +12,7 @@ use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\ClientOrder;
 use App\Models\Company;
 use App\Models\ImportHistory;
 use App\Models\Service;
@@ -202,11 +203,6 @@ class StoreController extends Controller
         return view(get_template() . '.provider_stores.index', compact('request', 'services', 'company'));
     }
 
-    public static function documentsTab(Request $request)
-    {
-        return view(get_template() . '.documents.index', compact('request'));
-    }
-
     public static function storeTab($request)
     {
         $page = 'Склад';
@@ -249,6 +245,14 @@ class StoreController extends Controller
         return view(get_template() . '.entrance.index', compact('request', 'data'));
     }
 
+    public static function documentsTab(Request $request)
+    {
+        PermissionController::canByPregMatch('Смотреть документы');
+        $data = DocumentController::getDocuments($request);
+        $data = json_encode($data->toArray());
+        return view(get_template() . '.documents.index', compact('request', 'data'));
+    }
+
     public static function providerTab($request)
     {
         //PermissionController::canByPregMatch('Смотреть заявки поставщикам');
@@ -288,11 +292,14 @@ class StoreController extends Controller
 
     public static function client_ordersTab($request)
     {
+        $data = ClientOrdersController::getClientOrders($request);
+        $data = json_encode($data->toArray());
+
         PermissionController::canByPregMatch('Смотреть заказ клиента');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders') {
-            return view(get_template() . '.client_orders.elements.table_container', compact('request'));
+            return view(get_template() . '.client_orders.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.client_orders.index', compact('request'));
+        return view(get_template() . '.client_orders.index', compact('request', 'data'));
     }
 
     public static function provider_ordersTab($request)
@@ -311,10 +318,14 @@ class StoreController extends Controller
     public static function adjustmentTab($request)
     {
         PermissionController::canByPregMatch('Смотреть корректировки');
+
+        $data = AdjustmentController::getAdjustments($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment') {
-            return view(get_template() . '.adjustments.elements.table_container', compact('request'));
+            return view(get_template() . '.adjustments.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.adjustments.index', compact('request'));
+        return view(get_template() . '.adjustments.index', compact('request', 'data'));
     }
 
     public function import(StoreImportRequest $request)

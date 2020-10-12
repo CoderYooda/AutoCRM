@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Comment\Doc;
 use stdClass;
+use Illuminate\Support\Facades\DB;
 
 class DocumentController extends Controller
 {
@@ -37,54 +38,7 @@ class DocumentController extends Controller
 
     public function tableData(Request $request)
     {
-        PermissionController::canByPregMatch('Смотреть документы');
-
-        $size = $request['size'] ?? 30;
-
-        $field = null;
-        $dir = null;
-
-        if(isset($request['sorters'])) {
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-
-        if($field === null && $dir === null) {
-            $field = 'created_at';
-            $dir = 'DESC';
-        }
-
-        if($request['dates_range'] !== null) {
-            $dates = explode('|', $request['dates_range']);
-            $dates[0] .= ' 00:00:00';
-            $dates[1] .= ' 23:59:59';
-            $request['dates'] = $dates;
-        }
-
-        $document_filter = DocumentType::find($request['document_filter']);
-
-        $documents = Document::with('manager')->where('company_id', Auth::user()->company_id)
-            ->when($request['accountable'] != null, function($query) use ($request) {
-                $query->whereIn('manager_id', $request['accountable']);
-            })
-            ->when($request->search, function ($query) use($request) {
-                $query->where('barcode', $request->search);
-            })
-            ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
-            })
-            ->when($document_filter != null, function ($query) use($document_filter) {
-                $query->where('name', $document_filter->name);
-            })
-            ->when($field && $dir, function ($query) use ($field, $dir) {
-                $query->orderBy($field, $dir);
-            })
-            ->paginate($size);
-
-        foreach ($documents as $key => $document) {
-            $documents[$key]['manager_name'] = $document->manager->fio;
-        }
-
+        $documents = self::getDocuments($request);
         return response()->json(['data' => $documents]);
     }
 
@@ -311,5 +265,60 @@ class DocumentController extends Controller
         return view($view_name)
             ->with('data', $data['data'])
             ->with('barcode', $document->barcode);
+    }
+
+    public static function getDocuments($request){
+        $size = $request['size'] ?? 30;
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])) {
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+
+        if($field === null && $dir === null) {
+            $field = 'created_at';
+            $dir = 'DESC';
+        }
+
+        if($request['dates_range'] !== null) {
+            $dates = explode('|', $request['dates_range']);
+            $dates[0] .= ' 00:00:00';
+            $dates[1] .= ' 23:59:59';
+            $request['dates'] = $dates;
+        }
+
+        $document_filter = DocumentType::find($request['document_filter']);
+
+        $documents = Document::select(DB::raw('
+                documents.*, documents.created_at as date, IF(partners.type != 2, partners.fio, partners.companyName) as manager
+            '))
+            ->leftJoin('partners', 'partners.id', '=', 'documents.manager_id')
+            ->where('documents.company_id', Auth::user()->company_id)
+
+            ->when($request['accountable'] != null, function($query) use ($request) {
+                $query->whereIn('manager_id', $request['accountable']);
+            })
+            ->when($request->search, function ($query) use($request) {
+                $query->where('barcode', $request->search);
+            })
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->when($document_filter != null, function ($query) use($document_filter) {
+                $query->where('name', $document_filter->name);
+            })
+            ->when($field && $dir, function ($query) use ($field, $dir) {
+                $query->orderBy($field, $dir);
+            })
+            ->paginate($size);
+
+//        foreach ($documents as $key => $document) {
+//            $documents[$key]['manager_name'] = $document->manager->fio;
+//        }
+
+        return $documents;
     }
 }

@@ -1,10 +1,10 @@
 @extends($request['view_as'] == 'json' && $request['target'] != null ? get_template() . '.layouts.TabXHR' : get_template() . '.store.layout.tabs')
 
 @section('tab')
-    <div id="ajax-table-adjustments" class="bottom-container full-box-cont">
+    <div id="ajax-table-adjustment" class="bottom-container full-box-cont">
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
-                <div id="adjustment-table" ></div>
+                <div data-data="{{ $data }}" id="adjustmentTable" ></div>
             </div>
         </div>
         <div class="content-rightside">

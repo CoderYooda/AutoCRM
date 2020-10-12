@@ -252,16 +252,13 @@ class EntranceController extends Controller
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
-
         if($field === null &&  $dir === null){
             $field = 'created_at';
             $dir = 'DESC';
         }
-
         if($request['provider'] == null){
             $request['provider'] = [];
         }
-
         if($request['accountable'] == null){
             $request['accountable'] = [];
         }

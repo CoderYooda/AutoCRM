@@ -111,13 +111,13 @@ class storePage extends Page{
         if(value == null){
             window.notification.notify( 'success', 'Поле очищено');
         }
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable ());
+        this.table.setRequest(option, value);
     }
 
     clearList(type, container){
         this[type] = [];
         document.getElementById(container).innerHTML = '';
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.table.setRequest(type, []);
         window.notification.notify( 'success', 'Поле очищено');
     }
 
@@ -143,12 +143,9 @@ class storePage extends Page{
                     '</div>' +
                     '');
                 stack.appendChild(node);
-                //object.reload();
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
+                object.table.setRequest(target, object[target]);
                 window.notification.notify( 'success', 'Контакт выбран');
             }
-            //document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
-            //console.log("Событие PartnerSelected вызвано");
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
@@ -264,9 +261,9 @@ class storePage extends Page{
     }
 
     removePartner(id, type){
-        this[type].splice(this[type].indexOf(id));
+        this[type].remove(id);
         document.getElementById(type + '_' + id).remove();
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.table.setRequest(type, this[type]);
     }
 
     // loadBreadcrumbs(category_id, root_category){
@@ -339,6 +336,8 @@ class storePage extends Page{
             }).then(function () {
                 window.isXHRloading = false;
             });
+        } else {
+            return false;
         }
     }
 
@@ -843,7 +842,7 @@ class storePage extends Page{
             ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
             paginationSize:Math.floor(elements),
             placeholder:"По данным критериям ничего нет",
-            columns: object.generateColumns(),
+            columns: 1,//object.generateColumns(),
             renderComplete: () => {
                 let title_elements = document.querySelectorAll('.tabulator-cell');
 
@@ -852,9 +851,7 @@ class storePage extends Page{
                 });
             },
             rowDblClick:function(e, row){
-
                 let id = row.getData().id;
-
                 if(object.contextDop == 'document') window.helper.openDocument(id);
                 else openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)
             },
@@ -1035,7 +1032,8 @@ class storePage extends Page{
             'AdjustmentStored',
             'ShipmentStored',
             'WarrantStored',
-            'EntranceRefundStored'
+            'EntranceRefundStored',
+            'ClientOrderStored'
         ];
 
         // //Поиск
@@ -1198,20 +1196,20 @@ class storePage extends Page{
         } else if(this.active_tab === 'provider_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 150, width: 150, name: 'Оплата', table_name: 'pays'},
-                {min_with: 130, width: 200, name: 'Поступление', table_name: 'incomes'},
-                {min_with: 150, width: 200, name: 'Поставщик', table_name: 'partner_name'},
-                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'itogo'},
-                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+                {min_with: 60, width: 150, name: 'Оплата', table_name: 'pays', transform: 'transform_ico'},
+                {min_with: 60, width: 150, name: 'Поступление', table_name: 'incomes', transform: 'transform_ico'},
+                {min_with: 120, width: 200, name: 'Поставщик', table_name: 'partner_name'},
+                {min_with: 120, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 90, width: 200, name: 'Сумма', table_name: 'itogo', transform: 'transform_price'},
+                {min_with: 90, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
             context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: function(data){openDialog('providerOrderDialog', '&provider_order_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('providerOrderDialog', '&provider_order_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            dbl_click = function(id){openDialog('providerOrderDialog', '&provider_order_id=' + id)};
             slug = 'store';
         } else if(this.active_tab === 'entrance'){
             header = [
@@ -1219,17 +1217,16 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Заявка', table_name: 'ordid'},
                 {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner'},
                 {min_with: 150, width: 'auto', name: 'Принимающий', table_name: 'manager'},
-                {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment'},
+                {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment', transform: 'transform_comment'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
-
             ];
             context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: function(data){openDialog('entranceDialog', '&entrance_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('entranceDialog', '&entrance_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            dbl_click = function(id){openDialog('entranceDialog', '&entrance_id=' + id)};
             slug = 'store';
         } else if(this.active_tab === 'entrance_refunds'){
             header = [
@@ -1237,16 +1234,17 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Поступление', table_name: 'entrance_id'},
                 {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner_name'},
                 {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'wsumm'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'wsumm', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
+
             context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: function(data){openDialog('entranceRefundDialog', '&entrance_refund_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('entranceRefundDialog', '&entrance_refund_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            dbl_click = function(id){openDialog('entranceRefundDialog', '&entrance_refund_id=' + id)};
             slug = 'store';
         } else if(this.active_tab === 'shipments'){
             header = [
@@ -1258,29 +1256,80 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
             context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: function(data){openDialog('shipmentDialog', '&shipment_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('shipmentDialog', '&shipment_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            dbl_click = function(id){openDialog('shipmentDialog', '&shipment_id=' + id)};
             slug = 'store';
         } else if(this.active_tab === 'refund'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'manager'},
                 {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
-
             ];
+
             context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: function(data){openDialog('refundDialog', '&refund_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('refundDialog', '&refund_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
+            dbl_click = function(id){openDialog('refundDialog', '&refund_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'client_orders'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 200, name: 'Статус', table_name: 'status_formatted'},
+                {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount_formatted'},
+
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('clientorderDialog', '&client_order_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'adjustment'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'partner'},
+                {min_with: 150, width: 200, name: 'Магазин', table_name: 'store'},
+                {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment', transform: 'transform_comment'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('adjustmentDialog', '&adjustment_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('adjustmentDialog', '&adjustment_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('adjustmentDialog', '&adjustment_id=' + id)};
+            slug = 'store';
+        } else if(this.active_tab === 'documents'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 250, name: 'Название', table_name: 'name'},
+                {min_with: 150, width: 'auto', name: 'Менеджер', table_name: 'manager'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+
+            context_menu = [
+                {name:'Открыть', action: function(data){window.helper.openDocument(data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){window.helper.openDocument(id)};
             slug = 'store';
         }
 
@@ -1354,8 +1403,9 @@ class storePage extends Page{
                     window.helper.insertParamUrl('category_id', 'null');
                     this.table.setRequest('category_id', null, false);
                     this.table.setRequest('search', object.search, false);
-
-                    object.loadCategory(object.category_id);
+                    if(!object.loadCategory(object.category_id)){
+                        this.table.freshData();
+                    }
                 }
                 else {
                     this.searchProviderStores();
@@ -1370,7 +1420,8 @@ class storePage extends Page{
     resetDate(){
         this.dates_range = null;
         this.page = 1;
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.table.setRequest('dates_range', this.dates_range, false);
+        this.table.setRequest('page', this.page);
         this.dates.clear();
         window.notification.notify( 'success', 'Дата очищена');
     }
@@ -1379,7 +1430,8 @@ class storePage extends Page{
         document.getElementById('search').value = '';
         this.search = '';
         this.page = 1;
-        this.reload();
+        this.table.setRequest('search', this.search, false);
+        this.table.setRequest('page', this.page);
     }
 
     getUrlString(type = null){
@@ -1429,12 +1481,10 @@ class storePage extends Page{
             onClose: function(selectedDates, dateStr, instance) {
                 object.page = 1;
                 if(selectedDates.length > 1){
-                    object.dates_range = window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString();
+                    object.table.setRequest('dates_range', window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString());
                 } else {
-                    object.dates_range = null;
+                    object.table.setRequest('dates_range', null);
                 }
-                // object.reload();
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }
         });
     }

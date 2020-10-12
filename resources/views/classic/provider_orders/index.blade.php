@@ -15,7 +15,7 @@
         </div>
         <div class="content-rightside">
             @can('Создавать заявки поставщикам')
-                <button onclick="openDialog('providerorderDialog')" class="button primary mb-15 w-100">Создать заявку</button>
+                <button onclick="openDialog('providerOrderDialog')" class="button primary mb-15 w-100">Создать заявку</button>
             @endcan
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>

@@ -84,11 +84,11 @@ class Table {
             container.appendChild(this.drawHeader());
             this.body = this.drawBody();
             container.appendChild(this.body);
-            this.body.addEventListener('mouseleave', (e) => {
-                this.elem.querySelector('.hover').style.top = '-60px';
-            });
+            // this.body.addEventListener('mouseleave', (e) => {
+            //     this.elem.querySelector('.hover').style.top = '-60px';
+            // });
             this.body.style.height = 'calc(100% - 70px)';
-            container.appendChild(this.drawHover());
+            // container.appendChild(this.drawHover());
             container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
             //container.appendChild(this.drawDragger());
@@ -148,6 +148,28 @@ class Table {
 
     }
 
+    transform_ico(val){
+        let div = document.createElement('div');
+        div.classList.add('tableIco');
+        div.style.background = "url(images/icons/pos_" + val + ".svg) left no-repeat";
+        return div;
+    };
+
+    transform_price(val){
+        let div = document.createElement('div');
+        div.classList.add('tablePrice');
+        div.innerHTML = val + ' ₽'
+        return div;
+    };
+
+    transform_comment(val){
+        let div = document.createElement('div');
+        div.classList.add('tablePrice');
+        let comment = val ? val : 'Нет комментария';
+        div.innerHTML = comment;
+        return div;
+    };
+
     freshData(){
         window.axios({
             method: 'post',
@@ -169,10 +191,10 @@ class Table {
         });
     }
 
-    moveHoverTo(index){
-        let row = this.elem.querySelector('[data-index="' + index + '"]');
-        this.elem.querySelector('.hover').style.top = row.offsetTop - row.parentNode.scrollTop + 'px';
-    }
+    // moveHoverTo(index){
+    //     let row = this.elem.querySelector('[data-index="' + index + '"]');
+    //     this.elem.querySelector('.hover').style.top = row.offsetTop - row.parentNode.scrollTop + 'px';
+    // }
 
     insertElems(){
         let index = 0;
@@ -195,9 +217,9 @@ class Table {
                 }
             });
 
-            bodyElem.addEventListener('mouseenter', (e) => {
-                this.moveHoverTo(bodyElem.getAttribute('data-index'));
-            });
+            // bodyElem.addEventListener('mouseenter', (e) => {
+            //     this.moveHoverTo(bodyElem.getAttribute('data-index'));
+            // });
 
             bodyElem.addEventListener('contextmenu', (e) => {
                 if(this.context_menu.length > 0){
@@ -280,7 +302,14 @@ class Table {
 
                 let title = document.createElement('div');
                 title.className = 'title';
-                title.innerText = elem[header_elem.table_name];
+
+                if(header_elem.transform != null){ //transform_ico
+                    title.appendChild(this[header_elem.transform](elem[header_elem.table_name]));
+                } else {
+                    title.innerText = elem[header_elem.table_name];
+                }
+
+
                 cell.appendChild(title);
                 bodyElem.appendChild(cell);
                 count++;
@@ -529,11 +558,11 @@ class Table {
         return this.bodyContainer;
     }
 
-    drawHover(){
-        this.hover = document.createElement('div');
-        this.hover.className = 'hover';
-        return this.hover;
-    }
+    // drawHover(){
+    //     this.hover = document.createElement('div');
+    //     this.hover.className = 'hover';
+    //     return this.hover;
+    // }
 
     drawContext(){
         this.context = document.createElement('div');

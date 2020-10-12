@@ -1,3 +1,6 @@
+.tableIco{
+    height: 29px;
+}
 .bbtable-container{
     overflow: hidden;
     position: relative;
@@ -266,6 +269,9 @@
         }
         .body-elem:not(:nth-child(2n)){
             background: #fafafa;
+        }
+        .body-elem:hover{
+            background: #eee!important;
         }
     }
 }
