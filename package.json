@@ -44,6 +44,7 @@
         "imask": "^5.2.1",
         "ioredis": "^4.14.1",
         "laravel-echo": "^1.8.0",
+        "libphonenumber-js": "^1.8.4",
         "notification-js": "^1.1.1",
         "notifyjs": "^3.0.0",
         "rellax": "^1.10.0",

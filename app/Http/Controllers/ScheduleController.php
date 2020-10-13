@@ -71,11 +71,14 @@ class ScheduleController extends Controller
             $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
             $dates = $request->data;
             Schedule::whereBetween('date', [$start_date, $end_date])->whereIn('partner_id', $request->resources)->delete();
+
+            $sch = [];
+
             foreach ($dates as $date_str => $date) {
                 foreach ($date as $resuorce_str => $resource) {
                     if ($resource != null) {
                         foreach ($resource as $schedule) {
-                            Schedule::create([
+                            $sch[] = Schedule::create([
                                 'company_id' => Auth::user()->company->id,
                                 'partner_id' => $schedule['partner_id'],
                                 'dayType' => $schedule['dayType'],

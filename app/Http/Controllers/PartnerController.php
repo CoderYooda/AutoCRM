@@ -46,9 +46,8 @@ class PartnerController extends Controller
             'root_id' => self::ROOT_CATEGORY
         ];
 
-        $data = [123, 22];
-
-        $data = json_encode($data);
+        $data = self::getPartners($request);
+        $data = json_encode($data->toArray());
 
         $viewName = $request->search ? 'elements.list_container' : 'index';
 

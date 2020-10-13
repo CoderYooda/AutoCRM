@@ -26,7 +26,7 @@ class ProviderOrdersController extends Controller
         $products = [];
 
         if($request->products) {
-            $ids = json_decode($request->products, true);
+            $ids = explode(',', $request->products);
             $products = Article::owned()->whereIn('id', $ids)->get();
         }
 

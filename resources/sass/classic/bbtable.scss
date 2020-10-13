@@ -170,6 +170,10 @@
             }
         }
     }
+
+    .bbtable-body.nodata{
+        background: url(/images/icons/nodata.svg) center no-repeat!important;
+    }
     .bbtable-body {
         border-top: 1px solid #E7E8EC;
         white-space: nowrap;
@@ -271,7 +275,10 @@
             background: #fafafa;
         }
         .body-elem:hover{
-            background: #eee!important;
+            background: #f6f7f8!important;
+        }
+        .body-elem.selected:hover{
+            background: #6a95c7!important;
         }
     }
 }

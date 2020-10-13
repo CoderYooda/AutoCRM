@@ -257,7 +257,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
         Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
         Route::post('/partner/{partner}/select', 'PartnerController@select')->name('SelectPartner');
-        Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
+        Route::post('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
         Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
         Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 

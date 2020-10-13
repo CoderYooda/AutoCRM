@@ -1,5 +1,6 @@
 import {Contextual, ContextualItem} from "../Contentual";
 import Page from "../Page/Page";
+import {Table} from "../BBTable";
 
 class partnerPage extends Page{
 
@@ -27,28 +28,28 @@ class partnerPage extends Page{
             //object.load();
         });
         object.checkActive();
-        //object.searchInit();
+        object.searchInit();
 
         document.addEventListener('PartnerStored', function(e){
 
             object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            object.table.freshData();
         });
 
         document.addEventListener('PartnerRemoved', function(e){
             object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            object.table.freshData();
         });
 
         document.addEventListener('WarrantStored', function(e){
             object.prepareParams();
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
+            object.table.freshData();
         });
 
         document.addEventListener('CategoryStored', function(e){
             if(object.active){
                 object.prepareParams();
-                object.table.setData('/partner/tabledata', object.prepareDataForTable());
+                object.table.freshData();
                 object.loadCategory(object.category_id, true, false);
             }
         });
@@ -113,7 +114,41 @@ class partnerPage extends Page{
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
         this.searchInit();
-        this.initTableData();
+        //this.initTableData();
+
+        let container = 'ajax-table-' + this.active_tab;
+
+        this.readData(container);
+
+        this.table = new Table({
+            container: this.active_tab + 'Table',
+            data: this.data,
+            url: '/' + this.active_tab + '/tabledata',
+            start_sort: 'DESC'
+        });
+        let header, context_menu, dbl_click, slug;
+        header = [
+            {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+            {min_with: 100, width: 'auto', name: 'Контакт', table_name: 'name'},
+            {min_with: 150, width: 200, name: 'Категория', table_name: 'category'},
+            {min_with: 150, width: 200, name: 'Телефон', table_name: 'phone', transform: 'transform_phone'},
+            {min_with: 150, width: 200, name: 'Баланс', table_name: 'balance', transform: 'transform_price'},
+        ];
+
+        context_menu = [
+            {name:'Редактировать', action: function(data){openDialog('partnerDialog', '&partner_id=' + data.contexted.id)}},
+            {name:'Открыть', action: function(data){openDialog('partnerDialog', '&partner_id=' + data.contexted.id)}},
+        ];
+        dbl_click = function(id){openDialog('partnerDialog', '&partner_id=' + id)};
+        slug = 'store';
+
+        this.table.setHeader(header);
+        this.table.setContextMenu(context_menu);
+        this.table.setBblClick(dbl_click);
+        this.table.setSlug(slug);
+        this.table.draw(this.active_tab + 'Table', this.data);
+
+
         this.initCategoryContextual();
         this.checkActive();
         //this.loadCategory(this.root_category, true, true);
@@ -139,20 +174,29 @@ class partnerPage extends Page{
 
     searchInit(){
         let object = this;
-        if(document.getElementById("search")){
-            let search = document.getElementById("search");
-            if(search){
-                let searchFn = window.helper.debounce(function(e) {
-                    object.search = search.value;
-                    object.page = 1;
-                    object.table.setData('/partner/tabledata', object.prepareDataForTable());
-                    console.log(1);
-                }, 400);
-                search.addEventListener("keydown", searchFn);
-                search.addEventListener("paste", searchFn);
-                search.addEventListener("delete", searchFn);
-                //document.addEventListener("PartnerStored", searchFn);
-            }
+        let searchFn;
+        let search_field = document.getElementById("search");
+        if(search_field){
+            searchFn = window.helper.debounce((e) => {
+
+                object.search = search_field.value;
+                window.helper.insertParamUrl('search', search_field.value);
+                object.category_id = null;
+                if(object.search == ''){
+                    object.category_id = object.root_category;
+                }
+                if(this.table) {
+                    window.helper.insertParamUrl('category_id', 'null');
+                    this.table.setRequest('category_id', null, false);
+                    this.table.setRequest('search', object.search, false);
+                    if(!object.loadCategory(object.category_id)){
+                        this.table.freshData();
+                    }
+                }
+            }, 400);
+            search_field.addEventListener("keydown", searchFn);
+            search_field.addEventListener("paste", searchFn);
+            search_field.addEventListener("delete", searchFn);
         }
     }
 
@@ -200,7 +244,7 @@ class partnerPage extends Page{
         let object = this;
         object.search = string;
         if (isXHRloading) { return; } window.isXHRloading = true;
-        object.table.setData('/partner/tabledata', object.prepareDataForTable());
+        this.table.setRequest('search', string);
     }
 
     initTableData(){
@@ -316,38 +360,50 @@ class partnerPage extends Page{
 
     loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
-        // if(clean_search != null && clean_search){
-        //
-        // }
-        this.search = null;
-        document.getElementById("search").value = null;
-        document.getElementById("search").value = '';
-        object.search = '';
-        window.helper.insertParamUrl('search', '');
+        if(clean_search != null && clean_search){
+            document.getElementById("search").value = '';
+            object.search = '';
+            this.table.setRequest('search', null, false);
+            window.helper.insertParamUrl('search', '');
+        }
 
         window.isXHRloading = true;
         window.helper.insertParamUrl('category_id', category_id);
 
         object.category_id = category_id;
-        if(update_data != null && update_data){
-            object.table.setData('/partner/tabledata', object.prepareDataForTable());
-        }
+
         let data = {};
         data.category_id = category_id;
         data.search = object.search;
         data.class = 'partner';
-        window.axios({
-            method: 'post',
-            url: '/category/loadview',
-            data: data
-        }).then(function (resp) {
-            document.getElementById('category-nav').innerHTML = resp.data.html;
-            object.initCategoryContextual();
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            window.isXHRloading = false;
-        });
+
+        let category_block = document.getElementById('category-nav');
+
+        if(category_block){
+            window.axios({
+                method: 'post',
+                url: '/category/loadview',
+                data: data
+            }).then((resp) =>  {
+                category_block.innerHTML = resp.data.html;
+                if(resp && resp.data){
+                    this.table.setRequest('category_id', data.category_id, false);
+                    this.table.setDatas(JSON.parse(resp.data.data));
+                }
+                if(!object.search){
+                    let breadcrumbs = document.getElementById('breadcrumbs-nav');
+                    if(breadcrumbs)
+                    document.getElementById('breadcrumbs-nav').innerHTML = resp.data.breadcrumbs;
+                }
+                object.initCategoryContextual();
+            }).catch(function (error) {
+                console.log(error);
+            }).then(function () {
+                window.isXHRloading = false;
+            });
+        } else {
+            return false;
+        }
     }
 
     generateColumns(){

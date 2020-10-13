@@ -31,7 +31,6 @@ class RefundController extends Controller
                 if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
                 $refunded_count[$product->id] += $product->pivot->refunded_count;
             }
-
             $shipment = $refund->shipment;
         }
 

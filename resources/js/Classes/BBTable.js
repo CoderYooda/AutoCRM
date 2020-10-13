@@ -1,5 +1,5 @@
+import parsePhoneNumber from 'libphonenumber-js'
 class Table {
-
     constructor(options){
         this.elem = document.getElementById(options.container);
         this.data = options.data;
@@ -87,7 +87,7 @@ class Table {
             // this.body.addEventListener('mouseleave', (e) => {
             //     this.elem.querySelector('.hover').style.top = '-60px';
             // });
-            this.body.style.height = 'calc(100% - 70px)';
+            this.body.style.height = 'calc(100% - 59px)';
             // container.appendChild(this.drawHover());
             container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
@@ -158,7 +158,24 @@ class Table {
     transform_price(val){
         let div = document.createElement('div');
         div.classList.add('tablePrice');
-        div.innerHTML = val + ' ₽'
+        let num = window.helper.numberFormat(val);
+        div.innerHTML = num + ' ₽';
+        return div;
+    };
+
+    transform_phone(val){
+        let phone;
+        if(val){
+            phone = parsePhoneNumber(val.toString(), 'RU').format("NATIONAL");
+            dd(val.toString(), phone);
+            dd(parsePhoneNumber('89524365064', 'RU').format("NATIONAL"));
+        } else {
+            phone = 'Не указан';
+        }
+        let div = document.createElement('div');
+        div.classList.add('tablePrice');
+        div.innerHTML = phone;
+
         return div;
     };
 
@@ -317,7 +334,9 @@ class Table {
             index++;
             this.bodyContainer.appendChild(bodyElem);
         });
-
+        if(!index){
+            this.bodyContainer.classList.add('nodata');
+        }
     }
 
     selectItem(index){
