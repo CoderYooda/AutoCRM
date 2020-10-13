@@ -690,6 +690,12 @@ class storePage extends Page{
             context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Создать заявку поставщику', action: (data) => {
+                    openDialog('providerOrderDialog', '&products=' + this.table.getSelectedIDs())
+                }},
+                {name:'Печать ценников', action: (data) => {
+                    window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())
+                }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
             slug = 'store';

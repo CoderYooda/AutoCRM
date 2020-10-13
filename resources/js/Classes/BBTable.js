@@ -167,8 +167,6 @@ class Table {
         let phone;
         if(val){
             phone = parsePhoneNumber(val.toString(), 'RU').format("NATIONAL");
-            dd(val.toString(), phone);
-            dd(parsePhoneNumber('89524365064', 'RU').format("NATIONAL"));
         } else {
             phone = 'Не указан';
         }
