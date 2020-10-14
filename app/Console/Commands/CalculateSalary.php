@@ -41,12 +41,13 @@ class CalculateSalary extends Command
     public function handle()
     {
         $date = Carbon::now();
-
         $managers = Partner::where('category_id', 5)->get();
         foreach($managers as $manager){
             $data = $manager->getSalary($date);
-            $manager->increment('salary_balance', $data[0]);
-            SPC::createPayment($data[1]);
+            if(doubleval($data[0]) !== 0.0){
+                $manager->increment('salary_balance', $data[0]);
+                SPC::createPayment($data[1]);
+            }
         }
     }
 }

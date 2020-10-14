@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class EvotorController extends Controller
@@ -54,12 +55,13 @@ class EvotorController extends Controller
             return response()->json([], 200);
         }
         $cashbox = Cashbox::where('cashbox_uuid', $request['cashbox_uuid'])->first();
+
         $warrant = Warrant::find($request['warrant_id']);
 
         if($warrant->cashbox_id == $cashbox->id){
             $warrant->payed_by = 'evotor';
             $warrant->payed_at = Carbon::now();
-            $warrant->save();
+            $warrant->saveQuietly();
         }
 
         return response()->json([], 200);
