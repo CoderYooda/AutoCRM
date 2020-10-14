@@ -260,7 +260,7 @@ const ajaxRequest = new (function () {
     onpopstate = function (oEvent) {
         bUpdateURL = false;
         oPageInfo.title = oEvent.state.title;
-        oPageInfo.url = oEvent.state.url;
+        oPageInfo.url = oEvent.state.url.replace(/&target=ajax-tab-content/gi, '');
         getPage();
     };
 
