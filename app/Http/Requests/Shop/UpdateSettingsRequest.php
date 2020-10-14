@@ -19,7 +19,7 @@ class UpdateSettingsRequest extends FormRequest
         }
 
         if(!isset($this['show_empty'])) $this['show_empty'] = 0;
-        if(!isset($this['show_empty'])) $this['show_empty'] = 0;
+        if(!isset($this['show_amount'])) $this['show_amount'] = 0;
         if(!isset($this['supplier_offers'])) $this['supplier_offers'] = 0;
 
         if($this['image_ids'] == null) $this['image_ids'] = [];
@@ -33,14 +33,13 @@ class UpdateSettingsRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'emails' => ['array', 'min:1'],
             'emails.*.email' => ['required', 'string'],
             'show_empty' => ['required', 'integer', 'between:0,1'],
             'show_amount' => ['required', 'integer', 'between:0,1'],
             'storage_days' => ['required', 'integer', 'between:7,31'],
             'supplier_id' => ['exists:services,id'],
-            'supplier_percent' => ['integer', 'between:5,1000'],
             'image_logotype_id' => ['nullable', 'exists:images,id'],
             'image_header_id' => ['nullable', 'exists:images,id'],
             'image_background_id' => ['nullable', 'exists:images,id'],
@@ -53,6 +52,12 @@ class UpdateSettingsRequest extends FormRequest
             'domain' => ['nullable', 'string', new DomainRule, new DomainDnsRule],
             'subdomain' => ['nullable', 'string', new SubdomainRule, new TabooSubdomainRule]
         ];
+
+        if($this->supplier_offers == 1) {
+            $rules['supplier_percent'] = ['required', 'integer', 'between:5,1000'];
+        }
+
+        return $rules;
     }
 
     protected function failedValidation(Validator $validator)

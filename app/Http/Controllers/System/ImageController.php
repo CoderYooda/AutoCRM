@@ -54,13 +54,7 @@ class ImageController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Доступные форматы Jpg, Png, Gif размером не более 10 мб'], 400);
         }
 
-        if($request['watermark'] != null){
-            $watermark = true;
-        } else {
-            $watermark = false;
-        }
-
-        return self::saveUserImage($request->image, Auth::user()->id."/", $watermark);
+        return self::saveUserImage($request->image, Auth::user()->id."/", $watermark ?? false);
     }
 
     public function remove(Request $request){

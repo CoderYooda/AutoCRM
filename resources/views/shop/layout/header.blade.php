@@ -19,7 +19,7 @@
                     <a href="{{ route('pages.index') }}">
                         <div class="logo">
                             @isset($shop->logotypeImage)
-                                <img class="w-100 h-100" src="{{ $shop->logotypeImage->image_path }}" title="{{ $shop->name }}"  alt="{{ $shop->name }}"/>
+                                <img class="w-100 h-100" src="{{ $shop->logotypeImage->path() }}" title="{{ $shop->name }}"  alt="{{ $shop->name }}"/>
                             @endisset
                         </div>
                     </a>
@@ -38,8 +38,10 @@
             </div>
             <div class="user-action-container header-elem">
                 <div class="action">
-                    <div class="icon heart"></div>
-                    <div class="counter">1</div>
+                    <a href="{{ route('favorites.index') }}">
+                        <div class="icon heart"></div>
+                    </a>
+                    <div id="favorite_count" class="counter">{{ $favorite->count() }}</div>
                 </div>
                 <div class="action">
                     <div class="icon cart"></div>

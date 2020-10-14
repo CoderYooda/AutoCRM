@@ -42,7 +42,7 @@
 
                 <div class="form-group">
                     <label>Показывать товары, которых нет в наличии</label>
-                    <label class="custom_checkbox">
+                    <label data-error="show_empty" class="custom_checkbox">
                         <input type="checkbox" class="not_default" name="show_empty" @if($shop->show_empty ?? true) checked @endif value="1" />
                         <span></span>
                     </label>
@@ -50,7 +50,7 @@
 
                 <div class="form-group">
                     <label>Показывать количество товаров в наличии</label>
-                    <label class="custom_checkbox">
+                    <label data-error="show_amount" class="custom_checkbox">
                         <input type="checkbox" class="not_default" name="show_amount" @if($shop->show_amount ?? true) checked @endif value="1" />
                         <span></span>
                     </label>

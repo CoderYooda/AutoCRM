@@ -49,7 +49,7 @@
                 <a href="{{ route('pages.index') }}">
                     <div class="logo">
                         @isset($shop->logotypeImage)
-                            <img class="w-100 h-100" src="{{ $shop->logotypeImage->image_path }}" title="{{ $shop->name }}"  alt="{{ $shop->name }}"/>
+                            <img class="w-100 h-100" src="{{ $shop->logotypeImage->path() }}" title="{{ $shop->name }}"  alt="{{ $shop->name }}"/>
                         @endisset
                     </div>
                 </a>

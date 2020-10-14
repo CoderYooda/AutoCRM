@@ -1,24 +1,5 @@
 import Tab from "./Classes/Tab";
 
-window.getProductInfo = function(id){
-
-    let data = new FormData();
-    data.append('id', id);
-
-    axios({
-        method: 'GET',
-        url: '/images/shop/test_product_response.json',
-        data: data
-    }).then(function (response) {
-
-        createModal();
-
-    }).catch(function (error) {
-        console.log(error)
-    });
-};
-
-
 window.auth = function(){
 
     axios({
@@ -28,7 +9,6 @@ window.auth = function(){
         createModal(response.data.html);
         let auth_tab_container = document.getElementById('auth-tabs');
         window.auth_tab = new Tab(auth_tab_container);
-
     }).catch(function (error) {
         console.log(error)
     });

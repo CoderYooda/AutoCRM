@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Auth;
@@ -167,15 +168,28 @@ class ProductController extends Controller
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
-        $stores = $product->stores ?? Store::owned()->get();
+        $stores = Store::owned()->get();
 
         $company = Auth::user()->company;
 
         $category = Category::find($category_select);
 
+        $shopFields = [
+            'sp_empty' => [
+                'name' => 'Показать, если нет в наличии',
+            ],
+            'sp_main' => [
+                'name' => 'Акционный товар',
+            ],
+            'sp_stock' => [
+                'name' => 'Показать на главной странице',
+                'onclick' => 'toggleStock'
+            ],
+        ];
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields'))->render(),
             'product' => $product
         ]);
     }
@@ -270,11 +284,15 @@ class ProductController extends Controller
             $article->sp_desc = $request->shop['desc'] ?? '';
             $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
 
-            $article->save();
-
             if($request->hasFile('shop.image')) {
-                $article->uploadImage($request->shop['image'], true, false);
+                $imageParams = $article->uploadImage($request->shop['image'], true, false);
+
+                $image = Image::create($imageParams);
+
+                $article->image_id = $image->id;
             }
+
+            $article->save();
 
             if(isset($request->shop['specifications'])) {
 

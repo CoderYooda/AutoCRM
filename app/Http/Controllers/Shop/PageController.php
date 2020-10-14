@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Models\Article;
+use App\Models\Category;
 use App\Models\Shop;
 use App\Http\Controllers\Controller;
 use App\Services\ShopManager\ShopManager;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class PageController extends Controller
 {
@@ -19,7 +21,23 @@ class PageController extends Controller
 
     public function index()
     {
-        return view('shop.index')->with('shop', $this->shop);
+        $params = [
+            'type' => 'store',
+            'category_id' => 2,
+            'company_id' => $this->shop->company_id
+        ];
+
+        $categories = Category::with('image', 'parent')->where($params)->limit(9)->get();
+
+        $products = Article::with('stores', 'supplier', 'image')
+            ->where('company_id', $this->shop->company_id)
+            ->whereHas('stores', function (Builder $builder) {
+                $builder->where('sp_main', 1);
+            })
+            ->get();
+
+        return view('shop.index', compact('categories', 'products'))
+            ->with('shop', $this->shop);
     }
 
     public function about()
@@ -44,6 +62,71 @@ class PageController extends Controller
 
     public function catalogue()
     {
-        return view('shop.catalogue')->with('shop', $this->shop);
+        $params = [
+            'type' => 'store',
+            'category_id' => 2,
+            'company_id' => $this->shop->company_id
+        ];
+
+        $categories = Category::with('image')->where($params)->paginate(12);
+
+        return view('shop.catalogue', compact('categories'))
+            ->with('shop', $this->shop);
+    }
+
+    public function show(string $path)
+    {
+        $slugs = explode('/', $path);
+
+        //Исключаем каталог из поиска
+        if(current($slugs) == 'catalogue') {
+            $slugs = array_slice($slugs, 1);
+        }
+
+        $categories = Category::where('company_id', $this->shop->company_id)->whereIn('slug', $slugs)->get();
+
+        //Проверка наследия категорий
+        if(count($categories) > 1) {
+            for ($i = count($categories) - 1; $i != -1; $i--) {
+
+                abort_if($categories[$i]->category_id != $categories[--$i]->id, 404, 'Страница не найдена.');
+            }
+        }
+
+        $product = Article::where('slug', end($slugs))->first();
+
+        abort_if(!$categories->count() && $product == null, 404, "Страница не найдена.");
+
+        return $product ? $this->showProductPage($product) : $this->showCategoryPage($categories->last());
+    }
+
+    protected function showCategoryPage(Category $selectedCategory)
+    {
+        $params = [
+            'category_id' => $selectedCategory->category_id,
+            'company_id' => $this->shop->company_id
+        ];
+
+        $categories = Category::with('parent')->where($params)->get();
+
+        $products = $selectedCategory->articles()->with('image')->paginate(15);
+
+        return view('shop.category', compact('products', 'selectedCategory', 'categories'))
+            ->with('shop', $this->shop);
+    }
+
+    protected function showProductPage(Article $product)
+    {
+        $selectedCategory = $product->category->load('childs');
+
+        $params = [
+            'category_id' => $selectedCategory->category_id,
+            'company_id' => $this->shop->company_id
+        ];
+
+        $categories = Category::with('parent')->where($params)->get();
+
+        return view('shop.product', compact('product', 'selectedCategory', 'categories'))
+            ->with('shop', $this->shop);
     }
 }

@@ -2,13 +2,9 @@
 
 @section('content')
 <div class="body">
-    <div class="pagination container bg-white">
-        <div class="paginator">
-            <span class="item" ><a href="javascript:void(0)">Главная</a></span>
-            <span class="item" ><a href="javascript:void(0)">После главной</a></span>
-            <span class="item" >Последняя</span>
-        </div>
-    </div>
+
+    @include('shop.includes.breadcrumbs')
+
     <div class="in-category container bg-white">
         <div class="title">
             <h2>Название Товара</h2>
@@ -16,36 +12,31 @@
 
         <div class="in-category-container">
             <div class="left-menu-container">
+                <div class="button_back">
+                    @if($selectedCategory->category_id != 2)
+                        <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+                        <a href="{{ $selectedCategory->parent->path() }}">Назад</a>
+                    @endif
+                </div>
+
                 <ul>
-                    <li class="active"><a href="/shop/index?page=category">Общий каталог</a>
-                        <ul>
-                            <li>
-                                <a href="/shop/index?page=category">Внытренняя категория</a>
-                            </li>
-                            <li>
-                                <a href="/shop/index?page=category">Внытренняя категория</a>
-                            </li>
-                            <li>
-                                <a href="/shop/index?page=category">Внытренняя категория</a>
-                            </li>
-                            <li>
-                                <a href="/shop/index?page=category">Внытренняя категория</a>
-                            </li>
-                            <li>
-                                <a href="/shop/index?page=category">Внытренняя категория</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a href="/shop/index?page=category">Моторныйе масла</a></li>
-                    <li><a href="/shop/index?page=category">Запчасти для ТО</a></li>
-                    <li><a href="/shop/index?page=category">Оригинальные запчасти</a></li>
-                    <li><a href="/shop/index?page=category">Автомобильные жидкости</a></li>
-                    <li><a href="/shop/index?page=category">Шины и диски</a></li>
-                    <li><a href="/shop/index?page=category">Аккумуляторы</a></li>
-                    <li><a href="/shop/index?page=category">Аксессуары</a></li>
-                    <li><a href="/shop/index?page=category">Автохимия</a></li>
+                    @foreach($categories as $category)
+                        <li @if($category->id == $selectedCategory->id) class="active" @endif>
+                            <a href="{{ $category->path() }}">{{ $category->name }}</a>
+                            @if($category->id == $selectedCategory->id && count($category->childs))
+                                <ul>
+                                    @foreach($category->childs as $childrenCategory)
+                                        <li>
+                                            <a href="{{ $childrenCategory->path() }}">{{ $childrenCategory->name }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </li>
+                    @endforeach
                 </ul>
             </div>
+
             <div class="items">
                 {{--<div class="categories-block">--}}
                     {{--@for($i = 0; $i <= 9; $i++)--}}

@@ -13,5 +13,10 @@ Route::namespace('Shop')->group(function () {
 
     Route::post('/feedback', 'FeedbackController@store')->name('feedback.store');
 
-    Route::get('/categories', 'CategoryController@index')->name('categories.index');
+    Route::get('/favorites', 'FavoriteController@index')->name('favorites.index');
+    Route::post('/favorites', 'FavoriteController@store')->name('favorites.store');
+
+    Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
+
+    Route::get('/{path}', 'PageController@show')->where('path', '(.*)')->name('pages.path');
 });

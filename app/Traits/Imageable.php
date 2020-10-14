@@ -11,6 +11,11 @@ use Intervention\Image\Facades\Image as ImageInt;
 
 trait Imageable
 {
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
+
     public function uploadImage(UploadedFile $uploadedFile, $thumb = false, $watermark = false)
     {
         $directory = 'public/images';

@@ -8,7 +8,7 @@ use App\Models\Shop;
 class ShopManager
 {
     /** @var Shop $shop  */
-    private $shop = null;
+    private $shop;
 
     public function __construct()
     {
@@ -16,12 +16,9 @@ class ShopManager
 
         $domainParams = explode('.', $domain);
 
-        if(isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN')) {
-            $this->shop = Shop::where('subdomain', $domainParams[0])->first();
-        }
-        else {
-            $this->shop = Shop::where('domain', $domainParams[0])->first();
-        }
+        $isDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
+
+        $this->shop = Shop::where(($isDomain ? 'subdomain' : 'domain'), $domainParams[0])->first();
     }
 
     public function getCurrentShop()

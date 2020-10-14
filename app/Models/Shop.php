@@ -13,6 +13,11 @@ class Shop extends Model
 
     protected $guarded = [];
 
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'id', 'company_id');
+    }
+
     public function aboutImages()
     {
         return $this->belongsToMany(Image::class, 'shop_images_about');

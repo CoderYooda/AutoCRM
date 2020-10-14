@@ -3413,6 +3413,11 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 .custom_checkbox {
+
+    &.is-invalid span {
+        border: 1px solid red;
+    }
+
     span {
         cursor: pointer;
         width: 15px;
@@ -3704,21 +3709,21 @@ div.is-invalid {
             }
         }
     }
+}
 
-    .form-group-flex {
+.form-group-flex {
 
-        display: flex;
-        margin-bottom: 10px;
+    display: flex;
+    margin-bottom: 10px;
 
-        label {
-            width: 140px;
-            line-height: 30px;
-            height: 30px;
-            margin-bottom: unset;
-        }
+    label {
+        width: 140px;
+        line-height: 30px;
+        height: 30px;
+        margin-bottom: unset;
+    }
 
-        span {
-            line-height: 30px;
-        }
+    span {
+        line-height: 30px;
     }
 }

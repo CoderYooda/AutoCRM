@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Shop;
 
-use App\Models\Shop;
 use App\Services\ShopManager\ShopManager;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class AppShopServiceProvider extends ServiceProvider
+class ShopServiceProvider extends ServiceProvider
 {
     public function register()
     {

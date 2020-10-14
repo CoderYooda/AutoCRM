@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Shop;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CategoryRequest extends FormRequest
+class StoreFavoriteRequest extends FormRequest
 {
     public function authorize()
     {
@@ -16,9 +16,7 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'min:3', 'string', 'max:120'],
-            'category_id' => ['required', 'min:0', 'max:12', 'exists:categories,id'],
-            'image' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:5120']
+            'product_id' => ['required', 'exists:articles,id']
         ];
     }
 

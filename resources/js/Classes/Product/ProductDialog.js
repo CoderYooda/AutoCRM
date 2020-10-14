@@ -52,6 +52,13 @@ class ProductDialog extends Modal {
         if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');
     }
 
+    toggleStock(element) {
+
+        let target_element = this.current_dialog.querySelector('#stock_menu');
+
+        target_element.classList.toggle('d-none');
+    }
+
     save(elem) {
         if (window.isXHRloading) return;
 

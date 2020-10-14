@@ -5,10 +5,12 @@
                 <span class="elem_text" title="{{ $categories['parent']->name }}">{{ $categories['parent']->name }}</span>
             </a>
         @else
-            <a class="category-back-button" onclick="window.{{ $class }}.loadCategory({{ $categories['parent']->parent()->first()->id }}, true, true)">
+            @if($categories['parent']->parent)
+            <a class="category-back-button" onclick="window.{{ $class }}.loadCategory({{ $categories['parent']->parent->id }}, true, true)">
                 <i class="fa fa-chevron-left" aria-hidden="true"></i>
                 <span class="elem_text" title="{{ $categories['parent']->name }}">{{ $categories['parent']->name }}</span>
             </a>
+            @endif
         @endif
         <div class="w-100" data-simplebar style="max-height: 400px;">
             <ul class="nav mt-5" >
