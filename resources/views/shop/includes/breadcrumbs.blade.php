@@ -6,8 +6,16 @@
             <span class="item">Каталог</span>
         @endif
 
+        @if(request()->routeIs('cart.index'))
+            <span class="item">Корзина</span>
+        @endif
+
         @if(request()->routeIs('favorites.index'))
             <span class="item">Избранное</span>
+        @endif
+
+        @if(request()->routeIs('pages.search'))
+            <span class="item">Поиск</span>
         @endif
 
         @if(request()->routeIs('pages.path'))

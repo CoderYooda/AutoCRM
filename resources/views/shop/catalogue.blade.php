@@ -15,7 +15,7 @@
                 <div class="category">
                     <div class="description">
                         <div class="title">{{ $category->name }}</div>
-                        <div class="link">
+                        <div class="url">
                             <a title="{{ $category->name }}" href="{{ $category->path() }}">Перейти</a>
                         </div>
                     </div>

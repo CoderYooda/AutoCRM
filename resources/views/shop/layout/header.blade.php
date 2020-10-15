@@ -31,10 +31,12 @@
                 </div>
             </div>
             <div class="search-container header-elem">
-                <div class="search-box">
-                    <input placeholder="Пример поиска — k1279" type="text">
-                    <a href="javascript:void(0)" class="search-ico"></a>
-                </div>
+                <form action="{{ route('pages.search') }}" method="GET">
+                    <div class="search-box">
+                        <input placeholder="Пример поиска — k1279" name="search" type="text" value="{{ request()->search }}" required />
+                        <button class="search-ico"></button>
+                    </div>
+                </form>
             </div>
             <div class="user-action-container header-elem">
                 <div class="action">
@@ -44,8 +46,10 @@
                     <div id="favorite_count" class="counter">{{ $favorite->count() }}</div>
                 </div>
                 <div class="action">
-                    <div class="icon cart"></div>
-                    <div class="counter">242</div>
+                    <a href="{{ route('cart.index') }}">
+                        <div class="icon cart"></div>
+                    </a>
+                    <div id="cart_count" class="counter">{{ $cart->total() }}</div>
                 </div>
                 <div class="action" >
                     <div onclick="window.auth()" class="icon user"></div>

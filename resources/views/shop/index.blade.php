@@ -54,15 +54,6 @@
                             <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
                             <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
                         </div>
-                        <div class="shipping-container">
-                            <div class="counter-container">
-                                <div class="button minus"></div>
-                                <input class="counter" value="1" type="text">
-                                <div class="button plus"></div>
-                            </div>
-                            <div class="cart-button"></div>
-{{--                            <div class="cart-button incart"></div>--}}
-                        </div>
                     </div>
                     @endforeach
                 </div>
@@ -80,7 +71,7 @@
         <div class="categories-container">
             @foreach($categories as $category)
                 <div class="category">
-                    <div class="description">
+                    <div class="description relative">
                         <div class="title">{{ $category->name }}</div>
                         <div class="link">
                             <a title="{{ $category->name }}" href="{{ $category->path() }}">Перейти</a>

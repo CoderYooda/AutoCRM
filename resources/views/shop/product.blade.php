@@ -6,75 +6,105 @@
     @include('shop.includes.breadcrumbs')
 
     <div class="in-category container bg-white">
-        <div class="title">
-            <h2>Название Товара</h2>
+        <div class="product_title">
+            <h2>{{ $product->name }}</h2>
+            <h3>Артикул {{ $product->article }}</h3>
         </div>
 
         <div class="in-category-container">
-            <div class="left-menu-container">
-                <div class="button_back">
-                    @if($selectedCategory->category_id != 2)
-                        <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-                        <a href="{{ $selectedCategory->parent->path() }}">Назад</a>
-                    @endif
+
+            <div class="product_info w-100 d-flex">
+
+                <div class="flex-1 photo">
+                    <img class="w-100 h-100" src="{{ $product->image_path }}" title="{{ $product->name }}" alt="{{ $product->name }}" />
                 </div>
 
-                <ul>
-                    @foreach($categories as $category)
-                        <li @if($category->id == $selectedCategory->id) class="active" @endif>
-                            <a href="{{ $category->path() }}">{{ $category->name }}</a>
-                            @if($category->id == $selectedCategory->id && count($category->childs))
-                                <ul>
-                                    @foreach($category->childs as $childrenCategory)
-                                        <li>
-                                            <a href="{{ $childrenCategory->path() }}">{{ $childrenCategory->name }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <div class="items">
-                {{--<div class="categories-block">--}}
-                    {{--@for($i = 0; $i <= 9; $i++)--}}
-                        {{--<div class="category">--}}
-                            {{--<a href="">--}}
-                                {{--<div class="photo">--}}
-                                    {{--@if(rand(0,3))--}}
-                                        {{--<img title="Название категории сюда" src="/images/shop/category-{{ rand(1,2) }}.png" alt="">--}}
-                                    {{--@endif--}}
-                                {{--</div>--}}
-                                {{--<div class="description">--}}
-                                    {{--<div class="title">Название категории</div>--}}
-                                {{--</div>--}}
-                            {{--</a>--}}
-                        {{--</div>--}}
-                    {{--@endfor--}}
-                {{--</div>--}}
-                {{--<div class="product-filter">--}}
-                    {{--<div class="sorting">--}}
-                        {{--<div class="title">Сортировать:</div>--}}
-                        {{--<div class="by-price desc">По цене</div>--}}
-                        {{--<div class="in-stock">--}}
-                            {{--<label for="instock">Только в наличии</label>--}}
-                            {{--<input id="instock" type="checkbox" name="instock">--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                    {{--<div class="list-grid">--}}
-                        {{--<div class="list active"></div>--}}
-                        {{--<div class="grid"></div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                <div class="shipment">
-                    <div class="header">
-                        На нашем складе
+                <div class="flex-2 description">
+                    <div class="relative"> {{-- is-full --}}
+                        <div class="param_title">Описание</div>
+                        <div class="param_desc">{{ $product->sp_desc }}</div>
+                        <span class="show pointer" onclick="product.showFullText(this);">...</span>
                     </div>
                 </div>
+
+                <div class="flex-2 specifications">
+                    <div class="relative"> {{-- is-full --}}
+                        <div class="param_title">Характеристики</div>
+                        <div class="specifications_table">
+                            @foreach($product->specifications as $specification)
+
+                                <div class="specification_element">
+                                    <div class="flex-1">{{ $specification->label }}</div>
+                                    <div class="flex-1">{{ $specification->value }}</div>
+                                </div>
+
+                            @endforeach
+                        </div>
+                        <span class="show pointer" onclick="product.showFullText(this);">...</span>
+                    </div>
+                </div>
+
             </div>
+
         </div>
+
+        <div class="product_title" style="margin-top: 40px;">
+            <h2>Предложения</h2>
+        </div>
+
+        <div class="table">
+
+            <div class="name">
+                На нашем складе
+            </div>
+
+            <div class="header">
+                <div class="flex-1 availability">
+                    <span>Наличие</span>
+                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                </div>
+
+                <div class="flex-1 price">
+                    <span>Цена</span>
+                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                </div>
+
+                <div class="flex-2 shop">
+                    Магазин
+                </div>
+
+            </div>
+
+            <div class="body">
+
+                @foreach($product->stores as $store)
+
+                <div class="element">
+                    <div class="flex-1 availability">{{ $product->getCountInStoreId($store->id) }} шт.</div>
+                    <div class="flex-1 price">
+                        <span class="current">{{ correct_price($store->pivot->retail_price) }} ₽</span>
+{{--                        <span class="old">150 000 ₽</span>--}}
+                    </div>
+                    <div class="flex-2 shop">{{ $store->name }}</div>
+
+                    <div class="absolute shipping-container">
+                        <div class="counter-container">
+                            <div class="button minus" onclick="cart.decrement(this, {{ $product->id }});"></div>
+                            <input class="counter" value="{{ $cart->getProductCount($product->id) }}" type="text" />
+                            <div class="button plus" onclick="cart.increment(this, {{ $product->id }});"></div>
+                        </div>
+                        <div class="cart-button @if($cart->isProductExists($product->id)) incart @endif" onclick="cart.add(this, {{ $product->id }});"></div>
+
+                    </div>
+
+                </div>
+
+                @endforeach
+
+            </div>
+
+        </div>
+
     </div>
 </div>
 @endsection

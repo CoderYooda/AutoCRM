@@ -8,6 +8,7 @@ use App\Models\Shop;
 use App\Http\Controllers\Controller;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
@@ -74,6 +75,19 @@ class PageController extends Controller
             ->with('shop', $this->shop);
     }
 
+    public function search(Request $request)
+    {
+        $params = [
+            'article' => $request->search,
+            'company_id' => $this->shop->company_id
+        ];
+
+        $products = Article::where($params)->paginate(15);
+
+        return view('shop.search', compact('products'))
+            ->with('shop', $this->shop);
+    }
+
     public function show(string $path)
     {
         $slugs = explode('/', $path);
@@ -119,14 +133,7 @@ class PageController extends Controller
     {
         $selectedCategory = $product->category->load('childs');
 
-        $params = [
-            'category_id' => $selectedCategory->category_id,
-            'company_id' => $this->shop->company_id
-        ];
-
-        $categories = Category::with('parent')->where($params)->get();
-
-        return view('shop.product', compact('product', 'selectedCategory', 'categories'))
+        return view('shop.product', compact('product', 'selectedCategory'))
             ->with('shop', $this->shop);
     }
 }
