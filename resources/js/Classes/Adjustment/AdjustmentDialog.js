@@ -1,4 +1,3 @@
-import Sortable from "sortablejs";
 import Modal from "../Modal/Modal";
 import Tabs from "../../Tools/Tabs";
 

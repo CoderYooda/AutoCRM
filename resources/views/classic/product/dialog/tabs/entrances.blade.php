@@ -1,4 +1,4 @@
-<div class="tab-pane" id="{{ $class }}_tab_entrances" data-simplebar style="height: 400px;">
+<div class="tab-pane" id="{{ $class }}_tab_entrances" data-simplebar style="max-height: 400px;">
 
     @if(isset($product->entrances) && count($product->entrances))
         <table>

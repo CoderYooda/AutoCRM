@@ -6,6 +6,8 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Shop;
 use App\Http\Controllers\Controller;
+use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Services\ProviderService\Providers;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -131,9 +133,19 @@ class PageController extends Controller
 
     protected function showProductPage(Article $product)
     {
+        /** @var Providers $providers */
+        $providers = app(Providers::class);
+
         $selectedCategory = $product->category->load('childs');
 
-        return view('shop.product', compact('product', 'selectedCategory'))
+        $providersOrders = [];
+
+        /** @var ProviderInterface $provider */
+        foreach ($providers->activated() as $provider_key => $provider) {
+            $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+        }
+
+        return view('shop.product', compact('product', 'selectedCategory', 'providersOrders'))
             ->with('shop', $this->shop);
     }
 }

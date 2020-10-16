@@ -15,6 +15,7 @@ window.product = new Product();
 window.tippy = Tippy;
 window.axios = require('axios');
 window.notification = require('notification-js/src/notification.js');
+window.simplebar = require('simplebar/dist/simplebar.min');
 
 require('./bootstrap');
 require('./functions')

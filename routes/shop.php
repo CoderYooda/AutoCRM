@@ -18,6 +18,7 @@ Route::namespace('Shop')->group(function () {
 
     Route::get('/cart', 'CartController@index')->name('cart.index');
     Route::post('/cart', 'CartController@store')->name('cart.store');
+    Route::post('/cart/delete', 'CartController@delete')->name('cart.delete');
     Route::post('/cart/save', 'CartController@save')->name('cart.save');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');

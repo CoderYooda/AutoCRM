@@ -6,6 +6,7 @@ use App\Models\CartProviderOrder;
 use App\Models\Company;
 use App\Models\User;
 use App\Services\ProviderService\Contract\CartInterface;
+use App\Services\ShopManager\ShopManager;
 use Illuminate\Support\Facades\Auth;
 
 trait ABCP
@@ -23,7 +24,12 @@ trait ABCP
 
     public function __construct()
     {
-        $this->company = Auth::user()->company;
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $this->company = $shop->company ?? Auth::user()->company;
         $this->user = Auth::user();
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');

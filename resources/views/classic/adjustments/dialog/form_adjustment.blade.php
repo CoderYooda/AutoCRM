@@ -5,7 +5,7 @@
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-        <div _id="adjustmenttabs" class="d-flex tab_links" style="margin: 0 22px 10px 22px;">
+        <div _id="adjustment_tabs" class="d-flex tab_links" style="margin: 0 22px 10px 22px;">
             <a href="#" class="mr-10 active" data-target="tab_desc">Описание</a>
             <a href="#" data-target="tab_products">Продукты</a>
         </div>

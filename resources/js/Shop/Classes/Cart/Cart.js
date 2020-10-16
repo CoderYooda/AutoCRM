@@ -10,8 +10,11 @@ class Cart {
 
         element.classList.add('incart');
 
+        let count = element.closest('.shipping-container').querySelector('input').value;
+
         let data = {
-            product_id: product_id
+            product_id: product_id,
+            count: count
         };
 
         axios.post('/cart', data)
@@ -27,7 +30,39 @@ class Cart {
             })
             .catch(response => {
                 console.log(response);
+
+                element.classList.remove('incart');
             });
+    }
+
+    remove(element, product_id) {
+
+        let target_element = element.closest('.cart_element');
+
+        target_element.classList.add('d-none');
+
+        let data = {
+            product_id: product_id
+        };
+
+        axios.post('/cart/delete', data)
+            .then(response => {
+
+                let data = response.data;
+
+                let counter_element = document.querySelector('#cart_count');
+
+                counter_element.innerHTML = data.total;
+
+                window.notification.notify(data.type, data.message);
+
+                target_element.remove();
+            })
+            .catch(response => {
+                console.log(response);
+                target_element.classList.remove('d-none');
+            });
+
     }
 
     increment(element, product_id) {
@@ -39,7 +74,9 @@ class Cart {
 
         count_element.value = count;
 
-        this.debounceSave(product_id, count);
+        let in_cart = element.closest('.shipping-container').querySelector('.cart-button').classList.contains('incart');
+
+        if(in_cart) this.debounceSave(product_id, count);
     }
 
     decrement(element, product_id) {
@@ -51,7 +88,9 @@ class Cart {
 
         count_element.value = count;
 
-        this.debounceSave(product_id, count);
+        let in_cart = element.closest('.shipping-container').querySelector('.cart-button').classList.contains('incart');
+
+        if(in_cart) this.debounceSave(product_id, count);
     }
 
     save(product_id, count) {
@@ -72,6 +111,10 @@ class Cart {
             .catch(response => {
                 console.log(response);
             });
+    }
+
+    isProductInCart() {
+
     }
 }
 

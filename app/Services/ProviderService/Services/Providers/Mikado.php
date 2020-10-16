@@ -6,6 +6,7 @@ namespace App\Services\ProviderService\Services\Providers;
 use App\Models\Company;
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +27,12 @@ class Mikado implements ProviderInterface
 
     public function __construct()
     {
-        $this->company = Auth::user()->company;
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $this->company = $shop->company ?? Auth::user()->company;
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');

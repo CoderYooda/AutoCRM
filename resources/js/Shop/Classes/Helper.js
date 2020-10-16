@@ -1,6 +1,11 @@
 class Helper {
 
     triggerClick(element) {
+
+        if(event.target.classList.contains('favour') || event.target.classList.contains('info')) {
+            return;
+        }
+
         element.querySelector('.redirect_link').click();
     }
 

@@ -22,7 +22,7 @@
                 <ul>
                     @foreach($categories as $category)
                         <li @if($category->id == $selectedCategory->id) class="active" @endif>
-                            <a href="{{ $category->path() }}">{{ $category->name }}</a>
+                            <a title="{{ $category->name }}" href="{{ $category->path() }}">{{ $category->name }}</a>
                             @if($category->id == $selectedCategory->id && count($category->childs))
                                 <ul>
                                     @foreach($category->childs as $childrenCategory)
