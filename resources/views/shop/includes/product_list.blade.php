@@ -11,7 +11,7 @@
         <div class="products row">
             @foreach($products as $product)
 
-                <div class="product pointer" onclick="helper.triggerClick(this);">
+                <div class="product pointer" onclick="helper.triggerClick(this);" id="product_{{ $product->id }}">
 
                     <a class="redirect_link d-none" href="{{ $product->path() }}"></a>
 

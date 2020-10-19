@@ -222,7 +222,7 @@ class Article extends Model
         $shop = $shopManager->getCurrentShop();
 
         /** @var Company $company */
-        $company = $shop->company->load('settings') ?? Auth::user()->company->load('settings');
+        $company = $shop->company ?? Auth::user()->company->load('settings');
 
         $price_source = $company->getSettingField('Источник цены');
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');

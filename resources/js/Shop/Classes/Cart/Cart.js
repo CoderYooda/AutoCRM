@@ -1,7 +1,17 @@
+import Tabs from "../../../Tools/Tabs";
+
 class Cart {
 
     constructor() {
         this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 400);
+
+        let tabs_element = document.querySelector('#register-tabs');
+
+        if(tabs_element) new Tabs('register-tabs');
+
+        $(document).ready(() => {
+            $('select').select2();
+        });
     }
 
     add(element, product_id) {
@@ -70,13 +80,11 @@ class Cart {
         let count_element = target_element.querySelector('.counter');
         let count = parseInt(count_element.value) + 1;
 
-        if(count > 98) return;
+        if(count >= 99) return;
 
         count_element.value = count;
 
-        let in_cart = element.closest('.shipping-container').querySelector('.cart-button').classList.contains('incart');
-
-        if(in_cart) this.debounceSave(product_id, count);
+        this.debounceSave(product_id, count);
     }
 
     decrement(element, product_id) {
@@ -88,12 +96,12 @@ class Cart {
 
         count_element.value = count;
 
-        let in_cart = element.closest('.shipping-container').querySelector('.cart-button').classList.contains('incart');
-
-        if(in_cart) this.debounceSave(product_id, count);
+        this.debounceSave(product_id, count);
     }
 
     save(product_id, count) {
+
+        if(!this.isProductInCart(product_id)) return;
 
         let data = {
             product_id: product_id,
@@ -113,8 +121,12 @@ class Cart {
             });
     }
 
-    isProductInCart() {
+    isProductInCart(product_id) {
 
+        let product_element = document.querySelector('#product_' + product_id);
+        let button_element = product_element.querySelector('.cart-button');
+
+        return button_element.classList.contains('incart');
     }
 }
 

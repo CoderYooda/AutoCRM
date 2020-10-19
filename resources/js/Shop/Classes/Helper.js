@@ -1,5 +1,16 @@
 class Helper {
 
+    toggleCheckbox(element) {
+
+        event.preventDefault();
+
+        let target_element = element.parentElement.querySelector('input');
+
+        console.log(target_element, target_element.checked, !target_element.checked);
+
+        target_element.checked = !target_element.checked;
+    }
+
     triggerClick(element) {
 
         if(event.target.classList.contains('favour') || event.target.classList.contains('info')) {

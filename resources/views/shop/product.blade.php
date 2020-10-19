@@ -87,7 +87,7 @@
 
                 @foreach($product->stores as $store)
 
-                <div class="element">
+                <div class="element" id="{{ $product->id }}">
                     <div class="flex-1 availability">{{ $product->getCountInStoreId($store->id) }} шт.</div>
                     <div class="flex-1 shop">{{ $store->name }}</div>
 

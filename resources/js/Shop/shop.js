@@ -6,6 +6,10 @@ import Cart from "./Classes/Cart/Cart";
 import Favorite from "./Classes/Favorite/Favorite";
 import Product from "./Classes/Product/Product";
 
+window.$ = window.jQuery = require('jquery');
+
+window.select2 = require('select2');
+
 window.feedback = new Feedback();
 window.axform = new AxForm();
 window.helper = new Helper();
