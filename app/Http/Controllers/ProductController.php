@@ -179,10 +179,10 @@ class ProductController extends Controller
                 'name' => 'Показать, если нет в наличии',
             ],
             'sp_main' => [
-                'name' => 'Акционный товар',
+                'name' => 'Показать на главной странице',
             ],
             'sp_stock' => [
-                'name' => 'Показать на главной странице',
+                'name' => 'Акционный товар',
                 'onclick' => 'toggleStock'
             ],
         ];

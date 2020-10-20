@@ -1,7 +1,7 @@
 @extends('shop.layout.app')
 
 @section('content')
-<div class="body">
+<div class="body" data-providers="{{ json_encode($providersOrders) }}" data-product="{{ json_encode($product) }}">
 
     @include('shop.includes.breadcrumbs')
 
@@ -87,7 +87,7 @@
 
                 @foreach($product->stores as $store)
 
-                <div class="element" id="{{ $product->id }}">
+                <div class="element" id="product_{{ $product->getHash($store->id) }}" data-store_id="{{ $store->id }}">
                     <div class="flex-1 availability">{{ $product->getCountInStoreId($store->id) }} шт.</div>
                     <div class="flex-1 shop">{{ $store->name }}</div>
 
@@ -98,11 +98,11 @@
 
                     <div class="absolute shipping-container">
                         <div class="counter-container">
-                            <div class="button minus" onclick="cart.decrement(this, {{ $product->id }});"></div>
-                            <input class="counter" value="{{ $cart->getProductCount($product->id) }}" type="text" />
-                            <div class="button plus" onclick="cart.increment(this, {{ $product->id }});"></div>
+                            <div class="button minus" onclick="cart.decrement(this, '{{ $product->getHash($store->id) }}');"></div>
+                            <input class="counter" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
+                            <div class="button plus" onclick="cart.increment(this, '{{ $product->getHash($store->id) }}');"></div>
                         </div>
-                        <div class="cart-button @if($cart->isProductExists($product->id)) incart @endif" onclick="cart.add(this, {{ $product->id }});"></div>
+                        <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
 
                     </div>
 
@@ -114,12 +114,12 @@
 
         </div>
 
-        @foreach($providersOrders as $providerName => $orders)
+        @foreach($providersOrders as $providerKey => $orders)
 
             <div class="table">
 
                 <div class="name">
-                    {{ $providerName }}
+                    {{ $providerKey }}
                 </div>
 
                 <div class="header">
@@ -144,7 +144,8 @@
 
                     @foreach($orders as $order)
 
-                        <div class="element">
+                        <div class="element" id="product_{{ $order['hash'] }}">
+
                             <div class="flex-1 availability">{{ $order['model']['availability'] }} шт.</div>
                             <div class="flex-1 shop">{{ $order['days_min'] }} дн.</div>
                             <div class="flex-2 price">
@@ -153,11 +154,11 @@
 
                             <div class="absolute shipping-container">
                                 <div class="counter-container">
-                                    <div class="button minus" onclick="cart.decrement(this, {{ $product->id }});"></div>
-                                    <input class="counter" value="{{ $cart->getProductCount($product->id) }}" type="text" />
-                                    <div class="button plus" onclick="cart.increment(this, {{ $product->id }});"></div>
+                                    <div class="button minus" onclick="cart.decrement(this, '{{ $order['hash'] }}');"></div>
+                                    <input type="text" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
+                                    <div class="button plus" onclick="cart.increment(this, '{{ $order['hash'] }}');"></div>
                                 </div>
-                                <div class="cart-button" onclick="cart.add(this, {{ $product->id }});"></div>
+                                <div class="cart-button @if($cart->isProductExists($order['hash'])) incart @endif" onclick="cart.add(this, '{{ $order['hash'] }}');"></div>
 
                             </div>
 

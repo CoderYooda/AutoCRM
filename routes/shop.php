@@ -20,6 +20,7 @@ Route::namespace('Shop')->group(function () {
     Route::post('/cart', 'CartController@store')->name('cart.store');
     Route::post('/cart/delete', 'CartController@delete')->name('cart.delete');
     Route::post('/cart/save', 'CartController@save')->name('cart.save');
+    Route::post('/cart/clear', 'CartController@clear')->name('cart.clear');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
 

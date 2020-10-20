@@ -14,7 +14,7 @@ class CartSaveRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => ['required', 'exists:articles,id'],
+            'hash' => ['required'],
             'count' => ['required', 'integer', 'between:1,999']
         ];
     }

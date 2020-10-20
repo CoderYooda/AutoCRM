@@ -63,6 +63,12 @@ h2{
         line-height: 52px !important;
     }
 
+    .select2-selection__rendered {
+        color: #404040;
+        padding-left: 24px;
+        text-transform: uppercase;
+    }
+
     height: 52px !important;
     line-height: 52px !important;
 
@@ -75,6 +81,10 @@ h2{
 
 .mr-20 {
     margin-right: 20px !important;
+}
+
+.mr-10 {
+    margin-right: 10px !important;
 }
 
 .mb-16 {
@@ -436,7 +446,7 @@ body{
             border: 2px solid #404040;
         }
 
-        &[placeholder] {
+        &::placeholder {
             color: #989898;
         }
     }
@@ -2497,6 +2507,14 @@ body{
 
     form {
         padding: 62px;
+
+        .tab {
+            display: none;
+
+            &.active {
+                display: block;
+            }
+        }
     }
 }
 
@@ -2598,10 +2616,55 @@ body{
 
 .cart_tabs {
 
-    margin-top: 10px;
     display: flex;
     color: white;
-    height: 62px;
+    background: #272727;
+    text-align: center;
 
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 
+    .tab {
+
+        flex: 1;
+        position: relative;
+
+        &.active {
+            background: #FAFAFA;
+            color: #272727;
+        }
+
+        &:not(.active)::after {
+            content: '';
+            position: absolute;
+            width: 1px;
+            height: 50%;
+            background: #5F5F5F;
+            top: calc(50% / 2);
+            right: 0;
+        }
+
+        .button {
+
+            position: relative;
+
+            .text {
+                display: inline;
+                line-height: 40px;
+                position: relative;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    width: 55px;
+                    height: 4px;
+                    background: #272727;
+                    bottom: -11px;
+                    left: 0;
+                }
+            }
+        }
+    }
 }

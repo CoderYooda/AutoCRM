@@ -11,55 +11,54 @@ class CartSession implements CartInterface
 
     public function __construct()
     {
+//        session()->forget('products');
         $this->products = session('products', []);
     }
 
-    public function addProduct($product_id): bool
+    public function addProduct($hash, $order, $count = 1): bool
     {
-        if($this->isProductExists($product_id)) {
-            $this->products[$product_id]++;
+        if($this->isProductExists($hash)) {
+            $this->products[$hash]['count'] += $count;
         }
         else {
-            $this->products[$product_id] = 1;
+            $this->products[$hash]['count'] = $count;
         }
 
-        session()->put('products', $this->products);
-
-        return true;
-    }
-
-    public function setProductCount($product_id, $count): bool
-    {
-        $this->products[$product_id] = $count;
+        $this->products[$hash]['data'] = $order;
 
         session()->put('products', $this->products);
 
         return true;
     }
 
-    public function removeProduct($product_id): bool
+    public function setProductCount($hash, $count): bool
     {
-        foreach ($this->products as $id => $count) {
-            if($product_id != $id) continue;
-
-            unset($this->products[$id]);
-        }
+        $this->products[$hash]['count'] = $count;
 
         session()->put('products', $this->products);
 
         return true;
     }
 
-    public function isProductExists($product_id): bool
+    public function removeProduct($hash): bool
     {
-        return in_array($product_id, array_keys($this->products));
+        unset($this->products[$hash]);
+
+        session()->put('products', $this->products);
+
+        return true;
     }
 
-    public function getProductCount($product_id): int
+    public function isProductExists($hash): bool
     {
-        if(!$this->isProductExists($product_id)) return 0;
+        return in_array($hash, array_keys($this->products));
+    }
 
-        return $this->products[$product_id];
+    public function getProductCount($hash): int
+    {
+        if(!$this->isProductExists($hash)) return 0;
+
+        return $this->products[$hash]['count'];
     }
 
     public function count(): int
@@ -71,11 +70,20 @@ class CartSession implements CartInterface
     {
         $total = 0;
 
-        foreach ($this->products as $product_id => $count) {
-            $total += $count;
+        foreach ($this->products as $hash => $data) {
+            $total += $data['count'];
         }
 
         return $total;
+    }
+
+    public function clear(): bool
+    {
+        $this->products = [];
+
+        session()->put('products', $this->products);
+
+        return true;
     }
 
     public function all(): array

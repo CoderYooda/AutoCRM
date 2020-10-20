@@ -14,7 +14,9 @@ class CartStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => ['required', 'exists:articles,id']
+            'hash' => ['required', 'string', 'max:255'],
+            'order' => ['required', 'array'],
+            'count' => ['required', 'between:1,99']
         ];
     }
 }

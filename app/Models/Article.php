@@ -86,6 +86,17 @@ class Article extends Model
         return $this->stores->find($store_id);
     }
 
+    public function getHash($store_id)
+    {
+        $stock = $store_id;
+        $manufacturer = $this->supplier->name;
+        $article = $this->article;
+        $days = 0;
+        $price = $this->stores->find($store_id)->pivot->retail_price;
+
+        return md5($stock . $manufacturer . $article . $days . $price);
+    }
+
     public function getImagePathAttribute()
     {
         return $this->image ? $this->image->path() : asset('/images/shop/no-photo.svg');
