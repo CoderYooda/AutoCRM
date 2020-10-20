@@ -54,7 +54,7 @@
             @endif
         </div>
         <form class="WarrantStoredListner ProviderOrderStoredListner" action="{{ route('StoreProviderOrder') }}" method="POST">
-            <div class="box-body">
+            <div class="modal-body">
                 @csrf
                 @if(isset($provider_order) && $provider_order->id != NULL)
                     <input type="hidden" name="id" value="{{ $provider_order->id }}">
@@ -65,83 +65,115 @@
                     <input type="hidden" name="id" value="">
                 @endif
                 <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($provider_order)){{ $provider_order->partner()->first()->id }}@endif">
-                <div class="row row-sm mb-10">
-                    <div class="col-sm-6">
-                        <div class="form-group row row-sm">
-                            <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
-                            <div class="input-group col-sm-8">
-                                <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
-                                    @if(isset($provider_order) && $provider_order->partner()->first() != null)
-                                        {{ $provider_order->partner()->first()->outputName() }}
-                                    @else
-                                        <option>Не выбрано</option>
-                                    @endif
-                                </button>
+                <div class="d-flex">
+                    <div class="link-tabs no-pr">
+                        <ul class="nav" id="po_tabs">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#tab_base" aria-controls="tab_base" data-toggle="tab" data-target="#tab_base">
+                                    Основные
+                                    <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#tab_items" aria-controls="tab_items" data-toggle="tab" data-target="#tab_items">
+                                    Позиции
+                                    <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content no-pl">
+                        <div class="tab-pane active" id="tab_base">
+                            <div class="form-group row row-sm">
+                                <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
+                                <div class="input-group col-sm-8">
+                                    <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                                        @if(isset($provider_order) && $provider_order->partner()->first() != null)
+                                            {{ $provider_order->partner()->first()->outputName() }}
+                                        @else
+                                            <option>Не выбрано</option>
+                                        @endif
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row row-sm">
-                            <label for="category_id" class="col-sm-4 label-sm">Склад</label>
-                            <div class="input-group col-sm-8">
-                                <div class="w-100">
-                                    <select custom_select name="store_id" class="form-control input-c">
-                                        @foreach($stores as $store)
-                                            <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
-                                        @endforeach
-                                    </select>
+                            <div class="form-group row row-sm">
+                                <label for="category_id" class="col-sm-4 label-sm">Склад</label>
+                                <div class="input-group col-sm-8">
+                                    <div class="w-100">
+                                        <select custom_select name="store_id" class="form-control input-c">
+                                            @foreach($stores as $store)
+                                                <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row row-sm">
+                                <div class="col-sm-12">
+                                    <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>
-                        <div class="pull-right checkbox">
-                            <b class="pr-2">НДС:</b>
-                            <label class="ui-check mb-0 pr-2">
-                                <input name="nds" type="checkbox" value="1"
-                                       @if(isset($provider_order) && $provider_order->nds) checked
-                                       @elseif(isset($provider_order) && !$provider_order->nds)
-                                       @else checked @endif
-                                       onclick="{{ $class }}.setNDS();">
-                                <i class="dark-white"></i>
-                                - есть
-                            </label>
-                            <label class="ui-check mb-0">
-                                <input name="nds_included" type="checkbox" value="1"
-                                       @if(isset($provider_order) && $provider_order->nds_included) checked
-                                       @elseif(isset($provider_order) && !$provider_order->nds_included)
-                                       @else checked @endif
-                                       onclick="{{ $class }}.setNDS();">
-                                <i class="dark-white"></i>
-                                - включен в стоимость
-                            </label>
+                        <div class="tab-pane" id="tab_items">
+
+                            <div data-items="@if($provider_order){{ json_encode($provider_order->articlesJson->toArray()) }}@else[]@endif" id="po_list">
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="mb-15"><b>Список приходных номенклатур</b>
+                                    <div class="pull-right checkbox">
+                                        <b class="pr-2">НДС:</b>
+                                        <label class="ui-check mb-0 pr-2">
+                                            <input name="nds" type="checkbox" value="1"
+                                                   @if(isset($provider_order) && $provider_order->nds) checked
+                                                   @elseif(isset($provider_order) && !$provider_order->nds)
+                                                   @else checked @endif
+                                                   onclick="{{ $class }}.setNDS();">
+                                            <i class="dark-white"></i>
+                                            - есть
+                                        </label>
+                                        <label class="ui-check mb-0">
+                                            <input name="nds_included" type="checkbox" value="1"
+                                                   @if(isset($provider_order) && $provider_order->nds_included) checked
+                                                   @elseif(isset($provider_order) && !$provider_order->nds_included)
+                                                   @else checked @endif
+                                                   onclick="{{ $class }}.setNDS();">
+                                            <i class="dark-white"></i>
+                                            - включен в стоимость
+                                        </label>
+                                    </div>
+                                </div>
+                                <div data-simplebar style="max-height: 150px;">
+
+                                    <table class="table-modal" >
+                                        <thead class="text-muted">
+                                        <tr>
+                                            <th width="30%">Наименование</th>
+                                            <th width="10%">Артикул</th>
+                                            <th width="10%" style="min-width: 60px;">Кол-во</th>
+                                            <th width="10%" style="min-width: 100px;">Цена</th>
+                                            <th width="10%" style="min-width: 70px;">НДС, %</th>
+                                            <th width="10%" style="min-width: 100px;">НДС</th>
+                                            <th width="10%" style="min-width: 100px;">Итого</th>
+                                            <th width="10%"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="product_list">
+                                        @isset($provider_order->articles)
+                                            @foreach($provider_order->articles as $product)
+                                                @include(get_template() . '.provider_orders.dialog.product_element')
+                                            @endforeach
+                                        @endisset
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div data-simplebar style="max-height: 150px;">
-                        <table class="table-modal" >
-                            <thead class="text-muted">
-                            <tr>
-                                <th width="30%">Наименование</th>
-                                <th width="10%">Артикул</th>
-                                <th width="10%" style="min-width: 60px;">Кол-во</th>
-                                <th width="10%" style="min-width: 100px;">Цена</th>
-                                <th width="10%" style="min-width: 70px;">НДС, %</th>
-                                <th width="10%" style="min-width: 100px;">НДС</th>
-                                <th width="10%" style="min-width: 100px;">Итого</th>
-                                <th width="10%"></th>
-                            </tr>
-                            </thead>
-                            <tbody class="product_list">
-                            @isset($provider_order->articles)
-                                @foreach($provider_order->articles as $product)
-                                    @include(get_template() . '.provider_orders.dialog.product_element')
-                                @endforeach
-                            @endisset
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>

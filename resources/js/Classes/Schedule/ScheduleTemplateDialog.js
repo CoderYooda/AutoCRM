@@ -1,3 +1,5 @@
+import Tabs from "../../Tools/Tabs";
+
 class scheduleTemplateDialog{
 
     constructor(dialog){
@@ -7,17 +9,18 @@ class scheduleTemplateDialog{
         this.container = this.root_dialog.querySelector('#periods');
         this.periods = {};
         //this.day_off_type = this.root_dialog.getElementById('day_off_type');
-        this.init();
+
         //this.activateTime(0);
         this.template = window.schedule.template;
         this.dayType = this.template[0].dayType; // Рабочий
-        this.initPeriods();
-        this.activateDayType(this.template[0].dayType);
-        this.activateFreeDayType(this.template[0].dayTypeId);
+        this.init();
+        // this.initPeriods();
+        // this.activateDayType(this.template[0].dayType);
+        // this.activateFreeDayType(this.template[0].dayTypeId);
     }
 
     init(){
-
+        this.linked();
     }
 
     applyTemplate()
@@ -25,7 +28,6 @@ class scheduleTemplateDialog{
         let object = this;
 
         if(this.dayType === 'work'){
-
             let periods = this.container.getElementsByClassName('period');
             object.template = [];
             [].forEach.call(periods, function(elem){
@@ -73,6 +75,9 @@ class scheduleTemplateDialog{
         this.initPeriods();
         this.activateDayType(this.template.type);
         this.activateFreeDayType(this.template.freeDayType);
+        if(this.root_dialog.querySelector('#schedule_tabs')){
+            new Tabs('schedule_tabs');
+        };
     }
 
     addPeriod(start = null, end = null)

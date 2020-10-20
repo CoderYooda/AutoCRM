@@ -1,7 +1,7 @@
 <div data-simplebar="init" class="modal-body">
     <div class="ov-hidden">
         <div class="row">
-            <div class="col-sm-5 no-pr d-flex">
+            <div class="col-sm-4 no-pr d-flex">
                 <ul class="nav" id="partner_tabs" role="tablist">
                     <li class="nav-item fl ip ul active" role="tab">
                         <a id="tab_base{{ $class }}-tab" href="#tab_base{{ $class }}"  data-height="false" aria-controls="tab_base{{ $class }}" aria-selected="true" class="nav-link">
@@ -61,7 +61,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-sm-7 no-pl">
+            <div class="col-sm-8 no-pl">
                 <div class="tab-content mb-0 pl-8">
                     <div role="tabpanel" class="tab-pane active main_tab animate" aria-labelledby="tab_base{{ $class }}-tab" id="tab_base{{ $class }}">
                         @include(get_template() . '.partner.dialog.tabs.base')

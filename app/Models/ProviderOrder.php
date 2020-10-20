@@ -43,6 +43,12 @@ class ProviderOrder extends Model
             ->withPivot('count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
     }
 
+    public function articlesJson()
+    {
+        return$this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
+            ->withPivot('count as count', 'price as price', 'nds as nds', 'nds_percent as nds_percent', 'nds_included as nds_included', 'total as total');
+    }
+
     public function getArticleCount($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();

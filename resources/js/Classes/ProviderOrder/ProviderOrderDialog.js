@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class providerOrderDialog extends Modal{
 
@@ -66,6 +67,10 @@ class providerOrderDialog extends Modal{
                 });
             }
         });
+
+        helper.initTabs('po_tabs');
+
+        this.list = new BBlist('po_list', 'products');
 
         this.loadItemsIfExists();
     }

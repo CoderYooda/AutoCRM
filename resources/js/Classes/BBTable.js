@@ -311,6 +311,7 @@ class Table {
                 } else {
                     cell.style.width = header_elem.width + 'px';
                 }
+
                 if(header_elem.min_with){
                     cell.style.minWidth = header_elem.min_with + 'px';
                 }

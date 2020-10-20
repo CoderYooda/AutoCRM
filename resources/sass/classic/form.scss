@@ -494,8 +494,20 @@ h5{
 .no-pl{
     padding-left: 0!important;
 }
+.helper_danger .fa-warning:before, .fa-exclamation-triangle:before {
+    content: "\F071";
+    background: rgb(255 255 255 / 35%);
+    border-radius: 3px;
+    padding: 3px;
+}
 .tab-content{
     padding: 15px;
+    position: relative;
+    width: 100%;
+    max-width: calc(100% - 200px);
+}
+.link-tabs{
+    width: 200px;
 }
 .text-danger{
     color: #FF4949;
@@ -514,21 +526,38 @@ h5{
     border-spacing: 0;
 }
 .modal-body .nav{
-    background-color: #F7F7F7;
+    background-color: #ffffff;
+    border-right: 1px solid #E7E8EC;
     margin: 15px;
     border-radius: 3px;
     overflow: hidden;
-    padding: 10px 0;
+    height: calc(100% - 30px);
     flex: 1;
 }
+
 .modal-body .nav-link{
-    padding: 10px 15px;
+    padding: 5px 15px;
     display: block;
-    border-bottom: 1px solid #FFFFFF;
+    border-right: 3px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.modal-body .nav-link:hover, .modal-body .active .nav-link{
-    background-color: #1F98E9;
+.modal-body .active .nav-link{
+    background-color: #0289CE;
+    border-color: #005E8E;
+    color: #fff;
+}
+
+.modal-body .nav-link:hover{
+    background-color: #F0F0F3;
+    border-color: #B7B7B7;
+    color: #404040;
+}
+
+.modal-body .active .nav-link:hover{
+    background-color: #0275AF;
+    border-color: #005079;
     color: #fff;
 }
 

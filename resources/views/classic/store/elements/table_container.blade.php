@@ -6,7 +6,7 @@
 @php $class = 'store' @endphp
 
 @can('Смотреть категории')
-    <div class="content-menu box w-290" id="category-nav" >
+    <div class="content-menu box w-250" id="category-nav" >
         @include(get_template() . '.category.aside-list')
     </div>
 @endcan

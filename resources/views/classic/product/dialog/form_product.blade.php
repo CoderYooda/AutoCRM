@@ -65,7 +65,7 @@
 
         <div class="modal-body">
             <div class="row">
-                <div class="col-sm-5 no-pr d-flex">
+                <div class="col-sm-4 no-pr d-flex">
                     <ul class="nav" id="product_tabs">
                         <li class="nav-item active">
                             <a class="nav-link" href="#{{$class}}_tab_base" aria-controls="{{$class}}_tab_base" data-toggle="tab" data-target="#{{$class}}_tab_base">
@@ -109,7 +109,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-sm-7 no-pl">
+                <div class="col-sm-8 no-pl">
                     <div class="tab-content no-pl">
                         @include(get_template() . '.product.dialog.tabs.base')
                         @include(get_template() . '.product.dialog.tabs.store')
