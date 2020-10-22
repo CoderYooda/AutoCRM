@@ -82,17 +82,17 @@ class TariffController extends Controller
             switch($request['tariff_id']){
                 case 30:
                     $type = 'pay_to_store';
-                    $amount = 1;
+                    $amount = 2500;
                     $days = 30;
                     break;
                 case 180:
                     $type = 'pay_to_store';
-                    $amount = 2;
+                    $amount = 7200;
                     $days = 180;
                     break;
                 case 360:
                     $type = 'pay_to_store';
-                    $amount = 3;
+                    $amount = 27600;
                     $days = 360;
                     break;
                 case 1:

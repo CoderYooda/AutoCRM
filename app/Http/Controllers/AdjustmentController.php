@@ -233,8 +233,8 @@ class AdjustmentController extends Controller
             ->leftJoin('partners', 'partners.id', '=', 'adjustments.manager_id')
             ->leftJoin('stores', 'stores.id', '=', 'adjustments.store_id')
             ->where('adjustments.company_id', Auth::user()->company()->first()->id)
-            ->when($request['accountable'] != null, function ($query) use ($request) {
-                $query->whereIn('adjustments.partner_id', $request['accountable']);
+            ->when(is_array($request['accountable']) && !empty($request['accountable']), function ($query) use ($request) {
+                $query->whereIn('adjustments.manager_id', $request['accountable']);
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('adjustments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);

@@ -4,12 +4,13 @@
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.scheduleTemplateDialog.finitaLaComedia()">×</button>
     <div class="box-body">
-        <ul id="template_tabs" class="nav nav-tabs mb-15 tab_links">
+
+        <ul class="nav nav-tabs mb-15" id="schedule_tabs">
             <li>
-                <a id="work_button" class="button primary d-block-f-left brr-0 nav-link" data-target="work" href="#work" onclick="window.scheduleTemplateDialog.setDaytype('work')">Рабочий день</a>
+                <a id="work_button" type="button" class="button primary d-block-f-left brr-0 nav-link" data-target="work" onclick="window.scheduleTemplateDialog.setDaytype('work')">Рабочий день</a>
             </li>
             <li>
-                <a id="free_button" class="button primary brl-0 nav-link" data-target="free" href="#free" onclick="window.scheduleTemplateDialog.setDaytype('free')">Нерабочий день</a>
+                <a id="free_button" type="button" class="button primary brl-0 nav-link" data-target="free" onclick="window.scheduleTemplateDialog.setDaytype('free')">Нерабочий день</a>
             </li>
         </ul>
         <div class="tab-content p-0">

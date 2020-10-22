@@ -233,28 +233,30 @@ class Partner extends Model
                     $pre_summ = $pfs_summ / 100 * $setting->pivot->value;
 
                     $summ += $pre_summ;
-
-                    $salary_data[] = [
-                        'company_id' => $this->company_id,
-                        'partner_id' => $this->id,
-                        'date' => Carbon::now(),
-                        'summ' => $pre_summ,
-                        'comment' => 'awdawd'
-                    ];
-
+                    if(doubleval($pre_summ) !== 0.0){
+                        $salary_data[] = [
+                            'company_id' => $this->company_id,
+                            'partner_id' => $this->id,
+                            'date' => Carbon::now(),
+                            'summ' => $pre_summ,
+                            'comment' => 'awdawd'
+                        ];
+                    }
                     break;
                 case 'percent':
                     $percent = $summ / 100 * $setting->pivot->value;
 
                     $pre_summ = $setting->isPositive ? $percent : -$percent;
                     $summ += $pre_summ;
-                    $salary_data[] = [
-                        'company_id' => $this->company_id,
-                        'partner_id' => $this->id,
-                        'date' => Carbon::now(),
-                        'summ' => $pre_summ,
-                        'comment' => 'awdawd'
-                    ];
+                    if(doubleval($pre_summ) !== 0.0) {
+                        $salary_data[] = [
+                            'company_id' => $this->company_id,
+                            'partner_id' => $this->id,
+                            'date' => Carbon::now(),
+                            'summ' => $pre_summ,
+                            'comment' => 'awdawd'
+                        ];
+                    }
                     break;
                 case 'oklad':
                 case 'fixed':
@@ -264,15 +266,17 @@ class Partner extends Model
                     ]);
                     $summ_per_hour = $setting->pivot->value / $setting->pivot->h_m_value;
 
-                    $pre_summ = $setting->isPositive ? $summ_per_hour * $hours : -$summ_per_hour * $hours;
+                    $pre_summ = $setting->isPositive ? $summ_per_hour * $hours : - $summ_per_hour * $hours;
                     $summ += $pre_summ;
-                    $salary_data[] = [
-                        'company_id' => $this->company_id,
-                        'partner_id' => $this->id,
-                        'date' => Carbon::now(),
-                        'summ' => $pre_summ,
-                        'comment' => 'awdawd'
-                    ];
+                    if(doubleval($pre_summ) !== 0.0) {
+                        $salary_data[] = [
+                            'company_id' => $this->company_id,
+                            'partner_id' => $this->id,
+                            'date' => Carbon::now(),
+                            'summ' => $pre_summ,
+                            'comment' => 'awdawd'
+                        ];
+                    }
                     break;
             }
         }

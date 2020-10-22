@@ -623,8 +623,8 @@ li.active .header-tab{
     background: #fff;
 }
 .dialog .titlebar {
-    height: 40px;
-    line-height: 40px;
+    height: 35px;
+    line-height: 35px;
     vertical-align: middle;
     font-size: 14px;
     font-weight: 500;
@@ -633,7 +633,7 @@ li.active .header-tab{
     text-overflow: ellipsis;
     cursor: move;
     padding: 0 90px 0 15px;
-    background: #1D87CF;
+    background: #2d76a8;
     color: #fff;
     border-radius: 4px 4px 0 0;
 }
@@ -671,14 +671,15 @@ li.active .header-tab{
 
 .modal-header .btn_close {
     float: right;
-    background: url(/images/icons/cross.png) no-repeat center;
-    opacity: .75;
+    background: url(/images/icons/cross.png) no-repeat 12px 12px;
+    opacity: 0.75;
     color: transparent;
     filter: alpha(opacity=75);
     cursor: pointer;
     outline: none;
-    width: 20px;
-    height: 20px;
+    width: 35px;
+    height: 35px!important;
+    position: absolute;
     top: 0;
     right: 0;
     padding: 0;
@@ -687,30 +688,31 @@ li.active .header-tab{
 
 .dialog .btn_close {
     float: right;
-    background: url(/images/icons/cross.png) no-repeat 13px 15px;
-    opacity: .75;
+    background: url(/images/icons/cross.png) no-repeat 12px 12px;
+    opacity: 0.75;
     color: transparent;
     filter: alpha(opacity=75);
     cursor: pointer;
     outline: none;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px!important;
     position: absolute;
     top: 0;
     right: 0;
+    
     padding: 0;
     border: 0;
 }
 .dialog .btn_minus{
-    background: url(/images/icons/minus.png) no-repeat 13px 15px;
+    background: url(/images/icons/minus.png) no-repeat 12px 12px;
     float: right;
-    opacity: .75;
+    opacity: 0.75;
     color: transparent;
     filter: alpha(opacity=75);
     cursor: pointer;
     outline: none;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px!important;
     position: absolute;
     top: 0;
     right: 40px;
@@ -853,7 +855,7 @@ a.button, button {
     outline: none;
     box-shadow: none;
     height: 30px !important;
-    line-height: 28px !important;
+    line-height: 27px !important;
     cursor: pointer;
     white-space: nowrap;
 }
@@ -994,13 +996,23 @@ input:-moz-placeholder { /* Firefox 18- */
     padding-right: 0;
     list-style: none;
 }
+#category-block{
+    margin: 0;
+    padding: 0;
+}
+
+#category-block .category-item:last-child a{
+    border-bottom: none;
+}
 
 .content-menu .nav > li > a{
-    padding: 5px 15px;
+    padding: 4px 15px;
     display: block;
     position: relative;
-
+    border-bottom: 1px solid #E7E8EC;
+    color: #404040;
 }
+
 .content-menu .nav > li > a span{
     padding-left: 22px;
 }
@@ -1331,8 +1343,8 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .col-sm-2 {
     -webkit-box-flex: 0;
-    flex: 0 0 16.7777776%;
-    max-width: 16.7777776%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
 }
 .col-sm-3 {
     -webkit-box-flex: 0;
@@ -1710,6 +1722,10 @@ input:-moz-placeholder { /* Firefox 18- */
     width: 290px!important;
     min-width: 290px!important;
 }
+.w-250{
+    width: 250px!important;
+    min-width: 250px!important;
+}
 .w-260{
     width: 260px!important;
     min-width: 260px!important;
@@ -1769,8 +1785,12 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 .h-32-text{
-    height: 32px;
-    line-height: 32px;
+     height: 32px;
+     line-height: 32px;
+ }
+.h-30-text{
+    height: 30px;
+    line-height: 30px;
 }
 .p-0{
     padding: 0px!important;

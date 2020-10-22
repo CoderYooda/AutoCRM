@@ -49,6 +49,7 @@ class CategoryController extends Controller
                 break;
             case 'partner':
                 $cat_info['root_id'] = 3;
+                $data = PartnerController::getPartners($request);
                 break;
         }
         $data = json_encode($data->toArray());

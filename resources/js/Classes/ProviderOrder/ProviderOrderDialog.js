@@ -1,5 +1,6 @@
 import Modal from "../Modal/Modal";
 import Tabs from "../../Tools/Tabs";
+import BBlist from "../BBitems";
 
 class providerOrderDialog extends Modal{
 
@@ -11,7 +12,7 @@ class providerOrderDialog extends Modal{
         this.nds_included = true;
         this.refer = null;
 
-        if(response.products != undefined) {
+        if(response && response.products != undefined) {
             Object.values(response.products).forEach(product_id => {
                 window.entity.addProductToList(product_id.id, this, 'providerOrder');
             });
@@ -57,6 +58,10 @@ class providerOrderDialog extends Modal{
                 });
             }
         });
+
+        helper.initTabs('po_tabs');
+
+        this.list = new BBlist('po_list', 'products');
 
         this.loadItemsIfExists();
 

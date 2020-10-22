@@ -8,11 +8,13 @@ class Page {
     }
 
     readData(target = null){
+
         let target_elem = document.getElementById(target);
         if(target_elem){
-            let data = target_elem.querySelector('[data-data]');
 
+            let data = target_elem.querySelector('[data-data]');
             if(target_elem.hasAttribute('data-data')){
+                console.log(1);
                 data = target_elem;
             }
 
@@ -20,6 +22,7 @@ class Page {
                 this.data = JSON.parse(data.dataset.data);
                 data.removeAttribute('data-data');
             }
+            return true;
         }
     }
 }

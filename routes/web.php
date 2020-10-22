@@ -141,7 +141,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
         Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
         Route::post('/clientorder/{client_order}/fresh', 'ClientOrdersController@fresh')->name('FreshClientOrder');
-        Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
+        Route::post('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
         Route::post('/client_orders/side_info', 'ClientOrdersController@getSideInfo')->name('GetClientOrderSideInfo');
         Route::get('/client_orders/{clientOrder}/select', 'ClientOrdersController@select')->name('SelectClientOrder');
         Route::post('/client_orders/makeshipped', 'ClientOrdersController@makeShipped')->name('MakeDhippedClientOrder');
@@ -163,7 +163,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/adjustment/store', 'AdjustmentController@store')->name('StoreAdjustment');// Строгое название
         Route::post('/adjustment/{id}/fresh', 'AdjustmentController@fresh')->name('FreshAdjustment');
         Route::post('/adjustment/{id}/delete', 'AdjustmentController@delete')->name('DeleteAdjustment');
-        Route::get('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
+        Route::post('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
         Route::post('/adjustment/side_info', 'AdjustmentController@getSideInfo')->name('GetPartnerSideInfo');
         Route::get('/adjustments/search', 'AdjustmentController@search')->name('SearchAdjustment');
 
@@ -260,7 +260,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
         Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
         Route::post('/partner/{partner}/select', 'PartnerController@select')->name('SelectPartner');
-        Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
+        Route::post('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
         Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
         Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 
@@ -275,7 +275,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Документы
         Route::any('/document', 'DocumentController@document')->name('Document');
-        Route::get('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
+        Route::post('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
         Route::post('/documents', 'DocumentController@store')->name('DocumentStore');
         Route::get('/documents/{document}', 'DocumentController@show')->name('DocumentShow');
         Route::post('/documents/side_info', 'DocumentController@getPartnerSideInfo')->name('GetDocumentPartnerSideInfo');

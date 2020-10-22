@@ -68,7 +68,7 @@ class DialogController extends Controller
             //Refund
             'refundDialog'              => [RefundController::class, 'refundDialog'],
             //ProviderOrder
-            'providerorderDialog'       => [ProviderOrdersController::class, 'providerorderDialog'],
+            'providerOrderDialog'       => [ProviderOrdersController::class, 'providerorderDialog'],
             'selectProviderOrderDialog' => [ProviderOrdersController::class, 'selectProviderOrderDialog'],
             //Adjustment
             'adjustmentDialog'          => [AdjustmentController::class, 'adjustmentDialog'],

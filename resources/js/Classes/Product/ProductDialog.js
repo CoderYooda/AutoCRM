@@ -26,7 +26,7 @@ class ProductDialog extends Modal {
             focused.select();
         }
         helper.initTabs('product_tabs');
-        var fn = window.helper.debounce(function (e) {
+        let fn = window.helper.debounce(function (e) {
             object.fapiSearch();
         }, 800);
 
