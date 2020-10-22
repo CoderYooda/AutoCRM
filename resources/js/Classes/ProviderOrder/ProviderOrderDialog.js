@@ -7,7 +7,7 @@ class providerOrderDialog extends Modal{
     constructor(dialog, response){
         super(dialog);
         console.log('Окно штрихкода инициализировано');
-        this.items = [];
+        // this.items = [];
         this.nds = true;
         this.nds_included = true;
         this.refer = null;
@@ -22,8 +22,6 @@ class providerOrderDialog extends Modal{
     }
 
     init(){
-
-        var fn = window.helper.debounce(e => this.recalculate(e), 50);
 
         ///Вешаем обработчик на чекбокс/////////////////
         // let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
@@ -59,17 +57,18 @@ class providerOrderDialog extends Modal{
             }
         });
 
-        helper.initTabs('po_tabs');
+        this.tabs = window.helper.initTabs('po_tabs');
 
-        this.list = new BBlist('po_list', 'products');
-
-        this.loadItemsIfExists();
-
-        this.linked();
-    }
-
-    linked() {
-        new Tabs('provider_orders-tabs');
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 70, width: 70, name: 'НДС, %', table_name: 'nds_percent', type: 'passive',},
+            {min_with: 70, width: 70, name: 'НДС', table_name: 'nds', type: 'passive',},
+            {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
+        ];
+        this.items = new BBlist(this, 'po_list', 'products', header);
     }
 
     scanOperation(product_id){
@@ -202,29 +201,6 @@ class providerOrderDialog extends Modal{
         });
     }
 
-    loadItemsIfExists(){
-
-        this.addInputsMask();
-
-        let product_elements = this.current_dialog.querySelectorAll('.element-item')
-
-        product_elements.forEach(element => {
-
-            let id = parseInt(element.querySelector('.id_elem').value);
-
-            let count = parseInt(element.querySelector(".count_elem"));
-            let price = parseFloat(element.querySelector(".price_elem"));
-
-            this.items.push({
-                id: id,
-                count: count,
-                price: price,
-                total: count * price
-            });
-
-        });
-    }
-
     setTotalPrice(count){
         let container = this.root_dialog.querySelector('#total_price');
         container.innerHTML = Number(count).toFixed(2);
@@ -277,15 +253,6 @@ class providerOrderDialog extends Modal{
         IMask(element, options);
     }
 
-    removeItem(id){
-        this.items.splice(
-            this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
-        );
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
-    }
 
     addProduct(elem_or_id, refer = null) {
         window.entity.addProductToList(elem_or_id, this, 'providerOrder', this.root_dialog.id);
@@ -321,61 +288,6 @@ class providerOrderDialog extends Modal{
 
     openSelectPartnerModal(){
         window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=6');
-    }
-
-    recalculate(){
-        console.log("Пересчет...");
-
-        let product_elements = this.current_dialog.querySelectorAll('.element-item')
-
-        let total_price = 0;
-
-        product_elements.forEach((element, index) => {
-            let id = element.querySelector('.id_elem');
-            let price = element.querySelector(".price_elem");
-            let count = element.querySelector(".count_elem");
-            let total = element.querySelector(".total_elem");
-            let pivot_id = element.querySelector('.pivot_id_elem');
-
-            id.name = 'products[' + index + '][id]';
-            price.name = 'products[' + index + '][price]';
-            count.name = 'products[' + index + '][count]';
-            if(pivot_id) pivot_id.name = 'products[' + index + '][pivot_id]';
-
-            let nds_percent = element.querySelector(".nds_percent_elem");
-            let nds = element.querySelector(".nds_elem");
-
-            let vcount = Number(count.value);
-            let vprice = Number(price.value);
-            let vnds_percent = Number(nds_percent.value);
-            let vnds = Number(nds.value);
-            let vtotal = Number(total.value);
-
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = (vtotal / 100) * vnds_percent;
-
-            if(this.nds){
-                if(!this.nds_included) vtotal += vnds;
-            } else {
-                vnds = 0.00;
-                vnds_percent = 0;
-            }
-
-            nds_percent.value = vnds_percent.toFixed(2);
-            nds.value = vnds.toFixed(2);
-            total.value = vtotal.toFixed(2);
-
-            total_price += vtotal;
-        });
-
-        this.setTotalPrice(total_price);
-    }
-
-    setNDS() {
-        this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
-        this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
-        this.recalculate();
     }
 }
 export default providerOrderDialog;

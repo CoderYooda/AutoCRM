@@ -344,7 +344,7 @@ class storePage extends Page{
         }
         return active_tab;
     }
-    
+
     cleanSearch(){
         this.search = null;
         document.getElementById("search").value = null;

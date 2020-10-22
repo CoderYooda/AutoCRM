@@ -8,7 +8,7 @@
                 <div class="box-body">
                     <ul  class="nav select-list-modal ">
                         @foreach($products as $product)
-                            <li id="product_item_{{ $product->id }}" data-article_id="{{ $product->id }}" onclick="{{$request['refer']}}.addProduct(this, 'selectProductDialog');" class="list-item pointer d-flex " >
+                            <li data-product="{{ json_encode($product) }}" id="product_item_{{ $product->id }}" data-article_id="{{ $product->id }}" onclick="{{$request['refer']}}.items.add(this, 'selectProductDialog');" class="list-item pointer d-flex " >
                                 <div class="ring-ico">
                                     <i class="fa fa-cogs" style="font-size: 22px;"></i>
                                 </div>
