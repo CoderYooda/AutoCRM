@@ -1,9 +1,13 @@
 <div class="pagination container bg-white">
     <div class="paginator">
-        <span class="item" ><a href="{{ route('pages.index') }}">Главная</a></span>
+        <span class="item"><a href="{{ route('pages.index') }}">Главная</a></span>
 
         @if(request()->routeIs('pages.catalogue'))
             <span class="item">Каталог</span>
+        @endif
+
+        @if(request()->routeIs('orders.success'))
+            <span class="item">Заказ №{{ $order->id }}</span>
         @endif
 
         @if(request()->routeIs('cart.index'))

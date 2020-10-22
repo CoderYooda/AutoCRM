@@ -196,6 +196,23 @@ class Cart {
             });
     }
 
+    changeRegisterType(type) {
+        document.querySelector('[name="register_type"]').value = type;
+    }
+
+    makeOrder(element) {
+        let form_element = document.querySelector('.order_form form');
+
+        let rules_element = document.querySelector('[name="rules"]:checked');
+
+        if(rules_element == null) {
+            window.notification.notify('error', 'Для продолжения оформления заказа подтвердите соглашение.');
+            return;
+        }
+
+        form_element.submit();
+    }
+
     getOrderByHash(hash) {
 
         let order = {};
@@ -225,7 +242,12 @@ class Cart {
 
         let total_price = 0;
 
+        let total_stores = {};
+
         elements.forEach(element => {
+
+            let store_id = element.dataset.store_id;
+
             let count = parseInt(element.querySelector('.counter').value);
             let price = parseFloat(element.querySelector('.current_price span').innerHTML.replace(' ', ''));
 
@@ -235,9 +257,18 @@ class Cart {
 
             element.querySelector('.total_price span').innerHTML = total.toFixed(2);
 
+            if(store_id) {
+                if(isNaN(total_stores[store_id])) total_stores[store_id] = 0;
+                total_stores[store_id] += total;
+            }
+
         });
 
-        console.log(total_price);
+        Object.keys(total_stores).forEach(store_id => {
+             let value = total_stores[store_id];
+
+             document.getElementById('total_store_' + store_id).innerHTML = value.toFixed(2);
+        });
 
         let total_element = document.getElementById('count');
 

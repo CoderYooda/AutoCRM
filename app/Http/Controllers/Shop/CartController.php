@@ -3,14 +3,20 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Requests\Shop\CartDeleteRequest;
+use App\Http\Requests\Shop\CartOrderRequest;
 use App\Http\Requests\Shop\CartSaveRequest;
 use App\Http\Requests\Shop\CartStoreRequest;
 use App\Interfaces\Shop\CartInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Order;
+use App\Models\Partner;
 use App\Models\Shop;
 use App\Models\Store;
 use App\Services\ShopManager\ShopManager;
+use Illuminate\Support\Facades\DB;
+
+const BUYER_CATEGORY = 7;
 
 class CartController extends Controller
 {
@@ -24,31 +30,8 @@ class CartController extends Controller
 
     public function index(CartInterface $cart)
     {
-        $cartOrders = $cart->all();
-
-        $orders = [];
+        $orders = $this->formatOrdersArray($cart->all());
         $storesTotal = [];
-
-        foreach ($cartOrders as $hash => $order) {
-            $product = Article::with('stores')->find($order['data']['product_id']);
-
-            $store = null;
-
-            if(isset($order['data']['store_id'])) {
-                $store = Store::find($order['data']['store_id']);
-                if(!isset($storesTotal[$store->id])) $storesTotal[$store->id] = 0;
-                $storesTotal[$store->id] += $product->stores->find($store->id)->pivot->retail_price;
-            }
-
-            $orders[$hash] = [
-                'manufacturer' => $order['data']['model']['hash_info']['manufacturer'] ?? $product->supplier->name,
-                'article' => $order['data']['model']['hash_info']['article'] ?? $product->article,
-                'name' => $product->name,
-                'price' => $order['data']['model']['hash_info']['price'] ?? $product->stores->find($store->id)->pivot->retail_price,
-                'image' => $product->image_path,
-                'count' => $cart->getProductCount($hash)
-            ];
-        }
 
         $stores = Store::where('company_id', $this->shop->company_id)->get();
 
@@ -103,5 +86,94 @@ class CartController extends Controller
             'message' => 'Количество было успешно изменено.',
             'total' => $cart->total()
         ]);
+    }
+
+    public function order(CartOrderRequest $request, CartInterface $cart, ShopManager $shopManager)
+    {
+        $shop = $shopManager->getCurrentShop();
+
+        $company = $shop->company;
+
+        $uniqueFields = [
+            'basePhone' => $request->phone,
+            'company_id' => $company->id,
+            'store_id' => $request->store_id
+        ];
+
+        $types = ['fl', 'ip', 'up'];
+
+        $updateFields = $request->except('rules', 'register', 'pay_type', 'delivery_type', 'store_id', 'register_type', 'name', 'surname', 'middlename');
+        $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
+        $updateFields['category_id'] = BUYER_CATEGORY;
+        $updateFields['type'] = array_search($request->register_type, $types);
+
+        $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
+
+        $totalPrice = 0;
+
+        $cartOrders = $this->formatOrdersArray($cart->all());
+
+        foreach ($cartOrders as $cartOrder) {
+            $totalPrice += $cartOrder['price'] * $cartOrder['count'];
+        }
+
+        $order = Order::create([
+            'company_id' => $company->id,
+            'partner_id' => $partner->id,
+            'total_price' => $totalPrice,
+            'status' => 0,
+            'comment' => $request->comment,
+            'email' => $request->email,
+            'phone' => $request->basePhone
+        ]);
+
+        foreach ($cartOrders as $cartOrder) {
+            DB::table('order_articles')->insert([
+                'order_id' => $order->id,
+                'manufacturer' => $cartOrder['manufacturer'],
+                'article' => $cartOrder['article'],
+                'name' => $cartOrder['name'],
+                'price' => $cartOrder['price'],
+                'count' => $cartOrder['count']
+            ]);
+        }
+
+        return redirect()->route('orders.success', ['order' => $order->id]);
+    }
+
+    private function formatOrdersArray(array $cartOrders)
+    {
+        $cart = app(CartInterface::class);
+
+        $orders = [];
+
+        foreach ($cartOrders as $hash => $order) {
+            $product = Article::with('stores')->find($order['data']['product_id']);
+
+            $store = null;
+
+            if(isset($order['data']['store_id'])) $store = Store::find($order['data']['store_id']);
+
+            $price = $order['data']['model']['hash_info']['price'] ?? $product->stores->find($store->id)->pivot->retail_price;
+            $count = $cart->getProductCount($hash);
+
+            if($store) {
+                if(!isset($storesTotal[$store->id])) $storesTotal[$store->id] = 0;
+                $storesTotal[$store->id] += $price * $count;
+            }
+
+            $orders[$hash] = [
+                'manufacturer' => $order['data']['model']['hash_info']['manufacturer'] ?? $product->supplier->name,
+                'article' => $order['data']['model']['hash_info']['article'] ?? $product->article,
+                'name' => $product->name,
+                'price' => $price,
+                'image' => $product->image_path,
+                'count' => $count
+            ];
+
+            if(isset($order['data']['store_id'])) $orders[$hash]['store_id'] = $order['data']['store_id'];
+        }
+
+        return $orders;
     }
 }

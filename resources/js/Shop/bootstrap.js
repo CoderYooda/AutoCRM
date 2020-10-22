@@ -157,24 +157,27 @@ function activateGalleryPin(){
 
 //Маска на поля
 
-let phone_element = document.querySelector('[name="phone"]');
+let phone_elements = document.querySelectorAll('input[class~=phone]');
 
-if(phone_element) {
-    IMask(phone_element, {
+if(phone_elements) {
 
-            mask: '+{7}(000)000-00-00',
-            lazy: true,
-            placeholderChar: '_',
+    phone_elements.forEach(element => {
+        IMask(element, {
 
-            dispatch: function (appended, dynamicMasked) {
-                var number = (dynamicMasked.value + appended).replace(/\D/g, '');
+                mask: '+{7}(000)000-00-00',
+                lazy: true,
+                placeholderChar: '_',
 
-                return dynamicMasked.compiledMasks.find(function (m) {
-                    return number.indexOf(m.startsWith) === 0;
-                });
+                dispatch: function (appended, dynamicMasked) {
+                    let number = (dynamicMasked.value + appended).replace(/\D/g, '');
+
+                    return dynamicMasked.compiledMasks.find(function (m) {
+                        return number.indexOf(m.startsWith) === 0;
+                    });
+                }
             }
-        }
-    );
+        );
+    });
 }
 
 //Яндекс карта

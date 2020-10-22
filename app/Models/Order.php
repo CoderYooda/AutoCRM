@@ -28,11 +28,6 @@ class Order extends Model
         return $this->hasOne(Partner::class, 'id', 'partner_id');
     }
 
-    public function products()
-    {
-        return $this->belongsToMany(Article::class, 'order_articles', 'order_id', 'article_id')->withPivot('price', 'count');
-    }
-
     public function getStatusName()
     {
         return self::$statues[$this->status];

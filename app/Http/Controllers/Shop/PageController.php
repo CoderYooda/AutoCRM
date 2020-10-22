@@ -141,21 +141,21 @@ class PageController extends Controller
         $selectedCategory = $product->category->load('childs');
 
         //TEST
-        $providersOrders = Cache::remember('orders', Carbon::now()->addHours(1), function () use($providers, $product) {
-            /** @var ProviderInterface $provider */
-            foreach ($providers->activated() as $provider_key => $provider) {
-                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
-            }
+//        $providersOrders = Cache::remember('orders', Carbon::now()->addHours(1), function () use($providers, $product) {
+//            /** @var ProviderInterface $provider */
+//            foreach ($providers->activated() as $provider_key => $provider) {
+//                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+//            }
+//
+//            return $providersOrders;
+//        });
 
-            return $providersOrders;
-        });
+        $providersOrders = [];
 
-//        $providersOrders = [];
-
-//        /** @var ProviderInterface $provider */
-//        foreach ($providers->activated() as $provider_key => $provider) {
-//            $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
-//        }
+        /** @var ProviderInterface $provider */
+        foreach ($providers->activated() as $provider_key => $provider) {
+            $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+        }
 
         return view('shop.product', compact('product', 'selectedCategory', 'providersOrders'))
             ->with('shop', $this->shop);

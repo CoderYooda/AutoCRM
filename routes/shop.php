@@ -21,6 +21,9 @@ Route::namespace('Shop')->group(function () {
     Route::post('/cart/delete', 'CartController@delete')->name('cart.delete');
     Route::post('/cart/save', 'CartController@save')->name('cart.save');
     Route::post('/cart/clear', 'CartController@clear')->name('cart.clear');
+    Route::post('/cart/order', 'CartController@order')->name('cart.order');
+
+    Route::get('/orders/{order}', 'OrderController@show')->name('orders.success');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
 

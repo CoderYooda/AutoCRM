@@ -18,10 +18,16 @@ class Tabs {
             let tab = document.getElementById(tabs_names[i]);
             this.tab_elements.push(tab);
         }
+
+        setTimeout(() => this.a_elements[0].click(), 200);
+
     }
 
     clickEvent(element) {
+
         element.addEventListener('click', event => {
+
+            console.log('click');
 
             //Удаляем активность у всех элементов с тэгом 'A'
             this.a_elements.forEach(a_element => a_element.classList.remove('active'));
@@ -31,12 +37,16 @@ class Tabs {
 
             this.tab_elements.forEach(tab_element => {
 
+                tab_element.querySelectorAll('input').forEach(input => input.disabled = true);
+
                 //Удаляем активность у всех табов
                 tab_element.classList.remove('active');
 
                 //Ставим активность на таб
                 if(tab_element.id === element.dataset.target) {
                     tab_element.classList.add('active');
+
+                    tab_element.querySelectorAll('input').forEach(input => input.disabled = false);
                 }
             });
         });

@@ -340,7 +340,6 @@ Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUse
 #Коморка разработчиков
 Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Admin')->name('Admin')->group(function () {
 
-
     Route::get('/', 'DashboardController@index')->name('Dashboard');
     Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('DashboardTable');
 
