@@ -6,19 +6,19 @@ class providerOrderDialog extends Modal{
     constructor(dialog, response){
         super(dialog);
         console.log('Окно штрихкода инициализировано');
-        this.items = [];
+        // this.items = [];
         this.nds = true;
         this.nds_included = true;
         this.totalPrice = 0.0;
         this.itogo = 0.0;
         this.refer = null;
 
-        if(response && response.products != undefined) {
-            Object.values(response.products).forEach(product_id => {
-                console.log(product_id.id);
-                window.entity.addProductToList(product_id.id, this, 'providerOrder');
-            });
-        }
+        // if(response && response.products != undefined) {
+        //     Object.values(response.products).forEach(product_id => {
+        //         console.log(product_id.id);
+        //         window.entity.addProductToList(product_id.id, this, 'providerOrder');
+        //     });
+        // }
 
         this.init();
     }
@@ -26,7 +26,7 @@ class providerOrderDialog extends Modal{
     init(){
         let object = this;
 
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
+        // var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
         ///Вешаем обрабочик на поле скидки/////////////
         // let discount = object.root_dialog.querySelector('input[name=discount]');
         // discount.addEventListener("keydown", fn);
@@ -68,11 +68,20 @@ class providerOrderDialog extends Modal{
             }
         });
 
-        helper.initTabs('po_tabs');
+        this.tabs = window.helper.initTabs('po_tabs');
 
-        this.list = new BBlist('po_list', 'products');
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 70, width: 70, name: 'НДС, %', table_name: 'nds_percent', type: 'passive',},
+            {min_with: 70, width: 70, name: 'НДС', table_name: 'nds', type: 'passive',},
+            {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
+        ];
+        this.items = new BBlist(this, 'po_list', 'products', header);
 
-        this.loadItemsIfExists();
+        // this.loadItemsIfExists();
     }
 
     scanOperation(product_id){
@@ -206,10 +215,6 @@ class providerOrderDialog extends Modal{
         });
     }
 
-    loadItemsIfExists(){
-        window.entity.loadItemsToList(this, 'providerorder');
-    }
-
     setTotalPrice(count){
         let container = this.root_dialog.querySelector('#total_price');
         container.innerHTML = Number(count).toFixed(2);
@@ -256,15 +261,6 @@ class providerOrderDialog extends Modal{
         }
     }
 
-    removeItem(id){
-        this.items.splice(
-            this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
-        );
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
-    }
 
     addProduct(elem_or_id, refer = null){
         let object = this;
@@ -305,86 +301,6 @@ class providerOrderDialog extends Modal{
     openSelectPartnerModal(){
         window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=6');
     }
-
-    recalculate(){
-        console.log("Пересчет...");
-        var object = this;
-        this.items.forEach(function(elem){
-            object.recalculateItem(elem.id);
-        });
-        var total_price = object.totalPrice;
-        var itogo = object.itogo;
-        // var inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        // var discount = object.root_dialog.querySelector('input[name=discount]');
-
-        object.items.map(function(e){
-            total_price = total_price + Number(e.total);
-        });
-
-        // if(inpercents.checked){
-        //     itogo = total_price - (total_price / 100 * Number(discount.value).toFixed(2));
-        // } else {
-        //itogo = total_price - Number(discount.value).toFixed(2);
-        // }
-
-        // var discount_val;
-        //
-        // if(inpercents.checked){
-        //     discount_val = discount.value + '%';
-        // } else {
-        //     discount_val = discount.value + 'р';
-        // }
-
-
-        object.setTotalPrice(total_price);
-        object.setItogo(itogo);
-        // object.setDiscount(discount_val);
-    }
-
-    recalculateItem(id){
-        let object = this;
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + id + "][price]']");
-
-        let nds_percent = item.querySelector("input[name='products[" + id + "][nds_percent]']");
-        let nds = item.querySelector("input[name='products[" + id + "][nds]']");
-
-        let vcount = Number(count.value);
-        let vprice = Number(price.value);
-        let vnds_percent = Number(nds_percent.value);
-        let vnds = Number(nds.value);
-        let vtotal = Number(total.value);
-
-        if(object.nds && !object.nds_included){
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = vtotal / 100 * vnds_percent;
-            vtotal = vnds + vtotal;
-        } else if(object.nds && object.nds_included){
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
-        } else {
-            vtotal = vprice * vcount;
-            vnds = 0.00;
-            vnds_percent = 0;
-        }
-
-        nds_percent.value = vnds_percent.toFixed(2);
-        nds.value = vnds.toFixed(2);
-        total.value = vtotal.toFixed(2);
-
-        object.items.map(function(e){
-            if(e.id === id){
-                e.total = vtotal;
-                e.count = vcount;
-                e.price = vprice;
-            }
-        });
-    }
-
 
 }
 export default providerOrderDialog;

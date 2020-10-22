@@ -241,6 +241,10 @@ class ProductController extends Controller
             ->limit(30)
             ->get();
 
+        foreach ($products as $product){
+            $product->price = $product->getPrice();
+        }
+
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
