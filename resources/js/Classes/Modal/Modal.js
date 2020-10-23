@@ -24,7 +24,7 @@ class Modal{
 
             // dd(localStorage.getItem(this.constructor.name + '_tab'));
 
-            if(localStorage.getItem(this.constructor.name + '_tab') !== 'undefined'){
+            if(localStorage.getItem(this.constructor.name + '_tab')){
 
                 let panes = this.current_dialog.querySelectorAll('.tab-pane');
 
