@@ -102,7 +102,7 @@ const ajaxRequest = new (function () {
                 history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
                 bUpdateURL = false;
             }
-            let tabs = document.querySelectorAll('.nav li');
+            let tabs = document.querySelectorAll('.nav li:not(.nav-item)');
             [].forEach.call(tabs, function (li) {
                 li.classList.remove('active');
                 if (window.helper.findGetParameter('active_tab') === li.dataset.tab) {

@@ -119,60 +119,8 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="tab_items">
-
-                            <div data-items="@if($provider_order){{ json_encode($provider_order->articlesJson->toArray()) }}@else[]@endif" id="po_list">
-
+                            <div data-items="@if($provider_order){{ json_encode($provider_order->articlesJson->toArray()) }}@else{{ json_encode([]) }}@endif" id="po_list">
                             </div>
-
-                            {{--<div class="form-group">--}}
-                                {{--<div class="mb-15"><b>Список приходных номенклатур</b>--}}
-                                    {{--<div class="pull-right checkbox">--}}
-                                        {{--<b class="pr-2">НДС:</b>--}}
-                                        {{--<label class="ui-check mb-0 pr-2">--}}
-                                            {{--<input name="nds" type="checkbox" value="1"--}}
-                                                   {{--@if(isset($provider_order) && $provider_order->nds) checked--}}
-                                                   {{--@elseif(isset($provider_order) && !$provider_order->nds)--}}
-                                                   {{--@else checked @endif--}}
-                                                   {{--onclick="{{ $class }}.setNDS();">--}}
-                                            {{--<i class="dark-white"></i>--}}
-                                            {{--- есть--}}
-                                        {{--</label>--}}
-                                        {{--<label class="ui-check mb-0">--}}
-                                            {{--<input name="nds_included" type="checkbox" value="1"--}}
-                                                   {{--@if(isset($provider_order) && $provider_order->nds_included) checked--}}
-                                                   {{--@elseif(isset($provider_order) && !$provider_order->nds_included)--}}
-                                                   {{--@else checked @endif--}}
-                                                   {{--onclick="{{ $class }}.setNDS();">--}}
-                                            {{--<i class="dark-white"></i>--}}
-                                            {{--- включен в стоимость--}}
-                                        {{--</label>--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
-                                {{--<div data-simplebar style="max-height: 150px;">--}}
-
-                                    {{--<table class="table-modal" >--}}
-                                        {{--<thead class="text-muted">--}}
-                                        {{--<tr>--}}
-                                            {{--<th width="30%">Наименование</th>--}}
-                                            {{--<th width="10%">Артикул</th>--}}
-                                            {{--<th width="10%" style="min-width: 60px;">Кол-во</th>--}}
-                                            {{--<th width="10%" style="min-width: 100px;">Цена</th>--}}
-                                            {{--<th width="10%" style="min-width: 70px;">НДС, %</th>--}}
-                                            {{--<th width="10%" style="min-width: 100px;">НДС</th>--}}
-                                            {{--<th width="10%" style="min-width: 100px;">Итого</th>--}}
-                                            {{--<th width="10%"></th>--}}
-                                        {{--</tr>--}}
-                                        {{--</thead>--}}
-                                        {{--<tbody class="product_list">--}}
-                                        {{--@isset($provider_order->articles)--}}
-                                            {{--@foreach($provider_order->articles as $product)--}}
-                                                {{--@include(get_template() . '.provider_orders.dialog.product_element')--}}
-                                            {{--@endforeach--}}
-                                        {{--@endisset--}}
-                                        {{--</tbody>--}}
-                                    {{--</table>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
                         </div>
                     </div>
                 </div>
