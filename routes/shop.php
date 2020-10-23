@@ -11,6 +11,11 @@ Route::namespace('Shop')->group(function () {
     Route::get('/contacts', 'PageController@contacts')->name('pages.contacts');
     Route::get('/catalogue', 'PageController@catalogue')->name('pages.catalogue');
 
+    Route::get('/user/login', 'UserController@loginForm')->name('user.loginForm');
+    Route::post('/user/login', 'UserController@loginAction')->name('user.loginAction');
+    Route::get('/user/register', 'UserController@registerForm')->name('user.registerForm');
+    Route::post('/user/register', 'UserController@registerAction')->name('user.registerAction');
+
     Route::post('/feedback', 'FeedbackController@store')->name('feedback.store');
 
     Route::get('/favorites', 'FavoriteController@index')->name('favorites.index');

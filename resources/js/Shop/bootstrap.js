@@ -160,24 +160,7 @@ function activateGalleryPin(){
 let phone_elements = document.querySelectorAll('input[class~=phone]');
 
 if(phone_elements) {
-
-    phone_elements.forEach(element => {
-        IMask(element, {
-
-                mask: '+{7}(000)000-00-00',
-                lazy: true,
-                placeholderChar: '_',
-
-                dispatch: function (appended, dynamicMasked) {
-                    let number = (dynamicMasked.value + appended).replace(/\D/g, '');
-
-                    return dynamicMasked.compiledMasks.find(function (m) {
-                        return number.indexOf(m.startsWith) === 0;
-                    });
-                }
-            }
-        );
-    });
+    phone_elements.forEach(element => window.phoneMask(element));
 }
 
 //Яндекс карта

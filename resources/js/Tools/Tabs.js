@@ -27,8 +27,6 @@ class Tabs {
 
         element.addEventListener('click', event => {
 
-            console.log('click');
-
             //Удаляем активность у всех элементов с тэгом 'A'
             this.a_elements.forEach(a_element => a_element.classList.remove('active'));
 

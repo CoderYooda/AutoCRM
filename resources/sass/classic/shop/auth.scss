@@ -1,0 +1,63 @@
+.register_tabs {
+    margin-bottom: 20px;
+    height: 35px;
+    display: flex;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: #5F5F5F;
+
+
+    .register_tab {
+
+        padding: 0 10px;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        cursor: pointer;
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &.active, :hover {
+            color: #272727;
+        }
+
+        &:not(:first-child)::after {
+            content: "";
+            position: absolute;
+            width: 1px;
+            left: 0;
+            top: calc(100% / 8);
+            height: 15px;
+            background: #E2E2E2;
+        }
+
+        &.active span {
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                width: 55px;
+                height: 4px;
+                background: #404040;
+                bottom: -16px;
+                left: 0;
+            }
+        }
+    }
+}
+
+.register_form {
+    .register_tab {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+}

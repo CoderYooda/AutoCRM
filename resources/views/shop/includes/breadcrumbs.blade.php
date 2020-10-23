@@ -2,6 +2,10 @@
     <div class="paginator">
         <span class="item"><a href="{{ route('pages.index') }}">Главная</a></span>
 
+        @if(request()->routeIs('user.registerForm'))
+            <span class="item">Регистрация</span>
+        @endif
+
         @if(request()->routeIs('pages.catalogue'))
             <span class="item">Каталог</span>
         @endif

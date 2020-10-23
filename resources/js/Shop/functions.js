@@ -1,17 +1,18 @@
-import Tab from "./Classes/Tab";
+window.phoneMask = function phoneMask(element) {
+    window.IMask(element, {
 
-window.auth = function(){
+            mask: '+{7}(000)000-00-00',
+            lazy: true,
 
-    axios({
-        method: 'GET',
-        url: '/shop/index?page=login'
-    }).then(function (response) {
-        createModal(response.data.html);
-        let auth_tab_container = document.getElementById('auth-tabs');
-        window.auth_tab = new Tab(auth_tab_container);
-    }).catch(function (error) {
-        console.log(error)
-    });
+            dispatch: function (appended, dynamicMasked) {
+                let number = (dynamicMasked.value + appended).replace(/\D/g,'');
+
+                return dynamicMasked.compiledMasks.find(function (m) {
+                    return number.indexOf(m.startsWith) === 0;
+                });
+            }
+        }
+    );
 };
 
 window.createModal = function(html = null){

@@ -56,6 +56,8 @@ h2{
 @import '~simplebar/dist/simplebar.min.css';
 @import "~select2/dist/css/select2.min.css";
 
+@import "shop/auth";
+
 .select2-container--default .select2-selection--single {
     .select2-selection__rendered,
     .select2-selection__arrow {
@@ -93,6 +95,18 @@ h2{
 
 .mr-10 {
     margin-right: 10px !important;
+}
+
+.mt-0 {
+    margin-top: 0 !important;
+}
+
+.mt-10 {
+    margin-top: 10px !important;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
 }
 
 .mb-16 {
@@ -612,7 +626,7 @@ body{
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
     .modal-block{
-        width: 600px;
+        width: 700px;
         height: auto;
         min-height: 200px;
         background: #fff;

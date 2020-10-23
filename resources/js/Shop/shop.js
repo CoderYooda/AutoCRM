@@ -5,6 +5,7 @@ import Feedback from "./Classes/Feedback/Feedback";
 import Cart from "./Classes/Cart/Cart";
 import Favorite from "./Classes/Favorite/Favorite";
 import Product from "./Classes/Product/Product";
+import Auth from "./Classes/Auth";
 
 window.$ = window.jQuery = require('jquery');
 
@@ -16,10 +17,11 @@ window.helper = new Helper();
 window.cart = new Cart();
 window.favorite = new Favorite();
 window.product = new Product();
+window.auth = new Auth();
 window.tippy = Tippy;
 window.axios = require('axios');
 window.notification = require('notification-js/src/notification.js');
 window.simplebar = require('simplebar/dist/simplebar.min');
 
+require('./functions');
 require('./bootstrap');
-require('./functions')
