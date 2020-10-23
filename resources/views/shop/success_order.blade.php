@@ -53,14 +53,14 @@
 
             </div>
 
-            <div class="d-flex">
-                <div class="float-l">
+            <div class="order_footer">
+                <div class="return_arrow float-l">
                     <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-                    <span class="ml-16">Вернуться на главную</span>
+                    <a href="{{ route('pages.index') }}" class="ml-16">Вернуться на главную</a>
                 </div>
                 <div class="float-r">
                     <div class="print_orders">
-
+                        Распечатать
                     </div>
                 </div>
             </div>

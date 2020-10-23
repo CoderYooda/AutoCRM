@@ -200,6 +200,18 @@ class Cart {
         document.querySelector('[name="register_type"]').value = type;
     }
 
+    toggleFields(type) {
+
+        let fields = {
+            anonymous: ['password']
+        };
+
+        if(type == 'anonymous') {
+
+        }
+
+    }
+
     makeOrder(element) {
         let form_element = document.querySelector('.order_form form');
 

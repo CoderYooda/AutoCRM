@@ -91,20 +91,28 @@
             <h2>Оформление заказа</h2>
         </div>
 
+        <div>
+
+            <div onclick="cart.toggleFields('anonymous');">Заказать без авторизации</div>
+            <div onclick="cart.toggleFields('auth');">Пройти авторизацию</div>
+            <div onclick="cart.toggleFields('register');">Пройти регистрацию</div>
+
+        </div>
+
         <div class="order_form" style="width: 80%;">
 
             <div id="register-tabs" class="cart_tabs">
-                <div class="tab pointer @if(old('register_type') == 'fl' || old('register_type') == null) active @endif" data-target="tab_fl" onclick="cart.changeRegisterType('fl');">
+                <div class="tab pointer" data-target="tab_fl" onclick="cart.changeRegisterType('fl');">
                     <div class="button">
                         <div class="text">Физическое лицо</div>
                     </div>
                 </div>
-                <div class="tab pointer @if(old('register_type') == 'ip') active @endif" data-target="tab_ip" onclick="cart.changeRegisterType('ip');">
+                <div class="tab pointer" data-target="tab_ip" onclick="cart.changeRegisterType('ip');">
                     <div class="button">
                         <div class="text">Индивидуальный предприниматель</div>
                     </div>
                 </div>
-                <div class="tab pointer @if(old('register_type') == 'ul') active @endif" data-target="tab_ul" onclick="cart.changeRegisterType('ul');">
+                <div class="tab pointer" data-target="tab_ul" onclick="cart.changeRegisterType('ul');">
                     <div class="button">
                         <div class="text">Юридическое лицо</div>
                     </div>
@@ -126,6 +134,19 @@
                                 <input type="text" class="form-control phone" name="basePhone" placeholder="+7(999)999-99-99" />
                             </div>
                             @error('basePhone')
+                                <div class="error_text">{{ $message }}</div>
+                                <div class="error_notify">!</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group-flex">
+                        <label>Пароль <span class="required_field">*</span></label>
+                        <div class="float-r">
+                            <div class="field">
+                                <input type="text" class="form-control phone" name="password" minlength="8" placeholder="********" />
+                            </div>
+                            @error('password')
                                 <div class="error_text">{{ $message }}</div>
                                 <div class="error_notify">!</div>
                             @enderror

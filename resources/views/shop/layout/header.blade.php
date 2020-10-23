@@ -52,7 +52,7 @@
                     <div id="cart_count" class="counter">{{ $cart->total() }}</div>
                 </div>
                 <div class="action" >
-                    <div onclick="window.auth()" class="icon user"></div>
+                    <div onclick="window.auth();" class="icon user"></div>
                     <div class="dropdown">
                         <div class="name">Имя Фамилия</div>
                         <ul>

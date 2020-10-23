@@ -19,7 +19,7 @@ class Tabs {
             this.tab_elements.push(tab);
         }
 
-        setTimeout(() => this.a_elements[0].click(), 200);
+        // setTimeout(() => this.a_elements[0].click(), 200);
 
     }
 

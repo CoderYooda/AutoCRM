@@ -19,7 +19,5 @@ class ProviderOrderObserver
         }
 
         $providerOrder->pays = $status;
-
-        dd($providerOrder);
     }
 }

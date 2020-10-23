@@ -252,7 +252,7 @@ class ProviderOrdersController extends Controller
 
             UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
 
-            foreach ($request['products'] as $product) {
+            foreach ($request['products'] as $product_id => $product) {
 
                 $count = $product['count'];
                 $price = $product['price'];
@@ -269,7 +269,7 @@ class ProviderOrdersController extends Controller
                 }
 
                 $params = [
-                    'article_id'        => $product['id'],
+                    'article_id'        => $product_id,
                     'provider_order_id' => $provider_order->id,
                     'count'             => $product['count'],
                     'price'             => $product['price'],
