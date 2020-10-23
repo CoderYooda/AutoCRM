@@ -266,8 +266,7 @@ class ProviderOrdersController extends Controller
         $provider_order_pivot_data = [];
 
         $errors = [];
-
-        foreach($request['products'] as $id => $product) {
+        foreach(array_reverse($request['products'], true) as $id => $product) {
 
             $vcount = $product['count'];
 

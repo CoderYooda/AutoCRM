@@ -1,25 +1,52 @@
 class Items {
-    constructor(object, container, form_name, header, use_nds = false){
+    constructor(object, container, form_name, header){
         this.container = document.getElementById(container);
+
         if(!form_name)
             throw new Error('Не указано имя формы');
-        this.form_name = form_name;
-        this.use_nds = use_nds;
-        this.header = header;
-        this.parent_object = object;
+
         if(!this.container)
             throw new Error('Не указан контейнер');
+
         if(!this.container.hasAttribute('data-items'))
             throw new Error('Не передан параметр items');
 
+        this.form_name = form_name;
+        this.header = header;
+        this.parent_object = object;
+
+        if(this.container.dataset.prefs){
+            this.prefs = JSON.parse(this.container.dataset.prefs);
+            this.container.removeAttribute('data-prefs');
+        }
+
+
+
         this.items = JSON.parse(this.container.dataset.items);
 
-        this.nds = false;
-        this.nds_included = false;
+        if(this.prefs && this.prefs.use_nds !== null){
+            this.use_nds = this.prefs.use_nds;
+        } else {
+            this.use_nds = null;
+        }
+
+        if(this.prefs && this.prefs.nds_included !== null){
+            this.nds_included = this.prefs.nds_included;
+        } else {
+            this.nds_included = null;
+        }
+
+        if(this.prefs && this.prefs.nds !== null){
+            this.nds = this.prefs.nds;
+        } else {
+            this.nds = null;
+        }
+
 
         this.container.removeAttribute('data-items');
 
-       //////
+        this.nds_input = null;
+        this.nds_included_input = null;
 
         this.draw();
     }
@@ -42,26 +69,30 @@ class Items {
             nds_container.classList.add('nds_container');
             title_cont.appendChild(nds_container);
 
-            let nds_title =  document.createElement('div');
-            nds_title.classList.add('nds_title');
-            nds_title.innerText = 'НДС:';
-            nds_container.appendChild(nds_title);
+            // let nds_title =  document.createElement('div');
+            // nds_title.classList.add('nds_title');
+            // nds_title.innerText = 'НДС:';
+            // nds_container.appendChild(nds_title);
 
             let checkbox = document.createElement('div');
             checkbox.classList.add('checkbox');
+            checkbox.addEventListener('click', ()=> {
+                this.ndsCnabged();
+            });
             nds_container.appendChild(checkbox);
 
             let name = document.createElement('label');
             name.classList.add('checkbox-title');
             name.setAttribute('for', 'nds');
-            name.innerText = 'наложен';
+            name.innerText = 'НДС:';
             checkbox.appendChild(name);
 
-            let input = document.createElement('input');
-            input.name = 'nds';
-            input.id = 'nds';
-            input.type = 'checkbox';
-            checkbox.appendChild(input);
+            this.nds_input = document.createElement('input');
+            this.nds_input.name = 'nds';
+            this.nds_input.id = 'nds';
+            this.nds_input.type = 'checkbox';
+            this.nds_input.checked = this.nds;
+            checkbox.appendChild(this.nds_input);
 
             let label = document.createElement('label');
             label.setAttribute('for', 'nds');
@@ -71,6 +102,9 @@ class Items {
 
             checkbox = document.createElement('div');
             checkbox.classList.add('checkbox');
+            checkbox.addEventListener('click', ()=> {
+                this.ndsIncludedCnanged();
+            });
             nds_container.appendChild(checkbox);
 
             name = document.createElement('label');
@@ -79,11 +113,12 @@ class Items {
             name.innerText = 'включен в стоимость';
             checkbox.appendChild(name);
 
-            input = document.createElement('input');
-            input.name = 'nds_included';
-            input.id = 'nds_included';
-            input.type = 'checkbox';
-            checkbox.appendChild(input);
+            this.nds_included_input = document.createElement('input');
+            this.nds_included_input.name = 'nds_included';
+            this.nds_included_input.id = 'nds_included';
+            this.nds_included_input.type = 'checkbox';
+            this.nds_included_input.checked = this.nds_included;
+            checkbox.appendChild(this.nds_included_input);
 
             label = document.createElement('label');
             label.setAttribute('for', 'nds_included');
@@ -162,8 +197,42 @@ class Items {
         this.items.forEach((cell_item) => {
             this.insertProduct(cell_item, false);
         });
-
     }
+
+    ndsCnabged(){
+        if(this.nds_input.value){
+            if(this.nds_input.checked === false) {
+                this.nds_input.checked = true;
+            }
+            else {
+                if(this.nds_input.checked === true) {
+                    this.nds_input.checked = false;
+                    this.nds_included_input.checked = false;
+                }
+            }
+        }
+        this.items.forEach((elem)=>{
+            this.recalculateItem(elem.id);
+        })
+    }
+
+    ndsIncludedCnanged(){
+        if(this.nds_included_input.value){
+            if(this.nds_included_input.checked === false) {
+                this.nds_included_input.checked = true;
+            }
+            else {
+                if(this.nds_included_input.checked === true) {
+                    this.nds_included_input.checked = false;
+                }
+            }
+        }
+
+        this.items.forEach((elem)=>{
+            this.recalculateItem(elem.id);
+        })
+    }
+
     removeItem(id){
         event.preventDefault();
         let elem = this.body.querySelector('#' + this.form_name + '_' + id);
@@ -308,12 +377,13 @@ class Items {
         let vnds = Number(nds.value);
         let vtotal = Number(total.value);
 
-        if(this.use_nds && !object.nds_included){
+
+        if(this.use_nds && this.nds_input.checked && !this.nds_included_input.checked){
             vnds_percent = 20;
             vtotal = vprice * vcount;
             vnds = vtotal / 100 * vnds_percent;
             vtotal = vnds + vtotal;
-        } else if(this.use_nds && object.nds_included){
+        } else if(this.use_nds && this.nds_input.checked && this.nds_included_input.checked){
             vnds_percent = 20;
             vtotal = vprice * vcount;
             vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;

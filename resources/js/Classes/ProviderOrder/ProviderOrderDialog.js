@@ -80,8 +80,6 @@ class providerOrderDialog extends Modal{
             {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
         ];
         this.items = new BBlist(this, 'po_list', 'products', header);
-
-        // this.loadItemsIfExists();
     }
 
     scanOperation(product_id){

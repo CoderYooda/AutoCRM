@@ -706,7 +706,7 @@ class storePage extends Page{
                 {min_with: 60, width: 150, name: 'Поступление', table_name: 'incomes', transform: 'transform_ico'},
                 {min_with: 120, width: 200, name: 'Поставщик', table_name: 'partner_name'},
                 {min_with: 120, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
-                {min_with: 90, width: 200, name: 'Сумма', table_name: 'itogo', transform: 'transform_price'},
+                {min_with: 90, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
                 {min_with: 90, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
             context_menu = [

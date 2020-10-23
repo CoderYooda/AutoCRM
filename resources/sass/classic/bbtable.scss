@@ -51,6 +51,7 @@
         input:checked+label::before {
             background: #5181B8 url(/images/icons/check.svg) center no-repeat;
             border: none;
+            background-position-y: 4px;
         }
     }
     .paginator {
