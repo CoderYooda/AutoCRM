@@ -61,3 +61,45 @@
         }
     }
 }
+
+#auth-tabs {
+    .custom_checkbox {
+        div {
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.06em;
+            color: #747474;
+        }
+    }
+
+    .form-group {
+
+        position: relative;
+
+        .error_notify {
+            position: absolute;
+            right: 30px;
+            top: calc(100% / 6);
+            color: #E23414;
+            font-size: 18px;
+        }
+
+        .error_text {
+            font-weight: 600;
+            margin-top: 12px;
+            padding-left: 30px;
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: 0.06em;
+            color: #E23414;
+        }
+
+        .errors {
+            display: none;
+        }
+
+        &.is-invalid .errors {
+            display: block;
+        }
+    }
+}

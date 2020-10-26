@@ -5,9 +5,6 @@ class Cart {
     constructor() {
         this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 400);
 
-        let tabs_element = document.querySelector('#register-tabs');
-        if(tabs_element) new Tabs('register-tabs');
-
         $(document).ready(() => {
             $('select').select2();
         });
@@ -202,27 +199,40 @@ class Cart {
 
     toggleFields(type) {
 
-        let fields = {
-            anonymous: ['password']
-        };
-
         if(type == 'anonymous') {
+            let target_element = document.querySelector('.order_register');
+            target_element.classList.remove('d-none');
 
+            let password_element = target_element.querySelector('input[name="password"]');
+            password_element.disabled = true;
+
+            let group_element = password_element.closest('.form-group-flex');
+            group_element.classList.add('d-none');
+        }
+        else if(type == 'auth') {
+            auth.form();
+        }
+        else {
+            let target_element = document.querySelector('.order_register');
+            target_element.classList.remove('d-none');
+
+            let register_element = document.querySelector('[name="register"]');
+            register_element.value = '1';
         }
 
+        if(type != 'auth') {
+            let buttons_element = document.querySelector('.order_types');
+            buttons_element.classList.add('d-none');
+        }
     }
 
-    makeOrder(element) {
-        let form_element = document.querySelector('.order_form form');
+    changeDeliveryType(element) {
 
-        let rules_element = document.querySelector('[name="rules"]:checked');
+        let target_element = document.querySelector('[name="store_id"]');
 
-        if(rules_element == null) {
-            window.notification.notify('error', 'Для продолжения оформления заказа подтвердите соглашение.');
-            return;
-        }
+        let group_element = target_element.closest('.form-group-flex');
 
-        form_element.submit();
+        group_element.classList.toggle('d-none');
     }
 
     getOrderByHash(hash) {

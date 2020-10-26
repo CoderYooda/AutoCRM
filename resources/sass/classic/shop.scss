@@ -57,6 +57,9 @@ h2{
 @import "~select2/dist/css/select2.min.css";
 
 @import "shop/auth";
+@import "shop/cabinet";
+@import "shop/cart";
+@import "shop/form";
 
 .select2-container--default .select2-selection--single {
     .select2-selection__rendered,
@@ -89,12 +92,20 @@ h2{
     width: 40px;
 }
 
+.w-50 {
+    width: 50% !important;
+}
+
 .mr-20 {
     margin-right: 20px !important;
 }
 
 .mr-10 {
     margin-right: 10px !important;
+}
+
+.mt-62 {
+    margin-top: 62px !important;
 }
 
 .mt-0 {
@@ -604,7 +615,6 @@ body{
     }
 }
 .recover-link{
-    margin-left: 30px;
     a{
         text-decoration: none;
         font-weight: 600;
@@ -625,8 +635,22 @@ body{
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
+
+    .modal-header {
+        padding-left: 32px;
+        line-height: 64px;
+        height: 64px;
+        border-bottom: 1px solid #EBEBEB;
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #272727;
+        background: #FAFAFA;
+    }
+
     .modal-block{
-        width: 700px;
+        width: 525px;
         height: auto;
         min-height: 200px;
         background: #fff;
@@ -669,12 +693,13 @@ body{
     }
     .modal-close{
         background: url(/images/shop/close-white.svg) center no-repeat transparent;
-        width: 24px;
-        height: 24px;
-        right: 16px;
-        top: 16px;
+        width: 26px;
+        height: 26px;
+        right: 32px;
+        top: calc(100% / 24);
         position: absolute;
         cursor: pointer;
+        padding: 4px;
     }
 }
 /* END MODALS */
@@ -2488,6 +2513,22 @@ body{
 
 .order_button {
     position: absolute;
+    width: 227px;
+    height: 52px;
+    line-height: 52px;
+    border: 2px solid #E23414;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #272727;
+    right: 20px;
+}
+
+.register_button {
     width: 227px;
     height: 52px;
     line-height: 52px;

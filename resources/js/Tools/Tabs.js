@@ -16,11 +16,19 @@ class Tabs {
 
         for(let i = 0; i < tabs_names.length; i++) {
             let tab = document.getElementById(tabs_names[i]);
-            this.tab_elements.push(tab);
+            if(tab) this.tab_elements.push(tab);
         }
 
-        // setTimeout(() => this.a_elements[0].click(), 200);
+        setTimeout(() => {
 
+            let active_element = this.ul_element.querySelector('.active');
+
+            if(active_element == null) {
+                this.ul_element.querySelector('[data-target]').click();
+            }
+            else active_element.click();
+
+        }, 200);
     }
 
     clickEvent(element) {
@@ -35,7 +43,9 @@ class Tabs {
 
             this.tab_elements.forEach(tab_element => {
 
-                tab_element.querySelectorAll('input').forEach(input => input.disabled = true);
+                let inputs = tab_element.querySelectorAll('input');
+
+                if(inputs) inputs.forEach(input => input.disabled = true);
 
                 //Удаляем активность у всех табов
                 tab_element.classList.remove('active');
@@ -44,7 +54,7 @@ class Tabs {
                 if(tab_element.id === element.dataset.target) {
                     tab_element.classList.add('active');
 
-                    tab_element.querySelectorAll('input').forEach(input => input.disabled = false);
+                    if(inputs) inputs.forEach(input => input.disabled = false);
                 }
             });
         });

@@ -10,9 +10,9 @@
             <h2>Корзина</h2>
         </div>
 
-        <div onclick="cart.makeOrder(this);" class="order_button">
-            Оформить заказ
-        </div>
+{{--        <div onclick="cart.makeOrder(this);" class="order_button">--}}
+{{--            Оформить заказ--}}
+{{--        </div>--}}
 
         <div class="cart_stores">
 
@@ -87,448 +87,110 @@
 
         </div>
 
-        <div class="title" style="margin-top: 62px;">
-            <h2>Оформление заказа</h2>
-        </div>
+        @if(!auth()->check())
+            <div class="order_types mt-62 @if(old('register_type') != null) d-none @endif">
 
-        <div>
+                <div onclick="cart.toggleFields('anonymous');">продолжить без регистрации</div>
+                <div onclick="cart.toggleFields('register');">зарегистрироваться</div>
+                <div onclick="cart.toggleFields('auth');">войти</div>
 
-            <div onclick="cart.toggleFields('anonymous');">Заказать без авторизации</div>
-            <div onclick="cart.toggleFields('auth');">Пройти авторизацию</div>
-            <div onclick="cart.toggleFields('register');">Пройти регистрацию</div>
+            </div>
+        @endif
 
-        </div>
-
-        <div class="order_form" style="width: 80%;">
-
-            <div id="register-tabs" class="cart_tabs">
-                <div class="tab pointer" data-target="tab_fl" onclick="cart.changeRegisterType('fl');">
-                    <div class="button">
-                        <div class="text">Физическое лицо</div>
-                    </div>
-                </div>
-                <div class="tab pointer" data-target="tab_ip" onclick="cart.changeRegisterType('ip');">
-                    <div class="button">
-                        <div class="text">Индивидуальный предприниматель</div>
-                    </div>
-                </div>
-                <div class="tab pointer" data-target="tab_ul" onclick="cart.changeRegisterType('ul');">
-                    <div class="button">
-                        <div class="text">Юридическое лицо</div>
-                    </div>
-                </div>
+        <div class="order_register @if(old('register_type') == null && !auth()->check()) d-none @endif">
+            <div class="title mt-62">
+                <h2>Оформление заказа</h2>
             </div>
 
-            <form action="{{ route('cart.order') }}" method="POST">
+            @if(auth()->check())
+                <div class="registered_form" style="width: 700px;">
 
-                @csrf
+                    <form action="{{ route('cart.order') }}" method="POST">
 
-                <input type="hidden" name="register_type" value="fl">
-
-                <div class="d-flex flex-column">
-
-                    <div class="form-group-flex">
-                        <label>Телефон <span class="required_field">*</span></label>
-                        <div class="float-r">
-                            <div class="field">
-                                <input type="text" class="form-control phone" name="basePhone" placeholder="+7(999)999-99-99" />
-                            </div>
-                            @error('basePhone')
-                                <div class="error_text">{{ $message }}</div>
-                                <div class="error_notify">!</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group-flex">
-                        <label>Пароль <span class="required_field">*</span></label>
-                        <div class="float-r">
-                            <div class="field">
-                                <input type="text" class="form-control phone" name="password" minlength="8" placeholder="********" />
-                            </div>
-                            @error('password')
-                                <div class="error_text">{{ $message }}</div>
-                                <div class="error_notify">!</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group-flex">
-                        <label>Электронная почта <span class="required_field">*</span></label>
-                        <div class="float-r">
-                            <div class="field">
-                                <input type="email" class="form-control" name="email" placeholder="example@domain.ru" />
-                            </div>
-                            @error('email')
-                                <div class="error_text">{{ $message }}</div>
-                                <div class="error_notify">!</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="tab active" id="tab_fl">
+                        @csrf
 
                         <div class="form-group-flex">
-                            <label>Фамилия <span class="required_field">*</span></label>
-                            <div class="float-r">
+                            <label>Телефон</label>
+                            <div class="float-r w-50">
+                                <span>{{ auth()->user()->companyPartner->basePhone }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex">
+                            <label>ФИО</label>
+                            <div class="float-r w-50">
+                                <span>{{ auth()->user()->companyPartner->fio }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex">
+                            <label>Электронная почта</label>
+                            <div class="float-r w-50">
+                                <span>{{ auth()->user()->companyPartner->email }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex">
+                            <label for="delivery_type">Способ доставки</label>
+                            <div class="float-r w-50">
+                                <select onchange="cart.changeDeliveryType(this);" name="delivery_type">
+                                    <option value="0">Самовывоз</option>
+                                    <option value="1">Доставка</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex @if(old('delivery_type')) d-none @endif">
+                            <label for="store_id">Точка получения заказа</label>
+                            <div class="float-r w-50">
+                                <select name="store_id">
+                                    @foreach($stores as $store)
+                                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex">
+                            <label>Способ оплаты</label>
+                            <div class="d-flex float-r w-50">
+                                <label class="custom_radio" style="margin-right: 42px;">
+                                    При получении
+                                    <input type="radio" class="not_default" name="pay_type" checked value="0" />
+                                    <span></span>
+                                </label>
+                                <label class="custom_radio">
+                                    На сайте
+                                    <input type="radio" class="not_default" name="pay_type" value="1" />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex">
+                            <label>Комментарий</label>
+                            <div class="float-r w-50">
                                 <div class="field">
-                                    <input type="text" class="form-control" name="surname" placeholder="Иванов" />
+                                    <textarea class="form-control" name="comment" placeholder="Комментарий">{{ old('comment') }}</textarea>
                                 </div>
-                                @error('surname')
+                                @error('comment')
                                     <div class="error_text">{{ $message }}</div>
                                     <div class="error_notify">!</div>
                                 @enderror
                             </div>
                         </div>
 
-                        <div class="form-group-flex">
-                            <label>Имя <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="name" placeholder="Иван" />
-                                </div>
-                                @error('name')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
+                        <div class="form-group">
+                            <div class="float-r w-50">
+                                <button class="register_button" type="submit">Оформить заказ</button>
                             </div>
                         </div>
 
-                        <div class="form-group-flex">
-                            <label>Отчество</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="middlename" placeholder="Иванович" />
-                                </div>
-                                @error('middlename')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="tab" id="tab_ip">
-
-                        <div class="form-group-flex">
-                            <label>Фамилия <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="surnanme" placeholder="Иванов" />
-                                </div>
-                                @error('surnanme')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Имя <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="name" placeholder="Иван" />
-                                </div>
-                                @error('name')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Отчество <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="middlename" placeholder="Иванович" />
-                                </div>
-                                @error('middlename')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>ИНН <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="inn" placeholder="0000000000" />
-                                </div>
-                                @error('inn')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>ОГРНИП</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="ogrn" placeholder="00000000000000" />
-                                </div>
-                                @error('ogrn')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>БИК</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="bik" placeholder="000000000" />
-                                </div>
-                                @error('bik')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Банк</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="bank" placeholder="Наименование банка" />
-                                </div>
-                                @error('bank')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Корреспондентский счет</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="cs" placeholder="00000000000000000000" />
-                                </div>
-                                @error('cs')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Расчетный счет</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="rs" placeholder="00000000000000000000" />
-                                </div>
-                                @error('rs')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Фактический адрес</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="actual_address" placeholder="г. Москва, ул. Бережная, д.9" />
-                                </div>
-                                @error('actual_address')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="tab" id="tab_ul">
-
-                        <div class="form-group-flex">
-                            <label>Название компании <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="company_name" placeholder="Рога и Копыта" />
-                                    <input type="text" class="form-control mr-10" maxlength="3" name="opf" placeholder="ООО" style="width: 32px;" />
-                                </div>
-                                @error('company_name')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>ИНН <span class="required_field">*</span></label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="inn" placeholder="0000000000" />
-                                </div>
-                                @error('inn')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>ОГРН</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="ogrn" placeholder="00000000000000" />
-                                </div>
-                                @error('actual_address')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>БИК</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="bik" placeholder="000000000" />
-                                </div>
-                                @error('bik')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Банк</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="bank" placeholder="Наименование банка" />
-                                </div>
-                                @error('bank')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Корреспондентский счет</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="cs" placeholder="00000000000000000000" />
-                                </div>
-                                @error('cs')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Расчетный счет</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="rs" placeholder="00000000000000000000" />
-                                </div>
-                                @error('rs')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Юридический адрес</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="ur_address" placeholder="г. Москва, ул. Бережная, д.9" />
-                                </div>
-                                @error('ur_address')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group-flex">
-                            <label>Фактический адрес</label>
-                            <div class="float-r">
-                                <div class="field">
-                                    <input type="text" class="form-control" name="actual_address" placeholder="г. Москва, ул. Бережная, д.9" />
-                                </div>
-                                @error('actual_address')
-                                    <div class="error_text">{{ $message }}</div>
-                                    <div class="error_notify">!</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="form-group-flex">
-                        <label for="delivery_type">Способ доставки <span class="required_field">*</span></label>
-                        <select name="delivery_type">
-                            <option value="0">Самовывоз</option>
-                            <option value="1">Доставка</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group-flex">
-                        <label for="store_id">Точка получения заказа <span class="required_field">*</span></label>
-                        <select name="store_id">
-                            @foreach($stores as $store)
-                                <option value="{{ $store->id }}">{{ $store->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group-flex">
-                        <label>Способ оплаты <span class="required_field">*</span></label>
-                        <div class="d-flex float-r" style="width: 352px;">
-                            <label class="custom_radio" style="margin-right: 42px;">
-                                При получении
-                                <input type="radio" class="not_default" name="pay_type" checked value="0" />
-                                <span></span>
-                            </label>
-                            <label class="custom_radio">
-                                На сайте
-                                <input type="radio" class="not_default" name="pay_type" value="1" />
-                                <span></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="register mb-20">
-                        <div class="d-flex float-r" style="width: 352px;">
-                            <label class="custom_checkbox">
-                                <input type="checkbox" class="mr-20" name="rules" checked />
-                                <span></span>
-                                <a href="#">Обработка персональных данных</a>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="register mb-20">
-                        <div class="d-flex float-r" style="width: 352px;">
-                            <label class="custom_checkbox">
-                                <input type="checkbox" class="mr-20" name="register" checked />
-                                <span></span>
-                                Регистрация в #bbcrm
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mb-16">
-                        <div class="float-r" style="width: 352px;">
-                            <div onclick="cart.makeOrder(this);" class="order_button relative right-0">
-                                Оформить заказ
-                            </div>
-                        </div>
-                    </div>
-
+                    </form>
                 </div>
-
-            </form>
+            @else
+                @include('shop.layout.register_fields')
+            @endif
 
         </div>
 

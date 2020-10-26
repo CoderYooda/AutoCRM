@@ -34,7 +34,7 @@ class Product {
             .then(response => {
 
                 console.log(response);
-                window.createModal(response.data.html);
+                window.createModal('Информация о продукте', response.data.html);
 
             }).catch(error => {
                 console.log(error);

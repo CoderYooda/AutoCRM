@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Http\Requests\Shop\LoginRequest;
 use App\Http\Requests\Shop\RegisterRequest;
 use App\Models\Company;
 use App\Models\Partner;
@@ -10,6 +11,10 @@ use App\Models\User;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+
+const BUYER_CATEGORY = 7;
 
 class UserController extends Controller
 {
@@ -19,6 +24,12 @@ class UserController extends Controller
     public function __construct(ShopManager $shopManager)
     {
         $this->shop = $shopManager->getCurrentShop();
+    }
+
+    public function index()
+    {
+        return view('shop.user')
+            ->with('shop', $this->shop);
     }
 
     public function loginForm()
@@ -31,9 +42,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function loginAction(Request $request)
+    public function loginAction(LoginRequest $request)
     {
-        dd($request->all());
+        if(!Auth::attempt($request->validated(), $request->has('remember'))) {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Неправильный логин или пароль.'
+            ], 422);
+        }
+
+        $user = User::where(['phone' => $request['phone']])->first();
+
+        Auth::login($user, true);
+
+        Session::flush();
+
+        return response([
+            'redirect' => redirect()->back()
+        ], 200);
     }
 
     public function registerForm()
@@ -42,10 +68,8 @@ class UserController extends Controller
             ->with('shop', $this->shop);
     }
 
-    public function registerAction(RegisterRequest $request, ShopManager $shopManager)
+    public function registerAction(RegisterRequest $request)
     {
-        dd($request->all());
-
         $company = $this->shop->company;
 
         $uniqueFields = [
@@ -54,20 +78,32 @@ class UserController extends Controller
             'store_id' => $request->store_id
         ];
 
-        $types = ['fl', 'ip', 'up'];
+        $types = ['fl', 'ip', 'ul'];
 
-        $updateFields = $request->except('rules', 'register_type', 'name', 'surname', 'middlename');
+        $updateFields = $request->except('rules', 'password', 'register_type', 'name', 'surname', 'middlename');
         $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
         $updateFields['category_id'] = BUYER_CATEGORY;
         $updateFields['type'] = array_search($request->register_type, $types);
 
-        $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
-
-        $user = User::create([
-            'phone' => $request->basePhone,
+        $user = User::updateOrCreate(['phone' => $request->basePhone], [
             'password' => bcrypt($request->password),
             'company_id' => null
         ]);
+
+        $updateFields['user_id'] = $user->id;
+
+        $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
+
+        Auth::loginUsingId($user->id, true);
+
+        Session::flush();
+
+        return redirect()->route('pages.index');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
 
         return redirect()->route('pages.index');
     }

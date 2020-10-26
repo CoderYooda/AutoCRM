@@ -8,13 +8,17 @@ use App\Http\Requests\Shop\CartSaveRequest;
 use App\Http\Requests\Shop\CartStoreRequest;
 use App\Interfaces\Shop\CartInterface;
 use App\Http\Controllers\Controller;
+use App\Mail\Shop\SuccessOrder;
 use App\Models\Article;
 use App\Models\Order;
 use App\Models\Partner;
 use App\Models\Shop;
 use App\Models\Store;
+use App\Models\User;
 use App\Services\ShopManager\ShopManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 const BUYER_CATEGORY = 7;
 
@@ -90,55 +94,81 @@ class CartController extends Controller
 
     public function order(CartOrderRequest $request, CartInterface $cart, ShopManager $shopManager)
     {
-        $shop = $shopManager->getCurrentShop();
+        return DB::transaction(function () use($cart, $shopManager, $request) {
 
-        $company = $shop->company;
+            /** @var Partner $partner */
+            $partner = null;
 
-        $uniqueFields = [
-            'basePhone' => $request->phone,
-            'company_id' => $company->id,
-            'store_id' => $request->store_id
-        ];
+            $shop = $shopManager->getCurrentShop();
 
-        $types = ['fl', 'ip', 'up'];
+            $company = $shop->company;
 
-        $updateFields = $request->except('rules', 'register', 'pay_type', 'delivery_type', 'store_id', 'register_type', 'name', 'surname', 'middlename');
-        $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
-        $updateFields['category_id'] = BUYER_CATEGORY;
-        $updateFields['type'] = array_search($request->register_type, $types);
+            if(Auth::check()) {
+                $partner = Auth::user()->companyPartner;
+            }
+            else {
 
-        $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
+                $uniqueFields = [
+                    'basePhone' => $request->phone,
+                    'company_id' => $company->id,
+                    'store_id' => $request->store_id
+                ];
 
-        $totalPrice = 0;
+                $types = ['fl', 'ip', 'up'];
 
-        $cartOrders = $this->formatOrdersArray($cart->all());
+                $updateFields = $request->except('rules', 'password', 'register', 'pay_type', 'delivery_type', 'store_id', 'register_type', 'name', 'surname', 'middlename');
+                $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
+                $updateFields['category_id'] = BUYER_CATEGORY;
+                $updateFields['type'] = array_search($request->register_type, $types);
 
-        foreach ($cartOrders as $cartOrder) {
-            $totalPrice += $cartOrder['price'] * $cartOrder['count'];
-        }
+                if($request->register) {
+                    $user = User::updateOrCreate(['phone' => $request->basePhone], [
+                        'password' => bcrypt($request->password),
+                        'company_id' => null
+                    ]);
 
-        $order = Order::create([
-            'company_id' => $company->id,
-            'partner_id' => $partner->id,
-            'total_price' => $totalPrice,
-            'status' => 0,
-            'comment' => $request->comment,
-            'email' => $request->email,
-            'phone' => $request->basePhone
-        ]);
+                    Auth::login($user, true);
 
-        foreach ($cartOrders as $cartOrder) {
-            DB::table('order_articles')->insert([
-                'order_id' => $order->id,
-                'manufacturer' => $cartOrder['manufacturer'],
-                'article' => $cartOrder['article'],
-                'name' => $cartOrder['name'],
-                'price' => $cartOrder['price'],
-                'count' => $cartOrder['count']
+                    $updateFields['user_id'] = $user->id;
+                }
+
+                $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
+
+            }
+
+            $totalPrice = 0;
+
+            $cartOrders = $this->formatOrdersArray($cart->all());
+
+            foreach ($cartOrders as $cartOrder) {
+                $totalPrice += $cartOrder['price'] * $cartOrder['count'];
+            }
+
+            $order = Order::create([
+                'company_id' => $company->id,
+                'partner_id' => $partner->id,
+                'total_price' => $totalPrice,
+                'status' => 0,
+                'comment' => $request->comment,
+                'email' => $partner->email,
+                'phone' => $partner->basePhone
             ]);
-        }
 
-        return redirect()->route('orders.success', ['order' => $order->id]);
+            foreach ($cartOrders as $cartOrder) {
+                DB::table('order_articles')->insert([
+                    'order_id' => $order->id,
+                    'manufacturer' => $cartOrder['manufacturer'],
+                    'article' => $cartOrder['article'],
+                    'name' => $cartOrder['name'],
+                    'price' => $cartOrder['price'],
+                    'count' => $cartOrder['count']
+                ]);
+            }
+
+            Mail::to($partner->email)->send(new SuccessOrder($order));
+
+            return redirect()->route('orders.success', ['order' => $order->id]);
+        });
     }
 
     private function formatOrdersArray(array $cartOrders)

@@ -95,6 +95,19 @@ class Partner extends Model
         return $this->belongsToMany(Phone::class, 'partner_phone');
     }
 
+    public function nameLetters()
+    {
+        $words = explode(' ', $this->fio);
+
+        $letters = '';
+
+        foreach ($words as $word) {
+            $letters .= mb_substr($word, 0, 1);
+        }
+
+        return $letters;
+    }
+
     public function salarySchemas()
     {
         return $this->belongsToMany(SalarySchema::class, 'salary_schemas_partner')->withPivot(['value', 'h_m_value', 'salary_schema_id', 'comment']);

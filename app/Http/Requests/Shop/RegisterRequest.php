@@ -17,8 +17,6 @@ class RegisterRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        dd($this->all());
-
         $this['rules'] = $this['rules'] == 'on' ? 1 : 0;
         $this['basePhone'] = str_replace(['(', ')', ' ', '-', '+'], '', $this['basePhone']);
     }
@@ -29,13 +27,8 @@ class RegisterRequest extends FormRequest
             'basePhone' => ['required', 'unique:users,phone'],
             'email' => ['required', 'email'],
             'password' => ['required', 'string', 'min:8', 'max:32'],
-            'store_id' => ['required', 'exists:stores,id'],
-            'comment' => ['nullable', 'string'],
             //
-            'delivery_type' => ['required', 'integer', 'between:0,1'],
-            'pay_type' => ['required', 'integer', 'between:0,1'],
             'rules' => ['required', 'integer', 'between:0,1'],
-            'register' => ['required', 'integer', 'between:0,1']
         ];
 
         $registerType = $this->register_type;
@@ -48,16 +41,7 @@ class RegisterRequest extends FormRequest
 
         if($registerType == 'ip' || $registerType == 'ul') {
             $rules['inn'] = ['required', 'string'];
-            $rules['ur_address'] = ['nullable', 'string'];
-        }
-
-        if($registerType == 'ip' || $registerType == 'ul') {
             $rules['ogrn'] = ['nullable', 'string'];
-            $rules['bik'] = ['nullable', 'string'];
-            $rules['bank'] = ['nullable', 'string'];
-            $rules['cs'] = ['nullable', 'string'];
-            $rules['rs'] = ['nullable', 'string'];
-            $rules['actual_address'] = ['nullable', 'string'];
         }
 
         if($registerType == 'ul') {

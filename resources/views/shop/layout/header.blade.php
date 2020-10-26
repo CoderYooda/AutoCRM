@@ -52,28 +52,33 @@
                     <div id="cart_count" class="counter">{{ $cart->total() }}</div>
                 </div>
                 <div class="action" >
-                    <div onclick="auth.form();" class="icon user"></div>
-                    <div class="dropdown">
-                        <div class="name">Имя Фамилия</div>
-                        <ul>
-                            <li>
-                                <a href="javascript:void(0)">Гараж</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">Мои заказы</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">Личные данные</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">Настройки</a>
-                            </li>
-                        </ul>
-                        <div class="quit">
-                            <a href="javascript:void(0)">Выход</a>
+                    <div @if(!auth()->check()) onclick="auth.form();" @endif class="icon user"></div>
+
+                    @if(auth()->check())
+                        <div class="dropdown">
+                            <div class="name">{{ auth()->user()->companyPartner->fio }}</div>
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0)">Гараж</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">Мои заказы</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">Личные данные</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">Настройки</a>
+                                </li>
+                            </ul>
+                            <div class="quit">
+                                <a class="dropdown-item" href="{{ route('user.logout') }}">
+                                    Выход
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="baloon">СИ</div>
+                        <div class="baloon">{{ auth()->user()->companyPartner->nameLetters() }}</div>
+                    @endif
                 </div>
             </div>
         </div>
