@@ -37,16 +37,20 @@ class createEntrance extends Modal{
             }
         });
 
-        this.tabs = window.helper.initTabs('entrance_tabs');
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('entrance_tabs' + prefix);
 
         let header = [
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
-            {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
-            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price',},
+            // {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'passive',},
         ];
-        this.items = new BBlist(this, 'entrance_list', 'products', header);
+
+        this.items = new BBlist(this, 'entrance_list' + prefix, 'products', header);
 
     }
 
@@ -88,9 +92,6 @@ class createEntrance extends Modal{
 
     freshContent(id, callback = null){
         let object = this;
-
-        //var store_id = this.store_obj.value;
-
         let data = {};
         //data.store_id = store_id;
         if(object.refer){
@@ -142,14 +143,12 @@ class createEntrance extends Modal{
             url: 'providerorder/'+ id +'/select',
             data: {refer:this.root_dialog.id}
         }).then((resp)=> {
-            dd(resp.data.items);
             this.items.setItems(resp.data.items);
 
             let info_container = object.root_dialog.querySelector('#entrance_info_block');
             if(info_container){
                 info_container.innerHTML = resp.data.info;
             }
-
             let select = object.root_dialog.querySelector('button[name=providerorder_id]');
             let input = object.root_dialog.querySelector('input[name=providerorder_id]');
             let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
@@ -157,11 +156,6 @@ class createEntrance extends Modal{
             select.innerHTML = str;
             window.notification.notify( 'success', 'Заявка выбрана');
             document.dispatchEvent(new Event('ProviderOrderSelected', {bubbles: true}));
-            // console.log("Событие ProviderOrderSelected вызвано");
-            // object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
-
-            //closeDialog(event);
-
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

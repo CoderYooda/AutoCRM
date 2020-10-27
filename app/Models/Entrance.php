@@ -50,7 +50,7 @@ class Entrance extends Model
 
     public function articlesJson()
     {
-        return$this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')
             ->withPivot('count as count', 'price as price', 'released_count as released_count');
     }
 

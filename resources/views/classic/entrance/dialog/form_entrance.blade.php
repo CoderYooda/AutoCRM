@@ -30,7 +30,7 @@
             <input class="providerorder_select" type="hidden" name="providerorder_id" value=" @if(isset($entrance->providerorder)){{ $entrance->providerorder->id }}@endif">
             <div class="d-flex">
                 <div class="link-tabs no-pr">
-                    <ul class="nav" id="entrance_tabs" storage_tabs>
+                    <ul class="nav" id="entrance_tabs{{ $entrance ? $entrance->id : '' }}" storage_tabs>
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ $entrance ? '#e_tab_base' . $entrance->id : '#e_tab_base' }}" aria-controls="{{ $entrance ? 'e_tab_base' . $entrance->id : 'e_tab_base' }}" data-toggle="tab" data-target="{{ $entrance ? '#e_tab_base' . $entrance->id : '#e_tab_base' }}">
                                 Основные
@@ -49,99 +49,95 @@
                         </li>
                     </ul>
                 </div>
-                <div class="tab-content no-pl">
-                    <div class="tab-pane active" id="{{ $entrance ? 'e_tab_base' . $entrance->id : 'e_tab_base' }}">
-                        <div class="form-group row row-sm">
-                            <label for="category_id" class="col-sm-5 label-sm">Заявка поставщику</label>
-                            <div class="input-group mb-3 col-sm-7 mb-0">
-                                <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select" @if(isset($providerorder) && $providerorder != null) disabled @endif>
-                                    @if(isset($entrance) && $entrance->providerorder)
-                                        {{ $entrance->providerorder->outputName() }}
-                                    @else
-                                        <option>Не выбрано</option>
-                                    @endif
-                                </button>
-                            </div>
-                        </div>
-                    @if($entrance && $entrance->providerorder)
-                        <div class="form-group row row-sm">
-                            <label for="category_id" class="col-sm-5 label-sm">Номер накладной</label>
-                            <div class="input-group mb-3 col-sm-7 mb-0">
-                                <input class="form-control" type="text" value="{{ strlen($entrance->invoice) ? $entrance->invoice : 'Не указан' }}" disabled>
-                            </div>
-                        </div>
-                    @else
-                        <div class="form-group row row-sm">
-                            <label for="category_id" class="col-sm-5 label-sm">Номер накладной</label>
-                            <div class="input-group mb-3 col-sm-7 mb-0">
-                                <input class="form-control" name="invoice" type="text" value="">
-                            </div>
-                        </div>
-                    @endif
-                    @if($entrance && $entrance->providerorder)
+                <div class="dialog_tab_holder">
+                    <div class="tab-content no-pl">
+                        <div class="tab-pane active" id="{{ $entrance ? 'e_tab_base' . $entrance->id : 'e_tab_base' }}">
                             <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-5 label-sm">Ответственный</label>
+                                <label for="category_id" class="col-sm-5 label-sm">Заявка поставщику</label>
                                 <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" type="text" value="{{ $entrance->providerorder->manager->outputName() }}" disabled>
+                                    <button onclick="{{ $class }}.openSelectProviderOrderModal()" type="button" name="providerorder_id" class="providerorder_select form-control text-left button_select" @if(isset($providerorder) && $providerorder != null) disabled @endif>
+                                        @if(isset($entrance) && $entrance->providerorder)
+                                            {{ $entrance->providerorder->outputName() }}
+                                        @else
+                                            <option>Не выбрано</option>
+                                        @endif
+                                    </button>
                                 </div>
                             </div>
                             <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-5 label-sm">Телефон ответственного</label>
+                                <label for="category_id" class="col-sm-5 label-sm">Номер накладной</label>
                                 <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" type="text" value="{{ $entrance->providerorder->manager->firstActivePhoneNumber() }}" disabled>
+                                    <input class="form-control" name="invoice" type="text" value="{{ ($entrance && $entrance->providerorder && $entrance->invoice) ? $entrance->invoice : 'Не указан' }}" @if(isset($entrance)) disabled @endif>
                                 </div>
                             </div>
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-5 label-sm">Поставщик</label>
-                                <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" type="text" value="{{ $entrance->providerorder->partner->outputName() }}" disabled>
+                            @if($entrance && $entrance->providerorder)
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-5 label-sm">Ответственный</label>
+                                    <div class="input-group mb-3 col-sm-7 mb-0">
+                                        <input class="form-control" type="text" value="{{ $entrance->providerorder->manager->outputName() }}" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-5 label-sm">Телефон поставщика</label>
-                                <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" type="text" value="{{ $entrance->providerorder->partner->firstActivePhoneNumber() }}" disabled>
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-5 label-sm">Телефон ответственного</label>
+                                    <div class="input-group mb-3 col-sm-7 mb-0">
+                                        <input class="form-control" type="text" value="{{ $entrance->providerorder->manager->firstActivePhoneNumber() }}" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-5 label-sm">Дата поступления</label>
-                                <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" type="text" value="{{ $entrance->providerorder->created_at }}" disabled>
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-5 label-sm">Поставщик</label>
+                                    <div class="input-group mb-3 col-sm-7 mb-0">
+                                        <input class="form-control" type="text" value="{{ $entrance->providerorder->partner->outputName() }}" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-5 label-sm">Общая сумма заявки</label>
-                                <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" type="text" value="{{ $entrance->providerorder->itogo }} р." disabled>
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-5 label-sm">Телефон поставщика</label>
+                                    <div class="input-group mb-3 col-sm-7 mb-0">
+                                        <input class="form-control" type="text" value="{{ $entrance->providerorder->partner->firstActivePhoneNumber() }}" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                        @endif
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-5 label-sm">Дата поступления</label>
+                                    <div class="input-group mb-3 col-sm-7 mb-0">
+                                        <input class="form-control" type="text" value="{{ $entrance->providerorder->created_at }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-5 label-sm">Общая сумма заявки</label>
+                                    <div class="input-group mb-3 col-sm-7 mb-0">
+                                        <input class="form-control" type="text" value="{{ $entrance->providerorder->itogo }} р." disabled>
+                                    </div>
+                                </div>
+                            @endif
 
-                        <div class="form-group row row-sm">
-                            <label for="entrance_dialog_focused" class="col-sm-5 label-sm">Комментарий:</label>
-                            <div class="input-group mb-3 col-sm-7 mb-0">
-                                <textarea style="resize: none; height: 80px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5" disabled>{{ ($entrance && $entrance->comment) ? $entrance->comment : 'Нет комментария' }}</textarea>
+                            <div class="form-group row row-sm">
+                                <label for="entrance_dialog_focused" class="col-sm-5 label-sm">Комментарий:</label>
+                                <div class="input-group mb-3 col-sm-7 mb-0">
+                                <textarea style="resize: none; height: 80px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5" @if(isset($entrance)) disabled @endif>{{(($entrance && $entrance->comment) ? $entrance->comment : $entrance) ? 'Нет комментария' : '' }}
+                                </textarea>
+                                </div>
                             </div>
-                        </div>
 
-                    </div>
-                    <div class="tab-pane" id="{{ $entrance ? 'e_tab_items' . $entrance->id : 'e_tab_items' }}">
-                        <div data-prefs="@if($entrance){{
+                        </div>
+                        <div class="tab-pane" id="{{ $entrance ? 'e_tab_items' . $entrance->id : 'e_tab_items' }}">
+                            <div data-prefs="@if($entrance){{
                                 json_encode([
-                                'use_nds' => false,
-                                'can_add_items' => false,
-                                'nds' => 0,
-                                'freeze' => true,
-                                'nds_included' => false]
+                                    'use_nds' => false,
+                                    'can_add_items' => false,
+                                    'nds' => 0,
+                                    'freeze' => true,
+                                    'nds_included' => false
+                                    ]
                                  )}}@else{{
                                 json_encode([
-                                'use_nds' => false,
-                                'can_add_items' => false,
-                                'nds' => 0,
-                                'nds_included' => false]
+                                    'use_nds' => false,
+                                    'can_add_items' => false,
+                                    'nds' => 0,
+                                    'nds_included' => false
+                                    ]
                                  )}}@endif" data-items="@if($entrance){{
                                  json_encode($entrance->articlesJson->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="entrance_list">
+                                 }}@else{{ json_encode([]) }}@endif" id="entrance_list{{ $entrance ? $entrance->id : '' }}">
+                            </div>
                         </div>
                     </div>
                 </div>

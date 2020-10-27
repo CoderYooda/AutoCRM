@@ -48,6 +48,23 @@ class ProviderOrder extends Model
         return$this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
             ->withPivot('count as count', 'price as price', 'nds as nds', 'nds_percent as nds_percent', 'nds_included as nds_included', 'total as total');
     }
+    #Получить еще не оприходованные товары
+    public function getNotEnteredArticles()
+    {
+        $articles = $this->articlesJson()->get();
+
+        foreach($articles as $key => $article){
+
+            $count = $article->count - $this->getArticleEntredCount($article->id);
+
+            if($count){
+                $article->count = $count;
+            } else {
+                unset($articles[$key]);
+            }
+        }
+        return $articles;
+    }
 
     public function getArticleCount($article_id)
     {
@@ -75,8 +92,10 @@ class ProviderOrder extends Model
                 $entered_count += $article->pivot->count;
             }
         }
+
         return $entered_count;
     }
+
 
     public function updateIncomeStatus()
     {
@@ -99,16 +118,6 @@ class ProviderOrder extends Model
     public function entrances()
     {
         return $this->hasMany(Entrance::class, 'providerorder_id');
-    }
-
-    public function checkEntered(){
-
-        if($this->articlesCount() === $this->getEnteredArticleCount()){
-            $this->entered = true;
-        } else {
-            $this->entered = false;
-        }
-        $this->save();
     }
 
     public function getArticleEntredCount($article_id)

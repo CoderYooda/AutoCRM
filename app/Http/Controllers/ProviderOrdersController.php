@@ -50,7 +50,7 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::with('articles')->where('entered', false)->limit(20)->orderBy('created_at', 'DESC')->get();
+        $providerorders = ProviderOrder::owned()->with('articles')->whereIn('incomes', [0,1])->limit(20)->orderBy('created_at', 'DESC')->get();
 
 //        foreach ($providerorders as $key => $providerorder) {
 //
@@ -113,10 +113,11 @@ class ProviderOrdersController extends Controller
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
+        $articles = $providerorder->getNotEnteredArticles();
 
         return response()->json([
             'id' => $providerorder->id,
-            'items' => $providerorder->articlesJson()->get(),
+            'items' => $articles,
 //            'items_html' => view(get_template() . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
             'info' => view(get_template() . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
             'name' => $providerorder->outputName()

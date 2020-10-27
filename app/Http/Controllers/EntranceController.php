@@ -43,8 +43,6 @@ class EntranceController extends Controller
             'products' => $entrance->articles()->get()]);
     }
 
-
-
     public function store(EntranceRequest $request)
     {
         PermissionController::canByPregMatch( 'Создавать поступления');
@@ -103,8 +101,8 @@ class EntranceController extends Controller
 
         $entrance->providerorder->updateIncomeStatus();
 
-        #Всё ли поступило?
-        $providerorder->checkEntered();
+//        #Всё ли поступило?
+//        $providerorder->checkEntered();
 
         #Ответ сервера
         return response()->json([
@@ -116,10 +114,10 @@ class EntranceController extends Controller
 
     public function fresh(Entrance $entrance, Request $request)
     {
-        $request['fresh'] = true;
+        $inner = true;
         $class = 'entranceDialog' . $entrance->id;
 
-        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'class', 'request'))
+        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'class', 'inner'))
             ->with('providerorder', $entrance->providerorder)
             ->render();
 
@@ -177,13 +175,13 @@ class EntranceController extends Controller
                     $available_count[$product->id] -= $product->pivot->count;
                 }
             }
-
-            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
+//
+//            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
         }
 
         return response()->json([
             'id' => $entrance->id,
-            'items_html' => $view,
+//            'items_html' => $view,
             'items' => $products,
             'partner' => $entrance->partner->outputName(),
             'partner_id' => $entrance->partner->id,
