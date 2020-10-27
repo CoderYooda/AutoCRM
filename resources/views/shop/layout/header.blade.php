@@ -52,7 +52,11 @@
                     <div id="cart_count" class="counter">{{ $cart->total() }}</div>
                 </div>
                 <div class="action" >
-                    <div @if(!auth()->check()) onclick="auth.form();" @endif class="icon user"></div>
+
+                    <a href="{{ route('user.index') }}" @if(!auth()->check()) onclick="auth.form();" @endif>
+                        <div class="icon user">
+                        </div>
+                    </a>
 
                     @if(auth()->check())
                         <div class="dropdown">

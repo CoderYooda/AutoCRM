@@ -6,6 +6,10 @@
             <span class="item">Регистрация</span>
         @endif
 
+        @if(request()->routeIs('user*'))
+            <span class="item">Личный кабинет</span>
+        @endif
+
         @if(request()->routeIs('pages.catalogue'))
             <span class="item">Каталог</span>
         @endif

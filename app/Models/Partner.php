@@ -108,6 +108,21 @@ class Partner extends Model
         return $letters;
     }
 
+    public function getSurnameAttribute()
+    {
+        return explode(' ', $this->fio)[0];
+    }
+
+    public function getNameAttribute()
+    {
+        return explode(' ', $this->fio)[1] ?? '0';
+    }
+
+    public function getMiddlenameAttribute()
+    {
+        return explode(' ', $this->fio)[2] ?? '';
+    }
+
     public function salarySchemas()
     {
         return $this->belongsToMany(SalarySchema::class, 'salary_schemas_partner')->withPivot(['value', 'h_m_value', 'salary_schema_id', 'comment']);

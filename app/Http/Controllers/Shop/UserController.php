@@ -8,6 +8,9 @@ use App\Models\Company;
 use App\Models\Partner;
 use App\Models\Shop;
 use App\Models\User;
+use App\Models\VehicleMark;
+use App\Models\VehicleModel;
+use App\Models\VehicleModify;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +31,11 @@ class UserController extends Controller
 
     public function index()
     {
-        return view('shop.user')
+        $marks = VehicleMark::limit(10)->get();
+        $models = VehicleModel::limit(10)->get();
+        $modifications = VehicleModify::limit(10)->get();
+
+        return view('shop.user', compact('marks', 'models', 'modifications'))
             ->with('shop', $this->shop);
     }
 

@@ -14,6 +14,8 @@ class Auth {
 
     form() {
 
+        event.preventDefault();
+
         axios({
             method: 'GET',
             url: '/user/login'

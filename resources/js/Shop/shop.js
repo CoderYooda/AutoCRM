@@ -6,6 +6,7 @@ import Cart from "./Classes/Cart/Cart";
 import Favorite from "./Classes/Favorite/Favorite";
 import Product from "./Classes/Product/Product";
 import Auth from "./Classes/Auth";
+import User from "./Classes/User/User";
 
 window.$ = window.jQuery = require('jquery');
 
@@ -18,6 +19,7 @@ window.cart = new Cart();
 window.favorite = new Favorite();
 window.product = new Product();
 window.auth = new Auth();
+window.user = new User();
 window.tippy = Tippy;
 window.axios = require('axios');
 window.notification = require('notification-js/src/notification.js');

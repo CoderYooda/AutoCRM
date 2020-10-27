@@ -1,1 +1,1 @@
-Оформлен заказ №{{ $order->id }} с сайта {{ route('orders.success', $order->id) }}
+Оформлен заказ №{{ $order->id }} с сайта {{ url('/') }}
