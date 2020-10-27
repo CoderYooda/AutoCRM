@@ -50,23 +50,26 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->with('articles')->orderBy('created_at', 'DESC')->limit(10)->get();
+        $providerorders = ProviderOrder::with('articles')->where('entered', false)->limit(20)->orderBy('created_at', 'DESC')->get();
 
-        foreach ($providerorders as $key => $providerorder) {
+//        foreach ($providerorders as $key => $providerorder) {
+//
+//            $product_count = 0;
+//
+//            foreach ($providerorder->articles as $product) {
+//                $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id);
+//
+//                $product_count += $count;
+//            }
+//
+//            if($product_count <= 0) unset($providerorders[$key]);
+//        }
 
-            $product_count = 0;
 
-            foreach ($providerorder->articles as $product) {
-                $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id);
-
-                $product_count += $count;
-            }
-
-            if($product_count <= 0) unset($providerorders[$key]);
-        }
 
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
+//            'items' => $providerorders,
             'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
         ]);
     }
@@ -113,7 +116,8 @@ class ProviderOrdersController extends Controller
 
         return response()->json([
             'id' => $providerorder->id,
-            'items_html' => view(get_template() . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
+            'items' => $providerorder->articlesJson()->get(),
+//            'items_html' => view(get_template() . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
             'info' => view(get_template() . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
             'name' => $providerorder->outputName()
         ]);
@@ -302,7 +306,7 @@ class ProviderOrdersController extends Controller
 //            }
 
             foreach($provider_order->entrances()->get() as $entrance){
-                $entrance->freshPriceByArticleId($product['id'], $vprice);
+                $entrance->freshPriceByArticleId($id, $vprice);
             }
 
             $store = Store::where('id', $request['store_id'])->first();

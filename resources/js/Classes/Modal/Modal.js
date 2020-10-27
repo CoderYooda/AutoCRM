@@ -26,23 +26,25 @@ class Modal{
 
             if(localStorage.getItem(this.constructor.name + '_tab')){
 
-                let panes = this.current_dialog.querySelectorAll('.tab-pane');
-
-                panes.forEach((pane)=>{
-                    pane.classList.remove('active');
-                });
-
-                let tabs = storage_tabs.querySelectorAll('li');
-                tabs.forEach((tab)=>{
-                    tab.classList.remove('active');
-                    tab.querySelector('a').setAttribute('aria-expanded', 'false');
-                });
-
                 let tab_a = this.current_dialog.querySelector('[data-target="' + localStorage.getItem(this.constructor.name + '_tab') + '"]');
-                tab_a.setAttribute('aria-expanded', 'true');
-                tab_a.parentElement.classList.add('active');
-                this.current_dialog.querySelector(localStorage.getItem(this.constructor.name + '_tab')).classList.add('active');
+                if(tab_a){
+                    let panes = this.current_dialog.querySelectorAll('.tab-pane');
 
+                    panes.forEach((pane)=>{
+                        pane.classList.remove('active');
+                    });
+
+                    let tabs = storage_tabs.querySelectorAll('li');
+                    tabs.forEach((tab)=>{
+                        tab.classList.remove('active');
+                        tab.querySelector('a').setAttribute('aria-expanded', 'false');
+                    });
+
+
+                    tab_a.setAttribute('aria-expanded', 'true');
+                    tab_a.parentElement.classList.add('active');
+                    this.current_dialog.querySelector(localStorage.getItem(this.constructor.name + '_tab')).classList.add('active');
+                }
             }
 
 

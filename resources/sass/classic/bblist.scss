@@ -1,12 +1,12 @@
 .list-container{
     overflow: hidden;
     .list-bottom{
-        margin-top: 10px;
         .button{
             height: 26px !important;
             line-height: 22px !important;
             padding: 2px 6px;
             margin: 0;
+            margin-top: 10px;
             border-radius: 0;
             background: #fff;
             border: 1px solid #e7e8ec;
@@ -87,6 +87,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 font-weight: 500;
+                display: block;
             }
         }
         .header-elem:not(:last-child) {

@@ -55,6 +55,12 @@ class ProviderOrder extends Model
         return $article != null ? $article->pivot->count : 0;
     }
 
+    public function articlesCount()
+    {
+        $count = $this->articles()->sum('count');
+        return $count;
+    }
+
     public function getPlanArticleCount()
     {
         $count = $this->articles()->sum('count');
@@ -93,6 +99,16 @@ class ProviderOrder extends Model
     public function entrances()
     {
         return $this->hasMany(Entrance::class, 'providerorder_id');
+    }
+
+    public function checkEntered(){
+
+        if($this->articlesCount() === $this->getEnteredArticleCount()){
+            $this->entered = true;
+        } else {
+            $this->entered = false;
+        }
+        $this->save();
     }
 
     public function getArticleEntredCount($article_id)

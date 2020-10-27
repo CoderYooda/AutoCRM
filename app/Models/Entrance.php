@@ -48,6 +48,12 @@ class Entrance extends Model
             ->withPivot('count', 'price', 'released_count');
     }
 
+    public function articlesJson()
+    {
+        return$this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')
+            ->withPivot('count as count', 'price as price', 'released_count as released_count');
+    }
+
     public static function decrementReleasedCount(int $entrance_id, int $article_id, int $count)
     {
         return DB::table('article_entrance')->where([

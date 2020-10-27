@@ -30,6 +30,18 @@ class Items {
             this.use_nds = null;
         }
 
+        if(this.prefs && this.prefs.freeze !== null){
+            this.freeze = this.prefs.freeze;
+        } else {
+            this.freeze = null;
+        }
+
+        if(this.prefs && this.prefs.can_add_items !== null){
+            this.can_add_items = this.prefs.can_add_items;
+        } else {
+            this.can_add_items = false;
+        }
+
         if(this.prefs && this.prefs.nds_included !== null){
             this.nds_included = this.prefs.nds_included;
         } else {
@@ -50,7 +62,15 @@ class Items {
 
         this.draw();
     }
+
+    setItems(items){
+        this.items = items;
+        this.draw();
+    }
+
     draw(){
+
+        this.container.innerHTML = '';
         let container = document.createElement('div');
         container.classList.add('list-container');
         this.container.appendChild(container);
@@ -161,15 +181,16 @@ class Items {
         bottom.classList.add('list-bottom');
         container.appendChild(bottom);
 
-        let add_button = document.createElement('button');
-
-        add_button.setAttribute('type', 'button');
-        add_button.name = 'products';
-        add_button.classList.add('button');
-        add_button.classList.add('list-add-button');
-        add_button.innerText = 'Добавить позицию';
-        add_button.setAttribute('onclick', this.parent_object.current_dialog.id + '.openProductmodal()');
-        bottom.appendChild(add_button);
+        if(this.can_add_items){
+            let add_button = document.createElement('button');
+            add_button.setAttribute('type', 'button');
+            add_button.name = 'products';
+            add_button.classList.add('button');
+            add_button.classList.add('list-add-button');
+            add_button.innerText = 'Добавить позицию';
+            add_button.setAttribute('onclick', this.parent_object.current_dialog.id + '.openProductmodal()');
+            bottom.appendChild(add_button);
+        }
 
         let placeholder = document.createElement('div');
         placeholder.classList.add('list-placeholder');
@@ -262,18 +283,20 @@ class Items {
             body_elem.id = this.form_name + '_' + cell_item.id;
             this.body.prepend(body_elem);
 
-            let actions = document.createElement('div');
-            actions.classList.add('list-actions');
-            body_elem.appendChild(actions);
+            if(!this.freeze){
 
-            let remove = document.createElement('button');
-            remove.classList.add('button');
-            remove.classList.add('list-remove');
-            remove.innerText = '✖';
-            remove.addEventListener('click', ()=>{
-                this.removeItem(cell_item.id);
-            });
-            actions.appendChild(remove);
+                let actions = document.createElement('div');
+                actions.classList.add('list-actions');
+                body_elem.appendChild(actions);
+                let remove = document.createElement('button');
+                remove.classList.add('button');
+                remove.classList.add('list-remove');
+                remove.innerText = '✖';
+                remove.addEventListener('click', ()=>{
+                    this.removeItem(cell_item.id);
+                });
+                actions.appendChild(remove);
+            }
 
             this.header.forEach((item) => {
                 let cell = document.createElement('div');
@@ -371,11 +394,11 @@ class Items {
         let nds_percent = item.querySelector("input[name='" + this.form_name + "[" + id + "][nds_percent]']");
         let nds = item.querySelector("input[name='" + this.form_name + "[" + id + "][nds]']");
 
-        let vcount = Number(count.value);
-        let vprice = Number(price.value);
-        let vnds_percent = Number(nds_percent.value);
-        let vnds = Number(nds.value);
-        let vtotal = Number(total.value);
+        let vcount = count ? Number(count.value) : 0;
+        let vprice = price ? Number(price.value) : 0;
+        let vnds_percent = nds_percent ? Number(nds_percent.value) : 0;
+        let vnds = nds ? Number(nds.value) : 0;
+        let vtotal = total ? Number(total.value) : 0;
 
 
         if(this.use_nds && this.nds_input.checked && !this.nds_included_input.checked){
@@ -392,10 +415,12 @@ class Items {
             vnds = 0.00;
             vnds_percent = 0;
         }
-
-        nds_percent.value = vnds_percent.toFixed(2);
-        nds.value = vnds.toFixed(2);
-        total.value = vtotal.toFixed(2);
+        if(nds_percent)
+            nds_percent.value = vnds_percent ? vnds_percent.toFixed(2) : 0;
+        if(nds)
+            nds.value = vnds ? vnds.toFixed(2) : 0;
+        if(total)
+            total.value = vtotal ? vtotal.toFixed(2) : 0;
 
         object.items.map(function(e){
             if(e.id === id){
