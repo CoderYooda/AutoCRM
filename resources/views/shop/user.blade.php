@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="body">
+    <div class="body user_page">
 
         @include('shop.includes.breadcrumbs')
 
@@ -26,13 +26,13 @@
                     <div class="info_body">
 
                         <div class="title">Сумма по заказам:</div>
-                        <div class="desc">21 025 478 ₽</div>
+                        <div class="desc">{{ correct_price($ordersTotal) }} ₽</div>
 
                         <div class="title">Заказов в ожидании:</div>
-                        <div class="desc">140</div>
+                        <div class="desc">{{ $ordersWait }}</div>
 
                         <div class="title">К доплате по заказам:</div>
-                        <div class="desc">524 256 ₽</div>
+                        <div class="desc">{{ correct_price($ordersDebt) }} ₽</div>
 
                     </div>
 

@@ -8,52 +8,19 @@
             <div class="fields float-r w-50">
                 <div class="display">
                     <span>{{ display_phone(auth()->user()->companyPartner->basePhone) }}</span>
-                    <div class="edit_button" onclick="user.editField(this);"></div>
-                </div>
-                <div class="edit d-none">
-                    <input type="text" class="phone" name="basePhone" value="{{ auth()->user()->companyPartner->basePhone }}" />
-                    <div class="accept_button" onclick="user.saveField(this);"></div>
                 </div>
             </div>
         </div>
 
         <div class="form-group-flex">
-            <label>Фамилия</label>
+            <label>ФИО</label>
             <div class="fields float-r w-50">
                 <div class="display">
-                    <span>{{ auth()->user()->companyPartner->surname }}</span>
+                    <span>{{ auth()->user()->companyPartner->fio }}</span>
                     <div class="edit_button" onclick="user.editField(this);"></div>
                 </div>
                 <div class="edit d-none">
-                    <input type="text" name="surname" value="{{ auth()->user()->companyPartner->surname }}" />
-                    <div class="accept_button" onclick="user.saveField(this);"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group-flex">
-            <label>Имя</label>
-            <div class="fields float-r w-50">
-                <div class="display">
-                    <span>{{ auth()->user()->companyPartner->name }}</span>
-                    <div class="edit_button" onclick="user.editField(this);"></div>
-                </div>
-                <div class="edit d-none">
-                    <input type="text" name="name" value="{{ auth()->user()->companyPartner->name }}" />
-                    <div class="accept_button" onclick="user.saveField(this);"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group-flex">
-            <label>Отчество</label>
-            <div class="fields float-r w-50">
-                <div class="display">
-                    <span>{{ auth()->user()->companyPartner->middlename }}</span>
-                    <div class="edit_button" onclick="user.editField(this);"></div>
-                </div>
-                <div class="edit d-none">
-                    <input type="text" name="middlename" value="{{ auth()->user()->companyPartner->middlename }}" />
+                    <input type="text" name="fio" value="{{ auth()->user()->companyPartner->fio }}" />
                     <div class="accept_button" onclick="user.saveField(this);"></div>
                 </div>
             </div>
@@ -103,10 +70,35 @@
 
     </div>
 
-{{--    @if(auth()->user()->companyPartner->type != 0)--}}
+    @if(auth()->user()->companyPartner->type != 0)
         <div class="requisites">
 
             <div class="tab_name mb-32">Реквизиты</div>
+
+            @if(auth()->user()->companyPartner->type == 2)
+
+                <div class="form-group-flex">
+                    <label>Наименование компании</label>
+                    <div class="fields float-r w-50">
+                        <div class="display">
+                            <span>
+                                @if(strlen(auth()->user()->companyPartner->opf) || strlen(auth()->user()->companyPartner->companyName))
+                                    {{ auth()->user()->companyPartner->opf . ' ' . auth()->user()->companyPartner->companyName }}
+                                @else
+                                    Не указано
+                                @endif
+                            </span>
+                            <div class="edit_button" onclick="user.editField(this);"></div>
+                        </div>
+                        <div class="edit d-none">
+                            <input type="text" class="mr-10" name="opf" maxlength="3" value="{{ auth()->user()->companyPartner->opf }}" placeholder="ОАО" style="max-width: 30px;" />
+                            <input type="text" name="companyName" placeholder="Рога и Копыта" value="{{ auth()->user()->companyPartner->companyName }}" />
+                            <div class="accept_button" onclick="user.saveField(this);"></div>
+                        </div>
+                    </div>
+                </div>
+
+            @endif
 
             <div class="form-group-flex">
                 <label>ИНН</label>
@@ -221,28 +213,48 @@
             </div>
 
         </div>
-{{--    @endif--}}
+    @endif
 
     <div class="delivery">
 
         <div class="tab_name mb-32">Адреса доставки</div>
 
-        @foreach([1, 2, 3] as $i)
+        <div class="addresses">
 
-            <div class="form-group-flex">
+            <div class="form-group-flex d-none copy">
                 <div class="fields">
-                    <div class="display">
-                        <span>г. Белгород, ул. проспект Славы, 150А, д. 54, стр. 5, под. 4, кв. 8</span>
-                        <div class="edit_button" onclick="user.editField(this);"></div>
-                    </div>
-                    <div class="edit d-none">
-                        <input type="text" name="address_{{ $loop->index }}" value="г. Белгород, ул. проспект Славы, 150А, д. 54, стр. 5, под. 4, кв. 8" />
-                        <div class="accept_button" onclick="user.saveField(this);"></div>
+                    <div class="edit">
+                        <input type="text" name="addresses[]" value="" />
+                        <div class="remove_button" onclick="user.removeField(this);"></div>
                     </div>
                 </div>
             </div>
 
-        @endforeach
+            @foreach($deliveryAddresses as $address)
+
+                <div class="form-group-flex">
+                    <div class="fields">
+                        <div class="edit">
+                            <input type="text" name="addresses[]" value="{{ $address->text }}" />
+                            <div class="remove_button" onclick="user.removeField(this);"></div>
+                        </div>
+                    </div>
+                </div>
+
+            @endforeach
+
+        </div>
+
+        <div class="actions">
+
+            <div class="add_address @if(count($deliveryAddresses) >= 3) d-none @endif" onclick="user.addAddress(this);">
+                <div class="button"></div>
+                <span class="text">Добавить адрес доставки</span>
+            </div>
+
+            <div class="save_addresses" onclick="user.saveAddresses(this);">Сохранить</div>
+
+        </div>
 
     </div>
 

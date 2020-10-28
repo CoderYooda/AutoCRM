@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DeliveryAddress;
 use App\Http\Controllers\HelpController;
 use App\Models\System\Image;
 use App\Traits\OwnedTrait;
@@ -331,5 +332,15 @@ class Partner extends Model
         }
 
         return $hours;
+    }
+
+    public function deliveryAddresses()
+    {
+        return $this->hasMany(DeliveryAddress::class, 'partner_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'partner_id', 'id');
     }
 }

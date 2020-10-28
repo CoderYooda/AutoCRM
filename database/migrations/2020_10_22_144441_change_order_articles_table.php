@@ -8,24 +8,39 @@ class ChangeOrderArticlesTable extends Migration
 {
     public function up()
     {
+        if(Schema::hasColumn('order_articles', 'article_id')) {
+
+            Schema::table('order_articles', function (Blueprint $table) {
+                $table->dropForeign('article_id');
+                $table->dropColumn('article_id');
+            });
+        }
+
         Schema::table('order_articles', function (Blueprint $table) {
             $table->string('manufacturer');
             $table->string('article');
             $table->string('name');
-
-            $table->dropForeign('article_id');
-            $table->dropColumn('article_id');
         });
+
+        Schema::rename('order_articles', 'order_positions');
     }
 
     public function down()
     {
+        if(!Schema::hasColumn('order_articles', 'article_id')) {
+
+            Schema::table('order_articles', function (Blueprint $table) {
+                $table->unsignedBigInteger('article_id');
+            });
+        }
+
         Schema::table('order_articles', function (Blueprint $table) {
             $table->dropColumn('manufacturer');
             $table->dropColumn('article');
             $table->dropColumn('name');
-
-            $table->unsignedBigInteger('article_id');
         });
+
+        Schema::rename('order_positions', 'order_articles');
+
     }
 }

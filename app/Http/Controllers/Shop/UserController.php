@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\DeliveryAddress;
 use App\Http\Requests\Shop\LoginRequest;
 use App\Http\Requests\Shop\RegisterRequest;
+use App\Http\Requests\Shop\SaveDeliveryRequest;
+use App\Http\Requests\Shop\SaveUserRequest;
 use App\Models\Company;
 use App\Models\Partner;
 use App\Models\Shop;
@@ -15,6 +18,7 @@ use App\Services\ShopManager\ShopManager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 const BUYER_CATEGORY = 7;
@@ -31,11 +35,23 @@ class UserController extends Controller
 
     public function index()
     {
-        $marks = VehicleMark::limit(10)->get();
-        $models = VehicleModel::limit(10)->get();
-        $modifications = VehicleModify::limit(10)->get();
+        $partner = Auth::user()->companyPartner;
 
-        return view('shop.user', compact('marks', 'models', 'modifications'))
+        $marks = VehicleMark::all();
+        $models = VehicleModel::where('mark_id', $marks->first()->id)->get();
+        $modifications = VehicleModify::where('model_id', $models->first()->id)->get();
+
+        $deliveryAddresses = $partner->deliveryAddresses;
+
+        $orders = $partner->orders()->with('positions')->paginate(15);
+
+        $ordersTotal = $partner->orders()->sum('total_price');
+        $ordersWait = $partner->orders()->where('status', '<', 2)->count();
+        $ordersDebt = $partner->orders()->where('status', '<', 2)->sum('total_price');
+
+        $vehicles = $partner->vehicles;
+
+        return view('shop.user', compact('marks', 'models', 'modifications', 'deliveryAddresses', 'orders', 'ordersDebt', 'ordersWait', 'ordersTotal', 'vehicles'))
             ->with('shop', $this->shop);
     }
 
@@ -113,5 +129,40 @@ class UserController extends Controller
         Auth::logout();
 
         return redirect()->route('pages.index');
+    }
+
+    public function save(SaveUserRequest $request)
+    {
+        if($request['field'] == 'password') $request['value'] = bcrypt($request['value']);
+
+        $partner = Auth::user()->companyPartner;
+
+        $partner->update([$request['field'] => $request['value']]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Информация обновлена.'
+        ]);
+    }
+
+    public function saveDelivery(SaveDeliveryRequest $request)
+    {
+        $partner = Auth::user()->companyPartner;
+
+        $data = [];
+
+        foreach ($request->addresses as $address) {
+            $data[] = [
+                'text' => $address
+            ];
+        }
+
+        $partner->deliveryAddresses()->delete();
+        $partner->deliveryAddresses()->createMany($data);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Информация обновлена.'
+        ]);
     }
 }

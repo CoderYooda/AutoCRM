@@ -167,6 +167,8 @@ class CartController extends Controller
 
             Mail::to($partner->email)->send(new SuccessOrder($order));
 
+            $cart->clear();
+
             return redirect()->route('orders.success', ['order' => $order->id]);
         });
     }

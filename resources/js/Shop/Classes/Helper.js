@@ -21,9 +21,14 @@ class Helper {
     }
 
     togglePreloader(element, status) {
+
+        if(element.tagName.toLowerCase() == 'input') {
+            element = element.closest('div');
+        }
+
         let classList = element.classList;
-        if(!classList.contains('preloader-block')) classList.add('preloader-block');
-        status ? classList.add('active') : classList.remove('active');
+
+        status ? classList.add('preloader') : classList.remove('preloader');
     };
 
     removeElementsByClass(className){

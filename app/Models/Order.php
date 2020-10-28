@@ -18,14 +18,20 @@ class Order extends Model
     ];
 
     public static $statues = [
-        0 => 'Ожидает подтверждения',
-        1 => 'Подтверждён',
-        2 => 'Отменён'
+        'Ожидает подтверждения',
+        'Ожидает оплаты',
+        'Подтверждён',
+        'Отменён'
     ];
 
     public function partner()
     {
         return $this->hasOne(Partner::class, 'id', 'partner_id');
+    }
+
+    public function positions()
+    {
+        return $this->hasMany(OrderPosition::class, 'order_id', 'id');
     }
 
     public function getStatusName()

@@ -8,6 +8,11 @@ Route::namespace('Shop')->group(function () {
         Route::get('/user/logout', 'UserController@logout')->name('user.logout');
 
         Route::get('/user', 'UserController@index')->name('user.index');
+        Route::post('/user/save', 'UserController@save')->name('user.save');
+        Route::post('/user/delivery/save', 'UserController@saveDelivery')->name('user.saveDelivery');
+
+        Route::get('/models/{mark}/list', 'VehicleController@modelList');
+        Route::get('/modifies/{mark}/{model}/list', 'VehicleController@modifyList');
     });
 
     Route::middleware('guest')->group(function () {
