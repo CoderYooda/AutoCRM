@@ -20,6 +20,12 @@ class Helper {
         element.querySelector('.redirect_link').click();
     }
 
+    createElementFromHTML(htmlString) {
+        let div = document.createElement('div');
+        div.innerHTML = htmlString.trim();
+        return div.firstChild;
+    }
+
     togglePreloader(element, status) {
 
         if(element.tagName.toLowerCase() == 'input') {

@@ -71,7 +71,7 @@
                     <div class="button">Распечатать</div>
 
                     @if($order->status == 1)
-                        <div class="button">Оплатить</div>
+                        <a href="{{ $order->tinkoff_url }}" class="button">Оплатить</a>
                     @endif
 
                 </div>

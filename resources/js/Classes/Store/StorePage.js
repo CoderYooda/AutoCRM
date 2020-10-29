@@ -10,6 +10,7 @@ import shipmentsMethods from "./tabs/ShipmentsMethods";
 import refundMethods from "./tabs/RefundMethods";
 import clientOrdersMethods from "./tabs/ClientOrdersMethods";
 import adjustmentMethods from "./tabs/AdjustmentMethods";
+import shopOrdersMethods from "./tabs/ShopOrdersMethods";
 import {Table} from "../BBTable";
 import Page from "../Page/Page";
 
@@ -23,7 +24,8 @@ const classes = {
     refundMethods,
     clientOrdersMethods,
     adjustmentMethods,
-    documentsMethods
+    documentsMethods,
+    shopOrdersMethods
 };
 
 

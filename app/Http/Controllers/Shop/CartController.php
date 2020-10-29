@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\CartDeleteRequest;
 use App\Http\Requests\Shop\CartOrderRequest;
 use App\Http\Requests\Shop\CartSaveRequest;
@@ -54,9 +55,9 @@ class CartController extends Controller
         $cart->addProduct($request->hash, $request->order, $request->count);
 
         return response()->json([
-            'type' => 'success',
+            'type'    => 'success',
             'message' => 'Продукт был добавлен в корзину.',
-            'total' => $cart->total()
+            'total'   => $cart->total()
         ]);
     }
 
@@ -65,9 +66,9 @@ class CartController extends Controller
         $cart->removeProduct($request->hash);
 
         return response()->json([
-            'type' => 'success',
+            'type'    => 'success',
             'message' => 'Продукт был удалён из корзины.',
-            'total' => $cart->total()
+            'total'   => $cart->total()
         ]);
     }
 
@@ -76,7 +77,7 @@ class CartController extends Controller
         $cart->clear();
 
         return response()->json([
-            'type' => 'success',
+            'type'    => 'success',
             'message' => 'Корзина успешно очищена.',
         ]);
     }
@@ -86,15 +87,15 @@ class CartController extends Controller
         $cart->setProductCount($request->hash, $request->count);
 
         return response()->json([
-            'type' => 'success',
+            'type'    => 'success',
             'message' => 'Количество было успешно изменено.',
-            'total' => $cart->total()
+            'total'   => $cart->total()
         ]);
     }
 
     public function order(CartOrderRequest $request, CartInterface $cart, ShopManager $shopManager)
     {
-        return DB::transaction(function () use($cart, $shopManager, $request) {
+        return DB::transaction(function () use ($cart, $shopManager, $request) {
 
             /** @var Partner $partner */
             $partner = null;
@@ -103,15 +104,14 @@ class CartController extends Controller
 
             $company = $shop->company;
 
-            if(Auth::check()) {
+            if (Auth::check()) {
                 $partner = Auth::user()->companyPartner;
-            }
-            else {
+            } else {
 
                 $uniqueFields = [
-                    'basePhone' => $request->phone,
+                    'basePhone'  => $request->phone,
                     'company_id' => $company->id,
-                    'store_id' => $request->store_id
+                    'store_id'   => $request->store_id
                 ];
 
                 $types = ['fl', 'ip', 'up'];
@@ -121,9 +121,9 @@ class CartController extends Controller
                 $updateFields['category_id'] = BUYER_CATEGORY;
                 $updateFields['type'] = array_search($request->register_type, $types);
 
-                if($request->register) {
+                if ($request->register) {
                     $user = User::updateOrCreate(['phone' => $request->basePhone], [
-                        'password' => bcrypt($request->password),
+                        'password'   => bcrypt($request->password),
                         'company_id' => null
                     ]);
 
@@ -145,31 +145,90 @@ class CartController extends Controller
             }
 
             $order = Order::create([
-                'company_id' => $company->id,
-                'partner_id' => $partner->id,
+                'company_id'  => $company->id,
+                'partner_id'  => $partner->id,
                 'total_price' => $totalPrice,
-                'status' => 0,
-                'comment' => $request->comment,
-                'email' => $partner->email,
-                'phone' => $partner->basePhone
+                'status'      => $request->pay_type,
+                'comment'     => $request->comment,
+                'email'       => $partner->email,
+                'phone'       => $partner->basePhone
             ]);
 
             foreach ($cartOrders as $cartOrder) {
-                DB::table('order_articles')->insert([
-                    'order_id' => $order->id,
+                DB::table('order_positions')->insert([
+                    'order_id'     => $order->id,
                     'manufacturer' => $cartOrder['manufacturer'],
-                    'article' => $cartOrder['article'],
-                    'name' => $cartOrder['name'],
-                    'price' => $cartOrder['price'],
-                    'count' => $cartOrder['count']
+                    'article'      => $cartOrder['article'],
+                    'name'         => $cartOrder['name'],
+                    'price'        => $cartOrder['price'],
+                    'count'        => $cartOrder['count']
                 ]);
+            }
+
+            $redirect = null;
+
+            if ($request->pay_type == 1) {
+
+                /** @var ShopManager $shopManager */
+                $shopManager = app(ShopManager::class);
+
+                $shop = $shopManager->getCurrentShop();
+
+                $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
+
+                $companyEmail = $shop->orderEmails->first()->email;
+                $companyPhone = $shop->phone->number;
+
+                $receiptItems = [];
+
+                foreach ($cartOrders as $cartOrder) {
+                    $receiptItems[] = [
+                        'Name'          => 'Оплата товара по заказу #' . $order->id,
+                        'Price'         => $cartOrder['price'] * 100,
+                        'Quantity'      => $cartOrder['count'],
+                        'Amount'        => $cartOrder['price'] * 100,
+                        'PaymentMethod' => 'full_prepayment',
+                        'PaymentObject' => 'commodity',
+                        'Tax'           => 'none'
+                    ];
+                }
+
+                $receipt = [
+                    'EmailCompany' => $companyEmail,
+                    'Phone'        => $companyPhone,
+                    'Taxation'     => 'osn',
+                    'Items'        => $receiptItems,
+                ];
+
+                $params = [
+                    'OrderId'    => $order->id,
+                    'Amount'     => $order->total_price * 100,
+                    'SuccessURL' => route('orders.success', $order->id),
+                    'DATA'       => [
+                        'Email'           => $companyEmail,
+                        'Connection_type' => 'example'
+                    ],
+                    'Receipt'    => $receipt
+                ];
+
+                $api->init($params);
+
+                $order->update([
+                    'tinkoff_id' => $api->paymentId,
+                    'tinkoff_url' => $api->paymentUrl
+                ]);
+
+                $redirect = redirect($api->paymentUrl);
+            }
+            else {
+                $redirect = redirect()->route('orders.success', ['order' => $order->id]);
             }
 
             Mail::to($partner->email)->send(new SuccessOrder($order));
 
             $cart->clear();
 
-            return redirect()->route('orders.success', ['order' => $order->id]);
+            return $redirect;
         });
     }
 
@@ -184,26 +243,26 @@ class CartController extends Controller
 
             $store = null;
 
-            if(isset($order['data']['store_id'])) $store = Store::find($order['data']['store_id']);
+            if (isset($order['data']['store_id'])) $store = Store::find($order['data']['store_id']);
 
             $price = $order['data']['model']['hash_info']['price'] ?? $product->stores->find($store->id)->pivot->retail_price;
             $count = $cart->getProductCount($hash);
 
-            if($store) {
-                if(!isset($storesTotal[$store->id])) $storesTotal[$store->id] = 0;
+            if ($store) {
+                if (!isset($storesTotal[$store->id])) $storesTotal[$store->id] = 0;
                 $storesTotal[$store->id] += $price * $count;
             }
 
             $orders[$hash] = [
                 'manufacturer' => $order['data']['model']['hash_info']['manufacturer'] ?? $product->supplier->name,
-                'article' => $order['data']['model']['hash_info']['article'] ?? $product->article,
-                'name' => $product->name,
-                'price' => $price,
-                'image' => $product->image_path,
-                'count' => $count
+                'article'      => $order['data']['model']['hash_info']['article'] ?? $product->article,
+                'name'         => $product->name,
+                'price'        => $price,
+                'image'        => $product->image_path,
+                'count'        => $count
             ];
 
-            if(isset($order['data']['store_id'])) $orders[$hash]['store_id'] = $order['data']['store_id'];
+            if (isset($order['data']['store_id'])) $orders[$hash]['store_id'] = $order['data']['store_id'];
         }
 
         return $orders;

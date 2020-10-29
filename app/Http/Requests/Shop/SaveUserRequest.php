@@ -12,6 +12,11 @@ class SaveUserRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        if($this['field'] == 'basePhone') $this['value'] = str_replace(['(', ')', ' ', '-', '+'], '', $this['value']);
+    }
+
     public function rules()
     {
         return [

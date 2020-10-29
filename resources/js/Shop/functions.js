@@ -51,6 +51,8 @@ window.createModal = function(header_name, html = null){
     modal_holder.appendChild(modal_block);
 
     body.appendChild(modal_holder);
+
+    return modal_holder;
 }
 
 window.closeModal = function(elem){

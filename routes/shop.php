@@ -10,6 +10,10 @@ Route::namespace('Shop')->group(function () {
         Route::get('/user', 'UserController@index')->name('user.index');
         Route::post('/user/save', 'UserController@save')->name('user.save');
         Route::post('/user/delivery/save', 'UserController@saveDelivery')->name('user.saveDelivery');
+        Route::post('/user/vehicles', 'VehicleController@store')->name('vehicles.store');
+        Route::delete('/user/vehicles', 'VehicleController@destroy')->name('vehicles.destroy');
+        Route::get('/user/vehicles/{vehicle}/edit', 'VehicleController@edit')->name('vehicles.edit');
+        Route::patch('/user/vehicles/{vehicle}', 'VehicleController@update')->name('vehicles.update');
 
         Route::get('/models/{mark}/list', 'VehicleController@modelList');
         Route::get('/modifies/{mark}/{model}/list', 'VehicleController@modifyList');

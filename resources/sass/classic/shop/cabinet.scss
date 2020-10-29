@@ -13,6 +13,8 @@
         .name {
             margin-bottom: 16px;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .phone, .email {
@@ -114,22 +116,22 @@
     }
 
     .vehicle_list {
-        display: flex;
+        //display: flex;
         margin-top: 24px;
 
         .vehicle_element {
 
+            position: relative;
+            cursor: pointer;
+
             border-top: 1px solid #E1E1E1;
             border-bottom: 1px solid #E1E1E1;
             border-left: 1px solid #E1E1E1;
+            margin-right: -1px;
 
             &:last-child {
                 border-right: 1px solid #E1E1E1;
             }
-
-            flex: 0 0 33.3333333%;
-            max-width: 33.3333333%;
-
 
             &:hover {
                 box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
@@ -159,6 +161,20 @@
                     &:last-child {
                         margin-bottom: unset;
                     }
+                }
+            }
+
+            .remove_button {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                background: url(/images/shop/user/remove_button.svg) center no-repeat;
+
+                &:hover {
+                    background: url(/images/shop/user/remove_button_hover.svg) center no-repeat;
                 }
             }
         }
@@ -499,5 +515,37 @@
                 width: 352px !important;
             }
         }
+    }
+}
+
+.vehicle_form {
+
+    .form-group-flex {
+
+        .error_text, .error_notify {
+            display: none;
+        }
+
+        &.is-invalid  {
+            .error_text, .error_notify {
+                display: block;
+            }
+        }
+    }
+
+    .save_button {
+        width: 176px;
+        padding: 13px 24px;
+        font-weight: bold;
+        background: white;
+        font-size: 12px;
+        text-align: center;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #272727;
+        margin-left: auto;
+        border: 2px solid #E23414;
+        border-radius: 4px;
+        cursor: pointer;
     }
 }

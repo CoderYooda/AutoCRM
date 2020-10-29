@@ -2,32 +2,15 @@
     Мой транспорт
 
     <div class="controls">
-        <div class="control-item left"></div>
-        <div class="control-item right"></div>
+        <div class="control-item left" onclick="window.garageSlider.prev();"></div>
+        <div class="control-item right" onclick="window.garageSlider.next();"></div>
     </div>
 
 </div>
 
-<div class="vehicle_list">
+<div class="slider_container">
 
-    @foreach($vehicles as $vehicle)
-
-        <div class="vehicle_element">
-
-            <div class="vehicle_content">
-                <div class="title">Марка</div>
-                <div class="desc">{{ $vehicle->mark->name }}</div>
-
-                <div class="title">Модель</div>
-                <div class="desc">{{ $vehicle->model->name }}</div>
-
-                <div class="title">Модификация</div>
-                <div class="desc">{{ $vehicle->modify->name }}</div>
-            </div>
-
-        </div>
-
-    @endforeach
+    @include('shop.layout.garage_slider')
 
 </div>
 
@@ -35,18 +18,16 @@
     Добавить транспорт
 </div>
 
-<form class="vehicle_form" action="#" method="POST">
+<form class="vehicle_form" action="{{ route('vehicles.store') }}" method="POST" onsubmit="vehicle.save(this);">
 
     <div class="form-group-flex">
         <label>VIN вашего автомобиля <span class="required_field">*</span></label>
         <div class="float-r">
             <div class="field">
-                <input type="text" class="form-control" name="vin" value="{{ old('vin') }}">
+                <input type="text" class="form-control" name="vin_code" value="{{ old('vin_code') }}">
             </div>
-            {{--                                @error('vin')--}}
             <div class="error_text">Текст ошибки</div>
             <div class="error_notify">!</div>
-            {{--                                @enderror--}}
         </div>
     </div>
 
@@ -54,7 +35,7 @@
         <label>Марка вашего автомобиля</label>
         <div class="float-r">
             <div class="field">
-                <select id="mark" name="mark_id" onchange="vehicle.changeMark();">
+                <select id="mark" name="mark_id" onchange="vehicle.changeMark(this);">
                     @foreach($marks as $mark)
                         <option value="{{ $mark->id }}">{{ $mark->name }}</option>
                     @endforeach
@@ -67,7 +48,7 @@
         <label>Модель вашего автомобиля</label>
         <div class="float-r">
             <div class="field">
-                <select id="model" name="model_id" onchange="vehicle.changeModel();">
+                <select id="model" name="model_id" onchange="vehicle.changeModel(this);">
                     @foreach($models as $model)
                         <option value="{{ $model->id }}">{{ $model->name }}</option>
                     @endforeach
@@ -80,7 +61,7 @@
         <label>Модификация вашего автомобиля</label>
         <div class="float-r">
             <div class="field">
-                <select id="modify" name="modification_id" onchange="vehicle.changeModify();">
+                <select id="modify" name="modify_id">
                     @foreach($modifications as $modify)
                         <option value="{{ $modify->id }}">{{ $modify->name }}</option>
                     @endforeach
@@ -93,8 +74,10 @@
         <label>Год автомобиля</label>
         <div class="float-r">
             <div class="field">
-                <input type="text" class="form-control" name="year" value="{{ old('year') }}">
+                <input type="number" class="form-control" name="year" value="{{ old('year') }}">
             </div>
+            <div class="error_text">Текст ошибки</div>
+            <div class="error_notify">!</div>
         </div>
     </div>
 
@@ -104,6 +87,12 @@
             <div class="field">
                 <textarea name="comment" class="form-control" style="height: 150px;">{{ old('comment') }}</textarea>
             </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="float-r" style="width: 352px !important;">
+            <div class="save_button float-l" onclick="vehicle.save(this);">Сохранить</div>
         </div>
     </div>
 

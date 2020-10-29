@@ -63,16 +63,13 @@
                             <div class="name">{{ auth()->user()->companyPartner->fio }}</div>
                             <ul>
                                 <li>
-                                    <a href="javascript:void(0)">Гараж</a>
+                                    <a href="{{ route('user.index') . '#garage' }}">Гараж</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0)">Мои заказы</a>
+                                    <a href="{{ route('user.index') . '#orders' }}">Мои заказы</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0)">Личные данные</a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0)">Настройки</a>
+                                    <a href="{{ route('user.index') . '#settings' }}">Личные данные</a>
                                 </li>
                             </ul>
                             <div class="quit">

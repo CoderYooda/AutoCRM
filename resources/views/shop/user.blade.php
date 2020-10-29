@@ -11,13 +11,13 @@
                 <h2>Личный кабинет</h2>
             </div>
 
-            <div class="d-flex">
+            <div style="position: relative; overflow: hidden;">
 
-                <div class="flex-1">
+                <div style="display: inline-block; width: 25%; float: left;">
 
                     <div class="info_header">
 
-                        <div class="name">{{ auth()->user()->companyPartner->fio }}</div>
+                        <div class="name" title="{{ auth()->user()->companyPartner->fio }}">{{ auth()->user()->companyPartner->fio }}</div>
                         <div class="phone">{{ display_phone(auth()->user()->companyPartner->basePhone) }}</div>
                         <div class="email">{{ auth()->user()->companyPartner->email }}</div>
 
@@ -38,7 +38,7 @@
 
                 </div>
 
-                <div class="flex-3 ml-20">
+                <div style="width: calc(75% - 30px); float: right;">
 
                     <div id="user_tabs" class="user_tabs">
                         <span class="tab active" data-target="garage">Гараж</span>
