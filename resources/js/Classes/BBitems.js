@@ -20,8 +20,6 @@ class Items {
             this.container.removeAttribute('data-prefs');
         }
 
-
-
         this.items = JSON.parse(this.container.dataset.items);
 
         if(this.prefs && this.prefs.use_nds !== null){
@@ -54,13 +52,41 @@ class Items {
             this.nds = null;
         }
 
-
         this.container.removeAttribute('data-items');
 
         this.nds_input = null;
         this.nds_included_input = null;
 
+
+        this.inpercents = this.parent_object.inpercents;
+        this.discount = this.parent_object.discount;
+
+        this.init();
+
         this.draw();
+    }
+
+    init(){
+        let fn = window.helper.debounce(e => {
+            if(this.items){
+                this.recalculateTotal();
+            }
+        }, 300);
+
+        let discount = this.parent_object.root_dialog.querySelector('input[name=discount]');
+        if(discount){
+            this.discount =  discount;
+            discount.addEventListener("keyup", fn);
+            discount.addEventListener("paste", fn);
+            discount.addEventListener("delete", fn);
+            discount.addEventListener("change", fn);
+        }
+
+        let inpercents = this.parent_object.root_dialog.querySelector('input[name=inpercents]');
+        if(inpercents){
+            this.inpercents = inpercents;
+            inpercents.addEventListener("change", fn);
+        }
     }
 
     setItems(items){
@@ -94,18 +120,18 @@ class Items {
             // nds_title.innerText = 'НДС:';
             // nds_container.appendChild(nds_title);
 
+            let name = document.createElement('label');
+            name.classList.add('checkbox-title');
+            name.setAttribute('for', 'nds');
+            name.innerText = 'НДС:';
+            nds_container.appendChild(name);
+
             let checkbox = document.createElement('div');
             checkbox.classList.add('checkbox');
             checkbox.addEventListener('click', ()=> {
                 this.ndsCnabged();
             });
             nds_container.appendChild(checkbox);
-
-            let name = document.createElement('label');
-            name.classList.add('checkbox-title');
-            name.setAttribute('for', 'nds');
-            name.innerText = 'НДС:';
-            checkbox.appendChild(name);
 
             this.nds_input = document.createElement('input');
             this.nds_input.name = 'nds';
@@ -119,6 +145,11 @@ class Items {
             checkbox.appendChild(label);
 
             //
+            name = document.createElement('label');
+            name.setAttribute('for', 'nds_included');
+            name.classList.add('checkbox-title');
+            name.innerText = 'включен в стоимость';
+            nds_container.appendChild(name);
 
             checkbox = document.createElement('div');
             checkbox.classList.add('checkbox');
@@ -127,17 +158,14 @@ class Items {
             });
             nds_container.appendChild(checkbox);
 
-            name = document.createElement('label');
-            name.setAttribute('for', 'nds_included');
-            name.classList.add('checkbox-title');
-            name.innerText = 'включен в стоимость';
-            checkbox.appendChild(name);
-
             this.nds_included_input = document.createElement('input');
             this.nds_included_input.name = 'nds_included';
             this.nds_included_input.id = 'nds_included';
             this.nds_included_input.type = 'checkbox';
             this.nds_included_input.checked = this.nds_included;
+            if(this.freeze){
+                this.nds_included_input.disable();
+            }
             checkbox.appendChild(this.nds_included_input);
 
             label = document.createElement('label');
@@ -266,7 +294,6 @@ class Items {
         this.recalculateTotal();
     }
 
-
     insertProduct(cell_item, check_isset = true){
 
         let isset = this.items.map(function (e) {
@@ -337,6 +364,7 @@ class Items {
                         input.addEventListener('change', () => {
                             this.recalculateItem(cell_item.id);
                         });
+                        if(this.freeze){input.disabled = true;}
                         title.appendChild(input);
                         break;
                     case 'price':
@@ -352,6 +380,7 @@ class Items {
                         price.addEventListener('change',  () => {
                             this.recalculateItem(cell_item.id);
                         });
+                        if(this.freeze){price.disabled = true;}
                         title.appendChild(price);
                         break;
                     case 'passive':
@@ -366,6 +395,7 @@ class Items {
                         passive.setAttribute('type', 'number');
                         passive.disabled = true;
                         passive.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+                        if(this.freeze){passive.disabled = true;}
                         title.appendChild(passive);
                         break;
                     default:
@@ -435,12 +465,42 @@ class Items {
     recalculateTotal(){
         let total_price = 0;
         let total_count = 0;
+        let itogo = 0;
 
         this.items.map(function(e){
             total_price = total_price + Number(e.total);
             total_count = total_count + Number(e.count);
         });
-        this.parent_object.setTotalPrice(total_price);
+
+
+
+        if(this.inpercents){
+            if(this.inpercents && parseInt(this.inpercents.value) === 1){
+                itogo = total_price - (total_price / 100 * Number(this.discount.value).toFixed(2));
+            } else {
+                itogo = total_price - Number(this.discount.value).toFixed(2);
+            }
+
+            if(parseInt(this.inpercents.value) && (parseInt(this.discount.value) >= 100)){
+                this.discount.value = 100;
+            }
+            let discount_val = this.discount.value + (parseInt(this.inpercents.value) ? ' %' : ' р');
+
+            if (typeof this.parent_object.setDiscount === "function") {
+                this.parent_object.setDiscount(discount_val);
+            }
+        } else {
+            itogo = total_price;
+        }
+
+        if (typeof this.parent_object.setTotalPrice === "function") {
+            this.parent_object.setTotalPrice(total_price);
+        }
+        if (typeof this.parent_object.setTotal === "function") {
+            this.parent_object.setTotal(itogo);
+        }
+
+        //this.parent_object.setTotalPrice(total_price);
     }
 
 }

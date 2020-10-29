@@ -12,7 +12,7 @@
 @endcan
 
 <div class="box-lister">
-    <div class="search-panel box mb-15">
+    <div class="d-flex mb-15">
         <div class="search-field-container w-100">
             <input id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="{{ request('search') }}" type="text">
         </div>
@@ -20,11 +20,11 @@
         <div class="actions">
 
             @can('Создавать категории')
-                <button type="button" onclick="{{ $class }}.openCategoryModal()" class="button primary ml-12">Новая категория</button>
+                <button type="button" onclick="{{ $class }}.openCategoryModal()" class="button primary ml-15">Новая категория</button>
             @endcan
 
             @can('Создавать товары')
-                <button type="button" onclick="{{ $class }}.openProductModal()" class="button primary ml-12">Новый товар</button>
+                <button type="button" onclick="{{ $class }}.openProductModal()" class="button primary ml-15">Новый товар</button>
             @endcan
 
         </div>

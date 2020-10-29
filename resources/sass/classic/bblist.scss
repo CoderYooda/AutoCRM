@@ -27,6 +27,10 @@
                 font-weight: 600;
                 line-height: 30px;
             }
+            .checkbox-title{
+                margin: 0;
+                margin-top: 4px;
+            }
             display: flex;
             .checkbox{
                 display: flex;
@@ -61,6 +65,9 @@
         display: flex;
         text-align: center;
         cursor: pointer;
+        width: 26px;
+        position: absolute;
+        top: 0;
     }
     .checkbox input + label::before {
         content: "";
@@ -137,7 +144,7 @@
                 left: 0;
                 top: 0;
                 width: calc(100% - 20px);
-                background: #eeeeee5c;
+                background: #eeeeee2e;
                 height: calc(100% - 20px);
                 margin: 10px;
                 border-radius: 18px;

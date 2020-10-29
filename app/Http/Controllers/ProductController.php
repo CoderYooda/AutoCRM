@@ -242,6 +242,7 @@ class ProductController extends Controller
             ->get();
 
         foreach ($products as $product){
+            $product->available = $product->getEntrancesCount();
             $product->price = $product->getPrice();
         }
 

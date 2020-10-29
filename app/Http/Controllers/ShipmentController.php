@@ -57,9 +57,17 @@ class ShipmentController extends Controller
             $shipment->summ = $shipment->itogo = $itogo;
         }
 
+        $articles = [];
+        if($shipment){
+            $articles = $shipment->articles()->get();
+            foreach($articles as $article){
+                $article->available = $article->getEntrancesCount();
+            }
+        }
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment','request'))
+            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment','request', 'articles'))
                 ->render()
         ]);
     }
@@ -77,6 +85,7 @@ class ShipmentController extends Controller
     private static function selectShipmentInner($request)
     {
         $class = 'selectShipmentDialog';
+
         $shipments = Shipment::with('articles')->where('company_id', Auth::user()->company->id)
             ->when(isset($request['string']), function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
@@ -158,7 +167,13 @@ class ShipmentController extends Controller
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
         $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
-        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request'))
+
+        $articles = $shipment->articles()->get();
+        foreach($articles as $article){
+            $article->available = $article->getEntrancesCount();
+        }
+
+        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request', 'articles'))
             ->render();
 
         return response()->json([

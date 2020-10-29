@@ -576,12 +576,6 @@ class Table {
         return this.bodyContainer;
     }
 
-    // drawHover(){
-    //     this.hover = document.createElement('div');
-    //     this.hover.className = 'hover';
-    //     return this.hover;
-    // }
-
     drawContext(){
         this.context = document.createElement('div');
         this.context.className = 'context';

@@ -669,6 +669,8 @@ class storePage extends Page{
         }
 
 
+
+
         let container = 'ajax-table-' + this.active_tab;
         this.readData(container);
 
@@ -678,6 +680,7 @@ class storePage extends Page{
             url: '/' + this.active_tab + '/tabledata',
             start_sort: 'DESC'
         });
+
         let header, context_menu, dbl_click, slug;
 
         if(this.active_tab === 'store'){
@@ -715,7 +718,7 @@ class storePage extends Page{
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('providerOrderDialog', '&provider_order_id=' + id)};
+            dbl_click = id => openDialog('providerOrderDialog', '&provider_order_id=' + id);
             slug = 'store';
         } else if(this.active_tab === 'entrance'){
             header = [
@@ -741,7 +744,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Поступление', table_name: 'entrance_id'},
                 {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner_name'},
                 {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'wsumm', transform: 'transform_price'},
+                {min_with: 150, width: 200, name: 'Возвращено', table_name: 'wsumm', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 

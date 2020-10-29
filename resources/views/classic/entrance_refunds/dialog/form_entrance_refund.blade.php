@@ -172,36 +172,13 @@
                     </div>
                 </div>
             </div>
-
-            {{--<div class="form-group">--}}
-                {{--<div for="category_id" class="mb-15"><b>Список доступных для возврата номенклатур</b>--}}
-                {{--</div>--}}
-                {{--<div data-simplebar style="max-height: 300px;">--}}
-                    {{--<table class="table-modal" >--}}
-                        {{--<thead class="text-muted">--}}
-                        {{--<tr>--}}
-                            {{--<th width="30%">Наименование</th>--}}
-                            {{--<th width="10%">Артикул</th>--}}
-                            {{--<th width="10%">Кол-во</th>--}}
-                            {{--<th width="20%">Реализовано / Поступило</th>--}}
-                            {{--<th width="10%">Цена</th>--}}
-                            {{--<th width="10%">Всего</th>--}}
-                            {{--<th width="5%"></th>--}}
-                        {{--</tr>--}}
-                        {{--</thead>--}}
-                        {{--<tbody class="product_list">--}}
-                        {{--@if(count($products))--}}
-                            {{--@include(get_template() . '.entrance_refunds.dialog.products_element')--}}
-                        {{--@endif--}}
-                        {{--</tbody>--}}
-                    {{--</table>--}}
-                {{--</div>--}}
-            {{--</div>--}}
         </div>
         <div class="modal-footer" style="white-space: nowrap">
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
+            @if(!isset($entrance_refund))
             <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
             <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
+            @endif
         </div>
         <div class="system_message">
 

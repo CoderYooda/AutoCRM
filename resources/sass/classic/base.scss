@@ -1,3 +1,7 @@
+#save_vehicle_form .select-selected {
+    display: none;
+}
+
 
 /*Base*/
 *, :after, :before {
@@ -128,7 +132,10 @@ h2{
 .text-muted{
     opacity: 0.7;
 }
-
+.actions button{
+    display: inline-block;
+    float: left;
+}
 .input_gr_sm {
     display: flex;
     label {
@@ -1231,6 +1238,11 @@ input:-moz-placeholder { /* Firefox 18- */
     background: #fff;
     //border-radius: 4px;
     box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+}
+.anon-label{
+    margin-bottom: 0;
+    margin-top: 4px;
+    cursor: pointer;
 }
 .box .box-header{
     /*border-bottom: 1px solid #e7e8ec;*/

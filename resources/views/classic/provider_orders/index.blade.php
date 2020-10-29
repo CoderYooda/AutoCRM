@@ -3,7 +3,7 @@
 @section('tab')
     <div id="ajax-table-provider_orders" class="bottom-container" style="height: calc(100% - 79px)!important;">
         <div class="box-lister" style="width: 1px!important;">
-            <div class="w-100 box box-search mb-15">
+            <div class="w-100 mb-15">
                 <input id="search" name="search" placeholder="Поиск по контактам" class="input w-100" value="{{ request('search') }}" type="text">
                 <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
                     <button class="btn_clean" onclick="window.store.cleanSearch()"></button>

@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class refundDialog extends Modal{
 
@@ -35,6 +36,24 @@ class refundDialog extends Modal{
                 object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
+
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('refund_tabs' + prefix);
+
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 80, width: 80, name: 'Всего ед.', table_name: 'count', type: 'passive',},
+            {min_with: 125, width: 125, name: 'Возвращено ед.', table_name: 'refunded_count', type: 'passive',},
+            // {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'passive',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'total', type: 'passive',},
+        ];
+
+        this.items = new BBlist(this, 'refund_list' + prefix, 'products', header);
     }
 
     freshContent(id, callback = null){
@@ -171,7 +190,8 @@ class refundDialog extends Modal{
 
     setTotalPrice(count){
         let container = this.root_dialog.querySelector('#total_price');
-        container.innerHTML = Number(count).toFixed(2);
+        if(container)
+            container.innerHTML = Number(count).toFixed(2);
     }
 
     setItogo(count){

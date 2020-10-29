@@ -65,7 +65,7 @@ class Refund extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
-            ->withPivot('count', 'price', 'total');
+            ->withPivot('count as count', 'price as price', 'total as total');
     }
 
 }

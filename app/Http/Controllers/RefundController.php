@@ -34,7 +34,9 @@ class RefundController extends Controller
             $shipment = $refund->shipment;
         }
 
-        $view = view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'refunded_count'))
+        $products = $entrance->articles ?? [];
+
+        $view = view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'refunded_count', 'products'))
             ->with('class', $tag);
 
         return response()->json([
