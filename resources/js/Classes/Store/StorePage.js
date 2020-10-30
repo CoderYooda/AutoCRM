@@ -850,6 +850,21 @@ class storePage extends Page{
             dbl_click = function(id){window.helper.openDocument(id)};
             slug = 'store';
         }
+        else if(this.active_tab === 'shop_orders'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 130, width: 250, name: 'Заказчик', table_name: 'partner_name'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+
+            context_menu = [
+                { name:'Открыть', action: data => openDialog('orderDialog', '&order_id=' + data.contexted.id) },
+            ];
+
+            dbl_click = id => openDialog('orderDialog', '&order_id=' + id);
+
+            slug = 'store';
+        }
 
         this.table.setHeader(header);
         this.table.setContextMenu(context_menu);

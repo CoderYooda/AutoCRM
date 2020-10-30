@@ -1,9 +1,10 @@
 import Modal from "../Modal/Modal";
 import Tabs from "../../Tools/Tabs";
+import BBlist from "../BBitems";
 
-class orderDialog extends Modal{
+class orderDialog extends Modal {
 
-    constructor(dialog){
+    constructor(dialog) {
         super(dialog);
         console.log('Диалог заказа инициализирован');
 
@@ -13,7 +14,17 @@ class orderDialog extends Modal{
     }
 
     init() {
-        new Tabs('order_tabs');
+        new Tabs('order_tabs', false);
+
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name', type: 'text'},
+            {min_with: 100, width: 100, name: 'Артикул', table_name: 'article', type: 'text'},
+            {min_with: 100, width: 100, name: 'Производитель', table_name: 'manufacturer', type: 'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 80, width: 80, name: 'Всего', table_name: 'total_price', type: 'passive'},
+        ];
+        this.items = new BBlist(this, 'order_list', 'products', header);
 
         this.loadItemsIfExists();
         this.addInputsMask();
@@ -45,7 +56,7 @@ class orderDialog extends Modal{
                         },
                     ],
                     dispatch: function (appended, dynamicMasked) {
-                        let number = (dynamicMasked.value + appended).replace(/\D/g,'');
+                        let number = (dynamicMasked.value + appended).replace(/\D/g, '');
 
                         return dynamicMasked.compiledMasks.find(function (m) {
                             return number.indexOf(m.startsWith) === 0;
@@ -56,8 +67,7 @@ class orderDialog extends Modal{
         });
     }
 
-    addInputsMask()
-    {
+    addInputsMask() {
         let inputs = this.current_dialog.querySelectorAll('.element-list input');
 
         inputs.forEach(element => {
@@ -73,8 +83,7 @@ class orderDialog extends Modal{
         });
     }
 
-    recalculate()
-    {
+    recalculate() {
         let full_totals = 0;
 
         this.items.forEach((item, index) => {
@@ -113,21 +122,21 @@ class orderDialog extends Modal{
         IMask(element, options);
     }
 
-    loadItemsIfExists(){
+    loadItemsIfExists() {
 
         let products = this.root_dialog.querySelectorAll('.element-item');
 
         products.forEach(product => {
             this.items.push({
                 id: parseInt(product.dataset.id),
-                count:product.dataset.count,
-                price:product.dataset.price,
-                total:product.dataset.count * product.dataset.price
+                count: product.dataset.count,
+                price: product.dataset.price,
+                total: product.dataset.count * product.dataset.price
             });
         });
     }
 
-    openProductmodal(){
+    openProductmodal() {
         window.openDialog('selectProduct', '&refer=' + this.root_dialog.id);
     }
 
@@ -135,14 +144,13 @@ class orderDialog extends Modal{
         window.entity.addProductToList(elem_or_id, this, 'order', this.root_dialog.id);
     }
 
-    addItem(data){
+    addItem(data) {
         let product_list = this.root_dialog.querySelector('.element-list');
         this.items.push(data);
 
         try {
             window.selectProductDialog.markAsAdded();
-        }
-        catch (e) {
+        } catch (e) {
             //console.log(e);
         }
 
@@ -151,7 +159,7 @@ class orderDialog extends Modal{
         this.addInputsMask();
         this.recalculate();
 
-        window.notification.notify( 'success', 'Товар добавлен к списку');
+        window.notification.notify('success', 'Товар добавлен к списку');
     }
 
     removeProduct(element) {
@@ -162,7 +170,7 @@ class orderDialog extends Modal{
 
         this.items.forEach((item, index) => {
 
-            if(item.id == product_id) {
+            if (item.id == product_id) {
                 this.items.splice(index, 1);
             }
         });
@@ -171,21 +179,21 @@ class orderDialog extends Modal{
     }
 
     acceptOrder(element) {
-        this.save(element, 1);
+        this.save(element, 'accept');
     }
 
     cancelOrder(element) {
-        this.save(element, 2);
+        this.save(element, 'cancel');
     }
 
     save(element, status) {
 
         let dataset = {
             status: status
-        };
+        }
 
         axform.send(element, response => {
-            if(response.status == 200) {
+            if (response.status == 200) {
                 this.fresh();
             }
         }, null, dataset);
@@ -210,4 +218,5 @@ class orderDialog extends Modal{
             });
     }
 }
+
 export default orderDialog;

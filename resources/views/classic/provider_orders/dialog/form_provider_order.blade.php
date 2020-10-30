@@ -109,12 +109,8 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="tab_items">
-                            <div data-items="@if($provider_order){{ json_encode($provider_order->articlesJson->toArray()) }}@else{{ json_encode([]) }}@endif" id="po_list">
+                            <div data-items="{{ json_encode($provider_order ? $provider_order->articlesJson->toArray() : []) }}" id="po_list">
                             </div>
-<<<<<<< HEAD
-
-=======
->>>>>>> ad0e7edd0aa12c611ec45f979599a890932c1701
                         </div>
 
                     </div>

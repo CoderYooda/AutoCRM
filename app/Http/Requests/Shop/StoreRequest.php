@@ -10,6 +10,8 @@ class StoreRequest extends FormRequest
 {
     public function authorize()
     {
+        dd($this->all());
+
         return true;
     }
 
@@ -19,9 +21,12 @@ class StoreRequest extends FormRequest
             'order_id' => ['required', 'exists:orders,id'],
             'comment' => ['nullable', 'string', 'max:512'],
             'products' => ['required'],
-            'status' => ['required', 'between:0,2'],
-            'products.*.count' => ['integer', 'min:1', 'max:9999'],
-            'products.*.price' => ['numeric', 'between:1,1000000.00'],
+            'status' => ['required', 'string'],
+            'products.*.name' => ['required', 'string'],
+            'products.*.article' => ['required', 'string'],
+            'products.*.manufacturer' => ['required', 'string'],
+            'products.*.count' => ['required', 'integer', 'min:1', 'max:9999'],
+            'products.*.price' => ['required', 'numeric', 'between:1,1000000'],
         ];
     }
 

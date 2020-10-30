@@ -1,6 +1,8 @@
 class Tabs {
 
-    constructor(element_name) {
+    constructor(element_name, disable_inputs = true) {
+
+        this.disable_inputs = disable_inputs;
 
         this.ul_element = document.getElementById(element_name);
 
@@ -43,9 +45,10 @@ class Tabs {
 
             this.tab_elements.forEach(tab_element => {
 
-                let inputs = tab_element.querySelectorAll('input');
-
-                if(inputs) inputs.forEach(input => input.disabled = true);
+                if(this.disable_inputs) {
+                    let inputs = tab_element.querySelectorAll('input');
+                    if (inputs) inputs.forEach(input => input.disabled = true);
+                }
 
                 //Удаляем активность у всех табов
                 tab_element.classList.remove('active');
@@ -54,7 +57,7 @@ class Tabs {
                 if(tab_element.id === element.dataset.target) {
                     tab_element.classList.add('active');
 
-                    if(inputs) inputs.forEach(input => input.disabled = false);
+                    if(this.disable_inputs && inputs) inputs.forEach(input => input.disabled = false);
                 }
             });
         });

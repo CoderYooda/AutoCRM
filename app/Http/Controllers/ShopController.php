@@ -13,7 +13,6 @@ use App\Models\ClientOrder;
 use App\Models\Order;
 use App\Models\Shop;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -131,37 +130,10 @@ class ShopController extends Controller
 
     public function tableData(Request $request)
     {
-        $size = $request['size'] ?? 30;
+        $data = OrderController::getOrders($request);
+        $data = json_encode($data);
 
-        $field = $request['sorters'][0]['field'] ?? 'created_at';
-        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
-
-        if($request['dates_range'] !== null){
-            $dates = explode('|', $request['dates_range']);
-            $dates[0] .= ' 00:00:00';
-            $dates[1] .= ' 23:59:59';
-            $request['dates'] = $dates;
-        }
-
-        $orders = Order::with('partner')
-            ->where('company_id', Auth::user()->company_id)
-//            ->when($request['client'] != null, function($query) use ($request) {
-//                $query->whereIn('shipments.partner_id', $request['client']);
-//            })
-            ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('created_at', [ Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1]) ]);
-            })
-            ->orderBy($field, $dir)
-            ->paginate($size);
-
-        foreach ($orders as &$order) {
-            $order['partner_name'] = $order->partner->official_name;
-            $order['status'] = $order->getStatusName();
-        }
-
-        return response()->json([
-            'data' => $orders
-        ]);
+        return $data;
     }
 
     public function updateAbout(UpdateAboutRequest $request)
@@ -277,19 +249,23 @@ class ShopController extends Controller
             /** @var ClientOrder $clientOrder */
             $clientOrder = null;
 
-            $products = (array)$request->products;
+            $positions = (array)$request->products;
 
-            if($request->status == 1) {
+            $status = Order::CANCELED_STATUS;
 
-                $order->products()->sync($products);
+            if($request->status == 'accept') {
+
+                dd($request->products);
+
+                $order->positions()->sync($positions);
 
                 $totalPrice = 0;
 
-                foreach ($products as &$product) {
-                    $product['total'] = $product['price'] * $product['count'];
-                    $product['store_id'] = $user->current_store;
+                foreach ($positions as &$position) {
+                    $position['total'] = $position['price'] * $position['count'];
+                    $position['store_id'] = $user->current_store;
 
-                    $totalPrice += $product['total'];
+                    $totalPrice += $position['total'];
                 }
 
                 $clientOrder = ClientOrder::create([
@@ -303,18 +279,24 @@ class ShopController extends Controller
                     'itogo' => $totalPrice
                 ]);
 
-                $clientOrder->articles()->sync($products);
+                $clientOrder->articles()->sync($positions);
+
+                $status = $order->pay_type == Order::PAYMENT_TYPE_ONLINE ? Order::WAIT_PAYMENT_STATUS : Order::WORKING_STATUS;
+
+                if($status == Order::PAYMENT_TYPE_ONLINE) {
+                    $order->initPayment();
+                }
             }
 
             $order->update([
                 'comment' => $request->comment,
-                'status' => $request->status,
+                'status' => $status,
                 'clientorder_id' => $clientOrder->id ?? null
             ]);
 
             return response()->json([
                 'type' => 'success',
-                'message' => 'Заказ успешно ' . ($request->status == 1 ? 'подтверждён' : 'отменён') . '.',
+                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.',
                 'event' => 'OrderStored'
             ], 200);
         });

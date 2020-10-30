@@ -195,7 +195,11 @@ class StoreController extends Controller
 
     public function shop_ordersTab(Request $request)
     {
-        return view(get_template() . '.shop_orders.index', compact('request'));
+        $data = OrderController::getOrders($request);
+
+        $data = json_encode($data->toArray());
+
+        return view(get_template() . '.shop_orders.index', compact('request', 'data'));
     }
 
     public function provider_storesTab(Request $request)
@@ -211,7 +215,6 @@ class StoreController extends Controller
     public static function storeTab($request)
     {
         $page = 'Склад';
-
 
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];

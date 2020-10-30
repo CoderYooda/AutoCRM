@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 const BUYER_CATEGORY = 7;
+const MODERATION_STATUS = 0;
 
 class CartController extends Controller
 {
@@ -148,10 +149,11 @@ class CartController extends Controller
                 'company_id'  => $company->id,
                 'partner_id'  => $partner->id,
                 'total_price' => $totalPrice,
-                'status'      => $request->pay_type,
+                'status'      => MODERATION_STATUS,
                 'comment'     => $request->comment,
                 'email'       => $partner->email,
-                'phone'       => $partner->basePhone
+                'phone'       => $partner->basePhone,
+                'pay_type'    => $request->pay_type
             ]);
 
             foreach ($cartOrders as $cartOrder) {
@@ -165,70 +167,11 @@ class CartController extends Controller
                 ]);
             }
 
-            $redirect = null;
-
-            if ($request->pay_type == 1) {
-
-                /** @var ShopManager $shopManager */
-                $shopManager = app(ShopManager::class);
-
-                $shop = $shopManager->getCurrentShop();
-
-                $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
-
-                $companyEmail = $shop->orderEmails->first()->email;
-                $companyPhone = $shop->phone->number;
-
-                $receiptItems = [];
-
-                foreach ($cartOrders as $cartOrder) {
-                    $receiptItems[] = [
-                        'Name'          => 'Оплата товара по заказу #' . $order->id,
-                        'Price'         => $cartOrder['price'] * 100,
-                        'Quantity'      => $cartOrder['count'],
-                        'Amount'        => $cartOrder['price'] * 100,
-                        'PaymentMethod' => 'full_prepayment',
-                        'PaymentObject' => 'commodity',
-                        'Tax'           => 'none'
-                    ];
-                }
-
-                $receipt = [
-                    'EmailCompany' => $companyEmail,
-                    'Phone'        => $companyPhone,
-                    'Taxation'     => 'osn',
-                    'Items'        => $receiptItems,
-                ];
-
-                $params = [
-                    'OrderId'    => $order->id,
-                    'Amount'     => $order->total_price * 100,
-                    'SuccessURL' => route('orders.success', $order->id),
-                    'DATA'       => [
-                        'Email'           => $companyEmail,
-                        'Connection_type' => 'example'
-                    ],
-                    'Receipt'    => $receipt
-                ];
-
-                $api->init($params);
-
-                $order->update([
-                    'tinkoff_id' => $api->paymentId,
-                    'tinkoff_url' => $api->paymentUrl
-                ]);
-
-                $redirect = redirect($api->paymentUrl);
-            }
-            else {
-                $redirect = redirect()->route('orders.success', ['order' => $order->id]);
-            }
-
             Mail::to($partner->email)->send(new SuccessOrder($order));
 
             $cart->clear();
 
-            return $redirect;
+            return redirect()->route('orders.success', ['order' => $order->id]);
         });
     }
 

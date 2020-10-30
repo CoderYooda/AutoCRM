@@ -306,7 +306,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
         Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
 
-        Route::get('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
+        Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
         Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');
         Route::post('/shop_orders/store', 'ShopController@store')->name('StoreOrder');
 
