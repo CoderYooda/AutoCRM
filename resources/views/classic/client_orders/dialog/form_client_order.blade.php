@@ -108,7 +108,7 @@
         @endif
     </div>
     <form class="ShipmentStoredListner EntranceStoredListner AdjustmentStoredListner WarrantStoredListner clientOrderSMSListner" action="{{ route('StoreClientOrder') }}" method="POST">
-        <div class="box-body">
+        <div class="modal-body">
             @csrf
             @if(isset($client_order) && $client_order->id != NULL)
                 <input type="hidden" name="id" value="{{ $client_order->id }}">

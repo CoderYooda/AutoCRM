@@ -51,25 +51,8 @@ class ProviderOrdersController extends Controller
     public static function selectProviderOrderDialog($request)
     {
         $providerorders = ProviderOrder::owned()->with('articles')->whereIn('incomes', [0,1])->limit(20)->orderBy('created_at', 'DESC')->get();
-
-//        foreach ($providerorders as $key => $providerorder) {
-//
-//            $product_count = 0;
-//
-//            foreach ($providerorder->articles as $product) {
-//                $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id);
-//
-//                $product_count += $count;
-//            }
-//
-//            if($product_count <= 0) unset($providerorders[$key]);
-//        }
-
-
-
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
-//            'items' => $providerorders,
             'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
         ]);
     }
