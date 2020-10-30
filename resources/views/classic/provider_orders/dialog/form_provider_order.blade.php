@@ -76,40 +76,51 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="tab-content no-pl">
-                        <div class="tab-pane active" id="tab_base">
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
-                                <div class="input-group col-sm-8">
-                                    <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
-                                        @if(isset($provider_order) && $provider_order->partner()->first() != null)
-                                            {{ $provider_order->partner()->first()->outputName() }}
-                                        @else
-                                            <option>Не выбрано</option>
-                                        @endif
-                                    </button>
+                    <div class="dialog_tab_holder">
+                        <div class="tab-content no-pl">
+                            <div class="tab-pane active" id="tab_base">
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
+                                    <div class="input-group col-sm-8">
+                                        <button onclick="{{ $class }}.openSelectPartnerModal()" type="button" name="partner_id" class="partner_select form-control text-left button_select">
+                                            @if(isset($provider_order) && $provider_order->partner()->first() != null)
+                                                {{ $provider_order->partner()->first()->outputName() }}
+                                            @else
+                                                <option>Не выбрано</option>
+                                            @endif
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-4 label-sm">Склад</label>
-                                <div class="input-group col-sm-8">
-                                    <div class="w-100">
-                                        <select custom_select name="store_id" class="form-control input-c">
-                                            @foreach($stores as $store)
-                                                <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
-                                            @endforeach
-                                        </select>
+                                <div class="form-group row row-sm">
+                                    <label for="category_id" class="col-sm-4 label-sm">Склад</label>
+                                    <div class="input-group col-sm-8">
+                                        <div class="w-100">
+                                            <select custom_select name="store_id" class="form-control input-c">
+                                                @foreach($stores as $store)
+                                                    <option value="{{ $store->id }}" @if(isset($provider_order) && $provider_order->store_id == $store->id) selected @elseif(Auth::user()->partner()->first()->store_id == $store->id) selected @endif>{{ $store->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row row-sm">
+                                    <div class="col-sm-12">
+                                        <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row row-sm">
-                                <div class="col-sm-12">
-                                    <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">@if(isset($provider_order)){{ $provider_order->comment }}@endif</textarea>
+
+                            <div class="tab-pane" id="tab_items">
+                                <div data-prefs="@if($provider_order){{
+                                json_encode([
+                                'use_nds' => true,
+                                'can_add_items' => true,
+                                'nds' => $provider_order->nds,
+                                 'nds_included' => $provider_order->nds_included]
+                                 )}} @else {{ json_encode(['use_nds' => true, 'nds' => true, 'can_add_items' => true, 'nds_included' => true]) }} @endif" data-items="@if($provider_order){{
+                                 json_encode($provider_order->articlesJson->toArray())
+                                 }}@else{{ json_encode([]) }}@endif" id="po_list">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab_items">
-                            <div data-items="{{ json_encode($provider_order ? $provider_order->articlesJson->toArray() : []) }}" id="po_list">
                             </div>
                         </div>
 

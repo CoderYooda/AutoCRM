@@ -14,14 +14,24 @@ class OrderController extends Controller
         $order = Order::with('partner', 'positions')->find($request->order_id);
 
         foreach ($order->positions as &$position) {
-            $position['total_price'] = $position->price * $position->count;
+            $position['total'] = $position->price * $position->count;
         }
 
         $class = 'orderDialog' . ($order->id ?? '');
 
         $view = view(get_template() . '.shop_orders.dialog.form_order', compact('order', 'class', 'request'));
 
-        $view->with('statuses', Order::$statuses);
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => true,
+            'nds' => 0,
+            'freeze' => false,
+            'nds_included' => false
+        ];
+
+        $view->with('statuses', Order::$statuses)
+            ->with('prefs', json_encode($prefs));
+
 
         return response()->json([
             'tag' => $class,

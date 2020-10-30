@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class createEntrance extends Modal{
 
@@ -15,11 +16,8 @@ class createEntrance extends Modal{
     init(){
         let object = this;
 
-        this.loadItemsIfExists();
         let focused = document.getElementById('entrance_dialog_focused');
-        if(focused) {
-            focused.focus();
-        }
+        if(focused) focused.focus();
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
             if (e.which == 13) {
@@ -38,6 +36,21 @@ class createEntrance extends Modal{
                 });
             }
         });
+
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('entrance_tabs' + prefix);
+
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            // {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'passive',},
+        ];
+
+        this.items = new BBlist(this, 'entrance_list' + prefix, 'products', header);
 
     }
 
@@ -71,91 +84,14 @@ class createEntrance extends Modal{
         });
     }
 
-    loadItemsIfExists(){
-        window.isXHRloading = true;
-        let object = this;
-        var entrance_id = this.root_dialog.dataset.id;
-        if(entrance_id && entrance_id !== 'undefined') {
-
-            window.axios({
-                method: 'post',
-                url: 'entrance/' + entrance_id + '/get_products'
-            })
-            .then(function (resp) {
-
-                [].forEach.call(resp.data.products, function(elem){
-                    object.items.push({id:elem.id, count:elem.pivot.count, price:elem.pivot.price, total:elem.pivot.total});
-
-                    let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-                    let inputs = item.getElementsByTagName('input');
-
-                    [].forEach.call(inputs, function(elem){
-                        var fn = window.helper.debounce(function(e) {
-                            object.recalculate(e);
-                        }, 50);
-                        elem.addEventListener("keydown", fn);
-                        elem.addEventListener("paste", fn);
-                        elem.addEventListener("delete", fn);
-                    });
-
-                });
-
-            }).catch(function (error) {
-                console.log(error);
-            }).finally(function () {
-                window.isXHRloading = false;
-            });
-
-        }
-
-
-
-        // let list_elems = this.root_dialog.querySelector('.product_list_elem');
-        // if(list_elems){
-        //     [].forEach.call(list_elems, function(elem){
-        //         object.addItem({id:resp.data.id, html:resp.data.html});
-        //     });
-        // }
-    }
-
     setTotalPrice(count){
         let container = this.root_dialog.querySelector('#total_price');
-        container.innerHTML = Number(count).toFixed(2);
-    }
-
-    addItem(elem){
-        let object = this;
-        let product_list = this.root_dialog.querySelector('.product_list');
-        this.items.push(elem);
-
-        try{
-            window.selectProductDialog.markAsAdded();
-        }catch (e) {
-            console.log(e);
-        }
-
-        product_list.insertAdjacentHTML('afterbegin', elem.html);
-
-        window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
-        let inputs = item.getElementsByTagName('input');
-
-        [].forEach.call(inputs, function(elem){
-            var fn = window.helper.debounce(function(e) {
-                object.recalculate(e);
-            }, 50);
-            elem.addEventListener("keydown", fn);
-            elem.addEventListener("paste", fn);
-            elem.addEventListener("delete", fn);
-        });
-        this.recalculate();
+        if(container)
+            container.innerHTML = Number(count).toFixed(2);
     }
 
     freshContent(id, callback = null){
         let object = this;
-
-        //var store_id = this.store_obj.value;
-
         let data = {};
         //data.store_id = store_id;
         if(object.refer){
@@ -174,20 +110,6 @@ class createEntrance extends Modal{
             callback();
         });
     }
-
-    removeItem(id){
-        this.items.splice(
-            this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
-        );
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
-    }
-
-    addProduct(elem){
-        window.entity.addProductToList(elem, this, 'entrance');
-    };
 
     selectPartner(id){
         var object = this;
@@ -220,13 +142,13 @@ class createEntrance extends Modal{
             method: 'post',
             url: 'providerorder/'+ id +'/select',
             data: {refer:this.root_dialog.id}
-        }).then(function (resp) {
+        }).then((resp)=> {
+            this.items.setItems(resp.data.items);
 
             let info_container = object.root_dialog.querySelector('#entrance_info_block');
             if(info_container){
                 info_container.innerHTML = resp.data.info;
             }
-
             let select = object.root_dialog.querySelector('button[name=providerorder_id]');
             let input = object.root_dialog.querySelector('input[name=providerorder_id]');
             let str = '<option selected value="' + resp.data.id + '">' + resp.data.name + '</option>';
@@ -234,11 +156,6 @@ class createEntrance extends Modal{
             select.innerHTML = str;
             window.notification.notify( 'success', 'Заявка выбрана');
             document.dispatchEvent(new Event('ProviderOrderSelected', {bubbles: true}));
-            console.log("Событие ProviderOrderSelected вызвано");
-            object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
-
-            //closeDialog(event);
-
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -256,91 +173,6 @@ class createEntrance extends Modal{
 
     openSelectProviderOrderModal(){
         window.openDialog('selectProviderOrderDialog', '&refer=' + this.root_dialog.id);
-    }
-
-    addProductsToList(providerorder_id, data){
-        let object = this;
-
-        window.axios({
-            method: 'post',
-            url: 'product/addtolist',
-            data: {
-                refer:object.root_dialog.id,
-                type:'providerorder',
-                providerorder_id: providerorder_id,
-                data:data
-            }
-        }).then(function (resp) {
-
-           // console.log(resp);
-
-            // var isset = object.items.map(function(e){
-            //     return e.id;
-            // }).indexOf(resp.data.product.id);
-
-
-            let product_list = object.root_dialog.querySelector('.product_list');
-
-            let items = [];
-
-            [].forEach.call(resp.data.products, function(elem){
-                items.push({
-                    'id': elem.id,
-                    'count': elem.count,
-                    'html': null,
-                    'price': elem.pivot.price,
-                    'total': 0,
-                });
-            });
-
-            object.items = items;
-
-            product_list.innerHTML = resp.data.html;
-
-            window.notification.notify( 'success', 'Товары добавлены к списку');
-
-            // [].forEach.call(resp.data.products, function(elem) {
-            //     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-            //     let inputs = item.getElementsByTagName('input');
-            //
-            //     [].forEach.call(inputs, function(elem){
-            //         var fn = window.helper.debounce(function(e) {
-            //             object.recalculate(e);
-            //         }, 50);
-            //         elem.addEventListener("keydown", fn);
-            //         elem.addEventListener("paste", fn);
-            //         elem.addEventListener("delete", fn);
-            //     });
-            // });
-
-
-
-            //object.recalculate();
-
-
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function () {
-            window.isXHRloading = false;
-        });
-
-        // [].forEach.call(data, function(elem){
-        //     console.log(elem);
-        // });
-    }
-
-    recalculate(){
-        console.log("Пересчет...");
-        var object = this;
-        // this.items.forEach(function(elem){
-        //     object.recalculateItem(elem.id);
-        // });
-        //var total_price = object.totalPrice;
-
-        // object.items.map(function(e){
-        //     total_price = total_price + Number(e.total);
-        // });
-        //object.setTotalPrice(total_price);
     }
 
     getPayment(){
@@ -378,59 +210,6 @@ class createEntrance extends Modal{
         }
 
         openDialog('warrantDialog', '&isIncoming=0'+params);
-    }
-
-    recalculateItem(id){
-        let object = this;
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + id + "][price]']");
-
-        //let nds_percent = item.querySelector("input[name=nds_percent]");
-        //let nds = item.querySelector("input[name=nds]");
-
-
-        let vcount = Number(count.value);
-        let vprice = Number(price.value);
-        //let vnds_percent = Number(nds_percent.value);
-        //let vnds = Number(nds.value);
-        //let vtotal = Number(total.value);
-
-        // if(object.nds && !object.nds_included){
-        //     vnds_percent = 20;
-        //     vtotal = vprice * vcount;
-        //     vnds = vtotal / 100 * vnds_percent;
-        //     vtotal = vnds + vtotal;
-        // } else if(object.nds && object.nds_included){
-        //     vnds_percent = 20;
-        //     vtotal = vprice * vcount;
-        //     vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
-        // } else {
-        //     vtotal = vprice * vcount;
-        //     vnds = 0.00;
-        //     vnds_percent = 0;
-        // }
-
-        vtotal = vprice * vcount;
-        vnds = 0.00;
-        vnds_percent = 0;
-
-        nds_percent.value = vnds_percent.toFixed(2);
-        nds.value = vnds.toFixed(2);
-        total.value = vtotal.toFixed(2);
-
-        // nds.value = Number(total.value).toFixed(2) * Number(nds_percent.value).toFixed(2);
-        //
-        // total.value = Number(total.value).toFixed(2) + Number(nds.value).toFixed(2);
-
-        object.items.map(function(e){
-            if(e.id === id){
-                e.total = vtotal;
-                e.count = vcount;
-                e.price = vprice;
-            }
-        });
     }
 
 }

@@ -1,5 +1,4 @@
 @if(!isset($inner) || !$inner)
-
 <div
     @if(isset($shipment) && $shipment->id != NULL)
         @php
@@ -28,9 +27,9 @@
         <div class="modal-alt-header">
             <span class="item-title _500">Магазин</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span id="store_selected">
-                        {{ Auth::user()->getStoreFirst()->name }}
-                    </span>
+                <span id="store_selected">
+                    {{ Auth::user()->getStoreFirst()->name }}
+                </span>
             </div>
             <div class="item-tag tag hide">
             </div>
@@ -38,7 +37,7 @@
         <div class="modal-alt-header">
             <span class="item-title _500">Всего на сумму</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
+                    <span id="total_price{{ isset($shipment) ? '_fixed' : '' }}">
                         @if(isset($shipment) && $shipment->summ != NULL){{ $shipment->summ }} @else 0.0 @endif
                     </span> р
             </div>
@@ -48,7 +47,7 @@
         <div class="modal-alt-header">
             <span class="item-title _500">Скидка</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span id="percents_price">
+                    <span id="percents_price{{ isset($shipment) ? '_fixed' : '' }}">
                         @if(isset($shipment) && $shipment->id != NULL)
                         {{ $shipment->discount }}  @if($shipment->inpercents)% @else р @endif
                         @else 0 р @endif
@@ -60,7 +59,7 @@
         <div class="modal-alt-header">
             <span class="item-title _500">Итого</span>
             <div class="item-except font-weight-bolder h-1x">
-                    <span id="itogo_price">
+                    <span id="itogo_price{{ isset($shipment) ? '_fixed' : '' }}">
                         @if(isset($shipment) && $shipment->itogo != NULL)
                             {{ $shipment->itogo }}
                         @else 0.0 @endif
@@ -74,7 +73,7 @@
                 <span class="item-title _500">Оплачено</span>
                 <div class="item-except @if($shipment->wsumm >= $shipment->itogo) text-success @endif font-weight-bolder h-1x">
                     <span>
-                        {{ correct_price($shipment->wsumm) }} р / <span id="payed_price">{{ correct_price($shipment->itogo) }}</span> р
+                        {{ correct_price($shipment->wsumm) }} р / <span id="payed_price{{ isset($shipment) ? '_fixed' : '' }}">{{ correct_price($shipment->itogo) }}</span> р
                     </span>
                 </div>
                 <div class="item-tag tag hide">
@@ -96,7 +95,7 @@
     </div>
 
     <form name="ShipmentForm" class="WarrantStoredListner PartnerSelectedListner" action="{{ route('StoreShipment') }}" method="POST">
-        <div class="box-body">
+        <div class="modal-body">
             @csrf
 
             <input type="hidden" name="id" value="{{ $shipment->id ?? '' }}">
@@ -113,90 +112,151 @@
             <input type="hidden" name="store_id" value="{{ Auth::user()->getStoreFirst()->id }}">
             <input class="partner_select" type="hidden" name="partner_id" value="{{ $shipment->partner->id ?? null }}">
             <input id="inpercents" name="inpercents" type="hidden" @if($shipment && $shipment->id != NULL && $shipment->inpercents) value="1" @else value="0" @endif>
-            <div class="row row-sm">
-                <div class="col-sm-6">
-                    <div class="form-group row">
-                        <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
-                        <div class="col-sm-6 no-pr">
-                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if(isset($shipment)) disabled @endif>
-                                @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
-                                    {{ $shipment->partner->outputName() }}
-                                @else
-                                    Нажмите для выбора
-                                @endif
-                            </button>
-                        </div>
-                        <div class="col-sm-3">
+
+
+            <div class="d-flex">
+                <div class="link-tabs no-pr">
+                    <ul class="nav" id="shipment_tabs{{ $shipment ? $shipment->id : '' }}" storage_tabs>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ $shipment ? '#s_tab_base' . $shipment->id : '#s_tab_base' }}" aria-controls="{{ $shipment ? 's_tab_base' . $shipment->id : 's_tab_base' }}" data-toggle="tab" data-target="{{ $shipment ? '#s_tab_base' . $shipment->id : '#s_tab_base' }}">
+                                Основные
+                                <span class="float-right helper_danger d-none-f">
+                                        <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                    </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ $shipment ? '#e_tab_items' . $shipment->id : '#e_tab_items' }}" aria-controls="{{ $shipment ? 'e_tab_items' . $shipment->id : 'e_tab_items' }}" data-toggle="tab" data-target="{{ $shipment ? '#e_tab_items' . $shipment->id : '#e_tab_items' }}">
+                                Позиции
+                                <span class="float-right helper_danger d-none-f">
+                                        <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                    </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dialog_tab_holder">
+                    <div class="tab-content no-pl">
+                        <div class="tab-pane active" id="{{ $shipment ? 's_tab_base' . $shipment->id : 's_tab_base' }}">
+                            <div class="form-group row">
+                                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
+                                <div class="col-sm-6 no-pr d-flex">
+                                    <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if(isset($shipment)) disabled @endif>
+                                        @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
+                                            {{ $shipment->partner->outputName() }}
+                                        @else
+                                            Нажмите для выбора
+                                        @endif
+                                    </button>
+                                    @if(!isset($shipment))
+                                    <div class="d-flex">
+                                        <div class="checkbox">
+                                            <input name="anonymous" id="anonymous" type="checkbox" onchange="{{ $class }}.anonymousBuyerToggle(this)" >
+                                            <label for="anonymous"></label>
+                                        </div>
+                                        <label class="checkbox-title anon-label" for="anonymous">Анонимный</label>
+                                    </div>
+                                    @endif
+                                </div>
+                                <div class="col-sm-3">
                             <span class="partner-balance">
                                 Баланс:<br>
                                 <span id="balance">{{ correct_price($shipment->partner->balance ?? 0.0) }} р</span>
                             </span>
-                        </div>
-                    </div>
-
-                    @if(!isset($shipment))
-                        <div class="form-group row">
-                            <label class="col-form-label pr-10">Анонимный покупатель</label>
-                            <input type="checkbox" name="anonymous" onchange="{{ $class }}.anonymousBuyerToggle(this)" style="max-height: 15px; margin-top: 3px;" />
-                        </div>
-                    @endif
-
-                    <div class="form-group row">
-                        <label class="col-sm-3" for="discount">Скидка</label>
-                        <div class="col-sm-9 input-group">
-                            <input onclick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment  && $shipment->id != NULL) value="{{ $shipment->discount }}" @else value="0" @endif>
-                            <span class="input-group-append">
-                                <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                                    <div class="drop-butt"><span id="inpercents_text"> @if(isset($shipment) && $shipment->id != NULL && $shipment->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
-                                    <div class="dropdown_container">
-                                        <div class="arrow"></div>
-                                        <span onclick="{{ $class }}.setField('inpercents', 0, 'в рублях', this)" class="element">В рублях</span>
-                                        <span onclick="{{ $class }}.setField('inpercents', 1, 'в процентах', this)" class="element">В процентах</span>
-                                    </div>
                                 </div>
-                            </span>
+                            </div>
+
+                            {{--@if(!isset($shipment))--}}
+                                {{--<div class="form-group row">--}}
+                                    {{--<label class="col-form-label pr-10">Анонимный покупатель</label>--}}
+                                    {{--<input type="checkbox" name="anonymous" onchange="{{ $class }}.anonymousBuyerToggle(this)" style="max-height: 15px; margin-top: 3px;" />--}}
+                                {{--</div>--}}
+                            {{--@endif--}}
+
+                            <div class="form-group row">
+                                <label class="col-sm-3" for="discount">Скидка</label>
+                                <div class="col-sm-9 input-group">
+                                    <input onclick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment  && $shipment->id != NULL) value="{{ $shipment->discount }}" @else value="0" @endif @if(isset($shipment)) disabled @endif >
+                                    <span class="input-group-append">
+                                        <div class="dropdown" onclick="window.helper.openModal(this, event)">
+                                            <div class="drop-butt"><span id="inpercents_text"> @if(isset($shipment) && $shipment->id != NULL && $shipment->inpercents)в процентах@elseв рублях@endif</span>
+                                                @if(!isset($shipment))
+                                                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                                                @endif
+                                            </div>
+                                            @if(!isset($shipment))
+                                            <div class="dropdown_container">
+                                                <div class="arrow"></div>
+                                                <span onclick="{{ $class }}.setField('inpercents', 0, 'в рублях', this)" class="element">В рублях</span>
+                                                <span onclick="{{ $class }}.setField('inpercents', 1, 'в процентах', this)" class="element">В процентах</span>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3" for="shipment_dialog_focused">Комментарий</label>
+                                <div class="col-sm-9">
+                                    <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="shipment_dialog_focused" cols="30" rows="4" @if(isset($shipment)) disabled @endif >@if(isset($shipment) && $shipment->id != NULL){{ $shipment->comment }}@endif</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="{{ $shipment ? 'e_tab_items' . $shipment->id : 'e_tab_items' }}">
+                            <div data-prefs="@if($shipment){{
+                                json_encode([
+                                    'use_nds' => false,
+                                    'can_add_items' => false,
+                                    'nds' => 0,
+                                    'freeze' => true,
+                                    'nds_included' => false
+                                    ]
+                                 )}}@else{{
+                                json_encode([
+                                    'use_nds' => false,
+                                    'can_add_items' => true,
+                                    'freeze' => false,
+                                    'nds' => 0,
+                                    'nds_included' => false
+                                    ]
+                                 )}}@endif" data-items="@if($shipment){{
+                                 json_encode($articles->toArray())
+                                 }}@else{{ json_encode([]) }}@endif" id="shipment_list{{ $shipment ? $shipment->id : '' }}">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 form-group">
-                    <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="shipment_dialog_focused" cols="30" rows="4">@if(isset($shipment) && $shipment->id != NULL){{ $shipment->comment }}@endif</textarea>
-                </div>
             </div>
-
-            <div class="form-group">
-                <div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>
-                </div>
-                <div data-simplebar style="max-height: 300px;">
-                    <table class="table-modal" >
-                        <thead class="text-muted">
-                        <tr>
-                            <th width="30%">Наименование</th>
-                            <th width="10%">Артикул</th>
-                            <th width="10%" style="min-width: 60px;">Кол-во</th>
-                            <th width="10%" style="min-width: 60px;">Доступное кол-во</th>
-                            <th width="10%" style="min-width: 100px;">Цена</th>
-                            <th width="10%" style="min-width: 100px;">Всего</th>
-                            <th width="5%" style="max-width:44px"></th>
-                        </tr>
-                        </thead>
-                        <tbody class="product_list">
-                        @isset($shipment)
-                            @foreach($shipment->articles as $product)
-                                @include(get_template() . '.shipments.dialog.product_element')
-                            @endforeach
-                        @endisset
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {{--<div class="form-group">--}}
+                {{--<div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>--}}
+                {{--</div>--}}
+                {{--<div data-simplebar style="max-height: 300px;">--}}
+                    {{--<table class="table-modal" >--}}
+                        {{--<thead class="text-muted">--}}
+                        {{--<tr>--}}
+                            {{--<th width="30%">Наименование</th>--}}
+                            {{--<th width="10%">Артикул</th>--}}
+                            {{--<th width="10%" style="min-width: 60px;">Кол-во</th>--}}
+                            {{--<th width="10%" style="min-width: 60px;">Доступное кол-во</th>--}}
+                            {{--<th width="10%" style="min-width: 100px;">Цена</th>--}}
+                            {{--<th width="10%" style="min-width: 100px;">Всего</th>--}}
+                            {{--<th width="5%" style="max-width:44px"></th>--}}
+                        {{--</tr>--}}
+                        {{--</thead>--}}
+                        {{--<tbody class="product_list">--}}
+                        {{--@isset($shipment)--}}
+                            {{--@foreach($shipment->articles as $product)--}}
+                                {{--@include(get_template() . '.shipments.dialog.product_element')--}}
+                            {{--@endforeach--}}
+                        {{--@endisset--}}
+                        {{--</tbody>--}}
+                    {{--</table>--}}
+                {{--</div>--}}
+            {{--</div>--}}
 
 
         </div>
         <div class="modal-footer" style="white-space: nowrap">
-
-            @if(!$shipment)
-            <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button mr-15 uppercase-btn"><i class="fa fa-plus"></i> Добавить товар</button>
-            @endif
 
             <button class="button white mr-15 uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
             {{--<button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>--}}
@@ -212,7 +272,8 @@
                 </button>
             @endif
 
-            @if(!isset($shipment) || !$shipment->hasRelations())
+            {{--|| !$shipment->hasRelations()--}}
+            @if(!isset($shipment))
                 <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
             @endif
         </div>

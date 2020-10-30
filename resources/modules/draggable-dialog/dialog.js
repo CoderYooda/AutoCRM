@@ -70,6 +70,8 @@ window.openDialog = function(tag, params = null, reload = false) {
 
         if(typeof(resp.data.tag) == "undefined") return ;
 
+        console.log(alreadyOpened(resp.data.tag), reload);
+
         if(!alreadyOpened(resp.data.tag) || reload){
             closeDialog(null, resp.data.tag);
             appendDialog(resp.data, resp.data.tag);

@@ -676,6 +676,8 @@ class storePage extends Page{
         }
 
 
+
+
         let container = 'ajax-table-' + this.active_tab;
         this.readData(container);
 
@@ -685,6 +687,7 @@ class storePage extends Page{
             url: '/' + this.active_tab + '/tabledata',
             start_sort: 'DESC'
         });
+
         let header, context_menu, dbl_click, slug;
 
         if(this.active_tab === 'store'){
@@ -713,7 +716,7 @@ class storePage extends Page{
                 {min_with: 60, width: 150, name: 'Поступление', table_name: 'incomes', transform: 'transform_ico'},
                 {min_with: 120, width: 200, name: 'Поставщик', table_name: 'partner_name'},
                 {min_with: 120, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
-                {min_with: 90, width: 200, name: 'Сумма', table_name: 'itogo', transform: 'transform_price'},
+                {min_with: 90, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
                 {min_with: 90, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
             context_menu = [
@@ -722,7 +725,7 @@ class storePage extends Page{
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            dbl_click = function(id){openDialog('providerOrderDialog', '&provider_order_id=' + id)};
+            dbl_click = id => openDialog('providerOrderDialog', '&provider_order_id=' + id);
             slug = 'store';
         } else if(this.active_tab === 'entrance'){
             header = [
@@ -748,7 +751,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Поступление', table_name: 'entrance_id'},
                 {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner_name'},
                 {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'wsumm', transform: 'transform_price'},
+                {min_with: 150, width: 200, name: 'Возвращено', table_name: 'wsumm', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
@@ -861,7 +864,7 @@ class storePage extends Page{
                 { name:'Открыть', action: data => openDialog('orderDialog', '&order_id=' + data.contexted.id) },
             ];
 
-            dbl_click = id => openDialog('orderDialog', '&order_id=' + id);
+            dbl_click = function(id) { openDialog('orderDialog', '&order_id=' + id) };
 
             slug = 'store';
         }

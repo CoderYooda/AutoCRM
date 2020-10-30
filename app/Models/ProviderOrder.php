@@ -61,11 +61,34 @@ class ProviderOrder extends Model
         return$this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
             ->withPivot('count as count', 'price as price', 'nds as nds', 'nds_percent as nds_percent', 'nds_included as nds_included', 'total as total');
     }
+    #Получить еще не оприходованные товары
+    public function getNotEnteredArticles()
+    {
+        $articles = $this->articlesJson()->get();
+
+        foreach($articles as $key => $article){
+
+            $count = $article->count - $this->getArticleEntredCount($article->id);
+
+            if($count){
+                $article->count = $count;
+            } else {
+                unset($articles[$key]);
+            }
+        }
+        return $articles;
+    }
 
     public function getArticleCount($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
         return $article->pivot->count ?? 0;
+    }
+
+    public function articlesCount()
+    {
+        $count = $this->articles()->sum('count');
+        return $count;
     }
 
     public function getPlanArticleCount()
@@ -82,8 +105,10 @@ class ProviderOrder extends Model
                 $entered_count += $article->pivot->count;
             }
         }
+
         return $entered_count;
     }
+
 
     public function updateIncomeStatus()
     {

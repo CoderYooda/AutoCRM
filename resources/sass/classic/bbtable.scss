@@ -1,6 +1,49 @@
 .tableIco{
     height: 29px;
 }
+.checkbox{
+    width: 30px;
+    min-width: 30px;
+    flex: unset;
+    text-align: center;
+    padding: 0px 7px;
+    position: relative;
+    input{
+        position: absolute !important;
+        z-index: -1;
+        opacity: 0;
+        top: 0;
+        left: 0;
+    }
+    label{
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        display: block;
+        position: absolute;
+        top: calc(50% - 8px);
+        left: calc(50% - 8px);
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+    input+label{
+        display: inline-flex;
+        align-items: center;
+        user-select: none;
+    }
+    input+label::before {
+        content: "";
+        width: 15px;
+        height: 15px;
+        border: 1px solid #E7E8EC;
+    }
+    input:checked+label::before {
+        background: #5181B8 url(/images/icons/check.svg) center no-repeat;
+        border: none;
+        background-position-y: 4px;
+    }
+}
 .bbtable-container{
     overflow: hidden;
     position: relative;
@@ -19,40 +62,7 @@
         border-bottom: none;
         z-index: 100000;
     }
-    .checkbox{
-        width: 30px;
-        min-width: 30px;
-        flex: unset;
-        text-align: center;
-        padding: 0px 7px;
-        input{
-            position: absolute!important;
-            z-index: -1;
-            opacity: 0;
-        }
-        label{
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            display: flex;
-            text-align: center;
-        }
-        input+label{
-            display: inline-flex;
-            align-items: center;
-            user-select: none;
-        }
-        input+label::before {
-            content: "";
-            width: 15px;
-            height: 15px;
-            border: 1px solid #E7E8EC;
-        }
-        input:checked+label::before {
-            background: #5181B8 url(/images/icons/check.svg) center no-repeat;
-            border: none;
-        }
-    }
+
     .paginator {
         position: absolute;
         bottom: 0;

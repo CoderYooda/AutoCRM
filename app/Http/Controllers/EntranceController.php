@@ -23,13 +23,9 @@ class EntranceController extends Controller
         $entrance = Entrance::find($request['entrance_id']);
         $class = 'entranceDialog' . ($entrance->id ?? '');
 
-        $providerorder = $entrance->providerorder ?? null;
-
-        $view = view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request', 'class'));
-
         return response()->json([
             'tag' => $class,
-            'html' => $view->render()
+            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance',  'request'))->with('class', $class)->render()
         ]);
     }
 
@@ -58,13 +54,9 @@ class EntranceController extends Controller
         //Проверка валидации
         $messages = [];
 
-        $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_keys($request->products))->get();
-
-        foreach($request['products'] as $pivot_id => $product) {
-
-            $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
-
-            $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
+        foreach($request['products'] as $id => $product) {
+            $entrance_count = $providerorder->getArticleEntredCount($id);
+            $providers_count = $providerorder->getArticleCount($id);
 
             $form_count = (int)$product['count'];
 
@@ -86,12 +78,11 @@ class EntranceController extends Controller
             'invoice' => $request->invoice
         ]);
 
-        foreach ($request->products as $pivot_id => $product) {
+        foreach ($request->products as $id => $product) {
+            $price = $providerorder->articles->find($id)->pivot->price;
 
-            $price = $providerorder->articles->find($product['id'])->pivot->price;
-
-            $entrance->articles()->attach($product['id'], [
-                'store_id' => $user->current_store,
+            $entrance->articles()->attach($id, [
+                'store_id' => $providerorder->store_id,
                 'company_id' => $entrance->company_id,
                 'count' => $product['count'],
                 'price' => $price,
@@ -105,6 +96,9 @@ class EntranceController extends Controller
 
         $entrance->providerorder->updateIncomeStatus();
 
+//        #Всё ли поступило?
+//        $providerorder->checkEntered();
+
         #Ответ сервера
         return response()->json([
             'message' => 'Поступление было успешно создано.',
@@ -115,10 +109,10 @@ class EntranceController extends Controller
 
     public function fresh(Entrance $entrance, Request $request)
     {
-        $request['fresh'] = true;
+        $inner = true;
         $class = 'entranceDialog' . $entrance->id;
 
-        $content = view(get_template() . '.entrance.includes.inner_entrance_dialog', compact( 'entrance', 'class', 'request'))
+        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'class', 'inner'))
             ->with('providerorder', $entrance->providerorder)
             ->render();
 
@@ -176,13 +170,13 @@ class EntranceController extends Controller
                     $available_count[$product->id] -= $product->pivot->count;
                 }
             }
-
-            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
+//
+//            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
         }
 
         return response()->json([
             'id' => $entrance->id,
-            'items_html' => $view,
+//            'items_html' => $view,
             'items' => $products,
             'partner' => $entrance->partner->outputName(),
             'partner_id' => $entrance->partner->id,

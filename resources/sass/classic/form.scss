@@ -500,14 +500,17 @@ h5{
     border-radius: 3px;
     padding: 3px;
 }
+.dialog_tab_holder{
+    width: calc(100% - 200px);
+}
 .tab-content{
     padding: 15px;
     position: relative;
     width: 100%;
-    max-width: calc(100% - 200px);
 }
 .link-tabs{
     width: 200px;
+    min-width: 200px;
 }
 .text-danger{
     color: #FF4949;

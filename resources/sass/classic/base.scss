@@ -1,3 +1,7 @@
+#save_vehicle_form .select-selected {
+    display: none;
+}
+
 
 /*Base*/
 *, :after, :before {
@@ -18,6 +22,8 @@ body {
     min-width: 1000px;
     overflow: hidden;
     user-select: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 a {
     color: #2D76A8;
@@ -39,7 +45,7 @@ input[type=checkbox]:not(.not_default) {
 }
 textarea{
     border: 1px solid #d3d9de;
-    padding: 3px 5px!important;
+    padding: 4px 10px!important;
 }
 input[type=email]:active, input[type=checkbox]:active, input[type=checkbox]:checked:active {
     box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
@@ -126,7 +132,10 @@ h2{
 .text-muted{
     opacity: 0.7;
 }
-
+.actions button{
+    display: inline-block;
+    float: left;
+}
 .input_gr_sm {
     display: flex;
     label {
@@ -1238,8 +1247,13 @@ input:-moz-placeholder { /* Firefox 18- */
 .box{
     position: relative;
     background: #fff;
-    border-radius: 4px;
+    //border-radius: 4px;
     box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+}
+.anon-label{
+    margin-bottom: 0;
+    margin-top: 4px;
+    cursor: pointer;
 }
 .box .box-header{
     /*border-bottom: 1px solid #e7e8ec;*/

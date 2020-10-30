@@ -1,4 +1,5 @@
 import parsePhoneNumber from 'libphonenumber-js'
+
 class Table {
     constructor(options){
         this.elem = document.getElementById(options.container);
@@ -575,12 +576,6 @@ class Table {
         });
         return this.bodyContainer;
     }
-
-    // drawHover(){
-    //     this.hover = document.createElement('div');
-    //     this.hover.className = 'hover';
-    //     return this.hover;
-    // }
 
     drawContext(){
         this.context = document.createElement('div');

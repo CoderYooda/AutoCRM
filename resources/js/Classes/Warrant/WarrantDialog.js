@@ -14,6 +14,14 @@ class warrantDialog extends Modal{
         document.addEventListener('WarrantStored', function(e){
             object.finitaLaComedia(true);
         });
+
+        object.root_dialog.querySelector('form').addEventListener('keyup',  function(e){
+            if (e.which == 13) {
+                e.preventDefault();
+                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+            }
+        });
+
         let focused = document.getElementById('warrant_dialog_focused');
         if(focused) {
             focused.focus();

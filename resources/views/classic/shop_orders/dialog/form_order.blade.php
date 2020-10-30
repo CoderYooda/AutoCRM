@@ -80,7 +80,7 @@
 
                 <div id="tab_products" class="tab">
 
-                    <div class="element-list" data-items="{{ json_encode($order ? $order->positions->toArray() : []) }}" id="order_list">
+                    <div data-prefs="{{ $prefs }}" data-items="{{ json_encode($order ? $order->positions->toArray() : []) }}" id="order_list">
 
                     </div>
 
