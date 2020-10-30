@@ -68,4 +68,17 @@ class Refund extends Model
             ->withPivot('count as count', 'price as price', 'total as total');
     }
 
+//    public function articles()
+//    {
+//        return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
+//            ->withPivot('count as count', 'price as price', 'total as total');
+//
+//
+//        return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
+//            ->withPivot('count', 'price as price', 'total as total')
+//            ->leftJoin('refund', 'refund.id', '=', 'article_refund.refund_id')
+//            ->selectRaw('*,  SUM(count) as refunded_count, articles.id as id, price');
+//        ->groupBy(['article_id']);
+//    }
+
 }

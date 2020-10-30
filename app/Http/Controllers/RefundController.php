@@ -20,23 +20,32 @@ class RefundController extends Controller
     public static function refundDialog(Request $request)
     {
         $refund = Refund::find($request['refund_id']);
-        $shipment = null;
+
+        /** @var Shipment $shipment */
+        $shipment = $refund->shipment ?? null;
 
         $tag = 'refundDialog' . ($refund->id ?? '');
 
-        $refunded_count = [];
+//        $refunded_count = [];
+//
+//        if($refund) {
+//            foreach ($refund->shipment->articles as $product) {
+//                if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
+//                $refunded_count[$product->id] += $product->pivot->refunded_count;
+//            }
+//            $shipment = $refund->shipment;
+//        }
 
-        if($refund) {
-            foreach ($refund->shipment->articles as $product) {
-                if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
-                $refunded_count[$product->id] += $product->pivot->refunded_count;
-            }
-            $shipment = $refund->shipment;
+
+
+        $products = $refund->articles ?? [];
+        foreach($products as $product) {
+            $product->shipment_count = $shipment->getProductCount($product->id);
+            $product->refunded_count = $shipment->getRefundedCount($product->id);
         }
 
-        $products = $entrance->articles ?? [];
 
-        $view = view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'refunded_count', 'products'))
+        $view = view(get_template() . '.refund.dialog.form_refund', compact('refund', 'shipment', 'request', 'products'))
             ->with('class', $tag);
 
         return response()->json([
@@ -70,7 +79,13 @@ class RefundController extends Controller
         $request['fresh'] = true;
         $class = 'refundDialog' . $refund->id;
         $inner = true;
-        $content = view(get_template() . '.refund.dialog.form_refund', compact( 'refund', 'shipment','class', 'inner', 'request'))->render();
+        $products = $refund->articles ?? [];
+
+        foreach($products as $product) {
+            $product->shipment_count = $shipment->getProductCount($product->id);
+            $product->refunded_count = $shipment->getRefundedCount($product->id);
+        }
+        $content = view(get_template() . '.refund.dialog.form_refund', compact( 'refund', 'shipment','class', 'inner', 'request', 'products'))->render();
         return response()->json([
             'html' => $content,
             'target' => $class,
@@ -88,9 +103,9 @@ class RefundController extends Controller
 
             $products = $request->products;
 
-            foreach ($products as $product) {
-                if ($product['count'] > $shipment->getAvailableToRefundArticlesCount($product['id'])) {
-                    $name = 'products.' . $product['id'] . '.count';
+            foreach ($products as $id => $product) {
+                if ($product['count'] > $shipment->getAvailableToRefundArticlesCount($id)) {
+                    $name = 'products.' . $id . '.count';
                     return response()->json([
                         'messages' => [$name => ['Кол - во не может быть больше чем в продаже']]
                     ], 422);
@@ -116,25 +131,25 @@ class RefundController extends Controller
 
             $refund_data = [];
 
-            foreach ($request['products'] as $product) {
+            foreach ($request['products'] as $id => $product) {
 
                 #Добавляем количество возвращенных товаров в продажу
-                $entrances = $shipment->incrementRefundedCount($product['id'], $product['count']);
+                $entrances = $shipment->incrementRefundedCount($id, $product['count']);
 
                 #Убаляем количество реализованных товаров с поступления
-                foreach ($entrances as $id => $amount) {
-                    Entrance::decrementReleasedCount($id, $product['id'], $amount);
+                foreach ($entrances as $entrance_id => $amount) {
+                    Entrance::decrementReleasedCount($entrance_id, $id, $amount);
                 }
 
                 #Создаем связь в article_refund
-                $shipment_price = $shipment->getProductPriceFromShipment($product['id']);
+                $shipment_price = $shipment->getProductPriceFromShipment($id);
 
                 $vcount = $product['count'];
                 $vprice = $shipment_price - ($shipment_price / 100 * $discount_percent);
                 $vtotal = $vprice * $vcount;
                 $refund->summ += $vtotal;
 
-                $refund_data[$product['id']] = [
+                $refund_data[$id] = [
                     'refund_id' => $refund->id,
                     'store_id' => $store->id,
                     'count' => $vcount,

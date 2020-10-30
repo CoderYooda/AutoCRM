@@ -46,8 +46,8 @@ class refundDialog extends Modal{
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
-            {min_with: 80, width: 80, name: 'Всего ед.', table_name: 'count', type: 'passive',},
-            {min_with: 125, width: 125, name: 'Возвращено ед.', table_name: 'refunded_count', type: 'passive',},
+            {min_with: 80, width: 80, name: 'Всего ед.', table_name: 'shipment_count', type: 'passive-count',},
+            {min_with: 125, width: 125, name: 'Возвращено ед.', table_name: 'refunded_count', type: 'passive-count',},
             // {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
             {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'passive',},
             {min_with: 80, width: 80, name: 'Цена', table_name: 'total', type: 'passive',},
@@ -332,7 +332,8 @@ class refundDialog extends Modal{
             method: 'post',
             url: 'shipment/'+ id +'/select',
             data: {refer:this.root_dialog.id}
-        }).then(function (resp) {
+        }).then(resp => {
+            this.items.setItems(resp.data.items);
             object.touch();
             let select = object.root_dialog.querySelector('button[name=shipment_id]');
             let partner_butt = object.root_dialog.querySelector('#partner_butt');
@@ -347,29 +348,29 @@ class refundDialog extends Modal{
             window.notification.notify( 'success', 'Продажа выбрана');
             document.dispatchEvent(new Event('ShipmentSelected', {bubbles: true}));
             console.log("Событие ShipmentSelected вызвано");
-            object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
+            // object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
             balance.innerHTML = resp.data.balance + ' р';
-            [].forEach.call(resp.data.items, function (elem) {
-                object.items.push({
-                    id: elem.id,
-                    count: elem.pivot.count,
-                    price: elem.pivot.price,
-                    total: elem.pivot.total,
-                });
-
-                let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-                let inputs = item.getElementsByTagName('input');
-
-                [].forEach.call(inputs, function (elem) {
-                    var fn = window.helper.debounce(function (e) {
-                        object.recalculate(e);
-                    }, 50);
-                    elem.addEventListener("keydown", fn);
-                    elem.addEventListener("paste", fn);
-                    elem.addEventListener("delete", fn);
-                });
-
-            });
+            // [].forEach.call(resp.data.items, function (elem) {
+            //     object.items.push({
+            //         id: elem.id,
+            //         count: elem.pivot.count,
+            //         price: elem.pivot.price,
+            //         total: elem.pivot.total,
+            //     });
+            //
+            //     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+            //     let inputs = item.getElementsByTagName('input');
+            //
+            //     [].forEach.call(inputs, function (elem) {
+            //         var fn = window.helper.debounce(function (e) {
+            //             object.recalculate(e);
+            //         }, 50);
+            //         elem.addEventListener("keydown", fn);
+            //         elem.addEventListener("paste", fn);
+            //         elem.addEventListener("delete", fn);
+            //     });
+            //
+            // });
 
         }).catch(function (error) {
             console.log(error);

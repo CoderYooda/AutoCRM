@@ -66,12 +66,12 @@ class Shipment extends Model
 
     public function getProductCount($product_id)
     {
-        return $this->articles()->where('article_id', $product_id)->sum('count');
+        return (int)$this->articles()->find($product_id)->count;
     }
 
     public function getRefundedCount($product_id)
     {
-        return $this->articles()->where('article_id', $product_id)->sum('refunded_count');
+        return (int)$this->articles()->find($product_id)->refunded_count;
     }
 
     public function articles()
@@ -153,7 +153,7 @@ class Shipment extends Model
                 $amount--;
 
                 DB::table('article_shipment')
-                    ->where('entrance_id', $product->entrance_id)
+                    ->where('id', $product->id)
                     ->increment('refunded_count', 1);
 
                 if (!isset($entrances[$product->entrance_id])) $entrances[$product->entrance_id] = 0;

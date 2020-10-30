@@ -398,6 +398,21 @@ class Items {
                         if(this.freeze){passive.disabled = true;}
                         title.appendChild(passive);
                         break;
+                    case 'passive-count':
+                        let passive_count = document.createElement("input");
+
+                        if(!this.use_nds && (item.table_name === 'nds' || item.table_name === 'nds_percent')){
+                            passive_count.value = Number(0).toFixed(2);
+                        } else {
+                            passive_count.value = Number(cell_item[item.table_name]);
+                        }
+
+                        passive_count.setAttribute('type', 'number');
+                        passive_count.disabled = true;
+                        passive_count.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+                        if(this.freeze){passive_count.disabled = true;}
+                        title.appendChild(passive_count);
+                        break;
                     default:
                         throw new Error('Неверный тип данных');
 

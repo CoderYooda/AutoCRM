@@ -119,7 +119,7 @@
                                     <label for="partner_id" class="col-sm-5 no-pr col-form-label">Возврат по продаже</label>
                                     <div class="col-sm-7">
                                         <button onclick="{{ $class }}.openSelectShipmentModal()" type="button"
-                                                name="shipment_id" class="shipment_select form-control text-left button_select">
+                                                name="shipment_id" class="shipment_select form-control text-left button_select" @if(isset($refund)) disabled @endif>
                                             @if(isset($refund) && $refund->shipment != null)
                                                 {{ $refund->shipment->outputName() }}
                                             @elseif(isset($shipment))
@@ -152,11 +152,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group row row-sm">
-                                    <textarea placeholder="Комментарий" style="resize: none;height: 128px;"
-                                              class="form-control" name="comment" cols="30" @isset($refund) disabled
-                                              @endisset
-                                              rows="5">@if($refund){{ $refund->comment ?? 'Комментария нет' }} @endif
-                                    </textarea>
+                                    <label class="col-sm-5" for="discount">Комментарий</label>
+                                    <div class="col-sm-7 input-group">
+                                        <textarea placeholder="Комментарий" style="resize: none;" id="comment"
+                                                  class="form-control" name="comment" cols="30" @isset($refund) disabled
+                                                  @endisset
+                                                  rows="5">@if($refund){{ $refund->comment ?? 'Комментария нет' }} @endif
+                                        </textarea>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tab-pane" id="{{ $refund ? 'refund_tab_items' . $refund->id : 'refund_tab_items' }}">
@@ -183,89 +186,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-
-                {{--<div class="row row-sm">--}}
-                    {{--<div class="col-sm-6">--}}
-                        {{--<div class="form-group row row-sm">--}}
-                            {{--<label for="partner_id" class="col-sm-5 no-pr col-form-label">Возврат по продаже</label>--}}
-                            {{--<div class="col-sm-7">--}}
-                                {{--<button onclick="{{ $class }}.openSelectShipmentModal()" type="button"--}}
-                                        {{--name="shipment_id" class="shipment_select form-control text-left button_select">--}}
-                                    {{--@if(isset($refund) && $refund->shipment != null)--}}
-                                        {{--{{ $refund->shipment->outputName() }}--}}
-                                    {{--@elseif(isset($shipment))--}}
-                                        {{--Продажа №{{ $shipment->id }}--}}
-                                    {{--@else--}}
-                                        {{--Не выбрано--}}
-                                    {{--@endif--}}
-                                {{--</button>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                        {{--<div class="form-group row row-sm">--}}
-                            {{--<label class="col-sm-5" for="discount">Покупатель</label>--}}
-                            {{--<div class="col-sm-4 input-group no-pr">--}}
-                                {{--<input id="partner_butt" type="text" name="partner_id"--}}
-                                       {{--value="@if(isset($refund) && $refund->shipment != null) {{ $refund->shipment->partner->outputName() }} @else не указан @endif"--}}
-                                       {{--class="form-control" disabled>--}}
-                            {{--</div>--}}
-                            {{--<div class="col-sm-3">--}}
-                            {{--<span class="partner-balance">--}}
-                                {{--Баланс:<br>--}}
-                                {{--<span id="balance">{{ correct_price($refund->partner->balance ?? 0.0) }} р</span>--}}
-                            {{--</span>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                        {{--<div class="form-group row row-sm">--}}
-                            {{--<label class="col-sm-5" for="discount">Ответственный</label>--}}
-                            {{--<div class="col-sm-7 input-group">--}}
-                                {{--<input type="text" value="{{ Auth::user()->partner->outputName() }}"--}}
-                                       {{--class="form-control" disabled>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                    {{--<div class="col-sm-6">--}}
-                        {{--<div class="form-group row row-sm">--}}
-                            {{--<div class="col-sm-12">--}}
-                                {{--<textarea placeholder="Комментарий" style="resize: none;height: 128px;"--}}
-                                          {{--class="form-control" name="comment" cols="30" @isset($refund) disabled--}}
-                                          {{--@endisset--}}
-                                          {{--rows="5">@if($refund){{ $refund->comment ?? 'Комментария нет' }} @endif</textarea>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                {{--<div class="form-group">--}}
-                    {{--<div for="category_id" class="mb-15"><b>Список возвращаемых номенклатур</b>--}}
-                    {{--</div>--}}
-                    {{--<div data-simplebar style="max-height: 300px;">--}}
-                        {{--<table class="table-modal">--}}
-                            {{--<thead class="text-muted">--}}
-                            {{--<tr>--}}
-                                {{--<th width="30%">Наименование</th>--}}
-                                {{--<th width="10%">Артикул</th>--}}
-                                {{--<th width="10%" style="min-width: 60px;">Кол-во</th>--}}
-                                {{--<th width="10%" style="min-width: 60px;">Всего товаров</th>--}}
-                                {{--<th width="10%" style="min-width: 60px;">Возвращено товаров</th>--}}
-                                {{--<th width="10%" style="min-width: 100px;">Цена</th>--}}
-                                {{--<th width="10%" style="min-width: 100px;">Всего</th>--}}
-                                {{--<th width="5%" style="max-width:44px"></th>--}}
-                            {{--</tr>--}}
-                            {{--</thead>--}}
-                            {{--<tbody class="product_list">--}}
-                            {{--@isset($refund->articles)--}}
-                                {{--@foreach($refund->articles as $product)--}}
-                                    {{--@include(get_template() . '.refund.dialog.product_element')--}}
-                                {{--@endforeach--}}
-                            {{--@endisset--}}
-                            {{--</tbody>--}}
-                        {{--</table>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
             </div>
             <div class="modal-footer" style="white-space: nowrap">
                 <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">

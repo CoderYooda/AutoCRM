@@ -59,9 +59,10 @@ class ShipmentController extends Controller
 
         $articles = [];
         if($shipment){
-            $articles = $shipment->articles()->get();
+            $articles = $shipment->articles;
             foreach($articles as $article){
                 $article->available = $article->getEntrancesCount();
+//                $article->count = $article->shipment_count;
             }
         }
 
@@ -116,17 +117,23 @@ class ShipmentController extends Controller
 
         $refunded_count = [];
 
-        foreach ($shipment->refunds as $refund) {
-
-            foreach ($refund->articles as $product) {
-                $refunded_count[$product->id] = $product->count;
-            }
-        }
+//        foreach ($shipment->refunds as $refund) {
+//
+//            foreach ($refund->articles as $product) {
+//                $refunded_count[$product->id] = $product->count;
+//            }
+//        }
 
         if(!$shipment){
             return response()->json([
                 'message' => 'Продажа не найдена, возможно она была удалёна',
             ], 422);
+        }
+
+        foreach($products as $product){
+            $product->shipment_count = $shipment->getProductCount($product->id);
+            $product->refunded_count = $shipment->getRefundedCount($product->id);
+            $product->count = $product->shipment_count - $product->refunded_count;
         }
 
         return response()->json([
@@ -168,7 +175,7 @@ class ShipmentController extends Controller
         $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
 
-        $articles = $shipment->articles()->get();
+        $articles = $shipment->articles;
         foreach($articles as $article){
             $article->available = $article->getEntrancesCount();
         }
