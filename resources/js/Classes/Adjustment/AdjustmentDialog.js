@@ -22,10 +22,6 @@ class Items {
         }
 
     }
-
-    getItems(){
-        return this.items;
-    }
 }
 
 class adjustmentDialog extends Modal{
@@ -105,8 +101,8 @@ class adjustmentDialog extends Modal{
 
         product_id = parseInt(product_id);
 
-        this.items.forEach((item, index) => {
-            if(item.id == product_id) delete this.items[index];
+        this.items.items.forEach((item, index) => {
+            if(item.id == product_id) delete this.items.items[index];
         });
 
         window.notification.notify( 'success', 'Продукт успешно удалён.');
@@ -117,10 +113,10 @@ class adjustmentDialog extends Modal{
     }
 
     setItems(items){
-        this.items = items;
+        this.items.items = items;
     }
 
-    addProduct(element) {
+    addProduct(pid) {
 
         let product_id = element.dataset.article_id;
 
