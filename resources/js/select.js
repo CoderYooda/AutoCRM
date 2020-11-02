@@ -21,39 +21,45 @@ window.applySelects = function() {
                 b = document.createElement("DIV");
                 b.setAttribute("class", "select-items select-hide");
                 for (j = 0; j < ll; j++) {
-
                     c = document.createElement("DIV");
+
                     c.innerHTML = selElmnt.options[j].innerHTML;
 
-                    c.addEventListener("click", function(e) {
+                    if(selElmnt.options[j].hasAttribute('disabled')){
+                        c.classList.add('disabled');
+                        c.addEventListener("click", function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        });
 
+                    } else {
+                        c.addEventListener("click", function(e) {
+                            let y, i, k, s, h, sl, yl;
+                            s = this.parentNode.parentNode.getElementsByTagName("select")[0];
 
-                        let y, i, k, s, h, sl, yl;
-                        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                            let evt = document.createEvent("HTMLEvents");
+                            evt.initEvent("change", false, true);
+                            s.dispatchEvent(evt);
 
-                        let evt = document.createEvent("HTMLEvents");
-                        evt.initEvent("change", false, true);
-                        s.dispatchEvent(evt);
-
-                        sl = s.length;
-                        h = this.parentNode.previousSibling;
-                        for (i = 0; i < sl; i++) {
-                            if (s.options[i].innerHTML == this.innerHTML) {
-                                s.selectedIndex = i;
-                                h.innerHTML = this.innerHTML;
-                                y = this.parentNode.getElementsByClassName("same-as-selected");
-                                yl = y.length;
-                                for (k = 0; k < yl; k++) {
-                                    y[k].removeAttribute("class");
+                            sl = s.length;
+                            h = this.parentNode.previousSibling;
+                            for (i = 0; i < sl; i++) {
+                                if (s.options[i].innerHTML == this.innerHTML) {
+                                    s.selectedIndex = i;
+                                    h.innerHTML = this.innerHTML;
+                                    y = this.parentNode.getElementsByClassName("same-as-selected");
+                                    yl = y.length;
+                                    for (k = 0; k < yl; k++) {
+                                        y[k].removeAttribute("class");
+                                    }
+                                    this.setAttribute("class", "same-as-selected");
+                                    break;
                                 }
-                                this.setAttribute("class", "same-as-selected");
-                                break;
                             }
-                        }
+                            h.click();
+                        });
+                    }
 
-
-                        h.click();
-                    });
                     b.appendChild(c);
                 }
                 x[i].parentElement.appendChild(b);

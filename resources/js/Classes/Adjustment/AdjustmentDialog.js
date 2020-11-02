@@ -2,6 +2,32 @@ import Sortable from "sortablejs";
 import Modal from "../Modal/Modal";
 import Tabs from "../../Tools/Tabs";
 
+class Items {
+    constructor(obj){
+        this.obj = obj;
+        this.items = obj.items;
+    }
+    add(elemWithData, refer){
+
+        let cell_item = JSON.parse(elemWithData.dataset.product);
+
+        let isset = this.items.map(function (e) {
+            return e.id;
+        }).indexOf(cell_item.id);
+
+        if(isset >= 0){
+            window.notification.notify('error', 'Товар уже в списке');
+        } else {
+            this.items.push(cell_item);
+        }
+
+    }
+
+    getItems(){
+        return this.items;
+    }
+}
+
 class adjustmentDialog extends Modal{
 
     constructor(dialog){
@@ -11,7 +37,7 @@ class adjustmentDialog extends Modal{
     }
 
     init() {
-        this.items = [];
+        this.items = new Items(this);
 
         this.linked();
     }
@@ -90,6 +116,10 @@ class adjustmentDialog extends Modal{
         openDialog('selectProduct', '&refer=' + this.current_dialog.id);
     }
 
+    setItems(items){
+        this.items = items;
+    }
+
     addProduct(element) {
 
         let product_id = element.dataset.article_id;
@@ -106,21 +136,21 @@ class adjustmentDialog extends Modal{
                     refer: this.current_dialog.id
                 }
             })
-                .then(response => {
+            .then(response => {
 
-                    this.items.push({ id: parseInt(product_id) });
+                this.items.push({ id: parseInt(product_id) });
 
-                    let data = response.data;
+                let data = response.data;
 
-                    let list_element = this.current_dialog.querySelector('#product-list');
+                let list_element = this.current_dialog.querySelector('#product-list');
 
-                    let html = helper.createElementFromHTML(data.html);
+                let html = helper.createElementFromHTML(data.html);
 
-                    list_element.appendChild(html);
+                list_element.appendChild(html);
 
-                    window.notification.notify( 'success', 'Продукт успешно добавлен.');
-                })
-                .catch(response => console.log(response));
+                window.notification.notify( 'success', 'Продукт успешно добавлен.');
+            })
+            .catch(response => console.log(response));
         }
         else {
             this.removeProduct(product_id);

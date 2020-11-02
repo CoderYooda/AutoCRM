@@ -10,6 +10,8 @@
             <a href="#" data-target="tab_products">Продукты</a>
         </div>
 
+
+
         <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
 
             @csrf

@@ -87,7 +87,7 @@
         </div>
         @endif
 
-        @if($client_order && ($client_order->wsumm != $client_order->itogo))
+        @if($client_order && ($client_order->wsumm < $client_order->itogo))
             <div class="modal-alt-header ">
                 <button onclick="{{ $class }}.getPayment()" class="button success uppercase-btn">Принять оплату</button>
             </div>
@@ -101,7 +101,7 @@
             </div>
         @endif
 
-        @if($client_order && $client_order->status === 'canceled' && $client_order->wsumm != 0)
+        @if(($client_order && $client_order->status === 'canceled') || ($client_order && ($client_order->wsumm > $client_order->itogo)))
             <div id="return_money" class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
             </div>
