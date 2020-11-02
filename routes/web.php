@@ -15,6 +15,8 @@ Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('Pass
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
 
+Route::view('/test', 'shop.emails.success_order');
+
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
 

@@ -10,8 +10,6 @@ class StoreRequest extends FormRequest
 {
     public function authorize()
     {
-        dd($this->all());
-
         return true;
     }
 

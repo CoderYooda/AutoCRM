@@ -164,21 +164,24 @@ class Helper{
 
     initDialogMethods(resp = null){
 
-        let dialogs = document.querySelectorAll('.dialog');
+        let dialogs = document.getElementsByClassName('dialog');
 
         dialogs.forEach(elem => {
 
-            let classname = elem.id.replace(/[^a-zA-Z]/g, '');
+            if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')) {
 
-            try {
-                window[elem.id] = new classes[classname](elem, resp ? resp.data : resp);
-            } catch (err) {
-                window.helper.log(classname + " - Такого конструктора не существует");
-                console.log(err);
+                let classname = elem.id.replace(/[^a-zA-Z]/g, '');
+
+                try {
+                    window[elem.id] = new classes[classname](elem, resp ? resp.data : resp);
+                } catch (err) {
+                    window.helper.log(classname + " - Такого конструктора не существует");
+                    console.log(err);
+                }
             }
-
-            window.applySelects();
         });
+
+        window.applySelects();
     }
 
     decodeHtml(html) {

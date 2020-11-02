@@ -2,8 +2,6 @@ class Items {
     constructor(object, container, form_name, header){
         this.container = document.getElementById(container);
 
-        console.log(this.container);
-
         if(!form_name)
             throw new Error('Не указано имя формы');
 
@@ -220,7 +218,7 @@ class Items {
             add_button.innerText = 'Добавить позицию';
 
             add_button.addEventListener('click', () => {
-                this.parent_object.current_dialog.openProductmodal();
+                this.parent_object.openProductmodal();
             });
             bottom.appendChild(add_button);
         }
@@ -352,6 +350,15 @@ class Items {
                 switch(item.type) {
                     case 'text':
                         title.innerText = cell_item[item.table_name];
+                        break;
+                    case 'hidden-text':
+                        title.innerText = cell_item[item.table_name];
+
+                        let edit_text = document.createElement("input");
+                        edit_text.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+                        edit_text.value = cell_item[item.table_name];
+                        edit_text.type = 'hidden';
+                        title.appendChild(edit_text);
                         break;
                     case 'counter':
                         let input = document.createElement("input");

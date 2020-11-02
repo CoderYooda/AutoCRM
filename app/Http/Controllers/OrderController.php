@@ -19,11 +19,13 @@ class OrderController extends Controller
 
         $class = 'orderDialog' . ($order->id ?? '');
 
-        $view = view(get_template() . '.shop_orders.dialog.form_order', compact('order', 'class', 'request'));
+        $positions = json_encode($order ? $order->positions->toArray() : []);
+
+        $view = view(get_template() . '.shop_orders.dialog.form_order', compact('order', 'class', 'request', 'positions'));
 
         $prefs = [
             'use_nds' => false,
-            'can_add_items' => true,
+            'can_add_items' => $order->status == Order::MODERATING_STATUS,
             'nds' => 0,
             'freeze' => false,
             'nds_included' => false

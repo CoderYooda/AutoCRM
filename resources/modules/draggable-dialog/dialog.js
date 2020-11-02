@@ -66,11 +66,7 @@ window.openDialog = function(tag, params = null, reload = false) {
         url: '/dialog_' + tag + '_open' + params
     }).then(function (resp) {
 
-        console.log(resp.data.tag);
-
         if(typeof(resp.data.tag) == "undefined") return ;
-
-        console.log(alreadyOpened(resp.data.tag), reload);
 
         if(!alreadyOpened(resp.data.tag) || reload){
             closeDialog(null, resp.data.tag);

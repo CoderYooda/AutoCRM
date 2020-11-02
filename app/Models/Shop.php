@@ -13,6 +13,15 @@ class Shop extends Model
 
     protected $guarded = [];
 
+    public function getUrl()
+    {
+        if($this->domain) {
+            return 'http://' . $this->domain . '/';
+        }
+
+        return 'http://' . $this->subdomain . '/';
+    }
+
     public function company()
     {
         return $this->hasOne(Company::class, 'id', 'company_id');

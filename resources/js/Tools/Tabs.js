@@ -35,6 +35,8 @@ class Tabs {
 
     clickEvent(element) {
 
+        let inputs = [];
+
         element.addEventListener('click', event => {
 
             //Удаляем активность у всех элементов с тэгом 'A'
@@ -46,7 +48,7 @@ class Tabs {
             this.tab_elements.forEach(tab_element => {
 
                 if(this.disable_inputs) {
-                    let inputs = tab_element.querySelectorAll('input');
+                    inputs = tab_element.querySelectorAll('input');
                     if (inputs) inputs.forEach(input => input.disabled = true);
                 }
 
@@ -57,7 +59,7 @@ class Tabs {
                 if(tab_element.id === element.dataset.target) {
                     tab_element.classList.add('active');
 
-                    if(this.disable_inputs && inputs) inputs.forEach(input => input.disabled = false);
+                    if(this.disable_inputs) inputs.forEach(input => input.disabled = false);
                 }
             });
         });

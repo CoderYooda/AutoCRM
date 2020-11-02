@@ -15,14 +15,13 @@ class orderDialog extends Modal {
         new Tabs('order_tabs', false);
 
         let header = [
-            {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name', type: 'text'},
-            {min_with: 100, width: 100, name: 'Артикул', table_name: 'article', type: 'text'},
-            {min_with: 100, width: 100, name: 'Производитель', table_name: 'manufacturer', type: 'text'},
-            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
-            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name', type: 'hidden-text'},
+            {min_with: 100, width: 100, name: 'Артикул', table_name: 'article', type: 'hidden-text'},
+            {min_with: 100, width: 100, name: 'Производитель', table_name: 'manufacturer', type: 'hidden-text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter'},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price'},
             {min_with: 80, width: 80, name: 'Всего', table_name: 'total', type: 'passive'},
         ];
-        console.log("awdawd", this.items);
         this.items = new BBlist(this, 'order_list', 'products', header);
 
         this.addPhoneMask();

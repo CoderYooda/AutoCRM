@@ -62,11 +62,6 @@
                     </div>
 
                     <div class="form-group-flex">
-                        <label>Статус</label>
-                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
-                    </div>
-
-                    <div class="form-group-flex">
                         <label>Тип оплаты</label>
                         <input class="form-control" style="line-height: 30px;" value="{{ $order->getPayTypeName() }}" disabled />
                     </div>
@@ -80,7 +75,7 @@
 
                 <div id="tab_products" class="tab">
 
-                    <div data-prefs="{{ $prefs }}" data-items="{{ json_encode($order ? $order->positions->toArray() : []) }}" id="order_list">
+                    <div data-prefs="{{ $prefs }}" data-items="{{ $positions }}" id="order_list">
 
                     </div>
 

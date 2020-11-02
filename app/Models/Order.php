@@ -6,6 +6,7 @@ use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Services\ShopManager\ShopManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 Carbon::setToStringFormat('d.m.Y H:i');
 
@@ -67,12 +68,17 @@ class Order extends Model
         return self::$payStatuses[$this->pay_type];
     }
 
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'company_id', 'company_id');
+    }
+
     public function initPayment()
     {
         /** @var ShopManager $shopManager */
         $shopManager = app(ShopManager::class);
 
-        $shop = $shopManager->getCurrentShop();
+        $shop = $shopManager->getCurrentShop() ?? Shop::where('company_id', Auth::user()->company_id)->first();
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
 
@@ -81,12 +87,19 @@ class Order extends Model
 
         $receiptItems = [];
 
+        $totalPrice = 0;
+
         foreach ($this->positions as $position) {
+
+            $price = (int)$position->price * 100;
+
+            $totalPrice += $price;
+
             $receiptItems[] = [
                 'Name'          => $position->name,
-                'Price'         => $position->price * 100,
+                'Price'         => $price,
                 'Quantity'      => $position->count,
-                'Amount'        => $position->price * 100,
+                'Amount'        => $price,
                 'PaymentMethod' => 'full_prepayment',
                 'PaymentObject' => 'commodity',
                 'Tax'           => 'none'
@@ -102,12 +115,8 @@ class Order extends Model
 
         $params = [
             'OrderId'    => $this->id,
-            'Amount'     => $this->total_price * 100,
-            'SuccessURL' => route('orders.success', $this->id),
-            'DATA'       => [
-                'Email'           => $companyEmail,
-                'Connection_type' => 'example'
-            ],
+            'Amount'     => $totalPrice,
+            'SuccessURL' => $shop->getUrl() . 'orders/' . $this->id,
             'Receipt'    => $receipt
         ];
 
