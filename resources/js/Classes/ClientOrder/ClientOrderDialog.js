@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class clientorderDialog extends Modal{
 
@@ -17,15 +18,6 @@ class clientorderDialog extends Modal{
 
     init(){
         let object = this;
-        helper.initTabs('cl_tabs');
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 500);
-
-        ///Вешаем обрабочик на поле скидки/////////////
-        let discount = object.root_dialog.querySelector('input[name=discount]');
-        discount.addEventListener("keydown", fn);
-        discount.addEventListener("paste", fn);
-        discount.addEventListener("delete", fn);
-        ////////////////////////////////////////////////
 
         ///Вешаем обработчик на чекбокс/////////////////
         let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
@@ -93,17 +85,26 @@ class clientorderDialog extends Modal{
             }
         });
 
-        // object.root_dialog.getElementsByTagName('form')[0].addEventListener('clientOrderStored',  function(){
-        //     let root_id = object.root_dialog.id;
-        //     object.freshContent(root_id,function(){
-        //         delete window[root_id];
-        //         delete window.dialogs[root_id];
-        //         window.helper.initDialogMethods();
-        //     });
-        // });
-        this.addPhoneMask();
 
-        this.loadItemsIfExists();
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('client_order_tabs' + prefix);
+
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 100, width: 110,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 90, width: 90, name: 'Наличие', table_name: 'store_count', type: 'text'},
+            {min_with: 90, width: 90, name: 'Отгружено', table_name: 'shipped_count', type: 'text'},
+            {min_with: 100, width: 100, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
+        ];
+
+        this.items = new BBlist(this, 'client_order_list' + prefix, 'products', header);
+
+        this.addPhoneMask();
 
         document.addEventListener('click', function(e){
             let elem = document.getElementById('templates');
@@ -529,7 +530,7 @@ class clientorderDialog extends Modal{
     makeShipped(elem){
         if(window.isXHRloading) return;
         window.axform.send(elem, (resp) => {
-            if(resp.status == 200){
+            if(resp.status === 200){
                 if(resp.data &&  resp.data.shipment_id){
                     this.finitaLaComedia(true);
                     window.openDialog('shipmentDialog', '&shipment_id=' + resp.data.shipment_id);

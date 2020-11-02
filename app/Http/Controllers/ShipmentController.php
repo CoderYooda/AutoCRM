@@ -62,6 +62,7 @@ class ShipmentController extends Controller
             $articles = $shipment->articles;
             foreach($articles as $article){
                 $article->available = $article->getEntrancesCount();
+                $article->supplier_name = $article->supplier->name;
 //                $article->count = $article->shipment_count;
             }
         }
@@ -178,6 +179,7 @@ class ShipmentController extends Controller
         $articles = $shipment->articles;
         foreach($articles as $article){
             $article->available = $article->getEntrancesCount();
+            $article->supplier_name = $article->supplier->name;
         }
 
         $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request', 'articles'))

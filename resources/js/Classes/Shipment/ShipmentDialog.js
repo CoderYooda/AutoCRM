@@ -142,6 +142,7 @@ class shipmentDialog extends Modal{
         let header = [
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 100, width: 100,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
             {min_with: 90, width: 90, name: 'Доступно', table_name: 'available', type: 'text'},
             {min_with: 100, width: 100, name: 'Цена', table_name: 'price', type: 'price',},

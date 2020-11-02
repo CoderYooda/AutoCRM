@@ -7,7 +7,7 @@
         @php $class = 'clientorderDialog' @endphp
         id="clientorderDialog"
         @endif
-        class="dialog client_order_dialog " style="width:1200px">
+        class="dialog client_order_dialog " style="width:1000px">
     @endif
     @if(isset($client_order) && $client_order->id != NULL)
         <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
@@ -121,28 +121,73 @@
             <input id="inpercents" name="inpercents" type="hidden" @if($client_order && $client_order->inpercents) value="1" @else value="0" @endif>
             <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($client_order)){{ $client_order->partner->id }}@endif">
 
+            <div class="d-flex">
+                <div class="link-tabs no-pr">
+                    <ul class="nav" id="client_order_tabs{{ $client_order ? $client_order->id : '' }}" storage_tabs>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ $client_order ? '#co_tab_base' . $client_order->id : '#co_tab_base' }}" aria-controls="{{ $client_order ? 'co_tab_base' . $client_order->id : 'co_tab_base' }}" data-toggle="tab" data-target="{{ $client_order ? '#co_tab_base' . $client_order->id : '#co_tab_base' }}">
+                                Основные
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ $client_order ? '#co_tab_items' . $client_order->id : '#co_tab_items' }}" aria-controls="{{ $client_order ? 'co_tab_items' . $client_order->id : 'co_tab_items' }}" data-toggle="tab" data-target="{{ $client_order ? '#co_tab_items' . $client_order->id : '#co_tab_items' }}">
+                                Позиции
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ $client_order ? '#co_tab_sms' . $client_order->id : '#co_tab_sms' }}" aria-controls="{{ $client_order ? 'co_tab_sms' . $client_order->id : 'co_tab_sms' }}" data-toggle="tab" data-target="{{ $client_order ? '#co_tab_sms' . $client_order->id : '#co_tab_sms' }}">
+                                SMS сообщения
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ $client_order ? '#co_tab_pays' . $client_order->id : '#co_tab_pays' }}" aria-controls="{{ $client_order ? 'co_tab_pays' . $client_order->id : 'co_tab_pays' }}" data-toggle="tab" data-target="{{ $client_order ? '#co_tab_pays' . $client_order->id : '#co_tab_pays' }}">
+                                Платежи
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ $client_order ? '#co_tab_ships' . $client_order->id : '#co_tab_ships' }}" aria-controls="{{ $client_order ? 'co_tab_ships' . $client_order->id : 'co_tab_ships' }}" data-toggle="tab" data-target="{{ $client_order ? '#co_tab_ships' . $client_order->id : '#co_tab_ships' }}">
+                                Продажи
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dialog_tab_holder">
+                    <div class="tab-content no-pl">
+                        <div class="tab-pane active" id="{{ $client_order ? 'co_tab_base' . $client_order->id : 'co_tab_base' }}">
 
-            <div class="row row-sm">
-                <div class="col-sm-6">
+                            <div class="form-group row row-sm">
+                                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заказчик</label>
+                                <div class="col-sm-9">
+                                    <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
+                                        @if(isset($client_order) && $client_order->partner != null)
+                                            {{ $client_order->partner->outputName() }}
+                                        @else
+                                            Не выбрано
+                                        @endif
+                                    </button>
+                                </div>
+                            </div>
 
-                    <div class="form-group row row-sm">
-                        <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заказчик</label>
-                        <div class="col-sm-9">
-                            <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
-                                @if(isset($client_order) && $client_order->partner != null)
-                                    {{ $client_order->partner->outputName() }}
-                                @else
-                                    Не выбрано
-                                @endif
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-group row row-sm">
-                        <label class="col-sm-3" for="discount">Скидка</label>
-                        <div class="col-sm-9 input-group">
-                            <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
-                            <span class="input-group-append">
+                            <div class="form-group row row-sm">
+                                <label class="col-sm-3" for="discount">Скидка</label>
+                                <div class="col-sm-9 input-group">
+                                    <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
+                                    <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span id="inpercents_text"> @if(isset($client_order) && $client_order->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
                                     <div class="dropdown_container">
@@ -152,34 +197,34 @@
                                     </div>
                                 </div>
                             </span>
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                    <div class="form-group row row-sm">
-                        <label class="col-sm-3" for="phone">Телефон</label>
-                        {{--<div class="col-sm-9 input-group">--}}
-                        {{--<input type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>--}}
-                        {{--</div>--}}
-                        <div class="col-sm-9 input-group">
-                            <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" value="{{ $client_order->phone ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
-                            <span class="input-group-append">
+                            <div class="form-group row row-sm">
+                                <label class="col-sm-3" for="phone">Телефон</label>
+                                {{--<div class="col-sm-9 input-group">--}}
+                                {{--<input type="text" name="phone" class="form-control phone_input" placeholder="Телефон" @if($client_order) value="{{ $client_order->phone }}" @else value="0" @endif>--}}
+                                {{--</div>--}}
+                                <div class="col-sm-9 input-group">
+                                    <input id="client-phone" type="text" name="phone" class="form-control phone_input" placeholder="Телефон" value="{{ $client_order->phone ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
+                                    <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span>Номера контакта</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
                                     <div class="dropdown_container">
                                         <div class="arrow"></div>
                                         <div id="phones-list">
                                             @if(isset($client_order))
-                                                    @forelse($client_order->partner->phones as $phone)
-                                                        <span onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="element">{{ $phone->number }}</span>
-                                                    @empty
+                                                @forelse($client_order->partner->phones as $phone)
+                                                    <span onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="element">{{ $phone->number }}</span>
+                                                @empty
                                                     <div class="no-result">
                                                         <div class="text-center">
                                                             Номеров нет
                                                         </div>
                                                     </div>
-                                                    @endforelse
-                                                @else
-                                                 <div class="no-result">
+                                                @endforelse
+                                            @else
+                                                <div class="no-result">
                                                     <div class="text-center">
                                                         Выберите контакт
                                                     </div>
@@ -189,69 +234,77 @@
                                     </div>
                                 </div>
                             </span>
-                            {{--<div class="input-group-append">--}}
-                                {{--<button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контактов</button>--}}
-                                {{--<div id="phones-list" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(619px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">--}}
+                                    {{--<div class="input-group-append">--}}
+                                    {{--<button class="btn white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Номера контактов</button>--}}
+                                    {{--<div id="phones-list" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(619px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">--}}
                                     {{--@if(isset($client_order))--}}
-                                        {{--@forelse($client_order->partner()->first()->phones()->get() as $phone)--}}
-                                            {{--<a onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="dropdown-item pointer">{{ $phone->number }}</a>--}}
-                                        {{--@empty--}}
-                                            {{--<div class="no-result">--}}
-                                                {{--<div class="text-center">--}}
-                                                    {{--Номеров нет--}}
-                                                {{--</div>--}}
-                                            {{--</div>--}}
-                                        {{--@endforelse--}}
+                                    {{--@forelse($client_order->partner()->first()->phones()->get() as $phone)--}}
+                                    {{--<a onclick="{{ $class }}.selectNumber(this)" data-number="{{ $phone->number }}" class="dropdown-item pointer">{{ $phone->number }}</a>--}}
+                                    {{--@empty--}}
+                                    {{--<div class="no-result">--}}
+                                    {{--<div class="text-center">--}}
+                                    {{--Номеров нет--}}
+                                    {{--</div>--}}
+                                    {{--</div>--}}
+                                    {{--@endforelse--}}
                                     {{--@else--}}
-                                        {{--<div class="no-result">--}}
-                                            {{--<div class="text-center">--}}
-                                                {{--Выберите контакт--}}
-                                            {{--</div>--}}
-                                        {{--</div>--}}
+                                    {{--<div class="no-result">--}}
+                                    {{--<div class="text-center">--}}
+                                    {{--Выберите контакт--}}
+                                    {{--</div>--}}
+                                    {{--</div>--}}
                                     {{--@endif--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        </div>
-                    </div>
+                                    {{--</div>--}}
+                                    {{--</div>--}}
+                                </div>
+                            </div>
 
-                    @if(isset($client_order))
-                    <div class="form-group row row-sm">
-                        <label class="col-sm-3" for="discount">Статус заказа</label>
-                        <div class="col-sm-9 input-group">
-                            <select custom_select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
-                                <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
-                                <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
-                                <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
-                                {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
-                                <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
-                            </select>
-                        </div>
-                    </div>
-                    @endif
-                    <div class="form-group row row-sm">
-                        <div class="col-sm-12">
-                            <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5" @if($client_order && $client_order->status === 'canceled') disabled @endif>{{ $client_order->comment ?? '' }}</textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 form-group no-pl intabs @if(!isset($client_order)) hide @endif">
-                    <div class="b-b nav-active-bg">
-                        <ul class="nav nav-tabs" id="cl_tabs">
-                            <li class="nav-item ">
-                                <a class="nav-link" href="#tab4" data-toggle="tab" data-target="#tab4">SMS сообщения</a>
-                            </li>
-                            <li class="nav-item active">
-                                <a class="nav-link" href="#tab5" data-toggle="tab" data-target="#tab5">Платежи</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#tab6" data-toggle="tab" data-target="#">Продажи</a>
-                            </li>
-                        </ul>
-                    </div>
+                            @if(isset($client_order))
+                                <div class="form-group row row-sm">
+                                    <label class="col-sm-3" for="discount">Статус заказа</label>
+                                    <div class="col-sm-9 input-group">
+                                        <select custom_select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
+                                            <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
+                                            <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
+                                            <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
+                                            {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
+                                            <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="form-group row row-sm">
+                                <div class="col-sm-12">
+                                    <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5" @if($client_order && $client_order->status === 'canceled') disabled @endif>{{ $client_order->comment ?? '' }}</textarea>
+                                </div>
+                            </div>
 
-                    <div class="tab-content p-0" >
-                        <div class="tab-pane" id="tab4">
-                            @if(isset($client_order) && !$client_order->isShipped)
+                        </div>
+                        <div class="tab-pane" id="{{ $client_order ? 'co_tab_items' . $client_order->id : 'co_tab_items' }}">
+                            <div data-prefs="@if($client_order){{
+                                json_encode([
+                                    'use_nds' => false,
+                                    'can_add_items' => true,
+                                    'nds' => 0,
+                                    'freeze' => false,
+                                    'nds_included' => false
+                                    ]
+                                 )}}@else{{
+                                json_encode([
+                                    'use_nds' => false,
+                                    'can_add_items' => true,
+                                    'freeze' => false,
+                                    'nds' => 0,
+                                    'nds_included' => false
+                                    ]
+                                 )}}@endif" data-items="@if($client_order){{
+                                 json_encode($articles->toArray())
+                                 }}@else{{ json_encode([]) }}@endif" id="client_order_list{{ $client_order ? $client_order->id : '' }}">
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="{{ $client_order ? 'co_tab_sms' . $client_order->id : 'co_tab_sms' }}">
+                            {{--&& !$client_order->isShipped--}}
+                            @if(isset($client_order) )
                                 <div class="d-flex flex-column flex" id="chat-list">
                                     <div class="hover">
                                         <div class="pt-3 pb-3">
@@ -314,7 +367,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="tab-pane active" id="tab5" data-simplebar style="height: 192px">
+                        <div class="tab-pane" id="{{ $client_order ? 'co_tab_pays' . $client_order->id : 'co_tab_pays' }}">
                             <div class="list-group">
                                 @if(isset($client_order))
                                     @forelse($client_order->warrants as $warrant)
@@ -341,7 +394,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="tab-pane" id="tab6" data-simplebar style="height: 192px">
+                        <div class="tab-pane" id="{{ $client_order ? 'co_tab_ships' . $client_order->id : 'co_tab_ships' }}">
                             <div class="list-group">
                                 @if(isset($client_order))
                                     @forelse($client_order->shipments as $shipment)
@@ -371,37 +424,8 @@
                     </div>
                 </div>
             </div>
-
-
-            <div class="form-group">
-                <div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>
-                </div>
-                <div data-simplebar style="max-height: 300px;">
-                    <table class="table-modal" >
-                        <thead class="text-muted">
-                        <tr>
-                            <th width="30%">Наименование</th>
-                            <th width="10%">Артикул</th>
-                            <th width="10%">Производитель</th>
-                            <th width="10%" style="min-width: 60px;">Кол-во</th>
-                            <th width="10%">Наличие</th>
-                            <th width="10%" style="min-width: 60px;">Отгружено</th>
-                            <th width="10%" style="min-width: 100px;">Цена</th>
-                            <th width="10%" style="min-width: 100px;">Всего</th>
-                            <th width="10%"></th>
-                        </tr>
-                        </thead>
-                        <tbody class="product_list">
-                            @if(isset($client_order))
-                                @foreach($client_order->articles as $product)
-                                    @include(get_template() . '.client_orders.dialog.product_element')
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
+
         <div class="modal-footer" style="white-space: nowrap">
             @if(!isset($client_order) || isset($client_order) && !$client_order->isShipped)
             <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Добавить товар</button>
@@ -418,7 +442,6 @@
             @if(isset($client_order) && $client_order->id != NULL)
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
-
             @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled' && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
             @endif

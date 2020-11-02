@@ -61,7 +61,7 @@ class ClientOrder extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_client_orders', 'client_order_id', 'article_id')
-            ->withPivot('count', 'shipped_count', 'price', 'total');
+            ->withPivot('count as count', 'shipped_count as shipped_count', 'price as price', 'total as total');
     }
 
     public static function getActiveOrders()
@@ -79,13 +79,13 @@ class ClientOrder extends Model
     public function getAvailableToShippingArticlesCount($article_id)
     {
         $article = $this->articles()->wherePivot('article_id', $article_id)->first();
-        return $article ? $article->pivot->count - $article->pivot->shipped_count : 0;
+        return $article ? $article->count - $article->shipped_count : 0;
     }
 
     public function getProductPriceFromClientOrder($article_id)
     {
         $article = $this->articles()->wherePivot('article_id', $article_id)->first();
-        return $article->pivot->price;
+        return $article->price;
     }
 
     public function getShippedArticlesIds()
@@ -100,8 +100,8 @@ class ClientOrder extends Model
         $products = [];
         foreach($this->articles as $article){
             $products[$article->id]['id'] = $article->id;
-            $products[$article->id]['count'] = $article->pivot->count;
-            $products[$article->id]['price'] = $article->pivot->price;
+            $products[$article->id]['count'] = $article->count;
+            $products[$article->id]['price'] = $article->price;
         }
         $request['partner_id'] = $this->partner_id;
         $request['store_id'] = $this->store_id;
@@ -131,7 +131,7 @@ class ClientOrder extends Model
     public function IsAllProductsShipped()
     {
         foreach($this->articles as $article){
-           if($this->getShippedCount($article->id) < $article->pivot->count){
+           if($this->getShippedCount($article->id) < $article->count){
                return false;
            }
         }
@@ -173,7 +173,7 @@ class ClientOrder extends Model
     public function getShippedCount($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
-        return $article ? $article->pivot->shipped_count : 0;
+        return $article ? $article->shipped_count : 0;
     }
 
     public function smsMessages()

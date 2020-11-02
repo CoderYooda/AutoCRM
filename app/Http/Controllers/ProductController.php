@@ -244,7 +244,11 @@ class ProductController extends Controller
         foreach ($products as $product){
             $product->available = $product->getEntrancesCount();
             $product->price = $product->getPrice();
+//            $product->supplier = $product->supplier()->first()->name;
+            $product->store_count = $product->available;
         }
+
+//        dd($products);
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
