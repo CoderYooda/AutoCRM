@@ -20,8 +20,8 @@ class clientorderDialog extends Modal{
         let object = this;
 
         ///Вешаем обработчик на чекбокс/////////////////
-        let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        inpercents.addEventListener("change", fn);
+        // let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
+        // inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
 
