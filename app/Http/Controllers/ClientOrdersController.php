@@ -33,9 +33,19 @@ class ClientOrdersController extends Controller
             $client_order = null;
         }
 
+        $articles = [];
+        if($client_order){
+            $articles = $client_order->articles;
+            foreach($articles as $article){
+                $article->supplier_name = $article->supplier->name;
+                $article->store_count = $article->getCountInCurrentStore();
+            }
+        }
+
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))->render()
+            'html' => view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request', 'articles'))->render()
         ]);
     }
 
@@ -72,7 +82,6 @@ class ClientOrdersController extends Controller
         ], 200);
     }
 
-
     public function fresh(ClientOrder $client_order, Request $request)
     {
         $client_order->articles = $client_order->articles()->get();
@@ -85,7 +94,17 @@ class ClientOrdersController extends Controller
 
         $request['fresh'] = true;
         $class = 'clientorderDialog' . $client_order->id;
-        $content = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))->render();
+
+        $articles = [];
+        if($client_order){
+            $articles = $client_order->articles;
+            foreach($articles as $article){
+                $article->supplier_name = $article->supplier->name;
+                $article->store_count = $article->getCountInCurrentStore();
+            }
+        }
+
+        $content = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request', 'articles'))->render();
         return response()->json([
             'html' => $content,
             'target' => 'clientorderDialog' . $client_order->id,
@@ -187,7 +206,8 @@ class ClientOrdersController extends Controller
 
         $client_order_data = [];
 
-        $rp = $request->products;
+        $rp = array_reverse($request['products'], true);
+
         foreach ($rp as $id => $product) {
                 $vcount = $product['count'];
 
@@ -208,7 +228,7 @@ class ClientOrdersController extends Controller
             $client_order->summ += $vtotal;
             $pivot_data = [
                 'store_id' => $client_order->store()->first()->id,
-                'article_id' => (int)$product['id'],
+                'article_id' => (int)$id,
                 'client_order_id' => $client_order->id,
                 'count' => (int)$vcount,
                 'price' => (double)$vprice,

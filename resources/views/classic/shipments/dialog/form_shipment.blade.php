@@ -139,8 +139,8 @@
                     <div class="tab-content no-pl">
                         <div class="tab-pane active" id="{{ $shipment ? 's_tab_base' . $shipment->id : 's_tab_base' }}">
                             <div class="form-group row">
-                                <label for="partner_id" class="col-sm-3 no-pr col-form-label">Покупатель</label>
-                                <div class="col-sm-6 no-pr d-flex">
+                                <label for="partner_id" class="col-sm-5 no-pr col-form-label">Покупатель</label>
+                                <div class="col-sm-5 no-pr d-flex">
                                     <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if(isset($shipment)) disabled @endif>
                                         @if(isset($shipment) && $shipment->partner != NULL && $shipment->partner != null)
                                             {{ $shipment->partner->outputName() }}
@@ -158,24 +158,16 @@
                                     </div>
                                     @endif
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                             <span class="partner-balance">
                                 Баланс:<br>
                                 <span id="balance">{{ correct_price($shipment->partner->balance ?? 0.0) }} р</span>
                             </span>
                                 </div>
                             </div>
-
-                            {{--@if(!isset($shipment))--}}
-                                {{--<div class="form-group row">--}}
-                                    {{--<label class="col-form-label pr-10">Анонимный покупатель</label>--}}
-                                    {{--<input type="checkbox" name="anonymous" onchange="{{ $class }}.anonymousBuyerToggle(this)" style="max-height: 15px; margin-top: 3px;" />--}}
-                                {{--</div>--}}
-                            {{--@endif--}}
-
                             <div class="form-group row">
-                                <label class="col-sm-3" for="discount">Скидка</label>
-                                <div class="col-sm-9 input-group">
+                                <label class="col-sm-5" for="discount">Скидка</label>
+                                <div class="col-sm-7 input-group">
                                     <input onclick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" @if($shipment  && $shipment->id != NULL) value="{{ $shipment->discount }}" @else value="0" @endif @if(isset($shipment)) disabled @endif >
                                     <span class="input-group-append">
                                         <div class="dropdown" onclick="window.helper.openModal(this, event)">
@@ -196,8 +188,8 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-3" for="shipment_dialog_focused">Комментарий</label>
-                                <div class="col-sm-9">
+                                <label class="col-sm-5" for="shipment_dialog_focused">Комментарий</label>
+                                <div class="col-sm-7">
                                     <textarea placeholder="Комментарий" style="resize: none;height: 85px;" class="form-control" name="comment" id="shipment_dialog_focused" cols="30" rows="4" @if(isset($shipment)) disabled @endif >@if(isset($shipment) && $shipment->id != NULL){{ $shipment->comment }}@endif</textarea>
                                 </div>
                             </div>
@@ -227,33 +219,6 @@
                     </div>
                 </div>
             </div>
-            {{--<div class="form-group">--}}
-                {{--<div for="category_id" class="mb-15"><b>Список приходных номенклатур</b>--}}
-                {{--</div>--}}
-                {{--<div data-simplebar style="max-height: 300px;">--}}
-                    {{--<table class="table-modal" >--}}
-                        {{--<thead class="text-muted">--}}
-                        {{--<tr>--}}
-                            {{--<th width="30%">Наименование</th>--}}
-                            {{--<th width="10%">Артикул</th>--}}
-                            {{--<th width="10%" style="min-width: 60px;">Кол-во</th>--}}
-                            {{--<th width="10%" style="min-width: 60px;">Доступное кол-во</th>--}}
-                            {{--<th width="10%" style="min-width: 100px;">Цена</th>--}}
-                            {{--<th width="10%" style="min-width: 100px;">Всего</th>--}}
-                            {{--<th width="5%" style="max-width:44px"></th>--}}
-                        {{--</tr>--}}
-                        {{--</thead>--}}
-                        {{--<tbody class="product_list">--}}
-                        {{--@isset($shipment)--}}
-                            {{--@foreach($shipment->articles as $product)--}}
-                                {{--@include(get_template() . '.shipments.dialog.product_element')--}}
-                            {{--@endforeach--}}
-                        {{--@endisset--}}
-                        {{--</tbody>--}}
-                    {{--</table>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-
 
         </div>
         <div class="modal-footer" style="white-space: nowrap">

@@ -87,6 +87,7 @@ class Items {
             this.inpercents = inpercents;
             inpercents.addEventListener("change", fn);
         }
+        console.log("Лист загружен");
     }
 
     setItems(items){
