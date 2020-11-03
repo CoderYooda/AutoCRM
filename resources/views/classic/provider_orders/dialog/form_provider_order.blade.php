@@ -126,7 +126,8 @@
                                 'index' => 'ordinal',
                                 'can_add_items' => true,
                                 'nds' => $provider_order->nds,
-                                 'nds_included' => $provider_order->nds_included]
+                                'index' => 'ordinal',
+                                'nds_included' => $provider_order->nds_included]
                                  )}} @else {{ json_encode(['use_nds' => true, 'nds' => true, 'can_add_items' => true, 'nds_included' => true]) }} @endif" data-items="@if($provider_order){{
                                  json_encode($provider_order->articlesJson->toArray())
                                  }}@else{{ json_encode([]) }}@endif" id="po_list">

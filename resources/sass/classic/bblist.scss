@@ -1,3 +1,16 @@
+
+.title_cont {
+    display: flex;
+    margin-bottom: 10px;
+
+    .header_title {
+        flex: 1;
+        font-weight: 600;
+        height: 30px;
+        line-height: 30px;
+    }
+}
+
 .list-container{
     overflow: hidden;
     .list-bottom{
@@ -14,14 +27,6 @@
     }
 
     .title_cont{
-        display: flex;
-        margin-bottom: 10px;
-        .header_title{
-            flex: 1;
-            font-weight: 600;
-            height: 30px;
-            line-height: 30px;
-        }
         .nds_container{
             .nds_title{
                 font-weight: 600;

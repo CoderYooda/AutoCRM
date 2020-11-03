@@ -159,10 +159,10 @@
                                     @endif
                                 </div>
                                 <div class="col-sm-2">
-                            <span class="partner-balance">
-                                Баланс:<br>
-                                <span id="balance">{{ correct_price($shipment->partner->balance ?? 0.0) }} р</span>
-                            </span>
+                                    <span class="partner-balance">
+                                        Баланс:<br>
+                                        <span id="balance">{{ correct_price($shipment->partner->balance ?? 0.0) }} р</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -210,7 +210,6 @@
                                     'freeze' => false,
                                     'nds' => 0,
                                     'nds_included' => false,
-                                    'index' => 'ordinal'
                                     ]
                                  )}}@endif" data-items="@if($shipment){{
                                  json_encode($articles->toArray())

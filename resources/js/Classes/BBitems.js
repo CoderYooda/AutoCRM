@@ -310,18 +310,19 @@ class Items {
 
     insertProduct(cell_item, check_isset = true){
         this.key = null;
-        if(this.index === 'id'){ //ordinal
-            this.key = cell_item[this.index];
-        } else {
+
+        if(this.index === 'ordinal'){
             this.key = this.item_index;
             this.item_index++;
+        } else {
+            this.key = cell_item.id;
         }
+
         cell_item.key = this.key;
 
         let isset = this.items.map(function (e) {
             return e.id;
         }).indexOf(cell_item.id);
-
 
         if(isset >= 0 && check_isset){
             window.notification.notify('error', 'Товар уже в списке');
@@ -472,9 +473,6 @@ class Items {
     }
 
     recalculateItem(id){
-
-        console.log(id);
-
         id = parseInt(id);
 
         let object = this;
