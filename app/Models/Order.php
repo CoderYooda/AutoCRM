@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Services\ShopManager\ShopManager;
 use Carbon\Carbon;
@@ -24,6 +25,9 @@ class Order extends Model
     const PAYMENT_TYPE_CASH = 0;
     const PAYMENT_TYPE_ONLINE = 1;
 
+    const DELIVERY_TYPE_PICKUP = 0;
+    const DELIVERY_TYPE_TRANSPORT = 1;
+
     protected $table = 'orders';
     protected $guarded = [];
 
@@ -43,6 +47,11 @@ class Order extends Model
         'Возврат'
     ];
 
+    public static $deliveryTypes = [
+        'Самовывоз',
+        'Доставка'
+    ];
+
     public static $payStatuses = [
         'Наличные',
         'Оплата на сайте'
@@ -56,6 +65,21 @@ class Order extends Model
     public function positions()
     {
         return $this->hasMany(OrderPosition::class, 'order_id', 'id');
+    }
+
+    public function deliveryAddress()
+    {
+        return $this->hasOne(DeliveryAddress::class, 'id', 'delivery_id');
+    }
+
+    public function pickupAddress()
+    {
+        return $this->hasOne(Store::class, 'id', 'pickup_id');
+    }
+
+    public function getDeliveryTypeName()
+    {
+        return self::$deliveryTypes[$this->delivery_type];
     }
 
     public function getStatusName()

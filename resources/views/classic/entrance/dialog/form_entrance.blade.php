@@ -119,24 +119,7 @@
 
                         </div>
                         <div class="tab-pane" id="{{ $entrance ? 'e_tab_items' . $entrance->id : 'e_tab_items' }}">
-                            <div data-prefs="@if($entrance){{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => false,
-                                    'nds' => 0,
-                                    'freeze' => true,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@else{{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => false,
-                                    'nds' => 0,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@endif" data-items="@if($entrance){{
-                                 json_encode($entrance->articlesJson->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="entrance_list{{ $entrance ? $entrance->id : '' }}">
+                            <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="entrance_list{{ $entrance ? $entrance->id : '' }}">
                             </div>
                         </div>
                     </div>

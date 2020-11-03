@@ -802,7 +802,7 @@ class storePage extends Page{
         } else if(this.active_tab === 'client_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 130, width: 200, name: 'Статус', table_name: 'status_formatted'},
+                {min_with: 130, width: 200, name: 'Статус', table_name: 'status'},
                 {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount_formatted'},
 
                 {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
@@ -856,6 +856,7 @@ class storePage extends Page{
         else if(this.active_tab === 'shop_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 90, width: 'auto', name: 'Статус',table_name: 'status'},
                 {min_with: 130, width: 250, name: 'Заказчик', table_name: 'partner_name'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];

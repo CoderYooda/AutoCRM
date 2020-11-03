@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\ProductController;
-use App\Models\Supplier;
+use App\Models\Order;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -22,6 +21,7 @@ class ClientOrdersRequest extends FormRequest
             'discount' => ['required', 'integer', 'max:1000000', 'min:0'],
             'products' => ['required_without:quick_products'],
             'phone' => ['required'],
+            'status' => [('between:0,' . (count(Order::$statuses) - 1))],
             'products.*.count' => ['integer', 'min:1', 'max:9999'],
             'products.*.price' => ['numeric', 'between:1,1000000.00'],
 

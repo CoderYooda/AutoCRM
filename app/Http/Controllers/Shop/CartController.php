@@ -36,6 +36,9 @@ class CartController extends Controller
 
     public function index(CartInterface $cart)
     {
+        /** @var Partner $partner */
+        $partner = Auth::user()->companyPartner;
+
         $orders = $this->formatOrdersArray($cart->all());
         $storesTotal = [];
 
@@ -47,7 +50,9 @@ class CartController extends Controller
             $totalPrice += $order['price'] * $order['count'];
         }
 
-        return view('shop.cart', compact('orders', 'stores', 'totalPrice', 'storesTotal'))
+        $deliveryAddresses = $partner->deliveryAddresses;
+
+        return view('shop.cart', compact('orders', 'stores', 'totalPrice', 'storesTotal', 'deliveryAddresses'))
             ->with('shop', $this->shop);
     }
 
@@ -112,12 +117,12 @@ class CartController extends Controller
                 $uniqueFields = [
                     'basePhone'  => $request->phone,
                     'company_id' => $company->id,
-                    'store_id'   => $request->store_id
+                    'store_id'   => $request->pickup_id
                 ];
 
                 $types = ['fl', 'ip', 'up'];
 
-                $updateFields = $request->except('rules', 'password', 'register', 'pay_type', 'delivery_type', 'store_id', 'register_type', 'name', 'surname', 'middlename');
+                $updateFields = $request->except('rules', 'password', 'register', 'pay_type', 'delivery_type', 'pickup_id', 'register_type', 'name', 'surname', 'middlename');
                 $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
                 $updateFields['category_id'] = BUYER_CATEGORY;
                 $updateFields['type'] = array_search($request->register_type, $types);
@@ -146,14 +151,17 @@ class CartController extends Controller
             }
 
             $order = Order::create([
-                'company_id'  => $company->id,
-                'partner_id'  => $partner->id,
-                'total_price' => $totalPrice,
-                'status'      => MODERATION_STATUS,
-                'comment'     => $request->comment,
-                'email'       => $partner->email,
-                'phone'       => $partner->basePhone,
-                'pay_type'    => $request->pay_type
+                'company_id'    => $company->id,
+                'partner_id'    => $partner->id,
+                'total_price'   => $totalPrice,
+                'status'        => MODERATION_STATUS,
+                'comment'       => $request->comment,
+                'email'         => $partner->email,
+                'phone'         => $partner->basePhone,
+                'pay_type'      => $request->pay_type,
+                'delivery_type' => $request->delivery_type,
+                'delivery_id'   => $request->delivery_id,
+                'pickup_id'     => $request->pickup_id
             ]);
 
             foreach ($cartOrders as $cartOrder) {

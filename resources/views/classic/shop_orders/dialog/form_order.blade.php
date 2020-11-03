@@ -62,8 +62,41 @@
                     </div>
 
                     <div class="form-group-flex">
+                        <label>Вариант получения</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getDeliveryTypeName() }}" disabled />
+                    </div>
+
+                    @if($order->delivery_type == \App\Models\Order::DELIVERY_TYPE_PICKUP)
+
+                        <div class="form-group-flex">
+                            <label>Точка получения товара</label>
+                            <input class="form-control" style="line-height: 30px;" value="{{ $order->pickupAddress->name }}" disabled />
+                        </div>
+
+                    @endif
+
+                    @if($order->delivery_type == \App\Models\Order::DELIVERY_TYPE_TRANSPORT)
+
+                        <div class="form-group-flex">
+                            <label>Адрес доставки</label>
+                            <input class="form-control" style="line-height: 30px;" value="{{ $order->deliveryAddress->text }}" disabled />
+                        </div>
+
+                    @endif
+
+                    <div class="form-group-flex">
+                        <label>Статус</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
+                    </div>
+
+                    <div class="form-group-flex">
                         <label>Тип оплаты</label>
                         <input class="form-control" style="line-height: 30px;" value="{{ $order->getPayTypeName() }}" disabled />
+                    </div>
+
+                    <div class="form-group-flex">
+                        <label>Статус</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
                     </div>
 
                     <div class="form-group-flex">
@@ -75,7 +108,7 @@
 
                 <div id="tab_products" class="tab">
 
-                    <div data-prefs="{{ $prefs }}" data-items="{{ $positions }}" id="order_list">
+                    <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="order_list">
 
                     </div>
 

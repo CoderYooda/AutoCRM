@@ -23,9 +23,35 @@ class EntranceController extends Controller
         $entrance = Entrance::find($request['entrance_id']);
         $class = 'entranceDialog' . ($entrance->id ?? '');
 
+        /** @var ProviderOrder $providerorder */
+        $providerorder = $entrance->providerorder ?? null;
+
+        $items = $entrance ? $entrance->articles->toArray() : [];
+
+        foreach ($items as $key => $item) {
+            $items[$key]['product_id'] = $item['id'];
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['entered_count'] = $providerorder->getArticleEnteredCountByPivotId($item['pivot']['provider_pivot_id'] ?? $item['pivot']['id']);
+            $items[$key]['total_count'] = $providerorder->getArticleCountByPivotId($item['pivot']['provider_pivot_id'] ?? $item['pivot']['id']);
+            $items[$key]['count'] = $providerorder ? $item['pivot']['count'] : ($item['total_count'] - $item['entered_count']);
+        }
+
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => false,
+            'nds' => 0,
+            'freeze' => $entrance ? true : false,
+            'nds_included' => false
+        ];
+
+        $view = view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request', 'class'))
+            ->with('items', json_encode($items))
+            ->with('prefs', json_encode($prefs));
+
         return response()->json([
             'tag' => $class,
-            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance',  'request'))->with('class', $class)->render()
+            'html' => $view->render()
         ]);
     }
 
@@ -54,9 +80,13 @@ class EntranceController extends Controller
         //Проверка валидации
         $messages = [];
 
-        foreach($request['products'] as $id => $product) {
-            $entrance_count = $providerorder->getArticleEntredCount($id);
-            $providers_count = $providerorder->getArticleCount($id);
+        $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_keys($request->products))->get();
+
+        foreach($request['products'] as $pivot_id => $product) {
+
+            $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
+
+            $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
 
             $form_count = (int)$product['count'];
 
@@ -78,11 +108,12 @@ class EntranceController extends Controller
             'invoice' => $request->invoice
         ]);
 
-        foreach ($request->products as $id => $product) {
-            $price = $providerorder->articles->find($id)->pivot->price;
+        foreach ($request->products as $pivot_id => $product) {
 
-            $entrance->articles()->attach($id, [
-                'store_id' => $providerorder->store_id,
+            $price = $providerorder->articles->find($product['id'])->pivot->price;
+
+            $entrance->articles()->attach($product['id'], [
+                'store_id' => $user->current_store,
                 'company_id' => $entrance->company_id,
                 'count' => $product['count'],
                 'price' => $price,
@@ -95,9 +126,6 @@ class EntranceController extends Controller
         UA::makeUserAction($entrance,'create');
 
         $entrance->providerorder->updateIncomeStatus();
-
-//        #Всё ли поступило?
-//        $providerorder->checkEntered();
 
         #Ответ сервера
         return response()->json([

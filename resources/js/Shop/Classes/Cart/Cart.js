@@ -228,11 +228,15 @@ class Cart {
 
     changeDeliveryType(element) {
 
-        let target_element = document.querySelector('[name="store_id"]');
+        let pickup_element = document.querySelector('[name="store_id"]');
 
-        let group_element = target_element.closest('.form-group-flex');
+        let pickup_group = pickup_element.closest('.form-group-flex');
+        pickup_group.classList.toggle('d-none');
 
-        group_element.classList.toggle('d-none');
+        let delivery_element = document.querySelector('[name="delivery_id"]');
+
+        let delivery_group = delivery_element.closest('.form-group-flex');
+        delivery_group.classList.toggle('d-none');
     }
 
     getOrderByHash(hash) {

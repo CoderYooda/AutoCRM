@@ -19,21 +19,21 @@ class OrderController extends Controller
 
         $class = 'orderDialog' . ($order->id ?? '');
 
-        $positions = json_encode($order ? $order->positions->toArray() : []);
+        $items = $order ? $order->positions->toArray() : [];
 
-        $view = view(get_template() . '.shop_orders.dialog.form_order', compact('order', 'class', 'request', 'positions'));
+        $view = view(get_template() . '.shop_orders.dialog.form_order', compact('order', 'class', 'request'));
 
         $prefs = [
             'use_nds' => false,
             'can_add_items' => $order->status == Order::MODERATING_STATUS,
             'nds' => 0,
-            'freeze' => false,
+            'freeze' => $order->status != Order::MODERATING_STATUS,
             'nds_included' => false
         ];
 
         $view->with('statuses', Order::$statuses)
-            ->with('prefs', json_encode($prefs));
-
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
 
         return response()->json([
             'tag' => $class,
@@ -56,7 +56,8 @@ class OrderController extends Controller
 
         $company_id = Auth::user()->company_id;
 
-        $entrance_refunds = Order::with('partner', 'positions')
+        /** @var Order[] $orders */
+        $orders = Order::with('partner', 'positions')
             ->where('company_id', $company_id)
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('entrance_refunds.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
@@ -65,10 +66,11 @@ class OrderController extends Controller
             ->orderBy($field, $dir)
             ->paginate($size);
 
-        foreach ($entrance_refunds as $entrance_refund) {
-            $entrance_refund['partner_name'] = $entrance_refund->partner->official_name;
+        foreach ($orders as $key => $order) {
+            $orders[$key]['partner_name'] = $order->partner->official_name;
+            $orders[$key]['status'] = $order->getStatusName();
         }
 
-        return $entrance_refunds;
+        return $orders;
     }
 }

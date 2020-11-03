@@ -1,56 +1,173 @@
 @php($order = \App\Models\Order::first())
 
-    <!doctype html>
+<!doctype html>
 <html lang="ru">
 
-<head>
+    <head>
 
-    <title>Успешное оформление заказа</title>
+        <title>Успешное оформление заказа</title>
 
-</head>
+        <style>
+
+            .body {
+                padding: 0;
+                margin: 0 auto;
+                position: relative;
+                width: 600px;
+            }
+
+            .header {
+                position: relative;
+                height: 112px;
+                line-height: 112px;
+            }
+
+            .header span {
+                position: relative;
+                top: -300px;
+                font-weight: bold;
+                font-size: 24px;
+                letter-spacing: 0.06em;
+                margin-left: 52px;
+                color: white;
+            }
+
+            .header .parts {
+                width: 398px;
+                height: 202px;
+                top: -153px;
+                position: relative;
+                right: -104px;
+                z-index: 1;
+            }
+
+            .content {
+                position: relative;
+                padding: 100px 52px 32px 52px;
+                background: white;
+            }
 
 
-<body class="body" style="padding: 0;margin: 0 auto;position: relative;width: 600px;">
+            .watch_button {
+                display: inline-block;
+                background: #1F98E9;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 14px;
+                margin-top: 24px;
+                letter-spacing: 0.04em;
+                padding: 11px 24px;
+                color: #FFFFFF;
+                text-decoration: unset;
+            }
 
-<div class="header" style="position: relative;height: 112px;line-height: 112px;background: url(/images/mail/header.svg) center no-repeat;">
-    <span style="font-weight: bold;font-size: 24px;letter-spacing: 0.06em;margin-left: 52px;color: white;">{{ $order->shop->domain ?? $order->shop->subdomain }}</span>
-</div>
+            h2 {
+                font-weight: 800;
+                font-size: 20px;
+                letter-spacing: 0.06em;
+                color: #404040;
+                z-index: 1;
+            }
 
-<div class="content" style="position: relative;padding: 100px 52px 32px 52px;background: white;">
+            h3 {
+                font-weight: bold;
+                font-size: 16px;
+                letter-spacing: 0.06em;
+                color: #404040;
+                z-index: 1;
+            }
 
-    <h2 style="font-weight: 800;font-size: 20px;letter-spacing: 0.06em;color: #404040;z-index: 1;">Здравствуйте!</h2>
-    <h3 style="font-weight: bold;font-size: 16px;letter-spacing: 0.06em;color: #404040;z-index: 1;">Ваш заказ №{{ $order->id }} оформлен</h3>
+            .form-group {
+                position: relative;
+                height: 66px;
+                border-bottom: 1px solid #ECECEC;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
 
-    <div class="form-group" style="position: relative;height: 66px;border-bottom: 1px solid #ECECEC;display: flex;flex-direction: column;justify-content: center;">
-        <label style="margin-bottom: 6px;font-weight: bold;font-size: 14px;letter-spacing: 0.04em;color: #404040;">ФИО:</label>
-        <div class="text" style="font-size: 16px;letter-spacing: 0.04em;color: #404040;">{{ $order->partner->fio }}</div>
-    </div>
+            .form-group:last-child {
+                border-bottom: unset;
+            }
 
-    <div class="form-group" style="position: relative;height: 66px;border-bottom: 1px solid #ECECEC;display: flex;flex-direction: column;justify-content: center;">
-        <label style="margin-bottom: 6px;font-weight: bold;font-size: 14px;letter-spacing: 0.04em;color: #404040;">Телефон:</label>
-        <div class="text" style="font-size: 16px;letter-spacing: 0.04em;color: #404040;">{{ display_phone($order->partner->basePhone) }}</div>
-    </div>
+            .form-group label {
+                margin-bottom: 6px;
+                font-weight: bold;
+                font-size: 14px;
+                letter-spacing: 0.04em;
+                color: #404040;
+            }
 
-    <div class="form-group" style="position: relative;height: 66px;border-bottom: 1px solid #ECECEC;display: flex;flex-direction: column;justify-content: center;">
-        <label style="margin-bottom: 6px;font-weight: bold;font-size: 14px;letter-spacing: 0.04em;color: #404040;">Email:</label>
-        <div class="text" style="font-size: 16px;letter-spacing: 0.04em;color: #404040;">{{ $order->partner->email }}</div>
-    </div>
+            .form-group .text {
+                font-size: 16px;
+                letter-spacing: 0.04em;
+                color: #404040;
+            }
 
-    <div class="form-group" style="position: relative;height: 66px;border-bottom: 1px solid #ECECEC;display: flex;flex-direction: column;justify-content: center;">
-        <label style="margin-bottom: 6px;font-weight: bold;font-size: 14px;letter-spacing: 0.04em;color: #404040;">Тип оплаты:</label>
-        <div class="text" style="font-size: 16px;letter-spacing: 0.04em;color: #404040;">{{ $order->getPayTypeName() }}</div>
-        @if($order->pay_type == 1 && $order->status == \App\Models\Order::WAIT_PAYMENT_STATUS)
-            <button class="pay_button" style="right: 0;top: calc(100% / 4);border: 2px solid #1F98E9;border-radius: 4px;padding: 8px 20px;color: #1F98E9;background: white;">Оплатить</button>
-        @endif
-    </div>
+            .form-group .pay_button {
+                position: absolute;
+                right: 0;
+                top: calc(100% / 4);
+                border: 2px solid #1F98E9;
+                border-radius: 4px;
+                padding: 8px 20px;
+                color: #1F98E9;
+                background: white;
+            }
 
-    <a class="watch_button" target="_blank" href="{{ $order->shop->getUrl() . 'orders/' . $order->id }}" style="display: inline-block;background: #1F98E9;border-radius: 4px;font-weight: bold;font-size: 14px;margin-top: 24px;letter-spacing: 0.04em;padding: 11px 24px;color: #FFFFFF;text-decoration: unset;">Список позиций</a>
+            .footer {
+                height: 72px;
+            }
 
-</div>
+        </style>
 
-<div class="footer" style="height: 72px;background: url(/images/mail/footer.svg) center no-repeat;">
-</div>
+    </head>
 
-</body>
+
+    <body class="body">
+
+        <div class="header">
+            <img src="{{ asset('/images/mail/header.svg') }}" />
+            <span>{{ $order->shop->domain ?? $order->shop->subdomain }}</span>
+            <img class="parts" src="{{ asset('/images/mail/parts.svg') }}" />
+        </div>
+
+        <div class="content">
+
+            <h2>Здравствуйте!</h2>
+            <h3>Ваш заказ №{{ $order->id }} оформлен</h3>
+
+            <div class="form-group">
+                <label>ФИО:</label>
+                <div class="text">{{ $order->partner->fio }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Телефон:</label>
+                <div class="text">{{ display_phone($order->partner->basePhone) }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Email:</label>
+                <div class="text">{{ $order->partner->email }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Тип оплаты:</label>
+                <div class="text">{{ $order->getPayTypeName() }}</div>
+                @if($order->pay_type == 1 && $order->status == \App\Models\Order::WAIT_PAYMENT_STATUS)
+                    <button class="pay_button">Оплатить</button>
+                @endif
+            </div>
+
+            <a class="watch_button" target="_blank" href="{{ $order->shop->getUrl() . 'orders/' . $order->id }}">Список позиций</a>
+
+        </div>
+
+        <div class="footer">
+            <img src="{{ asset('/images/mail/footer.svg') }}" />
+        </div>
+
+    </body>
 
 </html>

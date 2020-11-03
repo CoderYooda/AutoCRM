@@ -263,13 +263,16 @@
                                 <div class="form-group row row-sm">
                                     <label class="col-sm-3" for="discount">Статус заказа</label>
                                     <div class="col-sm-9 input-group">
-                                        <select custom_select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
-                                            <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
-                                            <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
-                                            <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
-                                            {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
-                                            <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
+                                        <select onchange="{{ $class }}.changeOrderStatus(this);" class="form-control" @if($client_order && ($client_order->status == 1 || $client_order->status >= 5) || $client_order->isShipped) disabled @endif>
+
+                                            @foreach($statuses as $id => $status)
+
+                                                <option value="{{ $id }}" @if($client_order->status > 1 && $id < 2) disabled @endif @if($client_order->status == $id) selected @endif>{{ $status }}</option>
+
+                                            @endforeach
+
                                         </select>
+                                        <input type="hidden" name="status" value="{{ $client_order->status }}" />
                                     </div>
                                 </div>
                             @endif

@@ -317,6 +317,8 @@ class ShopController extends Controller
                 if ($status == Order::PAYMENT_TYPE_ONLINE) {
                     $order->initPayment();
                 }
+
+                $clientOrder->update(['status' => $status]);
             }
 
             $order->update([

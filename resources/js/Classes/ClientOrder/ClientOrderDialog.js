@@ -582,16 +582,9 @@ class clientorderDialog extends Modal{
 
     changeOrderStatus(element) {
 
-        // let target_element = this.current_dialog.querySelector('#return_money');
+        let target_element = this.current_dialog.querySelector('[name="status"]');
 
-        // console.log(element.options[element.selectedIndex].value);
-        //
-        // if(element.options[element.selectedIndex].value == 'canceled') {
-        //     target_element.classList.remove('d-none');
-        // }
-        // else {
-        //     target_element.classList.add('d-none');
-        // }
+        target_element.value = element.options[element.selectedIndex].value;
     }
 
     getPriceFromServer(id, input) {

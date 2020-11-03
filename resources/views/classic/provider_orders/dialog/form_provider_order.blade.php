@@ -111,15 +111,7 @@
                             </div>
 
                             <div class="tab-pane" id="tab_items">
-                                <div data-prefs="@if($provider_order){{
-                                json_encode([
-                                'use_nds' => true,
-                                'can_add_items' => true,
-                                'nds' => $provider_order->nds,
-                                 'nds_included' => $provider_order->nds_included]
-                                 )}} @else {{ json_encode(['use_nds' => true, 'nds' => true, 'can_add_items' => true, 'nds_included' => true]) }} @endif" data-items="@if($provider_order){{
-                                 json_encode($provider_order->articlesJson->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="po_list">
+                                <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="po_list">
                                 </div>
                             </div>
                         </div>

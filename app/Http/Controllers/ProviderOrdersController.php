@@ -16,8 +16,8 @@ class ProviderOrdersController extends Controller
 {
     public static function providerorderDialog($request)
     {
-        $po_id = isset($request['provider_order_id']) ? $request['provider_order_id'] : $request['providerorder_id'];
-        $provider_order = ProviderOrder::find((int)$po_id);
+        $po_id = $request['provider_order_id'] ?? $request['providerorder_id'];
+        $provider_order = ProviderOrder::find($po_id);
 
         $class = 'providerorderDialog' . ($provider_order->id ?? '');
 
@@ -30,7 +30,31 @@ class ProviderOrdersController extends Controller
 
         $stores = Store::owned()->get();
 
-        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'stores', 'request', 'class'));
+        $prefs = [
+            'use_nds' => true,
+            'can_add_items' => true,
+            'nds' => $provider_order->nds ?? true,
+            'nds_included' => $provider_order->nds_included ?? true
+        ];
+
+        $items = $provider_order ? $provider_order->articles->toArray() : [];
+
+        foreach ($items as $key => $item) {
+            $items[$key]['product_id'] = $item['id'];
+            $items[$key]['name'] = $item['name'];
+            $items[$key]['article'] = $item['article'];
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['count'] = $item['pivot']['count'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['total'] = $item['pivot']['total'];
+            $items[$key]['nds'] = $item['pivot']['nds'];
+            $items[$key]['nds_percent'] = $item['pivot']['nds_percent'];
+            $items[$key]['nds_included'] = $item['pivot']['nds_included'];
+        }
+
+        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'stores', 'request', 'class'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
 
         return response()->json([
             'tag'      => $class,
@@ -187,126 +211,123 @@ class ProviderOrdersController extends Controller
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать заявки поставщикам' : 'Создавать заявки поставщикам');
 
-        $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
+        return DB::transaction(function () use ($request) {
+            $provider_order = ProviderOrder::firstOrNew(['id' => $request['id']]);
 
-        $request['do_date'] = Carbon::now();
+            $request['do_date'] = Carbon::now();
 
-        if($provider_order->exists){
-            $store = Store::owned()->where('id', $request['store_id'])->first();
+            if ($provider_order) {
+                $errors = [];
 
-            if($store->id !== $provider_order->store->id){
-                foreach($provider_order->entrances as $entrance){
-                    $entrance->migrateInStore($store);
+                foreach ($request->products as $index => $product) {
+
+                    if(!isset($product['pivot_id'])) continue;
+
+                    $enteredCount = $provider_order->getArticleEnteredCountByPivotId($product['pivot_id']);
+
+                    if ($enteredCount > $product) {
+                        $errors['products.' . $index . '.count'] = 'Кол-во в заявке не может быть меньше чем поступивших товаров.';
+                    }
+                }
+
+                if (count($errors)) {
+                    if ($request->expectsJson()) {
+                        return response()->json(['messages' => $errors], 422);
+                    }
                 }
             }
 
-            #Отнимаем с баланса контакта
-            $provider_order->partner()->first()->subtraction($provider_order->itogo);
+            if ($provider_order->exists) {
+                $store = Store::find($request['store_id']);
 
-            $this->message = 'Заказ поставщику обновлен';
+                if ($store->id !== $provider_order->store->id) {
+                    foreach ($provider_order->entrances as $entrance) {
+                        $entrance->migrateInStore($store);
+                    }
+                }
 
-            $wasExisted = true;
-        } else {
-            $provider_order->company_id = Auth::user()->company()->first()->id;
-            $provider_order->manager_id = Auth::user()->partner()->first()->id;
-            $this->message = 'Заказ поставщику сохранен';
-            $wasExisted = false;
-        }
-        $provider_order->fill($request->only($provider_order->fields));
-        $provider_order->summ = 0;
-        $provider_order->balance = 0;
-        $provider_order->itogo = 0;
-        $provider_order->save();
+                #Отнимаем с баланса контакта
+                $provider_order->partner->subtraction($provider_order->itogo);
 
-        UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
+                $this->message = 'Заказ поставщику обновлен';
 
-        $provider_order_pivot_data = [];
+                $wasExisted = true;
+            } else {
+                $provider_order->company_id = Auth::user()->company_id;
+                $provider_order->manager_id = Auth::user()->partner->id;
+                $this->message = 'Заказ поставщику сохранен';
+                $wasExisted = false;
+            }
+            $provider_order->fill($request->only($provider_order->fields));
+            $provider_order->summ = 0;
+            $provider_order->balance = 0;
+            $provider_order->itogo = 0;
+            $provider_order->save();
 
-        $errors = [];
-        foreach(array_reverse($request['products'], true) as $id => $product) {
+            UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
 
-            $vcount = $product['count'];
+            foreach ($request['products'] as $product) {
 
-            $entred_count = $provider_order->getArticleEntredCount($id);
+                $count = $product['count'];
+                $price = $product['price'];
+                $total = $price * $count;
 
-            if($entred_count > $vcount){
-                $errors['products.' . $id . '.count'] = 'Кол-во в заявке не может быть меньше чем поступивших товаров.';
+                $provider_order->summ += $total;
+
+                $nds_percent = 20;
+                $nds = 0.00;
+
+                if ($request['nds']) {
+                    $nds = $total / (100 + $nds_percent);
+                    if ($request['nds_included']) $nds *= $nds_percent;
+                }
+
+                $params = [
+                    'article_id'        => $product['id'],
+                    'provider_order_id' => $provider_order->id,
+                    'count'             => $product['count'],
+                    'price'             => $product['price'],
+                    'total'             => $total,
+                    'nds'               => round($nds, 2),
+                    'nds_percent'       => round($nds_percent, 2),
+                    'nds_included'      => $request['nds_included'],
+                ];
+
+                DB::table('article_provider_orders')->updateOrInsert(['id' => ($product['pivot_id'] ?? null)], $params);
+
+                foreach ($provider_order->entrances as $entrance) {
+                    $entrance->freshPriceByArticleId($product['id'], $total);
+                }
             }
 
-            $vprice = $product['price'];
+            $provider_order->freshWsumm();
 
-            $vtotal = $vprice * $vcount;
-
-            $provider_order->summ += $vtotal;
-            //$actor_product = Article::where('id', $product['id'])->first();
-
-            //$article_provider_order = $provider_order->articles()->where('article_id', $product['id'])->count();
-
-            ### Пересчёт кол-ва с учетом предидущего поступления #######################################
-            #$store->articles()->syncWithoutDetaching($actor_product->id);
-            #$beforeCount = $entrance->getArticlesCountById($actor_product->id);
-            #$count - Текущее кол-во на складе в наличии
-            #############################################################################################
-
-            $pivot_data = self::calculatePivotArticleProviderOrder($request, $product);
-
-            $provider_order_pivot_data[$id] = $pivot_data;
-
-//            if($article_provider_order > 0){
-//                $provider_order->articles()->updateExistingPivot($product['id'], $pivot_data);
-//            } else {
-//                $provider_order->articles()->save($actor_product, $pivot_data);
-//            }
-
-            foreach($provider_order->entrances()->get() as $entrance){
-                $entrance->freshPriceByArticleId($id, $vprice);
+            if ($request['inpercents']) {
+                $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
+            } else {
+                if ($request['discount'] >= $provider_order->summ) {
+                    $request['discount'] = $provider_order->summ;
+                }
+                if ($request['discount'] <= 0) {
+                    $request['discount'] = 0;
+                }
+                $provider_order->discount = $request['discount'];
+                $provider_order->itogo = $provider_order->summ - $request['discount'];
             }
 
-            $store = Store::where('id', $request['store_id'])->first();
-//            $store->recalculateMidprice($product['id']);
+            #Добавляем к балансу контакта
+            $provider_order->partner->addition($provider_order->itogo);
 
-        }
-        $provider_order->freshWsumm();
+            $provider_order->summ = $provider_order->articles()->sum('total');
 
+            $provider_order->save();
 
-        if(count($errors) > 0){
-            if($request->expectsJson()){
-                return response()->json(['messages' => $errors], 422);
-            }
-        }
-
-        # Синхронизируем товары к заявке
-        $provider_order->articles()->sync($provider_order_pivot_data);
-
-        if($request['inpercents']){
-            $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
-        } else {
-            if($request['discount'] >= $provider_order->summ){
-                $request['discount'] = $provider_order->summ;
-            }
-            if($request['discount'] <= 0){
-                $request['discount'] = 0;
-            }
-            $provider_order->discount = $request['discount'];
-            $provider_order->itogo = $provider_order->summ - $request['discount'];
-        }
-
-        #Добавляем к балансу контакта
-        $provider_order->partner()->first()->addition($provider_order->itogo);
-
-        $provider_order->summ = $provider_order->articles()->sum('total');
-
-        $provider_order->save();
-
-        if($request->expectsJson()){
             return response()->json([
                 'message' => $this->message,
-                'id' => $provider_order->id,
-                'event' => 'ProviderOrderStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+                'id'      => $provider_order->id,
+                'event'   => 'ProviderOrderStored',
+            ]);
+        });
     }
 
     public function getPartnerSideInfo(Request $request)

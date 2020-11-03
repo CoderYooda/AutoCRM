@@ -49,6 +49,11 @@ class ClientOrder extends Model
         return $relation;
     }
 
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'clientorder_id', 'id');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
