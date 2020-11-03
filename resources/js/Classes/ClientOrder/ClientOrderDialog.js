@@ -94,7 +94,7 @@ class clientorderDialog extends Modal{
         let header = [
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
-            {min_with: 100, width: 110,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
+            {min_with: 110, width: 120,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
             {min_with: 90, width: 90, name: 'Наличие', table_name: 'store_count', type: 'text'},
             {min_with: 90, width: 90, name: 'Отгружено', table_name: 'shipped_count', type: 'text'},
@@ -241,9 +241,12 @@ class clientorderDialog extends Modal{
         if(elem !== null){
             elem.closest('.dropdown').classList.remove('show');
         }
-        object.root_dialog.querySelector('#' + type).value = value;
+        let input = object.root_dialog.querySelector('#' + type);
+        input.value = value;
+        event = document.createEvent("HTMLEvents");
+        event.initEvent("change", true, true);
+        input.dispatchEvent(event);
         object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
-        object.recalculate();
     }
 
     getPayment(){
@@ -315,7 +318,7 @@ class clientorderDialog extends Modal{
             params += '&refer='+refer;
         }
         if(ostatok != null){
-            params += '&ostatok='+(ostatok - summ);
+            params += '&ostatok='+(ostatok);
         }
         if(refer_id != null){
             params += '&refer_id='+refer_id;
@@ -332,7 +335,7 @@ class clientorderDialog extends Modal{
         container.innerHTML = Number(count).toFixed(2);
     }
 
-    setItogo(count){
+    setTotal(count){
         let itogo_prices = this.root_dialog.querySelectorAll('.itogo_price');
         [].forEach.call(itogo_prices, function(itogo_price){
             itogo_price.innerHTML = Number(count).toFixed(2);

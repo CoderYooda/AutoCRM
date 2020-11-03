@@ -60,6 +60,8 @@ class providerOrderDialog extends Modal{
         this.tabs = window.helper.initTabs('po_tabs');
 
         let header = [
+            {min_with: NaN, width: NaN, name: 'pivot_id', table_name: 'pivot_id', type: 'hidden'},
+            {min_with: NaN, width: NaN, name: 'product_id', table_name: 'product_id', type: 'hidden'},
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},

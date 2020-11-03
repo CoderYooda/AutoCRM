@@ -28,6 +28,15 @@ class Items {
             this.use_nds = null;
         }
 
+        if(this.prefs && this.prefs.index !== 'undefined'){
+            this.index = this.prefs.index;
+            this.item_index = 0;
+        } else {
+            this.index = 'id';
+        }
+
+
+
         if(this.prefs && this.prefs.freeze !== null){
             this.freeze = this.prefs.freeze;
         } else {
@@ -193,8 +202,8 @@ class Items {
                 header_elem.style.minWidth = item.min_with + 'px';
             }
 
-
-            header.appendChild(header_elem);
+            if(item.type !== 'hidden')
+                header.appendChild(header_elem);
 
             let title = document.createElement('span');
             title.classList.add('head-title');
@@ -243,11 +252,15 @@ class Items {
                 if(item.min_with){
                     placeholder_cell.style.minWidth = item.min_with + 'px';
                 }
-                placeholder_item.appendChild(placeholder_cell);
+                if(item.type !== 'hidden')
+                    placeholder_item.appendChild(placeholder_cell);
             });
         }
 
         this.items.forEach((cell_item) => {
+
+            console.log(cell_item);
+
             this.insertProduct(cell_item, false);
         });
     }
@@ -300,6 +313,17 @@ class Items {
 
     insertProduct(cell_item, check_isset = true){
 
+
+
+        this.key = null;
+        if(this.index === 'id'){ //ordinal
+            this.key = cell_item[this.index];
+        } else {
+            this.key = this.item_index;
+            this.item_index++;
+        }
+
+
         let isset = this.items.map(function (e) {
             return e.id;
         }).indexOf(cell_item.id);
@@ -311,11 +335,10 @@ class Items {
             if(check_isset) this.items.push(cell_item);
             let body_elem = document.createElement('div');
             body_elem.classList.add('body-elem');
-            body_elem.id = this.form_name + '_' + cell_item.id;
+            body_elem.id = this.form_name + '_' + this.key;
             this.body.prepend(body_elem);
 
             if(!this.freeze){
-
                 let actions = document.createElement('div');
                 actions.classList.add('list-actions');
                 body_elem.appendChild(actions);
@@ -324,7 +347,7 @@ class Items {
                 remove.classList.add('list-remove');
                 remove.innerText = '✖';
                 remove.addEventListener('click', ()=>{
-                    this.removeItem(cell_item.id);
+                    this.removeItem(this.key);
                 });
                 actions.appendChild(remove);
             }
@@ -332,6 +355,9 @@ class Items {
             this.header.forEach((item) => {
                 let cell = document.createElement('div');
                 cell.classList.add('cell');
+
+                if(item.type === 'hidden')
+                    cell.style.display = 'none';
 
                 if(item.width === 'auto'){
                     cell.style.flex = 1;
@@ -370,15 +396,27 @@ class Items {
                         input.value = value;
                         input.setAttribute('type', 'number');
                         input.setAttribute('min', '1');
-                        input.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+
+                        input.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
+
+
                         input.addEventListener('keyup', () => {
-                            this.recalculateItem(cell_item.id);
+                            this.recalculateItem(this.key);
                         });
                         input.addEventListener('change', () => {
-                            this.recalculateItem(cell_item.id);
+                            this.recalculateItem(this.key);
                         });
                         if(this.freeze){input.disabled = true;}
                         title.appendChild(input);
+                        break;
+                    case 'hidden':
+                        let hidden = document.createElement("input");
+                        dd(cell_item);
+                        hidden.value = cell_item[item.table_name];
+                        hidden.type = 'hidden';
+                        hidden.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
+                        if(this.freeze){hidden.disabled = true;}
+                        this.container.appendChild(hidden);
                         break;
                     case 'price':
                         let price = document.createElement("input");
@@ -386,12 +424,12 @@ class Items {
                         price.setAttribute('type', 'number');
                         price.setAttribute('min', '1');
                         price.setAttribute('step', '0.1');
-                        price.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+                        price.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
                         price.addEventListener('keyup',  () => {
-                            this.recalculateItem(cell_item.id);
+                            this.recalculateItem(this.key);
                         });
                         price.addEventListener('change',  () => {
-                            this.recalculateItem(cell_item.id);
+                            this.recalculateItem(this.key);
                         });
                         if(this.freeze){price.disabled = true;}
                         title.appendChild(price);
@@ -407,7 +445,7 @@ class Items {
 
                         passive.setAttribute('type', 'number');
                         passive.disabled = true;
-                        passive.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+                        passive.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
                         if(this.freeze){passive.disabled = true;}
                         title.appendChild(passive);
                         break;
@@ -422,18 +460,19 @@ class Items {
 
                         passive_count.setAttribute('type', 'number');
                         passive_count.disabled = true;
-                        passive_count.name = this.form_name + '[' + cell_item.id + '][' + item.table_name + ']';
+                        passive_count.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
                         if(this.freeze){passive_count.disabled = true;}
-                        title.appendChild(passive_count);
+                        title.prepend(passive_count);
                         break;
                     default:
                         throw new Error('Неверный тип данных');
 
                 }
-                body_elem.appendChild(cell);
+                if(item.type !== 'hidden')
+                    body_elem.appendChild(cell);
             });
 
-            this.recalculateItem(cell_item.id);
+            this.recalculateItem(this.key);
         }
     }
 
@@ -443,6 +482,7 @@ class Items {
     }
 
     recalculateItem(id){
+
         let object = this;
         let item = this.container.querySelector('#' + this.form_name + '_' + id);
         let total = item.querySelector("input[name='" + this.form_name + "[" + id + "][total]']");
@@ -457,7 +497,6 @@ class Items {
         let vnds_percent = nds_percent ? Number(nds_percent.value) : 0;
         let vnds = nds ? Number(nds.value) : 0;
         let vtotal = total ? Number(total.value) : 0;
-
 
         if(this.use_nds && this.nds_input.checked && !this.nds_included_input.checked){
             vnds_percent = 20;
@@ -480,13 +519,30 @@ class Items {
         if(total)
             total.value = vtotal ? vtotal.toFixed(2) : 0;
 
-        object.items.map(function(e){
-            if(e.id === id){
-                e.total = vtotal;
-                e.count = vcount;
-                e.price = vprice;
-            }
-        });
+
+        if(this.index === 'id') {
+            object.items.map(function (e) {
+                if (e.id === id) {
+                    e.total = vtotal;
+                    e.count = vcount;
+                    e.price = vprice;
+                }
+            });
+        } else {
+            object.items[id].total = vtotal;
+            object.items[id].count = vcount;
+            object.items[id].price = vprice;
+            // console.log(object.items[id]);
+            //
+            // object.items.forEach(elem => {
+            //     elem[id].total = vtotal;
+            //     elem[id].count = vcount;
+            //     elem[id].price = vprice;
+            // });
+        }
+
+
+
         this.recalculateTotal();
     }
 
@@ -499,8 +555,6 @@ class Items {
             total_price = total_price + Number(e.total);
             total_count = total_count + Number(e.count);
         });
-
-
 
         if(this.inpercents){
             if(this.inpercents && parseInt(this.inpercents.value) === 1){

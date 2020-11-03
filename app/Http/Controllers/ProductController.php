@@ -236,10 +236,9 @@ class ProductController extends Controller
         foreach ($products as $product){
             $product->available = $product->getEntrancesCount();
             $product->price = $product->getPrice();
-
             $product->supplier_name = $product->supplier->name;
-
             $product->store_count = $product->available;
+            $product->shipped_count = 0;
         }
 
 //        dd($products);

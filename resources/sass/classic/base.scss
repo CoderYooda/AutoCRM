@@ -832,6 +832,11 @@ select:focus + .select-selected{
     background-color: #f8f8f9;
 }
 
+.select-items div.disabled{
+    background-color: #f9f9f980;
+    color: #d4d4d4!important;
+}
+
 input, select, textarea {
     outline: none!important;
 }

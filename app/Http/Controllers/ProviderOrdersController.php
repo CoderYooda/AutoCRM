@@ -31,6 +31,7 @@ class ProviderOrdersController extends Controller
         $stores = Store::owned()->get();
 
         $prefs = [
+            'index' => 'ordinal',
             'use_nds' => true,
             'can_add_items' => true,
             'nds' => $provider_order->nds ?? true,
