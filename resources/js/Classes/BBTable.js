@@ -206,11 +206,6 @@ class Table {
         });
     }
 
-    // moveHoverTo(index){
-    //     let row = this.elem.querySelector('[data-index="' + index + '"]');
-    //     this.elem.querySelector('.hover').style.top = row.offsetTop - row.parentNode.scrollTop + 'px';
-    // }
-
     insertElems(){
         let index = 0;
 

@@ -209,7 +209,8 @@
                                     'can_add_items' => true,
                                     'freeze' => false,
                                     'nds' => 0,
-                                    'nds_included' => false
+                                    'nds_included' => false,
+                                    'index' => 'ordinal'
                                     ]
                                  )}}@endif" data-items="@if($shipment){{
                                  json_encode($articles->toArray())
