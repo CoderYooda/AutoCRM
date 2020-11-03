@@ -298,21 +298,20 @@ class Items {
     }
 
     removeItem(id){
+        console.log('Remove_' + id);
         event.preventDefault();
         let elem = this.body.querySelector('#' + this.form_name + '_' + id);
         elem.remove();
         this.items.splice(
             this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
+                return e.key === id
+            }), 1
         );
+        console.log(this.items);
         this.recalculateTotal();
     }
 
     insertProduct(cell_item, check_isset = true){
-
-
-
         this.key = null;
         if(this.index === 'id'){ //ordinal
             this.key = cell_item[this.index];
@@ -320,17 +319,20 @@ class Items {
             this.key = this.item_index;
             this.item_index++;
         }
-
+        cell_item.key = this.key;
 
         let isset = this.items.map(function (e) {
-            return e.id;
+            return e.key;
         }).indexOf(cell_item.id);
 
 
         if(isset >= 0 && check_isset){
             window.notification.notify('error', 'Товар уже в списке');
         } else {
+
             if(check_isset) this.items.push(cell_item);
+
+
             let body_elem = document.createElement('div');
             body_elem.classList.add('body-elem');
             body_elem.id = this.form_name + '_' + this.key;
@@ -346,7 +348,7 @@ class Items {
                 remove.classList.add('list-remove');
                 remove.innerText = '✖';
                 remove.addEventListener('click', ()=>{
-                    this.removeItem(this.key);
+                    this.removeItem(body_elem.dataset.id);
                 });
                 actions.appendChild(remove);
             }
@@ -416,7 +418,7 @@ class Items {
                             hidden.disabled = true;
                         }
                         if(this.freeze){hidden.disabled = true;}
-                        this.container.appendChild(hidden);
+                        body_elem.appendChild(hidden);
                         break;
                     case 'price':
                         let price = document.createElement("input");
@@ -482,6 +484,9 @@ class Items {
     }
 
     recalculateItem(id){
+
+        console.log(id);
+
         id = parseInt(id);
 
         let object = this;
@@ -521,26 +526,13 @@ class Items {
         if(total)
             total.value = vtotal ? vtotal.toFixed(2) : 0;
 
-        if(this.index === 'id') {
-            object.items.map(function (e) {
-                if (e.id === id) {
-                    e.total = vtotal;
-                    e.count = vcount;
-                    e.price = vprice;
-                }
-            });
-        } else {
-            object.items[id].total = vtotal;
-            object.items[id].count = vcount;
-            object.items[id].price = vprice;
-            // console.log(object.items[id]);
-            //
-            // object.items.forEach(elem => {
-            //     elem[id].total = vtotal;
-            //     elem[id].count = vcount;
-            //     elem[id].price = vprice;
-            // });
-        }
+        object.items.map(function (e) {
+            if (e.key === id) {
+                e.total = vtotal;
+                e.count = vcount;
+                e.price = vprice;
+            }
+        });
 
 
 
