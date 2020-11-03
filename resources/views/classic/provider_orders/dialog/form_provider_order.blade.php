@@ -123,6 +123,7 @@
                                 <div data-prefs="@if($provider_order){{
                                 json_encode([
                                 'use_nds' => true,
+                                'index' => 'ordinal',
                                 'can_add_items' => true,
                                 'nds' => $provider_order->nds,
                                  'nds_included' => $provider_order->nds_included]

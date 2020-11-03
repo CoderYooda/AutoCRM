@@ -256,8 +256,6 @@ class Items {
 
         this.items.forEach((cell_item) => {
 
-            console.log(cell_item);
-
             this.insertProduct(cell_item, false);
         });
     }
@@ -274,8 +272,8 @@ class Items {
                 }
             }
         }
-        this.items.forEach((elem)=>{
-            this.recalculateItem(elem.id);
+        this.items.forEach((elem, key)=>{
+            this.recalculateItem(key);
         })
     }
 
@@ -291,8 +289,8 @@ class Items {
             }
         }
 
-        this.items.forEach((elem)=>{
-            this.recalculateItem(elem.id);
+        this.items.forEach((elem, key)=>{
+            this.recalculateItem(key);
         })
     }
 
@@ -333,6 +331,7 @@ class Items {
             let body_elem = document.createElement('div');
             body_elem.classList.add('body-elem');
             body_elem.id = this.form_name + '_' + this.key;
+            body_elem.dataset.id = this.key;
             this.body.prepend(body_elem);
 
             if(!this.freeze){
@@ -387,22 +386,23 @@ class Items {
 
                         input.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
 
-
                         input.addEventListener('keyup', () => {
-                            this.recalculateItem(this.key);
+                            this.recalculateItem(body_elem.dataset.id);
                         });
                         input.addEventListener('change', () => {
-                            this.recalculateItem(this.key);
+                            this.recalculateItem(body_elem.dataset.id);
                         });
                         if(this.freeze){input.disabled = true;}
                         title.appendChild(input);
                         break;
                     case 'hidden':
                         let hidden = document.createElement("input");
-                        dd(cell_item);
-                        hidden.value = cell_item[item.table_name];
+                        hidden.value = cell_item[item.table_name] ?  cell_item[item.table_name] : null;
                         hidden.type = 'hidden';
                         hidden.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
+                        if(!cell_item[item.table_name]){
+                            hidden.disabled = true;
+                        }
                         if(this.freeze){hidden.disabled = true;}
                         this.container.appendChild(hidden);
                         break;
@@ -414,10 +414,10 @@ class Items {
                         price.setAttribute('step', '0.1');
                         price.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
                         price.addEventListener('keyup',  () => {
-                            this.recalculateItem(this.key);
+                            this.recalculateItem(body_elem.dataset.id);
                         });
                         price.addEventListener('change',  () => {
-                            this.recalculateItem(this.key);
+                            this.recalculateItem(body_elem.dataset.id);
                         });
                         if(this.freeze){price.disabled = true;}
                         title.appendChild(price);
@@ -460,7 +460,7 @@ class Items {
                     body_elem.appendChild(cell);
             });
 
-            this.recalculateItem(this.key);
+            this.recalculateItem(body_elem.dataset.id);
         }
     }
 
@@ -470,12 +470,14 @@ class Items {
     }
 
     recalculateItem(id){
+        id = parseInt(id);
 
         let object = this;
         let item = this.container.querySelector('#' + this.form_name + '_' + id);
         let total = item.querySelector("input[name='" + this.form_name + "[" + id + "][total]']");
         let count = item.querySelector("input[name='" + this.form_name + "[" + id + "][count]']");
         let price = item.querySelector("input[name='" + this.form_name + "[" + id + "][price]']");
+
 
         let nds_percent = item.querySelector("input[name='" + this.form_name + "[" + id + "][nds_percent]']");
         let nds = item.querySelector("input[name='" + this.form_name + "[" + id + "][nds]']");
@@ -506,7 +508,6 @@ class Items {
             nds.value = vnds ? vnds.toFixed(2) : 0;
         if(total)
             total.value = vtotal ? vtotal.toFixed(2) : 0;
-
 
         if(this.index === 'id') {
             object.items.map(function (e) {

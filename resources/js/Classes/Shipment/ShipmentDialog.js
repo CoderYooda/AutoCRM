@@ -147,7 +147,6 @@ class shipmentDialog extends Modal{
             {min_with: 90, width: 90, name: 'Доступно', table_name: 'available', type: 'text'},
             {min_with: 100, width: 100, name: 'Цена', table_name: 'price', type: 'price',},
             {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
-            {min_with: NaN, width: NaN, name: 'pivot_id', table_name: 'count', type: 'hidden',},
         ];
 
         this.items = new BBlist(this, 'shipment_list' + prefix, 'products', header);
