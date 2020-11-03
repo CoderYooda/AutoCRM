@@ -86,14 +86,15 @@ class providerOrderDialog extends Modal{
         //data.store_id = store_id;
         if(object.refer){
             data.refer = object.refer;
+            data.inner = 1;
         }
 
         window.axios({
             method: 'post',
             url: 'providerorder/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

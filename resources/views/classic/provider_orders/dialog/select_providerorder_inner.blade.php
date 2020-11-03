@@ -9,7 +9,7 @@
                     </div>
                     <div class="list-title">
                         Заявка № {{ $providerorder->id }}
-                        <div class="secondary">{{ $providerorder->partner()->first()->outputName() }}</div>
+                        <div class="secondary">{{ $providerorder->partner->official_name ?? 'Не указано' }}</div>
                     </div>
                     <div class="list-body">
                         <div class="date">{{ $providerorder->normalizedData() }}</div>

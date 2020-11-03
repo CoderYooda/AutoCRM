@@ -23,17 +23,20 @@ class EntranceRefundController extends Controller
 
         $errors = [];
 
-        foreach ($request->products as $id => $product) {
-            $entrance_count = $entrance->articles->find($id)->pivot->count;
-            $entrance_released_count = $entrance->articles->find($id)->pivot->released_count;
-            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product, $id) {
-                return $query->articles->where('id', $id)->sum('pivot.count');
+        foreach ($request->products as $index => $product) {
+
+            $product_id = $product['product_id'];
+
+            $entrance_count = $entrance->articles->find($product_id)->pivot->count;
+            $entrance_released_count = $entrance->articles->find($product_id)->pivot->released_count;
+            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product, $product_id) {
+                return $query->articles->where('id', $product_id)->sum('pivot.count');
             });
 
             $available_count = $entrance_count - ($entrance_released_count - $entrance_refund_count);
 
             if((int)$product['count'] > $available_count) {
-                $name = 'products.' . $id . '.count';
+                $name = 'products.' . $index . '.count';
                 $errors[$name] = ['Данное количество недоступно.'];
             }
         }
@@ -116,8 +119,6 @@ class EntranceRefundController extends Controller
 
         $entrance = $entrance_refund->entrance ?? null;
 
-        $products = $entrance->articlesJson ?? [];
-
         $refunded_count = [];
 
         if($entrance) {
@@ -133,11 +134,24 @@ class EntranceRefundController extends Controller
             }
         }
 
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => false,
+            'nds' => 0,
+            'freeze' => $entrance ? false : true,
+            'nds_included' => false
+        ];
+
+        $items = $entrance ? $entrance_refund->articlesJson->toArray() : [];
+
+        $view = view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
 
         return response()->json([
             'tag' => $class,
             'id' => $entrance_refund->id ?? null,
-            'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class', 'products'))->render()
+            'html' => $view->render()
         ]);
     }
 

@@ -10,7 +10,7 @@
 {{--                            </div>--}}
                             <div class="list-title" style="max-width: unset;">
                                 Поступление № {{ $entrance->id }}
-                                <div class="secondary">Поставщик: {{ $entrance->partner->official_name }}</div>
+                                <div class="secondary">Поставщик: {{ $entrance->partner->official_name ?? 'Не указано' }}</div>
                             </div>
                             <div class="list-body">
 {{--                                <div class="date">Сумма: {{ $entrance->itogo }} р.</div>--}}

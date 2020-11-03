@@ -1,20 +1,8 @@
-    @if(!$request['fresh'])
-        <div
-        @if(isset($client_order) && $client_order->id != NULL)
-        @php $class = 'clientorderDialog' . $client_order->id @endphp
-        id="clientorderDialog{{$client_order->id}}" data-id="{{$client_order->id}}"
-        @else
-        @php $class = 'clientorderDialog' @endphp
-        id="clientorderDialog"
-        @endif
-        class="dialog client_order_dialog " style="width:1000px">
-    @endif
-    @if(isset($client_order) && $client_order->id != NULL)
-        <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
-    @else
-        <div class="titlebar">Новый заказ клиента</div>
-    @endif
-        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+@if(!$request['inner'])
+        <div id="{{ $class }}" @if($client_order) data-id="{{$client_order->id}}" @endif class="dialog client_order_dialog" style="width:1000px">
+@endif
+    <div class="titlebar">{{ $client_order ? ('Заказ клиента №' . $client_order->id) : ('Новый заказ клиента') }}</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="modal-header dark" style="-webkit-justify-content: flex-start;justify-content: normal;">
         <div class="modal-alt-header">
@@ -439,6 +427,6 @@
 
         </div>
     </form>
-@if(!$request['fresh'])
+@if(!$request['inner'])
     </div>
 @endif

@@ -1,6 +1,6 @@
 @php $stores = App\Models\Store::owned()->get(); @endphp
 
-@if(!isset($inner) || !$inner)
+@if(!$request->inner)
     <div id="providerorderDialog{{$provider_order->id ?? ''}}" @if($provider_order) data-id="{{$provider_order->id}}" @endif class="dialog provider_order_dialog new_dialog" style="width:1000px;">
 @endif
         <div class="titlebar">{{ isset($provider_order) ? ('Заявка поставщику №' . $provider_order->id) : ('Новая заявка поставщику') }}</div>
@@ -131,6 +131,6 @@
             </div>
 
         </form>
-        @if(!isset($inner) || !$inner)
+@if(!$request->inner)
     </div>
 @endif

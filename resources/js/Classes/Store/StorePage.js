@@ -562,13 +562,13 @@ class storePage extends Page{
 
         events.forEach((event) => {
             document.addEventListener(event, (e) => {
-                this.table.freshData();
+                object.table.freshData();
             });
         });
 
-        document.addEventListener('ClientOrderStored', function(e){
+        document.addEventListener('ClientOrderStored', (e) => {
             if(object.active){
-                this.table.reload();
+                object.table.freshData();
             }
         });
 

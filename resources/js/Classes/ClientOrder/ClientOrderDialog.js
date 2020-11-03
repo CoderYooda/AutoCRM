@@ -165,18 +165,19 @@ class clientorderDialog extends Modal{
         //data.store_id = store_id;
         if(object.refer){
             data.refer = object.refer;
+            data.inner = 1;
         }
 
         window.axios({
             method: 'post',
             url: 'clientorder/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
             object.addPhoneMask();
             console.log('Вставили html');
-        }).catch(function (error) {
-            console.log(error);w
+        }).catch(error => {
+            console.log(error);
         }).then(function () {
             callback();
         });

@@ -285,7 +285,7 @@ class ShopController extends Controller
 
                     $uniqueFields = [
                         'company_id' => $user->company_id,
-                        'name'       => $position['name']
+                        'name'       => $position['manufacturer']
                     ];
 
                     $supplier = Supplier::firstOrCreate($uniqueFields);
@@ -303,10 +303,14 @@ class ShopController extends Controller
 
                     $product = Article::firstOrCreate($uniqueFields, $updateFields);
 
+                    if($product->wasRecentlyCreated) {
+                        $product->update(['category_id' => 10]);
+                    }
+
                     $pivotData = [
                         'price'      => $position['price'],
                         'count'      => $position['count'],
-                        'total'      => $position['price'] * $position['count']
+                        'total'      => $position['price'] * $position['count'],
                     ];
 
                     $clientOrder->articles()->attach($product->id, $pivotData);

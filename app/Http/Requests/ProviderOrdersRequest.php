@@ -16,9 +16,9 @@ class ProviderOrdersRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        $this['nds'] = $this['nds'] ?? false;
-        $this['nds_included'] = $this['nds_included'] ?? false;
-        $this['locked'] = $this['locked'] ?? false;
+        $this['nds'] = $this['nds'] ? true : false;
+        $this['nds_included'] = $this['nds_included'] ? true : false;
+        $this['locked'] = $this['locked'] ? true : false;
     }
 
     public function rules()

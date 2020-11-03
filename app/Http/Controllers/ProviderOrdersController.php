@@ -45,9 +45,9 @@ class ProviderOrdersController extends Controller
             $items[$key]['name'] = $item['name'];
             $items[$key]['article'] = $item['article'];
             $items[$key]['pivot_id'] = $item['pivot']['id'];
-//            $items[$key]['count'] = $item['pivot']['count'];
-//            $items[$key]['price'] = $item['pivot']['price'];
-//            $items[$key]['total'] = $item['pivot']['total'];
+            $items[$key]['count'] = $item['pivot']['count'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['total'] = $item['pivot']['total'];
             $items[$key]['nds'] = $item['pivot']['nds'];
             $items[$key]['nds_percent'] = $item['pivot']['nds_percent'];
             $items[$key]['nds_included'] = $item['pivot']['nds_included'];
@@ -84,16 +84,31 @@ class ProviderOrdersController extends Controller
     public function select($id, Request $request)
     {
         $providerorder = ProviderOrder::find($id);
+
         if (!$providerorder) {
             return response()->json([
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
-        $articles = $providerorder->getNotEnteredArticles();
+
+        $products = $providerorder->getNotEnteredArticles();
+
+        foreach ($products as $key => $product) {
+            $products[$key]['pivot_id'] = $product['pivot']['id'];
+            $products[$key]['product_id'] = $product['id'];
+            $products[$key]['provider_order_id'] = $product['pivot']['provider_order_id'];
+            $products[$key]['name'] = $product['name'];
+            $products[$key]['nds'] = $product['pivot']['nds'];
+            $products[$key]['price'] = $product['pivot']['price'];
+            $products[$key]['count'] = $product['pivot']['count'];
+            $products[$key]['total'] = $product['pivot']['total'];
+            $products[$key]['nds_percent'] = $product['pivot']['nds_percent'];
+            $products[$key]['nds_included'] = $product['pivot']['nds_included'];
+        }
 
         return response()->json([
             'id' => $providerorder->id,
-            'items' => $articles,
+            'items' => $products,
             'info' => view(get_template() . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
             'name' => $providerorder->outputName()
         ]);
@@ -177,35 +192,10 @@ class ProviderOrdersController extends Controller
 
     public function fresh($id, Request $request)
     {
-        $provider_order = ProviderOrder::find($id);
+        $request['inner'] = 1;
+        $request['providerorder_id'] = $id;
 
-        foreach ($provider_order->articles as $article) {
-            $article->instock = $article->getCountInStoreId($provider_order->store_id);
-            if ($article->instock >= $article->count) {
-                $article->complited = true;
-            } else {
-                $article->complited = false;
-            }
-        }
-        $total_complited = true;
-
-        foreach ($provider_order->articles as $article) {
-            if (!$article->complited) {
-                $total_complited = false;
-            }
-        }
-
-        $provider_order->total_complited = $total_complited;
-
-        $request['fresh'] = true;
-        $class = 'providerorderDialog' . $id;
-        $inner = true;
-        $content = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'class', 'request', 'inner'))->render();
-        return response()->json([
-            'html'     => $content,
-            'target'   => 'providerorderDialog' . $id,
-            'products' => []
-        ]);
+        return self::providerorderDialog($request);
     }
 
     public function store(ProviderOrdersRequest $request)
@@ -284,7 +274,7 @@ class ProviderOrdersController extends Controller
                 }
 
                 $params = [
-                    'article_id'        => $product['id'],
+                    'article_id'        => $product['product_id'],
                     'provider_order_id' => $provider_order->id,
                     'count'             => $product['count'],
                     'price'             => $product['price'],
@@ -301,7 +291,7 @@ class ProviderOrdersController extends Controller
                 }
             }
 
-            $provider_order->freshWsumm();
+//            $provider_order->freshWsumm();
 
             if ($request['inpercents']) {
                 $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
