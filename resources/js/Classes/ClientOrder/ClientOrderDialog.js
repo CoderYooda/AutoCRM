@@ -92,6 +92,8 @@ class clientorderDialog extends Modal{
         this.tabs = window.helper.initTabs('client_order_tabs' + prefix);
 
         let header = [
+            {min_with: NaN, width: NaN, name: ' ', table_name: 'pivot_id', type:'hidden'},
+            {min_with: NaN, width: NaN, name: ' ', table_name: 'product_id', type:'hidden'},
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 110, width: 120,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},

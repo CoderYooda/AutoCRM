@@ -43,7 +43,7 @@
                     <div id="user_tabs" class="user_tabs">
                         <span class="tab active" data-target="garage">Гараж</span>
                         <span class="tab" data-target="orders">Мои заказы</span>
-                        <span class="tab" data-target="user">Личные данные</span>
+                        <span class="tab" data-target="settings">Личные данные</span>
                     </div>
 
                     <div class="tabs_content">
@@ -56,7 +56,7 @@
                             @include('shop.layout.orders_tab')
                         </div>
 
-                        <div id="user" class="tab">
+                        <div id="settings" class="tab">
                             @include('shop.layout.user_tab')
                         </div>
 

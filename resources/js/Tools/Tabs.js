@@ -30,7 +30,7 @@ class Tabs {
             }
             else active_element.click();
 
-        }, 200);
+        }, 50);
     }
 
     clickEvent(element) {
@@ -44,6 +44,8 @@ class Tabs {
 
             //Ставим активность на кликнутый элемент
             element.classList.add('active');
+
+            localStorage.setItem('userTabs', element.dataset.target);
 
             this.tab_elements.forEach(tab_element => {
 

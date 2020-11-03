@@ -853,6 +853,7 @@ input {
 
     &:disabled {
         cursor: not-allowed;
+        background: #f9f9f9;
     }
 
     &.is-invalid {

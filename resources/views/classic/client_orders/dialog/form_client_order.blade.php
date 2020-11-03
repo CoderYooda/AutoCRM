@@ -283,28 +283,12 @@
                             </div>
 
                         </div>
+
                         <div class="tab-pane" id="{{ $client_order ? 'co_tab_items' . $client_order->id : 'co_tab_items' }}">
-                            <div data-prefs="@if($client_order){{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => true,
-                                    'nds' => 0,
-                                    'freeze' => false,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@else{{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => true,
-                                    'freeze' => false,
-                                    'nds' => 0,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@endif" data-items="@if($client_order){{
-                                 json_encode($articles->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="client_order_list{{ $client_order ? $client_order->id : '' }}">
+                            <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="client_order_list{{ $client_order ? $client_order->id : '' }}">
                             </div>
                         </div>
+
                         <div class="tab-pane" id="{{ $client_order ? 'co_tab_sms' . $client_order->id : 'co_tab_sms' }}">
                             {{--&& !$client_order->isShipped--}}
                             @if(isset($client_order) )

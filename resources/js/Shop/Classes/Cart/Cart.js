@@ -228,7 +228,7 @@ class Cart {
 
     changeDeliveryType(element) {
 
-        let pickup_element = document.querySelector('[name="store_id"]');
+        let pickup_element = document.querySelector('[name="pickup_id"]');
 
         let pickup_group = pickup_element.closest('.form-group-flex');
         pickup_group.classList.toggle('d-none');

@@ -19,35 +19,45 @@ use Auth;
 
 class ClientOrdersController extends Controller
 {
-    public static function clientorderDialog($request)
+    public static function clientorderDialog(Request $request)
     {
-        $tag = 'clientorderDialog';
+        $co_id = $request['client_order_id'] ?? $request['clientorder_id'];
 
-        if ($request['client_order_id'] || $request['clientorder_id']) {
+        $client_order = ClientOrder::find($co_id);
 
-            $co_id = isset($request['client_order_id']) ? $request['client_order_id'] : $request['clientorder_id'];
+        $tag = 'clientorderDialog' . ($client_order->id ?? '');
 
-            $client_order = ClientOrder::find((int)$co_id);
+        $items = $client_order ? $client_order->articles->load('supplier') : [];
 
-            $tag .= $client_order->id;
-        } else {
-            $client_order = null;
+        foreach ($items as $key => $item) {
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['name'] = $item['name'];
+            $items[$key]['article'] = $item['article'];
+            $items[$key]['supplier_name'] = $item->supplier->name;
+            $items[$key]['count'] = $item['pivot']['count'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['total'] = $item['pivot']['total'];
+            $items[$key]['store_count'] = $item->getCountInCurrentStore();
         }
 
-        $articles = [];
-        if($client_order){
-            $articles = $client_order->articles;
-            foreach($articles as $article){
-                $article->supplier_name = $article->supplier->name;
-                $article->store_count = $article->getCountInCurrentStore();
-            }
-        }
+        $items = $items->toArray();
 
-        $statuses = Order::$statuses;
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => true,
+            'nds' => 0,
+            'freeze' => false,
+            'nds_included' => false
+        ];
+
+        $view = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items))
+            ->with('statuses', Order::$statuses);
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request', 'articles', 'statuses'))->render()
+            'html' => $view->render()
         ]);
     }
 
@@ -97,26 +107,41 @@ class ClientOrdersController extends Controller
         $request['fresh'] = true;
         $class = 'clientorderDialog' . $client_order->id;
 
-        $articles = [];
-        if($client_order){
-            $articles = $client_order->articles;
-            foreach($articles as $article){
-                $article->supplier_name = $article->supplier->name;
-                $article->store_count = $article->getCountInCurrentStore();
-            }
+        $items = $client_order ? $client_order->articles->load('supplier') : [];
+
+        foreach ($items as $key => $item) {
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['name'] = $item['name'];
+            $items[$key]['article'] = $item['article'];
+            $items[$key]['supplier_name'] = $item->supplier->name;
+            $items[$key]['count'] = $item['pivot']['count'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['total'] = $item['pivot']['total'];
+            $items[$key]['store_count'] = $article->getCountInCurrentStore();
         }
 
-        $content = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request', 'articles'))->render();
+        $items = $items->toArray();
+
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => true,
+            'nds' => 0,
+            'freeze' => false,
+            'nds_included' => false
+        ];
+
+        $view = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
+
         return response()->json([
-            'html' => $content,
+            'html' => $view->render(),
             'target' => 'clientorderDialog' . $client_order->id,
         ], 200);
     }
 
     public function store(ClientOrdersRequest $request)
     {
-        dd($request->all());
-
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать заказ клиента' : 'Создавать заказ клиента');
 
         return DB::transaction(function () use($request) {

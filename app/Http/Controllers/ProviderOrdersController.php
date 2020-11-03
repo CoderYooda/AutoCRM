@@ -45,9 +45,9 @@ class ProviderOrdersController extends Controller
             $items[$key]['name'] = $item['name'];
             $items[$key]['article'] = $item['article'];
             $items[$key]['pivot_id'] = $item['pivot']['id'];
-            $items[$key]['count'] = $item['pivot']['count'];
-            $items[$key]['price'] = $item['pivot']['price'];
-            $items[$key]['total'] = $item['pivot']['total'];
+//            $items[$key]['count'] = $item['pivot']['count'];
+//            $items[$key]['price'] = $item['pivot']['price'];
+//            $items[$key]['total'] = $item['pivot']['total'];
             $items[$key]['nds'] = $item['pivot']['nds'];
             $items[$key]['nds_percent'] = $item['pivot']['nds_percent'];
             $items[$key]['nds_included'] = $item['pivot']['nds_included'];

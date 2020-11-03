@@ -112,6 +112,7 @@
 
                             <div class="tab-pane" id="tab_items">
                                 <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="po_list">
+
                                 </div>
                             </div>
                         </div>

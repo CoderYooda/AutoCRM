@@ -66,7 +66,7 @@ class ClientOrder extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_client_orders', 'client_order_id', 'article_id')
-            ->withPivot('count as count', 'shipped_count as shipped_count', 'price as price', 'total as total');
+            ->withPivot('id', 'count as count', 'shipped_count as shipped_count', 'price as price', 'total as total');
     }
 
     public static function getActiveOrders()
