@@ -105,15 +105,31 @@ class ClientOrder extends Model
         return $articles ? $articles->pluck('id') : [];
     }
 
-    public function makeShipped(){
-        $shipmnetController = new ShipmentController();
+    public function makeShipped()
+    {
+        $shipmentController = new ShipmentController();
         $request = new ShipmentsRequest();
+
         $products = [];
-        foreach($this->articles as $article){
+
+        foreach($this->articles as $article) {
             $products[$article->id]['id'] = $article->id;
-            $products[$article->id]['count'] = $article->count;
-            $products[$article->id]['price'] = $article->price;
+
+            if(isset($products[$article->id]['price'])) $products[$article->id]['price'] += $article->price;
+            else $products[$article->id]['price'] = $article->price;
+
+            if(isset($products[$article->id]['count'])) $products[$article->id]['count'] += $article->count;
+            else $products[$article->id]['count'] = $article->count;
+
+            if(isset($products[$article->id]['duplicates'])) $products[$article->id]['duplicates'] ++;
+            else $products[$article->id]['duplicates'] = 1;
         }
+
+        foreach ($products as $key => $product) {
+            $products[$key]['price'] = $product['price'] / $product['duplicates'];
+            unset($products[$key]['duplicates']);
+        }
+
         $request['partner_id'] = $this->partner_id;
         $request['store_id'] = $this->store_id;
         $request['discount'] = $this->discount;
@@ -121,11 +137,14 @@ class ClientOrder extends Model
         $request['comment'] = '';
         $request['products'] = $products;
         $request['clientorder_id'] = $this->id;
-        $response = $shipmnetController->store($request);
+
+        $response = $shipmentController->store($request);
+
         if(!$response->isOk() && $response->getData('messages') != null){
             $status = 422;
             $data = $response->getData('messages');
-        } else {
+        }
+        else {
             $status = 200;
             $data =  [
                 'shipment_id' => $response->getData()->id,
@@ -133,6 +152,7 @@ class ClientOrder extends Model
                 'message' => 'Отгружено'
             ];
         }
+
         return [
             'status' => $status,
             'data' => $data

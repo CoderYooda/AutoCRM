@@ -195,22 +195,19 @@ class EntranceController extends Controller
                     $available_count[$product->id] -= $product->pivot->count;
                 }
             }
-//
-//            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
-        }
 
-        foreach ($products as $key => $product) {
-            $products[$key]['pivot_id'] = $product['pivot']['id'];
-            $products[$key]['product_id'] = $product['id'];
-            $products[$key]['price'] = $product['pivot']['price'];
-            $products[$key]['count'] = $product['pivot']['count'];
-            $products[$key]['released_count'] = $product['pivot']['released_count'];
-            $products[$key]['provider_pivot_id'] = $product['pivot']['provider_pivot_id'];
+            foreach ($products as $key => $product) {
+                $products[$key]['pivot_id'] = $product['pivot']['id'];
+                $products[$key]['product_id'] = $product['id'];
+                $products[$key]['price'] = $product['pivot']['price'];
+                $products[$key]['count'] = $product['pivot']['count'];
+                $products[$key]['released_count'] = $product['pivot']['released_count'];
+                $products[$key]['provider_pivot_id'] = $product['pivot']['provider_pivot_id'];
+            }
         }
 
         return response()->json([
             'id' => $entrance->id,
-//            'items_html' => $view,
             'items' => $products,
             'partner' => $entrance->partner->outputName(),
             'partner_id' => $entrance->partner->id,

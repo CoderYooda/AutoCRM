@@ -30,7 +30,7 @@
                                 <div class="form-group {{ $infoParams['field'] }}">
                                     <label>{{ $infoName }}</label>
                                     <div class="w-100">
-                                        <select @isset($infoParams['onclick']) onchange="{{ $class . '.' . $infoParams['onclick'] }}(this);" @endisset custom_select name="providers[{{ $provider_key }}][{{ $infoParams['field'] }}]">--}}
+                                        <select @isset($infoParams['onchange']) onchange="{{ $class . '.' . $infoParams['onchange'] }}(this);" @endisset custom_select name="providers[{{ $provider_key }}][{{ $infoParams['field'] }}]">
                                             @foreach($infoParams['params'] as $id => $name)
                                                 <option value="{{ $id }}">{{ $name }}</option>
                                             @endforeach
@@ -42,7 +42,7 @@
 
                             <div class="form-group mb-0">
                                 <label>Комментарий</label>
-                                <textarea name="comments[{{ $provider_key }}]" class="form-control resize-none" placeholder="Комментарий" style="height: 31px;">Тестовый заказ, отмените его!</textarea>
+                                <textarea name="comments[{{ $provider_key }}]" class="form-control resize-none" placeholder="Комментарий" style="height: 31px;"></textarea>
                             </div>
 
                         </div>

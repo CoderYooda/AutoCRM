@@ -3,7 +3,6 @@
 
 namespace App\Traits;
 
-
 use App\Http\Controllers\SupplierController;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Article;
@@ -27,7 +26,7 @@ trait CartProviderOrderCreator
             $orderInfo = json_decode($order->data, true);
 
             //Создание производителя
-            $supplierRequest['name'] = $orderInfo['brand'];
+            $supplierRequest['name'] = $orderInfo['Бренд']; //brand
 
             $supplierController->store($supplierRequest);
             $supplier = $supplierController::$supplier;
@@ -44,9 +43,9 @@ trait CartProviderOrderCreator
                 'category_id' => 2,
                 'creator_id' => $this->user->id,
                 'supplier_id' => $supplier->id,
-                'foundstring' => Article::makeFoundString($orderInfo['hash_info']['article'] . $supplier->name . $orderInfo['description']),
+                'foundstring' => Article::makeFoundString($orderInfo['hash_info']['article'] . $supplier->name . $orderInfo['caption']), //description
                 'article' => $orderInfo['hash_info']['article'],
-                'name' => $orderInfo['description'],
+                'name' => $orderInfo['caption'], //description
                 'fapi_id' => $supplier->fapi_id ?? null
             ];
 

@@ -112,7 +112,15 @@ class ClientOrdersController extends Controller
 
         return DB::transaction(function () use($request) {
             $request['phone'] = str_replace(['(', ')', ' ', '-'], '', $request['phone']);
+
+            /** @var ClientOrder $client_order */
             $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
+
+            if($request->shipping && $client_order->status < 2) {
+                return response()->json([
+                    'system_message' => ['В данный момент отгрузка недоступна.']
+                ], 422);
+            }
 
             if($client_order && $client_order->isShipped){
                 return response()->json([

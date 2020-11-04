@@ -202,11 +202,13 @@ class storePage extends Page{
 
         let service_input = document.querySelector('[name="service_key"]');
 
+        let element_index = parseInt(target_element.id);
+
         let index = -1;
 
-        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
-            if(this.items[i].index == target_element.id) index = target_element.id;
-        }
+        this.items.forEach((model, array_index) => {
+            if(model.index == element_index) index = array_index;
+        });
 
         let data = {
             provider_key: service_input.value,
@@ -217,14 +219,24 @@ class storePage extends Page{
 
         axios.post('/provider_stores/cart/set', data)
             .then(response => {
-                dd(response);
+                // dd(response);
             })
             .catch(response => {
                 dd(response);
             });
     }
 
+    sortBy(element, type) {
+
+        let brand_element = document.querySelector('.fa-angle-up').parentElement;
+
+        let brand_name = brand_element.dataset.manufacturer;
+
+        this.showManufactureStores(brand_element, brand_name, type);
+    }
+
     registerProviderOrder(element) {
+
         window.openDialog('ProviderCartDialog');
     }
 
@@ -675,8 +687,7 @@ class storePage extends Page{
             dd(e);
         }
 
-
-
+        if(this.active_tab == 'provider_stores') return;
 
         let container = 'ajax-table-' + this.active_tab;
         this.readData(container);

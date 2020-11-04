@@ -96,7 +96,6 @@ class Items {
             this.inpercents = inpercents;
             inpercents.addEventListener("change", fn);
         }
-        console.log("Лист загружен");
     }
 
     setItems(items){
@@ -484,8 +483,6 @@ class Items {
     }
 
     recalculateItem(id){
-
-        console.log(id);
 
         id = parseInt(id);
 

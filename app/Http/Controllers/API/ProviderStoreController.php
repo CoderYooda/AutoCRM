@@ -12,11 +12,8 @@ use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProviderStoreController extends Controller
@@ -248,11 +245,12 @@ class ProviderStoreController extends Controller
                 'Список способов доставки' => [
                     'params' => $provider->getDeliveryTypes(),
                     'field' => 'delivery_type_id',
-                    'onclick' => 'changeDeliveryType'
+                    'onchange' => 'changeDeliveryType'
                 ],
                 'Список адресов доставки' => [
                     'params' => $provider->getDeliveryToAddresses(),
-                    'field' => 'delivery_address_id'
+                    'field' => 'delivery_address_id',
+                    'onchange' => 'changeDeliveryAddress'
                 ],
                 'Список офисов самовывоза' => [
                     'params' => $provider->getPickupAddresses(),

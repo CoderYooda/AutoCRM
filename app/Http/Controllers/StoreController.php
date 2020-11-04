@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
-use App\Http\Controllers\Providers\TrinityController;
 use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;

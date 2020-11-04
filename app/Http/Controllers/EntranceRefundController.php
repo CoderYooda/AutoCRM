@@ -26,11 +26,12 @@ class EntranceRefundController extends Controller
         foreach ($request->products as $index => $product) {
 
             $product_id = $product['product_id'];
+            $pivot_id = $product['pivot_id'];
 
             $entrance_count = $entrance->articles->find($product_id)->pivot->count;
             $entrance_released_count = $entrance->articles->find($product_id)->pivot->released_count;
-            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product, $product_id) {
-                return $query->articles->where('id', $product_id)->sum('pivot.count');
+            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product, $pivot_id) {
+                return $query->articles->where('id', $pivot_id)->sum('pivot.count');
             });
 
             $available_count = $entrance_count - ($entrance_released_count - $entrance_refund_count);
@@ -47,8 +48,6 @@ class EntranceRefundController extends Controller
             ], 422);
         }
 
-        $store = Store::find(Auth::user()->current_store);
-
         #Создание заявки на возврат
         $entrance_refund = EntranceRefund::updateOrCreate(['id' => $request->id], [
             'partner_id' => $request->partner_id,
@@ -62,17 +61,17 @@ class EntranceRefundController extends Controller
         #Отнимаем имеющиеся количество для сохранения
         foreach ($entrance_refund->articles as $product) {
 
-            $entrance_refund->entrance->articles()->where('article_id', $product->id)->decrement('released_count', $product->pivot->count);
+            $entrance_refund->entrance->articles()->where('article_id', $product['product_id'])->decrement('released_count', $product->pivot->count);
         }
 
         $entrance_refund->articles()->sync([]);
 
         #Создаем новые пивоты
-        foreach ($request->products as $id => $product) {
+        foreach ($request->products as $index => $product) {
 
-            $price = $entrance->articles->find($id)->pivot->price;
+            $price = $entrance->articles()->find('id', $product['product_id'])->pivot->price;
 
-            $entrance_refund->articles()->attach($id, [
+            $entrance_refund->articles()->attach($product['product_id'], [
                 'entrance_refund_id' => $entrance_refund->id,
                 'store_id' => $request->store_id,
                 'count' => $product['count'],
@@ -81,7 +80,7 @@ class EntranceRefundController extends Controller
             ]);
 
             #Резервируем количество в поступлениях
-            $entrance_refund->entrance->articles()->where('article_id', $id)->increment('released_count', $product['count']);
+            $entrance_refund->entrance->articles()->where('article_id', $product['product_id'])->increment('released_count', $product['count']);
         }
 
         #Добавляем к балансу контакта
@@ -138,7 +137,7 @@ class EntranceRefundController extends Controller
             'use_nds' => false,
             'can_add_items' => false,
             'nds' => 0,
-            'freeze' => $entrance ? false : true,
+            'freeze' => $entrance ? true : false,
             'nds_included' => false
         ];
 
