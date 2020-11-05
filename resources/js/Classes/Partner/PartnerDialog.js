@@ -490,41 +490,9 @@ class partnerDialog extends Modal{
 
     deletePhone(elem){
 
-        var div = elem.closest('.addable').querySelector('.phones');
+        let div = elem.closest('.addable').querySelector('.phones');
         if(this.canRemovePhone(div)){
-
-            var id = elem.closest('.phone').dataset.id;
-            if(id != undefined){
-                if (isXHRloading) { return; }
-                isXHRloading = true;
-                var dReq = new XMLHttpRequest();
-                dReq.onreadystatechange = function (e) {
-                    if (dReq.readyState === 4) {
-                        var resp = JSON.parse(this.responseText);
-                        if(dReq.status === 200){
-                            //var element = document.getElementById('product_'+resp.product_id);
-                            notification.notify( 'success', resp.message);
-                        }else{
-                            notification.notify( 'error', resp.message);
-                        }
-                    }
-                };
-                dReq.onerror = function () {
-                    var resp = JSON.parse(this.responseText);
-                    isXHRloading = false;
-                };
-                dReq.onload = function () {
-                    var resp = JSON.parse(this.responseText);
-                    //document.getElementById('category_list').innerHTML = resp.html;
-                    isXHRloading = false;
-                };
-
-                dReq.open("post", 'phone/'+id+'/delete', true);
-                dReq.setRequestHeader('X-CSRF-TOKEN', token.content);
-                dReq.send();
-            }
             elem.closest('.phone').remove();
-
         }
     }
 

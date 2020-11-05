@@ -1,31 +1,19 @@
 @php $stores = App\Models\Store::owned()->get(); @endphp
+
 @if(!isset($inner) || !$inner)
-    <div
-        @if(isset($provider_order) && $provider_order->id != NULL)
-        @php $class = 'providerorderDialog' . $provider_order->id @endphp
-        id="providerorderDialog{{$provider_order->id}}" data-id="{{$provider_order->id}}"
-        @else
-        @php $class = 'providerorderDialog' @endphp
-        id="providerorderDialog"
-        @endif
-        class="dialog provider_order_dialog" style="width:1000px;">
-        @endif
-        @if(isset($provider_order) && $provider_order->id != NULL)
-            <div class="titlebar">Заявка поставщику №{{ $provider_order->id }}</div>
-        @else
-            <div class="titlebar">Новая заявка поставщику</div>
-        @endif
+    <div id="providerorderDialog{{$provider_order->id ?? ''}}" @if($provider_order) data-id="{{$provider_order->id}}" @endif class="dialog provider_order_dialog new_dialog" style="width:1000px;">
+@endif
+        <div class="titlebar">{{ isset($provider_order) ? ('Заявка поставщику №' . $provider_order->id) : ('Новая заявка поставщику') }}</div>
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
         <div class="modal-header dark" style="justify-content: normal;">
             <div class="modal-alt-header">
                 <span class="item-title _500">Всего на сумму</span>
                 <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
-                        @if(isset($provider_order)){{ correct_price($provider_order->summ) . ' ₽' }} @else 0.00 ₽ @endif
-                    </span>
+                    <span id="total_price">{{ correct_price($provider_order->summ ?? 0.0) }}</span> ₽
                 </div>
                 <div class="item-tag tag hide">
+
                 </div>
             </div>
             @if(isset($provider_order))
@@ -54,6 +42,7 @@
             @endif
         </div>
         <form class="WarrantStoredListner ProviderOrderStoredListner" action="{{ route('StoreProviderOrder') }}" method="POST">
+
             <div class="modal-body">
                 @csrf
                 @if(isset($provider_order) && $provider_order->id != NULL)
@@ -64,6 +53,7 @@
                 @else
                     <input type="hidden" name="id" value="">
                 @endif
+
                 <input class="partner_select" type="hidden" name="partner_id" value=" @if(isset($provider_order)){{ $provider_order->partner()->first()->id }}@endif">
                 <div class="d-flex">
                     <div class="link-tabs no-pr">
@@ -134,16 +124,20 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <button class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia(this)">Закрыть</button>
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right mr-15 uppercase-btn" onclick="{{ $class }}.save(this)">Сохранить</button>
             </div>
+
             <div class="system_message">
             </div>
+
         </form>
         @if(!isset($inner) || !$inner)
     </div>

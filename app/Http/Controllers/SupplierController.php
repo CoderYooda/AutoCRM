@@ -12,6 +12,9 @@ use Auth;
 
 class SupplierController extends Controller
 {
+    /** @var Supplier $supplier */
+    public static $supplier = null;
+
     public function _construct(){
         $status = 500;
         $message = 'Внутренняя ощибка сервера';
@@ -58,16 +61,16 @@ class SupplierController extends Controller
 
         $manufacturer = VehicleMark::where('name', $supplier_name)->first();
 
-        Supplier::firstOrCreate(['id' => (int)$request['id']], [
+        self::$supplier = Supplier::updateOrCreate(['name' => $supplier_name], [
             'name' => $supplier_name,
-            'company_id' => Auth::user()->company()->first()->id,
+            'company_id' => Auth::user()->company_id,
             'fapi_id' => $manufacturer->id ?? null
         ]);
 
         if($request->expectsJson()){
             return response()->json([
                 'message' => 'Производитель сохранен',
-                'event' => 'SupplierStored',
+                'event' => 'SupplierStored'
             ]);
         } else {
             return redirect()->back();

@@ -1,6 +1,11 @@
 <?php
 
 use App\Providers\AppProviderStoreService;
+use App\Providers\AppServiceProvider;
+
+use App\Providers\Shop\ShopServiceProvider;
+use App\Providers\Shop\CartServiceProvider;
+use App\Providers\Shop\FavoriteServiceProvider;
 
 return [
 
@@ -63,6 +68,7 @@ return [
         sngrl\SphinxSearch\SphinxSearchServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -74,7 +80,14 @@ return [
 
         Barryvdh\Debugbar\ServiceProvider::class,
 
-        AppProviderStoreService::class
+        //CRM
+        AppProviderStoreService::class,
+        AppServiceProvider::class,
+
+        //Интернет-магазин
+        CartServiceProvider::class,
+        FavoriteServiceProvider::class,
+        ShopServiceProvider::class
     ],
 
     /*

@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\PermissionController;
+use App\Http\Requests\DeleteCartProviderRequest;
+use App\Http\Requests\DeleteCartRequest;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
+use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services;
-use App\Services\ProviderService\Services\Cart\Cart;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProviderStoreController extends Controller
@@ -27,9 +31,7 @@ class ProviderStoreController extends Controller
         $manufacturers = [];
         $errors = [];
 
-        foreach ($providers->activated() as $provider) {
-
-            $service_key = $provider->getServiceKey();
+        foreach ($providers->activated() as $service_key => $provider) {
 
             try {
                 $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
@@ -55,7 +57,7 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function getStores(Providers $providers, Request $request, Cart $cart)
+    public function getStores(Providers $providers, Request $request, CartInterface $cart)
     {
         $selected_service = $request->selected_service;
         $article = $request->article;
@@ -106,20 +108,34 @@ class ProviderStoreController extends Controller
     {
         $url = "http://ws.armtek.ru/api/ws_user/getUserVkorgList?format=json";
 
-        $result = file_get_contents($url, null, stream_context_create([
-            'http' => [
-                'method' => 'GET',
-                'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode("WEBCFIRE.VOSTOK@MAIL.RU:ng2pP4R1zZz") . "\r\n", //TODO change account data
-            ],
-        ]));
+        $response = null;
 
-        $result = json_decode($result);
+        try {
 
-        return response()->json($result->RESP);
+            $response = file_get_contents($url, null, stream_context_create([
+                'http' => [
+                    'method' => 'GET',
+                    'header' => 'Content-Type: application/json' . "\r\n"
+                        . 'Authorization: Basic ' . base64_encode("{$request->login}:{$request->password}") . "\r\n",
+                ],
+            ]));
+        }
+        catch (\Exception $exception) {
+
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Ошибка авторизации: Проверьте правильность ввода логина и пароля, а так же IP адреса.'
+            ], 422);
+        }
+
+        $result = json_decode($response, true);
+
+        return response()->json([
+            'params' => $result['RESP']
+        ]);
     }
 
-    public function addCart(Cart $cart, AddCartRequest $request)
+    public function addCart(CartInterface $cart, AddCartRequest $request)
     {
         $cart->addProduct($request->provider_key, $request->article, $request->product);
 
@@ -129,44 +145,81 @@ class ProviderStoreController extends Controller
         ], 200);
     }
 
-    public function setCart(Cart $cart, SetCartRequest $request)
+    public function setCart(CartInterface $cart, SetCartRequest $request)
     {
         $cart->setProductCount($request->provider_key, $request->article, $request->product, $request->count);
 
         return response()->json([
             'type' => 'success',
             'message' => 'Кол-во было изменено.'
-        ], 200);
+        ]);
     }
 
-    public function orderCart(Providers $providers, OrderCartRequest $request)
+    public function deleteCart(CartInterface $cart, DeleteCartRequest $request)
     {
-        dd($request->all());
+        $cart->removeProductById($request->id);
 
-        $user_id = Auth::id();
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Позиция успешно удалена.'
+        ]);
+    }
 
-        $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
+    public function deleteCartProvider(CartInterface $cart, DeleteCartProviderRequest $request)
+    {
+        $cart->clearByProviderKey($request->provider_key);
 
-        $ordersKeys = $ordersCollection->pluck('provider_key')->unique('provider_key')->toArray();
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Позиции успешно удалена.'
+        ]);
+    }
+
+    public function resetCart(CartInterface $cart)
+    {
+        $cart->clear();
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Корзина успешно очищена.'
+        ]);
+    }
+
+    public function orderCart(CartInterface $cart, Providers $providers, OrderCartRequest $request)
+    {
+        $ordersCollection = $cart->getProducts();
+
+        $ordersKeys = $ordersCollection->pluck('provider_key')->unique()->toArray();
 
         $orders = [];
 
         foreach ($ordersCollection as $order) {
+
+            if(isset($request->orders[$order->id]['count'])) {
+                $order->count = $request->orders[$order->id]['count'];
+            }
+
             $orders[$order->provider_key][] = $order;
         }
 
         /** @var ProviderInterface $provider */
-        foreach ($providers->activated() as $provider) {
-            $key = $provider->getServiceKey();
+        foreach ($providers->activated() as $provider_key => $provider) {
 
-            if(!in_array($key, $ordersKeys)) continue;
+            if(!in_array($provider_key, $ordersKeys)) continue;
 
-            $provider->sendOrder($orders[$key]);
+            $providerParams = $request->providers[$provider_key];
 
-            DB::table('providers_cart')->where([
-                'user_id' => $user_id,
-                'provider_key' => $key
-            ])->delete();
+            $data = [
+                'orders' => $orders[$provider_key],
+                'comment' => $request->comments[$provider_key],
+                'delivery_type_id' => $providerParams['delivery_type_id'] ?? null,
+                'payment_type_id' => $providerParams['payment_type_id'] ?? null,
+                'pickup_address_id' => $providerParams['pickup_address_id'] ?? null,
+                'delivery_address_id' => $providerParams['delivery_address_id'] ?? null,
+                'date_shipment_id' => $providerParams['date_shipment_id'] ?? null
+            ];
+
+            $provider->sendOrder($data);
         }
 
         return response()->json([
@@ -175,26 +228,74 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public static function ProviderCartDialog(Request $request)
+    public static function providerCartDialog(Request $request)
     {
+        /** @var ProviderInterface[] $providers */
+        $providers = app(Providers::class)->activated();
+        $cart = app(CartInterface::class);
+
         PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');
 
         $class = 'providerCartDialog';
 
-        $user_id = Auth::id();
+        $ordersCollection = $cart->getProducts();
 
-        $ordersCollection = DB::table('providers_cart')->where('user_id', $user_id)->get();
+        $deliveryInfo = [];
+
+        foreach ($providers as $service_key => $provider) {
+
+            $deliveryInfo[$service_key] = [
+                'Список способов доставки' => [
+                    'params' => $provider->getDeliveryTypes(),
+                    'field' => 'delivery_type_id',
+                    'onclick' => 'changeDeliveryType'
+                ],
+                'Список адресов доставки' => [
+                    'params' => $provider->getDeliveryToAddresses(),
+                    'field' => 'delivery_address_id'
+                ],
+                'Список офисов самовывоза' => [
+                    'params' => $provider->getPickupAddresses(),
+                    'field' => 'pickup_address_id'
+                ],
+                'Список способов оплаты' => [
+                    'params' => $provider->getPaymentTypes(),
+                    'field' => 'payment_type_id'
+                ],
+                'Список дат отгрузки' => [
+                    'params' => $provider->getDateOfShipment(),
+                    'field' => 'date_shipment_id'
+                ]
+            ];
+        }
 
         $orders = [];
+        $providersInfo = [];
 
         foreach ($ordersCollection as $order) {
 
+            $provider_key = $order->provider_key;
+
+            if(!in_array($provider_key, array_keys($providers))) continue;
+
             $order->data = json_decode($order->data);
 
-            $orders[$order->provider_key][] = $order;
+            $orders[$provider_key][] = $order;
+
+            $total = $order->data->hash_info->price * $order->count;
+
+            if(!isset($providersInfo[$provider_key]['count'])) $providersInfo[$provider_key]['count'] = 0;
+            if(!isset($providersInfo[$provider_key]['total_price'])) $providersInfo[$provider_key]['total_price'] = 0;
+            if(!isset($providersInfo[$provider_key]['positions'])) $providersInfo[$provider_key]['positions'] = 0;
+
+            $providersInfo[$provider_key]['count'] += $order->count;
+            $providersInfo[$provider_key]['total_price'] += $total;
+            $providersInfo[$provider_key]['positions'] ++;
         }
 
-        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders'));
+        $providersInfo = collect($providersInfo);
+
+        $view = view(get_template() . '.provider_stores.dialog.form_cart_provider', compact('class', 'request', 'orders', 'deliveryInfo', 'providersInfo'));
 
         return response()->json([
             'tag' => $class,

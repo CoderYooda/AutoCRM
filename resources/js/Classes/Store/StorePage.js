@@ -10,7 +10,7 @@ import shipmentsMethods from "./tabs/ShipmentsMethods";
 import refundMethods from "./tabs/RefundMethods";
 import clientOrdersMethods from "./tabs/ClientOrdersMethods";
 import adjustmentMethods from "./tabs/AdjustmentMethods";
-import Tabs from "../../Tools/Tabs";
+import shopOrdersMethods from "./tabs/ShopOrdersMethods";
 import {Table} from "../BBTable";
 import Page from "../Page/Page";
 
@@ -25,6 +25,7 @@ const classes = {
     clientOrdersMethods,
     adjustmentMethods,
     documentsMethods,
+    shopOrdersMethods
 };
 
 
@@ -223,6 +224,10 @@ class storePage extends Page{
             });
     }
 
+    registerProviderOrder(element) {
+        window.openDialog('ProviderCartDialog');
+    }
+
     addToCart(element) {
         let target_element = element.closest('tr');
 
@@ -236,14 +241,13 @@ class storePage extends Page{
 
         input.value = '1';
 
+        let element_index = parseInt(target_element.id);
+
         let index = -1;
 
-        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
-            console.log(i, this.items[i].index, target_element.id, this.items[i].index == target_element.id);
-            if(this.items[i].index == target_element.id) index = i;
-        }
-
-        console.log(index, target_element.id, this.items[index]);
+        this.items.forEach((model, array_index) => {
+            if(model.index == element_index) index = array_index;
+        });
 
         let data = {
             provider_key: service_input.value,
@@ -253,7 +257,7 @@ class storePage extends Page{
 
         axios.post('/provider_stores/cart/add', data)
             .then(response => {
-               dd(response);
+               // dd(response);
             })
             .catch(response => {
                 dd(response);
@@ -425,7 +429,7 @@ class storePage extends Page{
 
     showManufactureStores(element, manufacturer, sort = null) {
 
-        let is_desc = true;
+        let is_desc = false;
 
         let target_element = document.getElementById('brand_context_' + manufacturer);
 
@@ -552,6 +556,7 @@ class storePage extends Page{
             'ShipmentStored',
             'WarrantStored',
             'EntranceRefundStored',
+            'OrderStored',
             'ClientOrderStored'
         ];
 
@@ -657,11 +662,13 @@ class storePage extends Page{
             shipments: 'shipments',
             refund: 'refund',
             client_orders: 'clientOrders',
-            adjustment: 'adjustment',
-            documents: 'documents'
+            documents: 'document',
+            shop_orders: 'shopOrders',
+            adjustment: 'adjustment'
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';
+
         try {
             this.model = new classes[model_name]();
         } catch (e) {

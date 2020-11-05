@@ -18,7 +18,6 @@ Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmS
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
 
-
 #СМС
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 
@@ -32,6 +31,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
+    Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 
     Route::get('/user/password/edit', 'UserController@passwordEdit')->name('UserPassChange');
     Route::post('/user/password/save', 'UserController@passwordStore')->name('UserPassStore');
@@ -109,7 +109,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
             Route::post('/provider_stores/cart/add', 'ProviderStoreController@addCart')->name('ProviderCartAdd');
             Route::post('/provider_stores/cart/set', 'ProviderStoreController@setCart')->name('ProviderCartSet');
+            Route::post('/provider_stores/cart/delete', 'ProviderStoreController@deleteCart')->name('ProviderCartDelete');
+            Route::post('/provider_stores/cart/reset', 'ProviderStoreController@resetCart')->name('ProviderCartReset');
             Route::post('/provider_stores/cart/order', 'ProviderStoreController@orderCart')->name('ProviderCartOrder');
+            Route::post('/provider_stores/cart/provider/delete', 'ProviderStoreController@deleteCartProvider')->name('ProviderCartDeleteProvider');
 
             Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
             Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
@@ -169,7 +172,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Кассовые операции
         Route::get('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
-        Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
+        Route::middleware('requestLimit')->post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
         Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
         Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
         Route::post('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
@@ -267,12 +270,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Сервисы
         Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
-        Route::post('/services/{service}/save', 'ServiceController@save')->name('ServiceSave');
         Route::post('/services/{service}/toggle', 'ServiceController@toggle')->name('ServiceToggle');
         Route::post('/services/updateSort', 'ServiceController@updateSort')->name('ServiceUpdateSort');
-
-        #Телефоны
-        Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
 
         #Документы
         Route::any('/document', 'DocumentController@document')->name('Document');
@@ -299,6 +298,17 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         Route::post('/settings/master/store', 'SettingsController@storeFromMaster')->name('StoreFromMaster');
         Route::post('/settings/master/close', 'SettingsController@closeSettingsMaster')->name('CloseMaster');
+
+        Route::get('/shop', 'ShopController@index')->name('ShopIndex');
+        Route::post('/shop', 'ShopController@update')->name('ShopUpdate');
+        Route::post('/shop/about', 'ShopController@updateAbout')->name('ShopUpdateAbout');
+        Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
+        Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
+        Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+
+        Route::get('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
+        Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');
+        Route::post('/shop_orders/store', 'ShopController@store')->name('StoreOrder');
 
         Route::group(['prefix' => 'ws'], function () {
             Route::get('/check-auth', function () {
@@ -329,7 +339,6 @@ Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUse
 
 #Коморка разработчиков
 Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Admin')->name('Admin')->group(function () {
-
 
     Route::get('/', 'DashboardController@index')->name('Dashboard');
     Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('DashboardTable');

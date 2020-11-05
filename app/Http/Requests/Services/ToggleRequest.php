@@ -18,6 +18,8 @@ class ToggleRequest extends FormRequest
     {
         $rules = [
             'enabled' => ['required', 'integer', 'between:0,1'],
+            'fields' => ['required', 'array'],
+            'fields.*' => ['nullable', 'string', 'max:255', 'min:1'],
         ];
 
         if($this->enabled == 0) {

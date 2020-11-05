@@ -193,6 +193,11 @@ class StoreController extends Controller
         return response()->json($response);
     }
 
+    public function shop_ordersTab(Request $request)
+    {
+        return view(get_template() . '.shop_orders.index', compact('request'));
+    }
+
     public function provider_storesTab(Request $request)
     {
         /** @var Company $company */
@@ -379,7 +384,7 @@ class StoreController extends Controller
             }
         }
         $params = [
-            'store' => Store::find($request->id),
+            'store' => Store::find($request->store_id),
             'user_id' => Auth::id(),
             'company_id' => Auth::user()->company->id,
         ];

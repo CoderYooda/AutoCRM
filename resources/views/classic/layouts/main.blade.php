@@ -61,11 +61,6 @@
                             </a>
                         </li>
                         @endcanany
-                        {{--<li id="employee_link" class="top-nav-item" >--}}
-                            {{--<a class="header-tab ajax-nav" href="{{ route('EmployeeIndex') }}">--}}
-                                {{--Сотрудники--}}
-                            {{--</a>--}}
-                        {{--</li>--}}
                         @canany(['Смотреть контакты'])
                         <li id="partner_link" class="top-nav-item" >
                             <a class="header-tab ajax-nav" href="{{ route('PartnerIndex') }}">
@@ -94,6 +89,13 @@
                             </a>
                         </li>
                         @endcanany
+{{--                        @canany(['Смотреть статистику'])--}}
+                            <li id="shop_link" class="top-nav-item" >
+                                <a class="header-tab ajax-nav" href="{{ route('ShopIndex') }}">
+                                    Интернет-магазин
+                                </a>
+                            </li>
+{{--                        @endcanany--}}
                         @endcan
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
@@ -257,6 +259,9 @@
                         <div class="version">version <br>{{ env('VERSION', '0.0.0') }} - {{ Auth::user()->current_store }}</div>
                     </div>
                 </div>
+
+                <input type="hidden" id="copy_text" value="" />
+
                 <div id="ajax-content">
                     @yield('content')
                 </div>

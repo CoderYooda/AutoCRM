@@ -2,38 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
 use App\Models\UserAction;
 use App\Http\Controllers\HelpController as HC;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\SystemMessage as SM;
-use Illuminate\Support\Facades\Gate;
-use Auth;
 
 class UserActionsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, Providers $providers)
     {
         $target = HC::selectTarget();
         PermissionController::canByPregMatch('Смотреть историю');
         $actions = self::getActions($request);
-        //$system_messages = SM::owned()->get();
         $system_messages = SM::getMessages($request);
-        $members = Auth::user()->company->members()->get();
-        //dd($members->pluck('id'));
+        $members = Auth::user()->company->members;
+
+        $view = view(get_template() . '.history.index', compact('request', 'actions', 'system_messages', 'members'));
+
         if($request->expectsJson() && $request['search'] === NULL){
-            $content = view(get_template() . '.history.index', compact('request', 'actions', 'system_messages', 'members'))->render();
 
             return response()->json([
                 'target' => $target,
                 'page' => 'История',
-                'html' => $content
+                'html' => $view->render()
             ]);
-        } else {
-            return view(get_template() . '.history.index', compact('request', 'actions', 'system_messages', 'members'));
         }
+
+        return $view;
     }
 
     public static function getActions($request)

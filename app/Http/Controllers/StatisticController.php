@@ -236,7 +236,7 @@ class StatisticController extends Controller
             #Добавлене в Entrance свойства 'amount' из связи, т.к в модели его нет
             if ($class == Entrance::class) {
                 foreach ($entities as $entity) {
-                    $entity['amount'] = $entity->providerorder->summ;
+                    $entity['amount'] = $entity->providerorder->summ ?? 0;
                 }
             }
 
@@ -286,7 +286,7 @@ class StatisticController extends Controller
             }
         }
 
-        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company->id)->get();
+        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company_id)->get();
 
         foreach ($cashbox_history as $cashbox) {
             $global_data[$cashbox->date]['Ежедневный остаток в кассах'] = $cashbox->balance;

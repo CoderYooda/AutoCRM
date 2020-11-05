@@ -12,12 +12,10 @@ class Page {
         let target_elem = document.getElementById(target);
         if(target_elem){
 
-            let data;
+            let data = target_elem.querySelector('[data-data]');
             if(target_elem.hasAttribute('data-data')){
                 console.log(1);
                 data = target_elem;
-            } else {
-                data = target_elem.querySelector('[data-data]');
             }
 
             if(data && data.dataset.data){
@@ -28,4 +26,4 @@ class Page {
         }
     }
 }
-export default Page
+export default Page;

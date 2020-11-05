@@ -34,13 +34,20 @@
                         </button>
                     </div>
                 </div>
-                <div class="form-group mb-0">
+                <div class="form-group">
                     <label for="category_id">Наименование</label>
-                    <input type="text" id="category_dialog_focused"
-                    @if(isset($category))
-                        value="{{ $category->name }}"
-                    @endif
-                           name="name" class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
+                    <input type="text" id="category_dialog_focused" value="{{ $category->name ?? '' }}" name="name" class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="image">Изображение (Инетрнет-магазин)</label>
+
+                    @isset($category->image->image_path)
+                        <div class="mb-10" style="width: 110px; height: 110px;">
+                            <img class="w-100 h-100" src="{{ $category->image->image_path }}" />
+                        </div>
+                    @endisset
+
+                    <input type="file" name="image" accept="image/jpeg,image/png" />
                 </div>
             </div>
         </div>

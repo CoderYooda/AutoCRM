@@ -174,10 +174,9 @@ class partnerPage extends Page{
 
     searchInit(){
         let object = this;
-        let searchFn;
         let search_field = document.getElementById("search");
         if(search_field){
-            searchFn = window.helper.debounce((e) => {
+            let searchFn = window.helper.debounce((e) => {
 
                 object.search = search_field.value;
                 window.helper.insertParamUrl('search', search_field.value);

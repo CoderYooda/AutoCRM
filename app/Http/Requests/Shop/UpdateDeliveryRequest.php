@@ -1,15 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Services;
+namespace App\Http\Requests\Shop;
 
-use App\Models\Service;
-use App\Rules\CheckApiDataForServices;
-use App\Rules\CheckServiceFieldOnValid;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SaveRequest extends FormRequest
+class UpdateDeliveryRequest extends FormRequest
 {
     public function authorize()
     {
@@ -19,10 +16,9 @@ class SaveRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => ['integer', 'exists:companies,id'],
-            'enabled' => ['integer', 'min:0', 'max:1'],
-            'fields' => ['required', 'array'],
-            'fields.*' => ['nullable', 'string', 'max:255', 'min:1'],
+            'delivery_desc' => ['required', 'string', 'max:1024'],
+            'seo_delivery_title' => ['nullable', 'string', 'max:2048'],
+            'seo_delivery_desc' => ['nullable', 'string', 'max:2048']
         ];
     }
 

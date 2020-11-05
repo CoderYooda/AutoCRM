@@ -1,5 +1,3 @@
-import Tabs from "../../Tools/Tabs";
-
 class settingsPage{
 
     constructor() {
@@ -11,45 +9,20 @@ class settingsPage{
     }
 
     init(){
-        let object = this;
-        // document.addEventListener('ajaxLoaded', function(e){
-        //     object.checkActive();
-        // });
-        //object.checkActive();
-        let form = null;
-        try {
-            let form = object.root.getElementsByTagName('form');
-        } catch (e) {
 
-        }
-        document.addEventListener('RoleAssigned', function(e){
-            object.reload();
-        });
-        document.addEventListener('RoleStored', function(e){
-            object.reload();
-        });
-        document.addEventListener('CashboxStored', function(e){
-            object.reload();
-        });
-        document.addEventListener('CashboxFresh', function(e){
-            object.reload();
-        });
-        document.addEventListener('StoreStored', function(e){
-            object.reload();
-        });
+        let events = [
+            'RoleAssigned',
+            'RoleStored',
+            'CashboxStored',
+            'CashboxFresh',
+            'StoreStored'
+        ];
 
-        if(form != null){
-            object.root.getElementsByTagName('form')[0].addEventListener('SettingsStored',function() {
-                let id = object.root.querySelector('input[name=id]').value;
-                if(id !== null){
-                    //let root_id = object.root.id;
-                    object.freshContent(id,function(){
-                        //delete window[root_id];
-                        //window.helper.initDialogMethods();
-                    });
-                }
+        events.forEach(name => {
+            document.addEventListener(name, e => {
+                this.reload();
             });
-        }
+        });
 
         this.linked();
     }
@@ -72,98 +45,100 @@ class settingsPage{
 
         event.preventDefault();
 
+        togglePreloader(element, true);
+
         axios.get('/services/' + service_id)
             .then(response => {
 
                 this.modal.setContent(response.data.html);
 
                 this.modal.show();
+
+                let input_elements = document.querySelectorAll('.form-group input');
+
+                input_elements.forEach(element => {
+
+                    let fn = window.helper.debounce(e => this.changeValue(element), 1000);
+
+                    element.addEventListener("keyup", fn);
+                    element.addEventListener("change", fn);
+                    element.addEventListener("paste", fn);
+                    element.addEventListener("delete", fn);
+                });
             })
             .catch(response => {
                 console.log(response);
+            })
+            .finally(() => {
+                togglePreloader(element, false);
             });
     }
 
     changeValue(input) {
         let url = document.getElementById('url').innerText;
 
-        if(url == 'armtek.ru' && input.name.includes('password')) {
+        if(url == 'armtek.ru') {
+
+            let login_input = document.querySelector('[name="fields[login]"]');
+            let password_input = document.querySelector('[name="fields[password]"]');
+
+            if(!login_input.value.length || !password_input.value.length) return;
 
             let select_element = document.querySelector('[name="fields[sales_organization]"]');
 
-            select_element.innerHTML = '';
+            let preloader_element = select_element.closest('.form-group');
 
-            let login = document.querySelector('[name="fields[login]"]');
+            togglePreloader(preloader_element, true);
+
+            let login = document.querySelector('[name="fields[login]"]').value;
             let password = input.value;
 
             axios.get('/provider_stores/armtek/sales_organization', {
+                params: {
                     login: login,
                     password: password
-                })
+                }
+            })
                 .then(response => {
+
+                    select_element.innerHTML = '';
 
                     let data = response.data;
 
-                    Object.keys(data).forEach(key => {
-
-                        let value = data[key];
+                    Object.values(data.params).forEach(item => {
 
                         let option_element = document.createElement('option');
-                        option_element.value = value.VKORG;
-                        option_element.innerText = value.PROGRAM_NAME;
+
+                        option_element.value = item.VKORG;
+                        option_element.innerText = item.PROGRAM_NAME;
 
                         select_element.add(option_element);
                     });
                 })
                 .catch(response => {
                     console.log(response);
+                })
+                .finally(response => {
+                    togglePreloader(preloader_element, false);
                 });
         }
     }
 
     toggleService(button_element, service_id) {
 
-        togglePreloader(button_element, true);
-
-        let enabled_input = document.querySelector('[name="enabled"]');
-
-        let field_inputs = document.querySelectorAll('.form-control');
-
-        let data = {
-            enabled: Number(enabled_input.value),
-            fields: {}
-        };
-
-        field_inputs.forEach(input => {
-
-            let correct_name = input.name.match(/\[(.+?)\]/)[1];
-
-            console.log(correct_name);
-
-            data['fields'][correct_name] = input.value;
-        });
-
-        axios.post('/services/' + service_id + '/toggle', data)
-        .then(response => {
-            let enabled = response.data.enabled;
-
-            button_element.innerText = enabled ? 'Деактивировать' : 'Активировать';
-            enabled_input.value = enabled;
-
-            let input = document.getElementById('service_' + service_id);
-            input.checked = enabled;
-        })
-        .catch(response => {
-            console.log(response);
-        })
-        .then(() => {
-            togglePreloader(button_element, false);
-        });
-    }
-
-    saveService(button_element) {
         window.axform.send(button_element, response => {
-            //
+
+            if(response && response.status == 200) {
+                let enabled = parseInt(response.data.enabled);
+
+                button_element.innerText = enabled ? 'Деактивировать' : 'Активировать';
+
+                let service_element = document.getElementById('service_' + service_id);
+                service_element.checked = enabled;
+
+                let enabled_element = document.querySelector('[name="enabled"]');
+                enabled_element.value = enabled;
+            }
         });
     }
 

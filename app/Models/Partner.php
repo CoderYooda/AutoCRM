@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\DeliveryAddress;
 use App\Http\Controllers\HelpController;
 use App\Models\System\Image;
 use App\Traits\OwnedTrait;
+use App\Traits\Phoneable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +14,7 @@ use Auth;
 
 class Partner extends Model
 {
-    use OwnedTrait, SoftDeletes;
+    use OwnedTrait, SoftDeletes, Phoneable;
 
     protected $guarded = [];
 
@@ -92,6 +94,34 @@ class Partner extends Model
     public function phones()
     {
         return $this->belongsToMany(Phone::class, 'partner_phone');
+    }
+
+    public function nameLetters()
+    {
+        $words = explode(' ', $this->fio);
+
+        $letters = '';
+
+        foreach ($words as $word) {
+            $letters .= mb_substr($word, 0, 1);
+        }
+
+        return $letters;
+    }
+
+    public function getSurnameAttribute()
+    {
+        return explode(' ', $this->fio)[0];
+    }
+
+    public function getNameAttribute()
+    {
+        return explode(' ', $this->fio)[1] ?? '0';
+    }
+
+    public function getMiddlenameAttribute()
+    {
+        return explode(' ', $this->fio)[2] ?? '';
     }
 
     public function salarySchemas()
@@ -302,5 +332,15 @@ class Partner extends Model
         }
 
         return $hours;
+    }
+
+    public function deliveryAddresses()
+    {
+        return $this->hasMany(DeliveryAddress::class, 'partner_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'partner_id', 'id');
     }
 }

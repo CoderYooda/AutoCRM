@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import Tabs from "../../Tools/Tabs";
 import BBlist from "../BBitems";
 
 class providerOrderDialog extends Modal{
@@ -9,30 +10,18 @@ class providerOrderDialog extends Modal{
         // this.items = [];
         this.nds = true;
         this.nds_included = true;
-        this.totalPrice = 0.0;
-        this.itogo = 0.0;
         this.refer = null;
 
-        // if(response && response.products != undefined) {
-        //     Object.values(response.products).forEach(product_id => {
-        //         console.log(product_id.id);
-        //         window.entity.addProductToList(product_id.id, this, 'providerOrder');
-        //     });
-        // }
+        if(response && response.products != undefined) {
+            Object.values(response.products).forEach(product_id => {
+                window.entity.addProductToList(product_id.id, this, 'providerOrder');
+            });
+        }
 
         this.init();
     }
 
     init(){
-        let object = this;
-
-        // var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
-        ///Вешаем обрабочик на поле скидки/////////////
-        // let discount = object.root_dialog.querySelector('input[name=discount]');
-        // discount.addEventListener("keydown", fn);
-        // discount.addEventListener("paste", fn);
-        // discount.addEventListener("delete", fn);
-        ////////////////////////////////////////////////
 
         ///Вешаем обработчик на чекбокс/////////////////
         // let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
@@ -50,18 +39,18 @@ class providerOrderDialog extends Modal{
         //     object.finitaLaComedia();
         // });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+        this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  e => {
             if (e.which == 13) {
                 e.preventDefault();
-                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+                this.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
+        this.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  () => {
+            let id = this.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
+                let root_id = this.root_dialog.id;
+                this.freshContent(id,function(){
                     delete window[root_id];
                     window.helper.initDialogMethods();
                 });
@@ -104,7 +93,6 @@ class providerOrderDialog extends Modal{
             data: data,
         }).then(function (resp) {
             document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            console.log('Вставили html');
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -219,55 +207,57 @@ class providerOrderDialog extends Modal{
         container.innerHTML = Number(count).toFixed(2);
     }
 
-    setItogo(count){
-        // let container = this.root_dialog.querySelector('#itogo_price');
-        // container.innerHTML = Number(count).toFixed(2);
-    }
+    addItem(data){
+        let product_list = this.root_dialog.querySelector('.element-list');
+        this.items.push(data);
 
-    setDiscount(count){
-        let container = this.root_dialog.querySelector('#percents_price');
-        container.innerHTML = count;
-    }
+        try {
+            window.selectProductDialog.markAsAdded();
+        }
+        catch (e) {
+            //console.log(e);
+        }
 
-    setNDS() {
-        this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
-        this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
+        product_list.insertAdjacentHTML('afterbegin', data.html);
+
+        this.addInputsMask();
         this.recalculate();
-    }
 
-    addItem(elem){
-        let object = this;
-        let product_list = this.root_dialog.querySelector('.product_list');
-        this.items.push(elem);
-        let tbody = document.createElement('tbody');
-        tbody.innerHTML = elem.html;
-        product_list.prepend(tbody.firstChild);
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
-        let inputs = item.getElementsByTagName('input');
+    }
 
-        [].forEach.call(inputs, function(elem){
-            var fn = window.helper.debounce(function(e) {
-                object.recalculate(e);
-            }, 50);
-            elem.addEventListener("keydown", fn);
-            elem.addEventListener("paste", fn);
-            elem.addEventListener("delete", fn);
+    addInputsMask()
+    {
+        let inputs = this.current_dialog.querySelectorAll('.element-list input');
+
+        inputs.forEach(element => {
+
+            let fn = window.helper.debounce(e => this.recalculate(e), 300);
+
+            element.addEventListener("keyup", fn);
+            element.addEventListener("change", fn);
+            element.addEventListener("paste", fn);
+            element.addEventListener("delete", fn);
+
+            this.addInputPriceMask(element);
         });
-        this.recalculate();
-        if(this.refer != null){
-            window[this.refer].markAsAdded();
-        }
+    }
+
+    addInputPriceMask(element) {
+        let options = {
+            mask: Number,
+            min: 0,
+            max: 9999999,
+            radix: '.'
+        };
+
+        IMask(element, options);
     }
 
 
-    addProduct(elem_or_id, refer = null){
-        let object = this;
-        window.entity.addProductToList(elem_or_id, this, 'providerOrder');
-        if(refer != null){
-            object.refer = refer;
-        }
-    };
+    addProduct(elem_or_id, refer = null) {
+        window.entity.addProductToList(elem_or_id, this, 'providerOrder', this.root_dialog.id);
+    }
 
     selectPartner(id){
         var object = this;
@@ -300,6 +290,5 @@ class providerOrderDialog extends Modal{
     openSelectPartnerModal(){
         window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=6');
     }
-
 }
 export default providerOrderDialog;

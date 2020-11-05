@@ -1,4 +1,4 @@
-<div class="tab-pane p-3" id="{{$class}}_tab_shop">
+<div class="tab-pane p-3" id="{{ $class }}_tab_shop">
 
     @if($company->getSettingField('Интернет магазин'))
 
@@ -93,25 +93,61 @@
                             <i class="fa fa-angle-down pointer fa-5" aria-hidden="true" onclick="{{ $class }}.toggleShopSettings(this, {{ $store->id }});"></i>
                         </div>
 
-                        <div id="toggle_{{ $store->id }}" class="toggleable d-flex p-10 d-none">
+                        <div id="toggle_{{ $store->id }}" class="toggleable p-10 d-none">
 
-                            <div class="flex-2 d-flex flex-column">
-                                @foreach(['Показать, если нет в наличии', 'Акционный товар', 'Показать на главной странице'] as $field)
+                            @foreach($shopFields as $field => $params)
+
+                                <div class="form-group relative">
                                     <div>
-                                        <span>{{ $field }}</span>
+                                        <span>{{ $params['name'] }}</span>
                                     </div>
-                                @endforeach
-                            </div>
+                                    <label class="absolute custom_checkbox" style="right: 0; top: 3px;">
+                                        <input type="checkbox" class="not_default" @isset($params['onclick']) onclick="{{ $class }}.{{ $params['onclick'] }}(this);" @endif name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if(!$product && $loop->first || $product && $product->stores->find($store->id) != null && $product->stores->find($store->id)->pivot->$field) checked @endif />
+                                        <span></span>
+                                    </label>
+                                </div>
 
-                            <div class="flex-1 d-flex flex-column">
-                                @foreach(['sp_empty', 'sp_stock', 'sp_main'] as $field)
-                                    <div style="margin-left: auto;">
-                                        <label class="custom_checkbox mb-0">
-                                            <input type="checkbox" class="not_default" name="shop[product_settings][{{ $store->id }}][{{ $field }}]" @if($product && $product->stores->find($store->id)->pivot->$field) checked @endif />
-                                            <span></span>
-                                        </label>
+                            @endforeach
+
+                            <div id="stock_menu" class="d-flex mt-15 @if(!$product || !$product->isStock()) d-none @endif">
+
+                                <div class="flex-1">
+                                    <div class="form-group">
+                                        <label>Цена</label>
                                     </div>
-                                @endforeach
+
+                                    <div class="form-group">
+                                        <label>Скидка</label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Итого</label>
+                                    </div>
+                                </div>
+
+                                <div class="flex-3">
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" name="shop[price]" value="12000" disabled />
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <div class="flex-1">
+                                            <input type="number" class="form-control" name="shop[discount]" value="10000" />
+                                        </div>
+
+                                        <div class="ml-5 flex-1">
+                                            <select custom_select name="shop[discount_type]">
+                                                <option>В рублях</option>
+                                                <option>В процентах</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" name="shop[total]" value="2000" disabled />
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>
@@ -126,7 +162,7 @@
 
     @else
 
-        <div>Активируйте интернет-магазин в <a class="ajax-nav" href="http://bbcrm/settings?active_tab=index">настройках</a>.</div>
+        <div>Активируйте интернет-магазин в <a class="ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}">настройках</a>.</div>
         <div>Это бесплатно.</div>
 
     @endif

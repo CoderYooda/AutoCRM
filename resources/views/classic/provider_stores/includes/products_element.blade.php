@@ -1,11 +1,11 @@
 @foreach($manufacturers as $manufacturer)
 
-    <tr id="brand_{{ $manufacturer }}" style="height: 40px;">
+    <tr id="brand_{{ $manufacturer }}" class="pointer" style="height: 40px;" onclick="store.showManufactureStores(this, '{{ $manufacturer }}')">
         <td>{{ $loop->index + 1 }}</td>
         <td>{{ $manufacturer }}</td>
         <td>{{ $request->search }}</td>
         <td style="width: 38px;">
-            <div class="store_arrow_bg pointer" data-manufacturer="{{ $manufacturer }}" onclick="store.showManufactureStores(this, '{{ $manufacturer }}')">
+            <div class="store_arrow_bg" data-manufacturer="{{ $manufacturer }}">
                 <i class="fa fa-angle-down fa-5" aria-hidden="true"></i>
             </div>
         </td>

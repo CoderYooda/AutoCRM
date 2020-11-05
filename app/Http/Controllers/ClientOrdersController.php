@@ -182,7 +182,6 @@ class ClientOrdersController extends Controller
             $wasExisted = false;
         }
 
-
         $client_order->fill($request->only($client_order->fields));
         $client_order->store_id = Auth::user()->getStoreFirst()->id;
         $client_order->summ = 0;

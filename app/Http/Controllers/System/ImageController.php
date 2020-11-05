@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Models\System\Image;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image as ImageInt;
 use Auth;
@@ -26,7 +27,7 @@ class ImageController extends Controller
         }
 
         return response()->json([
-            'images' => $images,
+            'images' => $images
         ], 200);
     }
 
@@ -53,14 +54,7 @@ class ImageController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Доступные форматы Jpg, Png, Gif размером не более 10 мб'], 400);
         }
 
-        if($request['watermark'] != null){
-            $watermark = true;
-        } else {
-            $watermark = false;
-        }
-
-        $response = self::saveUserImage($request->image, Auth::user()->id."/", $watermark);
-        return $response;
+        return self::saveUserImage($request->image, Auth::user()->id."/", $watermark ?? false);
     }
 
     public function remove(Request $request){
@@ -89,38 +83,33 @@ class ImageController extends Controller
 
     public function cropImage(Request $request)
     {
-
-        $user = Auth::user();
-
         $img = ImageInt::make(public_path($request['url']));
 
         $img->crop($request['coords']['width'], $request['coords']['height'], $request['coords']['x'], $request['coords']['y']);
 
         $name = md5(str_random(22));
 
-        $img->save(storage_path('/app/public/files/images/' . $user->id . '/') . $name . '.' . $img->extension);
+        $path = storage_path('/app/public/images/');
+
+        $img->save($path . $name . '.' . $img->extension);
+
         $img->fit(100);
-        $img->save(storage_path('/app/public/files/images/' . $user->id . '/') . 'thumb_' . $name . '.' . $img->extension);
+        $img->save($path . 'thumb_' . $name . '.' . $img->extension);
 
-        $imageobject = new Image();
-        $imageobject->filename = $name . '.' . $img->extension;
-        $imageobject->hash = $name;
-        $imageobject->mime = $img->mime();
-        $imageobject->size = $img->filesize();
-        $imageobject->uploader_id = Auth::user()->id;
-        $imageobject->url = '/storage/files/images/' . $user->id . '/' . $name . '.' . $img->extension;
-        $imageobject->thumb_url = '/storage/files/images/' . $user->id . '/' . 'thumb_' . $name . '.' . $img->extension;
-        //$imageobject->type = 'avatar';
+        $imageobject = Image::create([
+            'filename' => $name . '.' . $img->extension,
+            'hash' => $name,
+            'mime' => $img->mime(),
+            'size' => $img->filesize(),
+            'uploader_id' => Auth::user()->id,
+            'url' => 'public/images/' . $name . '.' . $img->extension,
+            'thumb_url' => 'public/images/thumb_' . $name . '.' . $img->extension
+        ]);
 
-        $imageobject->save();
-        $partner = $user->partner;
-        $partner->avatar_id = $imageobject->id;
-        $partner->pic_id = $imageobject->id;
-        $partner->save();
-
-//        if (self::removeCurrrentType($user, 'avatar')) {
-//            $user->avatar()->sync([$file_base->id => ['type' => 'avatar']]);
-//        }
-        return response()->json(['status' => 'success', 'message'=> 'Фото профиля обновлено!', 'avatar' => $imageobject]);
+        return response()->json([
+            'status' => 'success',
+            'message'=> 'Фото профиля обновлено!',
+            'file' => $imageobject
+        ]);
     }
 }

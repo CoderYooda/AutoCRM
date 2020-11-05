@@ -3,10 +3,7 @@
 
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-    <form id="form-import">
-
-        <input type="hidden" name="id" value="">
-        <input type="file" onchange="{{ $class }}.changeFile(this)" name="file" style="display: none;" />
+    <form action="/store/import" id="form-import" method="POST">
 
         <div class="modal-body" style="max-height: 400px;">
             <div class="box-body pb-0 mb-15">
@@ -20,8 +17,11 @@
                                 <img src="{{ asset('images/icons/statistic-question.svg') }}" alt="">
                             </label>
                             <div class="input-group mb-5">
-                                <input type="text" id="file-name" onclick="{{ $class }}.openFileSelector()" class="pointer form-control text-left button_select" placeholder="Название файла" readonly />
+                                <input type="text" name="file" id="file-name" onclick="{{ $class }}.openFileSelector()" class="pointer form-control text-left button_select" placeholder="Название файла" readonly />
                                 <button onclick="{{ $class }}.openFileSelector()" class="button primary ml-15">Обзор...</button>
+
+                                <input type="file" onchange="{{ $class }}.changeFile(this)" name="file" style="display: none;" accept=".xml,.txt,.csv" />
+
                             </div>
                             <div class="ml-15 mt-10">
                                 <div class="file-example-item">
@@ -36,17 +36,17 @@
                         </div>
 
                         <div class="form-group mt-15">
-                            <label>Выбор магазина</label>
+                            <label for="store_id">Выбор магазина</label>
                             <div class="input-group mb-15">
-                                <div class="dropdown w-100" onclick="window.helper.openModal(this, event)">
-                                    <input id="store-name" onclick="event.preventDefault()" placeholder="Выберите магазин" class="form-control pointer text-left button_select" disabled>
-                                    <div class="dropdown_container">
-                                        <div class="arrow"></div>
-                                        @foreach($stores as $store)
-                                            <span onclick="{{ $class }}.selectStore(this, {{ $store->id }})" class="element">{{ $store->name }}</span>
-                                        @endforeach
-                                    </div>
-                                </div>
+
+                                <select custom_select name="store_id" class="form-control input-c">
+
+                                    @foreach($stores as $store)
+                                        <option value="{{ $store->id }}" @if(auth()->user()->current_store == $store->id) selected @endif>{{ $store->name }}</option>
+                                    @endforeach
+
+                                </select>
+
                             </div>
                         </div>
 
@@ -104,8 +104,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" onclick="{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
-            <button type="submit" onclick="{{ $class }}.save(this)" class="button pull-right">Импортировать товар</button>
+            <button type="button" onclick="{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
+            <button type="button" onclick="{{ $class }}.save(this)" class="button pull-right">Импортировать товар</button>
         </div>
 
         <div class="system_message"></div>

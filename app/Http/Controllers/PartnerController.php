@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\HelpController as HC;
-use App\Http\Requests\DeletePartnerRequest;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Category;
 use App\Models\Partner;
-use App\Models\Setting;
-use App\Models\SMSMessages;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -24,11 +20,6 @@ use App\Models\Role;
 class PartnerController extends Controller
 {
     const ROOT_CATEGORY = 3;
-
-    public function _construct()
-    {
-
-    }
 
     public function index(Request $request)
     {
@@ -130,22 +121,26 @@ class PartnerController extends Controller
             $request['user_id'] = $partner->user_id;
             $request['company_id'] = $partner->company_id;
         } else{
-            $request['company_id'] = Auth::user()->company()->first()->id;
+            $request['company_id'] = Auth::user()->company_id;
             $message = "Контакт создан";
         }
 
-        if($request['birthday']){
+        if($request['birthday']) {
             $request['birthday'] = Carbon::parse($request['birthday']);
         }
 
         $partner->fill($request->only($partner->fields));
-        if($request['type'] == 2){
+
+        if($request['type'] == 2) {
             $partner->fio = $request['ur_fio'];
         }
-        $phones = PhoneController::upsertPhones($request);
+
+        $phones = $partner->upsertPhones($request['phones'], $request['phones_main']);
+
         if($phones->count()){
-            $partner->basePhone = $phones->where('main', true)->first()->number;
+            $partner->basePhone = $phones->where('main', 1)->first()->number;
         }
+
         $partner->save();
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
@@ -161,7 +156,7 @@ class PartnerController extends Controller
         foreach($partner->phones as $phone){
             $phones_str .= $phone->number;
         }
-        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
+        $partner->foundstring = mb_strtolower(str_replace(['(', ')', ' ', '-', '+'], '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
         $partner->save();
 
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Models\Article;
+use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -22,8 +23,7 @@ class CategoryController extends Controller
     public static $breadcrumbs;
 
     public function _construct(){
-        $status = 500;
-        $message = 'Внутренняя ощибка сервера';
+
     }
 
     public function index()
@@ -103,17 +103,17 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать категории' : 'Создавать категории');
+
         if($request['id'] == $request['category_id']){
             return response()->json([
                 'system_message' => view('messages.category_loop')->render(),
             ], 422);
         }
 
-        PermissionController::canByPregMatch($request['id'] ? 'Редактировать категории' : 'Создавать категории');
-
         $type = null;
         if($request['category_id'] != null){
-            $parent = Category::owned()->where('id', (int)$request['category_id'])->first();
+            $parent = Category::find($request['category_id']);
             if($parent && $parent->type != null){
                 $type = $parent->type;
             }
@@ -121,14 +121,8 @@ class CategoryController extends Controller
 
         $category = Category::firstOrNew(['id' => (int)$request['id']]);
 
-        if(!$category->locked){
-            $category->fill($request->all());
-            $category->creator_id = Auth::user()->id;
-            $category->company_id = Auth::user()->company()->first()->id;
-            $category->locked = false;
-            $category->type = $type;
-            $category->save();
-        } else {
+        if($category->locked){
+
             return response()->json([
                 'id' => $category->id,
                 'type' => 'error',
@@ -136,20 +130,26 @@ class CategoryController extends Controller
             ], 200);
         }
 
+        $category->fill($request->except('image'));
+        $category->creator_id = Auth::id();
+        $category->company_id = Auth::user()->company_id;
+        $category->type = $type;
+
+        if($request->hasFile('image')) {
+            $imageParams = $category->uploadImage($request->image, true, false);
+
+            $image = Image::create($imageParams);
+
+            $category->image_id = $image->id;
+        }
+
+        $category->save();
+
         UA::makeUserAction($category, 'create');
-
-        //$categories = self::getCategories($request);
-        //$articles = ProductController::getArticles($request);
-
-        //$content = view('product.elements.table_container', compact('articles', 'categories'))->render();
-
-        //$content = view('category.list', compact('articles', 'categories'))->render();
 
         if($request->expectsJson()){
             return response()->json([
                 'message' => 'Категория сохранена',
-//                'container' => $category->getRootType() . '_categories',
-//                'html' => $content,
                 'event' => 'CategoryStored'
             ]);
         } else {
@@ -205,7 +205,6 @@ class CategoryController extends Controller
         if($request['category_select']){
             $parent = Category::owned()->where('id', $request['category_select'])->first();
         }
-
 
         return response()->json([
             'tag' => $tag,
@@ -361,6 +360,7 @@ class CategoryController extends Controller
         if($parent == null){
             abort(404);
         }
+
         $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
         $categories['parent'] = $parent;
         $categories['parent_root'] = $parent->id == $root_category ? true : false;

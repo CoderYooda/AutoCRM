@@ -35,6 +35,7 @@ import documentDialog from "./Document/DocumentDialog";
 import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 import selectWarrantDialog from "./Warrant/SelectWarrantDialog";
 import salarySchemaDialog from "./Salary/salarySchemaDialog";
+import orderDialog from "./Order/OrderDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -58,6 +59,7 @@ import adminPage from "./Admin/AdminPage";
 import companyDialog from "./Admin/Company/CompanyDialog";
 import userDialog from "./Admin/User/UserDialog";
 import selectCompanyDialog from "./Company/SelectCompanyDialog";
+import shopPage from "./Shop/ShopPage";
 
 const classes = {
     entranceDialog,
@@ -100,6 +102,7 @@ const classes = {
     companyDialog,
     userDialog,
     selectCompanyDialog,
+    orderDialog
 };
 
 const pages = {
@@ -121,7 +124,8 @@ const pages = {
     passwordresetPage,
     statisticPage,
     statisticshowPage,
-    adminPage
+    adminPage,
+    shopPage,
 };
 
 class Helper{
@@ -159,27 +163,22 @@ class Helper{
     }
 
     initDialogMethods(resp = null){
-        let dialogs = document.getElementsByClassName('dialog');
-        if(dialogs){
-            [].forEach.call(dialogs, function(elem) {
 
-                if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
+        let dialogs = document.querySelectorAll('.dialog');
 
-                    var classname = elem.id.replace(/[^a-zA-Z]/g, '');
-                    try {
-                        if(resp){
-                            window[elem.id] = new classes[classname](elem, resp.data);
-                        } else {
-                            window[elem.id] = new classes[classname](elem);
-                        }
-                    } catch (err) {
-                        window.helper.log(classname + " - Такого конструктора не существует");
-                        console.log(err);
-                    }
-                    //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
-                }
-            });
-        }
+        dialogs.forEach(elem => {
+
+            let classname = elem.id.replace(/[^a-zA-Z]/g, '');
+
+            try {
+                window[elem.id] = new classes[classname](elem, resp ? resp.data : resp);
+            } catch (err) {
+                window.helper.log(classname + " - Такого конструктора не существует");
+                console.log(err);
+            }
+
+            window.applySelects();
+        });
     }
 
     decodeHtml(html) {
@@ -452,6 +451,7 @@ class Helper{
     }
 
     copy(str){
+
         let tmp   = document.createElement('INPUT'), // Создаём новый текстовой input
             focus = document.activeElement; // Получаем ссылку на элемент в фокусе (чтобы не терять фокус)
 
@@ -463,6 +463,17 @@ class Helper{
         document.body.removeChild(tmp); // Удаляем временный input
         focus.focus(); // Возвращаем фокус туда, где был
         window.notification.notify( 'success', 'Скопировано в буфер');
+    }
+
+    objectSum(object) {
+
+        let count = 0;
+
+        Object.values(object).forEach(value => {
+            count += parseFloat(value);
+        });
+
+        return count;
     }
 
     objectifyForm(formArray) {

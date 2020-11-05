@@ -54,6 +54,9 @@
                 <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'documents', 'target' => 'ajax-tab-content']) }}">Документы</a>
             </li>
         @endcan
+        <li id="shop_orders-tab" data-tab="shop_orders" class="@if($request['active_tab'] == 'shop_orders') active @endif">
+            <a class="ajax-nav" href="{{ route('StoreIndex', ['active_tab' => 'shop_orders', 'target' => 'ajax-tab-content']) }}">Онлайн-заказы <span id="orders_count" class="badge-pill">{{ $orders_count }}</span></a>
+        </li>
     </ul>
     <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 </div>

@@ -2,6 +2,7 @@
 
 @section('content')
     <div id="ajax-table-provider_orders" class="bottom-container">
+
         <div class="content-menu box w-290">
             <div id="t2able-container" class="box-content">
                 <div class="search-panel">
@@ -18,9 +19,13 @@
             </div>
         </div>
         <div class="box-lister box">
-            <div id="actions-container" class="box-content">
-                @include(get_template() . '.history.actions')
+
+            <div id="tab_actions" class="tab active">
+                <div id="actions-container" class="box-content">
+                    @include(get_template() . '.history.actions')
+                </div>
             </div>
+
         </div>
         <div class="box-lister box ml-0">
             <div id="system_messages-container" class="box-content">

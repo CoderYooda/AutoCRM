@@ -1,4 +1,4 @@
-<div class="tab-pane" id="{{ $class }}_tab_entrances" data-simplebar style="height: 400px;">
+<div class="tab-pane" id="{{ $class }}_tab_entrances" data-simplebar style="max-height: 400px;">
 
     @if(isset($product->entrances) && count($product->entrances))
         <table>
@@ -14,8 +14,8 @@
                 <tr>
                     <td>{{ $entrance->id }}</td>
                     <td>{{ $entrance->partner->official_name }}</td>
-                    <td>{{ $entrance->articles->find($product->id)->pivot->count }}</td>
-                    <td>{{ $entrance->articles->find($product->id)->pivot->created_at }}</td>
+                    <td>{{ $entrance->pivot->count }}</td>
+                    <td>{{ $entrance->pivot->created_at }}</td>
                 </tr>
 
             @endforeach

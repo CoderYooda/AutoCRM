@@ -9,19 +9,27 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Styles -->
+    <link href="{{ asset('css/shop.css') }}" rel="stylesheet">
+
     <!-- Scripts -->
     <script src="{{ asset('js/shop.js') }}" defer></script>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=c2977ace-5964-4b2c-aa49-c50ad494239f" type="text/javascript"></script>
 
-    <!-- Styles -->
-    <link href="{{ asset('css/shop.css') }}" rel="stylesheet">
+    @isset($shop->headerImage)
+        <link href="{{ $shop->headerImage->image_path }}" rel="headImage">
+    @endisset
 
-    {{--<link href="/images/shop/header_bg.png" rel="headImage">--}}
-    {{--<link href="/images/shop/body_bg.png" rel="bodyImage">--}}
+    @isset($shop->backgroundImage)
+        <link href="{{ $shop->backgroundImage->image_path  }}" rel="bodyImage">
+    @endisset
+
 </head>
-    <body>
-    @include('shop/layout/header')
+<body>
+
+    @include('shop.layout.header')
     @yield('content')
-    @include('shop/layout/footer')
-    </body>
+    @include('shop.layout.footer')
+
+</body>
 </html>

@@ -2,15 +2,31 @@
 
 namespace App\Providers;
 
+use App\Models\Cashbox;
+use App\Models\Company;
 use App\Models\DocumentType;
+use App\Models\Entrance;
+use App\Models\Order;
+use App\Models\Partner;
+use App\Models\ProviderOrder;
+use App\Models\Shipment;
+use App\Models\User;
+use App\Models\Warrant;
+use App\Observers\CashboxObserver;
+use App\Observers\CompanyObserver;
+use App\Observers\EntranceObserver;
+use App\Observers\OrderObserver;
+use App\Observers\PartnerObserver;
+use App\Observers\ProviderOrderObserver;
+use App\Observers\ShipmentObserver;
+use App\Observers\UserObserver;
+use App\Observers\WarrantObserver;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,14 +48,27 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Суперадмин');
         });
+
         Schema::defaultStringLength(191);
-        \App\Models\Shipment::observe(\App\Observers\ShipmentObserver::class);
-        \App\Models\Company::observe(\App\Observers\CompanyObserver::class);
-        \App\Models\Partner::observe(\App\Observers\PartnerObserver::class);
-        \App\Models\User::observe(\App\Observers\UserObserver::class);
-        \App\Models\Warrant::observe(\App\Observers\WarrantObserver::class);
-        \App\Models\Entrance::observe(\App\Observers\EntranceObserver::class);
-        \App\Models\Cashbox::observe(\App\Observers\CashboxObserver::class);
+
+        Shipment::observe(ShipmentObserver::class);
+        Company::observe(CompanyObserver::class);
+        Partner::observe(PartnerObserver::class);
+        User::observe(UserObserver::class);
+        Warrant::observe(WarrantObserver::class);
+        Entrance::observe(EntranceObserver::class);
+        Cashbox::observe(CashboxObserver::class);
+        Order::observe(OrderObserver::class);
+        ProviderOrder::observe(ProviderOrderObserver::class);
+
+        \View::composer([get_template() . '.documents.index'], function ($view) {
+            $view->with('documentsTypes', DocumentType::all());
+        });
+
+        \View::composer([get_template() . '.store.layout.tabs'], function ($view) {
+            $orders_count = Order::where('company_id', Auth::user()->company_id)->where('status', 0)->count();
+            $view->with('orders_count', $orders_count);
+        });
 
         \View::composer([get_template() . '.documents.index'], function ($view) {
             $view->with('documentsTypes', DocumentType::all());

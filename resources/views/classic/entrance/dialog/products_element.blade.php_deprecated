@@ -1,28 +1,28 @@
 @foreach($providerorder->articles as $product)
-@php $class = 'entranceDialog' @endphp
-@php $count = $product->pivot->count - $providerorder->getArticleEntredCount($product->id) @endphp
-@if($count > 0)
-    <tr class="product_list_elem" id="product_selected_{{ $product->id }}">
-        <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
-        <input name="products[{{ $product->id }}][price]" value="{{ $providerorder->getArticlePrice($product->id) }}" type="hidden" >
 
-        <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 200px">{{ $product->name }}</span></td>
-        <td><div class="compressed" style="width: 100px;"><a onclick="window.helper.copy('{{ $product->article }}');" >{{ $product->article }}</a></div></td>
+    @php
 
-        <td><input onclick="this.select();" name="products[{{ $product->id }}][count]" class="form-control form-control-sm" value="{{ $count }}" type="number" ></td>
-        <td>
-            {{ $providerorder->getArticleEntredCount($product->id) }} / {{ $providerorder->getArticleCount($product->id) }}
-        </td>
-        <td>
-            {{ $providerorder->getArticlePrice($product->id) }}
-        </td>
-        <td>
-            @if(isset($request) && $request['refer'] != null)
-                <button onclick="{{ $request['refer'] }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
-            @else
-                <button onclick="{{ $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button>
-            @endif
-        </td>
-    </tr>
+        $index = $product->pivot->id;
+        $price = $product->pivot->price ?? $providerorder->getArticlePrice($product->id);
+        $entered_count = $providerorder->getArticleEnteredCountByPivotId($product->pivot->id);
+        $total_count = $product->pivot->count;
+        $valid_count = $total_count - $entered_count;
+
+    @endphp
+
+    @if($valid_count > 0)
+        <tr class="product_list_elem" id="product_selected_{{ $product->id }}">
+            <input name="products[{{ $index }}][id]" value="{{ $product->id }}" type="hidden" >
+            <input name="products[{{ $index }}][price]" value="{{ $price }}" type="hidden" >
+
+            <td title="{{ $product->name }}"><span class="product_list_element_name" style="width: 200px">{{ $product->name }}</span></td>
+
+            <td><div class="compressed" style="width: 100px;"><a onclick="window.helper.copy('{{ $product->article }}');" >{{ $product->article }}</a></div></td>
+            <td><input onclick="this.select();" name="products[{{ $index }}][count]" class="form-control form-control-sm" value="{{ $valid_count }}" type="number" ></td>
+            <td>{{ $entered_count }} / {{ $total_count }}</td>
+            <td>{{ $price }}</td>
+            <td><button onclick="{{ $request['refer'] ?? $class }}.removeItem({{ $product->id }})" type="button" class="trash-button"><i class="fa fa-trash"></i></button></td>
+        </tr>
     @endif
+
 @endforeach

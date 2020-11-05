@@ -1,4 +1,3 @@
-import Sortable from "sortablejs";
 import Modal from "../Modal/Modal";
 import Tabs from "../../Tools/Tabs";
 
@@ -41,10 +40,6 @@ class adjustmentDialog extends Modal{
         let id = this.current_dialog.dataset.id;
         let prefix = id ? id : '';
         this.tabs = window.helper.initTabs('adjustment_tabs' + prefix);
-    }
-
-    linked() {
-       // new Tabs('adjustment_tabs');
     }
 
     showEntrances(element, article_id) {

@@ -7,49 +7,63 @@
                 <span class="">Остались вопросы? Свяжитесь с нами!</span>
             </div>
         </div>
-        <div class="feedaback">
+        <form action="{{ route('feedback.store') }}" method="POST" class="feedaback">
             <div class="name-container">
-                <input placeholder="Имя" class="name" type="text">
+                <input name="name" placeholder="Имя" class="name" type="text">
+                <div class="error" data-error="name"></div>
             </div>
             <div class="phone-container">
-                <input placeholder="Телефон" class="phone" type="text">
+                <input name="phone" placeholder="Телефон" class="phone" type="text">
+                <div class="error" data-error="phone"></div>
             </div>
-            <button>Заказать звонок</button>
-        </div>
+            <button type="button" onclick="feedback.save(this);">Заказать звонок</button>
+        </form>
     </div>
 
 </div>
 <div class="botton-info">
     <div class="container">
         <div class="contacts">
-            <div class="mini-card pin">
-                <span title="г. Белгород, Проспект Славы 150А">г. Белгород, Проспект Славы 150А</span>
+            <div class="mini-card pin pl-30">
+                <a href="{{ route('pages.about') }}" title="{{ $shop->address_name }}">{{ $shop->address_name }}</a>
             </div>
-            <div class="mini-card phone">
-                <span title="8(952)436-50-64">8(952)436-50-64</span>
+            <div class="mini-card phone pl-30">
+                <a href="tel: +{{ $shop->phone->number }}" title="{{ $shop->contactEmail->first()->email }}">{{ display_phone($shop->phone->number) }}</a>
             </div>
-            <div class="mini-card  mail">
-                <span title="CoderYooda@gmail.com">CoderYooda@gmail.com</span>
+            <div class="mini-card mail pl-30">
+                <a href="mailto:{{ $shop->contactEmail->first()->email }}" title="{{ $shop->contactEmail->first()->email }}">{{ $shop->contactEmail->first()->email }}</a>
             </div>
         </div>
         <div class="menu">
-            <a title="О компании" href="javascript:void(0)">О компании</a>
-            <a title="Оплата и доставка" href="javascript:void(0)">Оплата и доставка</a>
-            <a title="Гарантия и возврат" href="javascript:void(0)">Гарантия и возврат</a>
-            <a title="Контакты" href="javascript:void(0)">Контакты</a>
+            <a title="О компании" href="{{ route('pages.about') }}">О компании</a>
+            <a title="Оплата и доставка" href="{{ route('pages.delivery') }}">Оплата и доставка</a>
+            <a title="Гарантия и возврат" href="{{ route('pages.warranty') }}">Гарантия и возврат</a>
+            <a title="Контакты" href="{{ route('pages.contacts') }}">Контакты</a>
         </div>
     </div>
 </div>
 <div class="footer">
     <div class="container">
-        <div class="logo-container footer-elem">
-            <div class="logo"></div>
-            <span class="company-name">Название вашей компании</span>
+        <div class="logo-container footer-elem d-flex" style="align-items: center;">
+            <div>
+                <a href="{{ route('pages.index') }}">
+                    <div class="logo">
+                        @isset($shop->logotypeImage)
+                            <img class="w-100 h-100" src="{{ $shop->logotypeImage->path() }}" title="{{ $shop->name }}"  alt="{{ $shop->name }}"/>
+                        @endisset
+                    </div>
+                </a>
+            </div>
+            <div class="ml-15">
+                <h1 class="company-name">
+                    <a href="{{ route('pages.index') }}">{{ $shop->name }}</a>
+                </h1>
+            </div>
         </div>
         <div class="footer-elem"></div>
         <div class="copyright-data footer-elem">
             <span>
-                © «Название компании» 2020, работает на <a title="Лучшая программа для автозапчастей" href="https://bbcrm.ru/">#bbcrm</a>
+                © «{{ $shop->name }}» 2020, работает на <a title="Лучшая программа для автозапчастей" href="https://bbcrm.ru/">#bbcrm</a>
             </span>
         </div>
         <div class="personal-data footer-elem">

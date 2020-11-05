@@ -62,7 +62,6 @@ class TinkoffMerchantAPI
         return $this->buildQuery('Init', $args);
     }
 
-
     public function getState($args)
     {
         return $this->buildQuery('GetState', $args);

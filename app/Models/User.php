@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\ShopManager\ShopManager;
 use App\Traits\OwnedTrait;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
-use Auth;
 
 class User extends Authenticatable
 {
@@ -33,8 +32,23 @@ class User extends Authenticatable
         return $this->hasOne(Partner::class, 'user_id');
     }
 
+    public function companyPartner()
+    {
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        return $this->belongsTo(Partner::class, 'id', 'user_id')->where('company_id', $shop->company_id);
+    }
+
     public function getStoreFirst(){
-        return $this->partner()->first()->store()->first();
+        return $this->partner->store()->first();
+    }
+
+    public function getProvidersCartOrders()
+    {
+        return $this->hasOne(CartProviderOrder::class);
     }
 
     public function attachToCompany($company)

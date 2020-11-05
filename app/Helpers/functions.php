@@ -3,6 +3,29 @@
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Milon\Barcode\DNS1D;
 
+if(!function_exists('display_phone')) {
+    function display_phone($phone) {
+        $parts = sscanf($phone,'%1c%3c%3c%2c%2c');
+
+        return '+' . $parts[0] . '(' . $parts[1] . ')' . $parts[2] . '-' . $parts[3] . '-' . $parts[4];
+    }
+}
+
+if(!function_exists('domain_info')) {
+    function domain_info($host) {
+        $host = strtolower(trim($host));
+        $host = ltrim(str_replace("http://","",str_replace("https://","",$host)),"www.");
+        $count = substr_count($host, '.');
+        if($count === 2){
+            if(strlen(explode('.', $host)[1]) > 3) $host = explode('.', $host, 2)[1];
+        } else if($count > 2){
+            $host = getDomainOnly(explode('.', $host, 2)[1]);
+        }
+        $host = explode('/',$host);
+        return $host[0];
+    }
+}
+
 if(!function_exists('mb_ucfirst'))
 {
     function mb_ucfirst($string, $enc = 'UTF-8')

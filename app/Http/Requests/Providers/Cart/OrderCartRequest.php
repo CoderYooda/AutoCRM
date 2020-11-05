@@ -16,8 +16,18 @@ class OrderCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => ['max:512'],
-            'delivery_type' => ['required', 'string']
+            'comments' => ['array'],
+            'comments.*' => ['nullable', 'string', 'max:512'],
+
+            'orders' => ['array'],
+            'orders.*.count' => ['required', 'between:1,99'],
+
+            'providers' => ['array'],
+            'providers.*.delivery_type_id' => ['nullable', 'string', 'max:144'],
+            'providers.*.payment_type_id' => ['nullable', 'string', 'max:144'],
+            'providers.*.pickup_address_id' => ['nullable', 'string', 'max:144'],
+            'providers.*.delivery_address_id' => ['nullable', 'string', 'max:144'],
+            'providers.*.date_shipment_id' => ['nullable', 'string', 'max:144'],
         ];
     }
 

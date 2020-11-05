@@ -21,11 +21,15 @@ class EntranceController extends Controller
     public static function entranceDialog($request)
     {
         $entrance = Entrance::find($request['entrance_id']);
-        $tag = 'entranceDialog' . ($entrance->id ?? '');
+        $class = 'entranceDialog' . ($entrance->id ?? '');
+
+        $providerorder = $entrance->providerorder ?? null;
+
+        $view = view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request', 'class'));
 
         return response()->json([
-            'tag' => $tag,
-            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance',  'request'))->with('class', $tag)->render()
+            'tag' => $class,
+            'html' => $view->render()
         ]);
     }
 
@@ -47,21 +51,25 @@ class EntranceController extends Controller
     {
         PermissionController::canByPregMatch( 'Создавать поступления');
 
-        $store = Store::find(Auth::user()->current_store);
+        $user = Auth::user();
 
         $providerorder = ProviderOrder::find($request['providerorder_id']);
 
-        #проверка валидации
+        //Проверка валидации
         $messages = [];
 
-        foreach($request['products'] as $id => $product) {
-            $entrance_count = $providerorder->getArticleEntredCount($id);
-            $providers_count = $providerorder->getArticleCount($id);
+        $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_keys($request->products))->get();
 
+        foreach($request['products'] as $pivot_id => $product) {
+
+            $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
+
+            $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
 
             $form_count = (int)$product['count'];
-            if($entrance_count + $form_count > $providers_count){
-                $messages['products[' . $id . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
+
+            if($entrance_count + $form_count > $provider_count){
+                $messages['products[' . $pivot_id . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
             }
         }
 
@@ -70,30 +78,26 @@ class EntranceController extends Controller
         }
 
         $entrance = Entrance::create([
-            'manager_id' => Auth::user()->partner->id,
+            'manager_id' => $user->partner->id,
             'partner_id' => $providerorder->partner->id,
-            'company_id' => Auth::user()->company->id,
+            'company_id' => $user->company_id,
             'comment' => $request->comment,
             'providerorder_id' => $providerorder->id,
             'invoice' => $request->invoice
         ]);
 
-        foreach ($request->products as $id => $product) {
-            $price = $providerorder->articles->find($id)->pivot->price;
+        foreach ($request->products as $pivot_id => $product) {
 
-            $entrance->articles()->attach($id, [
-                'store_id' => $providerorder->store_id,
+            $price = $providerorder->articles->find($product['id'])->pivot->price;
+
+            $entrance->articles()->attach($product['id'], [
+                'store_id' => $user->current_store,
                 'company_id' => $entrance->company_id,
                 'count' => $product['count'],
-                'price' => $price
+                'price' => $price,
+                'provider_pivot_id' => $pivot_id
             ]);
         }
-
-        $product_ids = array_column($request->products, 'id');
-        $store->articles()->syncWithoutDetaching($product_ids, false);
-
-        #Обработка ответа
-        $entrance->company_id = Auth::user()->company_id;
 
         #Добавляем к балансу контакта
         $entrance->providerorder->partner->addition($entrance->totalPrice);

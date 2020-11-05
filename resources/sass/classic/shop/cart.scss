@@ -1,0 +1,26 @@
+.order_types {
+
+    display: flex;
+
+    div {
+        margin-right: 20px;
+        padding: 16px 42px;
+        border: 2px solid #E23414;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        text-align: center;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #272727;
+        right: 20px;
+    }
+}
+
+.registered_form {
+    padding: 62px;
+    background: #FAFAFA;
+
+
+}

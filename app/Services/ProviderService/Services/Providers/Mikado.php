@@ -4,11 +4,16 @@
 namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
+use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Services\ShopManager\ShopManager;
+use App\Traits\CartProviderOrderCreator;
 use Illuminate\Support\Facades\Auth;
 
 class Mikado implements ProviderInterface
 {
+    use CartProviderOrderCreator;
+
     protected $host = 'https://mikado-parts.ru/';
 
     protected $name = 'Mikado';
@@ -22,7 +27,12 @@ class Mikado implements ProviderInterface
 
     public function __construct()
     {
-        $this->company = Auth::user()->company;
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $this->company = $shop->company ?? Auth::user()->company;
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
@@ -32,8 +42,6 @@ class Mikado implements ProviderInterface
     {
         $params = [
             'Search_Code' => $article,
-            'ClientID' => $this->login,
-            'Password' => $this->password,
             'FromStockOnly' => 'FromStockAndByOrder'
         ];
 
@@ -67,8 +75,6 @@ class Mikado implements ProviderInterface
     {
         $params = [
             'Search_Code' => $article,
-            'ClientID' => $this->login,
-            'Password' => $this->password,
             'FromStockOnly' => 'FromStockAndByOrder'
         ];
 
@@ -83,6 +89,7 @@ class Mikado implements ProviderInterface
         foreach ($items as $key => $item) {
 
             if($item['CodeType'] == 'Analog') continue;
+            if(!isset($item['Srock'])) continue;
 
             $items[$key]['index'] = $key;
 
@@ -99,6 +106,7 @@ class Mikado implements ProviderInterface
         foreach ($items as $key => $item) {
 
             if($item['CodeType'] == 'Analog') continue;
+            if(!isset($item['Srock'])) continue;
 
             $delivery_days = (int)preg_replace('/[^0-9]/', '', $item['Srock'] ?? '0');
 
@@ -106,13 +114,13 @@ class Mikado implements ProviderInterface
                 'index' => $key,
                 'name' => $item['Supplier'],
                 'code' => $item['ZakazCode'],
-                'days_min' => $delivery_days,
                 'delivery' => $delivery_days,
+                'days_min' => $delivery_days,
                 'price' => $item['PriceRUR'],
-                'model' => $item,
-                'stock' => $item['ZakazCode'],
                 'manufacturer' => $item['Supplier'],
-                'hash' => md5($item['ZakazCode'] . $item['Supplier'] . $article . $item['Srock'] . $item['PriceRUR'])
+                'stock' => $item['ZakazCode'],
+                'model' => $item,
+                'hash' => md5($item['ZakazCode'] . $item['Supplier'] . $article . $item['Srock'] . $item['PriceRUR']),
             ];
         }
 
@@ -122,6 +130,13 @@ class Mikado implements ProviderInterface
     private function query($path, $params): array
     {
         $handle = curl_init();
+
+        $add_params = [
+            'ClientID' => $this->login,
+            'Password' => $this->password
+        ];
+
+        $params = array_merge($params, $add_params);
 
         curl_setopt($handle, CURLOPT_URL, $this->host . $path);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
@@ -160,9 +175,7 @@ class Mikado implements ProviderInterface
         $this->password = $fields['password'];
 
         $params = [
-            'ZakazCode' => 'xka-k1279',
-            'ClientID' => $this->login,
-            'Password' => $this->password
+            'ZakazCode' => 'xka-k1279'
         ];
 
         $result = $this->query('ws1/service.asmx/Code_Info', $params);
@@ -174,8 +187,66 @@ class Mikado implements ProviderInterface
         return true;
     }
 
-    public function sendOrder(array $products): bool
+    public function getPickupAddresses(): array
     {
-        // TODO: Implement sendOrder() method.
+        return [];
+    }
+
+    public function getDeliveryToAddresses(): array
+    {
+        return [];
+    }
+
+    public function getPaymentTypes(): array
+    {
+        return [];
+    }
+
+    public function getDeliveryTypes(): array
+    {
+        return [];
+    }
+
+    public function getDateOfShipment(): array
+    {
+        return [];
+    }
+
+    public function sendOrder(array $data): bool
+    {
+        $orders = [];
+
+        foreach ($data['orders'] as $order) {
+
+            $orderInfo = json_decode($order->data);
+
+            $params = [
+                'ZakazCode' => $orderInfo->ZakazCode,
+                'QTY' => $order->count,
+                'DeliveryType' => 1,
+                'Notes' => $data['comment'] ?? '',
+                'ExpressID' => 0,
+                'StockID' => 0
+            ];
+
+            $orders[] = $params;
+
+            $response = $this->query('ws1/basket.asmx/Basket_Add', $params);
+
+            dd($response);
+        }
+
+        /** @var CartInterface $cart */
+        $cart = app(CartInterface::class);
+        $cart->clearByProviderKey($this->service_key);
+
+        $this->createProviderOrder($data);
+
+        return true;
+    }
+
+    public function getOrdersStatuses(): array
+    {
+        return [];
     }
 }

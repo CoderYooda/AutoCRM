@@ -144,7 +144,7 @@ class TariffController extends Controller
         $params = [
             'OrderId' => $payment->OrderId,
             'Amount'  => $amount,
-            'SuccessURL' => route('UserIndex', ['id' => Auth::user()->id, 'active_tab' => 'service']),
+            'SuccessURL' => route('UserIndex', ['id' => Auth::id(), 'active_tab' => 'service']),
             'DATA'    => [
                 'Email'           => 'Coderyooda@gmail.com',//Auth::user()->phone,
                 'Connection_type' => 'example'

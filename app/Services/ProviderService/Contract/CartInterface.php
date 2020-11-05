@@ -22,5 +22,9 @@ interface CartInterface
 
     public function removeProduct($provider, $delivery_key, $manufacturer, $article);
 
+    public function removeProductById($id);
+
     public function clear();
+
+    public function clearByProviderKey($key);
 }

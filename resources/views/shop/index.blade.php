@@ -2,69 +2,60 @@
 
 @section('content')
 <div class="body">
-    <div class="slider container bg-white">
-        <div class="silder-content">
-            <div class="head-slider-container">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-                <img style="display: block;" src="/images/shop/slider.png" alt="">
-            </div>
-            <div class="controls">
-                <div class="control-item left" onclick="window.headSlider.prev()"></div>
-                <div class="control-item right" onclick="window.headSlider.next()"></div>
-            </div>
-            <div class="pins-container">
-{{--                <div class="pin"></div>--}}
-{{--                <div class="pin"></div>--}}
-{{--                <div class="pin active"></div>--}}
-{{--                <div class="pin"></div>--}}
-{{--                <div class="pin"></div>--}}
+
+    @if(count($shop->sliderImages))
+
+        <div class="slider container bg-white">
+            <div class="silder-content">
+                <div class="head-slider-container">
+                    @foreach($shop->sliderImages as $image)
+                        <img style="display: block;" src="{{ $image->url }}" alt="">
+                    @endforeach
+                </div>
+                <div class="controls">
+                    <div class="control-item left" onclick="window.headSlider.prev()"></div>
+                    <div class="control-item right" onclick="window.headSlider.next()"></div>
+                </div>
+                <div class="pins-container">
+                    {{-- Логика в JS --}}
+                </div>
             </div>
         </div>
-    </div>
+
+    @endif
+
     <div class="popular container bg-white">
         <div class="title">
-            <h2>Популярные товары</h2>
+            <h2>Акционные товары</h2>
             <div class="products grid-4">
                 <div class="popular-products">
-                    @for($i = 0; $i < 7; $i++)
+                    @foreach($products as $product)
                     <div class="product">
-                        <img class="product-img" title="сюда имя товара" src="/images/shop/product-{{ rand(0,3) }}.png" alt="">
-                        <h3 class="product-name" title="Название товара!!!">Моторное масло</h3>
-                        <div class="brand">VAG</div>
-                        <div class="article">k1279</div>
+                        <img class="product-img" title="{{ $product->name }}" src="{{ $product->image_path }}" alt="{{ $product->name }}">
+                        <h3 class="product-name" title="{{ $product->name }}">{{ $product->name }}</h3>
+                        <div class="brand">{{ $product->supplier->name }}</div>
+                        <div class="article">{{ $product->article }}</div>
                         <div class="price-container">
-                            @php $isAction = rand(0,1); $price = rand(1000, 300000) @endphp
-                            <span class="price @if($isAction) action @endif">{{ number_format($price, 0, ',', ' ') }}</span>
-                            @if($isAction)
-                            <span class="strikethrough-price">{{ number_format($price + rand(1000, 900000), 0, ',', ' ') }}</span>
-                            @endif
+
+                            <span class="price">{{ correct_price($product->stores->first()->pivot->retail_price) }}</span>
+
+{{--                            <span class="price action">{{ correct_price($product->stores->first()->pivot->retail_price) }}</span>--}}
+{{--                            <span class="strikethrough-price">{{ correct_price($product->stores->first()->pivot->retail_price) }}</span>--}}
                         </div>
                         <div class="top-left-label">
-                            @if(rand(0,1))
+                            @if($product->getEntrancesCount())
                                 <div class="in-stock">В наличии</div>
                             @else
                                 <div class="out-of-stock">Под заказ</div>
                             @endif
-                            @if($isAction)
-                            <div class="discount">-30%</div>
-                            @endif
+{{--                            <div class="discount">-30%</div>--}}
                         </div>
                         <div class="top-right-label">
-                            <div class="favour"></div>
-                            <div class="info" onclick="getProductInfo({{ $i }})"></div>
-                        </div>
-                        <div class="shipping-container">
-                            <div class="counter-container">
-                                <div class="button minus"></div>
-                                <input class="counter" value="1" type="text">
-                                <div class="button plus"></div>
-                            </div>
-                            <div class="cart-button {{ rand(0,1) ? 'incart' : '' }}"></div>
+                            <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
+                            <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
                         </div>
                     </div>
-                    @endfor
+                    @endforeach
                 </div>
                 <div class="controls">
                     <div class="control-item left" onclick="window.popularSlider.prev()"></div>
@@ -78,21 +69,18 @@
             <h2>Каталог товаров</h2>
         </div>
         <div class="categories-container">
-            @for($i = 0; $i <= 10; $i++)
-            <div class="category">
-                <div class="description">
-                    <div class="title">Название категории</div>
-                    <div class="link">
-                        <a title="Название категории сюда" href="/shop/index?page=category">Перейти</a>
+            @foreach($categories as $category)
+                <div class="category">
+                    <div class="description relative">
+                        <div class="title">{{ $category->name }}</div>
+                        <div class="link">
+                            <a title="{{ $category->name }}" href="{{ $category->path() }}">Перейти</a>
+                        </div>
+                    </div>
+                    <div class="photo" @isset($category->image) style="background: url({{ asset($category->image_path) }}) center no-repeat;" @endisset>
                     </div>
                 </div>
-                <div class="photo">
-                    @if(rand(0,3))
-                    <img title="Название категории сюда" src="/images/shop/category-{{ rand(1,2) }}.png" alt="">
-                    @endif
-                </div>
-            </div>
-            @endfor
+            @endforeach
         </div>
     </div>
 </div>

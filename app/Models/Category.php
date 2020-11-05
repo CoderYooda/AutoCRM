@@ -2,35 +2,123 @@
 
 namespace App\Models;
 
+use App\Models\System\Image;
+use App\Services\ShopManager\ShopManager;
+use App\Traits\Imageable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
+    use Imageable;
+
     protected $guarded = [];
+
     public $fields = [
         'company_id',
         'name',
         'balance'
     ];
 
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'id', 'image_id');
+    }
+
+    public function getImagePathAttribute()
+    {
+        return $this->image ? $this->image->path() : asset('/images/shop/no-photo.svg');
+    }
+
+    public function parents()
+    {
+        $parents = collect([]);
+
+        $parent = $this->parent;
+
+        while(!is_null($parent) && $parent->id > 2) {
+            $parents->push($parent);
+            $parent = $parent->parent;
+        }
+
+        return $parents->reverse();
+    }
+
+    public function path()
+    {
+        return route('pages.path', $this->getParentsSlugs());
+    }
+
+    public function getParentsSlugs()
+    {
+        $parents = $this->parents();
+
+        $slugs = '';
+
+        if(count($parents)) {
+            $slugs = implode('/', $parents->pluck('slug')->toArray()) . '/';
+        }
+
+        return '/catalogue/' . $slugs . $this->slug;
+    }
+
     public function parent()
     {
-        return $this->belongsTo(Category::class, 'category_id')
-            ->where(function($q){
-                $company_id = Auth::user()->company()->first()->id;
-                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
-            });
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $builder = $this->belongsTo(Category::class, 'category_id');
+
+        $builder->where(function (Builder $query) use($shop) {
+            $company_id = $shop->company_id ?? Auth::user()->company_id;
+
+            $query->where('company_id', $company_id)
+                ->orWhere('company_id', null);
+        });
+
+        return $builder;
     }
 
     public function childs()
     {
-        return $this->hasMany(Category::class, 'category_id')
-            ->where(function($q){
-                $company_id = Auth::user()->company()->first()->id;
-                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
-            });
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $builder = $this->hasMany(Category::class, 'category_id');
+
+        $builder->where(function (Builder $query) use($shop) {
+            $company_id = $shop->company_id ?? Auth::user()->company_id;
+
+            $query->where('company_id', $company_id)
+                ->orWhere('company_id', null);
+        });
+
+        return $builder;
     }
+
+//    public function parent()
+//    {
+//        return $this->belongsTo(Category::class, 'category_id')
+//            ->where(function($q){
+//                $company_id = Auth::user()->company()->first()->id;
+//                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
+//            });
+//    }
+//
+//    public function childs()
+//    {
+//        return $this->hasMany(Category::class, 'category_id')
+//            ->where(function($q){
+//                $company_id = Auth::user()->company()->first()->id;
+//                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
+//            });
+//    }
 
     public function articles()
     {

@@ -37,7 +37,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $subdomain = current(explode('.', request()->getHost()));
 
-        if($subdomain == 'online' || $subdomain == 'test' || $subdomain == "1") {
+        if($subdomain == 'online' || $subdomain == 'test') {
             $this->mapApiRoutes();
             $this->mapWebRoutes();
         }
