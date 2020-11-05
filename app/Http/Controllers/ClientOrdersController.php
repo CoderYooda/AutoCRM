@@ -42,7 +42,6 @@ class ClientOrdersController extends Controller
             }
         }
 
-
         return response()->json([
             'tag' => $tag,
             'html' => view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request', 'articles'))->render()
