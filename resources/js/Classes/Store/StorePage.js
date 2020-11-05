@@ -154,27 +154,22 @@ class storePage extends Page{
         });
     };
 
-    setArticleCartAmount(element) {
-        let amount = Number(element.value);
-        this.changeArticleCartAmount(element, amount);
-    }
-
-    incrementArticleCartAmount(element) {
+    incrementArticleCartAmount(element, count) {
         let target_element = element.closest('tr');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
 
-        this.changeArticleCartAmount(element, value + 1);
+        this.changeArticleCartAmount(element, value + count);
     }
 
-    decrementArticleCartAmount(element) {
+    decrementArticleCartAmount(element, count) {
         let target_element = element.closest('tr');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
 
-        this.changeArticleCartAmount(element, value - 1);
+        this.changeArticleCartAmount(element, value - count);
     }
 
     changeArticleCartAmount(element, count) {
@@ -240,7 +235,7 @@ class storePage extends Page{
         window.openDialog('ProviderCartDialog');
     }
 
-    addToCart(element) {
+    addToCart(element, count) {
         let target_element = element.closest('tr');
 
         let service_input = document.querySelector('[name="service_key"]');
@@ -251,7 +246,7 @@ class storePage extends Page{
         let input = target_element.querySelector('input');
         this.addInputCountMask(input);
 
-        input.value = '1';
+        input.value = count;
 
         let element_index = parseInt(target_element.id);
 
@@ -261,10 +256,13 @@ class storePage extends Page{
             if(model.index == element_index) index = array_index;
         });
 
+        console.log(this.items);
+
         let data = {
             provider_key: service_input.value,
             article: this.search,
-            product: this.items[index]
+            product: this.items[index],
+            count: count
         };
 
         axios.post('/provider_stores/cart/add', data)

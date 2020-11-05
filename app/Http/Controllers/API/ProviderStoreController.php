@@ -134,7 +134,7 @@ class ProviderStoreController extends Controller
 
     public function addCart(CartInterface $cart, AddCartRequest $request)
     {
-        $cart->addProduct($request->provider_key, $request->article, $request->product);
+        $cart->addProduct($request->provider_key, $request->article, $request->product, $request->count);
 
         return response()->json([
             'type' => 'success',

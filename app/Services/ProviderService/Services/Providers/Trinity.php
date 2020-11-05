@@ -85,9 +85,10 @@ class Trinity implements ProviderInterface
                 'manufacturer' => $item['producer'],
                 'article' => $article,
                 'days' => $item['deliverydays'],
-                'price' => $item['price']
+                'price' => $item['price'],
+                'packing' => $item['minOrderCount'],
+                'desc' => $item['caption']
             ];
-
         }
 
         foreach ($items['data'] as $key => $store) {
@@ -103,9 +104,11 @@ class Trinity implements ProviderInterface
                 'index' => $key,
                 'name' => $store['stock'],
                 'code' => $store['code'],
+                'rest' => $store['rest'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
-                'delivery' => $store['deliverydays'],
+                'min_count' => $store['minOrderCount'],
+                'delivery' => $store['deliverydays'] . 'дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['producer'],
                 'model' => $store,
@@ -208,6 +211,7 @@ class Trinity implements ProviderInterface
                 'price' => $orderInfo['price'],
                 'saled_price' => $orderInfo['price'] + sum_percent($orderInfo['price'], 20),
                 'quantity' => $product->count,
+                'source' => $orderInfo['source'],
                 'comment' => $data['comment'] ?? '',
                 'deliverydays' => $orderInfo['deliverydays'],
                 'minOrderCount' => $orderInfo['minOrderCount'],
@@ -227,8 +231,6 @@ class Trinity implements ProviderInterface
         ];
 
         $results = $this->query('cart/confirm', $this->createParams($params), true);
-
-        dd($results);
 
         $this->createProviderOrder($data);
 

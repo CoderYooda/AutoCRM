@@ -41,7 +41,7 @@ class Mikado implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'Search_Code' => $article,
+            'Search_Code'   => $article,
             'FromStockOnly' => 'FromStockAndByOrder'
         ];
 
@@ -74,8 +74,8 @@ class Mikado implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'Search_Code' => $article,
-            'FromStockOnly' => 'FromStockAndByOrder'
+            'Search_Code'   => $article,
+            'FromStockOnly' => 'FromStockOnly'
         ];
 
         $items = $this->query('ws1/service.asmx/Code_Search', $params);
@@ -88,39 +88,45 @@ class Mikado implements ProviderInterface
 
         foreach ($items as $key => $item) {
 
-            if($item['CodeType'] == 'Analog') continue;
-            if(!isset($item['Srock'])) continue;
+            $rest = null;
+            $delivery = null;
+
+            if (isset($item['OnStocks']['StockLine'][0]['DeliveryDelay'])) {
+                $delivery = $item['OnStocks']['StockLine'][0]['DeliveryDelay'] . ' дн.';
+                $rest = $item['OnStocks']['StockLine'][0]['StockQTY'];
+            } else {
+                $delivery = $item['OnStocks']['StockLine']['DeliveryDelay'] . ' дн.';
+                $rest = $item['OnStocks']['StockLine']['StockQTY'];
+            }
+
+            $rest = (int)preg_replace('/[^0-9]/', '', $rest);
+            $delivery = (int)preg_replace('/[^0-9]/', '', $delivery);
 
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
-                'stock' => $item['ZakazCode'],
+                'stock'        => $item['ZakazCode'],
                 'manufacturer' => $item['Supplier'],
-                'article' => $article,
-                'days' => $item['Srock'],
-                'price' => $item['PriceRUR']
+                'article'      => $article,
+                'days'         => $delivery,
+                'price'        => $item['PriceRUR'],
+                'packing'      => $item['MinZakazQTY'] ?? 1,
+                'desc'         => $item['Name']
             ];
 
-        }
-
-        foreach ($items as $key => $item) {
-
-            if($item['CodeType'] == 'Analog') continue;
-            if(!isset($item['Srock'])) continue;
-
-            $delivery_days = (int)preg_replace('/[^0-9]/', '', $item['Srock'] ?? '0');
-
             $results[] = [
-                'index' => $key,
-                'name' => $item['Supplier'],
-                'code' => $item['ZakazCode'],
-                'delivery' => $delivery_days,
-                'days_min' => $delivery_days,
-                'price' => $item['PriceRUR'],
+                'index'        => $key,
+                'name'         => $item['Supplier'],
+                'code'         => $item['ZakazCode'],
+                'rest'         => $rest,
+                'delivery'     => $delivery . ' дн.',
+                'days_min'     => $delivery,
+                'packing'      => $item['MinZakazQTY'] ?? 1,
+                'price'        => $item['PriceRUR'],
                 'manufacturer' => $item['Supplier'],
-                'stock' => $item['ZakazCode'],
-                'model' => $item,
-                'hash' => md5($item['ZakazCode'] . $item['Supplier'] . $article . $item['Srock'] . $item['PriceRUR']),
+                'stock'        => $item['ZakazCode'],
+                'model'        => $items[$key],
+                'hash'         => md5($item['ZakazCode'] . $item['Supplier'] . $article . $delivery . $item['PriceRUR']),
             ];
         }
 
@@ -141,7 +147,7 @@ class Mikado implements ProviderInterface
         curl_setopt($handle, CURLOPT_URL, $this->host . $path);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($handle, CURLOPT_POST, 1);
-        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
         curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($params));
         $result = curl_exec($handle);
@@ -150,7 +156,7 @@ class Mikado implements ProviderInterface
 
         curl_close($handle);
 
-        if($info['http_code'] != 200) {
+        if ($info['http_code'] != 200) {
             throw_error('Ошибка авторизации.');
         }
 
@@ -180,7 +186,7 @@ class Mikado implements ProviderInterface
 
         $result = $this->query('ws1/service.asmx/Code_Info', $params);
 
-        if($result['CodeType'] == 'NotDefined') {
+        if ($result['CodeType'] == 'NotDefined') {
             throw_error('Mikado: Ошибка авторизации логина или пароля.');
         }
 
@@ -218,22 +224,20 @@ class Mikado implements ProviderInterface
 
         foreach ($data['orders'] as $order) {
 
-            $orderInfo = json_decode($order->data);
+            $orderInfo = json_decode($order->data, true);
 
             $params = [
-                'ZakazCode' => $orderInfo->ZakazCode,
-                'QTY' => $order->count,
+                'ZakazCode'    => $orderInfo['ZakazCode'],
+                'QTY'          => $order->count,
                 'DeliveryType' => 1,
-                'Notes' => $data['comment'] ?? '',
-                'ExpressID' => 0,
-                'StockID' => 0
+                'Notes'        => $data['comment'] ?? '',
+                'ExpressID'    => 0,
+                'StockID'      => 0
             ];
 
             $orders[] = $params;
 
             $response = $this->query('ws1/basket.asmx/Basket_Add', $params);
-
-            dd($response);
         }
 
         /** @var CartInterface $cart */

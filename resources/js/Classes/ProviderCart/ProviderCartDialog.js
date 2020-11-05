@@ -44,8 +44,16 @@ class providerCartDialog extends Modal{
             let count_element = element.querySelector('.count_elem');
             let total_element = element.querySelector('.total_elem');
 
+            let step = count_element.step;
+
             let price = parseFloat(price_element.innerText.replace(' ', ''));
             let count = parseInt(count_element.value);
+
+            if(count % step != 0 || count <= 0) {
+                count = step;
+                count_element.value = step;
+            }
+
             let total = price * count;
 
             total_element.innerHTML = total.toFixed(2);
@@ -125,6 +133,7 @@ class providerCartDialog extends Modal{
     }
 
     changeDeliveryAddress(element) {
+
         setTimeout(() => {
 
             let selected_index = element.selectedIndex;

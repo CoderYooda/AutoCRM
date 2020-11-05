@@ -26,7 +26,7 @@ trait CartProviderOrderCreator
             $orderInfo = json_decode($order->data, true);
 
             //Создание производителя
-            $supplierRequest['name'] = $orderInfo['Бренд']; //brand
+            $supplierRequest['name'] = $orderInfo['hash_info']['manufacturer'];
 
             $supplierController->store($supplierRequest);
             $supplier = $supplierController::$supplier;
@@ -43,9 +43,9 @@ trait CartProviderOrderCreator
                 'category_id' => 2,
                 'creator_id' => $this->user->id,
                 'supplier_id' => $supplier->id,
-                'foundstring' => Article::makeFoundString($orderInfo['hash_info']['article'] . $supplier->name . $orderInfo['caption']), //description
+                'foundstring' => Article::makeFoundString($orderInfo['hash_info']['article'] . $supplier->name . $orderInfo['hash_info']['desc']),
                 'article' => $orderInfo['hash_info']['article'],
-                'name' => $orderInfo['caption'], //description
+                'name' => $orderInfo['hash_info']['desc'],
                 'fapi_id' => $supplier->fapi_id ?? null
             ];
 
