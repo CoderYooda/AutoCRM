@@ -321,7 +321,7 @@ class Items {
         cell_item.key = this.key;
 
         let isset = this.items.map(function (e) {
-            return e.key;
+            return e.id;
         }).indexOf(cell_item.id);
 
 
