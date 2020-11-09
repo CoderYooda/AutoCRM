@@ -89,7 +89,8 @@ class ArmTek implements ProviderInterface
                 'days'         => $item['DLVDT'],
                 'price'        => $item['PRICE'],
                 'packing'      => $item['RDPRF'],
-                'desc'         => $item['NAME']
+                'desc'         => $item['NAME'],
+                'rest'         => $item['RVALUE']
             ];
 
         }

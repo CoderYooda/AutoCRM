@@ -111,7 +111,8 @@ class Mikado implements ProviderInterface
                 'days'         => $delivery,
                 'price'        => $item['PriceRUR'],
                 'packing'      => $item['MinZakazQTY'] ?? 1,
-                'desc'         => $item['Name']
+                'desc'         => $item['Name'],
+                'rest'         => $rest
             ];
 
             $results[] = [

@@ -84,7 +84,8 @@ trait ABCP
                 'days'         => $item['deliveryPeriod'],
                 'price'        => $item['price'],
                 'packing'      => $item['packing'],
-                'desc'         => $item['description']
+                'desc'         => $item['description'],
+                'rest'         => $item['availability']
             ];
 
         }

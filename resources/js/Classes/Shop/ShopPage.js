@@ -12,6 +12,14 @@ class shopPage {
 
     init() {
         this.linked();
+
+        this.sizes = {
+            image_logotype: [52, 52],
+            image_header: [1920, 220],
+            image_background: [1920, 500]
+        };
+
+        this.clicked_input = null;
     }
 
     linked() {
@@ -53,15 +61,18 @@ class shopPage {
     loadCroppModal()
     {
         let myModal = document.getElementById('croppr_dialog');
+
         let options = {
-            backdrop: true,
             keyboard: true,
+            backdrop: 'static'
         }
 
         this.crop_modal = new bootstrap.Modal(myModal, options);
     }
 
     changeFile(input){
+
+        this.clicked_input = input;
 
         let data = new FormData();
 
@@ -74,13 +85,11 @@ class shopPage {
             data: data
         }).then((response) => {
 
-            let sizes = {
-                image_logotype: [52, 52],
-                image_header: [1920, 220],
-                image_background: [1920, 500]
-            };
+            let another_element = document.querySelector('.reload');
 
-            let size = sizes[input.id];
+            togglePreloader(another_element, false);
+
+            let size = this.sizes[input.id];
 
             document.getElementById('croppr-container').innerHTML = '';
             let crop = document.createElement('img');
@@ -89,14 +98,13 @@ class shopPage {
 
             document.getElementById('croppr-container').appendChild(crop);
 
-            document.querySelector('#croppr_dialog .save').setAttribute('onclick', 'shop.cropImage(window.cropdata);');
-            document.querySelector('#croppr_dialog .reload').setAttribute('onclick', 'shop.anotherPicture();');
+            document.querySelector('#croppr_dialog .save').setAttribute('onclick', 'shop.cropImage(this, window.cropdata);');
+            document.querySelector('#croppr_dialog .reload').setAttribute('onclick', 'shop.anotherPicture(this);');
 
             input.value = '';
 
-            let croppr = new Croppr('#croppr', {
+            window.croppr = new Croppr('#croppr', {
                 startSize: [100, 100, '%'],
-                minSize: [size[0], size[1], 'px'],
                 aspectRatio: size[1] / size[0],
                 onCropStart: function(){
                     // document.getElementById('crop_form_modal').classList.add('moving');
@@ -104,37 +112,56 @@ class shopPage {
                     // clearTimeout(window.freezeTimer);
                 },
                 onCropEnd: (value) => {
-                    window.cropdata = {'url':response.data.images[0].url, 'filename':response.data.images[0].filename, 'coords' : value, 'target': input.id};
+                    window.cropdata = {
+                        url: response.data.images[0].url,
+                        filename: response.data.images[0].filename,
+                        coords : value,
+                        target: input.id,
+                        fit_sizes: this.sizes[input.id]
+                    };
                     // document.getElementById('crop_form_modal').classList.remove('moving');
                     // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
                 },
                 onInitialize: (instance) => {
                     this.crop_modal.show();
-                    setTimeout(() => {
+                    let timer = setInterval(() => {
+
                         let w = document.getElementsByClassName('croppr-image')[0].clientWidth;
+
+                        if(w == 0) return;
+
+                        clearInterval(timer);
+
                         let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
-                        let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
+                        // let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
                         let orig_h = document.getElementsByClassName('croppr-image')[0].naturalHeight;
 
-                        croppr.options.minSize = {
-                            width: size[0] / ( orig_w / w ),
-                            height: size[1] / ( orig_h / h )
-                        }
-                        croppr.options.maxSize = {
-                            width: size[0] / ( orig_w / w ),
-                            height: size[1] / ( orig_h / h )
-                        }
+                        let scale_ratio_h = orig_h / h;
+
+                        let min_side_size = (w > h ? h : w) / scale_ratio_h;
+
                         instance.moveTo(w/2, h/2);
 
-                        instance.resizeTo(size[0] / ( orig_w / w ), size[1] / ( orig_h / h));
+                        instance.resizeTo(min_side_size * (size[0] / size[1]), min_side_size);
 
-                    }, 100);
+                        croppr.options.minSize = {
+                            width: min_side_size * (size[0] / size[1]),
+                            height: min_side_size
+                        };
+
+                        croppr.options.maxSize = {
+                            width: w,
+                            height: h
+                        }
+
+                    },50);
 
                     window.cropdata = {
-                        'url': response.data.images[0].url,
-                        'filename': response.data.images[0].filename,
-                        'coords': instance.getValue(),
-                        'target': input.id
+                        url: response.data.images[0].url,
+                        filename: response.data.images[0].filename,
+                        coords: instance.getValue(),
+                        target: input.id,
+                        fit_sizes: this.sizes[input.id]
                     };
                 }
             });
@@ -151,7 +178,17 @@ class shopPage {
 
     }
 
-    cropImage(cropdata){
+    anotherPicture(element) {
+
+        togglePreloader(element, true);
+
+        this.clicked_input.click();
+    }
+
+    cropImage(element, cropdata){
+
+        togglePreloader(element, true);
+
         axios({
             method: 'POST',
             url: '/system/crop_image',
@@ -163,7 +200,7 @@ class shopPage {
             let file_element = document.querySelector('[name="' + window.cropdata.target + '_id"]');
             let image_element = file_element.closest('div').querySelector('.image_main');
 
-            image_element.src = file.image_path;
+            image_element.src = file.path;
             file_element.value = file.id;
 
             this.crop_modal.hide();
@@ -172,6 +209,8 @@ class shopPage {
             dd(response);
         }).finally(() => {
             window.isXHRloading = false;
+
+            togglePreloader(element, false);
         });
     }
 
