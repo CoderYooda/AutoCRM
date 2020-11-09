@@ -166,30 +166,27 @@ class EntranceRefundController extends Controller
         $company_id = Auth::user()->company_id;
         $store_id = Auth::user()->partner->store_id;
 
-        $entrance_refunds = EntranceRefund::with('partner', 'manager', 'entrance')
-            ->where('company_id', $company_id)
-            ->where('store_id', $store_id)
+        $entrance_refunds = EntranceRefund::select(DB::raw('entrance_refunds.*, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
+            ->leftJoin('partners as partner', 'partner.id', '=', 'entrance_refunds.partner_id')
+            ->leftJoin('partners as manager', 'manager.id', '=', 'entrance_refunds.manager_id')
+            ->where('entrance_refunds.company_id', $company_id)
+            ->where('entrance_refunds.store_id', $store_id)
             ->when(is_array($request['provider']) && !empty($request['provider']), function($query) use ($request) {
                 $query->whereHas('partner', function($query) use ($request){
-                    $query->whereIn('id', $request['provider']);
+                    $query->whereIn('entrance_refunds.id', $request['provider']);
                 });
             })
             ->when(is_array($request['accountable']) && !empty($request['accountable']), function($query) use ($request) {
                 $query->whereHas('manager', function($query) use ($request){
-                    $query->whereIn('id', $request['accountable']);
+                    $query->whereIn('entrance_refunds.id', $request['accountable']);
                 });
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('entrance_refunds.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->groupBy('id')
+            ->groupBy('entrance_refunds.id')
             ->orderBy($field, $dir)
             ->paginate($size);
-
-        foreach ($entrance_refunds as $entrance_refund) {
-            $entrance_refund['manager_name'] = $entrance_refund->manager->official_name;
-            $entrance_refund['partner_name'] = $entrance_refund->partner->official_name;
-        }
 
         return $entrance_refunds;
 

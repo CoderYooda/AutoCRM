@@ -354,10 +354,10 @@ class ProviderOrdersController extends Controller
         return ProviderOrder::leftJoin('partners as partner', 'partner.id', '=', 'provider_orders.partner_id')
             ->leftJoin('partners as manager', 'manager.id', '=', 'provider_orders.manager_id')
             ->select(DB::raw('provider_orders.*, partner.fio, partner.foundstring as p_foundstring, manager.foundstring as m_foundstring, manager.fio, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
-            ->when(is_array($request['provider']), function ($query) use ($request) {
+            ->when(is_array($request['provider']) && count($request['provider']), function ($query) use ($request) {
                 $query->whereIn('provider_orders.partner_id', $request['provider']);
             })
-            ->when(is_array($request['accountable']), function ($query) use ($request) {
+            ->when(is_array($request['accountable']) && count($request['accountable']), function ($query) use ($request) {
                 $query->whereIn('manager_id', $request['accountable']);
             })
             ->when($request['search'] != null, function ($query) use ($request) {
@@ -366,14 +366,14 @@ class ProviderOrdersController extends Controller
                     ->orWhere('manager.foundstring', 'like', '%' . $request['search'] . '%');
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
-                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]),
+                $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]),
                     Carbon::parse($request['dates'][1])]);
             })
             ->when($request['pay_status'] != null, function ($query) use ($request) {
-                $query->where('pays', $request['pay_status']);
+                $query->where('provider_orders.pays', $request['pay_status']);
             })
             ->when($request['entrance_status'] != null, function ($query) use ($request) {
-                $query->where('incomes', $request['entrance_status']);
+                $query->where('provider_orders.incomes', $request['entrance_status']);
             })
             ->where('provider_orders.company_id', Auth::user()->company_id)
             ->orderBy($field, $dir)
