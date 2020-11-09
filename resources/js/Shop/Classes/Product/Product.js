@@ -25,7 +25,6 @@ class Product {
         }
     }
 
-
     getInfo(product_id) {
 
         event.preventDefault();

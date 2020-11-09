@@ -79,103 +79,114 @@ class shopPage {
         data.append('image[]', input.files[0]);
         data.append('refer', 'shop');
 
-        axios({
-            method: 'POST',
-            url: '/system/image_upload',
-            data: data
-        }).then((response) => {
+        let size = this.sizes[input.id];
 
-            let another_element = document.querySelector('.reload');
-
-            togglePreloader(another_element, false);
-
-            let size = this.sizes[input.id];
-
-            document.getElementById('croppr-container').innerHTML = '';
-            let crop = document.createElement('img');
-            crop.setAttribute("src", response.data.images[0].url);
-            crop.setAttribute("id", 'croppr');
-
-            document.getElementById('croppr-container').appendChild(crop);
-
-            document.querySelector('#croppr_dialog .save').setAttribute('onclick', 'shop.cropImage(this, window.cropdata);');
-            document.querySelector('#croppr_dialog .reload').setAttribute('onclick', 'shop.anotherPicture(this);');
+        let img = new Image()
+        img.src = window.URL.createObjectURL(input.files[0]);
+        img.onload = () => {
 
             input.value = '';
 
-            window.croppr = new Croppr('#croppr', {
-                startSize: [100, 100, '%'],
-                aspectRatio: size[1] / size[0],
-                onCropStart: function(){
-                    // document.getElementById('crop_form_modal').classList.add('moving');
-                    // document.getElementById('modal-container').classList.add('freeze');
-                    // clearTimeout(window.freezeTimer);
-                },
-                onCropEnd: (value) => {
-                    window.cropdata = {
-                        url: response.data.images[0].url,
-                        filename: response.data.images[0].filename,
-                        coords : value,
-                        target: input.id,
-                        fit_sizes: this.sizes[input.id]
-                    };
-                    // document.getElementById('crop_form_modal').classList.remove('moving');
-                    // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
-                },
-                onInitialize: (instance) => {
-                    this.crop_modal.show();
-                    let timer = setInterval(() => {
+            if(img.width < size[0] || img.height < size[1]) {
+                window.notification.notify('error', 'Минимальный размер изображения: ' + size[0] + 'x' + size[1]);
+                return;
+            }
 
-                        let w = document.getElementsByClassName('croppr-image')[0].clientWidth;
+            axios({
+                method: 'POST',
+                url: '/system/image_upload',
+                data: data
+            }).then((response) => {
 
-                        if(w == 0) return;
+                let another_element = document.querySelector('.reload');
 
-                        clearInterval(timer);
+                togglePreloader(another_element, false);
 
-                        let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
-                        // let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
-                        let orig_h = document.getElementsByClassName('croppr-image')[0].naturalHeight;
+                document.getElementById('croppr-container').innerHTML = '';
+                let crop = document.createElement('img');
+                crop.setAttribute("src", response.data.images[0].url);
+                crop.setAttribute("id", 'croppr');
 
-                        let scale_ratio_h = orig_h / h;
+                document.getElementById('croppr-container').appendChild(crop);
 
-                        let min_side_size = (w > h ? h : w) / scale_ratio_h;
+                document.querySelector('#croppr_dialog .save').setAttribute('onclick', 'shop.cropImage(this, window.cropdata);');
+                document.querySelector('#croppr_dialog .reload').setAttribute('onclick', 'shop.anotherPicture(this);');
 
-                        instance.moveTo(w/2, h/2);
+                input.value = '';
 
-                        instance.resizeTo(min_side_size * (size[0] / size[1]), min_side_size);
-
-                        croppr.options.minSize = {
-                            width: min_side_size * (size[0] / size[1]),
-                            height: min_side_size
+                window.croppr = new Croppr('#croppr', {
+                    startSize: [100, 100, '%'],
+                    aspectRatio: size[1] / size[0],
+                    onCropStart: function(){
+                        // document.getElementById('crop_form_modal').classList.add('moving');
+                        // document.getElementById('modal-container').classList.add('freeze');
+                        // clearTimeout(window.freezeTimer);
+                    },
+                    onCropEnd: (value) => {
+                        window.cropdata = {
+                            url: response.data.images[0].url,
+                            filename: response.data.images[0].filename,
+                            coords : value,
+                            target: input.id,
+                            fit_sizes: this.sizes[input.id]
                         };
+                        // document.getElementById('crop_form_modal').classList.remove('moving');
+                        // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
+                    },
+                    onInitialize: (instance) => {
+                        this.crop_modal.show();
+                        let timer = setInterval(() => {
 
-                        croppr.options.maxSize = {
-                            width: w,
-                            height: h
-                        }
+                            let w = document.getElementsByClassName('croppr-image')[0].clientWidth;
 
-                    },50);
+                            if(w == 0) return;
 
-                    window.cropdata = {
-                        url: response.data.images[0].url,
-                        filename: response.data.images[0].filename,
-                        coords: instance.getValue(),
-                        target: input.id,
-                        fit_sizes: this.sizes[input.id]
-                    };
-                }
+                            clearInterval(timer);
+
+                            let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
+                            // let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
+                            let orig_h = document.getElementsByClassName('croppr-image')[0].naturalHeight;
+
+                            let scale_ratio_h = orig_h / h;
+
+                            let min_side_size = (w > h ? h : w) / scale_ratio_h;
+
+                            instance.moveTo(w/2, h/2);
+
+                            instance.resizeTo(min_side_size * (size[0] / size[1]), min_side_size);
+
+                            croppr.options.minSize = {
+                                width: min_side_size * (size[0] / size[1]),
+                                height: min_side_size
+                            };
+
+                            croppr.options.maxSize = {
+                                width: w,
+                                height: h
+                            }
+
+                        },50);
+
+                        window.cropdata = {
+                            url: response.data.images[0].url,
+                            filename: response.data.images[0].filename,
+                            coords: instance.getValue(),
+                            target: input.id,
+                            fit_sizes: this.sizes[input.id]
+                        };
+                    }
+                });
+
+                // $('#pick-button').hide();
+                // $('#save-button').show();
+                // $('#another-button').show();
+
+            }).catch(function(response){
+                dd(response);
+            }).finally(function () {
+                window.isXHRloading = false;
             });
-
-            // $('#pick-button').hide();
-            // $('#save-button').show();
-            // $('#another-button').show();
-
-        }).catch(function(response){
-            dd(response);
-        }).finally(function () {
-            window.isXHRloading = false;
-        });
-
+        };
     }
 
     anotherPicture(element) {

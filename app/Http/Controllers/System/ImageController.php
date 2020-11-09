@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Models\System\Image;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -95,6 +96,10 @@ class ImageController extends Controller
         $name = Str::random(22);
 
         $path = storage_path('/app/public/images/');
+
+        if(!File::isDirectory($path)) {
+            File::makeDirectory($path, 755, true);
+        }
 
         $img->save($path . $name . '.' . $img->extension);
 

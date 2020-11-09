@@ -85,7 +85,8 @@ trait ABCP
                 'price'        => $item['price'],
                 'packing'      => $item['packing'],
                 'desc'         => $item['description'],
-                'rest'         => $item['availability']
+                'rest'         => $item['availability'],
+                'supplier'     => $this->name
             ];
 
         }
