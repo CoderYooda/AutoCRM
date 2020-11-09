@@ -1,20 +1,8 @@
-    @if(!$request['fresh'])
-        <div
-        @if(isset($client_order) && $client_order->id != NULL)
-        @php $class = 'clientorderDialog' . $client_order->id @endphp
-        id="clientorderDialog{{$client_order->id}}" data-id="{{$client_order->id}}"
-        @else
-        @php $class = 'clientorderDialog' @endphp
-        id="clientorderDialog"
-        @endif
-        class="dialog client_order_dialog " style="width:1000px">
-    @endif
-    @if(isset($client_order) && $client_order->id != NULL)
-        <div class="titlebar">Заказ клиента №{{ $client_order->id }}</div>
-    @else
-        <div class="titlebar">Новый заказ клиента</div>
-    @endif
-        <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
+@if(!$request['inner'])
+        <div id="{{ $class }}" @if($client_order) data-id="{{$client_order->id}}" @endif class="dialog client_order_dialog" style="width:1000px">
+@endif
+    <div class="titlebar">{{ $client_order ? ('Заказ клиента №' . $client_order->id) : ('Новый заказ клиента') }}</div>
+    <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
     <div class="modal-header dark" style="-webkit-justify-content: flex-start;justify-content: normal;">
         <div class="modal-alt-header">
@@ -101,7 +89,7 @@
             </div>
         @endif
 
-        @if(($client_order && $client_order->status === 'canceled') || ($client_order && ($client_order->wsumm > $client_order->itogo)))
+        @if(($client_order && $client_order->status === \App\Models\Order::CANCELED_STATUS) || ($client_order && ($client_order->wsumm > $client_order->itogo)))
             <div id="return_money" class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
             </div>
@@ -173,7 +161,7 @@
                             <div class="form-group row row-sm">
                                 <label for="partner_id" class="col-sm-3 no-pr col-form-label">Заказчик</label>
                                 <div class="col-sm-9">
-                                    <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
+                                    <button onclick="{{ $class }}.openSelectPartnermodal()" type="button" name="partner_id" class="partner_select form-control text-left button_select" @if($client_order && $client_order->status === \App\Models\Order::CANCELED_STATUS || $client_order && $client_order->isShipped) disabled @endif>
                                         @if(isset($client_order) && $client_order->partner != null)
                                             {{ $client_order->partner->outputName() }}
                                         @else
@@ -186,7 +174,7 @@
                             <div class="form-group row row-sm">
                                 <label class="col-sm-3" for="discount">Скидка</label>
                                 <div class="col-sm-9 input-group">
-                                    <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === 'canceled' || $client_order && $client_order->isShipped) disabled @endif>
+                                    <input onClick="this.select();" type="number" name="discount" class="form-control" placeholder="Скидка" value="{{ $client_order->discount ?? 0 }}" @if($client_order && $client_order->status === \App\Models\Order::CANCELED_STATUS || $client_order && $client_order->isShipped) disabled @endif>
                                     <span class="input-group-append">
                                 <div class="dropdown" onclick="window.helper.openModal(this, event)">
                                     <div class="drop-butt"><span id="inpercents_text"> @if(isset($client_order) && $client_order->inpercents)в процентах@elseв рублях@endif</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></div>
@@ -263,45 +251,32 @@
                                 <div class="form-group row row-sm">
                                     <label class="col-sm-3" for="discount">Статус заказа</label>
                                     <div class="col-sm-9 input-group">
-                                        <select custom_select name="status" onchange="{{ $class }}.changeOrderStatus(this)" class="form-control" @if($client_order && $client_order->status === 'canceled' || $client_order->isShipped) disabled @endif>
-                                            <option @if($client_order->status === 'active') selected @endif value="active">Активен</option>
-                                            <option @if($client_order->status === 'full') selected @endif value="active">Укомплектован</option>
-                                            <option @if($client_order->status === 'canceled') selected @endif value="canceled">Отменен</option>
-                                            {{--<option @if($client_order->status === 'full') selected @endif value="full">Укомплектован</option>--}}
-                                            <option @if($client_order->status === 'complete') selected @endif value="complete">Выполнен</option>
+                                        <select onchange="{{ $class }}.changeOrderStatus(this);" class="form-control" @if($client_order && ($client_order->status == \App\Models\Order::WAIT_PAYMENT_STATUS || $client_order->status >= 5) || $client_order->isShipped) disabled @endif>
+
+                                            @foreach($statuses as $id => $status)
+
+                                                <option value="{{ $id }}" @if($client_order->status > 1 && $id < 2) disabled @endif @if($client_order->status == $id) selected @endif>{{ $status }}</option>
+
+                                            @endforeach
+
                                         </select>
+                                        <input type="hidden" name="status" value="{{ $client_order->status }}" />
                                     </div>
                                 </div>
                             @endif
                             <div class="form-group row row-sm">
                                 <div class="col-sm-12">
-                                    <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5" @if($client_order && $client_order->status === 'canceled') disabled @endif>{{ $client_order->comment ?? '' }}</textarea>
+                                    <textarea placeholder="Комментарий" style="resize: none;" class="form-control" name="comment" id="clientorder_dialog_focused" cols="30" rows="5" @if($client_order && $client_order->status === \App\Models\Order::CANCELED_STATUS) disabled @endif>{{ $client_order->comment ?? '' }}</textarea>
                                 </div>
                             </div>
 
                         </div>
+
                         <div class="tab-pane" id="{{ $client_order ? 'co_tab_items' . $client_order->id : 'co_tab_items' }}">
-                            <div data-prefs="@if($client_order){{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => true,
-                                    'nds' => 0,
-                                    'freeze' => false,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@else{{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => true,
-                                    'freeze' => false,
-                                    'nds' => 0,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@endif" data-items="@if($client_order){{
-                                 json_encode($articles->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="client_order_list{{ $client_order ? $client_order->id : '' }}">
+                            <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="client_order_list{{ $client_order ? $client_order->id : '' }}">
                             </div>
                         </div>
+
                         <div class="tab-pane" id="{{ $client_order ? 'co_tab_sms' . $client_order->id : 'co_tab_sms' }}">
                             {{--&& !$client_order->isShipped--}}
                             @if(isset($client_order) )
@@ -434,7 +409,7 @@
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
 
-            @if(!$client_order || $client_order && $client_order->status !== 'canceled' && !$client_order->isShipped)
+            @if(!$client_order || $client_order && $client_order->status !== \App\Models\Order::CANCELED_STATUS && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn" onclick="{{ $class }}.saveAndClose(this)">Сохранить и закрыть</button>
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="{{ $class }}.save(this)">Сохранить</button>
             @endif
@@ -442,8 +417,8 @@
             @if(isset($client_order) && $client_order->id != NULL)
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
-            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== 'canceled' && !$client_order->isShipped)
-                <button type="button" class="button primary pull-right uppercase-btn  mr-15" onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
+            @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== \App\Models\Order::CANCELED_STATUS && !$client_order->isShipped)
+                <button type="button" class="button primary pull-right uppercase-btn  mr-15" @if($client_order->status < 2) disabled @endif onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
             @endif
 
 
@@ -452,6 +427,6 @@
 
         </div>
     </form>
-@if(!$request['fresh'])
+@if(!$request['inner'])
     </div>
 @endif

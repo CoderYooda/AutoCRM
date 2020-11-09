@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 
@@ -25,6 +26,9 @@ class Trinity implements ProviderInterface
 
     protected $api_key = null;
 
+    /** @var User $user */
+    protected $user = null;
+
     public function __construct()
     {
         /** @var ShopManager $shopManager */
@@ -32,7 +36,9 @@ class Trinity implements ProviderInterface
 
         $shop = $shopManager->getCurrentShop();
 
-        $this->company = $shop->company ?? Auth::user()->company;
+        $this->user = Auth::user();
+
+        $this->company = $shop->company ?? $this->user->company;
 
         $this->api_key = $this->company->getServiceFieldValue($this->service_key, $this->field_name);
     }
@@ -79,9 +85,11 @@ class Trinity implements ProviderInterface
                 'manufacturer' => $item['producer'],
                 'article' => $article,
                 'days' => $item['deliverydays'],
-                'price' => $item['price']
+                'price' => $item['price'],
+                'packing' => $item['minOrderCount'],
+                'desc' => $item['caption'],
+                'rest' => $item['rest']
             ];
-
         }
 
         foreach ($items['data'] as $key => $store) {
@@ -97,9 +105,11 @@ class Trinity implements ProviderInterface
                 'index' => $key,
                 'name' => $store['stock'],
                 'code' => $store['code'],
+                'rest' => $store['rest'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
-                'delivery' => $store['deliverydays'],
+                'min_count' => $store['minOrderCount'],
+                'delivery' => $store['deliverydays'] . 'дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['producer'],
                 'model' => $store,
@@ -152,14 +162,15 @@ class Trinity implements ProviderInterface
 
     protected function query($url, $context, $asArray = true)
     {
-        try {
+        $data = null;
 
+        try {
             $url .= (strpos($url, 'cart/saveGoods') !== false ? '?v=2' : '');
 
             $data = file_get_contents($this->host . $url, false, $context);
         }
         catch (\Exception $exception) {
-            throw_error('Trinity: Ошибка авторизации ключа.');
+            throw_error('Trinity: Ошибка авторизации ключа');
         }
 
         return json_decode($data, $asArray);
@@ -201,6 +212,7 @@ class Trinity implements ProviderInterface
                 'price' => $orderInfo['price'],
                 'saled_price' => $orderInfo['price'] + sum_percent($orderInfo['price'], 20),
                 'quantity' => $product->count,
+                'source' => $orderInfo['source'],
                 'comment' => $data['comment'] ?? '',
                 'deliverydays' => $orderInfo['deliverydays'],
                 'minOrderCount' => $orderInfo['minOrderCount'],
@@ -220,8 +232,6 @@ class Trinity implements ProviderInterface
         ];
 
         $results = $this->query('cart/confirm', $this->createParams($params), true);
-
-        dd($params, $results);
 
         $this->createProviderOrder($data);
 

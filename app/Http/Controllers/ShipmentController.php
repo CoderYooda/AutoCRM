@@ -38,6 +38,7 @@ class ShipmentController extends Controller
         $tag = 'shipmentDialog' . ($shipment->id ?? '');
 
         if($clientorder) {
+
             $shipment = new Shipment();
             $shipment->id = null;
             $shipment->partner = $clientorder->partner;

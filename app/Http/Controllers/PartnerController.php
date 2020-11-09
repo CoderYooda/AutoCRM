@@ -138,7 +138,7 @@ class PartnerController extends Controller
         $phones = $partner->upsertPhones($request['phones'], $request['phones_main']);
 
         if($phones->count()){
-            $partner->basePhone = $phones->where('main', 1)->first()->number;
+            $partner->basePhone = str_replace(array('(', ')', ' ', '-', '+'), '', $phones->where('main', 1)->first()->number);
         }
 
         $partner->save();
@@ -154,7 +154,7 @@ class PartnerController extends Controller
 
         $phones_str = '';
         foreach($partner->phones as $phone){
-            $phones_str .= $phone->number;
+            $phones_str .= str_replace(array('(', ')', ' ', '-', '+'), '', $phone->number);
         }
         $partner->foundstring = mb_strtolower(str_replace(['(', ')', ' ', '-', '+'], '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
         $partner->save();

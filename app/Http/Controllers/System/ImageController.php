@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image as ImageInt;
 use Auth;
 
@@ -87,7 +88,11 @@ class ImageController extends Controller
 
         $img->crop($request['coords']['width'], $request['coords']['height'], $request['coords']['x'], $request['coords']['y']);
 
-        $name = md5(str_random(22));
+        if($request->fit_sizes) {
+            $img->fit($request->fit_sizes[0], $request->fit_sizes[1]);
+        }
+
+        $name = Str::random(22);
 
         $path = storage_path('/app/public/images/');
 

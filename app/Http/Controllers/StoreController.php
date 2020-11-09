@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
-use App\Http\Controllers\Providers\TrinityController;
 use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
@@ -195,7 +194,11 @@ class StoreController extends Controller
 
     public function shop_ordersTab(Request $request)
     {
-        return view(get_template() . '.shop_orders.index', compact('request'));
+        $data = OrderController::getOrders($request);
+
+        $data = json_encode($data->toArray());
+
+        return view(get_template() . '.shop_orders.index', compact('request', 'data'));
     }
 
     public function provider_storesTab(Request $request)
@@ -211,7 +214,6 @@ class StoreController extends Controller
     public static function storeTab($request)
     {
         $page = 'Склад';
-
 
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];

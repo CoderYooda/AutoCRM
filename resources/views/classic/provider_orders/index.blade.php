@@ -27,7 +27,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="pay_status">Статус оплаты</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input id="pay_status" type="text" name="pay_status" value="{{ request('pay_status') }}" class="form-control pay_status input_as_link" placeholder="не выбрано" disabled>
+                        <input id="pay_status" type="text" name="pay_status" value="{{ request('pay_status') }}" class="form-control pay_status input_as_link" placeholder="не выбрано">
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('pay_status', null, 'не выбрано', this)" class="element">Не выбрано</span>
@@ -42,7 +42,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="entrance_status">Статус поступления</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input readonly id="entrance_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано" disabled>
+                        <input readonly id="entrance_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано">
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('entrance_status', null, 'не выбрано', this)" class="element">не выбрано</span>

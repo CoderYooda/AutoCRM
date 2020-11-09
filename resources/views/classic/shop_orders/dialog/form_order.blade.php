@@ -62,6 +62,44 @@
                     </div>
 
                     <div class="form-group-flex">
+                        <label>Вариант получения</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getDeliveryTypeName() }}" disabled />
+                    </div>
+
+                    @if($order->delivery_type == \App\Models\Order::DELIVERY_TYPE_PICKUP)
+
+                        <div class="form-group-flex">
+                            <label>Точка получения товара</label>
+                            <input class="form-control" style="line-height: 30px;" value="{{ $order->pickupAddress->name }}" disabled />
+                        </div>
+
+                    @endif
+
+                    @if($order->delivery_type == \App\Models\Order::DELIVERY_TYPE_TRANSPORT)
+
+                        <div class="form-group-flex">
+                            <label>Адрес доставки</label>
+                            <input class="form-control" style="line-height: 30px;" value="{{ $order->deliveryAddress->text }}" disabled />
+                        </div>
+
+                    @endif
+
+                    <div class="form-group-flex">
+                        <label>Статус</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
+                    </div>
+
+                    <div class="form-group-flex">
+                        <label>Тип оплаты</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getPayTypeName() }}" disabled />
+                    </div>
+
+                    <div class="form-group-flex">
+                        <label>Статус</label>
+                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
+                    </div>
+
+                    <div class="form-group-flex">
                         <label>Комментарий</label>
                         <textarea rows="4" name="comment" class="form-control resize-none" @if($order->status != 0) disabled @endif placeholder="Комментарий">{{ $order->comment ?? '' }}</textarea>
                     </div>
@@ -70,26 +108,9 @@
 
                 <div id="tab_products" class="tab">
 
-                    <div class="table_header">
-                        <div class="w-25 pl-10">Наименование</div>
-                        <div class="w-10">Артикул</div>
-                        <div class="w-20">Производитель</div>
-                        <div class="w-10">Кол-во</div>
-                        <div class="w-10">Наличие</div>
-                        <div class="w-10">Цена</div>
-                        <div class="w-10">Всего</div>
-                        @if($order->status == 0)
-                            <div class="w-5"></div>
-                        @endif
-                    </div>
+                    <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="order_list">
 
-                    <div class="element-list">
-                        @foreach($order->products as $product)
-                            @include(get_template() . '.shop_orders.dialog.product_element')
-                        @endforeach
                     </div>
-
-                    <button type="button" class="button add_product_button" @if($order->status != 0) disabled @endif onclick="{{ $class }}.openProductmodal();">Добавить товар</button>
 
                 </div>
 

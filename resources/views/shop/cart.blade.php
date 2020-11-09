@@ -143,9 +143,20 @@
                         <div class="form-group-flex @if(old('delivery_type')) d-none @endif">
                             <label for="store_id">Точка получения заказа</label>
                             <div class="float-r w-50">
-                                <select name="store_id">
+                                <select name="pickup_id">
                                     @foreach($stores as $store)
                                         <option value="{{ $store->id }}">{{ $store->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group-flex @if(!old('delivery_type')) d-none @endif">
+                            <label for="store_id">Адрес доставки</label>
+                            <div class="float-r w-50">
+                                <select name="delivery_id">
+                                    @foreach($deliveryAddresses as $deliveryAddress)
+                                        <option value="{{ $deliveryAddress->id }}">{{ $deliveryAddress->text }}</option>
                                     @endforeach
                                 </select>
                             </div>

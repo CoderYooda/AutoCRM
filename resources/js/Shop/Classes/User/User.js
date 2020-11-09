@@ -5,6 +5,28 @@ class User {
     constructor() {
         let tabs_element = document.getElementById('user_tabs');
         if(tabs_element) new Tabs('user_tabs');
+
+        let url = new URL(window.location.href);
+        let hash = url.hash.substring(1);
+
+        if(hash) {
+
+            setTimeout(() => {
+                let target_element = document.querySelector('[data-target="' + hash + '"]');
+                if(target_element) target_element.click();
+            }, 50);
+        }
+        else {
+
+            let local_tab = localStorage.getItem('userTabs');
+
+            if (local_tab) {
+                setTimeout(() => {
+                    let target_element = document.querySelector('[data-target="' + local_tab + '"]');
+                    if(target_element) target_element.click();
+                }, 50);
+            }
+        }
     }
 
     showOrderPositions(element) {

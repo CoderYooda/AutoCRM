@@ -238,6 +238,7 @@ class ProductController extends Controller
             $product->price = $product->getPrice();
             $product->supplier_name = $product->supplier->name;
             $product->store_count = $product->available;
+            $product->product_id = $product->id;
             $product->shipped_count = 0;
         }
 

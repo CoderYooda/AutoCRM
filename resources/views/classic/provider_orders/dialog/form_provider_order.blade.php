@@ -1,6 +1,6 @@
 @php $stores = App\Models\Store::owned()->get(); @endphp
 
-@if(!isset($inner) || !$inner)
+@if(!$request->inner)
     <div id="providerorderDialog{{$provider_order->id ?? ''}}" @if($provider_order) data-id="{{$provider_order->id}}" @endif class="dialog provider_order_dialog new_dialog" style="width:1000px;">
 @endif
         <div class="titlebar">{{ isset($provider_order) ? ('Заявка поставщику №' . $provider_order->id) : ('Новая заявка поставщику') }}</div>
@@ -109,18 +109,9 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="tab-pane" id="tab_items">
-                                <div data-prefs="@if($provider_order){{
-                                json_encode([
-                                'use_nds' => true,
-                                'index' => 'ordinal',
-                                'can_add_items' => true,
-                                'nds' => $provider_order->nds,
-                                'index' => 'ordinal',
-                                'nds_included' => $provider_order->nds_included]
-                                 )}} @else {{ json_encode(['use_nds' => true, 'nds' => true, 'can_add_items' => true, 'nds_included' => true]) }} @endif" data-items="@if($provider_order){{
-                                 json_encode($provider_order->articlesJson->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="po_list">
+                                <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="po_list">
                                 </div>
                             </div>
                         </div>
@@ -139,6 +130,6 @@
             </div>
 
         </form>
-        @if(!isset($inner) || !$inner)
+@if(!$request->inner)
     </div>
 @endif

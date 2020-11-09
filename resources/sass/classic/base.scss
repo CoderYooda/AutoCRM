@@ -708,7 +708,7 @@ li.active .header-tab{
     position: absolute;
     top: 0;
     right: 0;
-    
+
     padding: 0;
     border: 0;
 }
@@ -853,6 +853,7 @@ input {
 
     &:disabled {
         cursor: not-allowed;
+        background: #f9f9f9;
     }
 
     &.is-invalid {
@@ -3582,6 +3583,10 @@ div.is-invalid {
     width: 5%;
 }
 
+.w-35 {
+    width: 35%;
+}
+
 .w-10 {
     width: 10%;
 }
@@ -3757,7 +3762,7 @@ div.is-invalid {
     margin-bottom: 10px;
 
     label {
-        width: 140px;
+        width: 190px;
         line-height: 30px;
         height: 30px;
         margin-bottom: unset;

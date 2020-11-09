@@ -24,8 +24,8 @@ class UpdateAboutRequest extends FormRequest
     {
         return [
             'about_desc' => ['required', 'string', 'max:255'],
-            'seo_about_title' => ['required', 'string', 'max:255'],
-            'seo_about_desc' => ['required', 'string', 'max:255'],
+            'seo_about_title' => ['nullable', 'string', 'max:255'],
+            'seo_about_desc' => ['nullable', 'string', 'max:255'],
             'image_ids' => ['array'],
             'image_ids.*' => ['exists:images,id'],
             'delete_image_ids' => ['nullable', 'array'],

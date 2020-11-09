@@ -26,6 +26,8 @@ class AxForm{
             url = form.getAttribute("action");
         }
 
+        helper.removeClassesByClass('is-invalid');
+
         axios({
             headers: {
                 'Content-Type': 'multipart/form-data'

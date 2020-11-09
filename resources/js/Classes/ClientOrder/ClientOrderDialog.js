@@ -92,6 +92,8 @@ class clientorderDialog extends Modal{
         this.tabs = window.helper.initTabs('client_order_tabs' + prefix);
 
         let header = [
+            {min_with: NaN, width: NaN, name: ' ', table_name: 'pivot_id', type:'hidden'},
+            {min_with: NaN, width: NaN, name: ' ', table_name: 'product_id', type:'hidden'},
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 110, width: 120,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
@@ -163,18 +165,19 @@ class clientorderDialog extends Modal{
         //data.store_id = store_id;
         if(object.refer){
             data.refer = object.refer;
+            data.inner = 1;
         }
 
         window.axios({
             method: 'post',
             url: 'clientorder/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
             object.addPhoneMask();
             console.log('Вставили html');
-        }).catch(function (error) {
-            console.log(error);w
+        }).catch(error => {
+            console.log(error);
         }).then(function () {
             callback();
         });
@@ -585,16 +588,9 @@ class clientorderDialog extends Modal{
 
     changeOrderStatus(element) {
 
-        // let target_element = this.current_dialog.querySelector('#return_money');
+        let target_element = this.current_dialog.querySelector('[name="status"]');
 
-        // console.log(element.options[element.selectedIndex].value);
-        //
-        // if(element.options[element.selectedIndex].value == 'canceled') {
-        //     target_element.classList.remove('d-none');
-        // }
-        // else {
-        //     target_element.classList.add('d-none');
-        // }
+        target_element.value = element.options[element.selectedIndex].value;
     }
 
     getPriceFromServer(id, input) {

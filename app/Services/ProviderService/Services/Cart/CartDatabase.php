@@ -47,7 +47,7 @@ class CartDatabase implements CartInterface
         // TODO: Implement getProductsIds() method.
     }
 
-    public function addProduct($provider_key, $article, $product)
+    public function addProduct($provider_key, $article, $product, $count)
     {
         $hash = md5($product['hash_info']['stock'] . $product['hash_info']['manufacturer'] . $article . $product['hash_info']['days'] . $product['hash_info']['price']);
 
@@ -61,7 +61,7 @@ class CartDatabase implements CartInterface
             'data' => json_encode($product)
         ]);
 
-        return DB::table($this->table)->where($values)->increment('count', 1);
+        return DB::table($this->table)->where($values)->update(['count' => $count]);
     }
 
     public function getProductsCount()

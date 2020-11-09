@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\User;
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ShopManager\ShopManager;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 trait ABCP
@@ -65,8 +66,8 @@ trait ABCP
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'number' => $article,
-            'brand' => $brand,
+            'number'          => $article,
+            'brand'           => $brand,
             'useOnlineStocks' => 1
         ];
 
@@ -77,11 +78,14 @@ trait ABCP
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
-                'stock' => $item['supplierCode'],
+                'stock'        => $item['supplierCode'],
                 'manufacturer' => $item['brand'],
-                'article' => $article,
-                'days' => $item['deliveryPeriod'],
-                'price' => $item['price']
+                'article'      => $article,
+                'days'         => $item['deliveryPeriod'],
+                'price'        => $item['price'],
+                'packing'      => $item['packing'],
+                'desc'         => $item['description'],
+                'rest'         => $item['availability']
             ];
 
         }
@@ -94,17 +98,19 @@ trait ABCP
             $max_days = $item['deliveryPeriodMax'] ?? 1 / 24;
 
             $results[] = [
-                'index' => $item['index'],
-                'name' => $item['supplierCode'],
-                'code' => $item['number'],
-                'delivery' => $min_days . ($max_days > $min_days ?  ('/' . $max_days) : ''),
-                'days_min' => $min_days,
-                'days_max' => $max_days,
-                'price' => $item['price'],
+                'index'        => $item['index'],
+                'name'         => $item['supplierCode'],
+                'code'         => $item['number'],
+                'rest'         => $item['availability'],
+                'packing'      => $item['packing'],
+                'delivery'     => $min_days . ($max_days > $min_days ? ('/' . $max_days) : ''),
+                'days_min'     => $min_days,
+                'days_max'     => $max_days,
+                'price'        => $item['price'],
                 'manufacturer' => $item['brand'],
-                'stock' => $item['supplierCode'],
-                'model' => $item,
-                'hash' => md5($item['supplierCode'] . $item['brand'] . $article . $item['deliveryPeriod'] . $item['price'])
+                'stock'        => $item['supplierCode'],
+                'model'        => $item,
+                'hash'         => md5($item['supplierCode'] . $item['brand'] . $article . $item['deliveryPeriod'] . $item['price'])
             ];
         }
 
@@ -119,7 +125,7 @@ trait ABCP
 
         $full_path = $this->host . $path;
 
-        if($method == 'GET') $full_path .= ('?' . http_build_query($params));
+        if ($method == 'GET') $full_path .= ('?' . http_build_query($params));
 
         $context = [
             'http' => [
@@ -128,21 +134,19 @@ trait ABCP
             ],
         ];
 
-        if($method == 'POST') {
+        if ($method == 'POST') {
             $context['http']['content'] = http_build_query($params);
         }
 
         try {
             $result = file_get_contents($full_path, null, stream_context_create($context));
-        }
-        catch (\Exception $exception)
-        {
+        } catch (Exception $exception) {
             dd($exception->getMessage());
         }
 
         $result = (array)json_decode($result, true);
 
-        if(array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
+        if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
             throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
         }
 
@@ -156,7 +160,7 @@ trait ABCP
 
     public function checkConnect(array $fields): bool
     {
-        if(!isset($fields['login']) || !isset($fields['password'])) return false;
+        if (!isset($fields['login']) || !isset($fields['password'])) return false;
 
         $this->login = $fields['login'];
         $this->password = md5($fields['password']);
@@ -174,7 +178,7 @@ trait ABCP
         $results = [];
 
         foreach ($response as $office) {
-            $results[ $office['id'] ] = $office['name'];
+            $results[$office['id']] = $office['name'];
         }
 
         return $results;
@@ -188,7 +192,7 @@ trait ABCP
         $results = [];
 
         foreach ($response as $delivery) {
-            $results[ $delivery['id'] ] = $delivery['name'];
+            $results[$delivery['id']] = $delivery['name'];
         }
 
         return $results;
@@ -202,7 +206,7 @@ trait ABCP
         $results = [];
 
         foreach ($response as $payment) {
-            $results[ $payment['id'] ] = $payment['name'];
+            $results[$payment['id']] = $payment['name'];
         }
 
         return $results;
@@ -216,7 +220,7 @@ trait ABCP
         $results = [];
 
         foreach ($response as $type) {
-            $results[ $type['id'] ] = $type['name'];
+            $results[$type['id']] = $type['name'];
         }
 
         return $results;
@@ -230,7 +234,7 @@ trait ABCP
         $results = [];
 
         foreach ($response as $date) {
-            $results[ $date['date'] ] = $date['name'];
+            $results[$date['date']] = $date['name'];
         }
 
         return $results;
@@ -239,7 +243,7 @@ trait ABCP
     public function getOrdersStatuses(): array
     {
         $numbers = CartProviderOrder::where([
-            'company_id' => $this->company->id,
+            'company_id'  => $this->company->id,
             'service_key' => $this->service_key
         ])->pluck('number')->toArray();
 
@@ -261,22 +265,22 @@ trait ABCP
             $orderInfo = json_decode($order->data);
 
             $orders[] = [
-                'number' => $orderInfo->number,
-                'brand' => $orderInfo->brand,
+                'number'       => $orderInfo->number,
+                'brand'        => $orderInfo->brand,
                 'supplierCode' => $orderInfo->supplierCode,
-                'itemKey' => $orderInfo->itemKey,
-                'quantity' => $order->count
+                'itemKey'      => $orderInfo->itemKey,
+                'quantity'     => $order->count
             ];
         }
 
         $params = [
-            'positions' => $orders,
-            'shipmentMethod' => $data['delivery_type_id'],
-            'paymentMethod' => $data['payment_type_id'],
+            'positions'       => $orders,
+            'shipmentMethod'  => $data['delivery_type_id'],
+            'paymentMethod'   => $data['payment_type_id'],
             'shipmentAddress' => $data['delivery_address_id'],
-            'shipmentOffice' => $data['pickup_address_id'],
-            'shipmentDate' => $data['date_shipment_id'],
-            'comment' => $data['comment']
+            'shipmentOffice'  => $data['pickup_address_id'],
+            'shipmentDate'    => $data['date_shipment_id'],
+            'comment'         => $data['comment']
         ];
 
 //        $response = $this->query('orders/instant', $params, 'POST');

@@ -18,14 +18,36 @@ use Auth;
 
 class EntranceController extends Controller
 {
-    public static function entranceDialog($request)
+    public static function entranceDialog(Request $request)
     {
         $entrance = Entrance::find($request['entrance_id']);
         $class = 'entranceDialog' . ($entrance->id ?? '');
 
+        /** @var ProviderOrder $providerorder */
         $providerorder = $entrance->providerorder ?? null;
 
-        $view = view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request', 'class'));
+        $items = $entrance ? $entrance->articles->toArray() : [];
+
+        foreach ($items as $key => $item) {
+            $items[$key]['product_id'] = $item['id'];
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['entered_count'] = $providerorder->getArticleEnteredCountByPivotId($item['pivot']['provider_pivot_id'] ?? $item['pivot']['id']);
+            $items[$key]['total_count'] = $providerorder->getArticleCountByPivotId($item['pivot']['provider_pivot_id'] ?? $item['pivot']['id']);
+            $items[$key]['count'] = $providerorder ? $item['pivot']['count'] : ($item['total_count'] - $item['entered_count']);
+        }
+
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => false,
+            'nds' => 0,
+            'freeze' => $entrance ? true : false,
+            'nds_included' => false
+        ];
+
+        $view = view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request', 'class'))
+            ->with('items', json_encode($items))
+            ->with('prefs', json_encode($prefs));
 
         return response()->json([
             'tag' => $class,
@@ -58,9 +80,11 @@ class EntranceController extends Controller
         //Проверка валидации
         $messages = [];
 
-        $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_keys($request->products))->get();
+        $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_column($request->products, 'pivot_id'))->get();
 
-        foreach($request['products'] as $pivot_id => $product) {
+        foreach($request['products'] as $index => $product) {
+
+            $pivot_id = $product['pivot_id'];
 
             $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
 
@@ -69,7 +93,7 @@ class EntranceController extends Controller
             $form_count = (int)$product['count'];
 
             if($entrance_count + $form_count > $provider_count){
-                $messages['products[' . $pivot_id . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
+                $messages['products[' . $index . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
             }
         }
 
@@ -86,11 +110,13 @@ class EntranceController extends Controller
             'invoice' => $request->invoice
         ]);
 
-        foreach ($request->products as $pivot_id => $product) {
+        foreach ($request->products as $index => $product) {
 
-            $price = $providerorder->articles->find($product['id'])->pivot->price;
+            $pivot_id = $product['pivot_id'];
 
-            $entrance->articles()->attach($product['id'], [
+            $price = $providerorder->articles->find($product['product_id'])->pivot->price;
+
+            $entrance->articles()->attach($product['product_id'], [
                 'store_id' => $user->current_store,
                 'company_id' => $entrance->company_id,
                 'count' => $product['count'],
@@ -105,9 +131,6 @@ class EntranceController extends Controller
 
         $entrance->providerorder->updateIncomeStatus();
 
-//        #Всё ли поступило?
-//        $providerorder->checkEntered();
-
         #Ответ сервера
         return response()->json([
             'message' => 'Поступление было успешно создано.',
@@ -118,17 +141,10 @@ class EntranceController extends Controller
 
     public function fresh(Entrance $entrance, Request $request)
     {
-        $inner = true;
-        $class = 'entranceDialog' . $entrance->id;
+        $request['inner'] = 1;
+        $request['entrance_id'] = $entrance->id;
 
-        $content = view(get_template() . '.entrance.dialog.form_entrance', compact( 'entrance', 'class', 'inner'))
-            ->with('providerorder', $entrance->providerorder)
-            ->render();
-
-        return response()->json([
-            'html' => $content,
-            'target' => $class,
-        ], 200);
+        return self::entranceDialog($request);
     }
 
     private static function calculatePivotArticleEntrance($request, $store, $product){
@@ -153,7 +169,7 @@ class EntranceController extends Controller
 
     public function select(Entrance $entrance, Request $request)
     {
-        $products = null;
+        $products = [];
 
         if(!$entrance) {
             return response()->json([
@@ -179,13 +195,19 @@ class EntranceController extends Controller
                     $available_count[$product->id] -= $product->pivot->count;
                 }
             }
-//
-//            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
+
+            foreach ($products as $key => $product) {
+                $products[$key]['pivot_id'] = $product['pivot']['id'];
+                $products[$key]['product_id'] = $product['id'];
+                $products[$key]['price'] = $product['pivot']['price'];
+                $products[$key]['count'] = $product['pivot']['count'];
+                $products[$key]['released_count'] = $product['pivot']['released_count'];
+                $products[$key]['provider_pivot_id'] = $product['pivot']['provider_pivot_id'];
+            }
         }
 
         return response()->json([
             'id' => $entrance->id,
-//            'items_html' => $view,
             'items' => $products,
             'partner' => $entrance->partner->outputName(),
             'partner_id' => $entrance->partner->id,

@@ -96,7 +96,6 @@ class Items {
             this.inpercents = inpercents;
             inpercents.addEventListener("change", fn);
         }
-        console.log("Лист загружен");
     }
 
     setItems(items){
@@ -226,7 +225,10 @@ class Items {
             add_button.classList.add('button');
             add_button.classList.add('list-add-button');
             add_button.innerText = 'Добавить позицию';
-            add_button.setAttribute('onclick', this.parent_object.current_dialog.id + '.openProductmodal()');
+
+            add_button.addEventListener('click', () => {
+                this.parent_object.openProductmodal();
+            });
             bottom.appendChild(add_button);
         }
 
@@ -376,6 +378,15 @@ class Items {
                 switch(item.type) {
                     case 'text':
                         title.innerText = cell_item[item.table_name];
+                        break;
+                    case 'hidden-text':
+                        title.innerText = cell_item[item.table_name];
+
+                        let edit_text = document.createElement("input");
+                        edit_text.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
+                        edit_text.value = cell_item[item.table_name];
+                        edit_text.type = 'hidden';
+                        title.appendChild(edit_text);
                         break;
                     case 'counter':
                         let input = document.createElement("input");

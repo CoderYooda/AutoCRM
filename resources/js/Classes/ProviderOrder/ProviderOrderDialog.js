@@ -60,7 +60,8 @@ class providerOrderDialog extends Modal{
         this.tabs = window.helper.initTabs('po_tabs');
 
         let header = [
-            {min_with: NaN, width: NaN, name: 'rrr', table_name: 'rrr', type: 'hidden',},
+            {min_with: NaN, width: NaN, name: 'pivot_id', table_name: 'pivot_id', type: 'hidden'},
+            {min_with: NaN, width: NaN, name: 'product_id', table_name: 'product_id', type: 'hidden'},
             {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
@@ -85,14 +86,15 @@ class providerOrderDialog extends Modal{
         //data.store_id = store_id;
         if(object.refer){
             data.refer = object.refer;
+            data.inner = 1;
         }
 
         window.axios({
             method: 'post',
             url: 'providerorder/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

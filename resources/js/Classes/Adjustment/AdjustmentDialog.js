@@ -36,7 +36,7 @@ class adjustmentDialog extends Modal{
     init() {
         this.items = new Items(this);
         this.itemses = [];
-        this.linked();
+        //this.linked();
         let id = this.current_dialog.dataset.id;
         let prefix = id ? id : '';
         this.tabs = window.helper.initTabs('adjustment_tabs' + prefix);

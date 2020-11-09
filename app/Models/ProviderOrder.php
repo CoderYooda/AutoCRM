@@ -64,14 +64,14 @@ class ProviderOrder extends Model
     #Получить еще не оприходованные товары
     public function getNotEnteredArticles()
     {
-        $articles = $this->articlesJson()->get();
+        $articles = $this->articles;
 
         foreach($articles as $key => $article){
 
-            $count = $article->count - $this->getArticleEntredCount($article->id);
+            $count = $article->pivot->count - $this->getArticleEntredCount($article->id);
 
             if($count){
-                $article->count = $count;
+                $article->pivot->count = $count;
             } else {
                 unset($articles[$key]);
             }

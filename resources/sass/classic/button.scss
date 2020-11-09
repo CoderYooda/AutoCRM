@@ -49,7 +49,8 @@
 }
 .active .button, .button:active, .button.active{
     padding-top: 1px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
+    background: #1369a2;
 }
 //button .active .button.primary, .button.primary:active, .button.primary.active{
 //    background-color: #0e7fca!important;

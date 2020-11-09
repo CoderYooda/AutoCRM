@@ -5,6 +5,7 @@ namespace App\Models\System;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image as ImageInt;
 use Illuminate\Support\Facades\Storage;
@@ -13,9 +14,18 @@ class Image extends Model
 {
     protected $guarded = [];
 
+    protected $appends = [
+        'path'
+    ];
+
     public function uploader()
     {
         return $this->hasOne(User::class, 'upload_by');
+    }
+
+    public function getPathAttribute()
+    {
+        return Storage::url($this->url);
     }
 
     public function path()
@@ -23,7 +33,7 @@ class Image extends Model
         return Storage::url($this->url);
     }
 
-    public static function uploadImage($image, $path = null, $thumb = null, $watermark = null, $rank = null)
+    public static function uploadImage(UploadedFile $image, $path = null, $thumb = null, $watermark = null, $rank = null)
     {
         $base_path = '/files/images/';
 

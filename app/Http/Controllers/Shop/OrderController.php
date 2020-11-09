@@ -54,6 +54,6 @@ class OrderController extends Controller
 
         return view('shop.success_order', compact('order', 'positions'))
             ->with('shop', $this->shop)
-            ->with('statuses', Order::$statues);
+            ->with('statuses', Order::$statuses);
     }
 }

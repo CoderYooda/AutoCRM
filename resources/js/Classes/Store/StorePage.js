@@ -154,27 +154,22 @@ class storePage extends Page{
         });
     };
 
-    setArticleCartAmount(element) {
-        let amount = Number(element.value);
-        this.changeArticleCartAmount(element, amount);
-    }
-
-    incrementArticleCartAmount(element) {
+    incrementArticleCartAmount(element, count) {
         let target_element = element.closest('tr');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
 
-        this.changeArticleCartAmount(element, value + 1);
+        this.changeArticleCartAmount(element, value + count);
     }
 
-    decrementArticleCartAmount(element) {
+    decrementArticleCartAmount(element, count) {
         let target_element = element.closest('tr');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
 
-        this.changeArticleCartAmount(element, value - 1);
+        this.changeArticleCartAmount(element, value - count);
     }
 
     changeArticleCartAmount(element, count) {
@@ -202,45 +197,6 @@ class storePage extends Page{
 
         let service_input = document.querySelector('[name="service_key"]');
 
-        let index = -1;
-
-        for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
-            if(this.items[i].index == target_element.id) index = target_element.id;
-        }
-
-        let data = {
-            provider_key: service_input.value,
-            article: this.search,
-            product: this.items[index],
-            count: count
-        };
-
-        axios.post('/provider_stores/cart/set', data)
-            .then(response => {
-                dd(response);
-            })
-            .catch(response => {
-                dd(response);
-            });
-    }
-
-    registerProviderOrder(element) {
-        window.openDialog('ProviderCartDialog');
-    }
-
-    addToCart(element) {
-        let target_element = element.closest('tr');
-
-        let service_input = document.querySelector('[name="service_key"]');
-
-        target_element.querySelector('.add-to-cart').classList.add('d-none');
-        target_element.querySelector('.edit-cart-count').classList.remove('d-none');
-
-        let input = target_element.querySelector('input');
-        this.addInputCountMask(input);
-
-        input.value = '1';
-
         let element_index = parseInt(target_element.id);
 
         let index = -1;
@@ -252,7 +208,61 @@ class storePage extends Page{
         let data = {
             provider_key: service_input.value,
             article: this.search,
-            product: this.items[index]
+            product: this.items[index],
+            count: count
+        };
+
+        axios.post('/provider_stores/cart/set', data)
+            .then(response => {
+                // dd(response);
+            })
+            .catch(response => {
+                dd(response);
+            });
+    }
+
+    sortBy(element, type) {
+
+        let brand_element = document.querySelector('.fa-angle-up').parentElement;
+
+        let brand_name = brand_element.dataset.manufacturer;
+
+        this.showManufactureStores(brand_element, brand_name, type);
+    }
+
+    registerProviderOrder(element) {
+
+        window.openDialog('ProviderCartDialog');
+    }
+
+    addToCart(element, count) {
+        let target_element = element.closest('tr');
+
+        let service_input = document.querySelector('[name="service_key"]');
+
+        target_element.querySelector('.add-to-cart').classList.add('d-none');
+        target_element.querySelector('.edit-cart-count').classList.remove('d-none');
+
+        let input = target_element.querySelector('input');
+        this.addInputCountMask(input);
+
+        input.value = count;
+
+        let element_index = parseInt(target_element.id);
+
+        let index = -1;
+
+        this.items.forEach((model, array_index) => {
+            if(model.index == element_index) index = array_index;
+        });
+
+        console.log(this.items);
+
+        let data = {
+            provider_key: service_input.value,
+            article: this.search,
+            product: this.items[index],
+            count: count
         };
 
         axios.post('/provider_stores/cart/add', data)
@@ -562,13 +572,13 @@ class storePage extends Page{
 
         events.forEach((event) => {
             document.addEventListener(event, (e) => {
-                this.table.freshData();
+                object.table.freshData();
             });
         });
 
-        document.addEventListener('ClientOrderStored', function(e){
+        document.addEventListener('ClientOrderStored', (e) => {
             if(object.active){
-                this.table.reload();
+                object.table.freshData();
             }
         });
 
@@ -675,8 +685,7 @@ class storePage extends Page{
             dd(e);
         }
 
-
-
+        if(this.active_tab == 'provider_stores') return;
 
         let container = 'ajax-table-' + this.active_tab;
         this.readData(container);
@@ -802,7 +811,7 @@ class storePage extends Page{
         } else if(this.active_tab === 'client_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 130, width: 200, name: 'Статус', table_name: 'status_formatted'},
+                {min_with: 130, width: 200, name: 'Статус', table_name: 'status'},
                 {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount_formatted'},
 
                 {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
@@ -851,6 +860,22 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){window.helper.openDocument(id)};
+            slug = 'store';
+        }
+        else if(this.active_tab === 'shop_orders'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 90, width: 'auto', name: 'Статус',table_name: 'status'},
+                {min_with: 130, width: 250, name: 'Заказчик', table_name: 'partner_name'},
+                {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
+            ];
+
+            context_menu = [
+                { name:'Открыть', action: data => openDialog('orderDialog', '&order_id=' + data.contexted.id) },
+            ];
+
+            dbl_click = function(id) { openDialog('orderDialog', '&order_id=' + id) };
+
             slug = 'store';
         }
 

@@ -16,8 +16,8 @@ class ProviderOrdersController extends Controller
 {
     public static function providerorderDialog($request)
     {
-        $po_id = isset($request['provider_order_id']) ? $request['provider_order_id'] : $request['providerorder_id'];
-        $provider_order = ProviderOrder::find((int)$po_id);
+        $po_id = $request['provider_order_id'] ?? $request['providerorder_id'];
+        $provider_order = ProviderOrder::find($po_id);
 
         $class = 'providerorderDialog' . ($provider_order->id ?? '');
 
@@ -30,7 +30,32 @@ class ProviderOrdersController extends Controller
 
         $stores = Store::owned()->get();
 
-        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'stores', 'request', 'class'));
+        $prefs = [
+            'index' => 'ordinal',
+            'use_nds' => true,
+            'can_add_items' => true,
+            'nds' => $provider_order->nds ?? true,
+            'nds_included' => $provider_order->nds_included ?? true
+        ];
+
+        $items = $provider_order ? $provider_order->articles->toArray() : [];
+
+        foreach ($items as $key => $item) {
+            $items[$key]['product_id'] = $item['id'];
+            $items[$key]['name'] = $item['name'];
+            $items[$key]['article'] = $item['article'];
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['count'] = $item['pivot']['count'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['total'] = $item['pivot']['total'];
+            $items[$key]['nds'] = $item['pivot']['nds'];
+            $items[$key]['nds_percent'] = $item['pivot']['nds_percent'];
+            $items[$key]['nds_included'] = $item['pivot']['nds_included'];
+        }
+
+        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'stores', 'request', 'class'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
 
         return response()->json([
             'tag'      => $class,
@@ -48,39 +73,43 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->with('articles')->orderBy('created_at', 'DESC')->limit(10)->get();
-
-        $providerorders = $providerorders->filter(function (ProviderOrder $providerOrder) {
-
-            $total_count = 0;
-
-            foreach ($providerOrder->articles as $product) {
-                $total_count += $product->pivot->count - $providerOrder->getArticleEnteredCountByPivotId($product->pivot->id);
-            }
-
-            return (bool)$total_count;
-        });
+        $providerorders = ProviderOrder::owned()->with('articles')->whereIn('incomes', [0,1])->limit(20)->orderBy('created_at', 'DESC')->get();
         return response()->json([
-            'tag'  => 'selectProviderOrderDialog',
-            'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders', 'request'))->render(),
+            'tag' => 'selectProviderOrderDialog',
+            'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
         ]);
     }
 
     public function select($id, Request $request)
     {
         $providerorder = ProviderOrder::find($id);
+
         if (!$providerorder) {
             return response()->json([
                 'message' => 'Заявка клиента не найдена, возможно она была удалёна',
             ], 422);
         }
-        $articles = $providerorder->getNotEnteredArticles();
+
+        $products = $providerorder->getNotEnteredArticles();
+
+        foreach ($products as $key => $product) {
+            $products[$key]['pivot_id'] = $product['pivot']['id'];
+            $products[$key]['product_id'] = $product['id'];
+            $products[$key]['provider_order_id'] = $product['pivot']['provider_order_id'];
+            $products[$key]['name'] = $product['name'];
+            $products[$key]['nds'] = $product['pivot']['nds'];
+            $products[$key]['price'] = $product['pivot']['price'];
+            $products[$key]['count'] = $product['pivot']['count'];
+            $products[$key]['total'] = $product['pivot']['total'];
+            $products[$key]['nds_percent'] = $product['pivot']['nds_percent'];
+            $products[$key]['nds_included'] = $product['pivot']['nds_included'];
+        }
 
         return response()->json([
-            'id'         => $providerorder->id,
-            'items_html' => view(get_template() . '.entrance.dialog.products_element', compact('providerorder', 'request'))->render(),
-            'info'       => view(get_template() . '.provider_orders.contact-card', compact('providerorder', 'request'))->render(),
-            'name'       => $providerorder->outputName()
+            'id' => $providerorder->id,
+            'items' => $products,
+            'info' => view(get_template() . '.provider_orders.contact-card', compact( 'providerorder','request'))->render(),
+            'name' => $providerorder->outputName()
         ]);
     }
 
@@ -162,35 +191,10 @@ class ProviderOrdersController extends Controller
 
     public function fresh($id, Request $request)
     {
-        $provider_order = ProviderOrder::find($id);
+        $request['inner'] = 1;
+        $request['providerorder_id'] = $id;
 
-        foreach ($provider_order->articles as $article) {
-            $article->instock = $article->getCountInStoreId($provider_order->store_id);
-            if ($article->instock >= $article->count) {
-                $article->complited = true;
-            } else {
-                $article->complited = false;
-            }
-        }
-        $total_complited = true;
-
-        foreach ($provider_order->articles as $article) {
-            if (!$article->complited) {
-                $total_complited = false;
-            }
-        }
-
-        $provider_order->total_complited = $total_complited;
-
-        $request['fresh'] = true;
-        $class = 'providerorderDialog' . $id;
-        $inner = true;
-        $content = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'class', 'request', 'inner'))->render();
-        return response()->json([
-            'html'     => $content,
-            'target'   => 'providerorderDialog' . $id,
-            'products' => []
-        ]);
+        return self::providerorderDialog($request);
     }
 
     public function store(ProviderOrdersRequest $request)
@@ -252,7 +256,7 @@ class ProviderOrdersController extends Controller
 
             UA::makeUserAction($provider_order, $wasExisted ? 'fresh' : 'create');
 
-            foreach ($request['products'] as $product_id => $product) {
+            foreach ($request['products'] as $product) {
 
                 $count = $product['count'];
                 $price = $product['price'];
@@ -269,7 +273,7 @@ class ProviderOrdersController extends Controller
                 }
 
                 $params = [
-                    'article_id'        => $product_id,
+                    'article_id'        => $product['product_id'],
                     'provider_order_id' => $provider_order->id,
                     'count'             => $product['count'],
                     'price'             => $product['price'],
@@ -285,6 +289,8 @@ class ProviderOrdersController extends Controller
                     $entrance->freshPriceByArticleId($product['id'], $total);
                 }
             }
+
+//            $provider_order->freshWsumm();
 
             if ($request['inpercents']) {
                 $provider_order->itogo = $provider_order->summ - ($provider_order->summ / 100 * $request['discount']);
@@ -379,4 +385,36 @@ class ProviderOrdersController extends Controller
             ->orderBy($field, $dir)
             ->paginate($size);
     }
+
+    private static function calculatePivotArticleProviderOrder($request, $product){
+### Рассчет товара для поступления ##########################
+        $data = [];
+
+        $vcount = $product['count'];
+        $vprice = $product['price'];
+        $vnds_percent = 20;
+
+        if($request['nds'] && !$request['nds_included']){
+            $vtotal = $vprice * $vcount;
+            $vnds = $vtotal / 100 * $vnds_percent;
+            $vtotal = $vnds + $vtotal;
+        } else if($request['nds'] && $request['nds_included']){
+            $vtotal = $vprice * $vcount;
+            $vnds = $vtotal / ( 100 + $vnds_percent ) * $vnds_percent;
+        } else {
+            $vtotal = $vprice * $vcount;
+            $vnds = 0.00;
+        }
+
+        $data = [
+            'count' => $product['count'],
+            'price' => $product['price'],
+            'total' => $vtotal,
+            'nds' => round($vnds, 2),
+            'nds_percent' => round($vnds_percent, 2),
+            'nds_included' => $request['nds_included'],
+        ];
+        return $data;
+    }
 }
+

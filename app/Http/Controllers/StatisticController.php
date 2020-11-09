@@ -31,11 +31,6 @@ class StatisticController extends Controller
     const REFUND = 2;
     const INCOMING_WARRANT = 5;
 
-    public function boot()
-    {
-
-    }
-
     public function index(StatisticRequest $request)
     {
         PermissionController::canByPregMatch('Смотреть статистику');
@@ -160,7 +155,7 @@ class StatisticController extends Controller
 
         $queries = [];
 
-        $company = Auth::user()->company()->first();
+        $company = Auth::user()->company;
 
         #Формарование дат
         for ($i = strtotime($request->begin_date); $i <= strtotime($request->final_date); $i += 86400) {
@@ -286,7 +281,11 @@ class StatisticController extends Controller
             }
         }
 
-        $cashbox_history = DB::table('cashbox_history')->where('company_id', Auth::user()->company_id)->get();
+        $cashbox_history = DB::table('cashbox_history')
+            ->where('company_id', Auth::user()->company_id)
+            ->where('created_at', '>=', DateTime::createFromFormat('d.m.Y', $request->begin_date))
+            ->where('created_at', '<=', DateTime::createFromFormat('d.m.Y', $request->final_date))
+            ->get();
 
         foreach ($cashbox_history as $cashbox) {
             $global_data[$cashbox->date]['Ежедневный остаток в кассах'] = $cashbox->balance;
@@ -297,13 +296,19 @@ class StatisticController extends Controller
 
         foreach ($global_data as $date => $entities) {
 
-            #Ежедневный остаток в кассах
-            if(!isset($global_data[$date]['Ежедневный остаток в кассах'])) $global_data[$date]['Ежедневный остаток в кассах'] = 0;
-            if($global_data[$date]['Ежедневный остаток в кассах']) $list['Ежедневный остаток в кассах'][$date] = $global_data[$date]['Ежедневный остаток в кассах'];
+            try {
+                #Ежедневный остаток в кассах
+                if (!isset($global_data[$date]['Ежедневный остаток в кассах'])) $global_data[$date]['Ежедневный остаток в кассах'] = 0;
+                if ($global_data[$date]['Ежедневный остаток в кассах']) $list['Ежедневный остаток в кассах'][$date] = $global_data[$date]['Ежедневный остаток в кассах'];
 
-            #Маржа = Приходные минус расходные ордера
-            $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
-            if($global_data[$date]['Маржа'] != 0) $list['Маржа'][$date] = $global_data[$date]['Маржа'];
+                #Маржа = Приходные минус расходные ордера
+                $global_data[$date]['Маржа'] = $global_data[$date]['profit_total'] - $global_data[$date]['expenses_total'];
+                if($global_data[$date]['Маржа'] != 0) $list['Маржа'][$date] = $global_data[$date]['Маржа'];
+
+            }
+            catch (\Exception $exception) {
+                dd($date, $entities, $exception);
+            }
 
             #Валовая прибыль = Продажи + заказы клиентов - возвраты
             $global_data[$date]['Валовая прибыль'] = $global_data[$date]['profit_total']; // - $global_data[$date]['refund_total'];

@@ -52,6 +52,7 @@
     @endif
 
     <form action="{{ route('StoreProduct') }}" method="POST">
+
         @csrf
         <input class="category_select" type="hidden" name="category_id" value="
         @if(isset($product)){{ $product->category->id }}

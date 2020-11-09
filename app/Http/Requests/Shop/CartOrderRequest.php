@@ -22,8 +22,9 @@ class CartOrderRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'store_id' => ['required', 'exists:stores,id'],
+            'pickup_id' => ['required', 'exists:stores,id'],
             'delivery_type' => ['required', 'integer', 'between:0,1'],
+            'delivery_id' => ['nullable', 'integer', 'exists:delivery_addresses,id'],
             'pay_type' => ['required', 'integer', 'between:0,1'],
             'rules' => ['required', 'integer', 'between:0,1'],
             'comment' => ['nullable', 'string']

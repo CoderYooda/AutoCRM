@@ -19,8 +19,8 @@
                     <thead>
                         <tr style="height: 38px;">
                             <th></th>
-                            <th>Склад</th>
-                            <th>Код</th>
+                            <th>Остаток на складе</th>
+                            <th>Мин. кол-во для заказа</th>
                             <th class="thead_sortable" onclick="store.sortBy(this, 'days')">Срок поставки <div class="sort_arrow days down"></div></th>
                             <th class="thead_sortable" onclick="store.sortBy(this, 'price')">Цена <div class="sort_arrow price down"></div></th>
                         </tr>

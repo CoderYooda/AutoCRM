@@ -44,8 +44,16 @@ class providerCartDialog extends Modal{
             let count_element = element.querySelector('.count_elem');
             let total_element = element.querySelector('.total_elem');
 
-            let price = parseFloat(price_element.innerText);
+            let step = count_element.step;
+
+            let price = parseFloat(price_element.innerText.replace(' ', ''));
             let count = parseInt(count_element.value);
+
+            if(count % step != 0 || count <= 0) {
+                count = step;
+                count_element.value = step;
+            }
+
             let total = price * count;
 
             total_element.innerHTML = total.toFixed(2);
@@ -124,11 +132,29 @@ class providerCartDialog extends Modal{
         IMask(element, options);
     }
 
+    changeDeliveryAddress(element) {
+
+        setTimeout(() => {
+
+            let selected_index = element.selectedIndex;
+
+            let target_element = element.closest('.provider').querySelector('.pickup_address_id');
+
+            if(target_element) {
+                if (selected_index == 0) target_element.classList.remove('d-none');
+                else target_element.classList.add('d-none');
+            }
+
+        }, 100);
+    }
+
     changeDeliveryType(element) {
 
         setTimeout(() => {
 
             let selected_index = element.selectedIndex; // 0 - Самовывоз, 1 - доставка
+
+            console.log(selected_index);
 
             let pickup_element = element.closest('.provider').querySelector('.pickup_address_id');
             let delivery_element = element.closest('.provider').querySelector('.delivery_address_id');

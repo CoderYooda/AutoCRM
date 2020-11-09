@@ -15,6 +15,8 @@ Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('Pass
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
 
+Route::view('/test', 'shop.emails.success_order');
+
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
 
@@ -306,7 +308,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
         Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
 
-        Route::get('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
+        Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
         Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');
         Route::post('/shop_orders/store', 'ShopController@store')->name('StoreOrder');
 

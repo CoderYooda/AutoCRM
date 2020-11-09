@@ -146,7 +146,7 @@
 
                         <div class="element" id="product_{{ $order['hash'] }}">
 
-                            <div class="flex-1 availability">{{ $order['model']['availability'] }} шт.</div>
+                            <div class="flex-1 availability">{{ $order['model']['hash_info']['rest'] }} шт.</div>
                             <div class="flex-1 shop">{{ $order['days_min'] }} дн.</div>
                             <div class="flex-2 price">
                                 <span class="current">{{ correct_price($order['price']) }} ₽</span>

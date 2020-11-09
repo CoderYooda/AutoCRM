@@ -5,14 +5,6 @@
         <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
         <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
 
-<<<<<<< HEAD
-=======
-        <div _id="adjustment_tabs" class="d-flex tab_links" style="margin: 0 22px 10px 22px;">
-            <a href="#" class="mr-10 active" data-target="tab_desc">Описание</a>
-            <a href="#" data-target="tab_products">Продукты</a>
-        </div>
-
->>>>>>> origin/test_prod
         <form onsubmit="{{ $class }}.save(this)" class="AdjustmentStoredListner" action="{{ route('StoreAdjustment') }}" method="POST">
             <div class="modal-body">
                 @csrf

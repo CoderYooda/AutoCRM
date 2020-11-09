@@ -29,7 +29,7 @@ class Category extends Model
 
     public function getImagePathAttribute()
     {
-        return $this->image ? $this->image->path() : asset('/images/shop/no-photo.svg');
+        return $this->image ? $this->image->path : asset('/images/shop/no-photo.svg');
     }
 
     public function parents()

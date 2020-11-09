@@ -1,6 +1,6 @@
-@if(!isset($inner) || !$inner)
+@if(!$request->inner)
 <div id="entranceDialog{{ $entrance->id ?? '' }}" @if($entrance) data-id="{{ $entrance->id }}" @endif class="dialog entrance_dialog" style="width:800px;">
-    @endif
+@endif
     <div class="titlebar">{{ $entrance ? ('Поступление товара #' . $entrance->id . ' по заявке #' . $entrance->providerorder->id) : 'Новое поступление товара' }}</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>
@@ -67,7 +67,7 @@
                             <div class="form-group row row-sm">
                                 <label for="category_id" class="col-sm-5 label-sm">Номер накладной</label>
                                 <div class="input-group mb-3 col-sm-7 mb-0">
-                                    <input class="form-control" name="invoice" type="text" value="{{ ($entrance && $entrance->providerorder && $entrance->invoice) ? $entrance->invoice : 'Не указан' }}" @if(isset($entrance)) disabled @endif>
+                                    <input class="form-control" name="invoice" type="text" placeholder="Номер накладной" value="{{ $entrance->invoice ?? '' }}" @isset($entrance) disabled @endisset>
                                 </div>
                             </div>
                             @if($entrance && $entrance->providerorder)
@@ -112,31 +112,13 @@
                             <div class="form-group row row-sm">
                                 <label for="entrance_dialog_focused" class="col-sm-5 label-sm">Комментарий:</label>
                                 <div class="input-group mb-3 col-sm-7 mb-0">
-                                <textarea style="resize: none; height: 80px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5" @if(isset($entrance)) disabled @endif>{{(($entrance && $entrance->comment) ? $entrance->comment : $entrance) ? 'Нет комментария' : '' }}
-                                </textarea>
+                                <textarea style="resize: none; height: 80px;" class="form-control" name="comment" id="entrance_dialog_focused" cols="30" rows="5" placeholder="Комментарий" @isset($entrance) disabled @endisset>{{ $entrance->comment ?? '' }}</textarea>
                                 </div>
                             </div>
 
                         </div>
                         <div class="tab-pane" id="{{ $entrance ? 'e_tab_items' . $entrance->id : 'e_tab_items' }}">
-                            <div data-prefs="@if($entrance){{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => false,
-                                    'nds' => 0,
-                                    'freeze' => true,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@else{{
-                                json_encode([
-                                    'use_nds' => false,
-                                    'can_add_items' => false,
-                                    'nds' => 0,
-                                    'nds_included' => false
-                                    ]
-                                 )}}@endif" data-items="@if($entrance){{
-                                 json_encode($entrance->articlesJson->toArray())
-                                 }}@else{{ json_encode([]) }}@endif" id="entrance_list{{ $entrance ? $entrance->id : '' }}">
+                            <div data-prefs="{{ $prefs }}" data-items="{{ $items }}" id="entrance_list{{ $entrance ? $entrance->id : '' }}">
                             </div>
                         </div>
                     </div>
@@ -154,6 +136,6 @@
             </div>
         </div>
     </form>
-    @if(!isset($inner) || !$inner)
+@if(!$request->inner)
 </div>
 @endif

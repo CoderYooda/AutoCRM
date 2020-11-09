@@ -16,9 +16,9 @@ class ShopManager
 
         $domainParams = explode('.', $domain);
 
-        $isDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
+        $isOurDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
 
-        $this->shop = Shop::where(($isDomain ? 'subdomain' : 'domain'), $domainParams[0])->first();
+        $this->shop = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $domainParams[0])->first();
     }
 
     public function getCurrentShop()

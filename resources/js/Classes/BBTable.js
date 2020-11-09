@@ -1,4 +1,3 @@
-import parsePhoneNumber from 'libphonenumber-js'
 class Table {
     constructor(options){
         this.elem = document.getElementById(options.container);
@@ -164,22 +163,18 @@ class Table {
     };
 
     transform_phone(val){
-        let phone;
-        if(val){
-            phone = parsePhoneNumber(val.toString(), 'RU').format("NATIONAL");
-        } else {
-            phone = 'Не указан';
-        }
+
         let div = document.createElement('div');
-        div.classList.add('tablePrice');
-        div.innerHTML = phone;
+
+        div.classList.add('tablePhone');
+        div.innerHTML = val ? val : 'Не указан';
 
         return div;
     };
 
     transform_comment(val){
         let div = document.createElement('div');
-        div.classList.add('tablePrice');
+        div.classList.add('tableComment');
         let comment = val ? val : 'Нет комментария';
         div.innerHTML = comment;
         return div;
