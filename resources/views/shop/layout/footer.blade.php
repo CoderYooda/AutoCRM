@@ -27,12 +27,16 @@
             <div class="mini-card pin pl-30">
                 <a href="{{ route('pages.about') }}" title="{{ $shop->address_name }}">{{ $shop->address_name }}</a>
             </div>
-            <div class="mini-card phone pl-30">
-                <a href="tel: +{{ $shop->phone->number }}" title="{{ $shop->contactEmail->first()->email }}">{{ display_phone($shop->phone->number) }}</a>
-            </div>
-            <div class="mini-card mail pl-30">
-                <a href="mailto:{{ $shop->contactEmail->first()->email }}" title="{{ $shop->contactEmail->first()->email }}">{{ $shop->contactEmail->first()->email }}</a>
-            </div>
+            @isset($shop->phone->number )
+                <div class="mini-card phone pl-30">
+                    <a href="tel: +{{ $shop->phone->number }}" title="{{ $shop->phone->number  }}">{{ display_phone($shop->phone->number) }}</a>
+                </div>
+            @endisset
+            @isset($shop->contactEmail)
+                <div class="mini-card mail pl-30">
+                    <a href="mailto:{{ $shop->contactEmail->first()->email }}" title="{{ $shop->contactEmail->first()->email }}">{{ $shop->contactEmail->first()->email }}</a>
+                </div>
+            @endisset
         </div>
         <div class="menu">
             <a title="О компании" href="{{ route('pages.about') }}">О компании</a>

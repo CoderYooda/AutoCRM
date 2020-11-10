@@ -145,6 +145,10 @@ class Vehicle {
                 this.updateSlider(response.data.html);
 
                 document.querySelector('[name="vin_code"]').value = '';
+
+                let header_element = document.querySelector('.vehicle_header');
+
+                header_element.classList.remove('d-none');
             })
             .catch(error => {
 
@@ -167,6 +171,10 @@ class Vehicle {
     edit(element, vehicle_id) {
 
         event.preventDefault();
+
+        if(event.target.classList.contains('remove_button')) return;
+
+        if(document.querySelector('.modal-block')) return;
 
         helper.togglePreloader(element, true);
 
@@ -195,12 +203,6 @@ class Vehicle {
 
         element.closest('.vehicle_element').remove();
 
-        let vehicle_elements = document.querySelectorAll('.vehicle_element');
-
-        if(vehicle_elements.length == 0) {
-            document.querySelector('.empty_table').classList.remove('d-none');
-        }
-
         let data = {
             vehicle_id: vehicle_id,
             _method: 'DELETE'
@@ -209,6 +211,14 @@ class Vehicle {
         axios.post('/user/vehicles', data)
             .then(response => {
                 this.updateSlider(response.data.html);
+
+                let vehicle_elements = document.querySelectorAll('.vehicle_element');
+
+                if(vehicle_elements.length == 0) {
+                    let header_element = document.querySelector('.vehicle_header');
+
+                    header_element.classList.add('d-none');
+                }
             })
             .catch(response => {
                 console.log(response);
@@ -220,10 +230,6 @@ class Vehicle {
         let vehicle_elements = document.querySelectorAll('.vehicle_element');
 
         if(vehicle_elements.length == 0) return;
-
-        let classes = document.querySelector('.controls').classList;
-
-        vehicle_elements.length > 3 ? classes.remove('d-none') : classes.add('d-none');
 
         window.garageSlider = new BBSlider({
             selector: '.vehicle_list',

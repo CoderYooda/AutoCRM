@@ -4,12 +4,16 @@
             <div class="mini-card pin">
                 <a href="{{ route('pages.about') }}" title="{{ $shop->address_name }}">{{ $shop->address_name }}</a>
             </div>
-            <div class="mini-card float-r phone">
-                <a href="tel: +{{ $shop->phone->number }}">{{ display_phone($shop->phone->number) }}</a>
-            </div>
-            <div class="mini-card float-r pr-50 mail">
-                <a href="mailto:{{ $shop->contactEmail->first()->email }}" >{{ $shop->contactEmail->first()->email }}</a>
-            </div>
+            @isset($shop->phone->number)
+                <div class="mini-card float-r phone">
+                    <a href="tel: +{{ $shop->phone->number }}">{{ display_phone($shop->phone->number) }}</a>
+                </div>
+            @endisset
+            @isset($shop->contactEmail)
+                <div class="mini-card float-r pr-50 mail">
+                    <a href="mailto:{{ $shop->contactEmail->first()->email }}" >{{ $shop->contactEmail->first()->email }}</a>
+                </div>
+            @endisset
         </div>
     </div>
     <div class="header-mid">
