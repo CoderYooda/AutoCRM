@@ -295,6 +295,8 @@ class ProductController extends Controller
             $article->sp_desc = $request->shop['desc'] ?? '';
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
+            $article->save();
+
             if($request->hasFile('shop.image')) {
                 $imageParams = $article->uploadImage($request->shop['image'], true, false);
 
@@ -302,8 +304,6 @@ class ProductController extends Controller
 
                 $article->image_id = $image->id;
             }
-
-            $article->save();
 
             if(isset($request->shop['specifications'])) {
 
