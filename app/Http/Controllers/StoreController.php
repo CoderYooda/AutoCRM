@@ -139,6 +139,8 @@ class StoreController extends Controller
         #Получаем список продуктов из поиска
         $products = ProductController::getArticles($request, $manufacture_selected);
 
+        dd($products);
+
         #Получаем список аналогов
         $analog_products = ProductController::searchByArticleAndBrand($analog_articles);
 
