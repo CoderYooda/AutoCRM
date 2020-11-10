@@ -1,5 +1,3 @@
-@php($order = \App\Models\Order::first())
-
 <!doctype html>
 <html lang="ru">
 
@@ -160,7 +158,7 @@
                 @endif
             </div>
 
-            <a class="watch_button" target="_blank" href="{{ $order->shop->getUrl() . 'orders/' . $order->id }}">Список позиций</a>
+            <a class="watch_button" target="_blank" href="{{ $order->path() }}">Список позиций</a>
 
         </div>
 

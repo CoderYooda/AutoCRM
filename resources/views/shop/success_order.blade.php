@@ -10,15 +10,11 @@
 
         @include('shop.includes.breadcrumbs')
 
-        <div class="container bg-white order_page">
+        <div class="container bg-white order_page relative">
 
             <div class="title">
                 <h2>Заказ №{{ $order->id }}</h2>
                 <h3>{{ $statuses[$order->status] }}</h3>
-            </div>
-
-            <div class="pay_button">
-                Оплатить
             </div>
 
             <div class="orders_table">
@@ -77,7 +73,14 @@
                     <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
                     <a href="{{ route('pages.index') }}" class="ml-16">Вернуться на главную</a>
                 </div>
-                <div class="float-r">
+                <div class="d-flex float-r">
+
+                    @if($order->status == \App\Models\Order::WAIT_PAYMENT_STATUS)
+                        <div class="pay_button mr-10">
+                            <a href="{{ $order->tinkoff_url }}">Оплатить</a>
+                        </div>
+                    @endif
+
                     <div class="print_orders">
                         Распечатать
                     </div>

@@ -20,8 +20,10 @@ class OrderController extends Controller
         $this->shop = $shopManager->getCurrentShop();
     }
 
-    public function show(Order $order, ShowOrderRequest $request)
+    public function show($hash, ShowOrderRequest $request)
     {
+        $order = Order::where('hash', $hash)->firstOrFail();
+
         $positions = DB::table('order_positions')->where('order_id', $order->id)->get();
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));

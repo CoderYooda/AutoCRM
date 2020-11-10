@@ -57,6 +57,16 @@ class Order extends Model
         'Оплата на сайте'
     ];
 
+    public function path()
+    {
+        return $this->shop->getUrl() . 'orders/' . $this->hash;
+    }
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'id', 'shop_id');
+    }
+
     public function partner()
     {
         return $this->hasOne(Partner::class, 'id', 'partner_id');
@@ -92,17 +102,9 @@ class Order extends Model
         return self::$payStatuses[$this->pay_type];
     }
 
-    public function shop()
-    {
-        return $this->hasOne(Shop::class, 'company_id', 'company_id');
-    }
-
     public function initPayment()
     {
-        /** @var ShopManager $shopManager */
-        $shopManager = app(ShopManager::class);
-
-        $shop = $shopManager->getCurrentShop() ?? Shop::where('company_id', Auth::user()->company_id)->first();
+        $shop = $this->shop;
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
 

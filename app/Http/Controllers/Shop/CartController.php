@@ -118,7 +118,7 @@ class CartController extends Controller
                 $uniqueFields = [
                     'company_id' => $company->id,
                     'store_id'   => $request->pickup_id,
-                    'fio' => ($request->surname . ' ' . $request->name . ' ' . $request->middlename)
+                    'fio'        => ($request->surname . ' ' . $request->name . ' ' . $request->middlename)
                 ];
 
                 $types = ['fl', 'ip', 'ul'];
@@ -141,7 +141,7 @@ class CartController extends Controller
                 /** @var Partner $partner */
                 $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
 
-                if($request->delivery_address) {
+                if ($request->delivery_address) {
                     $deliveryAddress = $partner->deliveryAddresses()->create(['text' => $request->delivery_address]);
 
                     $request['delivery_id'] = $deliveryAddress->id;
@@ -167,8 +167,11 @@ class CartController extends Controller
                 'pay_type'      => $request->pay_type,
                 'delivery_type' => $request->delivery_type,
                 'delivery_id'   => $request->delivery_id,
-                'pickup_id'     => $request->pickup_id
+                'pickup_id'     => $request->pickup_id,
+                'shop_id'       => $shop->id
             ]);
+
+            $order->update(['hash' => md5($order->id . $partner->id)]);
 
             foreach ($cartOrders as $cartOrder) {
 
@@ -182,7 +185,7 @@ class CartController extends Controller
 
             $cart->clear();
 
-            return redirect()->route('orders.success', ['order' => $order->id]);
+            return redirect($order->path());
         });
     }
 
