@@ -5,9 +5,7 @@ class Cart {
     constructor() {
         this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 400);
 
-        $(document).ready(() => {
-            $('select').select2();
-        });
+        $('select').select2();
 
         this.providers = {};
 
@@ -93,10 +91,9 @@ class Cart {
 
                 target_element.remove();
 
-
                 let cart_elements = document.querySelectorAll('.cart_element');
 
-                if(cart_elements.length == 0) this.clear();
+                if(cart_elements.length == 0) this.clear(true);
             })
             .catch(response => {
                 console.log(response);
@@ -131,38 +128,50 @@ class Cart {
         this.debounceSave(hash, count);
     }
 
-    clear() {
-        let elements = document.querySelectorAll('.cart_element');
+    clear(only_html = false) {
 
+        let elements = document.querySelectorAll('.cart_element');
         elements.forEach(element => element.classList.add('d-none'));
 
         let empty_element = document.querySelector('.empty_table');
         empty_element.classList.remove('d-none');
 
-        let content_element = document.querySelector('.in-category');
-        content_element.classList.add('d-none');
+        let hide_classes = [
+            'cart_stores',
+            'cart_table',
+            'cart_actions',
+            'order_types',
+            'order_register'
+        ];
 
-        axios.post('/cart/clear')
-            .then(response => {
+        hide_classes.forEach(class_name => {
+            let class_element = document.querySelector('.' + class_name);
+            if(class_element) class_element.classList.add('d-none');
+        });
 
-                let data = response.data;
+        if(!only_html) {
 
-                window.notification.notify(data.type, data.message);
+            axios.post('/cart/clear')
+                .then(response => {
 
-                elements.forEach(element => element.remove());
+                    let data = response.data;
 
-                let count_element = document.querySelector('#cart_count');
+                    window.notification.notify(data.type, data.message);
 
-                count_element.innerHTML = 0;
-            })
-            .catch(response => {
-                console.log(response);
+                    elements.forEach(element => element.remove());
 
-                elements.forEach(element => element.classList.remove('d-none'));
+                    let count_element = document.querySelector('#cart_count');
 
-                empty_element.classList.add('d-none');
-                content_element.classList.remove('d-none');
-            })
+                    count_element.innerHTML = 0;
+                })
+                .catch(response => {
+                    console.log(response);
+
+                    elements.forEach(element => element.classList.remove('d-none'));
+
+                    empty_element.classList.add('d-none');
+                });
+        }
     }
 
     save(hash, count) {
@@ -231,9 +240,14 @@ class Cart {
         let pickup_element = document.querySelector('[name="pickup_id"]');
 
         let pickup_group = pickup_element.closest('.form-group-flex');
+
         pickup_group.classList.toggle('d-none');
 
         let delivery_element = document.querySelector('[name="delivery_id"]');
+
+        if(!delivery_element) {
+            delivery_element = document.querySelector('[name="delivery_address"]');
+        }
 
         let delivery_group = delivery_element.closest('.form-group-flex');
         delivery_group.classList.toggle('d-none');

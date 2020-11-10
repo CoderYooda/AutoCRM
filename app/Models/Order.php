@@ -130,6 +130,19 @@ class Order extends Model
             ];
         }
 
+        if($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
+
+            $receiptItems[] = [
+                'Name'          => 'Доставка',
+                'Price'         => $this->delivery_price * 100,
+                'Quantity'      => 1,
+                'Amount'        => $this->delivery_price * 100,
+                'PaymentMethod' => 'full_prepayment',
+                'PaymentObject' => 'commodity',
+                'Tax'           => 'none'
+            ];
+        }
+
         $receipt = [
             'EmailCompany' => $companyEmail,
             'Phone'        => $companyPhone,

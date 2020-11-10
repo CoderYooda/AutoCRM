@@ -47,7 +47,7 @@ class Mikado implements ProviderInterface
 
         $result = $this->query('ws1/service.asmx/Code_Search', $params);
 
-        $result = array_column($result['List']['Code_List_Row'], 'Brand');
+        $result = array_column($result['List']['Code_List_Row'] ?? [], 'Brand');
 
         $result = array_unique($result);
 
@@ -80,7 +80,7 @@ class Mikado implements ProviderInterface
 
         $items = $this->query('ws1/service.asmx/Code_Search', $params);
 
-        $items = collect($items['List']['Code_List_Row']);
+        $items = collect($items['List']['Code_List_Row'] ?? []);
 
         $items = $items->where('Brand', $brand)->toArray();
 
@@ -112,7 +112,8 @@ class Mikado implements ProviderInterface
                 'price'        => $item['PriceRUR'],
                 'packing'      => $item['MinZakazQTY'] ?? 1,
                 'desc'         => $item['Name'],
-                'rest'         => $rest
+                'rest'         => $rest,
+                'supplier'     =>  $this->name
             ];
 
             $results[] = [

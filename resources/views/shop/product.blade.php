@@ -1,7 +1,7 @@
 @extends('shop.layout.app')
 
 @section('content')
-<div class="body" data-providers="{{ json_encode($providersOrders) }}" data-product="{{ json_encode($product) }}">
+<div class="body product_page" data-providers="{{ json_encode($providersOrders) }}" data-product="{{ json_encode($product) }}">
 
     @include('shop.includes.breadcrumbs')
 
@@ -142,7 +142,7 @@
 
                 <div data-simplebar class="body" style="max-height: 300px;">
 
-                    @foreach($orders as $order)
+                    @forelse($orders as $order)
 
                         <div class="element" id="product_{{ $order['hash'] }}">
 
@@ -164,7 +164,13 @@
 
                         </div>
 
-                    @endforeach
+                    @empty
+
+                        <div class="empty_table">
+                            <span>Нет предложений по этому поставщику</span>
+                        </div>
+
+                    @endforelse
 
                 </div>
 

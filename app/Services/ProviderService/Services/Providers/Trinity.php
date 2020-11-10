@@ -88,7 +88,8 @@ class Trinity implements ProviderInterface
                 'price' => $item['price'],
                 'packing' => $item['minOrderCount'],
                 'desc' => $item['caption'],
-                'rest' => $item['rest']
+                'rest' => $item['rest'],
+                'supplier' => $this->name
             ];
         }
 

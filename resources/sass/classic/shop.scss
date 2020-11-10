@@ -60,6 +60,7 @@ h2{
 @import "shop/cabinet";
 @import "shop/cart";
 @import "shop/form";
+@import "shop/product";
 @import "shop/modals/edit_vehicle";
 
 .select2-container--default .select2-selection--single {
@@ -2901,7 +2902,7 @@ body{
 
 .order_footer {
 
-    margin-bottom: 62px;
+    padding-bottom: 62px;
     height: 42px;
     line-height: 42px;
 

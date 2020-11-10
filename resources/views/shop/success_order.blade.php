@@ -24,7 +24,7 @@
                     <div class="w-20">Наименование</div>
                     <div class="w-15">Артикул</div>
                     <div class="w-15">Бренд</div>
-                    <div class="w-10">Магазин</div>
+                    <div class="w-10">Источник</div>
                     <div class="w-10">Кол-во</div>
                     <div class="w-10">Цена</div>
                     <div class="w-10">Всего</div>
@@ -40,7 +40,7 @@
                             <div class="w-20">{{ $position->name }}</div>
                             <div class="w-15">{{ $position->article }}</div>
                             <div class="w-15">{{ $position->manufacturer }}</div>
-                            <div class="w-10">{{ 'Заказная позиция' }}</div>
+                            <div class="w-10">{{ $position->source }}</div>
                             <div class="w-10">{{ $position->count }}</div>
                             <div class="w-10">{{ correct_price($position->price) }} ₽</div>
                             <div class="w-10">{{ correct_price($position->count * $position->price) }} ₽</div>
@@ -52,6 +52,21 @@
                 </div>
 
             </div>
+
+            @if($order->delivery_type == \App\Models\Order::DELIVERY_TYPE_TRANSPORT && $order->delivery_price > 0)
+
+                <div class="delivery_info">
+                    <div class="address">
+                        <label>Доставка по адресу:</label>
+                        <span>{{ $order->deliveryAddress->text }}</span>
+                    </div>
+                    <div class="address">
+                        <label>Стоимость доставки:</label>
+                        <span>{{ correct_price($order->delivery_price) }} руб.</span>
+                    </div>
+                </div>
+
+            @endif
 
             <div class="order_footer">
                 <div class="return_arrow float-l">

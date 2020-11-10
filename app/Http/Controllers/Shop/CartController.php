@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\CartDeleteRequest;
 use App\Http\Requests\Shop\CartOrderRequest;
@@ -37,7 +38,9 @@ class CartController extends Controller
     public function index(CartInterface $cart)
     {
         /** @var Partner $partner */
-        $partner = Auth::user()->companyPartner;
+        $partner = Auth::user()->companyPartner ?? null;
+
+        $deliveryAddresses = $partner->deliveryAddresses ?? [];
 
         $orders = $this->formatOrdersArray($cart->all());
         $storesTotal = [];
@@ -49,8 +52,6 @@ class CartController extends Controller
         foreach ($orders as $order) {
             $totalPrice += $order['price'] * $order['count'];
         }
-
-        $deliveryAddresses = $partner->deliveryAddresses;
 
         return view('shop.cart', compact('orders', 'stores', 'totalPrice', 'storesTotal', 'deliveryAddresses'))
             ->with('shop', $this->shop);
@@ -122,7 +123,7 @@ class CartController extends Controller
 
                 $types = ['fl', 'ip', 'up'];
 
-                $updateFields = $request->except('rules', 'password', 'register', 'pay_type', 'delivery_type', 'pickup_id', 'register_type', 'name', 'surname', 'middlename');
+                $updateFields = $request->except('rules', 'password', 'delivery_address', 'register', 'pay_type', 'delivery_type', 'pickup_id', 'register_type', 'name', 'surname', 'middlename');
                 $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
                 $updateFields['category_id'] = BUYER_CATEGORY;
                 $updateFields['type'] = array_search($request->register_type, $types);
@@ -138,8 +139,14 @@ class CartController extends Controller
                     $updateFields['user_id'] = $user->id;
                 }
 
+                /** @var Partner $partner */
                 $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
 
+                if($request->delivery_address) {
+                    $deliveryAddress = $partner->deliveryAddresses()->create(['text' => $request->delivery_address]);
+
+                    $request['delivery_id'] = $deliveryAddress->id;
+                }
             }
 
             $totalPrice = 0;
@@ -165,14 +172,11 @@ class CartController extends Controller
             ]);
 
             foreach ($cartOrders as $cartOrder) {
-                DB::table('order_positions')->insert([
-                    'order_id'     => $order->id,
-                    'manufacturer' => $cartOrder['manufacturer'],
-                    'article'      => $cartOrder['article'],
-                    'name'         => $cartOrder['name'],
-                    'price'        => $cartOrder['price'],
-                    'count'        => $cartOrder['count']
-                ]);
+
+                $cartOrder = collect($cartOrder)->except('image', 'store_id');
+                $cartOrder['order_id'] = $order->id;
+
+                DB::table('order_positions')->insert($cartOrder->toArray());
             }
 
             Mail::to($partner->email)->send(new SuccessOrder($order));
@@ -205,6 +209,7 @@ class CartController extends Controller
             }
 
             $orders[$hash] = [
+                'source'       => $store->name ?? $order['data']['model']['hash_info']['supplier'],
                 'manufacturer' => $order['data']['model']['hash_info']['manufacturer'] ?? $product->supplier->name,
                 'article'      => $order['data']['model']['hash_info']['article'] ?? $product->article,
                 'name'         => $product->name,

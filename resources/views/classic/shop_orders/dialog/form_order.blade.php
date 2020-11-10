@@ -70,7 +70,7 @@
 
                         <div class="form-group-flex">
                             <label>Точка получения товара</label>
-                            <input class="form-control" style="line-height: 30px;" value="{{ $order->pickupAddress->name }}" disabled />
+                            <input type="text" class="form-control" style="line-height: 30px;" value="{{ $order->pickupAddress->name }}" disabled />
                         </div>
 
                     @endif
@@ -79,24 +79,29 @@
 
                         <div class="form-group-flex">
                             <label>Адрес доставки</label>
-                            <input class="form-control" style="line-height: 30px;" value="{{ $order->deliveryAddress->text }}" disabled />
+                            <input type="text" class="form-control" style="line-height: 30px;" value="{{ $order->deliveryAddress->text }}" disabled />
+                        </div>
+
+                        <div class="form-group-flex">
+                            <label>Стоимость доставки</label>
+                            <input type="number" class="form-control" name="delivery_price" value="{{ $order->delivery_price }}" @if($order->status >= 2 || $order->delivery_price > 0) disabled @endif />
                         </div>
 
                     @endif
 
                     <div class="form-group-flex">
                         <label>Статус</label>
-                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
+                        <input type="text" class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
                     </div>
 
                     <div class="form-group-flex">
                         <label>Тип оплаты</label>
-                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getPayTypeName() }}" disabled />
+                        <input type="text" class="form-control" style="line-height: 30px;" value="{{ $order->getPayTypeName() }}" disabled />
                     </div>
 
                     <div class="form-group-flex">
                         <label>Статус</label>
-                        <input class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
+                        <input type="text" class="form-control" style="line-height: 30px;" value="{{ $order->getStatusName() }}" disabled />
                     </div>
 
                     <div class="form-group-flex">
