@@ -174,7 +174,9 @@ class Vehicle {
 
         if(event.target.classList.contains('remove_button')) return;
 
-        if(document.querySelector('.modal-block')) return;
+        if(window.isXHRloading) return;
+
+        window.isXHRloading = true;
 
         helper.togglePreloader(element, true);
 
@@ -183,6 +185,8 @@ class Vehicle {
             url: '/user/vehicles/' + vehicle_id + '/edit'
         })
         .then(response => {
+
+            if(document.querySelector('.modal-block')) return;
 
             window.edit_vehicle = createModal('Редактирование транспорта', response.data.html);
 
@@ -196,6 +200,8 @@ class Vehicle {
         })
         .finally(() => {
             helper.togglePreloader(element, false);
+
+            window.isXHRloading = false;
         });
     }
 

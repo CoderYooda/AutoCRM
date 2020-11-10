@@ -22,11 +22,11 @@ class UpdateRequest extends FormRequest
             'address_desc' => ['nullable', 'string', 'max:255'],
             'phones' => ['array', 'min:1'],
             'phones.*.number' => ['required', 'string'],
-            'phones.*.desc' => ['nullable', 'string'],
+            'phones.*.desc' => ['required', 'string'],
             'phones_main' => ['required'],
             'emails' => ['array', 'min:1'],
             'emails.*.email' => ['required', 'string'],
-            'emails.*.desc' => ['nullable', 'string'],
+            'emails.*.desc' => ['required', 'string'],
             'emails_main' => ['required'],
             'seo_contacts_title' => ['nullable', 'string', 'max:255'],
             'seo_contacts_desc' => ['nullable', 'string', 'max:255']
