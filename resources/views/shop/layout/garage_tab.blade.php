@@ -1,16 +1,20 @@
-<div class="tab_name">
-    Мой транспорт
+<div class="vehicle_header @if(count($vehicles) == 0) d-none @endif">
 
-    <div class="controls">
-        <div class="control-item left" onclick="window.garageSlider.prev();"></div>
-        <div class="control-item right" onclick="window.garageSlider.next();"></div>
+    <div class="tab_name">
+        Мой транспорт
+
+        <div class="controls">
+            <div class="control-item left" onclick="window.garageSlider.prev();"></div>
+            <div class="control-item right" onclick="window.garageSlider.next();"></div>
+        </div>
+
     </div>
 
-</div>
+    <div class="slider_container">
 
-<div class="slider_container">
+        @include('shop.layout.garage_slider')
 
-    @include('shop.layout.garage_slider')
+    </div>
 
 </div>
 
