@@ -7,7 +7,7 @@
             <label>Телефон</label>
             <div class="fields float-r w-50">
                 <div class="display">
-                    <span>{{ display_phone(auth()->user()->companyPartner->basePhone) }}</span>
+                    <span>{{ display_phone(auth()->user()->companyPartner->firstActivePhoneNumber()) }}</span>
                 </div>
             </div>
         </div>

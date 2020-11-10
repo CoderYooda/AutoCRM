@@ -77,7 +77,7 @@ class UserActionsController extends Controller
                     $query->where('fio', 'like', $request['search'] . '%')
                         ->orWhere('companyName', 'like', $request['search'] . '%');
                 } else {
-                    $query->where('fio', 'like', '%' . $request['search'] . '%')->orWhere('companyName', 'like', '%' . $request['search'] . '%')->orWhere('basePhone', 'like', '%' . $request['search'] . '%');
+                    $query->where('fio', 'like', '%' . $request['search'] . '%')->orWhere('companyName', 'like', '%' . $request['search'] . '%');
                 }
             })
             ->when($request['user_id'] != null, function($query) use ($request){

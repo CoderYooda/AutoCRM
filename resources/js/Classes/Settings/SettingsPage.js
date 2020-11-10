@@ -300,7 +300,15 @@ class settingsPage{
         if(window.isXHRloading) return;
 
         window.axform.send(elem, function(resp){
-            //
+            if(resp.status == 200) {
+
+                let input_element = document.querySelector('[name="shop_enabled"]');
+
+                let link_element = document.getElementById('shop_link');
+                let classes = link_element.classList;
+
+                input_element.value == 1 ? classes.remove('d-none') : classes.add('d-none');
+            }
         });
     }
 

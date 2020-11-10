@@ -144,7 +144,7 @@
 
             <div class="form-group">
                 <label>Телефон:</label>
-                <div class="text">{{ display_phone($order->partner->basePhone) }}</div>
+                <div class="text">{{ display_phone($order->partner->firstActivePhoneNumber()) }}</div>
             </div>
 
             <div class="form-group">

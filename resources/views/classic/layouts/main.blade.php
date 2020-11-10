@@ -90,13 +90,12 @@
                         </li>
                         @endcanany
                         @endcan
-                        @if(auth()->user()->company->getSettingField('Интернет магазин'))
-                            <li id="shop_link" class="top-nav-item" >
-                                <a class="header-tab ajax-nav" href="{{ route('ShopIndex') }}">
-                                    Интернет-магазин
-                                </a>
-                            </li>
-                        @endif
+
+                        <li id="shop_link" class="top-nav-item @if(!auth()->user()->company->getSettingField('Интернет магазин')) d-none @endif">
+                            <a class="header-tab ajax-nav" href="{{ route('ShopIndex') }}">
+                                Интернет-магазин
+                            </a>
+                        </li>
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
                     {{--{{ Auth::user()->current_store }}--}}

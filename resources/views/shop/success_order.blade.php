@@ -17,6 +17,10 @@
                 <h3>{{ $statuses[$order->status] }}</h3>
             </div>
 
+            <div class="pay_button">
+                Оплатить
+            </div>
+
             <div class="orders_table">
 
                 <div class="orders_header">

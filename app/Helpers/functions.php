@@ -5,9 +5,16 @@ use Milon\Barcode\DNS1D;
 
 if(!function_exists('display_phone')) {
     function display_phone($phone) {
+
         $parts = sscanf($phone,'%1c%3c%3c%2c%2c');
 
         return '+' . $parts[0] . '(' . $parts[1] . ')' . $parts[2] . '-' . $parts[3] . '-' . $parts[4];
+    }
+}
+
+if(!function_exists('clear_phone_number')) {
+    function clear_phone_number($number) {
+        return str_replace(['(', ')', ' ', '-', '+'], '', $number);
     }
 }
 

@@ -26,7 +26,7 @@ trait Phoneable
         if($phones && count($phones) > 0){
             foreach($phones as $key => $r_phone){
 
-                $number = str_replace(['(', ')', ' ', '-'], '', $r_phone['number']);
+                $number = clear_phone_number($r_phone['number']);
 
                 $phone = $this->phones()->create([
                     'number' => $number,

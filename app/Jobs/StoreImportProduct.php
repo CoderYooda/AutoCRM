@@ -142,8 +142,7 @@ class StoreImportProduct implements ShouldQueue
             'supplier_id' => $supplier->id,
             'barcode' => $attributes['barcode_manufacturer'],
             'barcode_local' => $attributes['barcode_warehouse'],
-            'category_id' => $category->id,
-            'foundstring' => Article::makeFoundString($attributes['name'] . $attributes['article'] . $attributes['manufacturer'] . $attributes['barcode_manufacturer']),
+            'category_id' => $category->id
         ]);
 
         if((int)$attributes['count'] > 0) {

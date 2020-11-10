@@ -77,9 +77,11 @@
                         <div class="form-group">
                             <label>Выберите поставщика для работы с проценкой</label>
                             <select custom_select name="supplier_id">
-                                @foreach(auth()->user()->company->getActiveServicesByCategory() as $service)
+                                @forelse(auth()->user()->company->getActiveServicesByCategory() as $service)
                                     <option @if($shop && $shop->supplier_id == $service->id) selected @endif value="{{ $service->id }}">{{ $service->name }}</option>
-                                @endforeach
+                                @empty
+                                    <option value="">Нет активных поставщиков</option>
+                                @endforelse
                             </select>
                         </div>
 

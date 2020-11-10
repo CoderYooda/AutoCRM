@@ -16,16 +16,16 @@
 
         @if(count($orders))
 
-            <div class="cart_stores">
+{{--            <div class="cart_stores">--}}
 
-                @foreach($stores as $store)
-                    <div class="store @if($loop->first) active @endif">
-                        <div class="name">{{ $store->name }}</div>
-                        <div class="total"><span id="total_store_{{ $store->id }}">{{ correct_price($storesTotal[$store->id] ?? 0) }}</span> ₽</div>
-                    </div>
-                @endforeach
+{{--                @foreach($stores as $store)--}}
+{{--                    <div class="store @if($loop->first) active @endif">--}}
+{{--                        <div class="name">{{ $store->name }}</div>--}}
+{{--                        <div class="total"><span id="total_store_{{ $store->id }}">{{ correct_price($storesTotal[$store->id] ?? 0) }}</span> ₽</div>--}}
+{{--                    </div>--}}
+{{--                @endforeach--}}
 
-            </div>
+{{--            </div>--}}
 
             <div class="cart_table w-100">
 
@@ -114,7 +114,7 @@
                             <div class="form-group-flex">
                                 <label>Телефон</label>
                                 <div class="float-r w-50">
-                                    <span>{{ auth()->user()->companyPartner->basePhone }}</span>
+                                    <span>{{ display_phone(auth()->user()->companyPartner->firstActivePhoneNumber()) }}</span>
                                 </div>
                             </div>
 

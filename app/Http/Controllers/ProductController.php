@@ -294,7 +294,6 @@ class ProductController extends Controller
             $article->sp_name = $request->shop['name'] ?? '';
             $article->sp_desc = $request->shop['desc'] ?? '';
             $article->slug = Str::slug($request->name . '-' . $article->id);
-            $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
 
             if($request->hasFile('shop.image')) {
                 $imageParams = $article->uploadImage($request->shop['image'], true, false);

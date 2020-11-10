@@ -87,26 +87,32 @@
 
                 @foreach($product->stores as $store)
 
-                <div class="element" id="product_{{ $product->getHash($store->id) }}" data-store_id="{{ $store->id }}">
-                    <div class="flex-1 availability">{{ $product->getCountInStoreId($store->id) }} шт.</div>
-                    <div class="flex-1 shop">{{ $store->name }}</div>
+                    <div class="element" id="product_{{ $product->getHash($store->id) }}" data-store_id="{{ $store->id }}">
+                        <div class="flex-1 availability">{{ $product->getCountInStoreId($store->id) }} шт.</div>
+                        <div class="flex-1 shop">{{ $store->name }}</div>
 
-                    <div class="flex-2 price">
-                        <span class="current">{{ correct_price($store->pivot->retail_price) }} ₽</span>
-{{--                        <span class="old">150 000 ₽</span>--}}
-                    </div>
-
-                    <div class="absolute shipping-container">
-                        <div class="counter-container">
-                            <div class="button minus" onclick="cart.decrement(this, '{{ $product->getHash($store->id) }}');"></div>
-                            <input class="counter" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
-                            <div class="button plus" onclick="cart.increment(this, '{{ $product->getHash($store->id) }}');"></div>
+                        <div class="flex-2 price">
+                            <span class="current">{{ correct_price($store->pivot->retail_price) }} ₽</span>
+    {{--                        <span class="old">150 000 ₽</span>--}}
                         </div>
-                        <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
+
+                        <div class="absolute shipping-container">
+                            @if($product->getCountInStoreId($store->id))
+                                <div class="counter-container">
+                                    <div class="button minus" onclick="cart.decrement(this, '{{ $product->getHash($store->id) }}');"></div>
+                                    <input class="counter" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
+                                    <div class="button plus" onclick="cart.increment(this, '{{ $product->getHash($store->id) }}');"></div>
+                                </div>
+                                <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
+                            @else
+                                <div class="counter-container">
+                                    Нет в наличие
+                                </div>
+                            @endif
+
+                        </div>
 
                     </div>
-
-                </div>
 
                 @endforeach
 

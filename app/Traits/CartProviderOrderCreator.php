@@ -43,7 +43,6 @@ trait CartProviderOrderCreator
                 'category_id' => 2,
                 'creator_id' => $this->user->id,
                 'supplier_id' => $supplier->id,
-                'foundstring' => Article::makeFoundString($orderInfo['hash_info']['article'] . $supplier->name . $orderInfo['hash_info']['desc']),
                 'article' => $orderInfo['hash_info']['article'],
                 'name' => $orderInfo['hash_info']['desc'],
                 'fapi_id' => $supplier->fapi_id ?? null

@@ -23,7 +23,6 @@ class Article extends Model
         'creator_id',
         'supplier_id',
         'measurement_id',
-        'foundstring',
         'article',
         'oem',
         'storeCode',
@@ -218,7 +217,7 @@ class Article extends Model
     {
         if($store_id == null) $store_id = Auth::user()->current_store;
 
-        return $this->stores->find($store_id)->pivot->sp_stock;
+        return $this->stores->find($store_id)->pivot->sp_stock ?? 0;
     }
 
     public function getPrice(int $count = 1)
@@ -290,11 +289,13 @@ class Article extends Model
         return str_replace($chars, '', $article);
     }
 
-    public static function makeFoundString(string $string)
+    public function freshFoundString()
     {
+        $string = $this->supplier->name . $this->article . $this->name . $this->barcode . $this->barcode_local;
+
         $chars = ["-","!","?",".",""," "];
 
-        return str_replace($chars, '', $string);
+        $this->foundstring = mb_strtolower(str_replace($chars, '', $string));
     }
 
     public function shipment()

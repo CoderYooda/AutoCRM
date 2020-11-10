@@ -259,8 +259,6 @@ class StressTest extends Command
             $phones_str .= $phone->number;
         }
         $partner->phones()->sync($phones);
-        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str));
-        $partner->save();
         return $partner;
     }
 

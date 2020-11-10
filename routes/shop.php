@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test', function () {
+
+    \Illuminate\Support\Facades\Auth::logout();
+
+    dd(\Illuminate\Support\Facades\Auth::user()->companyPartner);
+});
+
 Route::namespace('Shop')->group(function () {
 
     Route::middleware('auth')->group(function () {
