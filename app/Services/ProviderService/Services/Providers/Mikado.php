@@ -82,7 +82,13 @@ class Mikado implements ProviderInterface
 
         $items = collect($items['List']['Code_List_Row'] ?? []);
 
-        $items = $items->where('Brand', $brand)->toArray();
+        $brand = strtoupper($brand);
+
+        $items = $items->filter(function ($item) use($brand) {
+             return strpos($item['Brand'], $brand) !== false;
+        });
+
+        $items = $items->toArray();
 
         $results = [];
 

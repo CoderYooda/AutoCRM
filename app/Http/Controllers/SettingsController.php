@@ -243,7 +243,6 @@ class SettingsController extends Controller
                 $partner->type = 0;
                 $partner->company_id = Auth::user()->company->id;
                 $partner->store_id = Auth::user()->getStoreFirst()->id;
-                $partner->basePhone = $employee['phone'];
                 $partner->category_id = 5;
                 $partner->fio = $employee['fio'];
                 $partner->save();
@@ -282,7 +281,6 @@ class SettingsController extends Controller
                 $partner = new Partner();
                 $partner->type = 2;
                 $partner->company_id = Auth::user()->company->id;
-                $partner->basePhone = $partn['phone'];
                 $partner->category_id = 6;
                 $partner->fio = $partn['fio'];
                 $partner->companyName = $partn['companyName'];

@@ -18,7 +18,7 @@
                     <div class="info_header">
 
                         <div class="name" title="{{ auth()->user()->companyPartner->fio }}">{{ auth()->user()->companyPartner->fio }}</div>
-                        <div class="phone">{{ display_phone(auth()->user()->companyPartner->basePhone) }}</div>
+                        <div class="phone">{{ display_phone(auth()->user()->companyPartner->firstActivePhoneNumber()) }}</div>
                         <div class="email">{{ auth()->user()->companyPartner->email }}</div>
 
                     </div>

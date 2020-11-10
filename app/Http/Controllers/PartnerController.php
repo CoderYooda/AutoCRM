@@ -113,6 +113,7 @@ class PartnerController extends Controller
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать контакты' : 'Создавать контакты');
 
+        /** @var Partner $partner */
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){
@@ -137,10 +138,6 @@ class PartnerController extends Controller
 
         $phones = $partner->upsertPhones($request['phones'], $request['phones_main']);
 
-        if($phones->count()){
-            $partner->basePhone = str_replace(array('(', ')', ' ', '-', '+'), '', $phones->where('main', 1)->first()->number);
-        }
-
         $partner->save();
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
@@ -152,11 +149,6 @@ class PartnerController extends Controller
 
         //SystemMessage::sendToAllButOne();
 
-        $phones_str = '';
-        foreach($partner->phones as $phone){
-            $phones_str .= str_replace(array('(', ')', ' ', '-', '+'), '', $phone->number);
-        }
-        $partner->foundstring = mb_strtolower(str_replace(['(', ')', ' ', '-', '+'], '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
         $partner->save();
 
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
@@ -415,7 +407,7 @@ class PartnerController extends Controller
             $field = 'id';
             $dir = 'DESC';
         }
-        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name, partners.id, partners.fio, partners.companyName, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category'))
+        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name, partners.id, partners.fio, partners.companyName, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, cat.name as category'))
             ->leftJoin('categories as cat', 'cat.id', '=', 'partners.category_id')
 //            ->from(DB::raw('
 //                partners
@@ -442,6 +434,10 @@ class PartnerController extends Controller
             ->orderBy($field, $dir)
             ->paginate($size);
 //        ->toSql();
+
+        foreach ($partners as $key => $partner) {
+            $partners[$key]->phone = $partner->firstActivePhoneNumber();
+        }
 
         return $partners;
     }

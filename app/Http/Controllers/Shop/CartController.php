@@ -116,15 +116,14 @@ class CartController extends Controller
             } else {
 
                 $uniqueFields = [
-                    'basePhone'  => $request->phone,
                     'company_id' => $company->id,
-                    'store_id'   => $request->pickup_id
+                    'store_id'   => $request->pickup_id,
+                    'fio' => ($request->surname . ' ' . $request->name . ' ' . $request->middlename)
                 ];
 
-                $types = ['fl', 'ip', 'up'];
+                $types = ['fl', 'ip', 'ul'];
 
                 $updateFields = $request->except('rules', 'password', 'delivery_address', 'register', 'pay_type', 'delivery_type', 'pickup_id', 'register_type', 'name', 'surname', 'middlename');
-                $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
                 $updateFields['category_id'] = BUYER_CATEGORY;
                 $updateFields['type'] = array_search($request->register_type, $types);
 
@@ -164,7 +163,7 @@ class CartController extends Controller
                 'status'        => MODERATION_STATUS,
                 'comment'       => $request->comment,
                 'email'         => $partner->email,
-                'phone'         => $partner->basePhone,
+                'phone'         => $partner->firstActivePhoneNumber(),
                 'pay_type'      => $request->pay_type,
                 'delivery_type' => $request->delivery_type,
                 'delivery_id'   => $request->delivery_id,

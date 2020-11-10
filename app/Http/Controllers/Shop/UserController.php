@@ -76,6 +76,19 @@ class UserController extends Controller
 
         $user = User::where(['phone' => $request['phone']])->first();
 
+        if($user->companyPartner == null) {
+
+            $params = $user->partner->getAttributes();
+
+            unset($params['id'], $params['created_at'], $params['updated_at'], $params['deleted_at']);
+            $params['company_id'] = $this->shop->company_id;
+            $params['category_id'] = BUYER_CATEGORY;
+            $params['balance'] = 0;
+            $params['store_id'] = null;
+
+            Partner::create($params);
+        }
+
         Auth::login($user, true);
 
         Session::flush();

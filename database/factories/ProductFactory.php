@@ -13,12 +13,11 @@ $factory->define(\App\Models\Article::class, function (Faker $faker) {
     $article = \App\Http\Controllers\HelpController::generateRandomArticle(rand(5, 10));
     $name = $json[$item_index]->name;
     $barcode = $faker->ean13();
-    $prepared_article = $json[$item_index]->article;
-    $prepared_name = mb_strtolower(str_replace(' ', '', $name));
-    $prepared_barcode = mb_strtolower(str_replace(' ', '', $barcode));
+//    $prepared_article = $json[$item_index]->article;
+//    $prepared_name = mb_strtolower(str_replace(' ', '', $name));
+//    $prepared_barcode = mb_strtolower(str_replace(' ', '', $barcode));
 
     return [
-        'foundstring' => $prepared_article . $prepared_barcode . $prepared_name,
         'article' => $article,
         'oem' => $faker->ean13(),
         'storeCode' => $faker->ean13(),

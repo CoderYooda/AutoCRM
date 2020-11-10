@@ -23,7 +23,6 @@ class Partner extends Model
         'user_id',
         'category_id',
         'store_id',
-        'foundstring',
         'basePhone',
         'type',
         'fio',
@@ -44,6 +43,16 @@ class Partner extends Model
         'rs',
         'opf'
     ];
+
+    public function freshFoundString()
+    {
+        $phones_str = '';
+        foreach($this->phones as $phone){
+            $phones_str .= $phone->number;
+        }
+
+        $this->foundstring = mb_strtolower(str_replace(['(', ')', ' ', '-', '+'], '', $this->fio . $this->companyName . $phones_str . $this->barcode));
+    }
 
     public function vehicles()
     {
@@ -131,18 +140,9 @@ class Partner extends Model
 
     public function firstActivePhoneNumber()
     {
-        $phones = $this->phones;
-        $num_out = 'Основной номер не указан';
-        if($phones){
-            $number = $phones->where('main', true)->first();
-            if($number){
-                $num_out = phone_format( $number->number);
-            }
-        }
-        if(!$num_out){
-            $num_out = 'Ошибка форматирования номера';
-        }
-        return $num_out;
+        $phone = $this->phones()->where('main', true)->first();
+
+        return $phone->number ?? '';
     }
 
     public function getCutSurnameAttribute()
@@ -153,7 +153,6 @@ class Partner extends Model
 
         foreach ($arr as $key => $value)
         {
-
             if(!$key) $return_name .= ($value . ' ');
             else $return_name .= (mb_substr($value, 0, 1) . '.');
         }

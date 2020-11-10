@@ -61,6 +61,7 @@ h2{
 @import "shop/cart";
 @import "shop/form";
 @import "shop/product";
+@import "shop/success_order";
 @import "shop/modals/edit_vehicle";
 
 .select2-container--default .select2-selection--single {
@@ -2301,6 +2302,7 @@ body{
                 .counter-container{
 
                     height: 42px;
+                    line-height: 42px;
 
                     display: flex;
                     width: 168px;

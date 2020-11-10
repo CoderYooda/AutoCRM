@@ -15,7 +15,7 @@
 
 <div class="orders_body">
 
-    @foreach($orders as $order)
+    @forelse($orders as $order)
 
         <div class="order_element">
 
@@ -39,7 +39,7 @@
                     <div class="title">Наименование</div>
                     <div class="title">Артикул</div>
                     <div class="title">Бренд</div>
-                    <div class="title">Магазин</div>
+                    <div class="title">Источник</div>
                     <div class="title count">Кол-во</div>
                     <div class="title">Цена</div>
                     <div class="title">Всего</div>
@@ -55,7 +55,7 @@
                             <div class="desc">{{ $position->name }}</div>
                             <div class="desc">{{ $position->article }}</div>
                             <div class="desc">{{ $position->manufacturer }}</div>
-                            <div class="desc">Археерейская</div>
+                            <div class="desc">{{ $position->source }}</div>
                             <div class="desc count">{{ $position->count }}</div>
                             <div class="desc">{{ correct_price($position->price) }} ₽</div>
                             <div class="desc">{{ correct_price($position->price * $position->count) }} ₽</div>
@@ -80,6 +80,12 @@
 
         </div>
 
-    @endforeach
+    @empty
+
+        <div class="empty_table">
+            Пусто
+        </div>
+
+    @endforelse
 
 </div>
