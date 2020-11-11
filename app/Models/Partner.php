@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\DeliveryAddress;
+use App\Models\DeliveryAddress;
 use App\Http\Controllers\HelpController;
 use App\Models\System\Image;
 use App\Traits\OwnedTrait;

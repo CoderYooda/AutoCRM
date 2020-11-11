@@ -25,7 +25,7 @@ class ProductDialog extends Modal {
             focused.focus();
             focused.select();
         }
-        helper.initTabs('product_tabs');
+        helper.initTabs('product_tabs', false);
         let fn = window.helper.debounce(function (e) {
             object.fapiSearch();
         }, 800);
@@ -44,8 +44,50 @@ class ProductDialog extends Modal {
         this.article_input.addEventListener("paste", fn);
         this.article_input.addEventListener("delete", fn);
 
+        this.initShopDiscountRecalculate();
+
         this.linked();
     }
+
+    initShopDiscountRecalculate() {
+        let discount_element = this.current_dialog.querySelector('[name="shop[discount]"]');
+
+        this.recalculateShopDiscountDebounce = window.helper.debounce( (e) => {
+            this.recalculateShopDiscount();
+        }, 500);
+
+        discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
+        discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
+        discount_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
+    }
+
+    recalculateShopDiscount() {
+
+        let price_element = this.current_dialog.querySelector('[name="shop[price]"]');
+        let discount_element = this.current_dialog.querySelector('[name="shop[discount]"]');
+        let total_element = this.current_dialog.querySelector('[name="shop[total]"]');
+        let type_element = this.current_dialog.querySelector('[name="shop[discount_type]"]');
+
+        let price = parseFloat(price_element.value);
+        let discount = parseFloat(discount_element.value);
+        let total = 0;
+
+        if(type_element.value == 1) { //Если скидка в процентах
+
+            if(discount < 0 || discount > 100) discount = discount_element.value = 0;
+
+            total = price - (price / 100 * discount);
+        }
+        else {
+
+            if(discount < 0 || discount > price) discount = discount_element.value = 0;
+
+            total = price - discount;
+        }
+
+        total_element.value = total;
+    }
+
 
     linked()
     {

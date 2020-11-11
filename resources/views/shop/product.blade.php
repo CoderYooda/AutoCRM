@@ -106,7 +106,7 @@
                                 <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
                             @else
                                 <div class="counter-container">
-                                    Нет в наличие
+                                    Нет в наличии
                                 </div>
                             @endif
 

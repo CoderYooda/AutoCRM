@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Request;
 
 class Article extends Model
 {
@@ -94,6 +94,24 @@ class Article extends Model
         $price = $this->stores->find($store_id)->pivot->retail_price;
 
         return md5($stock . $manufacturer . $article . $days . $price);
+    }
+
+    public function fillShopFields($request)
+    {
+        $this->sp_name = $request->shop['name'] ?? '';
+        $this->sp_desc = $request->shop['desc'] ?? '';
+
+        $this->sp_discount = $request->shop['discount'];
+        $this->sp_discount_type = $request->shop['discount_type'];
+
+        $price = $this->getPrice();
+
+        if($this->sp_discount_type == 0) { //В рублях
+            $this->sp_discount_total = $price - $this->sp_discount;
+        }
+        else {
+            $this->sp_discount_total = $price - ($price / 100 * $this->sp_discount);
+        }
     }
 
     public function getImagePathAttribute()

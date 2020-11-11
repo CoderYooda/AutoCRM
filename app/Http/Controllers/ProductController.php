@@ -291,8 +291,9 @@ class ProductController extends Controller
             #Кроссы
             $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
-            $article->sp_name = $request->shop['name'] ?? '';
-            $article->sp_desc = $request->shop['desc'] ?? '';
+
+            $article->fillShopFields($request);
+
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
@@ -302,7 +303,7 @@ class ProductController extends Controller
 
                 $image = Image::create($imageParams);
 
-                $article->image_id = $image->id;
+                $article->update(['image_id' => $image->id]);
             }
 
             if(isset($request->shop['specifications'])) {

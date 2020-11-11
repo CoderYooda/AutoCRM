@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\DeliveryAddress;
+use App\Models\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\CartDeleteRequest;
 use App\Http\Requests\Shop\CartOrderRequest;
@@ -10,7 +10,7 @@ use App\Http\Requests\Shop\CartSaveRequest;
 use App\Http\Requests\Shop\CartStoreRequest;
 use App\Interfaces\Shop\CartInterface;
 use App\Http\Controllers\Controller;
-use App\Mail\Shop\SuccessOrder;
+use App\Mail\Shop\ModerateOrder;
 use App\Models\Article;
 use App\Models\Order;
 use App\Models\Partner;
@@ -181,7 +181,7 @@ class CartController extends Controller
                 DB::table('order_positions')->insert($cartOrder->toArray());
             }
 
-            Mail::to($partner->email)->send(new SuccessOrder($order));
+            Mail::to($partner->email)->send(new ModerateOrder($order));
 
             $cart->clear();
 

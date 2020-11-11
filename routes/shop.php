@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
 
-    $order = \App\Models\Order::latest()->first();
-
-    return view('shop.emails.success_order', compact('order'));
+    return view('shop.emails.order.road')->with([
+        'shop' => \App\Models\Shop::latest()->first(),
+        'order' => \App\Models\Order::latest()->first()
+    ]);
 });
 
 Route::namespace('Shop')->group(function () {

@@ -44,6 +44,8 @@ class ProductRequest extends FormRequest
 
             'shop.name' => ['nullable', 'string', 'max:255'],
             'shop.desc' => ['nullable', 'string', 'max:1024'],
+            'shop.discount' => ['required', 'numeric', 'between:0,99999'],
+            'shop.discount_type' => ['required', 'integer', 'between:0,1'],
             'shop.specifications' => ['array'],
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.product_settings.*.*' => ['accepted'],

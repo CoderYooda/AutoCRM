@@ -17,7 +17,7 @@ class Trinity implements ProviderInterface
 
     protected $host = 'http://trinity-parts.ru/httpws/hs/';
 
-    protected $name = 'Trinity';
+    protected $name = 'Trinity Parts';
     protected $service_key = 'trinity';
     protected $field_name = 'api_key';
 
@@ -109,6 +109,7 @@ class Trinity implements ProviderInterface
                 'rest' => $store['rest'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
+                'packing' => $store['minOrderCount'],
                 'min_count' => $store['minOrderCount'],
                 'delivery' => $store['deliverydays'] . 'дн.',
                 'price' => $store['price'],

@@ -9,6 +9,8 @@ use App\Http\Requests\Shop\UpdateDeliveryRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
 use App\Http\Requests\Shop\UpdateWarrantyRequest;
+use App\Mail\Shop\CanceledOrder;
+use App\Mail\Shop\ConfirmOrder;
 use App\Models\Article;
 use App\Models\ClientOrder;
 use App\Models\Order;
@@ -18,6 +20,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class ShopController extends Controller
@@ -321,8 +324,14 @@ class ShopController extends Controller
                 if ($status == Order::PAYMENT_TYPE_ONLINE) {
                     $order->initPayment();
                 }
+                else {
+                    Mail::to($order->email)->send(new ConfirmOrder($order));
+                }
 
                 $clientOrder->update(['status' => $status]);
+            }
+            else {
+                Mail::to($order->email)->send(new CanceledOrder($order));
             }
 
             $order->update([

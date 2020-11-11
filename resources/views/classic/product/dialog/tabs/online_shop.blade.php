@@ -127,24 +127,25 @@
 
                                 <div class="flex-3">
                                     <div class="form-group">
-                                        <input type="number" class="form-control" name="shop[price]" value="12000" disabled />
+                                        <input type="number" class="form-control" name="shop[price]" value="{{ $product->getPrice() }}" disabled />
                                     </div>
 
                                     <div class="form-group d-flex">
                                         <div class="flex-1">
-                                            <input type="number" class="form-control" name="shop[discount]" value="10000" />
+                                            <input type="number" class="form-control" name="shop[discount]" value="{{ $product->sp_discount }}" />
                                         </div>
 
                                         <div class="ml-5 flex-1">
-                                            <select custom_select name="shop[discount_type]">
-                                                <option>В рублях</option>
-                                                <option>В процентах</option>
+                                            <select custom_select onchange="{{ $class }}.recalculateShopDiscountDebounce();" name="shop[discount_type]">
+                                                @foreach(['В рублях', 'В процентах'] as $index => $name)
+                                                    <option @if($product->sp_discount_type == $index) selected @endif value="{{ $index }}">{{ $name }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="number" class="form-control" name="shop[total]" value="2000" disabled />
+                                        <input type="number" class="form-control" name="shop[total]" value="{{ $product->sp_discount_total }}" disabled />
                                     </div>
                                 </div>
 

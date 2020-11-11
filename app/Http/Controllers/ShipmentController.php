@@ -321,8 +321,6 @@ class ShipmentController extends Controller
             #Добавляем к балансу контакта
             $shipment->partner->subtraction($shipment->itogo);
 
-            $shipment->foundstring = str_replace(["-", "!", "?", ".", ""], "", trim($shipment->id . $shipment->partner->foundstring));
-
             if ($request['created_at']) {
                 $shipment->created_at = $request['created_at'];
             }

@@ -3,6 +3,27 @@
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Milon\Barcode\DNS1D;
 
+if(!function_exists('num_word')) {
+    function num_word($value, $words, $show = true)
+    {
+        $num = $value % 100;
+        if ($num > 19) {
+            $num = $num % 10;
+        }
+
+        $out = ($show) ?  $value . ' ' : '';
+        switch ($num) {
+            case 1:  $out .= $words[0]; break;
+            case 2:
+            case 3:
+            case 4:  $out .= $words[1]; break;
+            default: $out .= $words[2]; break;
+        }
+
+        return $out;
+    }
+}
+
 if(!function_exists('display_phone')) {
     function display_phone($phone) {
 
@@ -106,8 +127,15 @@ if(!function_exists('convertPHPSizeToBytes')) {
 }
 
 if(!function_exists('correct_price')) {
-    function correct_price($price) {
-        return number_format((float)$price, 2, '.', ' ');
+    function correct_price($price, $desc = false) {
+
+        $string = number_format((float)$price, 2, '.', ' ');
+
+        if($desc) {
+            $string .= ' ' . num_word($price, ['рубль', 'рубля', 'рублей'], false);
+        }
+
+        return $string;
     }
 }
 

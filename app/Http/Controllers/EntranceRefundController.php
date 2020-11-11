@@ -69,7 +69,7 @@ class EntranceRefundController extends Controller
         #Создаем новые пивоты
         foreach ($request->products as $index => $product) {
 
-            $price = $entrance->articles()->find('id', $product['product_id'])->pivot->price;
+            $price = $entrance->articles()->find($product['product_id'])->pivot->price;
 
             $entrance_refund->articles()->attach($product['product_id'], [
                 'entrance_refund_id' => $entrance_refund->id,
