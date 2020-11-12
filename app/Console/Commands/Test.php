@@ -8,6 +8,9 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use mysql_xdevapi\Exception;
+use App\Models\Category;
+use Illuminate\Support\Str;
+use App\Models\Article;
 
 class Test extends Command
 {
@@ -27,15 +30,27 @@ class Test extends Command
 
     public function handle()
     {
-        $orders = Partner::find(141)->user->getProvidersCartOrders;
+//        $orders = Partner::find(141)->user->getProvidersCartOrders;
+//
+//        $params = [
+//            'orders' => $orders->pluck('number')->toArray()
+//        ];
+//
+//        $result = $this->query('orders/list/', $params, 'GET');
+//
+//        dd($result);
+        foreach (Article::all() as $product) {
 
-        $params = [
-            'orders' => $orders->pluck('number')->toArray()
-        ];
+            $productName = $product->name;
 
-        $result = $this->query('orders/list/', $params, 'GET');
+            $nameUsing = Article::where(['name' => $productName, 'company_id' => $product->company_id])
+                ->where('id', '!=', $product->id)
+                ->exists();
 
-        dd($result);
+            if($nameUsing) $productName .= '-' . $product->id;
+
+            $product->update(['slug' => Str::slug($productName)]);
+        }
     }
 
     private function query($path, $params, $method): array

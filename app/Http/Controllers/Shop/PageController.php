@@ -12,6 +12,7 @@ use App\Services\ShopManager\ShopManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class PageController extends Controller
@@ -151,6 +152,8 @@ class PageController extends Controller
 //        });
 
         $providersOrders = [];
+
+//        dd(Auth::user());
 
         /** @var ProviderInterface $provider */
         foreach ($providers->activated() as $provider_key => $provider) {

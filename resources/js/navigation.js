@@ -258,10 +258,13 @@ const ajaxRequest = new (function () {
     oLoadingBox.appendChild(oCover);
 
     onpopstate = function (oEvent) {
-        bUpdateURL = false;
-        oPageInfo.title = oEvent.state ? oEvent.state.title : null;
-        oPageInfo.url = oEvent.state.url.replace(/&target=ajax-tab-content/gi, '');
-        getPage();
+        if(oEvent.state){
+            bUpdateURL = false;
+            oPageInfo.title = oEvent.state ? oEvent.state.title : null;
+            oPageInfo.url = oEvent.state.url.replace(/&target=ajax-tab-content/gi, '');
+            getPage();
+        }
+
     };
 
     window.addEventListener ? addEventListener("load", init, false) : window.attachEvent ? attachEvent("onload", init) : (onload = init);

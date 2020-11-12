@@ -1,3 +1,4 @@
+import SimpleBar from 'simplebar';
 class Table {
     constructor(options){
         this.elem = document.getElementById(options.container);
@@ -93,6 +94,7 @@ class Table {
             //container.appendChild(this.drawDragger());
             this.elem.appendChild(container);
             this.insertElems();
+            new SimpleBar(document.getElementsByClassName('bbtable-body')[0]);
         } else {
             console.log("Не указан контейнер");
         }

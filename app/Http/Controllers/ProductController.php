@@ -390,11 +390,13 @@ class ProductController extends Controller
 
         $company_id = Auth::user()->company_id;
 
+        //$search = str_replace(['-'], '', $request->search));
+
         $articles = Article::selectRaw('articles.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
             ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
-                $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
+                $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
             ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
                 $q->where('articles.category_id', (int)$request['category_id']);
