@@ -88,19 +88,29 @@
                 @foreach($product->stores as $store)
 
                     <div class="element" id="product_{{ $product->getHash($store->id) }}" data-store_id="{{ $store->id }}">
-                        <div class="flex-1 availability">{{ $product->getCountInStoreId($store->id) }} шт.</div>
+                        <div class="flex-1 availability">
+                            @if($shop->show_amount)
+                                {{ $product->getCountInStoreId($store->id) }} шт.
+                            @else
+                                {{ $product->getCountInStoreId($store->id) ? 'В наличие' : 'Отсутствует' }}
+                            @endif
+                        </div>
                         <div class="flex-1 shop">{{ $store->name }}</div>
 
                         <div class="flex-2 price">
-                            <span class="current">{{ correct_price($store->pivot->retail_price) }} ₽</span>
-    {{--                        <span class="old">150 000 ₽</span>--}}
+                            @if(!$product->sp_stock)
+                                <span class="current">{{ correct_price($product->getPrice()) }} ₽</span>
+                            @else
+                                <span class="current">{{ correct_price($product->getPrice() - $product->sp_discount_total) }} ₽</span>
+                                <span class="old">{{ correct_price($product->getPrice()) }} ₽</span>
+                            @endif
                         </div>
 
                         <div class="absolute shipping-container">
                             @if($product->getCountInStoreId($store->id))
                                 <div class="counter-container">
                                     <div class="button minus" onclick="cart.decrement(this, '{{ $product->getHash($store->id) }}');"></div>
-                                    <input class="counter" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
+                                    <input class="counter" data-max="{{ $product->getCountInStoreId($store->id) }}" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
                                     <div class="button plus" onclick="cart.increment(this, '{{ $product->getHash($store->id) }}');"></div>
                                 </div>
                                 <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
@@ -161,7 +171,7 @@
                             <div class="absolute shipping-container">
                                 <div class="counter-container">
                                     <div class="button minus" onclick="cart.decrement(this, '{{ $order['hash'] }}');"></div>
-                                    <input type="text" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
+                                    <input type="text" data-max="{{ $order['model']['hash_info']['rest'] }}" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
                                     <div class="button plus" onclick="cart.increment(this, '{{ $order['hash'] }}');"></div>
                                 </div>
                                 <div class="cart-button @if($cart->isProductExists($order['hash'])) incart @endif" onclick="cart.add(this, '{{ $order['hash'] }}');"></div>

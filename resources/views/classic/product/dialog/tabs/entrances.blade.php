@@ -13,7 +13,7 @@
 
                 <tr>
                     <td>{{ $entrance->id }}</td>
-                    <td>{{ $entrance->partner->official_name }}</td>
+                    <td>{{ $entrance->partner->official_name ?? '' }}</td>
                     <td>{{ $entrance->pivot->count }}</td>
                     <td>{{ $entrance->pivot->created_at }}</td>
                 </tr>

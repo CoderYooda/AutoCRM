@@ -74,6 +74,8 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
+        if($items == []) return [];
+
         $results = [];
 
         foreach ($items['data'] as $key => $item) {
@@ -172,7 +174,7 @@ class Trinity implements ProviderInterface
             $data = file_get_contents($this->host . $url, false, $context);
         }
         catch (\Exception $exception) {
-            throw_error('Trinity: Ошибка авторизации ключа');
+            $data = json_encode([]);
         }
 
         return json_decode($data, $asArray);

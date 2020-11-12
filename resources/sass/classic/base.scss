@@ -3291,6 +3291,18 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 
+    .shop_params {
+
+        border: 1px solid #e7e8ec;
+        padding: 10px;
+        padding-bottom: 0;
+
+        .stocks {
+            display: flex;
+            padding-bottom: 10px;
+        }
+    }
+
     #tab_main {
 
         .shop_name {
@@ -3376,50 +3388,6 @@ input:-moz-placeholder { /* Firefox 18- */
                     line-height: 20px;
                     height: 20px;
                     border-radius: unset !important;
-                }
-            }
-        }
-    }
-
-    #tab_settings {
-        .elements {
-
-            .toggleable {
-                border-left: 1px solid #E7E8EC;
-                border-right: 1px solid #E7E8EC;
-
-                &:last-child {
-                    border-bottom: 1px solid #E7E8EC;
-                }
-            }
-
-            .element {
-                border: 1px solid #E7E8EC;
-
-                line-height: 36px;
-
-                &:last-child {
-                    border-bottom: 1px solid #E7E8EC !important;
-                }
-
-                .element-title {
-                    height: 46px;
-                    padding-right: 46px;
-                    padding-left: 15px;
-                    line-height: 46px;
-                }
-
-                i {
-                    color: #B2BDCE;
-                    font-size: 20px;
-                    position: absolute;
-                    right: 0;
-                    display: block;
-                    height: 100%;
-                    width: 46px;
-                    top: 0;
-                    text-align: center;
-                    line-height: 46px;
                 }
             }
         }

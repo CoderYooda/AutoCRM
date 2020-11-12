@@ -50,11 +50,14 @@ class ProductDialog extends Modal {
     }
 
     initShopDiscountRecalculate() {
-        let discount_element = this.current_dialog.querySelector('[name="shop[discount]"]');
 
         this.recalculateShopDiscountDebounce = window.helper.debounce( (e) => {
             this.recalculateShopDiscount();
         }, 500);
+
+        let stocks_element = this.current_dialog.querySelector('.stocks');
+
+        let discount_element = stocks_element.querySelector('.discount');
 
         discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
         discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
@@ -63,10 +66,12 @@ class ProductDialog extends Modal {
 
     recalculateShopDiscount() {
 
-        let price_element = this.current_dialog.querySelector('[name="shop[price]"]');
-        let discount_element = this.current_dialog.querySelector('[name="shop[discount]"]');
-        let total_element = this.current_dialog.querySelector('[name="shop[total]"]');
-        let type_element = this.current_dialog.querySelector('[name="shop[discount_type]"]');
+        let stocks_element = this.current_dialog.querySelector('.stocks');
+
+        let price_element = stocks_element.querySelector('.price');
+        let discount_element = stocks_element.querySelector('.discount');
+        let total_element = stocks_element.querySelector('.total');
+        let type_element = stocks_element.querySelector('.type');
 
         let price = parseFloat(price_element.value);
         let discount = parseFloat(discount_element.value);
@@ -96,7 +101,7 @@ class ProductDialog extends Modal {
 
     toggleStock(element) {
 
-        let target_element = this.current_dialog.querySelector('#stock_menu');
+        let target_element = this.current_dialog.querySelector('.stocks');
 
         target_element.classList.toggle('d-none');
     }
@@ -153,8 +158,10 @@ class ProductDialog extends Modal {
 
     toggleShopSettings(element, store_id) {
 
-        element.classList.toggle('fa-angle-down');
-        element.classList.toggle('fa-angle-up');
+        let i_element = element.querySelector('i');
+
+        i_element.classList.toggle('fa-angle-down');
+        i_element.classList.toggle('fa-angle-up');
 
         let target_element = this.current_dialog.querySelector('#toggle_' + store_id);
 

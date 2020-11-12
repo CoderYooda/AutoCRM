@@ -23,7 +23,11 @@
                         @else
                             <div class="out-of-stock">Под заказ</div>
                         @endif
-                        {{-- <div class="discount">-30%</div> --}}
+                        @if($product->sp_stock)
+                             <div class="discount">
+                                 Акция
+                             </div>
+                        @endif
                     </div>
 
                     <div class="name-container">

@@ -10,8 +10,18 @@ class AddDiscountShopFieldsToArticles extends Migration
     {
         Schema::table('articles', function (Blueprint $table) {
             $table->decimal('sp_discount', 12, 2)->default(0);
+            $table->decimal('sp_discount_price', 12, 2)->default(0);
             $table->integer('sp_discount_type')->default(0);
             $table->integer('sp_discount_total')->default(0);
+
+            $table->integer('sp_main')->default(0);
+            $table->integer('sp_stock')->default(0);
+        });
+
+        Schema::table('article_store', function (Blueprint $table) {
+            $table->dropColumn('sp_empty');
+            $table->dropColumn('sp_main');
+            $table->dropColumn('sp_stock');
         });
     }
 
@@ -19,8 +29,18 @@ class AddDiscountShopFieldsToArticles extends Migration
     {
         Schema::table('articles', function (Blueprint $table) {
             $table->dropColumn('sp_discount');
+            $table->dropColumn('sp_discount_price');
             $table->dropColumn('sp_discount_type');
             $table->dropColumn('sp_discount_total');
+
+            $table->dropColumn('sp_main');
+            $table->dropColumn('sp_stock');
+        });
+
+        Schema::table('article_store', function (Blueprint $table) {
+            $table->integer('sp_empty')->default(0);
+            $table->integer('sp_main')->default(0);
+            $table->integer('sp_stock')->default(0);
         });
     }
 }

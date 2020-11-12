@@ -175,9 +175,6 @@ class ProductController extends Controller
         $category = Category::find($category_select);
 
         $shopFields = [
-            'sp_empty' => [
-                'name' => 'Показать, если нет в наличии',
-            ],
             'sp_main' => [
                 'name' => 'Показать на главной странице',
             ],
@@ -329,18 +326,13 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
-                    $shop_settings = $request->shop['product_settings'][$store->id];
-
                     $store->articles()->syncWithoutDetaching($article->id);
 
                     $pivot_data = [
                         'storage_zone' => $storage['storage_zone'],
                         'storage_rack' => $storage['storage_rack'],
                         'storage_vertical' => $storage['storage_vertical'],
-                        'storage_horizontal' => $storage['storage_horizontal'],
-                        'sp_main' => $shop_settings['sp_main'],
-                        'sp_empty' => $shop_settings['sp_empty'],
-                        'sp_stock' => $shop_settings['sp_stock']
+                        'storage_horizontal' => $storage['storage_horizontal']
                     ];
 
                     if(isset($storage['retail_price'])){
