@@ -11,11 +11,11 @@
                 <h2>О компании</h2>
                 <div class="d-flex">
                     <div class="text">{!! $shop->about_desc !!}</div>
-                    @isset($shop->aboutImages)
+                    @if(count($shop->aboutImages))
                         <div class="main_picture flex-1">
                             <img src="{{ $shop->aboutImages->first()->url }}" alt="">
                         </div>
-                    @endisset
+                    @endif
                 </div>
             </div>
         </div>

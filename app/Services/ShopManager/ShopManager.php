@@ -25,4 +25,9 @@ class ShopManager
     {
         return $this->shop;
     }
+
+    public function isWatchShop()
+    {
+        return $this->shop ? true : false;
+    }
 }

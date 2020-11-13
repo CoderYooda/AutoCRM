@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SuccessOrder extends Mailable implements ShouldQueue
+class WaitOrder extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -22,7 +22,11 @@ class SuccessOrder extends Mailable implements ShouldQueue
 
     public function build()
     {
-        return $this->view('shop.emails.success_order')
-            ->with('order', $this->order);
+        return $this->view('shop.emails.order.wait')
+            ->subject('Заказ №' . $this->order->id . ' ожидает выдачи')
+            ->with([
+                'order' => $this->order,
+                'shop' => $this->order->shop
+            ]);
     }
 }

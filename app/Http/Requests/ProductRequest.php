@@ -46,8 +46,13 @@ class ProductRequest extends FormRequest
             'shop.desc' => ['nullable', 'string', 'max:1024'],
             'shop.specifications' => ['array'],
             'shop.specifications.*.*' => ['string', 'max:255'],
-            'shop.product_settings.*.*' => ['accepted'],
-            'shop.image' => ['file', 'mimes:jpeg,bmp,png', 'max:5120']
+            'shop.settings.*.*' => ['accepted'],
+            'shop.image' => ['file', 'mimes:jpeg,bmp,png', 'max:5120'],
+
+//            'shop.discounts.price' => ['required', 'numeric', 'between:0,999999'],
+            'shop.discounts.discount' => ['required', 'numeric', 'between:0,999999'],
+            'shop.discounts.type' => ['required', 'integer', 'between:0,1'],
+//            'shop.discounts.total' => ['required', 'integer', 'between:0,999999'],
         ];
     }
 
@@ -55,12 +60,8 @@ class ProductRequest extends FormRequest
     {
         $shop = $this['shop'];
 
-        $stores = Store::owned()->get();
-
-        foreach ($stores as $store) {
-            foreach (['sp_empty', 'sp_stock', 'sp_main'] as $field) {
-                $shop['product_settings'][$store->id][$field] = filter_var($shop['product_settings'][$store->id][$field] ?? null, FILTER_VALIDATE_BOOLEAN);
-            }
+        foreach (['sp_stock', 'sp_main'] as $field) {
+            $shop['settings'][$field] = filter_var($shop['settings'][$field] ?? null, FILTER_VALIDATE_BOOLEAN);
         }
 
         $this['shop'] = $shop;

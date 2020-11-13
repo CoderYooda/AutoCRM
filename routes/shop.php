@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
 
-    \Illuminate\Support\Facades\Auth::logout();
-
-    dd(\Illuminate\Support\Facades\Auth::user()->companyPartner);
+    return view('shop.emails.order.road')->with([
+        'shop' => \App\Models\Shop::latest()->first(),
+        'order' => \App\Models\Order::latest()->first()
+    ]);
 });
 
 Route::namespace('Shop')->group(function () {
@@ -52,7 +53,7 @@ Route::namespace('Shop')->group(function () {
     Route::post('/cart/clear', 'CartController@clear')->name('cart.clear');
     Route::post('/cart/order', 'CartController@order')->name('cart.order');
 
-    Route::get('/orders/{order}', 'OrderController@show')->name('orders.success');
+    Route::get('/orders/{hash}', 'OrderController@show')->name('orders.success');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
 

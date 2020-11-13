@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use App\DeliveryAddress;
+use App\Mail\Shop\PaymentOrder;
+use App\Models\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
+use App\Mail\WaitPaymentMail;
 use App\Services\ShopManager\ShopManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 Carbon::setToStringFormat('d.m.Y H:i');
 
@@ -57,6 +60,16 @@ class Order extends Model
         'Оплата на сайте'
     ];
 
+    public function path()
+    {
+        return $this->shop->getUrl() . 'orders/' . $this->hash;
+    }
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'id', 'shop_id');
+    }
+
     public function partner()
     {
         return $this->hasOne(Partner::class, 'id', 'partner_id');
@@ -92,17 +105,9 @@ class Order extends Model
         return self::$payStatuses[$this->pay_type];
     }
 
-    public function shop()
-    {
-        return $this->hasOne(Shop::class, 'company_id', 'company_id');
-    }
-
     public function initPayment()
     {
-        /** @var ShopManager $shopManager */
-        $shopManager = app(ShopManager::class);
-
-        $shop = $shopManager->getCurrentShop() ?? Shop::where('company_id', Auth::user()->company_id)->first();
+        $shop = $this->shop;
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
 
@@ -153,7 +158,7 @@ class Order extends Model
         $params = [
             'OrderId'    => $this->id,
             'Amount'     => $totalPrice,
-            'SuccessURL' => $shop->getUrl() . 'orders/' . $this->id,
+            'SuccessURL' => $this->path(),
             'Receipt'    => $receipt
         ];
 
@@ -163,6 +168,8 @@ class Order extends Model
             'tinkoff_id' => $api->paymentId,
             'tinkoff_url' => $api->paymentUrl
         ]);
+
+        Mail::to($this->email)->send(new PaymentOrder($this));
 
         return redirect($api->paymentUrl);
     }

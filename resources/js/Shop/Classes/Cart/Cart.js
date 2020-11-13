@@ -26,14 +26,21 @@ class Cart {
 
     add(element, hash) {
 
-        if(element.classList.contains('incart')) return;
-        element.classList.add('incart');
-
         let input_element = element.closest('.shipping-container').querySelector('input');
 
         if(input_element.value < 1) input_element.value = 1;
 
-        let count = input_element.value;
+        let count = parseInt(input_element.value);
+
+        let max_count = input_element.dataset.max;
+
+        if(count > max_count) {
+            window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+            return;
+        }
+
+        if(element.classList.contains('incart')) return;
+        element.classList.add('incart');
 
         let order = this.getOrderByHash(hash);
 
@@ -108,7 +115,12 @@ class Cart {
         let count_element = target_element.querySelector('.counter');
         let count = parseInt(count_element.value) + 1;
 
-        if(count >= 99) return;
+        let max_count = count_element.dataset.max;
+
+        if((count - 1) >= max_count) {
+            window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+            return;
+        }
 
         count_element.value = count;
 
@@ -288,8 +300,18 @@ class Cart {
 
             let store_id = element.dataset.store_id;
 
-            let count = parseInt(element.querySelector('.counter').value);
+            let count_element = element.querySelector('.counter');
+
+            let count = parseInt(count_element.value);
             let price = parseFloat(element.querySelector('.current_price span').innerHTML.replace(' ', ''));
+
+            let max_count = count_element.dataset.max;
+
+            if(count > max_count) {
+                count = max_count;
+                count_element.value = max_count;
+                window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+            }
 
             let total = count * price;
 

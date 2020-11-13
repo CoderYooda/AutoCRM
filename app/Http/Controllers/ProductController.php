@@ -175,9 +175,6 @@ class ProductController extends Controller
         $category = Category::find($category_select);
 
         $shopFields = [
-            'sp_empty' => [
-                'name' => 'Показать, если нет в наличии',
-            ],
             'sp_main' => [
                 'name' => 'Показать на главной странице',
             ],
@@ -233,14 +230,14 @@ class ProductController extends Controller
             ->limit(30)
             ->get();
 
-        foreach ($products as $product){
-            $product->available = $product->getEntrancesCount();
-            $product->price = $product->getPrice();
-            $product->supplier_name = $product->supplier->name;
-            $product->store_count = $product->available;
-            $product->product_id = $product->id;
-            $product->shipped_count = 0;
-        }
+//        foreach ($products as $product){
+//            $product->available = $product->getEntrancesCount();
+//            $product->price = $product->getPrice();
+//            $product->supplier_name = $product->supplier->name;
+//            $product->store_count = $product->available;
+//            $product->product_id = $product->id;
+//            $product->shipped_count = 0;
+//        }
 
 //        dd($products);
 
@@ -291,8 +288,9 @@ class ProductController extends Controller
             #Кроссы
             $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
-            $article->sp_name = $request->shop['name'] ?? '';
-            $article->sp_desc = $request->shop['desc'] ?? '';
+
+            $article->fillShopFields($request);
+
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
@@ -302,7 +300,7 @@ class ProductController extends Controller
 
                 $image = Image::create($imageParams);
 
-                $article->image_id = $image->id;
+                $article->update(['image_id' => $image->id]);
             }
 
             if(isset($request->shop['specifications'])) {
@@ -328,18 +326,13 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
-                    $shop_settings = $request->shop['product_settings'][$store->id];
-
                     $store->articles()->syncWithoutDetaching($article->id);
 
                     $pivot_data = [
                         'storage_zone' => $storage['storage_zone'],
                         'storage_rack' => $storage['storage_rack'],
                         'storage_vertical' => $storage['storage_vertical'],
-                        'storage_horizontal' => $storage['storage_horizontal'],
-                        'sp_main' => $shop_settings['sp_main'],
-                        'sp_empty' => $shop_settings['sp_empty'],
-                        'sp_stock' => $shop_settings['sp_stock']
+                        'storage_horizontal' => $storage['storage_horizontal']
                     ];
 
                     if(isset($storage['retail_price'])){

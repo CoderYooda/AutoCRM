@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\Shop;
 use App\Http\Controllers\Controller;
 use App\Services\ProviderService\Contract\ProviderInterface;
@@ -35,14 +36,12 @@ class PageController extends Controller
 
         $categories = Category::with('image', 'parent')->where($params)->limit(9)->get();
 
-        $products = Article::with('stores', 'supplier', 'image')
+        $stockProducts = Article::with('stores', 'supplier', 'image')
             ->where('company_id', $this->shop->company_id)
-            ->whereHas('stores', function (Builder $builder) {
-                $builder->where('sp_main', 1);
-            })
+            ->where('sp_main', 1)
             ->get();
 
-        return view('shop.index', compact('categories', 'products'))
+        return view('shop.index', compact('categories', 'stockProducts'))
             ->with('shop', $this->shop);
     }
 
@@ -128,7 +127,15 @@ class PageController extends Controller
 
         $categories = Category::with('parent')->where($params)->get();
 
-        $products = $selectedCategory->articles()->with('image')->paginate(15);
+        $products = $selectedCategory
+            ->articles()
+            ->with('image')
+            ->when(!$this->shop->show_empty, function (Builder $query) {
+                $query->whereHas('entrances', function (Builder $query) {
+                    $query->whereRaw('count != released_count');
+                });
+            })
+            ->paginate(15);
 
         return view('shop.category', compact('products', 'selectedCategory', 'categories'))
             ->with('shop', $this->shop);

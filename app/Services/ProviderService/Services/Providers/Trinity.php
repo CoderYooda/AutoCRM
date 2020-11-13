@@ -17,7 +17,7 @@ class Trinity implements ProviderInterface
 
     protected $host = 'http://trinity-parts.ru/httpws/hs/';
 
-    protected $name = 'Trinity';
+    protected $name = 'Trinity Parts';
     protected $service_key = 'trinity';
     protected $field_name = 'api_key';
 
@@ -74,6 +74,8 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
+        if($items == []) return [];
+
         $results = [];
 
         foreach ($items['data'] as $key => $item) {
@@ -109,6 +111,7 @@ class Trinity implements ProviderInterface
                 'rest' => $store['rest'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
+                'packing' => $store['minOrderCount'],
                 'min_count' => $store['minOrderCount'],
                 'delivery' => $store['deliverydays'] . 'дн.',
                 'price' => $store['price'],
@@ -171,7 +174,7 @@ class Trinity implements ProviderInterface
             $data = file_get_contents($this->host . $url, false, $context);
         }
         catch (\Exception $exception) {
-            throw_error('Trinity: Ошибка авторизации ключа');
+            $data = json_encode([]);
         }
 
         return json_decode($data, $asArray);

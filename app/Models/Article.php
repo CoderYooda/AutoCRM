@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Request;
 
 class Article extends Model
 {
@@ -96,6 +96,30 @@ class Article extends Model
         return md5($stock . $manufacturer . $article . $days . $price);
     }
 
+    public function fillShopFields($request)
+    {
+        $this->sp_name = $request->shop['name'] ?? '';
+        $this->sp_desc = $request->shop['desc'] ?? '';
+
+        $shop_discount = $request->shop['discounts'];
+
+        $price = $this->getPrice();
+        $this->sp_discount = $shop_discount['discount'];
+        $this->sp_discount_type = $shop_discount['type'];
+
+        if($this->sp_discount_type == 0) { //В рублях
+            $this->sp_discount_total = $price - $this->sp_discount;
+        }
+        else {
+            $this->sp_discount_total = $price - ($price / 100 * $this->sp_discount);
+        }
+
+        $shop_settings = $request->shop['settings'];
+
+        $this->sp_main = $shop_settings['sp_main'];
+        $this->sp_stock = $shop_settings['sp_stock'];
+    }
+
     public function getImagePathAttribute()
     {
         return $this->image ? $this->image->path() : asset('/images/shop/no-photo.svg');
@@ -104,7 +128,7 @@ class Article extends Model
     public function stores()
     {
         return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price', 'sp_main', 'sp_empty', 'sp_stock');
+            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
     }
 
     public function getStorageZone($id){
@@ -122,6 +146,26 @@ class Article extends Model
     public function getStorageHor($id){
         $store = $this->stores->find($id);
         return $store ? $store->pivot->storage_horizontal : '';
+    }
+
+    public function getStoreDiscountPrice()
+    {
+        return $this->sp_discount_price;
+    }
+
+    public function getStoreDiscount()
+    {
+        return $this->sp_discount;
+    }
+
+    public function getStoreDiscountType()
+    {
+        return $this->sp_discount_type;
+    }
+
+    public function getStoreDiscountTotal()
+    {
+        return $this->sp_discount_total;
     }
 
     public function decrementFromEntrance(int $count)
@@ -222,12 +266,12 @@ class Article extends Model
 
     public function getPrice(int $count = 1)
     {
-        if(isset($this->pivot->price)) {
-            return $this->pivot->price;
-        }
-
         /** @var ShopManager $shopManager */
         $shopManager = app(ShopManager::class);
+
+        if(!$shopManager->isWatchShop() && isset($this->pivot->price)) {
+            return $this->pivot->price;
+        }
 
         $shop = $shopManager->getCurrentShop();
 
@@ -240,18 +284,27 @@ class Article extends Model
         $store_id = Auth::user()->current_store ?? null;
 
         if($price_source == 'retail') {
+
+            if($shopManager->isWatchShop()) {
+                return $this->stores->sum('pivot.retail_price') / $this->stores->count();
+            }
+
             return $this->stores->find($store_id)->pivot->retail_price ?? 0;
         }
         else { /* FIFO-LIFO */
 
-            $products = DB::table('article_entrance')
+            $query = DB::table('article_entrance')
                 ->where('article_id', $this->id)
-                ->where(function (Builder $builder) use($store_id) {
-                    if($store_id) $builder->where('store_id', $store_id);
-                })
                 ->whereRaw('count != released_count')
-                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
-                ->get();
+                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'));
+
+            if(!$shopManager->isWatchShop()) {
+                $query->where(function (Builder $builder) use($store_id) {
+                    if($store_id) $builder->where('store_id', $store_id);
+                });
+            }
+
+            $products = $query->get();
 
             $retail_price = 0;
             $found_count = 0;

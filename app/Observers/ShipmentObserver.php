@@ -6,28 +6,18 @@ use App\Models\Shipment;
 
 class ShipmentObserver
 {
-    public function created(Shipment $shipment)
+    public function creating(Shipment $shipment)
     {
-        //
+        $shipment->freshFoundString();
     }
 
-    public function updated(Shipment $shipment)
+    public function updating(Shipment $shipment)
     {
-        //
+        $shipment->freshFoundString();
     }
 
-    public function deleted(Shipment $shipment)
+    public function saving(Shipment $shipment)
     {
-        //
-    }
-
-    public function restored(Shipment $shipment)
-    {
-        //
-    }
-
-    public function forceDeleted(Shipment $shipment)
-    {
-        //
+        $shipment->freshFoundString();
     }
 }

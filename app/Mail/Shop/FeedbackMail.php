@@ -31,7 +31,8 @@ class FeedbackMail extends Mailable implements ShouldQueue
             ->subject('Заявка на обратный звонок')
             ->with([
                 'name' => $this->name,
-                'phone' => $this->phone
+                'phone' => $this->phone,
+                'shop' => $this->shop
             ]);
     }
 }

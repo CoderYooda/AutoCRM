@@ -12,20 +12,14 @@
 
 <div class="content" style="position: relative;padding: 32px 52px;background: white;">
 
-    <h2 style="font-weight: 800;font-size: 20px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Заявка
-        на звонок</h2>
+    <h2 style="font-weight: 800;font-size: 20px;letter-spacing: 0.06em;color: #404040;z-index: 1;margin-top: 0;">Заказ готов к выдаче</h2>
 
-    <div class="form-group"
-         style="position: relative;height: 66px;border-bottom: 1px solid #ECECEC;display: flex;flex-direction: column;justify-content: center;">
-        <label
-            style="margin-bottom: 6px;font-weight: bold;font-size: 14px;letter-spacing: 0.04em;color: #404040;">Имя:</label>
-        <div class="text" style="font-size: 16px;letter-spacing: 0.04em;color: #404040;">{{ $name }}</div>
-    </div>
+    <span style="font-weight: 800;font-size: 14px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Ваш заказ №{{ $order->id }} на сумму {{ correct_price($order->total_price, true) }} готов к выдаче.</span>
+    <br/>
+    <span style="font-weight: 800;font-size: 14px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Забрать заказ вы можете по адресу: {{ $order->pickupAddress->name }}</span>
 
-    <div class="form-group"
-         style="position: relative;height: 66px;border-bottom: unset;display: flex;flex-direction: column;justify-content: center;">
-        <label style="margin-bottom: 6px;font-weight: bold;font-size: 14px;letter-spacing: 0.04em;color: #404040;">Телефон:</label>
-        <div class="text" style="font-size: 16px;letter-spacing: 0.04em;color: #404040;">{{ display_phone($phone) }}</div>
+    <div class="form-group" style="margin-top: 20px;text-align: center;">
+        <a target="_blank" style="background: #1F98E9;border-radius: 4px;font-weight: bold;font-size: 14px;margin-top: 24px;letter-spacing: 0.04em;padding: 6px 24px;color: #FFFFFF;text-decoration: unset;" href="{{ $order->path() }}">Просмотреть заказ</a>
     </div>
 
 </div>

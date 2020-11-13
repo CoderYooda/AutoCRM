@@ -237,20 +237,22 @@ class Vehicle {
 
         if(vehicle_elements.length == 0) return;
 
-        window.garageSlider = new BBSlider({
-            selector: '.vehicle_list',
-            duration: 600,
-            easing: 'ease-out',
-            perPage: 3,
-            startIndex: 0,
-            draggable: true,
-            multipleDrag: true,
-            threshold: 20,
-            loop: false,
-            rtl: false,
-            onInit: () => {},
-            onChange: () => {},
-        });
+        setTimeout(() => {
+            window.garageSlider = new BBSlider({
+                selector: '.vehicle_list',
+                duration: 600,
+                easing: 'ease-out',
+                perPage: 3,
+                startIndex: 0,
+                draggable: true,
+                multipleDrag: true,
+                threshold: 20,
+                loop: false,
+                rtl: false,
+                onInit: () => {},
+                onChange: () => {},
+            });
+        }, 200);
     }
 
     updateSlider(html) {

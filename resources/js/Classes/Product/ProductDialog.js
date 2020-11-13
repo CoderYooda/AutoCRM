@@ -25,7 +25,7 @@ class ProductDialog extends Modal {
             focused.focus();
             focused.select();
         }
-        helper.initTabs('product_tabs');
+        helper.initTabs('product_tabs', false);
         let fn = window.helper.debounce(function (e) {
             object.fapiSearch();
         }, 800);
@@ -44,8 +44,55 @@ class ProductDialog extends Modal {
         this.article_input.addEventListener("paste", fn);
         this.article_input.addEventListener("delete", fn);
 
+        this.initShopDiscountRecalculate();
+
         this.linked();
     }
+
+    initShopDiscountRecalculate() {
+
+        this.recalculateShopDiscountDebounce = window.helper.debounce( (e) => {
+            this.recalculateShopDiscount();
+        }, 500);
+
+        let stocks_element = this.current_dialog.querySelector('.stocks');
+
+        let discount_element = stocks_element.querySelector('.discount');
+
+        discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
+        discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
+        discount_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
+    }
+
+    recalculateShopDiscount() {
+
+        let stocks_element = this.current_dialog.querySelector('.stocks');
+
+        let price_element = stocks_element.querySelector('.price');
+        let discount_element = stocks_element.querySelector('.discount');
+        let total_element = stocks_element.querySelector('.total');
+        let type_element = stocks_element.querySelector('.type');
+
+        let price = parseFloat(price_element.value);
+        let discount = parseFloat(discount_element.value);
+        let total = 0;
+
+        if(type_element.value == 1) { //Если скидка в процентах
+
+            if(discount < 0 || discount > 100) discount = discount_element.value = 0;
+
+            total = price - (price / 100 * discount);
+        }
+        else {
+
+            if(discount < 0 || discount > price) discount = discount_element.value = 0;
+
+            total = price - discount;
+        }
+
+        total_element.value = total;
+    }
+
 
     linked()
     {
@@ -54,7 +101,7 @@ class ProductDialog extends Modal {
 
     toggleStock(element) {
 
-        let target_element = this.current_dialog.querySelector('#stock_menu');
+        let target_element = this.current_dialog.querySelector('.stocks');
 
         target_element.classList.toggle('d-none');
     }
@@ -111,8 +158,10 @@ class ProductDialog extends Modal {
 
     toggleShopSettings(element, store_id) {
 
-        element.classList.toggle('fa-angle-down');
-        element.classList.toggle('fa-angle-up');
+        let i_element = element.querySelector('i');
+
+        i_element.classList.toggle('fa-angle-down');
+        i_element.classList.toggle('fa-angle-up');
 
         let target_element = this.current_dialog.querySelector('#toggle_' + store_id);
 

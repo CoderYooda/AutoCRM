@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientOrdersRequest;
+use App\Mail\Shop\RoadOrder;
+use App\Mail\Shop\WaitOrder;
 use App\Models\ClientOrder;
 use App\Models\Order;
 use App\Models\Partner;
@@ -16,6 +18,7 @@ use Carbon\Carbon;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
 use Auth;
+use Illuminate\Support\Facades\Mail;
 
 class ClientOrdersController extends Controller
 {
@@ -190,6 +193,15 @@ class ClientOrdersController extends Controller
             $client_order->save();
 
             if($client_order->order) {
+
+                if($request->status == Order::WAIT_PICKUP_STATUS && $client_order->order->status != Order::WAIT_PICKUP_STATUS) {
+                    Mail::to($client_order->order->email)->send(new WaitOrder($client_order->order));
+                }
+
+                if($request->status == Order::DELIVERY_STATUS && $client_order->order->status != Order::DELIVERY_STATUS) {
+                    Mail::to($client_order->order->email)->send(new RoadOrder($client_order->order));
+                }
+
                 $client_order->order->update(['status' => $request->status]);
             }
 

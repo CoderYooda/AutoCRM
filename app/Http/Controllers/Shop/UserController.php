@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\DeliveryAddress;
+use App\Models\DeliveryAddress;
 use App\Http\Requests\Shop\LoginRequest;
 use App\Http\Requests\Shop\RegisterRequest;
 use App\Http\Requests\Shop\SaveDeliveryRequest;

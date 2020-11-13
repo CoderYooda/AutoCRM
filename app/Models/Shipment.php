@@ -31,7 +31,6 @@ class Shipment extends Model
         'discount',
         'inpercents',
         'comment',
-        'foundstring',
         'created_at'
     ];
 
@@ -46,6 +45,11 @@ class Shipment extends Model
                 $builder->where('company_id', $user->company->id);
             });
         }
+    }
+
+    public function freshFoundString()
+    {
+        $this->foundstring = $this->id . $this->partner->foundstring;
     }
 
     public function hasRelations()

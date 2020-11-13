@@ -18,4 +18,9 @@ class StoreRequest extends FormRequest
             'phone' => ['required', 'string', 'min:11', 'max:255']
         ];
     }
+
+    protected function passedValidation()
+    {
+        $this['phone'] = clear_phone_number($this['phone']);
+    }
 }

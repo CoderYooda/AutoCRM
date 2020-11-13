@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\ShowOrderRequest;
+use App\Mail\Shop\PayedOrder;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -20,8 +22,10 @@ class OrderController extends Controller
         $this->shop = $shopManager->getCurrentShop();
     }
 
-    public function show(Order $order, ShowOrderRequest $request)
+    public function show($hash, ShowOrderRequest $request)
     {
+        $order = Order::where('hash', $hash)->firstOrFail();
+
         $positions = DB::table('order_positions')->where('order_id', $order->id)->get();
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
@@ -37,6 +41,8 @@ class OrderController extends Controller
 
             if($api->status == 'CONFIRMED') {
                 $order->update(['status' => 2]);
+
+                Mail::to($order->email)->send(new PayedOrder($order));
             }
             else {
                 $canceled_statuses = [
