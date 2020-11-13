@@ -38,25 +38,25 @@
 
                     <div class="flex-3">
                         <div class="form-group">
-                            <input type="number" class="form-control price" name="shop[discounts][price]" value="{{ $product->getPrice() }}" disabled />
+                            <input type="number" class="form-control price" name="shop[discounts][price]" value="{{ $product ? $product->getPrice() : 0 }}" disabled />
                         </div>
 
                         <div class="form-group d-flex">
                             <div class="flex-1">
-                                <input type="number" class="form-control discount" name="shop[discounts][discount]" value="{{ $product->getStoreDiscount() }}" />
+                                <input type="number" class="form-control discount" name="shop[discounts][discount]" value="{{ $product->sp_discount ?? 0 }}" />
                             </div>
 
                             <div class="ml-5 flex-1">
                                 <select class="type" custom_select onchange="{{ $class }}.recalculateShopDiscountDebounce();" name="shop[discounts][type]">
                                     @foreach(['В рублях', 'В процентах'] as $index => $name)
-                                        <option @if($product->getStoreDiscountType() == $index) selected @endif value="{{ $index }}">{{ $name }}</option>
+                                        <option @if($product && $product->getStoreDiscountType() == $index) selected @endif value="{{ $index }}">{{ $name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <input type="number" class="form-control total" name="shop[discounts][total]" value="{{ $product->sp_discount_total }}" disabled />
+                            <input type="number" class="form-control total" name="shop[discounts][total]" value="{{ $product->sp_discount_total ?? 0 }}" disabled />
                         </div>
                     </div>
                 </div>
@@ -72,10 +72,11 @@
                 <div class="flex-1">
                     <label class="mb-5">Основное фото</label>
                     <div style="width: 110px; height: 110px;">
-                        <img class="h-100 w-100" src="{{ $product->image_path ?? asset('/images/product-placeholder.svg') }}" />
+                        <img class="h-100 w-100 image" src="{{ $product->image_path ?? asset('/images/product-placeholder.svg') }}" />
                     </div>
-                    <label class="upload_file pointer" for="shop[image]">Файл не выбран<div></div></label>
-                    <input type="file" id="shop[image]" name="shop[image]" onclick="{{ $class }}.clickFile(this);" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png,image/gif" hidden/>
+                    <label class="upload_file pointer" for="shop[image]">Выберите файл<div></div></label>
+                    <input type="file" id="shop[image]" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png,image/gif" hidden/>
+                    <input type="hidden" name="image_id" value="{{ $product->image->id ?? null }}" />
                 </div>
                 <div class="flex-3 ml-10">
                     <label class="mb-5">Описание продукта</label>

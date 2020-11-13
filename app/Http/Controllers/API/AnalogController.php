@@ -7,100 +7,88 @@ use App\Http\Controllers\Controller;
 
 class AnalogController extends Controller
 {
-    public static function getAnalogues($article, $m_id)
-    {
-        if(!strlen($article)) {
-            return [];
-        }
+    protected $host = 'http://id34135.public.api.abcp.ru/';
+    protected $login = 'api@id34135';
+    protected $password = '3f4aa416a24a0bc475793cd6b63b2e33';
 
-        $attributes = [
-            'n' => $article,
-            'mfi' => $m_id,
+    public function getManufacturersByArticle(string $article)
+    {
+        $params = [
+            'number' => $article,
+            'useOnlineStocks' => 0
         ];
 
-        $response = self::makeRequest('analogList', $attributes);
+        $response = $this->query('search/brands/', $params, 'GET');
 
-        $mans_collect = collect($response->manufacturerList->mf);
-        $parts_collect = collect($response->productList->p);
-        $analog_collect = collect($response->analogList->a);
+        $results = [];
 
-        $analogues = [];
-
-        for ($i = 0; $i < count($analog_collect); $i++) {
-
-            $analog = $analog_collect[$i];
-
-            $manufacturer = $mans_collect->where('i', $analog->mfai)->first();
-            $part = $parts_collect->where('i', $analog->pai)->first();
-
-            $analogues[] = [
-                'm_id' => $manufacturer->dbi,
-                'm_name' => $manufacturer->da,
-                'p_id' => $part->dbi,
-                'p_name' => $part->d,
-                'nsa' => $analog->nsa,
+        foreach ($response as $article) {
+            $results[] = [
+                'brand' => $article['brand'],
+                'article' => $article['number'],
+                'description' => $article['description']
             ];
         }
 
-        return $analogues;
+        return response()->json([
+            'articles' => $results
+        ]);
     }
 
-    public static function getManufacturersByArticle(string $article)
+    public function getAnalogues($brand, $article)
     {
-        $response = self::makeRequest('productList', [ 'n' => $article ]);
-
-        if(!strlen($article)) {
-            return [];
-        }
-
-        #Фильтр запроса
-
-        $manufacturers = [];
-
-        $mans_collect = collect($response->manufacturerList->mf);
-        $parts_collect = collect($response->productList->p);
-
-        for($i = 0; $i < count($parts_collect); $i++) {
-
-            $part = $parts_collect[$i];
-            $manufacturer = $mans_collect->where('i', $part->mfi)->first();
-
-            $manufacturers[] = [
-                'm_id' => $manufacturer->dbi,
-                'm_name' => $manufacturer->da,
-                'p_id' => $part->dbi,
-                'p_name' => $part->d,
-                'p_article' => $part->ns
-            ];
-        }
-
-        $manufacturers = collect($manufacturers)->sortBy('m_name')->values();
-
-        return $manufacturers;
-    }
-
-    public static function makeRequest(string $method, array $params = [])
-    {
-        $url = 'https://fapi.iisis.ru/fapi/v2/' . $method . '?';
-
-        $params['ui'] = '73fe9d3a-6b61-40f5-a44f-6d1e0183917a';
-
-        $url .= http_build_query($params);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $headers = [
-            'Content-Type: application/json;',
+        $params = [
+            'brand'  => $brand,
+            'number' => $article,
+            'format' => 'bnpchmt',
+            'cross_image' => 0
         ];
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = $this->query('articles/info/', $params, 'GET');
 
-        $response = curl_exec($ch);
+//        dd($response);
 
-        curl_close($ch);
+        if(!isset($response['crosses'])) return [];
 
-        return json_decode($response);
+        $results = [];
+
+        foreach ($response['crosses'] as $article) {
+           $results[$article['brand']][] = $article['numberFix'];
+        }
+
+        return $results;
+    }
+
+    private function query($path, $params, $method): array
+    {
+        $params['userlogin'] = $this->login;
+        $params['userpsw'] = $this->password;
+        $params['locale'] = 'ru_RU';
+
+        $full_path = $this->host . $path;
+
+        if ($method == 'GET') $full_path .= ('?' . http_build_query($params));
+
+        $context = [
+            'http' => [
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'method' => $method
+            ],
+        ];
+
+        if ($method == 'POST') {
+            $context['http']['content'] = http_build_query($params);
+        }
+
+        $result = [];
+
+        try {
+            $result = file_get_contents($full_path, null, stream_context_create($context));
+            $result = (array)json_decode($result, true);
+        } catch (\Exception $exception) {
+
+        }
+
+        return $result;
     }
 }

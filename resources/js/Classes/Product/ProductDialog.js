@@ -114,17 +114,35 @@ class ProductDialog extends Modal {
         });
     }
 
-    clickFile(element) {
-        let target_element = this.current_dialog.querySelector('.upload_file');
+    changeFile(input) {
 
-        target_element.innerHTML = 'Файл не выбран <div></div>';
-    }
+        let data = new FormData();
 
-    changeFile(element) {
+        data.append('image[]', input.files[0]);
+        data.append('refer', 'shop');
 
-        let target_element = this.current_dialog.querySelector('.upload_file');
+        let image_element = this.current_dialog.querySelector('.image');
+        let image_input = this.current_dialog.querySelector('[name="image_id"]');
+        let preloader_element = image_input.closest('div');
 
-        target_element.innerHTML = element.files[0].name + '<div></div>';
+        togglePreloader(preloader_element, true);
+
+        axios({
+            method: 'POST',
+            url: '/system/image_upload',
+            data: data
+        }).then((response) => {
+
+            let image_id = response.data.images[0].id;
+            let image_url = response.data.images[0].url;
+
+            image_element.src = image_url;
+
+            image_input.value = image_id;
+        })
+        .finally(() => {
+            togglePreloader(preloader_element, false);
+        });
     }
 
     addSpecificationField(element) {
@@ -172,23 +190,22 @@ class ProductDialog extends Modal {
 
         document.getElementById('trin_preload').classList.remove('hide');
 
+        this.provider_search_container.classList.add('show');
+
         window.axios({
             method: 'get',
             url: '/api/manufacturers/' + this.article_input.value,
         }).then(response => {
             let data = response.data;
 
-            this.provider_search_container.classList.add('show');
-
             let html = '';
 
-            Object.keys(data).forEach(key => {
-                let m_name = data[key].m_name;
-                let m_id = data[key].m_id;
-                let p_article = data[key].p_article;
-                let p_name = data[key].p_name;
+            Object.values(data.articles).forEach(item => {
+                let m_name = item.brand;
+                let p_article = item.article;
+                let p_name = item.description;
 
-                html += '<div class="tr_result" data-ident="' + p_name + '" data-article="' + p_article + '" data-producer="' + m_name + '" onclick="window.productDialog.appendArticle(this)">' +
+                html += '<div class="tr_result" data-ident="' + p_name + '" data-article="' + p_article + '" data-producer="' + m_name + '" onclick="window.' + this.current_dialog.id + '.appendArticle(this);">' +
                     '<span class="article">' + p_name + '</span>' +
                     '<span class="article">Артикул: ' + p_article + '</span>' +
                     '<span class="article">Производитель: ' + m_name + '</span>' +
@@ -205,15 +222,10 @@ class ProductDialog extends Modal {
             else {
                 search_element.classList.remove('d-none');
             }
-
-            // var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
-            // let providertab = document.querySelector('#provider-tab .nav-badge');
-            // if(providertab){
-            //     providertab.innerHTML = badge;
-            // }
         }).catch(function (error) {
             console.log(error);
-        }).then(function () {
+        }).finally(() => {
+
             document.getElementById('trin_preload').classList.add('hide');
             window.isXHRloading = false;
         });

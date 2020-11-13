@@ -217,7 +217,8 @@ class CartController extends Controller
                 'name'         => $product->name,
                 'price'        => $price,
                 'image'        => $product->image_path,
-                'count'        => $count
+                'count'        => $count,
+                'max_count'    => $store ? $product->getCountInStoreId($store->id) : $order['data']['model']['hash_info']['rest']
             ];
 
             if (isset($order['data']['store_id'])) $orders[$hash]['store_id'] = $order['data']['store_id'];

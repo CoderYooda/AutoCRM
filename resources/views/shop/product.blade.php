@@ -92,7 +92,7 @@
                             @if($shop->show_amount)
                                 {{ $product->getCountInStoreId($store->id) }} шт.
                             @else
-                                {{ $product->getCountInStoreId($store->id) ? 'В наличие' : 'Отсутствует' }}
+                                {{ $product->getCountInStoreId($store->id) ? 'В наличие' : 'Нет в наличие' }}
                             @endif
                         </div>
                         <div class="flex-1 shop">{{ $store->name }}</div>
@@ -116,7 +116,7 @@
                                 <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
                             @else
                                 <div class="counter-container">
-                                    Нет в наличии
+                                    &#8212;
                                 </div>
                             @endif
 

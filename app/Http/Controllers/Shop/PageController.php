@@ -80,12 +80,9 @@ class PageController extends Controller
 
     public function search(Request $request)
     {
-        $params = [
-            'article' => $request->search,
-            'company_id' => $this->shop->company_id
-        ];
-
-        $products = Article::where($params)->paginate(15);
+        $products = Article::where('company_id', $this->shop->company_id)
+            ->where('foundstring', 'like', "%{$request->search}%")
+            ->paginate(15);
 
         return view('shop.search', compact('products'))
             ->with('shop', $this->shop);

@@ -361,7 +361,7 @@ class ProductController extends Controller
         }
     }
 
-    public static function getArticles(Request $request, $manufacture_selected = null)
+    public static function getArticles(Request $request)
     {
 
         $size = 30;
@@ -392,12 +392,8 @@ class ProductController extends Controller
             ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
                 $q->where('articles.category_id', (int)$request['category_id']);
             })
-            ->when($manufacture_selected != null, function (Builder $q) use($manufacture_selected) {
-                $q->whereHas('supplier', function (Builder $q) use($manufacture_selected) {
-                    $q->where('name', $manufacture_selected);
-                });
-
-//                $q->where('fapi_id', $request['manufacture_id']);
+            ->when($request->analogues, function (Builder $query) use($request) {
+                $query->whereIn('articles.id', json_decode($request->analogues));
             })
             ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir)

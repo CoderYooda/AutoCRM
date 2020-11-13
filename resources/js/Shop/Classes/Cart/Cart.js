@@ -3,7 +3,7 @@ import Tabs from "../../../Tools/Tabs";
 class Cart {
 
     constructor() {
-        this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 400);
+        this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 200);
 
         $('select').select2();
 
@@ -319,18 +319,18 @@ class Cart {
 
             element.querySelector('.total_price span').innerHTML = total.toFixed(2);
 
-            if(store_id) {
-                if(isNaN(total_stores[store_id])) total_stores[store_id] = 0;
-                total_stores[store_id] += total;
-            }
+            // if(store_id) {
+            //     if(isNaN(total_stores[store_id])) total_stores[store_id] = 0;
+            //     total_stores[store_id] += total;
+            // }
 
         });
 
-        Object.keys(total_stores).forEach(store_id => {
-             let value = total_stores[store_id];
-
-             document.getElementById('total_store_' + store_id).innerHTML = value.toFixed(2);
-        });
+        // Object.keys(total_stores).forEach(store_id => {
+        //      let value = total_stores[store_id];
+        //
+        //      document.getElementById('total_store_' + store_id).innerHTML = value.toFixed(2);
+        // });
 
         let total_element = document.getElementById('count');
 

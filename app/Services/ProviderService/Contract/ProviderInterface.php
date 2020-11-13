@@ -31,6 +31,8 @@ interface ProviderInterface
 
     public function getOrdersStatuses(): array;
 
+    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array ;
+
     public function checkConnect(array $fields): bool;
 
     public function sendOrder(array $products): bool;

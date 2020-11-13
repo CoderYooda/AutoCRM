@@ -125,7 +125,8 @@ class Trinity implements ProviderInterface
         return $results;
     }
 
-    public function searchItems($article, $brand, $searchType = 'full', $asArray = true) {
+    public function searchItems($article, $brand, $searchType = 'full', $asArray = true)
+    {
         $article = strtoupper($article);
         $brand = strtoupper($brand);
         $searchParams = new stdClass();
@@ -174,6 +175,7 @@ class Trinity implements ProviderInterface
             $data = file_get_contents($this->host . $url, false, $context);
         }
         catch (\Exception $exception) {
+            dd($exception);
             $data = json_encode([]);
         }
 
@@ -270,5 +272,12 @@ class Trinity implements ProviderInterface
     public function getOrdersStatuses(): array
     {
         return [];
+    }
+
+    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    {
+        $items = $this->searchItems('k1279', 'FILTRON', 'full', true);
+
+        dd($items);
     }
 }
