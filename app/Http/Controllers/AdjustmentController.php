@@ -6,6 +6,7 @@ use App\Http\Requests\AdjustmentRequest;
 use App\Http\Requests\Adjustments\SearchRequest;
 use App\Models\Adjustment;
 use App\Models\Article;
+use App\Models\Entrance;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,21 +21,25 @@ class AdjustmentController extends Controller
     {
         $adjustment = Adjustment::find($request->adjustment_id);
 
-        $tag = 'adjustmentDialog' . ($adjustment->id ?? '');
+        $class = 'adjustmentDialog' . ($adjustment->id ?? '');
 
         $articles = [];
 
         if ($adjustment) {
 
-            $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
-            $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('article_entrance_id'))->get();
+//            $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
+//            $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('article_entrance_id'))->get();
 
-            $articleNames = Article::with('supplier')->whereIn('id', $articleEntrances->pluck('article_id'))->get();
 
-            foreach ($articleEntrances as $articleEntrance) {
+            $articlesAdjustment = DB::table('article_adjustment')->where('adjustment_id', $adjustment->id)->get();
 
-                $article_id = $articleEntrance->article_id;
-                $adjustmentArticleEntrance = $adjustmentArticleEntrances->where('article_entrance_id', $articleEntrance->id)->first();
+            $articleNames = Article::with('supplier')->whereIn('id', $articlesAdjustment->pluck('article_id'))->get();
+
+            foreach ($articlesAdjustment as $articleAdjustment) {
+
+                $article_id = $articleAdjustment->article_id;
+
+                $articleEntrance = DB::table('article_entrance')->find($articleAdjustment->article_entrance_id);
 
                 $articles[$article_id]['name'] = $articleNames->find($article_id)->name;
                 $articles[$article_id]['article'] = $articleNames->find($article_id)->article;
@@ -42,21 +47,21 @@ class AdjustmentController extends Controller
 
                 $articles[$article_id]['entrances'][$articleEntrance->id] = [
                     'id'              => $articleEntrance->id,
-                    'created_at'      => date('d.m.Y', strtotime($articleEntrance->created_at)),
-                    'deviation_price' => $adjustmentArticleEntrance->price,
-                    'deviation_count' => $adjustmentArticleEntrance->count,
-                    'price'           => $articleEntrance->price,
-                    'count'           => $articleEntrance->count,
-                    'released_count'  => $articleEntrance->released_count
+                    'created_at'      => Carbon::parse($articleEntrance->created_at)->format('d.m.Y'),
+                    'deviation_price' => $articleAdjustment->deviation_price,
+                    'deviation_count' => $articleAdjustment->deviation_count,
+                    'price'           => $articleAdjustment->price,
+                    'count'           => $articleAdjustment->count,
                 ];
             }
         }
 
-        $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact('adjustment', 'request', 'articles'))
-            ->with('class', $tag);
+//        dd($articles);
+
+        $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact('adjustment', 'request', 'articles', 'class'));
 
         return response()->json([
-            'tag'  => $tag,
+            'tag'  => $class,
             'html' => $view->render()
         ]);
     }
@@ -80,13 +85,13 @@ class AdjustmentController extends Controller
         $articleAttributes = [
             'name'         => $article->name,
             'manufacturer' => $article->supplier->name,
-            'article' => $article->article,
+            'article'      => $article->article,
             'entrances'    => []
         ];
 
         foreach ($articleEntrances as $articleEntrance) {
 
-            if($articleEntrance->count == $articleEntrance->released_count) continue;
+            if ($articleEntrance->count == $articleEntrance->released_count) continue;
 
             $articleAttributes['entrances'][$articleEntrance->id] = [
                 'id'             => $articleEntrance->id,
@@ -114,6 +119,8 @@ class AdjustmentController extends Controller
 
     public function store(AdjustmentRequest $request)
     {
+        PermissionController::canByPregMatch('Создавать корректировки');
+
         return DB::transaction(function () use ($request) {
 
             $user = Auth::user();
@@ -136,7 +143,7 @@ class AdjustmentController extends Controller
 
                     if ($articleEntranceId == 'new') {
 
-                        if($params['count'] == 0) continue;
+                        if ($params['count'] == 0) continue;
 
                         $attributes = [
                             'entrance_id' => null,
@@ -154,26 +161,37 @@ class AdjustmentController extends Controller
 
                     $articleEntrance = DB::table('article_entrance')->find($articleEntranceId);
 
-                    if($entrance_id != 'new') {
+                    if ($entrance_id != 'new') {
                         $query->where('id', $entrance_id)->update([
-                            'count' => ($articleEntrance->released_count + $params['count']),
-                            'price' => $params['price'],
+                            'count'      => ($articleEntrance->released_count + $params['count']),
+                            'price'      => $params['price'],
                             'updated_at' => Carbon::now()
                         ]);
                     }
 
-//                    dd($articleEntrance->count, $articleEntrance->released_count,  $params['count'], (($articleEntrance->count - $articleEntrance->released_count) + $params['count']));
+//                    DB::table('adjustment_article_entrance')->insertOrIgnore([
+//                        'adjustment_id'       => $adjustment->id,
+//                        'article_entrance_id' => $articleEntranceId,
+//                        'count'               => $params['count'] - ($articleEntrance->count ?? 0),
+//                        'price'               => $params['price'] - ($articleEntrance->price ?? 0),
+//                    ]);
 
-                    DB::table('adjustment_article_entrance')->insertOrIgnore([
+                    DB::table('article_adjustment')->insert([
+                        'article_id'          => $article_id,
                         'adjustment_id'       => $adjustment->id,
                         'article_entrance_id' => $articleEntranceId,
-                        'count'               => $params['count'] - ($articleEntrance->count ?? 0),
-                        'price'               => $params['price'] - ($articleEntrance->price ?? 0),
+                        'store_id'            => Auth::user()->current_store,
+                        'count'               => $params['count'],
+                        'prev_count'          => $articleEntrance->count,
+                        'deviation_count'     => $params['count'] - $articleEntrance->count,
+                        'price'               => $params['price'],
+                        'prev_price'          => $articleEntrance->price,
+                        'deviation_price'     => $params['price'] - $articleEntrance->price,
+                        'total'               => $params['price'] * $params['count']
                     ]);
                 }
             }
 
-            PermissionController::canByPregMatch('Создавать корректировки');
             UA::makeUserAction($adjustment, 'create');
 
             return response()->json([
