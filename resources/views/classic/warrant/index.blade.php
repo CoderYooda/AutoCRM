@@ -1,10 +1,9 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? get_template() . '.layouts.TabXHR' : get_template() . '.cash.layout.tabs')
-
 @section('tab')
     <div id="ajax-table-warrant" class="bottom-container full-box-cont">
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
-                <div id="warrant-table" ></div>
+                <div data-data="{{ $data }}" id="warrant" ></div>
             </div>
         </div>
         <div class="content-rightside">

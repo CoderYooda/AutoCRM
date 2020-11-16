@@ -5,7 +5,7 @@ class Socket{
 
     constructor(){
         console.log('Сокеты подключены');
-        this.init();
+        //this.init();
     }
 
     init(){

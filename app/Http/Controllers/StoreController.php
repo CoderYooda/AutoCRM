@@ -215,11 +215,14 @@ class StoreController extends Controller
         $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 2;
 
+        $data = ProductController::getArticles($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
-            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request'));
+            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request', 'data'));
         }
         $trinity = null; #TODO
-        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity'));
+        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data'));
     }
 
     public static function entrance_refundsTab($request)

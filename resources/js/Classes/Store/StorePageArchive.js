@@ -4,8 +4,6 @@ import entranceMethods from "./tabs/EntranceMethods";
 import providerStoresMethods from "./tabs/ProviderStoreMethods";
 import documentMethods from "./tabs/DocumentMethods";
 import Tabs from "../../Tools/Tabs";
-import {Table} from "../BBTable";
-import Page from "../Page/Page";
 
 const classes = {
     entranceMethods,
@@ -14,10 +12,9 @@ const classes = {
 };
 
 
-class storePage extends Page{
+class storePage{
 
     constructor(){
-        super();
         console.log('страница склада инициализировано');
         this.init();
     }
@@ -1003,7 +1000,7 @@ class storePage extends Page{
             object.checkActive();
         });
         object.linked();
-        if(object.active_tab === 'store'){
+        if(object.active_tab == 'store'){
             object.loadCategory(this.root_category, true, true);
         }
 
@@ -1092,7 +1089,7 @@ class storePage extends Page{
         }
 
         this.initCategoryContextual();
-        //this.initTableData();
+        this.initTableData();
         this.searchInit();
         this.initDatesFilter();
         this.checkActive();
@@ -1151,15 +1148,6 @@ class storePage extends Page{
         } catch (e) {
             dd(e);
         }
-
-        this.readData(container);
-
-        this.table = new Table({
-            container: this.active_tab,
-            data: this.data,
-            url: '/' + this.active_tab + '/tabledata',
-            start_sort: 'DESC'
-        });
 
     }
 

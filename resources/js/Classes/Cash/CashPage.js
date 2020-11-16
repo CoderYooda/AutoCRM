@@ -1,8 +1,11 @@
 import {Contextual, ContextualItem} from "../Contentual";
+import {Table, TableItem} from "../BBTable";
+import Page from "../Page/Page";
 
-class cashPage{
+class cashPage extends Page{
 
     constructor(){
+        super();
         console.log('страница денег инициализировано');
         this.active = true;
         this.active_tab = window.helper.findGetParameter('active_tab');
@@ -22,44 +25,114 @@ class cashPage{
 
     linked(){ //Состояние Linked - когда экземпляр класса уже был загружен, и находится в памяти. (Возвращение на страницу)
         this.active_tab = window.helper.findGetParameter('active_tab');
-        this.initTableData();
+        //this.initTableData();
         this.initDatesFilter();
         this.checkActive();
+
+        let container = 'ajax-table-' + this.active_tab;
+
+        this.readData(container);
+
+        this.table = new Table({
+            container: this.active_tab,
+            data: this.data,
+            url: '/' + this.active_tab + '/tabledata',
+            start_sort: 'DESC'
+        });
+
+        let header, context_menu, dbl_click, slug;
+
+        if(this.active_tab === 'cashmove'){
+            header = [
+                {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 150, name: 'Дата', table_name: 'date'},
+                {min_with: 150, width: 'auto', name: 'Откуда', table_name: 'cin'},
+                {min_with: 150, width: 'auto', name: 'Куда', table_name: 'cout'},
+                {min_with: 150, width: 'auto', name: 'Ответственный', table_name: 'manager'},
+                {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
+                {min_with: 100, width: 200, name: 'Сумма', table_name: 'summ'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('moneymoveDialog', '&moneymove_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('moneymoveDialog', '&moneymove_id=' + data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('moneymoveDialog', '&moneymove_id=' + id)};
+            slug = 'cashmove';
+        } else if(this.active_tab === 'salarypayments'){
+            header = [
+                {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 'auto', name: 'Сотрудник', table_name: 'name'},
+                {min_with: 100, width: 200, name: 'Начисление', table_name: 'summ'},
+                {min_with: 100, width: 200, name: 'Дата', table_name: 'date'},
+                {min_with: 100, width: 200, name: 'Комментарий', table_name: 'comment'},
+            ];
+            context_menu = [
+                // {name:'Открыть', action: function(data){dd(data);}},
+                // {name:'Открыть', action: function(data){dd(data);}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){};
+            slug = 'salarypayments';
+        } else if(this.active_tab === 'warrant'){
+            header = [
+                {min_with: 100, width: 100, name: 'ID',table_name: 'id'},
+                {min_with: 100, width: 200, name: 'Дата', table_name: 'date'},
+                {min_with: 100, width: 200, name: 'Тип', table_name: 'type'},
+                {min_with: 100, width: 'auto', name: 'Контакт', table_name: 'partner'},
+                {min_with: 100, width: 200, name: 'Статья', table_name: 'dds'},
+                {min_with: 100, width: 200, name: 'Касса', table_name: 'cashbox'},
+                {min_with: 100, width: 200, name: 'Сумма', table_name: 'summ'},
+            ];
+            context_menu = [
+                {name:'Редактировать', action: function(data){openDialog('warrantDialog', '&warrant_id=' + data.contexted.id)}},
+                {name:'Открыть', action: function(data){openDialog('warrantDialog', '&warrant_id=' + data.contexted.id)}},
+                {name:'Печать', action: function(data){helper.printDocument((data.contexted.type === 'Приходный ордер' ? 'in-warrant' : 'out-warrant'), data.contexted.id)}},
+                // {name:'Удалить', action: function(data){dd(data);}},
+                // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
+            ];
+            dbl_click = function(id){openDialog('warrantDialog', '&warrant_id=' + id)};
+            slug = 'warrant';
+        }
+
+        this.table.setHeader(header);
+        this.table.setContextMenu(context_menu);
+        this.table.setBblClick(dbl_click);
+        this.table.setSlug(slug);
+
+        this.table.draw(this.active_tab, this.data);
     }
 
     removePartner(id, type){
-        let object = this;
-        object[type].remove(id);
+        this.table.removeFromRequest(type, id);
         document.getElementById(type + '_' + id).remove();
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
     }
 
     selectPartner(id, target){
-        let object = this;
         window.axios({
             method: 'post',
             url: 'partner/'+ id +'/select',
             data: {refer:null}
-        }).then(function (resp) {
+        }).then( (resp) => {
+            let stored_partners = this.table.getRequest(target);
 
-            if(object[target].includes(resp.data.id)){
+
+            if(stored_partners && Array.isArray(stored_partners) && this.table.getRequest(target).includes(resp.data.id)){
                 window.notification.notify( 'error', 'Уже имеется в списке');
             } else {
-                object[target].push(resp.data.id);
+                this.table.setRequest(target, resp.data.id, true, true);
                 let stack = document.getElementById(target + '_stack');
-                var node = helper.createElementFromHTML('' +
+                let node = helper.createElementFromHTML('' +
                     '<div id="' + target + '_' + resp.data.id + '" class="' + target + '_selected filter_element" >' +
                     '<span>' + resp.data.name + '</span>' +
                     '<button type="button" onclick="window.cash.removePartner(' + resp.data.id + ', \'' + target + '\')" class="right-remove"><i class="fa fa-remove"></i></button>' +
                     '</div>' +
                     '');
                 stack.appendChild(node);
-                //object.reload();
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
                 window.notification.notify( 'success', 'Контакт выбран');
             }
-            //document.dispatchEvent(new Event('PartnerSelected', {bubbles: true}));
-            //console.log("Событие PartnerSelected вызвано");
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
@@ -68,37 +141,28 @@ class cashPage{
     };
 
     init(){
-        let object = this;
-        object.linked();
+        this.initSearch();
 
-        object.initSearch();
-        // document.addEventListener('ajaxLoaded', function(e){
-        //     object.checkActive();
-        //     //object.chartInit();
-        //     object.load();
-        // });
-
-        //object.searchInit();
-        //object.initDates();
-
-        document.addEventListener('WarrantStored', function(e){
-            object.prepareParams();
-            object.reload();
+        document.addEventListener('WarrantStored',(e)=>{
+            this.table.freshData();
         });
 
-        document.addEventListener('MoneymoveStored', function(e){
-            object.prepareParams();
-            object.reload();
+        document.addEventListener('MoneymoveStored', (e) => {
+            this.table.freshData();
         });
+
+        this.linked();
     }
 
     clearList(type, container){
-        this[type] = [];
+        this.table.setRequest(type, []);
         document.getElementById(container).innerHTML = '';
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
         window.notification.notify( 'success', 'Поле очищено');
     }
 
+
+
+    /// Фильтр даты
     initDatesFilter(){
         let object = this;
         let startDateArray = [];
@@ -106,210 +170,26 @@ class cashPage{
             mode: "range",
             defaultDate: startDateArray,
             dateFormat: "d.m.Y",
-            onClose: function(selectedDates, dateStr, instance) {
-                object.page = 1;
+            onClose: (selectedDates, dateStr, instance) => {
+                this.table.setRequest('page', 1, false);
                 if(selectedDates.length > 1){
-                    object.dates_range = window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString();
+                    this.table.setRequest('dates_range', window.flatpickr.formatDate(selectedDates[0], "d.m.Y") + '|' + window.flatpickr.formatDate(selectedDates[1], "d.m.Y").toString());
                 } else {
-                    object.dates_range = null;
+                    this.table.setRequest('dates_range', null);
                 }
-                //object.reload();
-                object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
             }
         });
     }
 
     resetDate(){
         this.dates_range = null;
-        this.page = 1;
-        this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        this.table.setRequest('page', 1, false);
+        this.table.setRequest('dates_range', null);
         this.dates.clear();
         window.notification.notify( 'success', 'Дата очищена');
     }
+    ///
 
-    generateColumns(){
-        let object = this;
-        let columns = [];
-
-        if(object.active_tab === 'warrant') {
-            object.contextDop = 'warrant';
-            object.parametr = 'warrant';
-            var priceFormatter = function(cell, formatterParams, onRendered){
-                onRendered(function(){
-                    cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.'
-                });
-            };
-            columns = [
-                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
-                        cell.getRow().toggleSelect();
-                    }},
-                {title:"ID", field:"id", width:80},
-                {title:"Дата", field:"created_at", width:150},
-                {title:"Тип", field:"type", minWidth:150, align:"left"},
-                {title:"Контакт", field:"partner", minWidth:150, align:"left"},
-                {title:"Статья", field:"dds", width:130, align:"left"},
-                {title:"Касса", field:"cashbox", width:130, align:"left"},
-                {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
-            ];
-
-        } else if(object.active_tab === 'cashmove'){
-            object.contextDop = 'moneymove';
-            object.parametr = 'moneymove';
-            var iconFormatter = function(cell, formatterParams, onRendered){
-                onRendered(function(){
-                    cell.getElement().innerHTML = '<div class="ic-' + cell.getValue() + '"><div>';
-                });
-            };
-            var priceFormatter = function(cell, formatterParams, onRendered){
-                onRendered(function(){
-                    var formatter = new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'RUB',
-                    });
-                    cell.getElement().innerHTML = '<span class="table_input" id="price_'+ cell.getData().id +'" >'+ formatter.format(cell.getValue()) +'</span>';
-                });
-            };
-            columns = [
-                {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
-                        cell.getRow().toggleSelect();
-                    }},
-                {title:"№", field:"id", width:50},
-                {title:"Дата", field:"created_at", width:150},
-                {title:"Откуда", field:"cin", width:160, align:"left"},
-                {title:"Куда", field:"cout", width:160, align:"left"},
-                {title:"Ответственный", field:"manager", align:"left"},
-                {title:"Комментарий", field:"comment", width:150, align:"left"},
-                {title:"Сумма", field:"summ", width:130, align:"left", formatter:priceFormatter},
-            ];
-        }
-        return columns;
-    }
-
-    initTableData(){
-        let object = this;
-        let table_container = document.getElementById('table-container');
-        let height = 500;
-
-        if(table_container){
-            height = table_container.offsetHeight;
-        }
-        let cleanHeight = height - 110;
-        let elements = cleanHeight / 44;
-
-        object.table = new Tabulator("#" + this.getCurrentActiveTab() + "-table", {
-            locale:true,
-            langs:{
-                "ru":{
-                    "ajax":{
-                        "loading":"Загрузка", //ajax loader text
-                        "error":"Ошибка", //ajax error text
-                    },
-                    "pagination":{
-                        "page_size":"Кол-во элементов",
-                        "first":"Первая",
-                        "first_title":"Первая страница",
-                        "last":"Последняя",
-                        "last_title":"Последняя страница",
-                        "prev":"Предыдущая",
-                        "prev_title":"Предыдущая страница",
-                        "next":"Следующая",
-                        "next_title":"Следующая страница",
-                        "show_page":"След.",
-                    },
-                    "headerFilters":{
-                        "default":"filter column...",
-                        "columns":{
-                            "name":"filter name...",
-                        }
-                    }
-                }
-            },
-            clipboard:true,
-            selectable:true,
-            selectableRangeMode:"click",
-            resizableColumns:false,
-            height:height-15,
-            pagination:"remote",
-            layout:"fitColumns",
-            ajaxSorting:true,
-            ajaxURL:'/' + object.active_tab + '/tabledata',
-            ajaxRequesting:function(url, params){
-                window.isXHRloading = true;
-                document.body.classList.add('loading');
-            },
-            ajaxResponse:function(url, params, response){
-                window.isXHRloading = false;
-                document.body.classList.remove('loading');
-                return response;
-            },
-            ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
-            paginationSize:Math.floor(elements),
-            placeholder:"По данным критериям ничего нет",
-            columns: object.generateColumns(),
-            rowDblClick:function(e, row){
-                openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
-            },
-            rowContext:function(e, row){
-                e.preventDefault();
-                object.selectedData = object.table.getSelectedData();
-
-                let data = row.getData();
-                let id = row.getData().id;
-
-                let items = [];
-
-                items.push(new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + id)}, shortcut:'Что то' }));
-
-                if(object.contextDop == 'warrant') {
-                    items.push(new ContextualItem({type: 'seperator'}));
-
-                    items.push(new ContextualItem({
-                        label: 'Печать', onClick: () => {
-                            helper.printDocument((data.type == 'Приходный ордер' ? 'in-warrant' : 'out-warrant'), id)
-                        }, shortcut: 'Что то'
-                    }));
-                }
-                    // new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
-
-                // if(object.selectedData.length > 0){
-                //     items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
-                // }
-
-                object.tableContextual = null;
-                object.tableContextual = new Contextual({
-                    isSticky: false,
-                    items:items,
-                });
-            },
-            tableBuilt:function(){
-                // console.log('Таблица готова');
-            },
-            rowClick:function(e, row){
-                let addsCard = document.getElementById('adds-card');
-                if(object.active_tab != 'store'){
-                    console.log('Загружаем инфо');
-                    let data = {};
-                    data.id = row.getData().id;
-                    window.axios({
-                        method: 'post',
-                        url: '/' + object.active_tab + '/side_info',
-                        data: data
-                    }).then(function (resp) {
-                        document.getElementById('contact_block').innerHTML = resp.data.info;
-                        document.getElementById('comment_block').innerHTML = resp.data.comment;
-                        if(addsCard){
-                            addsCard.classList.remove('hide');
-                        }
-                        //console.log(resp);
-                    }).catch(function (error) {
-                        console.log(error);
-                    }).finally(function () {
-                        window.isXHRloading = false;
-                    });
-                }
-            },
-        });
-    }
 
     openSelectPartnerModal(target){
         let cat_id = 3;
@@ -322,39 +202,18 @@ class cashPage{
         } else {
             cat_id = 3;
         }
-
         window.openDialog('selectPartner', '&refer=' + 'cash&category_id=' + cat_id + '&target=' + target);
     }
 
     setField(option, value = null, text, elem = null){
-        let object = this;
-        object[option] = value;
+        this.table.setRequest(option, value, true);
         document.getElementById(option).value = text;
         if(elem !== null){
             elem.closest('.dropdown').classList.remove('show');
         }
-
         if(value == null){
             window.notification.notify( 'success', 'Поле очищено');
         }
-
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable ());
-    }
-
-    prepareDataForTable(){
-        let object = this;
-        let data = {};
-        data.view_as = "json";
-        data.target = "ajax-table-warrant";
-        data.page = 1;
-
-        if(object.partner !== []){data.partner = object.partner;}
-        if(object.any !== []){data.any = object.any;}
-        if(object.dates_range !== null){data.dates_range = object.dates_range;}
-
-        if(object.isIncoming !== null){data.isIncoming = object.isIncoming;}
-        if(object.search && object.search !== 'null' || object.search !== null){data.search = object.search.toString();}
-        return data;
     }
 
     getCurrentActiveTab(){
@@ -407,32 +266,32 @@ class cashPage{
         document.getElementById('search').value = '';
         this.search = '';
         this.page = 1;
-        this.reload();
+        //reload
     }
 
-    load(){
-        this.active_tab = window.helper.findGetParameter('active_tab');
-
-        if(window.helper.findGetParameter('page') !== null){
-            this.page = window.helper.findGetParameter('page');
-        } else { this.page = 1}
-        if(window.helper.findGetParameter('search') !== null){
-            this.search = window.helper.findGetParameter('search');
-        } else { this.search = ''}
-
-        let date_start = window.helper.findGetParameter('date_start');
-        let date_end = window.helper.findGetParameter('date_end');
-
-
-        if(date_start !== null && date_end !== null){
-            this.date_start = date_start;
-            this.date_end = date_end;
-            this.dates_range = [this.date_start, this.date_end];
-        }
-        this.searchInit();
-        this.initDates();
-        console.log('load');
-    }
+    // load(){
+    //     this.active_tab = window.helper.findGetParameter('active_tab');
+    //
+    //     if(window.helper.findGetParameter('page') !== null){
+    //         this.page = window.helper.findGetParameter('page');
+    //     } else { this.page = 1}
+    //     if(window.helper.findGetParameter('search') !== null){
+    //         this.search = window.helper.findGetParameter('search');
+    //     } else { this.search = ''}
+    //
+    //     let date_start = window.helper.findGetParameter('date_start');
+    //     let date_end = window.helper.findGetParameter('date_end');
+    //
+    //
+    //     if(date_start !== null && date_end !== null){
+    //         this.date_start = date_start;
+    //         this.date_end = date_end;
+    //         this.dates_range = [this.date_start, this.date_end];
+    //     }
+    //     this.searchInit();
+    //     this.initDates();
+    //     console.log('load');
+    // }
 
     checkActive(){
         let className = window.location.pathname.substring(1);
@@ -446,54 +305,37 @@ class cashPage{
         }
     }
 
-    searchInit(){
+    // searchInit(){
+    //
+    //     let object = this;
+    //     let cont = document.getElementById(object.root_id);
+    //     if(cont){
+    //         let search = cont.querySelector("input[name=search]");
+    //         if(search){
+    //             let searchFn = window.helper.debounce(function(e) {
+    //                 object.search = search.value;
+    //                 object.page = 1;
+    //                 object.reload();
+    //             }, 400);
+    //             search.addEventListener("keydown", searchFn);
+    //             search.addEventListener("paste", searchFn);
+    //             search.addEventListener("delete", searchFn);
+    //             search.addEventListener("select", searchFn);
+    //         }
+    //         let isIncoming = cont.querySelector("select[name=warrant_isIncoming]");
+    //         if(isIncoming){
+    //             let searchFn = window.helper.debounce(function(e) {
+    //                 object.isIncoming = isIncoming.value;
+    //                 object.page = 1;
+    //                 object.reload();
+    //             }, 0);
+    //             isIncoming.addEventListener("change", searchFn);
+    //         }
+    //     }
+    // }
 
-        let object = this;
-        let cont = document.getElementById(object.root_id);
-        if(cont){
-            let search = cont.querySelector("input[name=search]");
-            if(search){
-                let searchFn = window.helper.debounce(function(e) {
-                    object.search = search.value;
-                    object.page = 1;
-                    object.reload();
-                }, 400);
-                search.addEventListener("keydown", searchFn);
-                search.addEventListener("paste", searchFn);
-                search.addEventListener("delete", searchFn);
-                search.addEventListener("select", searchFn);
-            }
-            let isIncoming = cont.querySelector("select[name=warrant_isIncoming]");
-            if(isIncoming){
-                let searchFn = window.helper.debounce(function(e) {
-                    object.isIncoming = isIncoming.value;
-                    object.page = 1;
-                    object.reload();
-                }, 0);
-                isIncoming.addEventListener("change", searchFn);
-            }
-        }
-    }
 
-    prepareParams(){
-        if(this.category_id === null){
-            this.category_id = '';
-        }
-        if(!this.search || this.search === 'null' || this.search === null){
-            this.search = '';
-        }
-        if(this.page === null || this.page === 'null'){
-            this.page = 1;
-        }
-        if(this.date_start === null || this.date_start === 'null'){
-            this.date_start = '';
-        }
-        if(this.date_end === null || this.date_end === 'null'){
-            this.date_end = '';
-        }
-    }
-
-    getUrlString(){
+    getUrlString(){ //Берет параметры из get и пихает в модель
         let url = '?view_as=json';
         url += '&target=ajax-table-' + this.active_tab;
         if(this.search && this.search !== 'null' || this.search !== null){
@@ -523,9 +365,5 @@ class cashPage{
         return url;
     }
 
-    reload(){
-        let object = this;
-        object.table.setData('/' + object.active_tab + '/tabledata', object.prepareDataForTable());
-    }
 }
 export default cashPage;

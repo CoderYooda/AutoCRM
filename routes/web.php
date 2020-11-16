@@ -168,7 +168,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
         Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
         Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
-        Route::get('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
+        Route::post('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
         Route::post('/warrant/side_info', 'WarrantController@getSideInfo')->name('GetWarrantSideInfo');
         Route::get('/warrants', 'WarrantController@selectDialog')->name('GetWarrants');
 
@@ -182,7 +182,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         #Движение средств между кассами
         Route::post('/cashmove/store', 'MoneyMoveController@store')->name('StoreMoneyMove');// Строгое название
         Route::post('/cashmove/search', 'MoneyMoveController@search')->name('MoneyMovePageSearch');
-        Route::get('/cashmove/tabledata', 'MoneyMoveController@tableData')->name('MoneyMoveData');
+        Route::post('/cashmove/tabledata', 'MoneyMoveController@tableData')->name('MoneyMoveData');
         Route::post('/cashmove/side_info', 'MoneyMoveController@getSideInfo')->name('MoneyMoveSideInfo');
         Route::post('/moneymove/{id}/delete', 'MoneyMoveController@delete')->name('DeleteMoneyMove');
         #Касса
@@ -256,6 +256,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
         Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
         Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
+
+        #Выплаты зарплат
+        Route::get('/salarypayments', 'SalaryPayments@index')->name('SalaryPaymentsIndex');// Строгое название
+        Route::post('/salarypayments/tabledata', 'SalaryPaymentsController@tableData')->name('SalaryPaymentsTableData');
 
         #Сервисы
         Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');

@@ -22,13 +22,9 @@ class Providers
 
     public function activated()
     {
-        $providers = [];
-
-        foreach ($this->providers as $provider) {
-            if($provider->isActivated()) $providers[] = $provider;
-        }
-
-        return $providers;
+        return array_filter($this->providers, function (ProviderInterface $provider) {
+            return $provider->isActivated();
+        });
     }
 
     public function find(string $key)
