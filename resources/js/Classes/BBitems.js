@@ -297,7 +297,6 @@ class Items {
     }
 
     removeItem(id){
-        console.log('Remove_' + id);
         event.preventDefault();
         let elem = this.body.querySelector('#' + this.form_name + '_' + id);
         elem.remove();
@@ -306,13 +305,10 @@ class Items {
                 return e.key === id
             }), 1
         );
-        console.log(this.items);
         this.recalculateTotal();
     }
 
     insertProduct(cell_item, check_isset = true){
-
-        console.log('cell', cell_item)
 
         this.key = null;
 
@@ -483,7 +479,6 @@ class Items {
 
     add(elemWithData, refer){
         let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);
-        console.log('add', cell_item);
         this.insertProduct(cell_item);
     }
 

@@ -1,5 +1,5 @@
 @if(!$request['inner'])
-        <div id="{{ $class }}" @if($client_order) data-id="{{$client_order->id}}" @endif class="dialog client_order_dialog" style="width:1000px">
+        <div id="{{ $class }}" @if($client_order) data-id="{{$client_order->id}}" @endif class="dialog client_order_dialog" style="width:1100px">
 @endif
     <div class="titlebar">{{ $client_order ? ('Заказ клиента №' . $client_order->id) : ('Новый заказ клиента') }}</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>

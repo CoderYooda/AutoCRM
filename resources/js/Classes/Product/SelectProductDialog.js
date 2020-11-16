@@ -60,7 +60,8 @@ class SelectProductDialog extends Modal{
             method: 'post',
             url: 'product/dialog/search',
             data: data
-        }).then(function (resp) {
+        }).then((resp) => {
+            this.products = resp.data.products;
             var results_container = document.querySelector('#search_product_results');
             results_container.innerHTML = resp.data.html;
             if(object.new_btn){
