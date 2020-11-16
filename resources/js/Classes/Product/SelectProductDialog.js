@@ -2,12 +2,14 @@ import Modal from "../Modal/Modal";
 
 class SelectProductDialog extends Modal{
 
-    constructor(dialog){
+    constructor(dialog, resp){
         super(dialog);
         console.log('Окно штрихкода инициализировано');
         this.search_obj = dialog.querySelector("#product_search");
         //this.store_obj = dialog.querySelector("#product_search_store");
         this.results_obj = dialog.querySelector("#search_product_results");
+        this.products = resp.products;
+
 
         this.refer = dialog.querySelector("#refer").value;
         this.new_btn = dialog.querySelector("#new_btn");
@@ -20,6 +22,17 @@ class SelectProductDialog extends Modal{
         this.searchInit();
         this.markAsAdded();
         this.init();
+    }
+
+    getProductDataById(article_id){
+
+        let product = null;
+
+        Object.values(this.products).forEach(item => {
+            if(item.id == article_id) product = item;
+        });
+
+        return product;
     }
 
     loadCategory(category_id, clean_search = null, update_data = null){
@@ -119,7 +132,8 @@ class SelectProductDialog extends Modal{
             method: 'post',
             url: 'product/dialog/search',
             data: data,
-        }).then(function (resp) {
+        }).then((resp) => {
+            this.products = resp.data.products;
             object.results_obj.innerHTML = resp.data.html;
             object.markAsAdded();
         }).catch(function (error) {

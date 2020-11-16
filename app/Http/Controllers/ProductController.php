@@ -208,7 +208,7 @@ class ProductController extends Controller
         $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
-        $products = Article::owned()->where(function ($q) use ($request) {
+        $products = Article::with('stores', 'supplier')->owned()->where(function ($q) use ($request) {
             if ($request['store_id'] != null) {
                 $q->whereHas('stores', function ($query) use ($request) {
                     return $query->where('store_id', $request['store_id']);
@@ -249,7 +249,8 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => 'selectProductDialog',
-            'html' => $content->render()
+            'html' => $content->render(),
+            'products' => $products,
         ]);
     }
 

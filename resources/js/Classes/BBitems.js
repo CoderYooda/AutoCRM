@@ -311,6 +311,9 @@ class Items {
     }
 
     insertProduct(cell_item, check_isset = true){
+
+        console.log('cell', cell_item)
+
         this.key = null;
 
         if(this.index === 'ordinal'){
@@ -479,7 +482,8 @@ class Items {
     }
 
     add(elemWithData, refer){
-        let cell_item = JSON.parse(elemWithData.dataset.product);
+        let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);
+        console.log('add', cell_item);
         this.insertProduct(cell_item);
     }
 

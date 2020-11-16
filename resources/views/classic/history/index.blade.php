@@ -44,7 +44,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="pay_status">Тип записи</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input id="type" type="text" name="type" value="{{ request('type') }}" class="form-control type input_as_link" placeholder="не выбрано" disabled>
+                        <input id="type" type="text" name="type" value="{{ request('type') }}" class="form-control type input_as_link" placeholder="не выбрано" >
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="actions.setField('type', null, 'не выбрано', this)" class="element">Не выбрано</span>
