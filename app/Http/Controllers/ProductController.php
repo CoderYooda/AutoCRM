@@ -272,8 +272,6 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $supplier = Supplier::find($request['supplier_id']);
-
             $article = Article::with('specifications')->firstOrNew($compare);
             if ($article->exists) {
                 $this->message = 'Товар обновлен';
@@ -286,7 +284,6 @@ class ProductController extends Controller
             self::$product = $article;
 
             #Кроссы
-            $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
 
             $article->fillShopFields($request);
@@ -294,14 +291,6 @@ class ProductController extends Controller
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
-
-            if($request->hasFile('shop.image')) {
-                $imageParams = $article->uploadImage($request->shop['image'], true, false);
-
-                $image = Image::create($imageParams);
-
-                $article->update(['image_id' => $image->id]);
-            }
 
             if(isset($request->shop['specifications'])) {
 
@@ -361,7 +350,7 @@ class ProductController extends Controller
         }
     }
 
-    public static function getArticles(Request $request, $manufacture_selected = null)
+    public static function getArticles(Request $request)
     {
 
         $size = 30;
@@ -394,12 +383,8 @@ class ProductController extends Controller
             ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
                 $q->where('articles.category_id', (int)$request['category_id']);
             })
-            ->when($manufacture_selected != null, function (Builder $q) use($manufacture_selected) {
-                $q->whereHas('supplier', function (Builder $q) use($manufacture_selected) {
-                    $q->where('name', $manufacture_selected);
-                });
-
-//                $q->where('fapi_id', $request['manufacture_id']);
+            ->when($request->analogues, function (Builder $query) use($request) {
+                $query->whereIn('articles.id', json_decode($request->analogues));
             })
             ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir)

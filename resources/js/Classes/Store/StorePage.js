@@ -393,15 +393,6 @@ class storePage extends Page{
             else {
 
                 document.getElementById('table_body').innerHTML = response.data.html;
-
-                let counts = response.data.counts;
-
-                Object.keys(counts).forEach(service_key => {
-
-                    let manufacturers = counts[service_key];
-
-                    document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
-                });
             }
 
             let errors = response.data.errors;
@@ -608,6 +599,26 @@ class storePage extends Page{
         this.searchInit();
     }
 
+    showAnalogues(info) {
+        let product = info.contexted;
+
+        let data = {
+            brand: product.supplier,
+            article: product.article
+        };
+
+        axios.post('/analogues', data)
+            .then(response => {
+
+                document.getElementById('breadcrumbs-nav').innerHTML = 'Результат поиска аналогов на складе по артикулу: ' + product.article;
+
+                this.table.setRequest('analogues', JSON.stringify(response.data.analogues), true, false);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     linked()
     {
         this.baseParams();
@@ -704,7 +715,7 @@ class storePage extends Page{
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
                 {min_with: 150, width: 200, name: 'Артикул', table_name: 'article'},
-                {min_with: 150, width: 200, name: 'Бренд', table_name: 'supplier'},
+                {min_with: 150, width: 200, name: 'Производитель', table_name: 'supplier'},
             ];
             context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
@@ -714,6 +725,9 @@ class storePage extends Page{
                 }},
                 {name:'Печать ценников', action: (data) => {
                     window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())
+                }},
+                {name:'Показать аналоги в наличии', action: (data) => {
+                    this.showAnalogues(data);
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
@@ -929,6 +943,7 @@ class storePage extends Page{
                 if(this.table) {
                     window.helper.insertParamUrl('category_id', 'null');
                     this.table.setRequest('category_id', null, false);
+                    this.table.setRequest('analogues', null, false);
                     this.table.setRequest('search', object.search, false);
                     if(!object.loadCategory(object.category_id)){
                         this.table.freshData();

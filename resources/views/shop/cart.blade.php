@@ -61,7 +61,7 @@
                             <div class="absolute shipping-container">
                                 <div class="counter-container">
                                     <div class="button minus" onclick="cart.decrement(this, '{{ $hash }}');"></div>
-                                    <input type="text" data-max="{{ 1 }}" class="counter" value="{{ $order['count'] }}" />
+                                    <input type="text" data-max="{{ $order['max_count'] }}" class="counter" value="{{ $order['count'] }}" />
                                     <div class="button plus" onclick="cart.increment(this, '{{ $hash }}');"></div>
                                 </div>
                                 <div class="cart-button incart" onclick="cart.remove(this, '{{ $hash }}');"></div>

@@ -29,7 +29,8 @@ class Article extends Model
         'barcode_local',
         'barcode',
         'name',
-        'blockedCount'
+        'blockedCount',
+        'image_id'
     ];
 
     protected $guarded = [];
@@ -122,7 +123,7 @@ class Article extends Model
 
     public function getImagePathAttribute()
     {
-        return $this->image ? $this->image->path() : asset('/images/shop/no-photo.svg');
+        return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
     }
 
     public function stores()

@@ -107,6 +107,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
             Route::get('/inn/{inn}', 'InnController@getInfo')->name('getInnInfo');
         });
 
+        Route::post('/analogues', 'StoreController@getAnalogues')->name('searchAnalogues');
+
         Route::namespace('API')->group(function () {
 
             Route::post('/provider_stores/cart/add', 'ProviderStoreController@addCart')->name('ProviderCartAdd');

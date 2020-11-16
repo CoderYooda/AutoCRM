@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\ProductRequest;
 use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
@@ -15,10 +16,12 @@ use App\Models\ClientOrder;
 use App\Models\Company;
 use App\Models\ImportHistory;
 use App\Models\Service;
+use App\Models\Shop;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Models\VehicleMark;
+use App\Services\ProviderService\Providers;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -113,79 +116,13 @@ class StoreController extends Controller
 
     public function tableData(StoreGetRequest $request)
     {
-
-        $analogues = [];
-        $manufactures = [];
-        $analog_articles = [];
-        $manufacture_selected = null;
-
-        $manufactures = AnalogController::getManufacturersByArticle($request->search);
-
-        if ($request->manufacture_id) {
-            $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
-        }
-
-        #Список артикулов аналогов
-
-        foreach ($analogues as $analogue) {
-            $analog_articles[$analogue['m_name']] = $analogue['nsa'];
-        }
-
-        #Узнаем название производителя
-        if(count($manufactures)) {
-            $manufacture_selected = collect($manufactures)->where('m_id', $request->manufacture_id)->first()['m_name'];
-        }
-
         #Получаем список продуктов из поиска
-        $products = ProductController::getArticles($request, $manufacture_selected);
+        $products = ProductController::getArticles($request);
 
-        #Получаем список аналогов
-        $analog_products = ProductController::searchByArticleAndBrand($analog_articles);
-
-        $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
-
-        $all_ids = $products->pluck('id')->merge($analog_products->pluck('id'));
-
-        $size = (int)$request['size'] ?? 30;
-
-//        $field = null;
-//        $dir = null;
-//
-//        if (isset($request['sorters'])) {
-//            $field = $request['sorters'][0]['field'];
-//            $dir = $request['sorters'][0]['dir'];
-//        }
-//        if ($field === null && $dir === null) {
-//            $field = 'id';
-//            $dir = 'ASC';
-//        }
-
-//        #Сливаем коллекции для вывода
-//        $products = Article::selectRaw('articles.*, suppliers.name as supplier_name')
-//            ->where('articles.company_id', Auth::user()->company_id)
-//            ->whereIn('articles.id', $all_ids)
-////            ->when($field == 'supplier_name', function (Builder $q) {
-//            ->leftJoin('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
-////            })
-//            ->orderBy($field, $dir)
-//            ->paginate($size);
-//
-////        foreach ($products as $key => $product) {
-////            $products[$key]['supplier_name'] = $product->supplier->name;
-////        }
-
-
-        $is_barcode = $products->where('barcode', $request->search)->count() && $products->where('article', '!=', $request->search);
-
-        if(!$is_barcode) {
-            $analog_pluck = $analog_products->pluck('article');
-            $info .= 'Список доступных аналогов на складе: ' . (count($analog_pluck) ? trim($analog_pluck, '[]') : 'Нет');
-        }
+        $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '.';
 
         $response = [
-            'data' => ProductController::getArticles($request),
-            'manufacturers' => $manufactures,
-            'analogues' => $analogues,
+            'data' => $products,
             'info' => $info
         ];
 
@@ -471,7 +408,7 @@ class StoreController extends Controller
         $message = 'Склад удален';
         $status = 200;
 
-        if ($store->company()->first()->id != Auth::user()->company()->first()->id) {
+        if ($store->company->id != Auth::user()->company_id) {
             $message = 'Вам не разрешено удалять этот склад';
             $status = 422;
         }
@@ -493,5 +430,37 @@ class StoreController extends Controller
     public static function getStores($request)
     {
         return Store::owned()->get();
+    }
+
+    public function getAnalogues(Request $request)
+    {
+        $brand = $request->brand;
+        $article = $request->article;
+
+        $controller = new AnalogController();
+
+        $analogues = $controller->getAnalogues($brand, $article);
+
+        $articles = [];
+
+        foreach ($analogues as $brand => $brandArticles) {
+            $articles = array_merge($articles, $brandArticles);
+        }
+
+        $analogueProducts = Article::with('supplier')->owned()->whereIn('article', $articles)->get();
+
+        $brands = array_keys($analogues);
+
+        $brands = array_map(function ($brand){
+            return strtoupper($brand);
+        }, $brands);
+
+        $analogueProducts = $analogueProducts->filter(function ($product) use($brands, $analogues) {
+            return in_array(strtoupper($product->supplier->name), $brands);
+        });
+
+        return response()->json([
+            'analogues' => $analogueProducts->pluck('id')
+        ]);
     }
 }

@@ -63,8 +63,7 @@ class SupplierController extends Controller
 
         self::$supplier = Supplier::updateOrCreate(['name' => $supplier_name], [
             'name' => $supplier_name,
-            'company_id' => Auth::user()->company_id,
-            'fapi_id' => $manufacturer->id ?? null
+            'company_id' => Auth::user()->company_id
         ]);
 
         if($request->expectsJson()){
@@ -100,8 +99,7 @@ class SupplierController extends Controller
 
         $supplier = Supplier::firstOrCreate([
             'name' => $supplier_name,
-            'company_id' => Auth::user()->company()->first()->id,
-            'fapi_id' => $manufacturer->id ?? null
+            'company_id' => Auth::user()->company_id
         ]);
 
         return $supplier;
