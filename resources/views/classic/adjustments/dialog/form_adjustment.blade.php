@@ -52,9 +52,9 @@
                                 <div class="title_cont"><div class="header_title">Список номенклатур</div></div>
                                 <div id="table-list" >
                                     <div class="header d-flex w-100">
-                                        <div class="pl-10" style="width: 15%">Артикул</div>
-                                        <div style="width: 23%">Производитель</div>
-                                        <div style="width: 57%">Название</div>
+                                        <div class="pl-10" style="width: 120px;">Артикул</div>
+                                        <div style="width: 180px;">Производитель</div>
+                                        <div style="width: 45%;">Название</div>
                                         <div></div>
                                     </div>
                                     <div data-simplebar class="body w-100" style="height: 216px;">

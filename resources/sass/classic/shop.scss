@@ -1013,6 +1013,11 @@ body{
         }
         .product{
             width: 25%;
+
+            a {
+                color: #272727;
+                text-decoration: unset;
+            }
         }
     }
     .product{
@@ -2137,6 +2142,10 @@ body{
     .photo {
         width: 190px;
         height: 190px;
+
+        img {
+            object-fit: contain;
+        }
     }
 
     .description {

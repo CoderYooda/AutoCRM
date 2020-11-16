@@ -169,23 +169,16 @@ class AdjustmentController extends Controller
                         ]);
                     }
 
-//                    DB::table('adjustment_article_entrance')->insertOrIgnore([
-//                        'adjustment_id'       => $adjustment->id,
-//                        'article_entrance_id' => $articleEntranceId,
-//                        'count'               => $params['count'] - ($articleEntrance->count ?? 0),
-//                        'price'               => $params['price'] - ($articleEntrance->price ?? 0),
-//                    ]);
-
                     DB::table('article_adjustment')->insert([
                         'article_id'          => $article_id,
                         'adjustment_id'       => $adjustment->id,
                         'article_entrance_id' => $articleEntranceId,
                         'store_id'            => Auth::user()->current_store,
                         'count'               => $params['count'],
-                        'prev_count'          => $articleEntrance->count,
+                        'prev_count'          => $entrance_id == 'new' ? 0 : $articleEntrance->count,
                         'deviation_count'     => $params['count'] - $articleEntrance->count,
                         'price'               => $params['price'],
-                        'prev_price'          => $articleEntrance->price,
+                        'prev_price'          => $entrance_id == 'new' ? 0 : $articleEntrance->price,
                         'deviation_price'     => $params['price'] - $articleEntrance->price,
                         'total'               => $params['price'] * $params['count']
                     ]);

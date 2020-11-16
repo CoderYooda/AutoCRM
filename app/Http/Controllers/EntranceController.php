@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\EntranceWasSaved;
+use App\Events\RecalculateEntranceAvailableCount;
 use App\Http\Requests\EntranceRequest;
 use App\Models\EntranceRefund;
 use App\Models\ProviderOrder;
@@ -13,6 +15,7 @@ use App\Models\Entrance;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Models\ArticleStock;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 
@@ -73,70 +76,76 @@ class EntranceController extends Controller
     {
         PermissionController::canByPregMatch( 'Создавать поступления');
 
-        $user = Auth::user();
+        return DB::transaction(function () use($request) {
+            $user = Auth::user();
 
-        $providerorder = ProviderOrder::find($request['providerorder_id']);
+            $providerorder = ProviderOrder::find($request['providerorder_id']);
 
-        //Проверка валидации
-        $messages = [];
+            //Проверка валидации
+            $messages = [];
 
-        $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_column($request->products, 'pivot_id'))->get();
+            $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_column($request->products, 'pivot_id'))->get();
 
-        foreach($request['products'] as $index => $product) {
+            foreach($request['products'] as $index => $product) {
 
-            $pivot_id = $product['pivot_id'];
+                $pivot_id = $product['pivot_id'];
 
-            $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
+                $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
 
-            $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
+                $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
 
-            $form_count = (int)$product['count'];
+                $form_count = (int)$product['count'];
 
-            if($entrance_count + $form_count > $provider_count){
-                $messages['products[' . $index . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
+                if($entrance_count + $form_count > $provider_count){
+                    $messages['products[' . $index . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
+                }
             }
-        }
 
-        if(count($messages)){
-            return response()->json(['messages' => $messages], 422);
-        }
+            if(count($messages)){
+                return response()->json(['messages' => $messages], 422);
+            }
 
-        $entrance = Entrance::create([
-            'manager_id' => $user->partner->id,
-            'partner_id' => $providerorder->partner->id,
-            'company_id' => $user->company_id,
-            'comment' => $request->comment,
-            'providerorder_id' => $providerorder->id,
-            'invoice' => $request->invoice
-        ]);
-
-        foreach ($request->products as $index => $product) {
-
-            $pivot_id = $product['pivot_id'];
-
-            $price = $providerorder->articles->find($product['product_id'])->pivot->price;
-
-            $entrance->articles()->attach($product['product_id'], [
-                'store_id' => $user->current_store,
-                'company_id' => $entrance->company_id,
-                'count' => $product['count'],
-                'price' => $price,
-                'provider_pivot_id' => $pivot_id
+            $entrance = Entrance::create([
+                'manager_id' => $user->partner->id,
+                'partner_id' => $providerorder->partner->id,
+                'company_id' => $user->company_id,
+                'comment' => $request->comment,
+                'providerorder_id' => $providerorder->id,
+                'invoice' => $request->invoice
             ]);
-        }
 
-        #Добавляем к балансу контакта
-        $entrance->providerorder->partner->addition($entrance->totalPrice);
-        UA::makeUserAction($entrance,'create');
+            $totalPrice = 0;
 
-        $entrance->providerorder->updateIncomeStatus();
+            foreach ($request->products as $index => $product) {
 
-        #Ответ сервера
-        return response()->json([
-            'message' => 'Поступление было успешно создано.',
-            'id' => $entrance->id,
-            'event' => 'EntranceStored',
-        ], 200);
+                $pivot_id = $product['pivot_id'];
+
+                $price = $providerorder->articles->find($product['product_id'])->pivot->price;
+
+                $entrance->articles()->attach($product['product_id'], [
+                    'store_id' => $user->current_store,
+                    'company_id' => $entrance->company_id,
+                    'count' => $product['count'],
+                    'price' => $price,
+                    'provider_pivot_id' => $pivot_id
+                ]);
+
+                $totalPrice += $product['count'] * $price;
+            }
+
+            #Добавляем к балансу контакта
+            $entrance->providerorder->partner->addition($totalPrice);
+            UA::makeUserAction($entrance,'create');
+
+            $entrance->providerorder->updateIncomeStatus();
+
+            #Ответ сервера
+            return response()->json([
+                'message' => 'Поступление было успешно создано.',
+                'id' => $entrance->id,
+                'event' => 'EntranceStored',
+            ], 200);
+        });
     }
 
     public function fresh(Entrance $entrance, Request $request)

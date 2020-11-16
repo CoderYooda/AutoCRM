@@ -15,7 +15,7 @@ class Entrance extends Model
     use OwnedTrait, HasManagerAndPartnerTrait;
 
     protected $casts = [
-        'created_at'  => 'date:d.m.Y H:i',
+        'created_at' => 'date:d.m.Y H:i',
         'updated_at' => 'date:d.m.Y H:i'
     ];
 
@@ -58,9 +58,9 @@ class Entrance extends Model
     {
         return DB::table('article_entrance')->where([
             'entrance_id' => $entrance_id,
-            'article_id' => $article_id
+            'article_id'  => $article_id
         ])
-        ->decrement('released_count', $count);
+            ->decrement('released_count', $count);
     }
 
     public function entrancerefunds()
@@ -83,8 +83,9 @@ class Entrance extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function normalizedData(){
-       return $this->created_at->format('d.m.Y (H:i)');
+    public function normalizedData()
+    {
+        return $this->created_at->format('d.m.Y (H:i)');
     }
 
     public function freshPriceByArticleId($article_id, $price)
@@ -113,7 +114,7 @@ class Entrance extends Model
 
     public function warrants()
     {
-        return $this->belongsToMany(Warrant::class, 'entrance_warrant',  'entrance_id', 'warrant_id' );
+        return $this->belongsToMany(Warrant::class, 'entrance_warrant', 'entrance_id', 'warrant_id');
     }
 }
 

@@ -233,7 +233,7 @@ class Article extends Model
 
     public function getEntrancesCount()
     {
-        $company = $this->company->load('settings');
+        $company = $this->company;
 
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
@@ -277,7 +277,7 @@ class Article extends Model
         $shop = $shopManager->getCurrentShop();
 
         /** @var Company $company */
-        $company = $shop->company ?? Auth::user()->company->load('settings');
+        $company = $shop->company ?? Auth::user()->company;
 
         $price_source = $company->getSettingField('Источник цены');
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');

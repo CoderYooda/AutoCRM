@@ -21,7 +21,7 @@
 
                 @endforeach
 
-                <div class="stocks @if($product && !$product->sp_stock) d-none @endif">
+                <div class="stocks @if(!$product || !$product->sp_stock) d-none @endif">
                     <div class="flex-1">
                         <div class="form-group">
                             <label>Цена</label>

@@ -151,7 +151,7 @@ trait ABCP
             $result = file_get_contents($full_path, null, stream_context_create($context));
             $result = (array)json_decode($result, true);
         } catch (Exception $exception) {
-            dd($exception);
+//            dd($exception);
         }
 
         if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {

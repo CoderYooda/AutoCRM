@@ -32,30 +32,32 @@
                     <div class="popular-products">
                         @foreach($stockProducts as $product)
                             <div class="product">
-                                <img class="product-img" title="{{ $product->name }}" src="{{ $product->image_path }}" alt="{{ $product->name }}">
-                                <h3 class="product-name" title="{{ $product->name }}">{{ $product->name }}</h3>
-                                <div class="brand">{{ $product->supplier->name }}</div>
-                                <div class="article">{{ $product->article }}</div>
-                                <div class="price-container">
-                                    @if(!$product->sp_stock)
-                                        <span class="price">{{ correct_price($product->getPrice()) }}</span>
-                                    @else
-                                        <span class="price action">{{ correct_price($product->sp_discount_total) }}</span>
-                                        <span class="strikethrough-price">{{ correct_price($product->getPrice()) }}</span>
-                                    @endif
-                                </div>
-                                <div class="top-left-label">
-                                    @if($product->getEntrancesCount())
-                                        <div class="in-stock">В наличии</div>
-                                    @else
-                                        <div class="out-of-stock">Под заказ</div>
-                                    @endif
-        {{--                            <div class="discount">-30%</div>--}}
-                                </div>
-                                <div class="top-right-label">
-                                    <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
-                                    <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
-                                </div>
+                                <a href="{{ $product->path() }}">
+                                    <img class="product-img" title="{{ $product->name }}" src="{{ $product->image_path }}" alt="{{ $product->name }}">
+                                    <h3 class="product-name" title="{{ $product->name }}">{{ $product->name }}</h3>
+                                    <div class="brand">{{ $product->supplier->name }}</div>
+                                    <div class="article">{{ $product->article }}</div>
+                                    <div class="price-container">
+                                        @if(!$product->sp_stock)
+                                            <span class="price">{{ correct_price($product->getPrice()) }}</span>
+                                        @else
+                                            <span class="price action">{{ correct_price($product->sp_discount_total) }}</span>
+                                            <span class="strikethrough-price">{{ correct_price($product->getPrice()) }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="top-left-label">
+                                        @if($product->getEntrancesCount())
+                                            <div class="in-stock">В наличии</div>
+                                        @else
+                                            <div class="out-of-stock">Под заказ</div>
+                                        @endif
+            {{--                            <div class="discount">-30%</div>--}}
+                                    </div>
+                                    <div class="top-right-label">
+                                        <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
+                                        <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
+                                    </div>
+                                </a>
                             </div>
                         @endforeach
                     </div>

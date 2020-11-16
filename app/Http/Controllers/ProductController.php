@@ -11,7 +11,7 @@ use App\Models\Supplier;
 use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -204,7 +204,6 @@ class ProductController extends Controller
     private static function selectProductInner($request)
     {
         $class = 'selectProductDialog';
-        $stores = Store::owned()->get();
         $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
@@ -215,7 +214,6 @@ class ProductController extends Controller
                 });
             }
         })
-
             ->when($request['string'], function($q) use ($request){
                 $q->where('foundstring', 'LIKE', '%' .  str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
             })
@@ -225,13 +223,21 @@ class ProductController extends Controller
                     $q->where('category_id', $request['category_id']);
                 });
             })
-            ->orderBy('created_at', 'ASC')
+            ->latest()
             ->where('deleted_at', null)
             ->limit(30)
             ->get();
 
+        $availableCounts = DB::table('article_entrance')
+            ->whereIn('article_id', $products->pluck('id'))
+            ->selectRaw('article_id, SUM(count) as count, SUM(released_count) as released_count')
+            ->get();
+
         foreach ($products as $product){
-            $product->available = $product->getEntrancesCount();
+
+            $availableCount = $availableCounts->where('article_id', $product->id)->first();
+
+            $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
             $product->price = $product->getPrice();
             $product->supplier_name = $product->supplier->name;
             $product->store_count = $product->available;
@@ -239,13 +245,11 @@ class ProductController extends Controller
             $product->shipped_count = 0;
         }
 
-//        dd($products);
-
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
 
-        $content = view(get_template() . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'));
+        $content = view(get_template() . '.product.dialog.' . $view, compact('products', 'categories', 'class', 'request'));
 
         return response()->json([
             'tag' => 'selectProductDialog',

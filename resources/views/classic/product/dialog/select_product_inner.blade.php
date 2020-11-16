@@ -19,8 +19,7 @@
                                 <div class="list-body">
                                     <div class="date">Артикул: {{ $product->article }}</div>
                                     <div class="secondary">Производитель: {{ $product->supplier->name }}</div>
-                                    <div class="secondary">Количество на складе: 1</div>
-                                    {{--{{ $product->getEntrancesCount() }}--}}
+                                    <div class="secondary">Количество на складе: {{ $product->available }}</div>
                                 </div>
                             </li>
                         @endforeach
