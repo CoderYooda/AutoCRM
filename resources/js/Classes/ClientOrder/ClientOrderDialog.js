@@ -98,7 +98,7 @@ class clientorderDialog extends Modal{
             {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
             {min_with: 110, width: 120,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
             {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
-            {min_with: 90, width: 90, name: 'Наличие', table_name: 'store_count', type: 'text'},
+            {min_with: 90, width: 90, name: 'Наличие', table_name: 'available', type: 'text'},
             {min_with: 90, width: 90, name: 'Отгружено', table_name: 'shipped_count', type: 'text'},
             {min_with: 100, width: 100, name: 'Цена', table_name: 'price', type: 'price',},
             {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},

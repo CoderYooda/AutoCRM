@@ -230,14 +230,14 @@ class ProductController extends Controller
             ->limit(30)
             ->get();
 
-//        foreach ($products as $product){
-//            $product->available = $product->getEntrancesCount();
-//            $product->price = $product->getPrice();
-//            $product->supplier_name = $product->supplier->name;
-//            $product->store_count = $product->available;
-//            $product->product_id = $product->id;
-//            $product->shipped_count = 0;
-//        }
+        foreach ($products as $product){
+            $product->available = $product->getEntrancesCount();
+            $product->price = $product->getPrice();
+            $product->supplier_name = $product->supplier->name;
+            $product->store_count = $product->available;
+            $product->product_id = $product->id;
+            $product->shipped_count = 0;
+        }
 
 //        dd($products);
 

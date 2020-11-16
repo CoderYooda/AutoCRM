@@ -86,6 +86,8 @@ class AdjustmentController extends Controller
 
         foreach ($articleEntrances as $articleEntrance) {
 
+            if($articleEntrance->count == $articleEntrance->released_count) continue;
+
             $articleAttributes['entrances'][$articleEntrance->id] = [
                 'id'             => $articleEntrance->id,
                 'created_at'     => date('d.m.Y', strtotime($articleEntrance->created_at)),
