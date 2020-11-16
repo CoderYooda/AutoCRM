@@ -230,14 +230,14 @@ class ProductController extends Controller
             ->limit(30)
             ->get();
 
-        foreach ($products as $product){
-            $product->available = $product->getEntrancesCount();
-            $product->price = $product->getPrice();
-            $product->supplier_name = $product->supplier->name;
-            $product->store_count = $product->available;
-            $product->product_id = $product->id;
-            $product->shipped_count = 0;
-        }
+//        foreach ($products as $product){
+//            $product->available = $product->getEntrancesCount();
+//            $product->price = $product->getPrice();
+//            $product->supplier_name = $product->supplier->name;
+//            $product->store_count = $product->available;
+//            $product->product_id = $product->id;
+//            $product->shipped_count = 0;
+//        }
 
 //        dd($products);
 
@@ -372,11 +372,13 @@ class ProductController extends Controller
 
         $company_id = Auth::user()->company_id;
 
+        //$search = str_replace(['-'], '', $request->search));
+
         $articles = Article::selectRaw('articles.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
             ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
-                $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
+                $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
             ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
                 $q->where('articles.category_id', (int)$request['category_id']);

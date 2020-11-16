@@ -29,7 +29,7 @@ class CashboxObserver
             [
                 'cashbox_id' => $cashbox->id,
                 'company_id' => $cashbox->company_id,
-                'date' => Carbon::now()->timestamp
+                'created_at' => Carbon::now()->timestamp
             ],
             [
                 'balance' => $cashbox->balance

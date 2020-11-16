@@ -59,7 +59,7 @@ class CartOrderRequest extends FormRequest
             if($registerType == 'ul') {
                 $rules['opf'] = ['required', 'string', 'min:2'];
                 $rules['companyName'] = ['required', 'string'];
-            }
+            };
         }
 
         return $rules;

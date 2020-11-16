@@ -16,6 +16,8 @@ window.applySelects = function() {
                 ll = selElmnt.length;
                 a = document.createElement("DIV");
                 a.setAttribute("class", "select-selected");
+                if(!selElmnt.options[selElmnt.selectedIndex])
+                    continue;
                 a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
                 x[i].parentElement.appendChild(a);
                 b = document.createElement("DIV");

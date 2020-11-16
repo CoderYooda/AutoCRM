@@ -54,6 +54,15 @@ if(!function_exists('domain_info')) {
     }
 }
 
+if(!function_exists('search_formatter'))
+{
+    function search_formatter($search)
+    {
+        $chars = ["-","!","?",".",""," "];
+        return mb_strtolower(str_replace($chars, '', $search));
+    }
+}
+
 if(!function_exists('mb_ucfirst'))
 {
     function mb_ucfirst($string, $enc = 'UTF-8')

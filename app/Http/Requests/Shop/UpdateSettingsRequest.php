@@ -45,7 +45,7 @@ class UpdateSettingsRequest extends FormRequest
             'image_background_id' => ['nullable', 'exists:images,id'],
             'image_ids' => ['array'],
             'image_ids.*' => ['exists:images,id'],
-            'image_urls' => ['array'],
+            'image_urls' => ['required', 'array'],
             'image_urls.*' => ['required', 'active_url'],
             'delete_image_ids' => ['nullable', 'array'],
             'delete_image_ids.*' => ['integer', 'exists:images,id'],

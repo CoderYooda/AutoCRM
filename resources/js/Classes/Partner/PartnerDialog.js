@@ -33,8 +33,9 @@ class partnerDialog extends Modal{
         this.current_dialog.querySelector('#toggle_access').addEventListener('change', function(){
            object.toggleAccess();
         });
+        window.helper.initTabs('partner_tabs_' + this.current_dialog.id);
 
-        helper.initTabs('partner_tabs');
+
 
         setTimeout(() => {
             let type = this.current_dialog.querySelector('[name="type"]').value;

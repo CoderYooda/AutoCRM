@@ -38,6 +38,10 @@ class ProviderOrder extends Model
 
     //protected $dateFormat = 'Y-m-d/H:i';
 
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
+    }
+
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')

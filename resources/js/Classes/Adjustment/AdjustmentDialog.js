@@ -10,15 +10,17 @@ class Items {
 
         let cell_item = JSON.parse(elemWithData.dataset.product);
 
-        let isset = this.items.map(function (e) {
-            return e.id;
-        }).indexOf(cell_item.id);
+        this.obj.addProduct(cell_item.id);
 
-        if(isset >= 0){
-            window.notification.notify('error', 'Товар уже в списке');
-        } else {
-            this.items.push(cell_item);
-        }
+        // let isset = this.items.map(function (e) {
+        //     return e.id;
+        // }).indexOf(cell_item.id);
+        //
+        // if(isset >= 0){
+        //     window.notification.notify('error', 'Товар уже в списке');
+        // } else {
+        //     this.items.push(cell_item);
+        // }
 
     }
 }
@@ -33,8 +35,11 @@ class adjustmentDialog extends Modal{
 
     init() {
         this.items = new Items(this);
-
-        new Tabs('adjustment_tabs');
+        this.itemses = [];
+        //this.linked();
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+        this.tabs = window.helper.initTabs('adjustment_tabs' + prefix);
     }
 
     showEntrances(element, article_id) {
@@ -96,8 +101,8 @@ class adjustmentDialog extends Modal{
 
         product_id = parseInt(product_id);
 
-        this.items.items.forEach((item, index) => {
-            if(item.id == product_id) delete this.items.items[index];
+        this.itemses.forEach((item, index) => {
+            if(item.id === product_id) delete this.itemses[index];
         });
 
         window.notification.notify( 'success', 'Продукт успешно удалён.');
@@ -113,39 +118,51 @@ class adjustmentDialog extends Modal{
 
     addProduct(pid) {
 
-        let product_id = element.dataset.article_id;
+        let product_id = pid;
 
-        element.classList.toggle('already_selected');
+        let isset = this.itemses.map(function (e) {
+            return e.id;
+        }).indexOf(pid);
 
-        if(element.classList.contains('already_selected')) {
-
-            window.selectProductDialog.markAsAdded();
-
+        if(isset >= 0){
+            window.notification.notify('error', 'Товар уже в списке');
+        } else {
             axios.get('/adjustments/search', {
                 params: {
                     product_id: product_id,
                     refer: this.current_dialog.id
                 }
             })
-            .then(response => {
+                .then(response => {
 
-                this.items.push({ id: parseInt(product_id) });
+                    this.itemses.push({ id: parseInt(product_id) });
 
-                let data = response.data;
+                    let data = response.data;
 
-                let list_element = this.current_dialog.querySelector('#product-list');
+                    let list_element = this.current_dialog.querySelector('#product-list');
 
-                let html = helper.createElementFromHTML(data.html);
+                    let html = helper.createElementFromHTML(data.html);
 
-                list_element.appendChild(html);
+                    list_element.appendChild(html);
 
-                window.notification.notify( 'success', 'Продукт успешно добавлен.');
-            })
-            .catch(response => console.log(response));
+                    window.notification.notify( 'success', 'Продукт успешно добавлен.');
+                })
+                .catch(response => console.log(response));
         }
-        else {
-            this.removeProduct(product_id);
-        }
+
+
+
+        //element.classList.toggle('already_selected');
+
+        // if(element.classList.contains('already_selected')) {
+        //
+        //     window.selectProductDialog.markAsAdded();
+        //
+        //
+        // }
+        // else {
+        //     this.removeProduct(product_id);
+        // }
     }
 
     save(element) {

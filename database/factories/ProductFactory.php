@@ -20,7 +20,6 @@ $factory->define(\App\Models\Article::class, function (Faker $faker) {
     return [
         'article' => $article,
         'oem' => $faker->ean13(),
-        'storeCode' => $faker->ean13(),
         'barcode_local' => $faker->ean13(),
         'barcode' => $faker->ean13(),
         'name' => $name,

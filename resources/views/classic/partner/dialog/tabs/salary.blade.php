@@ -12,7 +12,7 @@
                 @endif
             </div>
         </div>
-        <button type="button" class="button mt-10" onclick="window.{{ $class }}.openSalarySchemaModal()">Добавить настройку</button>
+        <button type="button" class="button white mt-10" onclick="window.{{ $class }}.openSalarySchemaModal()">Добавить настройку</button>
 
         {{--@if($partner)--}}
             {{--<div>--}}

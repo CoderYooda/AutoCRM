@@ -43,13 +43,13 @@ class StressTest extends Command
      */
     protected $signature = 'stress:seed';
 
-    private $partners_count = 60;
-    private $count_suppliers = 150;
-    private $count_products = 500;
-    private $count_shipments = 140;
-    private $count_providerorder = 200;
-    private $count_clientorder = 120;
-    private $count_adjustments = 0;
+    private $partners_count = 5000;
+    private $count_suppliers = 600;
+    private $count_products = 10000;
+    private $count_shipments = 6000;
+    private $count_providerorder = 6000;
+    private $count_clientorder = 6000;
+    private $count_adjustments = 6000;
 
     /**
      * The console command description.
@@ -94,6 +94,7 @@ class StressTest extends Command
 
         $user_main = $user;
         Auth::login($user_main);
+
         $partner = self::createPartner($user, $company, $store);
         Auth::logout($user_main);
 
@@ -132,6 +133,7 @@ class StressTest extends Command
             $product = factory(Article::class)->make(['supplier_id' => $suppliers[array_rand($suppliers)]]);
             $product->category_id = \App\Models\Category::where('company_id', $company->id)->where('type', 'store')->inRandomOrder()->first()->id;
             $product->company_id = $company->id;
+
             $product->creator_id = $company->id;
             $product->save();
             $bar->advance();
@@ -244,12 +246,14 @@ class StressTest extends Command
         $partner->store_id = $store->id;
         $partner->save();
 
+
+
         $phones = [];
         $phones_str = '';
         for($i = 0; $i < rand(2, 4);$i++){
             $main = $i == 0 ? 1 : 0;
             $phone = new Phone(['number' => '+79'.rand(123465064, 923465064), 'main' => $main,  ]);
-            $phone->company_id = $company->id;
+//            $phone->company_id = $company->id;
             $phone->save();
             $phones[] = $phone->id;
             $phones_str .= $phone->number;
@@ -309,9 +313,9 @@ class StressTest extends Command
 
         for($e = 0; $e < $products_count; $e++){
             $product = Article::owned()->inRandomOrder()->first();
-            $products[$product->id]['id'] = $product->id;
-            $products[$product->id]['count'] = rand(1, 12);
-            $products[$product->id]['price'] = rand(1, 2000);
+            $products[$e]['product_id'] = $product->id;
+            $products[$e]['count'] = rand(1, 12);
+            $products[$e]['price'] = rand(1, 2000);
         }
         $nds_included = 0;
         $nds = rand(0,1);
@@ -345,10 +349,13 @@ class StressTest extends Command
             $fake_request['comment'] = $comment;
             $fake_request['invoice'] = rand(10000, 99999);
             $products = [];
+            $index = 0;
             foreach($articles as $article){
-                $products[$article->id]['id'] = $article->id;
-                $products[$article->id]['price'] = $article->pivot->price;
-                $products[$article->id]['count'] = rand(1, $article->pivot->count);
+                $products[$index]['product_id'] = $article->id;
+                $products[$index]['pivot_id'] = $article->pivot->id;
+                $products[$index]['price'] = $article->pivot->price;
+                $products[$index]['count'] = rand(1, $article->pivot->count);
+                $index++;
             }
             $fake_request['products'] = $products;
 
@@ -399,10 +406,9 @@ class StressTest extends Command
 
         for($e = 0; $e < $products_count; $e++){
             $product = Article::owned()->inRandomOrder()->first();
-            $products[$product->id]['id'] = $product->id;
-            $products[$product->id]['count'] = rand(1, 12);
-            $products[$product->id]['price'] = rand(1, 2000);
-            $products['new'] = null;
+            $products[$e]['product_id'] = $product->id;
+            $products[$e]['count'] = rand(1, 12);
+            $products[$e]['price'] = rand(1, 2000);
         }
 
         $discount = rand(0,1);

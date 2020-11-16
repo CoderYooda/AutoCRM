@@ -30,7 +30,7 @@ class ClientOrdersController extends Controller
 
         $tag = 'clientorderDialog' . ($client_order->id ?? '');
 
-        $items = $client_order ? $client_order->articles->load('supplier') : [];
+        $items = $client_order ? $client_order->articles->load('supplier') : collect();
 
         foreach ($items as $key => $item) {
             $items[$key]['pivot_id'] = $item['pivot']['id'];
@@ -61,7 +61,6 @@ class ClientOrdersController extends Controller
             ->with('prefs', json_encode($prefs))
             ->with('items', json_encode($items))
             ->with('statuses', Order::$statuses);
-
         return response()->json([
             'tag' => $tag,
             'html' => $view->render()
@@ -227,20 +226,23 @@ class ClientOrdersController extends Controller
             foreach ($rp as $index => $product) {
 
                 $product_id = $product['product_id'];
-                $pivot_id = $product['pivot_id'];
                 $count = $product['count'];
+                $price = (double)$product['price'];
 
-                if(isset($product['pivot_id']) && $count < $client_order->getShippedCountByPivotId($pivot_id)){
-                    $name = 'products.' . $index . '.count';
-                    return response()->json([
-                        'messages' => [$name => ['Отгружено более ' . $count . ' товаров, декремент невозможен']]
-                    ], 422);
-                }
+                if(isset($product['pivot_id'])) {
 
-                if($client_order && $client_order->getShippedCountByPivotId($pivot_id)){
-                    $price = $client_order->getProductPriceFromClientOrderByPivotId($pivot_id);
-                } else {
-                    $price = (double)$product['price'];
+                    $pivot_id = $product['pivot_id'];
+
+                    if ($count < $client_order->getShippedCountByPivotId($pivot_id)) {
+                        $name = 'products.' . $index . '.count';
+                        return response()->json([
+                            'messages' => [$name => ['Отгружено более ' . $count . ' товаров, декремент невозможен']]
+                        ], 422);
+                    }
+
+                    if($client_order && $client_order->getShippedCountByPivotId($pivot_id)){
+                        $price = $client_order->getProductPriceFromClientOrderByPivotId($pivot_id);
+                    }
                 }
 
                 $total = $price * $count;
@@ -251,7 +253,7 @@ class ClientOrdersController extends Controller
                     'count' => (int)$count,
                     'price' => (double)$price,
                     'total' => (double)$total,
-                    'shipped_count' => $client_order->getShippedCountByPivotId($pivot_id)
+                    'shipped_count' => isset($product['pivot_id']) ? $client_order->getShippedCountByPivotId($pivot_id) : 0
                 ];
 
                 $client_order->articles()->attach($product_id, $pivot_data);
