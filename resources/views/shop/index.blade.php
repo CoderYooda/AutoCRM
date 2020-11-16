@@ -87,7 +87,14 @@
                 </div>
             @endforeach
 
-            {{ $categories->links() }}
+            <div class="category">
+                <div class="description relative">
+                    <div class="title">+{{ $categories->total() }} категорий</div>
+                    <div class="link">
+                        <a title="Показать все" href="{{ route('pages.catalogue') }}">Показать все</a>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
