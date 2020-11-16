@@ -1,0 +1,105 @@
+.register_tabs {
+    margin-bottom: 20px;
+    height: 35px;
+    display: flex;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: #5F5F5F;
+
+
+    .register_tab {
+
+        padding: 0 10px;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        cursor: pointer;
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &.active, :hover {
+            color: #272727;
+        }
+
+        &:not(:first-child)::after {
+            content: "";
+            position: absolute;
+            width: 1px;
+            left: 0;
+            top: calc(100% / 8);
+            height: 15px;
+            background: #E2E2E2;
+        }
+
+        &.active span {
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                width: 55px;
+                height: 4px;
+                background: #404040;
+                bottom: -16px;
+                left: 0;
+            }
+        }
+    }
+}
+
+.register_form {
+    .register_tab {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+}
+
+#auth-tabs {
+    .custom_checkbox {
+        div {
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.06em;
+            color: #747474;
+        }
+    }
+
+    .form-group {
+
+        position: relative;
+
+        .error_notify {
+            position: absolute;
+            right: 30px;
+            top: calc(100% / 6);
+            color: #E23414;
+            font-size: 18px;
+        }
+
+        .error_text {
+            font-weight: 600;
+            margin-top: 12px;
+            padding-left: 30px;
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: 0.06em;
+            color: #E23414;
+        }
+
+        .errors {
+            display: none;
+        }
+
+        &.is-invalid .errors {
+            display: block;
+        }
+    }
+}

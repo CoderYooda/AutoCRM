@@ -27,12 +27,16 @@ class StoreImportProduct implements ShouldQueue
     protected $products = [];
     protected $params = [];
 
+    protected $vehicle_marks = [];
+
     protected $success_article_ids = [];
 
     public function __construct(array $params, array $products)
     {
         $this->params = $params;
         $this->products = $products;
+
+        $this->vehicle_marks = VehicleMark::all();
     }
 
     public function handle()
@@ -73,7 +77,7 @@ class StoreImportProduct implements ShouldQueue
 
         DB::table('import_history')->insert([
             'partner_id' => $user->partner->id,
-            'company_id' => $user->company->id,
+            'company_id' => $user->company_id,
             'store_id' => $user->partner->store->id,
             'list' => implode(',', $this->success_article_ids),
             'created_at' => Carbon::now(),
@@ -110,8 +114,7 @@ class StoreImportProduct implements ShouldQueue
 
         $search_manufacturer_name = mb_strtoupper($attributes['manufacturer']);
 
-        $fapi_id = VehicleMark::where('name', 'like', "%{$search_manufacturer_name}%")->first()->id ?? null;
-        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name, 'fapi_id' => $fapi_id]);
+        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name]);
 
         #Создание категорий по товару
         $category = Category::find((count($attributes['categories']) != 0 ? 2 : 10));
@@ -122,7 +125,7 @@ class StoreImportProduct implements ShouldQueue
 
             $category_name = trim($category_name, ' ');
 
-            $category = Category::firstOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store', 'category_id' => $category->id], [
+            $category = Category::updateOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store', 'category_id' => $category->id], [
                 'name' => $category_name,
                 'company_id' => $company_id,
                 'creator_id' => $user_id,
@@ -131,27 +134,27 @@ class StoreImportProduct implements ShouldQueue
             ]);
         }
 
-        $article = Article::firstOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
-            'fapi_id' => $fapi_id,
+        $article = Article::updateOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
             'name' => $attributes['name'],
             'creator_id' => $user_id,
             'supplier_id' => $supplier->id,
             'barcode' => $attributes['barcode_manufacturer'],
             'barcode_local' => $attributes['barcode_warehouse'],
-            'category_id' => $category->id,
-            'foundstring' => Article::makeFoundString($attributes['name'] . $attributes['article'] . $attributes['manufacturer'] . $attributes['barcode_manufacturer']),
+            'category_id' => $category->id
         ]);
 
-        DB::table('article_entrance')->insert([
-            'article_id' => $article->id,
-            'entrance_id' => null,
-            'company_id' => $company_id,
-            'store_id' => $store->id,
-            'count' => $attributes['count'],
-            'price' => $attributes['price'],
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
+        if((int)$attributes['count'] > 0) {
+            DB::table('article_entrance')->insert([
+                'article_id'  => $article->id,
+                'entrance_id' => null,
+                'company_id'  => $company_id,
+                'store_id'    => $store->id,
+                'count'       => $attributes['count'],
+                'price'       => $attributes['price'],
+                'created_at'  => Carbon::now(),
+                'updated_at'  => Carbon::now()
+            ]);
+        }
 
         if(!$article->wasRecentlyCreated) {
             return 'duplicates';

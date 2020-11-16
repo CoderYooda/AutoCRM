@@ -3,6 +3,66 @@
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Milon\Barcode\DNS1D;
 
+if(!function_exists('num_word')) {
+    function num_word($value, $words, $show = true)
+    {
+        $num = $value % 100;
+        if ($num > 19) {
+            $num = $num % 10;
+        }
+
+        $out = ($show) ?  $value . ' ' : '';
+        switch ($num) {
+            case 1:  $out .= $words[0]; break;
+            case 2:
+            case 3:
+            case 4:  $out .= $words[1]; break;
+            default: $out .= $words[2]; break;
+        }
+
+        return $out;
+    }
+}
+
+if(!function_exists('display_phone')) {
+    function display_phone($phone) {
+
+        $parts = sscanf($phone,'%1c%3c%3c%2c%2c');
+
+        return '+' . $parts[0] . '(' . $parts[1] . ')' . $parts[2] . '-' . $parts[3] . '-' . $parts[4];
+    }
+}
+
+if(!function_exists('clear_phone_number')) {
+    function clear_phone_number($number) {
+        return str_replace(['(', ')', ' ', '-', '+'], '', $number);
+    }
+}
+
+if(!function_exists('domain_info')) {
+    function domain_info($host) {
+        $host = strtolower(trim($host));
+        $host = ltrim(str_replace("http://","",str_replace("https://","",$host)),"www.");
+        $count = substr_count($host, '.');
+        if($count === 2){
+            if(strlen(explode('.', $host)[1]) > 3) $host = explode('.', $host, 2)[1];
+        } else if($count > 2){
+            $host = getDomainOnly(explode('.', $host, 2)[1]);
+        }
+        $host = explode('/',$host);
+        return $host[0];
+    }
+}
+
+if(!function_exists('search_formatter'))
+{
+    function search_formatter($search)
+    {
+        $chars = ["-","!","?",".",""," "];
+        return mb_strtolower(str_replace($chars, '', $search));
+    }
+}
+
 if(!function_exists('mb_ucfirst'))
 {
     function mb_ucfirst($string, $enc = 'UTF-8')
@@ -76,8 +136,15 @@ if(!function_exists('convertPHPSizeToBytes')) {
 }
 
 if(!function_exists('correct_price')) {
-    function correct_price($price) {
-        return number_format((float)$price, 2, '.', ' ');
+    function correct_price($price, $desc = false) {
+
+        $string = number_format((float)$price, 2, '.', ' ');
+
+        if($desc) {
+            $string .= ' ' . num_word($price, ['рубль', 'рубля', 'рублей'], false);
+        }
+
+        return $string;
     }
 }
 

@@ -5,20 +5,23 @@ namespace App\Http\Controllers;
 use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
-use App\Http\Controllers\Providers\TrinityController;
+use App\Http\Requests\ProductRequest;
 use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\ClientOrder;
 use App\Models\Company;
 use App\Models\ImportHistory;
 use App\Models\Service;
+use App\Models\Shop;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Models\VehicleMark;
+use App\Services\ProviderService\Providers;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -113,82 +116,26 @@ class StoreController extends Controller
 
     public function tableData(StoreGetRequest $request)
     {
-        $analogues = [];
-        $manufactures = [];
-        $analog_articles = [];
-        $manufacture_selected = null;
-
-        $manufactures = AnalogController::getManufacturersByArticle($request->search);
-
-        if ($request->manufacture_id) {
-            $analogues = AnalogController::getAnalogues($request->search, $request->manufacture_id);
-        }
-
-        #Список артикулов аналогов
-
-        foreach ($analogues as $analogue) {
-            $analog_articles[$analogue['m_name']] = $analogue['nsa'];
-        }
-
-        #Узнаем название производителя
-        if(count($manufactures)) {
-            $manufacture_selected = collect($manufactures)->where('m_id', $request->manufacture_id)->first()['m_name'];
-        }
-
         #Получаем список продуктов из поиска
-        $products = ProductController::getArticles($request, $manufacture_selected);
+        $products = ProductController::getArticles($request);
 
-        #Получаем список аналогов
-        $analog_products = ProductController::searchByArticleAndBrand($analog_articles);
-
-        $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '. ';
-
-        $all_ids = $products->pluck('id')->merge($analog_products->pluck('id'));
-
-        $size = (int)$request['size'] ?? 30;
-
-        $field = null;
-        $dir = null;
-
-        if (isset($request['sorters'])) {
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-        if ($field === null && $dir === null) {
-            $field = 'id';
-            $dir = 'ASC';
-        }
-
-        #Сливаем коллекции для вывода
-        $products = Article::selectRaw('articles.*, suppliers.name as supplier_name')
-            ->where('articles.company_id', Auth::user()->company_id)
-            ->whereIn('articles.id', $all_ids)
-//            ->when($field == 'supplier_name', function (Builder $q) {
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'articles.supplier_id')
-//            })
-            ->orderBy($field, $dir)
-            ->paginate($size);
-
-//        foreach ($products as $key => $product) {
-//            $products[$key]['supplier_name'] = $product->supplier->name;
-//        }
-
-
-        $is_barcode = $products->where('barcode', $request->search)->count() && $products->where('article', '!=', $request->search);
-
-        if(!$is_barcode) {
-            $analog_pluck = $analog_products->pluck('article');
-            $info .= 'Список доступных аналогов на складе: ' . (count($analog_pluck) ? trim($analog_pluck, '[]') : 'Нет');
-        }
+        $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '.';
 
         $response = [
             'data' => $products,
-            'manufacturers' => $manufactures,
-            'analogues' => $analogues,
             'info' => $info
         ];
 
         return response()->json($response);
+    }
+
+    public function shop_ordersTab(Request $request)
+    {
+        $data = OrderController::getOrders($request);
+
+        $data = json_encode($data->toArray());
+
+        return view(get_template() . '.shop_orders.index', compact('request', 'data'));
     }
 
     public function provider_storesTab(Request $request)
@@ -201,42 +148,53 @@ class StoreController extends Controller
         return view(get_template() . '.provider_stores.index', compact('request', 'services', 'company'));
     }
 
-    public static function documentsTab(Request $request)
-    {
-        return view(get_template() . '.documents.index', compact('request'));
-    }
-
     public static function storeTab($request)
     {
         $page = 'Склад';
+
         $categories = CategoryController::getCategories($request, 'store');
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
         $cat_info['root_id'] = 2;
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : $cat_info['root_id'];
+        $breadcrumbs = CategoryController::loadBreadcrumbs($request);
 
         $data = ProductController::getArticles($request);
         $data = json_encode($data->toArray());
 
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
-            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request', 'data'));
+            return view(get_template() . '.store.elements.table_container', compact('categories', 'cat_info', 'request', 'data', 'breadcrumbs'));
         }
         $trinity = null; #TODO
-        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data'));
+        return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data', 'breadcrumbs'));
     }
 
     public static function entrance_refundsTab($request)
     {
-        return view(get_template() . '.entrance_refunds.index', compact('request'));
+        $data = EntranceRefundController::getEntranceRefunds($request);
+        $data = json_encode($data->toArray());
+
+        return view(get_template() . '.entrance_refunds.index', compact('request', 'data'));
     }
 
     public static function entranceTab($request)
     {
         PermissionController::canByPregMatch('Смотреть поступления');
+        $data = EntranceController::getEntrances($request);
+        $data = json_encode($data->toArray());
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-entrance') {
-            return view(get_template() . '.entrance.elements.table_container', compact('request'));
+            return view(get_template() . '.entrance.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.entrance.index', compact('request'));
+        return view(get_template() . '.entrance.index', compact('request', 'data'));
+    }
+
+    public static function documentsTab(Request $request)
+    {
+        PermissionController::canByPregMatch('Смотреть документы');
+        $data = DocumentController::getDocuments($request);
+        $data = json_encode($data->toArray());
+        return view(get_template() . '.documents.index', compact('request', 'data'));
     }
 
     public static function providerTab($request)
@@ -253,46 +211,65 @@ class StoreController extends Controller
     public static function shipmentsTab($request)
     {
         PermissionController::canByPregMatch('Смотреть продажи');
+
+        $data = ShipmentController::getShipments($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-shipments') {
-            return view(get_template() . '.shipments.elements.table_container', compact('request'));
+            return view(get_template() . '.shipments.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.shipments.index', compact('request'));
+        return view(get_template() . '.shipments.index', compact('request', 'data'));
     }
 
     public static function refundTab($request)
     {
         PermissionController::canByPregMatch('Смотреть возвраты');
+
+        $data = RefundController::getRefunds($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-refund') {
-            return view(get_template() . '.refund.elements.table_container', compact('request'));
+            return view(get_template() . '.refund.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.refund.index', compact('request'));
+        return view(get_template() . '.refund.index', compact('request', 'data'));
     }
 
     public static function client_ordersTab($request)
     {
+        $data = ClientOrdersController::getClientOrders($request);
+        $data = json_encode($data->toArray());
+
         PermissionController::canByPregMatch('Смотреть заказ клиента');
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders') {
-            return view(get_template() . '.client_orders.elements.table_container', compact('request'));
+            return view(get_template() . '.client_orders.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.client_orders.index', compact('request'));
+        return view(get_template() . '.client_orders.index', compact('request', 'data'));
     }
 
     public static function provider_ordersTab($request)
     {
         PermissionController::canByPregMatch('Смотреть заявки поставщикам');
+
+        $data = ProviderOrdersController::getPoviderOrders($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-provider_orders') {
-            return view(get_template() . '.provider_orders.elements.table_container', compact('request'));
+            return view(get_template() . '.provider_orders.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.provider_orders.index', compact('request'));
+        return view(get_template() . '.provider_orders.index', compact('request', 'data'));
     }
 
     public static function adjustmentTab($request)
     {
         PermissionController::canByPregMatch('Смотреть корректировки');
+
+        $data = AdjustmentController::getAdjustments($request);
+        $data = json_encode($data->toArray());
+
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-adjustment') {
-            return view(get_template() . '.adjustments.elements.table_container', compact('request'));
+            return view(get_template() . '.adjustments.elements.table_container', compact('request', 'data'));
         }
-        return view(get_template() . '.adjustments.index', compact('request'));
+        return view(get_template() . '.adjustments.index', compact('request', 'data'));
     }
 
     public function import(StoreImportRequest $request)
@@ -431,7 +408,7 @@ class StoreController extends Controller
         $message = 'Склад удален';
         $status = 200;
 
-        if ($store->company()->first()->id != Auth::user()->company()->first()->id) {
+        if ($store->company->id != Auth::user()->company_id) {
             $message = 'Вам не разрешено удалять этот склад';
             $status = 422;
         }
@@ -453,5 +430,37 @@ class StoreController extends Controller
     public static function getStores($request)
     {
         return Store::owned()->get();
+    }
+
+    public function getAnalogues(Request $request)
+    {
+        $brand = $request->brand;
+        $article = $request->article;
+
+        $controller = new AnalogController();
+
+        $analogues = $controller->getAnalogues($brand, $article);
+
+        $articles = [];
+
+        foreach ($analogues as $brand => $brandArticles) {
+            $articles = array_merge($articles, $brandArticles);
+        }
+
+        $analogueProducts = Article::with('supplier')->owned()->whereIn('article', $articles)->get();
+
+        $brands = array_keys($analogues);
+
+        $brands = array_map(function ($brand){
+            return strtoupper($brand);
+        }, $brands);
+
+        $analogueProducts = $analogueProducts->filter(function ($product) use($brands, $analogues) {
+            return in_array(strtoupper($product->supplier->name), $brands);
+        });
+
+        return response()->json([
+            'analogues' => $analogueProducts->pluck('id')
+        ]);
     }
 }

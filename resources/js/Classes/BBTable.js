@@ -1,5 +1,5 @@
+import SimpleBar from 'simplebar';
 class Table {
-
     constructor(options){
         this.elem = document.getElementById(options.container);
         this.data = options.data;
@@ -17,6 +17,28 @@ class Table {
         this.bodyContainer;
         this.last_selected = null;
         this.request = {};
+        window.addEventListener('resize', (e) => {
+            this.elem.style.width = '1px';
+            this.elem.style.height = '1px';
+
+            this.elem.style.width = this.elem.parentElement.offsetWidth + 'px';
+            this.elem.style.height = this.elem.parentElement.offsetHeight + 'px';
+        });
+
+        document.addEventListener('click', (e) => {
+            let element = e.target;
+            let close = true;
+            do {
+                if (element.classList && element.classList.contains('context')) {
+                    close = false;
+                }
+                element = element.parentNode;
+            } while (element);
+            if(close && this.elem){
+                this.elem.querySelector('#context').style.left = '-300px';
+            }
+
+        });
     }
 
     setHeader(header){
@@ -50,42 +72,40 @@ class Table {
         if(data){
             this.data = data;
         }
+
         if(this.elem){
             this.elem.innerHTML = '';
             this.elem.style.height = '100%';
+            this.elem.style.width = this.elem.offsetWidth + 'px';
+            this.elem.style.height = this.elem.parentElement.offsetHeight + 'px';
             this.total_height = this.elem.clientHeight;
             let container = document.createElement('div');
             container.className = 'bbtable-container';
             container.appendChild(this.drawHeader());
-            let body = this.drawBody();
-            container.appendChild(body);
-            body.addEventListener('mouseleave', (e) => {
-                this.elem.querySelector('.hover').style.top = '-60px';
-            });
-            body.style.height = this.total_height - 70 + 'px';
-            container.appendChild(this.drawHover());
+            this.body = this.drawBody();
+            container.appendChild(this.body);
+            // this.body.addEventListener('mouseleave', (e) => {
+            //     this.elem.querySelector('.hover').style.top = '-60px';
+            // });
+            this.body.style.height = 'calc(100% - 59px)';
+            // container.appendChild(this.drawHover());
             container.appendChild(this.drawContext());
             container.appendChild(this.drawPaginator());
+            //container.appendChild(this.drawDragger());
             this.elem.appendChild(container);
             this.insertElems();
-
-            document.addEventListener('click', (e) => {
-                let element = e.target;
-                let close = true;
-                do {
-                    if (element.classList && element.classList.contains('context')) {
-                        close = false;
-                    }
-                    element = element.parentNode;
-                } while (element);
-                if(close){
-                    this.elem.querySelector('#context').style.left = '-300px';
-                }
-
-            });
+            new SimpleBar(document.getElementsByClassName('bbtable-body')[0]);
         } else {
             console.log("Не указан контейнер");
         }
+    }
+
+    drawDragger(){
+        let dragger = document.createElement('div');
+        dragger.className = 'dragger';
+        height = this.elem.querySelector('.bbtable-body').offsetHeight;
+        dragger.style.height = height + 'px';
+        header_elem.appendChild(dragger);
     }
 
     setRequest(key, value, fresh = true, push = false){
@@ -101,6 +121,7 @@ class Table {
         }
         if(fresh){
             this.freshData();
+
         }
     }
 
@@ -115,25 +136,71 @@ class Table {
         return this.request[key];
     }
 
+    setDatas(data = null){
+        if(data && data.current_page){
+            this.data = data;
+            this.draw();
+        } else {
+            dd('неверный формат данных');
+        }
+    }
+
+    setData(){
+
+    }
+
+    transform_ico(val){
+        let div = document.createElement('div');
+        div.classList.add('tableIco');
+        div.style.background = "url(images/icons/pos_" + val + ".svg) left no-repeat";
+        return div;
+    };
+
+    transform_price(val){
+        let div = document.createElement('div');
+        div.classList.add('tablePrice');
+        let num = window.helper.numberFormat(val);
+        div.innerHTML = num + ' ₽';
+        return div;
+    };
+
+    transform_phone(val){
+
+        let div = document.createElement('div');
+
+        div.classList.add('tablePhone');
+        div.innerHTML = val ? val : 'Не указан';
+
+        return div;
+    };
+
+    transform_comment(val){
+        let div = document.createElement('div');
+        div.classList.add('tableComment');
+        let comment = val ? val : 'Нет комментария';
+        div.innerHTML = comment;
+        return div;
+    };
+
     freshData(){
-        let object = this;
         window.axios({
             method: 'post',
             url: this.url,
             data: this.request,
-        }).then(function (resp) {
-           object.data = resp.data;
-           object.draw();
+        }).then( (resp) => {
+
+            if(resp.data.current_page){
+                this.data = resp.data;
+            }else if(resp.data.data.current_page){
+                this.data = resp.data.data;
+            }
+
+           this.draw();
         }).catch(function (error) {
             console.log(error);
         }).then(function () {
             window.isXHRloading = false;
         });
-    }
-
-    moveHoverTo(index){
-        let row = this.elem.querySelector('[data-index="' + index + '"]');
-        this.elem.querySelector('.hover').style.top = row.offsetTop - row.parentNode.scrollTop + 'px';
     }
 
     insertElems(){
@@ -157,9 +224,9 @@ class Table {
                 }
             });
 
-            bodyElem.addEventListener('mouseenter', (e) => {
-                this.moveHoverTo(bodyElem.getAttribute('data-index'));
-            });
+            // bodyElem.addEventListener('mouseenter', (e) => {
+            //     this.moveHoverTo(bodyElem.getAttribute('data-index'));
+            // });
 
             bodyElem.addEventListener('contextmenu', (e) => {
                 if(this.context_menu.length > 0){
@@ -229,19 +296,28 @@ class Table {
 
                 let cell = document.createElement('div');
                 cell.className = 'cell';
+                cell.setAttribute('data-td', count);
 
                 if(header_elem.width === 'auto'){
                     cell.style.flex = 1;
                 } else {
                     cell.style.width = header_elem.width + 'px';
                 }
+
                 if(header_elem.min_with){
                     cell.style.minWidth = header_elem.min_with + 'px';
                 }
 
                 let title = document.createElement('div');
                 title.className = 'title';
-                title.innerText = elem[header_elem.table_name];
+
+                if(header_elem.transform != null){ //transform_ico
+                    title.appendChild(this[header_elem.transform](elem[header_elem.table_name]));
+                } else {
+                    title.innerText = elem[header_elem.table_name];
+                }
+
+
                 cell.appendChild(title);
                 bodyElem.appendChild(cell);
                 count++;
@@ -249,7 +325,9 @@ class Table {
             index++;
             this.bodyContainer.appendChild(bodyElem);
         });
-
+        if(!index){
+            this.bodyContainer.classList.add('nodata');
+        }
     }
 
     selectItem(index){
@@ -382,10 +460,12 @@ class Table {
             } else {
                 arrow.classList.add('down');
             }
+
             if(this.sorters[elem.table_name].active === true){
                 arrow.classList.add('active');
                 header_elem.classList.add('active');
             }
+
             header_elem.appendChild(arrow);
             header.appendChild(header_elem);
         });
@@ -486,12 +566,6 @@ class Table {
            context.style.top = this.context_top - this.bodyContainer.scrollTop + this.body_scroll + 'px';
         });
         return this.bodyContainer;
-    }
-
-    drawHover(){
-        this.hover = document.createElement('div');
-        this.hover.className = 'hover';
-        return this.hover;
     }
 
     drawContext(){

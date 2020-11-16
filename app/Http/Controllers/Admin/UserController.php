@@ -51,6 +51,7 @@ class UserController extends Controller
 
         foreach ($users as &$user) {
             $user->role = $user->roles->first()->name;
+            $user->company_name = 'ID(' . $user->company_id . '): ' . ($user->company->name ?? 'Новая компания');
         }
 
         return response()->json([

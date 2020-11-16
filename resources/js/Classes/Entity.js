@@ -101,7 +101,7 @@ class Entity {
         });
     };
 
-    addProductToList(elem_or_id, object, type) { // Добавление элемента в список
+    addProductToList(elem_or_id, object, type, refer = null) { // Добавление элемента в список
         let article_id = null;
         let focus = true;
         if (Number.isInteger(elem_or_id)) {
@@ -122,16 +122,21 @@ class Entity {
             store_id = window.store_id;
         }
         let count = 1;
+
+        let data = {
+            refer: object.root_dialog.id,
+            type: type,
+            article_id: article_id,
+            store_id: store_id,
+            count: count,
+        };
+
+        if(refer != null) data.refer = refer;
+
         window.axios({
             method: 'post',
             url: 'product/addtolist',
-            data: {
-                refer: object.root_dialog.id,
-                type: type,
-                article_id: article_id,
-                store_id: store_id,
-                count: count,
-            }
+            data: data
         }).then(function (resp) {
             let isset = object.items.map(function (e) {
                 return e.id;

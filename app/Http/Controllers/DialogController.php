@@ -19,6 +19,8 @@ class DialogController extends Controller
             'selectCompany'             => [CompanyController::class, 'selectDialog'],
             'companyDialog'             => [CompanyController::class, 'dialog'],
             'userDialog'                => [UserController::class, 'dialog'],
+            //Order
+            'orderDialog'               => [OrderController::class, 'dialog'],
             //Warrant
             'warrantDialog'             => [WarrantController::class, 'warrantDialog'],
             'selectWarrant'             => [WarrantController::class, 'selectDialog'],
@@ -28,7 +30,7 @@ class DialogController extends Controller
             //Document
             'documentDialog'            => [DocumentController::class, 'dialog'],
             //Cart
-            'ProviderCartDialog'        => [ProviderStoreController::class, 'ProviderCartDialog'],
+            'ProviderCartDialog'        => [ProviderStoreController::class, 'providerCartDialog'],
             //Supplier
             'selectSupplier'            => [SupplierController::class, 'selectSupplierDialog'],
             'supplierDialog'            => [SupplierController::class, 'supplierDialog'],
@@ -66,7 +68,7 @@ class DialogController extends Controller
             //Refund
             'refundDialog'              => [RefundController::class, 'refundDialog'],
             //ProviderOrder
-            'providerorderDialog'       => [ProviderOrdersController::class, 'providerorderDialog'],
+            'providerOrderDialog'       => [ProviderOrdersController::class, 'providerorderDialog'],
             'selectProviderOrderDialog' => [ProviderOrdersController::class, 'selectProviderOrderDialog'],
             //Adjustment
             'adjustmentDialog'          => [AdjustmentController::class, 'adjustmentDialog'],

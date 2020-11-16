@@ -29,7 +29,7 @@
             <div id="template_container" class="form-group mr-15">
                 <label>Шаблон <a style="font-weight: 300;" onclick="openDialog('scheduletemplateDialog')"> изменить</a></label>
                 <div>
-                    <a id="template_text" onclick="openDialog('scheduletemplateDialog')" class="pointer h-32-text">Шаблон</a>
+                    <a id="template_text" onclick="openDialog('scheduletemplateDialog')" class="pointer h-30-text">Шаблон</a>
                 </div>
             </div>
             <div id="save_butt" class="form-group" style="margin-left: auto;">

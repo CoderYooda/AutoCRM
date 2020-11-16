@@ -23,7 +23,7 @@ class PartnerRequest extends FormRequest
             $this['number'] = (int)str_replace(' ', '', $this['number']);
         }
         if ($this->access && $this['phone'] != null) {
-            $this['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $this['phone']);
+            $this['phone'] = clear_phone_number($this['phone']);
         }
 
         if ($this['issued_date'] == '__.__.____') {

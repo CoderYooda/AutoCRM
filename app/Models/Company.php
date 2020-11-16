@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
     protected $guarded = [];
+
+    protected $casts = [
+        'created_at'  => 'date:d.m.Y H:i',
+        'updated_at' => 'date:d.m.Y H:i'
+    ];
 
     public function shop()
     {
@@ -23,7 +27,11 @@ class Company extends Model
 
     public function getDays()
     {
-        return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
+        $days = (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);
+
+        if($days < 0) $days = 0;
+
+        return $days;
     }
 
     public function members()
@@ -55,9 +63,7 @@ class Company extends Model
     {
         return $this->serviceproviders()
             ->where('category_id', $category_id)
-            ->whereHas('serviceproviders', function (Builder $query) {
-                $query->where('enabled', 1);
-            })
+            ->where('enabled', 1)
             ->orderBy('sort')
             ->get();
     }
@@ -96,12 +102,6 @@ class Company extends Model
         return $this->hasMany(Setting::class, 'company_id');
     }
 
-    public function checkAccessToStore($store)
-    {
-        //TODO check
-        return ($store == null || $this->stores()->find($store->id) == NULL);
-    }
-
     public function getSettingField($field)
     {
         return $this->settings->where('name', $field)->first()->value;
@@ -134,15 +134,5 @@ class Company extends Model
     public function decrementSmsBalance($amount)
     {
         return $this->decrement('sms_balance', $amount);
-    }
-
-    public function inviteUser($user)
-    {
-        //TODO check
-        $user->update(['company_id' => $this->id]);
-
-//        $user->company_id = $this->id;
-//        $user->save();
-        return 1;
     }
 }

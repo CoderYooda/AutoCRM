@@ -17,6 +17,6 @@ class CheckApiDataForServices implements Rule
 
     public function message()
     {
-        return 'Неправильно указаны данные для подключения';
+        return 'Неправильно указаны данные для подключения.';
     }
 }

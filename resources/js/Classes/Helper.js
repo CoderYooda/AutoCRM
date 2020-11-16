@@ -35,6 +35,7 @@ import documentDialog from "./Document/DocumentDialog";
 import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 import selectWarrantDialog from "./Warrant/SelectWarrantDialog";
 import salarySchemaDialog from "./Salary/salarySchemaDialog";
+import orderDialog from "./Order/OrderDialog";
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -101,6 +102,7 @@ const classes = {
     companyDialog,
     userDialog,
     selectCompanyDialog,
+    orderDialog
 };
 
 const pages = {
@@ -161,30 +163,25 @@ class Helper{
     }
 
     initDialogMethods(resp = null){
+
         let dialogs = document.getElementsByClassName('dialog');
-        if(dialogs){
-            [].forEach.call(dialogs, function(elem) {
 
-                if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')){
+        dialogs.forEach(elem => {
 
-                    var classname = elem.id.replace(/[^a-zA-Z]/g, '');
-                    try {
-                        if(resp){
-                            window[elem.id] = new classes[classname](elem, resp.data);
-                        } else {
-                            window[elem.id] = new classes[classname](elem);
-                        }
-                    } catch (err) {
-                        window.helper.log(classname + " - Такого конструктора не существует");
-                        console.log(err);
-                    }
+            if(window[elem.id] === null || !window[elem.id].hasOwnProperty('root_dialog')) {
 
-                    window.applySelects();
+                let classname = elem.id.replace(/[^a-zA-Z]/g, '');
 
-                    //window[elem.id] = new DynamicClass( classname + 'Dialog', elem );
+                try {
+                    window[elem.id] = new classes[classname](elem, resp ? resp.data : resp);
+                } catch (err) {
+                    window.helper.log(classname + " - Такого конструктора не существует");
+                    console.log(err);
                 }
-            });
-        }
+            }
+        });
+
+        window.applySelects();
     }
 
     decodeHtml(html) {
@@ -457,6 +454,7 @@ class Helper{
     }
 
     copy(str){
+
         let tmp   = document.createElement('INPUT'), // Создаём новый текстовой input
             focus = document.activeElement; // Получаем ссылку на элемент в фокусе (чтобы не терять фокус)
 
@@ -468,6 +466,17 @@ class Helper{
         document.body.removeChild(tmp); // Удаляем временный input
         focus.focus(); // Возвращаем фокус туда, где был
         window.notification.notify( 'success', 'Скопировано в буфер');
+    }
+
+    objectSum(object) {
+
+        let count = 0;
+
+        Object.values(object).forEach(value => {
+            count += parseFloat(value);
+        });
+
+        return count;
     }
 
     objectifyForm(formArray) {
@@ -514,5 +523,7 @@ class Helper{
     numberFormat (n) {
         return parseFloat(n).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1 ");
     };
+
+
 }
 export default Helper;

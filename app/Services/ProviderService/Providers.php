@@ -22,9 +22,16 @@ class Providers
 
     public function activated()
     {
-        return array_filter($this->providers, function (ProviderInterface $provider) {
-            return $provider->isActivated();
-        });
+        $providers = [];
+
+        foreach ($this->providers as $provider) {
+
+            $provider_key = $provider->getServiceKey();
+
+            if($provider->isActivated()) $providers[$provider_key] = $provider;
+        }
+
+        return $providers;
     }
 
     public function find(string $key)

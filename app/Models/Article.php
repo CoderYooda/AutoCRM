@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\System\Image;
+use App\Services\ShopManager\ShopManager;
 use App\Traits\Imageable;
 use App\Traits\OwnedTrait;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class Article extends Model
 {
@@ -19,14 +23,14 @@ class Article extends Model
         'creator_id',
         'supplier_id',
         'measurement_id',
-        'foundstring',
         'article',
         'oem',
         'storeCode',
         'barcode_local',
         'barcode',
         'name',
-        'blockedCount'
+        'blockedCount',
+        'image_id'
     ];
 
     protected $guarded = [];
@@ -38,9 +42,21 @@ class Article extends Model
         return false;
     }
 
+    public function path()
+    {
+        $categoryPath = $this->category->path();
+
+        return $categoryPath . '/' . $this->slug;
+    }
+
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'id', 'image_id');
+    }
+
     public function canUserTake()
     {
-        return $this->company_id == Auth::user()->company->id;
+        return $this->company_id == Auth::user()->company_id;
     }
 
     public function company()
@@ -70,10 +86,87 @@ class Article extends Model
         return $this->stores->find($store_id);
     }
 
+    public function getHash($store_id)
+    {
+        $stock = $store_id;
+        $manufacturer = $this->supplier->name;
+        $article = $this->article;
+        $days = 0;
+        $price = $this->stores->find($store_id)->pivot->retail_price;
+
+        return md5($stock . $manufacturer . $article . $days . $price);
+    }
+
+    public function fillShopFields($request)
+    {
+        $this->sp_name = $request->shop['name'] ?? '';
+        $this->sp_desc = $request->shop['desc'] ?? '';
+
+        $shop_discount = $request->shop['discounts'];
+
+        $price = $this->getPrice();
+        $this->sp_discount = $shop_discount['discount'];
+        $this->sp_discount_type = $shop_discount['type'];
+
+        if($this->sp_discount_type == 0) { //В рублях
+            $this->sp_discount_total = $price - $this->sp_discount;
+        }
+        else {
+            $this->sp_discount_total = $price - ($price / 100 * $this->sp_discount);
+        }
+
+        $shop_settings = $request->shop['settings'];
+
+        $this->sp_main = $shop_settings['sp_main'];
+        $this->sp_stock = $shop_settings['sp_stock'];
+    }
+
+    public function getImagePathAttribute()
+    {
+        return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
+    }
+
     public function stores()
     {
         return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
-            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price', 'sp_main', 'sp_empty', 'sp_stock');
+            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
+    }
+
+    public function getStorageZone($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_zone : '';
+    }
+    public function getStorageRack($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_rack : '';
+    }
+    public function getStorageVert($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_vertical : '';
+    }
+    public function getStorageHor($id){
+        $store = $this->stores->find($id);
+        return $store ? $store->pivot->storage_horizontal : '';
+    }
+
+    public function getStoreDiscountPrice()
+    {
+        return $this->sp_discount_price;
+    }
+
+    public function getStoreDiscount()
+    {
+        return $this->sp_discount;
+    }
+
+    public function getStoreDiscountType()
+    {
+        return $this->sp_discount_type;
+    }
+
+    public function getStoreDiscountTotal()
+    {
+        return $this->sp_discount_total;
     }
 
     public function decrementFromEntrance(int $count)
@@ -140,15 +233,19 @@ class Article extends Model
 
     public function getEntrancesCount()
     {
-        $company = Auth::user()->company->load('settings');
+        $company = $this->company;
 
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
-        $store_id = Auth::user()->current_store;
+        $store_id = Auth::user()->current_store ?? null;
 
         $count_info = DB::table('article_entrance')
             ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
-            ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            ->where('article_id', $this->id)
+            ->where('company_id', $company->id)
+            ->where(function (Builder $builder) use($store_id) {
+                if($store_id) $builder->where('store_id', $store_id);
+            })
             ->whereRaw('count != released_count')
             ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
             ->first();
@@ -156,26 +253,59 @@ class Article extends Model
         return $count_info->count - $count_info->released_count;
     }
 
+    public function getCount()
+    {
+        return $this->pivot->count ?? 1;
+    }
+
+    public function isStock($store_id = null)
+    {
+        if($store_id == null) $store_id = Auth::user()->current_store;
+
+        return $this->stores->find($store_id)->pivot->sp_stock ?? 0;
+    }
+
     public function getPrice(int $count = 1)
     {
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        if(!$shopManager->isWatchShop() && isset($this->pivot->price)) {
+            return $this->pivot->price;
+        }
+
+        $shop = $shopManager->getCurrentShop();
+
         /** @var Company $company */
-        $company = Auth::user()->company->load('settings');
+        $company = $shop->company ?? Auth::user()->company;
 
         $price_source = $company->getSettingField('Источник цены');
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
-        $store_id = Auth::user()->current_store;
+        $store_id = Auth::user()->current_store ?? null;
 
         if($price_source == 'retail') {
+
+            if($shopManager->isWatchShop()) {
+                return $this->stores->sum('pivot.retail_price') / $this->stores->count();
+            }
+
             return $this->stores->find($store_id)->pivot->retail_price ?? 0;
         }
         else { /* FIFO-LIFO */
 
-            $products = DB::table('article_entrance')
-                ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            $query = DB::table('article_entrance')
+                ->where('article_id', $this->id)
                 ->whereRaw('count != released_count')
-                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
-                ->get();
+                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'));
+
+            if(!$shopManager->isWatchShop()) {
+                $query->where(function (Builder $builder) use($store_id) {
+                    if($store_id) $builder->where('store_id', $store_id);
+                });
+            }
+
+            $products = $query->get();
 
             $retail_price = 0;
             $found_count = 0;
@@ -203,7 +333,7 @@ class Article extends Model
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
-            ->withPivot('price', 'count', 'released_count');
+            ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 
     public static function makeCorrectArticle(string $article)
@@ -213,11 +343,13 @@ class Article extends Model
         return str_replace($chars, '', $article);
     }
 
-    public static function makeFoundString(string $string)
+    public function freshFoundString()
     {
+        $string = $this->supplier->name . $this->article . $this->name . $this->barcode . $this->barcode_local;
+
         $chars = ["-","!","?",".",""," "];
 
-        return str_replace($chars, '', $string);
+        $this->foundstring = mb_strtolower(str_replace($chars, '', $string));
     }
 
     public function shipment()

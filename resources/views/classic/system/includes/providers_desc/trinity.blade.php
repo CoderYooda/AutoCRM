@@ -1,5 +1,5 @@
 <ul class="service-list pr-15">
-    <li>Перейти на <a target="_blank" href="http://trinity-parts.ru/">сайт</a> поставщика;</li>
+    <li>Перейти на <a target="_blank" href="{{ $service->url }}">сайт</a> поставщика;</li>
     <li>Необходимо пройти регистрацию у поставщика;</li>
     <li>Для получения ключа свяжитесь с Вашим менеджером в Trinity Parts;</li>
     <li>Для доступа к сервису введите Ваш API ключ;</li>

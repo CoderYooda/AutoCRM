@@ -1,0 +1,34 @@
+textarea {
+    &.form-control {
+        border: 2px solid #EBEBEB;
+        border-radius: 4px;
+        width: 300px;
+        padding: 16px 24px;
+        float: right;
+        resize: none;
+        height: 19px;
+
+        &::placeholder {
+            text-transform: uppercase;
+            color: #989898;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.06em;
+        }
+    }
+}
+
+.form-group-flex {
+
+    label {
+        line-height: 52px;
+    }
+
+    div {
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 52px;
+        letter-spacing: 0.06em;
+    }
+}
+

@@ -4,18 +4,17 @@
 namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
-use App\Rules\CheckApiDataForServices;
-use App\Rules\CheckServiceFieldOnValid;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Services\ShopManager\ShopManager;
+use App\Traits\CartProviderOrderCreator;
 use Carbon\Carbon;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use stdClass;
 
 class ArmTek implements ProviderInterface
 {
+    use CartProviderOrderCreator;
+
     protected $url = "http://ws.armtek.ru/api";
 
     protected $name = 'ArmTek';
@@ -28,7 +27,12 @@ class ArmTek implements ProviderInterface
 
     public function __construct()
     {
-        $this->company = Auth::user()->company;
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $this->company = $shop->company ?? Auth::user()->company;
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
@@ -38,7 +42,7 @@ class ArmTek implements ProviderInterface
     {
         $params = [
             'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
-            'PIN' => $article,
+            'PIN'   => $article,
         ];
 
         $result = $this->query('/ws_search/assortment_search', $params, 'POST');
@@ -64,25 +68,54 @@ class ArmTek implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'VKORG' => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
-            'BRAND' => $brand,
+            'VKORG'    => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'BRAND'    => $brand,
             'KUNNR_RG' => $this->getApiKunnr(),
-            'PIN' => $article
+            'PIN'      => $article
         ];
 
         $items = $this->query('/ws_search/search', $params, 'POST');
 
+        if (isset($items['RESP']['MSG'])) return [];
+
+        foreach ($items['RESP'] as $key => $item) {
+
+            $items['RESP'][$key]['index'] = $key;
+
+            $items['RESP'][$key]['hash_info'] = [
+                'stock'        => $item['KEYZAK'],
+                'manufacturer' => $item['BRAND'],
+                'article'      => $article,
+                'days'         => $item['DLVDT'],
+                'price'        => $item['PRICE'],
+                'packing'      => $item['RDPRF'],
+                'desc'         => $item['NAME'],
+                'rest'         => $item['RVALUE'],
+                'supplier'     => $this->name
+            ];
+
+        }
+
         $results = [];
 
-        foreach ($items['RESP'] as $item) {
+        foreach ($items['RESP'] as $key => $item) {
 
             $delivery_timestamp = Carbon::parse($item['DLVDT']);
 
+            $delivery_days = Carbon::now()->diffInDays($delivery_timestamp);
+
             $results[] = [
-                'name' => $item['RVALUE'],
-                'code' => $item['ARTID'],
-                'delivery' => Carbon::now()->diffInDays($delivery_timestamp),
-                'price' => $item['PRICE'],
+                'index'        => $item['index'],
+                'name'         => $item['KEYZAK'],
+                'code'         => $item['ARTID'],
+                'rest'         => $item['RVALUE'],
+                'delivery'     => $delivery_days,
+                'days_min'     => $delivery_days,
+                'price'        => $item['PRICE'],
+                'manufacturer' => $item['BRAND'],
+                'stock'        => $item['KEYZAK'],
+                'model'        => $item,
+                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $article . $item['DLVDT'] . $item['PRICE'])
             ];
         }
 
@@ -93,10 +126,10 @@ class ArmTek implements ProviderInterface
     {
         $fields = [];
 
-        if($field_name == 'sales_organization') {
+        if ($field_name == 'sales_organization') {
             $result = $this->query('/ws_user/getUserVkorgList', [], 'GET');
 
-            if(isset($result['RESP'])) {
+            if (isset($result['RESP'])) {
                 foreach ($result['RESP'] as $program) {
 
                     $fields[$program['PROGRAM_NAME']] = $program['VKORG'];
@@ -113,16 +146,16 @@ class ArmTek implements ProviderInterface
 
         $result = @file_get_contents($this->url . $path . '?format=json', null, stream_context_create([
             'http' => [
-                'method' => $method,
-                'header' => 'Content-Type: application/json' . "\r\n"
-                    . 'Authorization: Basic '. base64_encode($this->login . ":" . $this->password) . "\r\n",
+                'method'  => $method,
+                'header'  => 'Content-Type: application/json' . "\r\n"
+                    . 'Authorization: Basic ' . base64_encode($this->login . ":" . $this->password) . "\r\n",
                 'content' => $params
             ],
         ]));
 
         $result = (array)json_decode($result, true);
 
-        if(isset($result['MESSAGES'][0]['TYPE']) && $result['MESSAGES'][0]['TYPE'] == 'E') {
+        if (isset($result['MESSAGES'][0]['TYPE']) && $result['MESSAGES'][0]['TYPE'] == 'E') {
             throw_error($result['MESSAGES'][0]['TEXT']);
         }
 
@@ -142,7 +175,7 @@ class ArmTek implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-        if(!isset($fields['login']) || !isset($fields['password'])) return false;
+        if (!isset($fields['login']) || !isset($fields['password'])) return false;
 
         try {
             $result = file_get_contents($this->url . '/ws_user/getUserVkorgList?format=json', null, stream_context_create([
@@ -152,8 +185,7 @@ class ArmTek implements ProviderInterface
                         . 'Authorization: Basic ' . base64_encode($fields['login'] . ":" . $fields['password']) . "\r\n",
                 ],
             ]));
-        }
-        catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw_error('ArmTek: Ошибка авторизации логина или пароля.');
         }
 
@@ -161,13 +193,113 @@ class ArmTek implements ProviderInterface
 
         $vkorgs_list = array_column($result['RESP'], 'VKORG');
 
-        if(!in_array($fields['sales_organization'], $vkorgs_list)) return false;
+        if (!in_array($fields['sales_organization'], $vkorgs_list)) return false;
 
         return $result['STATUS'] == 200;
     }
 
-    public function sendOrder(array $products): bool
+    public function sendOrder(array $data): bool
     {
-        // TODO: Implement sendOrder() method.
+        $orders = [];
+
+        foreach ($data['orders'] as $order) {
+            $orderInfo = json_decode($order->data, true);
+
+            $orders[] = [
+                'PIN'    => $orderInfo['PIN'],
+                'BRAND'  => $orderInfo['BRAND'],
+                'KWMENG' => $order->count,
+//                'KEYZAK' => $orderInfo['KEYZAK'],
+//                'DBTYP' => 3,
+            ];
+        }
+
+        $params = [
+            'VKORG'     => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'KUNRG'     => $this->getApiKunnr(),
+            'INCOTERMS' => $data['delivery_type_id'],
+            'KUNZA'     => $data['delivery_type_id'] == 1 ? $data['pickup_address_id'] : ['delivery_address_id'],
+            'TEXT_ORD'  => $data['comment'],
+            'ITEMS'     => $orders
+        ];
+
+        $items = $this->query('/ws_order/createTestOrder', $params, 'POST');
+
+        dd($items);
+
+        $this->createProviderOrder($data);
+
+        return true;
+    }
+
+    // Получение списка офисов самовывоза
+    public function getPickupAddresses(): array
+    {
+        $params = [
+            'VKORG'     => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'STRUCTURE' => 1
+        ];
+
+        $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
+
+        $pickups = $result['RESP']['STRUCTURE']['RG_TAB'][0]['EXW_TAB'];
+
+        $results = [];
+
+        foreach ($pickups as $pickup) {
+            $results[$pickup['ID']] = $pickup['NAME'];
+        }
+
+        return $results;
+    }
+
+    //	Получение списка адресов доставки
+    public function getDeliveryToAddresses(): array
+    {
+        $params = [
+            'VKORG'     => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'STRUCTURE' => 1
+        ];
+
+        $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
+
+        $addresses = $result['RESP']['STRUCTURE']['RG_TAB'][0]['ZA_TAB'];
+
+        $results = [];
+
+        foreach ($addresses as $address) {
+            $results[$address['KUNNR']] = $address['ADRESS'];
+        }
+
+        return $results;
+    }
+
+    public function getPaymentTypes(): array
+    {
+        return [];
+    }
+
+    //	Получение списка способов доставки
+    public function getDeliveryTypes(): array
+    {
+        return [
+            '1' => 'Самовывоз',
+            '0' => 'Доставка'
+        ];
+    }
+
+    public function getDateOfShipment(): array
+    {
+        return [];
+    }
+
+    public function getOrdersStatuses(): array
+    {
+        return [];
+    }
+
+    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    {
+        // TODO: Implement searchAnaloguesByBrandAndArticle() method.
     }
 }

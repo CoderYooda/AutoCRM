@@ -8,7 +8,7 @@
                 <div class="box-body">
                     <ul  class="nav select-list-modal ">
                         @foreach($products as $product)
-                            <li id="product_item_{{ $product->id }}" data-article_id="{{ $product->id }}" onclick="{{$request['refer']}}.addProduct(this, 'selectProductDialog');" class="list-item pointer d-flex " >
+                            <li id="product_item_{{ $product->id }}" data-article_id="{{ $product->id }}" onclick="{{$request['refer']}}.items.add(this, 'selectProductDialog');" class="list-item pointer d-flex " >
                                 <div class="ring-ico">
                                     <i class="fa fa-cogs" style="font-size: 22px;"></i>
                                 </div>
@@ -19,7 +19,7 @@
                                 <div class="list-body">
                                     <div class="date">Артикул: {{ $product->article }}</div>
                                     <div class="secondary">Производитель: {{ $product->supplier->name }}</div>
-                                    <div class="secondary">Количество на складе: {{ $product->getEntrancesCount() }}</div>
+                                    <div class="secondary">Количество на складе: {{ $product->available }}</div>
                                 </div>
                             </li>
                         @endforeach

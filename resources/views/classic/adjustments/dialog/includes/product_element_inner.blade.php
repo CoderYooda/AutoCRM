@@ -14,7 +14,7 @@
             <div class="children_element d-flex">
                 <div class="pl-10" style="width: 15%">{{ $entrance['created_at'] }}</div>
                 <div style="width: 23%"><input type="text" onclick="this.select();" name="products[{{ $entrance['id'] }}][{{ $article_id }}][price]" value="{{ $entrance['price'] }}" @isset($adjustment) disabled @endisset></div>
-                <div style="width: 57%"><input type="text" onclick="this.select();" name="products[{{ $entrance['id'] }}][{{ $article_id }}][count]" value="{{ $entrance['count'] - $entrance['released_count'] }}" @isset($adjustment) disabled @endisset></div>
+                <div style="width: 57%"><input type="text" onclick="this.select();" name="products[{{ $entrance['id'] }}][{{ $article_id }}][count]" value="{{ isset($adjustment) ? $entrance['count'] : ($entrance['count'] - $entrance['released_count']) }}" @isset($adjustment) disabled @endisset></div>
                 <div></div>
             </div>
 

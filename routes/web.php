@@ -15,6 +15,11 @@ Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('Pass
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
 
+Route::view('/test', 'shop.emails.success_order');
+
+#Шаблон интренет магазина
+Route::get('shop/index', 'TestController@index')->name('ShopIndex');
+
 #СМС
 Route::post('/sms/confirm', 'SmsController@confirm')->name('SmsConfirmate');
 
@@ -28,6 +33,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     #Пользователь
     Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
+    Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 
     Route::get('/user/password/edit', 'UserController@passwordEdit')->name('UserPassChange');
     Route::post('/user/password/save', 'UserController@passwordStore')->name('UserPassStore');
@@ -82,13 +88,13 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/entrance/store', 'EntranceController@store')->name('StoreEntrance');
         Route::post('/entrance/{id}/get_products', 'EntranceController@getEntranceProducts')->name('GetEntranceProducts');
         Route::post('/entrance/{entrance}/fresh', 'EntranceController@fresh')->name('FreshEntrance');
-        Route::get('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
+        Route::post('/entrance/tabledata', 'EntranceController@tableData')->name('StoreEntranceData');
         Route::post('/entrance/side_info', 'EntranceController@getPartnerSideInfo')->name('GetEntrancePartnerSideInfo');
         Route::post('/entrance/dialog/search', 'EntranceController@dialogSearch')->name('EntranceDialogSearch');
         Route::post('/entrance/{entrance}/select', 'EntranceController@select')->name('SelectEntrance');
 
         #Возвраты поступлений
-        Route::get('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
+        Route::post('/entrance_refunds/tabledata', 'EntranceRefundController@tableData')->name('StoreEntranceRefundData');
         Route::post('/entrance_refunds/store', 'EntranceRefundController@store')->name('StoreEntranceRefund');
         Route::post('/entrance_refunds/side_info', 'EntranceRefundController@getSideInfo')->name('GetEntranceRefundSideInfo');
 
@@ -101,11 +107,16 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
             Route::get('/inn/{inn}', 'InnController@getInfo')->name('getInnInfo');
         });
 
+        Route::post('/analogues', 'StoreController@getAnalogues')->name('searchAnalogues');
+
         Route::namespace('API')->group(function () {
 
             Route::post('/provider_stores/cart/add', 'ProviderStoreController@addCart')->name('ProviderCartAdd');
             Route::post('/provider_stores/cart/set', 'ProviderStoreController@setCart')->name('ProviderCartSet');
+            Route::post('/provider_stores/cart/delete', 'ProviderStoreController@deleteCart')->name('ProviderCartDelete');
+            Route::post('/provider_stores/cart/reset', 'ProviderStoreController@resetCart')->name('ProviderCartReset');
             Route::post('/provider_stores/cart/order', 'ProviderStoreController@orderCart')->name('ProviderCartOrder');
+            Route::post('/provider_stores/cart/provider/delete', 'ProviderStoreController@deleteCartProvider')->name('ProviderCartDeleteProvider');
 
             Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
             Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
@@ -124,7 +135,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shipment/{shipment}/fresh', 'ShipmentController@fresh')->name('FreshShipment');
         Route::post('/shipment/{shipment}/select', 'ShipmentController@select')->name('SelectShipment');
         Route::post('/shipment/dialog/search', 'ShipmentController@dialogSearch')->name('ShipmentDialogSearch');
-        Route::get('/shipments/tabledata', 'ShipmentController@tableData')->name('StoreShipmentData');
+        Route::post('/shipments/tabledata', 'ShipmentController@tableData')->name('StoreShipmentData');
         Route::post('/shipments/side_info', 'ShipmentController@getSideInfo')->name('GetShipmentSideInfo');
 
         #Заказы клиентов
@@ -134,7 +145,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/clientorder/search', 'ClientOrdersController@search')->name('ClientOrderPageSearch');
         Route::post('/clientorder/{id}/delete', 'ClientOrdersController@delete')->name('DeleteClientOrder');
         Route::post('/clientorder/{client_order}/fresh', 'ClientOrdersController@fresh')->name('FreshClientOrder');
-        Route::get('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
+        Route::post('/client_orders/tabledata', 'ClientOrdersController@tableData')->name('StoreClientOrderData');
         Route::post('/client_orders/side_info', 'ClientOrdersController@getSideInfo')->name('GetClientOrderSideInfo');
         Route::get('/client_orders/{clientOrder}/select', 'ClientOrdersController@select')->name('SelectClientOrder');
         Route::post('/client_orders/makeshipped', 'ClientOrdersController@makeShipped')->name('MakeDhippedClientOrder');
@@ -149,14 +160,14 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/providerorder/{id}/select', 'ProviderOrdersController@select')->name('SelectProviderOrder');
         Route::post('/providerorder/{id}/loaditems', 'ProviderOrdersController@loadItems')->name('LoadItemsProviderOrder');
         Route::post('/providerorder/{id}/fresh', 'ProviderOrdersController@fresh')->name('FreshProviderOrder');
-        Route::get('/provider_orders/tabledata', 'ProviderOrdersController@tableData')->name('StoreProviderOrderData');
+        Route::post('/provider_orders/tabledata', 'ProviderOrdersController@tableData')->name('StoreProviderOrderData');
         Route::post('/provider_orders/side_info', 'ProviderOrdersController@getPartnerSideInfo')->name('GetPartnerSideInfo');
 
         #Корректировки
         Route::post('/adjustment/store', 'AdjustmentController@store')->name('StoreAdjustment');// Строгое название
         Route::post('/adjustment/{id}/fresh', 'AdjustmentController@fresh')->name('FreshAdjustment');
         Route::post('/adjustment/{id}/delete', 'AdjustmentController@delete')->name('DeleteAdjustment');
-        Route::get('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
+        Route::post('/adjustment/tabledata', 'AdjustmentController@tableData')->name('StoreAdjustmentData');
         Route::post('/adjustment/side_info', 'AdjustmentController@getSideInfo')->name('GetPartnerSideInfo');
         Route::get('/adjustments/search', 'AdjustmentController@search')->name('SearchAdjustment');
 
@@ -165,7 +176,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Кассовые операции
         Route::get('/warrant/events', 'WarrantController@events')->name('WarrantOrderEvents');// Строгое название
-        Route::post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
+        Route::middleware('requestLimit')->post('/warrant/store', 'WarrantController@store')->name('StoreWarrant');// Строгое название
         Route::post('/warrant/search', 'WarrantController@search')->name('WarrantPageSearch');
         Route::post('/warrant/{id}/delete', 'WarrantController@delete')->name('DeleteWarrant');
         Route::post('/warrant/tabledata', 'WarrantController@tableData')->name('StoreWarrantData');
@@ -176,7 +187,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/refund/store', 'RefundController@store')->name('StoreRefund');// Строгое название
         Route::post('/refund/search', 'RefundController@search')->name('RefundPageSearch');
         Route::post('/refund/{refund}/fresh', 'RefundController@fresh')->name('FreshRefund');
-        Route::get('/refund/tabledata', 'RefundController@tableData')->name('StoreRefundData');
+        Route::post('/refund/tabledata', 'RefundController@tableData')->name('StoreRefundData');
         Route::post('/refund/side_info', 'RefundController@getSideInfo')->name('GetRefundSideInfo');
 
         #Движение средств между кассами
@@ -202,7 +213,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Склады
         Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
-        Route::get('/store/tabledata', 'StoreController@tableData')->name('StoreTableProductData');
+        Route::post('/store/tabledata', 'StoreController@tableData')->name('StoreTableProductData');
         Route::post('/store/new', 'StoreController@store')->name('StoreStore');
         Route::post('/store/{id}/delete', 'StoreController@delete')->name('DeleteStore');
         Route::post('/store/checkstock', 'StoreController@checkstock')->name('CheckStock');
@@ -253,7 +264,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/partner/{id}/delete', 'PartnerController@delete')->name('DeletePartner');
         Route::post('/partner/dialog/search', 'PartnerController@dialogSearch')->name('PartnerDialogSearch');
         Route::post('/partner/{partner}/select', 'PartnerController@select')->name('SelectPartner');
-        Route::get('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
+        Route::post('/partner/tabledata', 'PartnerController@tabledata')->name('PartnerTableData');
         Route::post('/partner/side_info', 'PartnerController@getSideInfo')->name('GetPartnerSideInfo');
         Route::post('/partner/check-phone', 'PartnerController@checkPhone')->name('checkPartnerPhone');
 
@@ -263,16 +274,12 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Сервисы
         Route::get('/services/{service}', 'ServiceController@show')->name('ServiceShow');
-        Route::post('/services/{service}/save', 'ServiceController@save')->name('ServiceSave');
         Route::post('/services/{service}/toggle', 'ServiceController@toggle')->name('ServiceToggle');
         Route::post('/services/updateSort', 'ServiceController@updateSort')->name('ServiceUpdateSort');
 
-        #Телефоны
-        Route::post('/phone/{id}/delete', 'PhoneController@removePhone')->name('RemovePhone');
-
         #Документы
         Route::any('/document', 'DocumentController@document')->name('Document');
-        Route::get('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
+        Route::post('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
         Route::post('/documents', 'DocumentController@store')->name('DocumentStore');
         Route::get('/documents/{document}', 'DocumentController@show')->name('DocumentShow');
         Route::post('/documents/side_info', 'DocumentController@getPartnerSideInfo')->name('GetDocumentPartnerSideInfo');
@@ -298,6 +305,14 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         Route::get('/shop', 'ShopController@index')->name('ShopIndex');
         Route::post('/shop', 'ShopController@update')->name('ShopUpdate');
+        Route::post('/shop/about', 'ShopController@updateAbout')->name('ShopUpdateAbout');
+        Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
+        Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
+        Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+
+        Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
+        Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');
+        Route::post('/shop_orders/store', 'ShopController@store')->name('StoreOrder');
 
         Route::group(['prefix' => 'ws'], function () {
             Route::get('/check-auth', function () {
@@ -328,7 +343,6 @@ Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUse
 
 #Коморка разработчиков
 Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Admin')->name('Admin')->group(function () {
-
 
     Route::get('/', 'DashboardController@index')->name('Dashboard');
     Route::get('/{active_tab}/tabledata', 'DashboardController@tableData')->name('DashboardTable');

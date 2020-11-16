@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class clientorderDialog extends Modal{
 
@@ -17,19 +18,10 @@ class clientorderDialog extends Modal{
 
     init(){
         let object = this;
-        helper.initTabs('cl_tabs');
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 500);
-
-        ///Вешаем обрабочик на поле скидки/////////////
-        let discount = object.root_dialog.querySelector('input[name=discount]');
-        discount.addEventListener("keydown", fn);
-        discount.addEventListener("paste", fn);
-        discount.addEventListener("delete", fn);
-        ////////////////////////////////////////////////
 
         ///Вешаем обработчик на чекбокс/////////////////
-        let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        inpercents.addEventListener("change", fn);
+        // let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
+        // inpercents.addEventListener("change", fn);
         ////////////////////////////////////////////////
 
 
@@ -93,17 +85,28 @@ class clientorderDialog extends Modal{
             }
         });
 
-        // object.root_dialog.getElementsByTagName('form')[0].addEventListener('clientOrderStored',  function(){
-        //     let root_id = object.root_dialog.id;
-        //     object.freshContent(root_id,function(){
-        //         delete window[root_id];
-        //         delete window.dialogs[root_id];
-        //         window.helper.initDialogMethods();
-        //     });
-        // });
-        this.addPhoneMask();
 
-        this.loadItemsIfExists();
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('client_order_tabs' + prefix);
+
+        let header = [
+            {min_with: NaN, width: NaN, name: ' ', table_name: 'pivot_id', type:'hidden'},
+            {min_with: NaN, width: NaN, name: ' ', table_name: 'product_id', type:'hidden'},
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 110, width: 120,    name: 'Производитель',   table_name: 'supplier_name',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 90, width: 90, name: 'Наличие', table_name: 'available', type: 'text'},
+            {min_with: 90, width: 90, name: 'Отгружено', table_name: 'shipped_count', type: 'text'},
+            {min_with: 100, width: 100, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
+        ];
+
+        this.items = new BBlist(this, 'client_order_list' + prefix, 'products', header);
+
+        this.addPhoneMask();
 
         document.addEventListener('click', function(e){
             let elem = document.getElementById('templates');
@@ -162,18 +165,19 @@ class clientorderDialog extends Modal{
         //data.store_id = store_id;
         if(object.refer){
             data.refer = object.refer;
+            data.inner = 1;
         }
 
         window.axios({
             method: 'post',
             url: 'clientorder/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
             object.addPhoneMask();
             console.log('Вставили html');
-        }).catch(function (error) {
-            console.log(error);w
+        }).catch(error => {
+            console.log(error);
         }).then(function () {
             callback();
         });
@@ -240,9 +244,12 @@ class clientorderDialog extends Modal{
         if(elem !== null){
             elem.closest('.dropdown').classList.remove('show');
         }
-        object.root_dialog.querySelector('#' + type).value = value;
+        let input = object.root_dialog.querySelector('#' + type);
+        input.value = value;
+        event = document.createEvent("HTMLEvents");
+        event.initEvent("change", true, true);
+        input.dispatchEvent(event);
         object.root_dialog.querySelector('#' + type + '_text').innerHTML = text;
-        object.recalculate();
     }
 
     getPayment(){
@@ -314,7 +321,7 @@ class clientorderDialog extends Modal{
             params += '&refer='+refer;
         }
         if(ostatok != null){
-            params += '&ostatok='+(ostatok - summ);
+            params += '&ostatok='+(ostatok);
         }
         if(refer_id != null){
             params += '&refer_id='+refer_id;
@@ -331,7 +338,7 @@ class clientorderDialog extends Modal{
         container.innerHTML = Number(count).toFixed(2);
     }
 
-    setItogo(count){
+    setTotal(count){
         let itogo_prices = this.root_dialog.querySelectorAll('.itogo_price');
         [].forEach.call(itogo_prices, function(itogo_price){
             itogo_price.innerHTML = Number(count).toFixed(2);
@@ -529,7 +536,7 @@ class clientorderDialog extends Modal{
     makeShipped(elem){
         if(window.isXHRloading) return;
         window.axform.send(elem, (resp) => {
-            if(resp.status == 200){
+            if(resp.status === 200){
                 if(resp.data &&  resp.data.shipment_id){
                     this.finitaLaComedia(true);
                     window.openDialog('shipmentDialog', '&shipment_id=' + resp.data.shipment_id);
@@ -581,16 +588,9 @@ class clientorderDialog extends Modal{
 
     changeOrderStatus(element) {
 
-        // let target_element = this.current_dialog.querySelector('#return_money');
+        let target_element = this.current_dialog.querySelector('[name="status"]');
 
-        // console.log(element.options[element.selectedIndex].value);
-        //
-        // if(element.options[element.selectedIndex].value == 'canceled') {
-        //     target_element.classList.remove('d-none');
-        // }
-        // else {
-        //     target_element.classList.add('d-none');
-        // }
+        target_element.value = element.options[element.selectedIndex].value;
     }
 
     getPriceFromServer(id, input) {

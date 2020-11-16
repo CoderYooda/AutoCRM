@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\DeliveryAddress;
 use App\Http\Controllers\HelpController;
 use App\Models\System\Image;
 use App\Traits\OwnedTrait;
+use App\Traits\Phoneable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +14,7 @@ use Auth;
 
 class Partner extends Model
 {
-    use OwnedTrait, SoftDeletes;
+    use OwnedTrait, SoftDeletes, Phoneable;
 
     protected $guarded = [];
 
@@ -21,7 +23,6 @@ class Partner extends Model
         'user_id',
         'category_id',
         'store_id',
-        'foundstring',
         'basePhone',
         'type',
         'fio',
@@ -42,6 +43,16 @@ class Partner extends Model
         'rs',
         'opf'
     ];
+
+    public function freshFoundString()
+    {
+        $phones_str = '';
+        foreach($this->phones as $phone){
+            $phones_str .= $phone->number;
+        }
+
+        $this->foundstring = mb_strtolower(str_replace(['(', ')', ' ', '-', '+'], '', $this->fio . $this->companyName . $phones_str . $this->barcode));
+    }
 
     public function vehicles()
     {
@@ -94,6 +105,34 @@ class Partner extends Model
         return $this->belongsToMany(Phone::class, 'partner_phone');
     }
 
+    public function nameLetters()
+    {
+        $words = explode(' ', $this->fio);
+
+        $letters = '';
+
+        foreach ($words as $word) {
+            $letters .= mb_substr($word, 0, 1);
+        }
+
+        return $letters;
+    }
+
+    public function getSurnameAttribute()
+    {
+        return explode(' ', $this->fio)[0];
+    }
+
+    public function getNameAttribute()
+    {
+        return explode(' ', $this->fio)[1] ?? '0';
+    }
+
+    public function getMiddlenameAttribute()
+    {
+        return explode(' ', $this->fio)[2] ?? '';
+    }
+
     public function salarySchemas()
     {
         return $this->belongsToMany(SalarySchema::class, 'salary_schemas_partner')->withPivot(['value', 'h_m_value', 'salary_schema_id', 'comment']);
@@ -101,18 +140,9 @@ class Partner extends Model
 
     public function firstActivePhoneNumber()
     {
-        $phones = $this->phones;
-        $num_out = 'Основной номер не указан';
-        if($phones){
-            $number = $phones->where('main', true)->first();
-            if($number){
-                $num_out = phone_format( $number->number);
-            }
-        }
-        if(!$num_out){
-            $num_out = 'Ошибка форматирования номера';
-        }
-        return $num_out;
+        $phone = $this->phones()->where('main', true)->first();
+
+        return $phone->number ?? '';
     }
 
     public function getCutSurnameAttribute()
@@ -123,7 +153,6 @@ class Partner extends Model
 
         foreach ($arr as $key => $value)
         {
-
             if(!$key) $return_name .= ($value . ' ');
             else $return_name .= (mb_substr($value, 0, 1) . '.');
         }
@@ -232,28 +261,30 @@ class Partner extends Model
                     $pre_summ = $pfs_summ / 100 * $setting->pivot->value;
 
                     $summ += $pre_summ;
-
-                    $salary_data[] = [
-                        'company_id' => $this->company_id,
-                        'partner_id' => $this->id,
-                        'date' => Carbon::now(),
-                        'summ' => $pre_summ,
-                        'comment' => 'awdawd'
-                    ];
-
+                    if(doubleval($pre_summ) !== 0.0){
+                        $salary_data[] = [
+                            'company_id' => $this->company_id,
+                            'partner_id' => $this->id,
+                            'date' => Carbon::now(),
+                            'summ' => $pre_summ,
+                            'comment' => 'awdawd'
+                        ];
+                    }
                     break;
                 case 'percent':
                     $percent = $summ / 100 * $setting->pivot->value;
 
                     $pre_summ = $setting->isPositive ? $percent : -$percent;
                     $summ += $pre_summ;
-                    $salary_data[] = [
-                        'company_id' => $this->company_id,
-                        'partner_id' => $this->id,
-                        'date' => Carbon::now(),
-                        'summ' => $pre_summ,
-                        'comment' => 'awdawd'
-                    ];
+                    if(doubleval($pre_summ) !== 0.0) {
+                        $salary_data[] = [
+                            'company_id' => $this->company_id,
+                            'partner_id' => $this->id,
+                            'date' => Carbon::now(),
+                            'summ' => $pre_summ,
+                            'comment' => 'awdawd'
+                        ];
+                    }
                     break;
                 case 'oklad':
                 case 'fixed':
@@ -263,15 +294,17 @@ class Partner extends Model
                     ]);
                     $summ_per_hour = $setting->pivot->value / $setting->pivot->h_m_value;
 
-                    $pre_summ = $setting->isPositive ? $summ_per_hour * $hours : -$summ_per_hour * $hours;
+                    $pre_summ = $setting->isPositive ? $summ_per_hour * $hours : - $summ_per_hour * $hours;
                     $summ += $pre_summ;
-                    $salary_data[] = [
-                        'company_id' => $this->company_id,
-                        'partner_id' => $this->id,
-                        'date' => Carbon::now(),
-                        'summ' => $pre_summ,
-                        'comment' => 'awdawd'
-                    ];
+                    if(doubleval($pre_summ) !== 0.0) {
+                        $salary_data[] = [
+                            'company_id' => $this->company_id,
+                            'partner_id' => $this->id,
+                            'date' => Carbon::now(),
+                            'summ' => $pre_summ,
+                            'comment' => 'awdawd'
+                        ];
+                    }
                     break;
             }
         }
@@ -298,5 +331,15 @@ class Partner extends Model
         }
 
         return $hours;
+    }
+
+    public function deliveryAddresses()
+    {
+        return $this->hasMany(DeliveryAddress::class, 'partner_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'partner_id', 'id');
     }
 }

@@ -8,19 +8,22 @@ class Page {
     }
 
     readData(target = null){
+
         let target_elem = document.getElementById(target);
         if(target_elem){
-            let data;
+
+            let data = target_elem.querySelector('[data-data]');
             if(target_elem.hasAttribute('data-data')){
+                console.log(1);
                 data = target_elem;
-            } else {
-                data = target_elem.querySelector('[data-data]');
             }
+
             if(data && data.dataset.data){
                 this.data = JSON.parse(data.dataset.data);
                 data.removeAttribute('data-data');
             }
+            return true;
         }
     }
 }
-export default Page
+export default Page;

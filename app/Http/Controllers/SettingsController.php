@@ -243,13 +243,18 @@ class SettingsController extends Controller
                 $partner->type = 0;
                 $partner->company_id = Auth::user()->company->id;
                 $partner->store_id = Auth::user()->getStoreFirst()->id;
-                $partner->basePhone = $employee['phone'];
                 $partner->category_id = 5;
                 $partner->fio = $employee['fio'];
                 $partner->save();
 
-                $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
-                $partner->phones()->sync($phones->pluck('id'));
+                $phones = [
+                    [
+                        'number' => $employee['phone'],
+                        'main' => true
+                    ]
+                ];
+
+                $partner->upsertPhones($phones);
 
                 if($employee['access']){
                     $password = rand(10000, 99999);
@@ -276,11 +281,17 @@ class SettingsController extends Controller
                 $partner = new Partner();
                 $partner->type = 2;
                 $partner->company_id = Auth::user()->company->id;
-                $partner->basePhone = $partn['phone'];
                 $partner->category_id = 6;
                 $partner->fio = $partn['fio'];
                 $partner->companyName = $partn['companyName'];
                 $partner->save();
+
+                $phones = [
+                    [
+                        'number' => $employee['phone'],
+                        'main' => false
+                    ]
+                ];
 
                 $phones = PhoneController::upsertPhones(['company_id' => Auth::user()->company->id, 'phones_main' => 0, 'phones' => [['number' => $employee['phone']]]]);
                 $partner->phones()->sync($phones->pluck('id'));

@@ -19,7 +19,7 @@ class AdjustmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => ['string', 'max:1024'],
+            'comment' => ['nullable', 'string', 'max:1024'],
             'products' => ['required'],
             'products.*' => [new CheckExistEntrances, new CheckExistArticles],
             'products.*.*.count' => ['required', 'integer', 'between:0,999', new CheckEntranceNewCount],

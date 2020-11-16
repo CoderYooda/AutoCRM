@@ -71,20 +71,47 @@ class ScheduleController extends Controller
             $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
             $dates = $request->data;
             Schedule::whereBetween('date', [$start_date, $end_date])->whereIn('partner_id', $request->resources)->delete();
+
+            $sch = [];
+            $errors = [];
             foreach ($dates as $date_str => $date) {
                 foreach ($date as $resuorce_str => $resource) {
                     if ($resource != null) {
+
+
+                        #Инвертирование диапазона если start больше чем end
+                        foreach($resource as $key => $interval){
+                            $start = $interval['start'];
+                            $end = $interval['end'];
+                            if(Carbon::parse($start) > Carbon::parse($end)){
+                                $resource[$key]['start'] = $end;
+                                $resource[$key]['end'] = $start;
+                            }
+                        }
+                        #Проверка на пересечение диапазонов
+                        foreach($resource as $key => $interval){
+                            if(isset($resource[$key + 1])){
+                                if(Carbon::parse($interval['end']) > Carbon::parse($resource[$key + 1]['start']) ){
+                                    $resource[$key]['valid'] = false;
+                                }
+                            }
+                        }
+
                         foreach ($resource as $schedule) {
-                            Schedule::create([
-                                'company_id' => Auth::user()->company->id,
-                                'partner_id' => $schedule['partner_id'],
-                                'dayType' => $schedule['dayType'],
-                                'dayTypeId' => $schedule['dayTypeId'],
-                                'dayTypeText' => $schedule['dayTypeText'],
-                                'date' => $date_str,
-                                'start' => $schedule['start'],
-                                'end' => $schedule['end']
-                            ]);
+                            if(isset($schedule['valid']) && !$schedule['valid']) {
+                                $errors[] = $schedule;
+                            } else {
+                                $sch[] = Schedule::create([
+                                    'company_id' => Auth::user()->company->id,
+                                    'partner_id' => $schedule['partner_id'],
+                                    'dayType' => $schedule['dayType'],
+                                    'dayTypeId' => $schedule['dayTypeId'],
+                                    'dayTypeText' => $schedule['dayTypeText'],
+                                    'date' => $date_str,
+                                    'start' => $schedule['start'],
+                                    'end' => $schedule['end']
+                                ]);
+                            }
                         }
                     }
                 }

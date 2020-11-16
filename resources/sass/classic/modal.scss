@@ -32,10 +32,15 @@
 #croppr-container{
     max-height: 500px!important;
     min-height: 500px;
+    display: flex;
+    .croppr-container{
+        margin: auto;
+    }
 }
 #croppr-container img{
-    max-height: 500px!important;
-    min-height: 500px;
+    //max-height: 500px!important;
+    //min-height: 500px;
+    object-fit: contain;
 }
 .modal-content {
     position: relative;

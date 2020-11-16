@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Models\Article;
+use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -14,6 +15,7 @@ use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -22,8 +24,7 @@ class CategoryController extends Controller
     public static $breadcrumbs;
 
     public function _construct(){
-        $status = 500;
-        $message = 'Внутренняя ощибка сервера';
+
     }
 
     public function index()
@@ -38,36 +39,40 @@ class CategoryController extends Controller
         $cat_info = [];
         $cat_info['route'] = 'StoreIndex';
         $cat_info['params'] = ['active_tab' => 'store'];
+        $data = null;
+
+        $request['page'] = 1;
 
         switch ($request['class']) {
             case 'store':
                 $cat_info['root_id'] = 2;
+                $data = ProductController::getArticles($request);
                 break;
             case 'partner':
                 $cat_info['root_id'] = 3;
+                $data = PartnerController::getPartners($request);
                 break;
         }
+        $data = json_encode($data->toArray());
         $class = $request['class'];
-        if($request->expectsJson()){
 
-           $response =  [];
-           $response['html'] = view(get_template() . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
+        $request['category_id'] = $request['category_id'] ? $request['category_id'] : $cat_info['root_id'];
 
-           if($request['class'] == 'partner'){
-               $partners = PartnerController::getPartners($request);
-               $response['tableData'] = $partners;
-           }
+        $response = [];
+        $response['html'] = view(get_template() . '.category.aside-list', compact('categories', 'cat_info', 'request', 'class') )->render();
+        $response['data'] = $data;
+        $response['breadcrumbs'] = self::loadBreadcrumbs($request);
 
-            return response()->json($response);
-        } else {
-            return redirect()->back();
+        if($request['class'] == 'partner'){
+            $partners = PartnerController::getPartners($request);
+            $response['tableData'] = $partners;
         }
+
+        return response()->json($response);
     }
 
-    public function loadBreadcrumbs(Request $request){
-
+    public static function loadBreadcrumbs(Request $request){
         self::$breadcrumbs = collect();
-
         if($request['search'] != '' ){
             $html = '<ol class="breadcrumb nav m-0"><li>Поиск по складу</li></ol>';
             return response()->json([
@@ -75,9 +80,6 @@ class CategoryController extends Controller
             ]);
         }
 
-        if($request['category_id'] === 'null' || $request['category_id'] == null  && $request['root_category'] != null){
-            $request['category_id'] = $request['root_category'];
-        }
         $html = '<ol class="breadcrumb nav m-0">';
         $category = Category::owned()->where('id', $request['category_id'])->first();
         self::rec($category, $request['root_category']);
@@ -89,20 +91,12 @@ class CategoryController extends Controller
             }
         }
         $html .= '</ol>';
-        if($request->expectsJson()){
-            return response()->json([
-                'html' => $html
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        return $html;
     }
 
     public static function rec($category, $root){
         self::$breadcrumbs->prepend($category);
-
         $parent = $category->parent()->first();
-
         if($parent != null && $parent->id != 1 && $category->id != $root){
             self::rec($parent, $root);
         }
@@ -110,17 +104,17 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request)
     {
+        PermissionController::canByPregMatch($request['id'] ? 'Редактировать категории' : 'Создавать категории');
+
         if($request['id'] == $request['category_id']){
             return response()->json([
                 'system_message' => view('messages.category_loop')->render(),
             ], 422);
         }
 
-        PermissionController::canByPregMatch($request['id'] ? 'Редактировать категории' : 'Создавать категории');
-
         $type = null;
         if($request['category_id'] != null){
-            $parent = Category::owned()->where('id', (int)$request['category_id'])->first();
+            $parent = Category::find($request['category_id']);
             if($parent && $parent->type != null){
                 $type = $parent->type;
             }
@@ -128,14 +122,8 @@ class CategoryController extends Controller
 
         $category = Category::firstOrNew(['id' => (int)$request['id']]);
 
-        if(!$category->locked){
-            $category->fill($request->all());
-            $category->creator_id = Auth::user()->id;
-            $category->company_id = Auth::user()->company()->first()->id;
-            $category->locked = false;
-            $category->type = $type;
-            $category->save();
-        } else {
+        if($category->locked){
+
             return response()->json([
                 'id' => $category->id,
                 'type' => 'error',
@@ -143,20 +131,20 @@ class CategoryController extends Controller
             ], 200);
         }
 
+        $category->slug = Str::slug($request->name . '-' . $category->id);
+
+        $category->fill($request->except('image'));
+        $category->creator_id = Auth::id();
+        $category->company_id = Auth::user()->company_id;
+        $category->type = $type;
+
+        $category->save();
+
         UA::makeUserAction($category, 'create');
-
-        //$categories = self::getCategories($request);
-        //$articles = ProductController::getArticles($request);
-
-        //$content = view('product.elements.table_container', compact('articles', 'categories'))->render();
-
-        //$content = view('category.list', compact('articles', 'categories'))->render();
 
         if($request->expectsJson()){
             return response()->json([
                 'message' => 'Категория сохранена',
-//                'container' => $category->getRootType() . '_categories',
-//                'html' => $content,
                 'event' => 'CategoryStored'
             ]);
         } else {
@@ -196,27 +184,27 @@ class CategoryController extends Controller
         ], $this->status);
     }
 
-    public static function categoryDialog($request)
+    public static function categoryDialog(Request $request)
     {
-        $tag = 'categoryDialog';
+        $category = Category::find($request['category_id']);
 
-        if($request['category_id']){
-            $tag .= $request['category_id'];
-            $category = Category::owned()->where('id', (int)$request['category_id'])->first();
-            $parent = Category::owned()->where('id', $category->category_id)->first();
-        } else {
-            $category = null;
-            $parent = null;
+        $parent = null;
+
+        if($category) {
+            $parent = Category::find($category->category_id);
         }
+
+        $class = 'categoryDialog' . ($category->id ?? '');
 
         if($request['category_select']){
-            $parent = Category::owned()->where('id', $request['category_select'])->first();
+            $parent = Category::find($request['category_select']);
         }
 
+        $view = view(get_template() . '.category.dialog.form_category', compact('category', 'parent', 'class', 'request'));
 
         return response()->json([
-            'tag' => $tag,
-            'html' => view(get_template() . '.category.dialog.form_category', compact('category', 'parent', 'request'))->render()
+            'tag' => $class,
+            'html' => $view->render()
         ]);
     }
 
@@ -368,6 +356,7 @@ class CategoryController extends Controller
         if($parent == null){
             abort(404);
         }
+
         $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
         $categories['parent'] = $parent;
         $categories['parent_root'] = $parent->id == $root_category ? true : false;

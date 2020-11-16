@@ -1,25 +1,37 @@
 class AxForm{
 
-    send(elem, callback = null, url = null, dataset = null, config = null){
+    send(elem, callback = null, url = null, dataset = null, config = null, files = null){
 
-        togglePreloader(elem, true);
-
-        let object = this;
-        let dialog = elem.closest(".dialog");
         window.event.preventDefault();
+
+        if(elem) togglePreloader(elem, true);
+
+        let dialog = elem.closest(".dialog");
         let form = elem.closest("form");
         let data = new FormData(form);
+
         if(dataset != null){
             for (const [key, value] of Object.entries(dataset)) {
                 data.append(key, value);
             }
         }
 
+        if(files){
+            files.forEach((file, index) => {
+                data.append('files[' + index + ']', file);
+            });
+        }
+
         if(url == null){
             url = form.getAttribute("action");
         }
 
+        helper.removeClassesByClass('is-invalid');
+
         axios({
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
             method: form.getAttribute("method"),
             url: url,
             data: data,
@@ -104,14 +116,20 @@ class AxForm{
                         }
                         iteration++;
                     });
+
                     try{
                         var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
                     } catch (e) {
-                        var el = null
+                        var el = null;
                     }
 
                     if(el === null){
-                        var el = elem.closest('form').querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+
+                        var el = elem.closest('form').querySelector('[data-error="' + error_prepared + '"]');
+
+                        if(el == null) {
+                            var el = elem.closest('form').querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
+                        }
                     }
 
                     if(el !== null && el.closest(".tab-pane")){
@@ -137,9 +155,9 @@ class AxForm{
             // if(error.response && messages){
             //
             // }
-            if(callback != null) callback(error.response);
+            if(callback != null) callback(error);
         }).finally(() => {
-            togglePreloader(elem, false);
+            if(elem) togglePreloader(elem, false);
         });
     }
 }

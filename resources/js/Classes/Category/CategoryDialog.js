@@ -34,7 +34,7 @@ class CategoryDialog extends Modal{
     }
 
     openSelectCategoryDialog(category_selected = null){
-        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_selected=' + category_selected);
+        window.openDialog('selectCategory', '&refer=' + this.root_dialog.id + '&category_id=' + category_selected);
     }
 
     save(elem){
@@ -68,6 +68,37 @@ class CategoryDialog extends Modal{
         }).finally(function () {
             window.isXHRloading = false;
         });
-    };
+    }
+
+    changeFile(input) {
+
+        let data = new FormData();
+
+        data.append('image[]', input.files[0]);
+        data.append('refer', 'shop');
+
+        let image_element = this.current_dialog.querySelector('.image');
+        let image_input = this.current_dialog.querySelector('[name="image_id"]');
+        let preloader_element = image_input.closest('div');
+
+        togglePreloader(preloader_element, true);
+
+        axios({
+            method: 'POST',
+            url: '/system/image_upload',
+            data: data
+        }).then((response) => {
+
+            let image_id = response.data.images[0].id;
+            let image_url = response.data.images[0].url;
+
+            image_element.src = image_url;
+
+            image_input.value = image_id;
+        })
+            .finally(() => {
+                togglePreloader(preloader_element, false);
+            });
+    }
 }
 export default CategoryDialog;

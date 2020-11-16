@@ -1,0 +1,27 @@
+.form_edit {
+
+    .form-group-flex {
+
+        font-size: 16px !important;
+        display: block !important;
+        margin-bottom: 10px !important;
+
+        div {
+            position: relative !important;
+        }
+
+        label {
+            line-height: 40px !important;
+        }
+
+        input, select, textarea {
+            float: unset !important;
+            width: 88% !important;
+            letter-spacing: 0.10em !important;
+        }
+    }
+
+    .save_button {
+        margin-left: unset !important;
+    }
+}

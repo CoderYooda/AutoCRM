@@ -17,7 +17,21 @@ interface ProviderInterface
 
     public function isActivated(): bool;
 
+    public function getPickupAddresses(): array;
+
+    public function getDeliveryToAddresses(): array;
+
+    public function getPaymentTypes(): array;
+
+    public function getDeliveryTypes(): array;
+
+    public function getDateOfShipment(): array;
+
     public function getSelectFieldValues(string $field_id): array;
+
+    public function getOrdersStatuses(): array;
+
+    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array ;
 
     public function checkConnect(array $fields): bool;
 

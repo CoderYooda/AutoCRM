@@ -27,8 +27,8 @@ class Handler extends ExceptionHandler
         $exc->message = $exception->getMessage();
         $exc->session = serialize(session()->all());
         if($user && $user !== null){
-            $exc->company_id = $user->id;
-            $exc->user_id = $user->company->id;
+            $exc->company_id = $user->company_id;
+            $exc->user_id = $user->id;
         }
         $exc->save();
 

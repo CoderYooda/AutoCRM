@@ -163,7 +163,6 @@ class RegisterController extends Controller
         foreach($partner->phones as $phone){
             $phones_str .= $phone->number;
         }
-        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str));
         $partner->save();
 
         Company::flushEventListeners();

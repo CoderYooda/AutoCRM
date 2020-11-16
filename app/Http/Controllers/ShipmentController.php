@@ -38,6 +38,7 @@ class ShipmentController extends Controller
         $tag = 'shipmentDialog' . ($shipment->id ?? '');
 
         if($clientorder) {
+
             $shipment = new Shipment();
             $shipment->id = null;
             $shipment->partner = $clientorder->partner;
@@ -57,9 +58,19 @@ class ShipmentController extends Controller
             $shipment->summ = $shipment->itogo = $itogo;
         }
 
+        $articles = [];
+        if($shipment){
+            $articles = $shipment->articles;
+            foreach($articles as $article){
+                $article->available = $article->getEntrancesCount();
+                $article->supplier_name = $article->supplier->name;
+//                $article->count = $article->shipment_count;
+            }
+        }
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment','request'))
+            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment','request', 'articles'))
                 ->render()
         ]);
     }
@@ -77,6 +88,7 @@ class ShipmentController extends Controller
     private static function selectShipmentInner($request)
     {
         $class = 'selectShipmentDialog';
+
         $shipments = Shipment::with('articles')->where('company_id', Auth::user()->company->id)
             ->when(isset($request['string']), function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
@@ -107,17 +119,23 @@ class ShipmentController extends Controller
 
         $refunded_count = [];
 
-        foreach ($shipment->refunds as $refund) {
-
-            foreach ($refund->articles as $product) {
-                $refunded_count[$product->id] = $product->count;
-            }
-        }
+//        foreach ($shipment->refunds as $refund) {
+//
+//            foreach ($refund->articles as $product) {
+//                $refunded_count[$product->id] = $product->count;
+//            }
+//        }
 
         if(!$shipment){
             return response()->json([
                 'message' => 'Продажа не найдена, возможно она была удалёна',
             ], 422);
+        }
+
+        foreach($products as $product){
+            $product->shipment_count = $shipment->getProductCount($product->id);
+            $product->refunded_count = $shipment->getRefundedCount($product->id);
+            $product->count = $product->shipment_count - $product->refunded_count;
         }
 
         return response()->json([
@@ -158,7 +176,14 @@ class ShipmentController extends Controller
         $request['refer'] = is_array($request['refer'] ) ? null : $request['refer'];
         $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
-        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request'))
+
+        $articles = $shipment->articles;
+        foreach($articles as $article){
+            $article->available = $article->getEntrancesCount();
+            $article->supplier_name = $article->supplier->name;
+        }
+
+        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request', 'articles'))
             ->render();
 
         return response()->json([
@@ -295,8 +320,6 @@ class ShipmentController extends Controller
 
             #Добавляем к балансу контакта
             $shipment->partner->subtraction($shipment->itogo);
-
-            $shipment->foundstring = str_replace(["-", "!", "?", ".", ""], "", trim($shipment->id . $shipment->partner->foundstring));
 
             if ($request['created_at']) {
                 $shipment->created_at = $request['created_at'];

@@ -19,10 +19,10 @@
                 </td>
                 <td>
                    <div class="storage_store_container">
-                       <input name="storage[{{ $store->id }}][storage_zone]" value=" @if(isset($product)){{          $store->getArticleStorageZone($product->id) }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_1" type="text">
-                       <input name="storage[{{ $store->id }}][storage_rack]" value=" @if(isset($product)){{          $store->getArticleStorageRack($product->id) }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_2" type="text">
-                       <input name="storage[{{ $store->id }}][storage_vertical]" value=" @if(isset($product)){{      $store->getArticleStorageVert($product->id) }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_3" type="text">
-                       <input name="storage[{{ $store->id }}][storage_horizontal]" value=" @if(isset($product)){{    $store->getArticleStorageHor($product->id)  }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_4" type="text">
+                       <input name="storage[{{ $store->id }}][storage_zone]" value=" @if(isset($product)){{          $product->getStorageZone($store->id) }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_1" type="text">
+                       <input name="storage[{{ $store->id }}][storage_rack]" value=" @if(isset($product)){{          $product->getStorageRack($store->id) }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_2" type="text">
+                       <input name="storage[{{ $store->id }}][storage_vertical]" value=" @if(isset($product)){{      $product->getStorageVert($store->id) }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_3" type="text">
+                       <input name="storage[{{ $store->id }}][storage_horizontal]" value=" @if(isset($product)){{    $product->getStorageHor($store->id)  }}@endif" onclick="this.select()" maxlength="2" class="storage_store bb_4" type="text">
                    </div>
                 </td>
             </tr>

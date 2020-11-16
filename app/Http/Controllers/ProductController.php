@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Model\Catalog\Product;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Auth;
-use App\Http\Controllers\Providers\TrinityController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use stdClass;
 
 class ProductController extends Controller
 {
     private static $root_category = 2;
+
+    /** @var Article $product */
+    public static $product = null;
 
     public static function chequeDialog(Request $request)
     {
@@ -99,7 +100,7 @@ class ProductController extends Controller
     {
         if ($request['data'] != null && count($request['data']) > 0) {
             if ($request['type'] == 'providerorder') {
-                $providerorder = ProviderOrder::owned()->where('id', $request['providerorder_id'])->first();
+                $providerorder = ProviderOrder::find($request['providerorder_id']);
                 $products = $providerorder->articles()->whereIn('article_id', array_column($request['data'], 'id'))->get();
                 foreach ($products as $product) {
                     foreach ($request['data'] as $item) {
@@ -122,64 +123,42 @@ class ProductController extends Controller
 
         }
 
+        $product = Article::find($request['article_id']);
 
-        if ($request['type'] && $request['type'] == 'clientOrder_quick') {
-
-        } else {
-            $article = Article::find($request['article_id']);
-
-            if (!$article) {
-                return response()->json([
-                    'message' => 'Товар не найден, возможно он был удалён',
-                ], 422);
-            }
-            if (!$article->canUserTake()) {
-                return response()->json([
-                    'message' => 'Доступ к этому товару запрещен.',
-                ], 422);
-            }
+        if (!$product) {
+            return response()->json([
+                'message' => 'Товар не найден, возможно он был удалён',
+            ], 422);
         }
 
-        if ($request['type'] && $request['type'] === 'shipment') {
-            $product = $article;
-
-            $content = view(get_template() . '.shipments.dialog.product_element', compact('product','request'))->render();
-
-        } elseif ($request['type'] && $request['type'] === 'clientOrder') {
-            $product = $article;
-            $content = view(get_template() . '.client_orders.dialog.product_element', compact('product','request'))->render();
-
-        } elseif ($request['type'] && $request['type'] === 'providerOrder') {
-            $product = $article;
-            $content = view(get_template() . '.provider_orders.dialog.product_element', compact('product', 'request'))->render();
-
-        } elseif ($request['type'] && $request['type'] === 'clientOrder_quick') {
-            $product = new StdClass();
-            $product->id = $request['article_id'];
-            $product->count = $request['count'];
-            $product->price = 0;
-            $product->total = 0;
-            $content = view(get_template() . '.client_orders.dialog.quick_product_element', compact('product', 'request'))->render();
-
-        } elseif ($request['type'] && $request['type'] == 'adjustment') {
-            $product = $article;
-            $content = view(get_template() . '.adjustments.dialog.product_element', compact('product', 'request'))->render();
-
-        } else {
-            $product = $article;
-
-            $content = view(get_template() . '.entrance.dialog.product_element', compact('product', 'request'))->render();
-
+        if (!$product->canUserTake()) {
+            return response()->json([
+                'message' => 'Доступ к этому товару запрещен.',
+            ], 422);
         }
+
+        $paths = [
+            'shipment' => '.shipments.dialog.product_element',
+            'clientOrder' => '.client_orders.dialog.product_element',
+            'providerOrder' => '.provider_orders.dialog.product_element',
+            'adjustment' => '.adjustments.dialog.product_element',
+            'order' => '.shop_orders.dialog.product_element'
+        ];
+
+        //Берем путь из массива или если нет, то стандартный
+        $path = $paths[$request['type']] ?? '.entrance.dialog.product_element';
+
+        $content = view(get_template() . $path, compact('product', 'request'));
+
         return response()->json([
             'product' => $product,
-            'html' => $content
+            'html' => $content->render()
         ]);
     }
 
     public static function productDialog(Request $request)
     {
-        $product = Article::with('specifications')->find($request['product_id']);
+        $product = Article::with('specifications', 'entrances', 'stores')->find($request['product_id']);
 
         $tag = 'productDialog' . ($product->id ?? '');
 
@@ -189,15 +168,25 @@ class ProductController extends Controller
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
-        $company = Auth::user()->company;
-
         $stores = Store::owned()->get();
+
+        $company = Auth::user()->company;
 
         $category = Category::find($category_select);
 
+        $shopFields = [
+            'sp_main' => [
+                'name' => 'Показать на главной странице',
+            ],
+            'sp_stock' => [
+                'name' => 'Акционный товар',
+                'onclick' => 'toggleStock'
+            ],
+        ];
+
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'stores', 'request'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields'))->render(),
             'product' => $product
         ]);
     }
@@ -215,18 +204,16 @@ class ProductController extends Controller
     private static function selectProductInner($request)
     {
         $class = 'selectProductDialog';
-        $stores = Store::owned()->get();
         $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
-        $products = Article::owned()->where(function ($q) use ($request) {
+        $products = Article::with('stores', 'supplier')->owned()->where(function ($q) use ($request) {
             if ($request['store_id'] != null) {
                 $q->whereHas('stores', function ($query) use ($request) {
                     return $query->where('store_id', $request['store_id']);
                 });
             }
         })
-
             ->when($request['string'], function($q) use ($request){
                 $q->where('foundstring', 'LIKE', '%' .  str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
             })
@@ -236,20 +223,38 @@ class ProductController extends Controller
                     $q->where('category_id', $request['category_id']);
                 });
             })
-            ->orderBy('created_at', 'ASC')
+            ->latest()
             ->where('deleted_at', null)
             ->limit(30)
             ->get();
+
+        $availableCounts = DB::table('article_entrance')
+            ->whereIn('article_id', $products->pluck('id'))
+            ->selectRaw('article_id, SUM(count) as count, SUM(released_count) as released_count')
+            ->get();
+
+        foreach ($products as $product){
+
+            $availableCount = $availableCounts->where('article_id', $product->id)->first();
+
+            $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
+            $product->price = $product->getPrice();
+            $product->supplier_name = $product->supplier->name;
+            $product->store_count = $product->available;
+            $product->product_id = $product->id;
+            $product->shipped_count = 0;
+        }
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
         $view = $request['inner'] ? 'select_product_inner' : 'select_product';
 
-        $content = view(get_template() . '.product.dialog.' . $view, compact('products', 'stores', 'categories', 'class', 'request'));
+        $content = view(get_template() . '.product.dialog.' . $view, compact('products', 'categories', 'class', 'request'));
 
         return response()->json([
             'tag' => 'selectProductDialog',
-            'html' => $content->render()
+            'html' => $content->render(),
+            'products' => $products,
         ]);
     }
 
@@ -272,8 +277,6 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $supplier = Supplier::find($request['supplier_id']);
-
             $article = Article::with('specifications')->firstOrNew($compare);
             if ($article->exists) {
                 $this->message = 'Товар обновлен';
@@ -283,18 +286,16 @@ class ProductController extends Controller
                 $this->message = 'Товар сохранён';
             }
 
+            self::$product = $article;
+
             #Кроссы
-            $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
-            $article->sp_name = $request->shop['name'];
-            $article->sp_desc = $request->shop['desc'];
-            $article->foundstring = Article::makeFoundString($request->article . $supplier->name . $request->name . $request->barcode);
+
+            $article->fillShopFields($request);
+
+            $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
-
-            if($request->hasFile('shop.image')) {
-                $article->uploadImage($request->shop['image'], true, false);
-            }
 
             if(isset($request->shop['specifications'])) {
 
@@ -319,18 +320,13 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
-                    $shop_settings = $request->shop['product_settings'][$store->id];
-
                     $store->articles()->syncWithoutDetaching($article->id);
 
                     $pivot_data = [
                         'storage_zone' => $storage['storage_zone'],
                         'storage_rack' => $storage['storage_rack'],
                         'storage_vertical' => $storage['storage_vertical'],
-                        'storage_horizontal' => $storage['storage_horizontal'],
-                        'sp_main' => $shop_settings['sp_main'],
-                        'sp_empty' => $shop_settings['sp_empty'],
-                        'sp_stock' => $shop_settings['sp_stock']
+                        'storage_horizontal' => $storage['storage_horizontal']
                     ];
 
                     if(isset($storage['retail_price'])){
@@ -359,27 +355,47 @@ class ProductController extends Controller
         }
     }
 
-    public static function getArticles(Request $request, $manufacture_selected = null)
+    public static function getArticles(Request $request)
     {
+
+        $size = 30;
+        if(isset($request['size'])){
+            $size = (int)$request['size'];
+        }
+
+        $field = null;
+        $dir = null;
+
+        if(isset($request['sorters'])){
+            $field = $request['sorters'][0]['field'];
+            $dir = $request['sorters'][0]['dir'];
+        }
+        if($field === null &&  $dir === null){
+            $field = 'id';
+            $dir = 'DESC';
+        }
+
         $company_id = Auth::user()->company_id;
 
-        return Article::with('supplier')
-            ->where('company_id', $company_id)
+        //$search = str_replace(['-'], '', $request->search));
+
+        $articles = Article::selectRaw('articles.*, supplier.name as supplier')
+            ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
+            ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
-                $q->where('articles.foundstring', 'LIKE', '%' . $request->search . '%');
+                $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
             ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
                 $q->where('articles.category_id', (int)$request['category_id']);
             })
-            ->when($manufacture_selected != null, function (Builder $q) use($manufacture_selected) {
-                $q->whereHas('supplier', function (Builder $q) use($manufacture_selected) {
-                    $q->where('name', $manufacture_selected);
-                });
-
-//                $q->where('fapi_id', $request['manufacture_id']);
+            ->when($request->analogues, function (Builder $query) use($request) {
+                $query->whereIn('articles.id', json_decode($request->analogues));
             })
             ->where('deleted_at', null) #fix soft delete
-            ->get();
+            ->orderBy($field, $dir)
+            ->paginate($size);
+
+        return $articles;
     }
 
     public static function searchByArticleAndBrand($articles)

@@ -4,11 +4,16 @@
 namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
+use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
+use App\Services\ShopManager\ShopManager;
+use App\Traits\CartProviderOrderCreator;
 use Illuminate\Support\Facades\Auth;
 
 class Mikado implements ProviderInterface
 {
+    use CartProviderOrderCreator;
+
     protected $host = 'https://mikado-parts.ru/';
 
     protected $name = 'Mikado';
@@ -22,7 +27,12 @@ class Mikado implements ProviderInterface
 
     public function __construct()
     {
-        $this->company = Auth::user()->company;
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $this->company = $shop->company ?? Auth::user()->company;
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
@@ -31,15 +41,13 @@ class Mikado implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'Search_Code' => $article,
-            'ClientID' => $this->login,
-            'Password' => $this->password,
+            'Search_Code'   => $article,
             'FromStockOnly' => 'FromStockAndByOrder'
         ];
 
         $result = $this->query('ws1/service.asmx/Code_Search', $params);
 
-        $result = array_column($result['List']['Code_List_Row'], 'Brand');
+        $result = array_column($result['List']['Code_List_Row'] ?? [], 'Brand');
 
         $result = array_unique($result);
 
@@ -66,53 +74,67 @@ class Mikado implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'Search_Code' => $article,
-            'ClientID' => $this->login,
-            'Password' => $this->password,
-            'FromStockOnly' => 'FromStockAndByOrder'
+            'Search_Code'   => $article,
+            'FromStockOnly' => 'FromStockOnly'
         ];
 
         $items = $this->query('ws1/service.asmx/Code_Search', $params);
 
-        $items = collect($items['List']['Code_List_Row']);
+        $items = collect($items['List']['Code_List_Row'] ?? []);
 
-        $items = $items->where('Brand', $brand)->toArray();
+        $brand = strtoupper($brand);
+
+        $items = $items->filter(function ($item) use($brand) {
+             return strpos($item['Brand'], $brand) !== false;
+        });
+
+        $items = $items->toArray();
 
         $results = [];
 
         foreach ($items as $key => $item) {
 
-            if($item['CodeType'] == 'Analog') continue;
+            $rest = null;
+            $delivery = null;
+
+            if (isset($item['OnStocks']['StockLine'][0]['DeliveryDelay'])) {
+                $delivery = $item['OnStocks']['StockLine'][0]['DeliveryDelay'] . ' дн.';
+                $rest = $item['OnStocks']['StockLine'][0]['StockQTY'];
+            } else {
+                $delivery = $item['OnStocks']['StockLine']['DeliveryDelay'] . ' дн.';
+                $rest = $item['OnStocks']['StockLine']['StockQTY'];
+            }
+
+            $rest = (int)preg_replace('/[^0-9]/', '', $rest);
+            $delivery = (int)preg_replace('/[^0-9]/', '', $delivery);
 
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
-                'stock' => $item['ZakazCode'],
+                'stock'        => $item['ZakazCode'],
                 'manufacturer' => $item['Supplier'],
-                'article' => $article,
-                'days' => $item['Srock'],
-                'price' => $item['PriceRUR']
+                'article'      => $article,
+                'days'         => $delivery,
+                'price'        => $item['PriceRUR'],
+                'packing'      => $item['MinZakazQTY'] ?? 1,
+                'desc'         => $item['Name'],
+                'rest'         => $rest,
+                'supplier'     =>  $this->name
             ];
 
-        }
-
-        foreach ($items as $key => $item) {
-
-            if($item['CodeType'] == 'Analog') continue;
-
-            $delivery_days = (int)preg_replace('/[^0-9]/', '', $item['Srock'] ?? '0');
-
             $results[] = [
-                'index' => $key,
-                'name' => $item['Supplier'],
-                'code' => $item['ZakazCode'],
-                'days_min' => $delivery_days,
-                'delivery' => $delivery_days,
-                'price' => $item['PriceRUR'],
-                'model' => $item,
-                'stock' => $item['ZakazCode'],
+                'index'        => $key,
+                'name'         => $item['Supplier'],
+                'code'         => $item['ZakazCode'],
+                'rest'         => $rest,
+                'delivery'     => $delivery . ' дн.',
+                'days_min'     => $delivery,
+                'packing'      => $item['MinZakazQTY'] ?? 1,
+                'price'        => $item['PriceRUR'],
                 'manufacturer' => $item['Supplier'],
-                'hash' => md5($item['ZakazCode'] . $item['Supplier'] . $article . $item['Srock'] . $item['PriceRUR'])
+                'stock'        => $item['ZakazCode'],
+                'model'        => $items[$key],
+                'hash'         => md5($item['ZakazCode'] . $item['Supplier'] . $article . $delivery . $item['PriceRUR']),
             ];
         }
 
@@ -123,10 +145,17 @@ class Mikado implements ProviderInterface
     {
         $handle = curl_init();
 
+        $add_params = [
+            'ClientID' => $this->login,
+            'Password' => $this->password
+        ];
+
+        $params = array_merge($params, $add_params);
+
         curl_setopt($handle, CURLOPT_URL, $this->host . $path);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($handle, CURLOPT_POST, 1);
-        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
         curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($params));
         $result = curl_exec($handle);
@@ -135,7 +164,7 @@ class Mikado implements ProviderInterface
 
         curl_close($handle);
 
-        if($info['http_code'] != 200) {
+        if ($info['http_code'] != 200) {
             throw_error('Ошибка авторизации.');
         }
 
@@ -160,22 +189,81 @@ class Mikado implements ProviderInterface
         $this->password = $fields['password'];
 
         $params = [
-            'ZakazCode' => 'xka-k1279',
-            'ClientID' => $this->login,
-            'Password' => $this->password
+            'ZakazCode' => 'xka-k1279'
         ];
 
         $result = $this->query('ws1/service.asmx/Code_Info', $params);
 
-        if($result['CodeType'] == 'NotDefined') {
+        if ($result['CodeType'] == 'NotDefined') {
             throw_error('Mikado: Ошибка авторизации логина или пароля.');
         }
 
         return true;
     }
 
-    public function sendOrder(array $products): bool
+    public function getPickupAddresses(): array
     {
-        // TODO: Implement sendOrder() method.
+        return [];
+    }
+
+    public function getDeliveryToAddresses(): array
+    {
+        return [];
+    }
+
+    public function getPaymentTypes(): array
+    {
+        return [];
+    }
+
+    public function getDeliveryTypes(): array
+    {
+        return [];
+    }
+
+    public function getDateOfShipment(): array
+    {
+        return [];
+    }
+
+    public function sendOrder(array $data): bool
+    {
+        $orders = [];
+
+        foreach ($data['orders'] as $order) {
+
+            $orderInfo = json_decode($order->data, true);
+
+            $params = [
+                'ZakazCode'    => $orderInfo['ZakazCode'],
+                'QTY'          => $order->count,
+                'DeliveryType' => 1,
+                'Notes'        => $data['comment'] ?? '',
+                'ExpressID'    => 0,
+                'StockID'      => 0
+            ];
+
+            $orders[] = $params;
+
+            $response = $this->query('ws1/basket.asmx/Basket_Add', $params);
+        }
+
+        /** @var CartInterface $cart */
+        $cart = app(CartInterface::class);
+        $cart->clearByProviderKey($this->service_key);
+
+        $this->createProviderOrder($data);
+
+        return true;
+    }
+
+    public function getOrdersStatuses(): array
+    {
+        return [];
+    }
+
+    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    {
+        // TODO: Implement searchAnaloguesByBrandAndArticle() method.
     }
 }

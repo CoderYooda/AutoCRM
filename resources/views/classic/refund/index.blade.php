@@ -4,7 +4,7 @@
     <div id="ajax-table-refund" class="bottom-container full-box-cont">
         <div class="box-lister box w-px">
             <div id="table-container" class="box-content">
-                <div id="refund-table"></div>
+                <div data-data="{{ $data }}" id="refundTable"></div>
             </div>
         </div>
         <div class="content-rightside">

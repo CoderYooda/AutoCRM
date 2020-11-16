@@ -31,11 +31,11 @@
 
                     @endforelse
 
-{{--                    @can('Создавать заявки поставщикам')--}}
-{{--                    @if(count($services))--}}
-{{--                        <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>--}}
-{{--                    @endif--}}
-{{--                    @endcan--}}
+                    @can('Создавать заявки поставщикам')
+                        @if(count($services))
+                            <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>
+                        @endif
+                    @endcan
 
                 </div>
 

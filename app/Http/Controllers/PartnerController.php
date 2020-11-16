@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\HelpController as HC;
-use App\Http\Requests\DeletePartnerRequest;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Category;
 use App\Models\Partner;
-use App\Models\Setting;
-use App\Models\SMSMessages;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -24,11 +20,6 @@ use App\Models\Role;
 class PartnerController extends Controller
 {
     const ROOT_CATEGORY = 3;
-
-    public function _construct()
-    {
-
-    }
 
     public function index(Request $request)
     {
@@ -46,9 +37,8 @@ class PartnerController extends Controller
             'root_id' => self::ROOT_CATEGORY
         ];
 
-        $data = [123, 22];
-
-        $data = json_encode($data);
+        $data = self::getPartners($request);
+        $data = json_encode($data->toArray());
 
         $viewName = $request->search ? 'elements.list_container' : 'index';
 
@@ -123,6 +113,7 @@ class PartnerController extends Controller
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать контакты' : 'Создавать контакты');
 
+        /** @var Partner $partner */
         $partner = Partner::firstOrNew(['id' => $request['id']]);
         $wasExisted = false;
         if($partner->exists){
@@ -131,22 +122,22 @@ class PartnerController extends Controller
             $request['user_id'] = $partner->user_id;
             $request['company_id'] = $partner->company_id;
         } else{
-            $request['company_id'] = Auth::user()->company()->first()->id;
+            $request['company_id'] = Auth::user()->company_id;
             $message = "Контакт создан";
         }
 
-        if($request['birthday']){
+        if($request['birthday']) {
             $request['birthday'] = Carbon::parse($request['birthday']);
         }
 
         $partner->fill($request->only($partner->fields));
-        if($request['type'] == 2){
+
+        if($request['type'] == 2) {
             $partner->fio = $request['ur_fio'];
         }
-        $phones = PhoneController::upsertPhones($request);
-        if($phones->count()){
-            $partner->basePhone = $phones->where('main', true)->first()->number;
-        }
+
+        $phones = $partner->upsertPhones($request['phones'], $request['phones_main']);
+
         $partner->save();
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
@@ -158,11 +149,6 @@ class PartnerController extends Controller
 
         //SystemMessage::sendToAllButOne();
 
-        $phones_str = '';
-        foreach($partner->phones as $phone){
-            $phones_str .= $phone->number;
-        }
-        $partner->foundstring = mb_strtolower(str_replace(array('(', ')', ' ', '-', '+'), '', $partner->fio . $partner->companyName . $phones_str . $partner->barcode));
         $partner->save();
 
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
@@ -421,7 +407,7 @@ class PartnerController extends Controller
             $field = 'id';
             $dir = 'DESC';
         }
-        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name, partners.id, partners.fio, partners.companyName, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, basePhone as phone, cat.name as category'))
+        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name, partners.id, partners.fio, partners.companyName, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, cat.name as category'))
             ->leftJoin('categories as cat', 'cat.id', '=', 'partners.category_id')
 //            ->from(DB::raw('
 //                partners
@@ -448,6 +434,10 @@ class PartnerController extends Controller
             ->orderBy($field, $dir)
             ->paginate($size);
 //        ->toSql();
+
+        foreach ($partners as $key => $partner) {
+            $partners[$key]->phone = $partner->firstActivePhoneNumber();
+        }
 
         return $partners;
     }

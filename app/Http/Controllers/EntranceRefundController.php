@@ -23,17 +23,21 @@ class EntranceRefundController extends Controller
 
         $errors = [];
 
-        foreach ($request->products as $product) {
-            $entrance_count = $entrance->articles->find($product['id'])->pivot->count;
-            $entrance_released_count = $entrance->articles->find($product['id'])->pivot->released_count;
-            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product) {
-                return $query->articles->where('id', $product['id'])->sum('pivot.count');
+        foreach ($request->products as $index => $product) {
+
+            $product_id = $product['product_id'];
+            $pivot_id = $product['pivot_id'];
+
+            $entrance_count = $entrance->articles->find($product_id)->pivot->count;
+            $entrance_released_count = $entrance->articles->find($product_id)->pivot->released_count;
+            $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product, $pivot_id) {
+                return $query->articles->where('id', $pivot_id)->sum('pivot.count');
             });
 
             $available_count = $entrance_count - ($entrance_released_count - $entrance_refund_count);
 
             if((int)$product['count'] > $available_count) {
-                $name = 'products.' . $product['id'] . '.count';
+                $name = 'products.' . $index . '.count';
                 $errors[$name] = ['Данное количество недоступно.'];
             }
         }
@@ -43,8 +47,6 @@ class EntranceRefundController extends Controller
                 'messages' => $errors
             ], 422);
         }
-
-        $store = Store::find(Auth::user()->current_store);
 
         #Создание заявки на возврат
         $entrance_refund = EntranceRefund::updateOrCreate(['id' => $request->id], [
@@ -59,17 +61,17 @@ class EntranceRefundController extends Controller
         #Отнимаем имеющиеся количество для сохранения
         foreach ($entrance_refund->articles as $product) {
 
-            $entrance_refund->entrance->articles()->where('article_id', $product->id)->decrement('released_count', $product->pivot->count);
+            $entrance_refund->entrance->articles()->where('article_id', $product['product_id'])->decrement('released_count', $product->pivot->count);
         }
 
         $entrance_refund->articles()->sync([]);
 
         #Создаем новые пивоты
-        foreach ($request->products as $product) {
+        foreach ($request->products as $index => $product) {
 
-            $price = $entrance->articles->find($product['id'])->pivot->price;
+            $price = $entrance->articles()->find($product['product_id'])->pivot->price;
 
-            $entrance_refund->articles()->attach($product['id'], [
+            $entrance_refund->articles()->attach($product['product_id'], [
                 'entrance_refund_id' => $entrance_refund->id,
                 'store_id' => $request->store_id,
                 'count' => $product['count'],
@@ -78,7 +80,7 @@ class EntranceRefundController extends Controller
             ]);
 
             #Резервируем количество в поступлениях
-            $entrance_refund->entrance->articles()->where('article_id', $product['id'])->increment('released_count', $product['count']);
+            $entrance_refund->entrance->articles()->where('article_id', $product['product_id'])->increment('released_count', $product['count']);
         }
 
         #Добавляем к балансу контакта
@@ -116,8 +118,6 @@ class EntranceRefundController extends Controller
 
         $entrance = $entrance_refund->entrance ?? null;
 
-        $products = $entrance->articles ?? [];
-
         $refunded_count = [];
 
         if($entrance) {
@@ -133,11 +133,24 @@ class EntranceRefundController extends Controller
             }
         }
 
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => false,
+            'nds' => 0,
+            'freeze' => $entrance ? true : false,
+            'nds_included' => false
+        ];
+
+        $items = $entrance ? $entrance_refund->articlesJson->toArray() : [];
+
+        $view = view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
 
         return response()->json([
             'tag' => $class,
             'id' => $entrance_refund->id ?? null,
-            'html' => view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class', 'products'))->render()
+            'html' => $view->render()
         ]);
     }
 
@@ -154,6 +167,8 @@ class EntranceRefundController extends Controller
     {
         if($request['dates_range']) {
             $dates = explode('|', $request['dates_range']);
+            $dates[0] .= ' 00:00:00';
+            $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
 
@@ -164,30 +179,27 @@ class EntranceRefundController extends Controller
         $company_id = Auth::user()->company_id;
         $store_id = Auth::user()->partner->store_id;
 
-        $entrance_refunds = EntranceRefund::with('partner', 'manager', 'entrance')
-            ->where('company_id', $company_id)
-            ->where('store_id', $store_id)
-            ->when(is_array($request['provider']), function($query) use ($request) {
+        $entrance_refunds = EntranceRefund::select(DB::raw('entrance_refunds.*, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
+            ->leftJoin('partners as partner', 'partner.id', '=', 'entrance_refunds.partner_id')
+            ->leftJoin('partners as manager', 'manager.id', '=', 'entrance_refunds.manager_id')
+            ->where('entrance_refunds.company_id', $company_id)
+            ->where('entrance_refunds.store_id', $store_id)
+            ->when(is_array($request['provider']) && !empty($request['provider']), function($query) use ($request) {
                 $query->whereHas('partner', function($query) use ($request){
-                    $query->whereIn('id', $request['provider']);
+                    $query->whereIn('entrance_refunds.id', $request['provider']);
                 });
             })
-            ->when(is_array($request['accountable']), function($query) use ($request) {
+            ->when(is_array($request['accountable']) && !empty($request['accountable']), function($query) use ($request) {
                 $query->whereHas('manager', function($query) use ($request){
-                    $query->whereIn('id', $request['accountable']);
+                    $query->whereIn('entrance_refunds.id', $request['accountable']);
                 });
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('entrances.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('entrance_refunds.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->groupBy('id')
+            ->groupBy('entrance_refunds.id')
             ->orderBy($field, $dir)
             ->paginate($size);
-
-        foreach ($entrance_refunds as $entrance_refund) {
-            $entrance_refund['manager_name'] = $entrance_refund->manager->official_name;
-            $entrance_refund['partner_name'] = $entrance_refund->partner->official_name;
-        }
 
         return $entrance_refunds;
 

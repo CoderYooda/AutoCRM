@@ -5,17 +5,19 @@ namespace App\Services\ProviderService\Services\Providers;
 
 use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
+use App\Services\ShopManager\ShopManager;
+use App\Traits\CartProviderOrderCreator;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class Trinity implements ProviderInterface
 {
+    use CartProviderOrderCreator;
+
     protected $host = 'http://trinity-parts.ru/httpws/hs/';
 
-    protected $name = 'Trinity';
+    protected $name = 'Trinity Parts';
     protected $service_key = 'trinity';
     protected $field_name = 'api_key';
 
@@ -24,9 +26,19 @@ class Trinity implements ProviderInterface
 
     protected $api_key = null;
 
+    /** @var User $user */
+    protected $user = null;
+
     public function __construct()
     {
-        $this->company = Auth::user()->company;
+        /** @var ShopManager $shopManager */
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $this->user = Auth::user();
+
+        $this->company = $shop->company ?? $this->user->company;
 
         $this->api_key = $this->company->getServiceFieldValue($this->service_key, $this->field_name);
     }
@@ -38,9 +50,7 @@ class Trinity implements ProviderInterface
             'online' => true ? 'allow' : 'disallow'
         ];
 
-        $url = $this->host . 'search/byCode';
-
-        $results = $this->query($url, $this->createParams($params), true);
+        $results = $this->query('search/byCode', $this->createParams($params), true);
 
         return array_column($results['data'], 'producer');
     }
@@ -64,6 +74,8 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
+        if($items == []) return [];
+
         $results = [];
 
         foreach ($items['data'] as $key => $item) {
@@ -75,9 +87,12 @@ class Trinity implements ProviderInterface
                 'manufacturer' => $item['producer'],
                 'article' => $article,
                 'days' => $item['deliverydays'],
-                'price' => $item['price']
+                'price' => $item['price'],
+                'packing' => $item['minOrderCount'],
+                'desc' => $item['caption'],
+                'rest' => $item['rest'],
+                'supplier' => $this->name
             ];
-
         }
 
         foreach ($items['data'] as $key => $store) {
@@ -93,9 +108,12 @@ class Trinity implements ProviderInterface
                 'index' => $key,
                 'name' => $store['stock'],
                 'code' => $store['code'],
+                'rest' => $store['rest'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
-                'delivery' => $store['deliverydays'],
+                'packing' => $store['minOrderCount'],
+                'min_count' => $store['minOrderCount'],
+                'delivery' => $store['deliverydays'] . 'дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['producer'],
                 'model' => $store,
@@ -107,7 +125,8 @@ class Trinity implements ProviderInterface
         return $results;
     }
 
-    public function searchItems($article, $brand, $searchType = 'full', $asArray = true) {
+    public function searchItems($article, $brand, $searchType = 'full', $asArray = true)
+    {
         $article = strtoupper($article);
         $brand = strtoupper($brand);
         $searchParams = new stdClass();
@@ -116,6 +135,7 @@ class Trinity implements ProviderInterface
             'searchCode' => $searchParams,
             'onlyStock' => '0',
         ];
+
         switch ($searchType) {
             case 'onlyStock':
                 $params['onlyStock'] = '1';
@@ -128,8 +148,8 @@ class Trinity implements ProviderInterface
                 $params['online'] = 'allow';
                 break;
         }
-        $url = $this->host . 'search/byCodeBrand';
-        return $this->query($url, $this->createParams($params), $asArray);
+
+        return $this->query('search/byCodeBrand', $this->createParams($params), $asArray);
     }
 
     protected function createParams(array $params = [])
@@ -147,14 +167,16 @@ class Trinity implements ProviderInterface
 
     protected function query($url, $context, $asArray = true)
     {
-        try {
+        $data = null;
 
+        try {
             $url .= (strpos($url, 'cart/saveGoods') !== false ? '?v=2' : '');
 
-            $data = file_get_contents($url, false, $context);
+            $data = file_get_contents($this->host . $url, false, $context);
         }
         catch (\Exception $exception) {
-            throw_error('Trinity: Ошибка авторизации ключа.');
+            dd($exception);
+            $data = json_encode([]);
         }
 
         return json_decode($data, $asArray);
@@ -177,37 +199,37 @@ class Trinity implements ProviderInterface
         return true;
     }
 
-    public function sendOrder(array $products): bool
+    public function sendOrder(array $data): bool
     {
-        foreach ($products as $product) {
+        $orders = [];
 
-            $emptyClass = new stdClass();
-            $emptyClass->internal_id = $product->id;
-            $emptyClass->bid = $product->delivery_key;
-            $emptyClass->code = $product->article;
-            $emptyClass->producer = $product->manufacturer;
-//            $emptyClass->caption = 'Фильтр масляный';
-//            $emptyClass->supplier_id = 'УТ0002790';
-            $emptyClass->stock = $product->stock;
-            $emptyClass->price = $product->price;
-            $emptyClass->saled_price = $product->price + sum_percent($product->price, 20);
-            $emptyClass->quantity = $product->count;
-            $emptyClass->comment = 'тестовый заказ через API';
-//            $emptyClass->deliverydays = '0/2';
-            $emptyClass->minOrderCount = '1';
+        foreach ($data['orders'] as $product) {
 
-            $orders[] = $emptyClass;
+            $orderInfo = json_decode($product->data, true);
+
+            $orders[] = [
+                'internal_id' => $product->id,
+                'bid' => $orderInfo['bid'],
+                'code' => $orderInfo['code'],
+                'producer' => $orderInfo['producer'],
+                'caption' => $orderInfo['caption'],
+                'supplier_id' => $orderInfo['supplier_id'],
+                'stock' => $orderInfo['stock'],
+                'price' => $orderInfo['price'],
+                'saled_price' => $orderInfo['price'] + sum_percent($orderInfo['price'], 20),
+                'quantity' => $product->count,
+                'source' => $orderInfo['source'],
+                'comment' => $data['comment'] ?? '',
+                'deliverydays' => $orderInfo['deliverydays'],
+                'minOrderCount' => $orderInfo['minOrderCount'],
+            ];
         }
 
         $params = [
             'parts' => $orders
         ];
 
-        $url = $this->host . 'cart/saveGoods';
-
-        $results = $this->query($url, $this->createParams($params), true);
-
-        //----------------------------------------------------------------------------------------------
+        $results = $this->query('cart/saveGoods', $this->createParams($params), true);
 
         $idList = collect($results['data'])->collapse()->toArray();
 
@@ -215,12 +237,47 @@ class Trinity implements ProviderInterface
             'IDs' => $idList
         ];
 
-        $url = $this->host . 'cart/confirm';
+        $results = $this->query('cart/confirm', $this->createParams($params), true);
 
-        $results = $this->query($url, $this->createParams($params), true);
-
-        dd($results);
+        $this->createProviderOrder($data);
 
         return true;
+    }
+
+    public function getPickupAddresses(): array
+    {
+        return [];
+    }
+
+    public function getDeliveryToAddresses(): array
+    {
+        return [];
+    }
+
+    public function getPaymentTypes(): array
+    {
+        return [];
+    }
+
+    public function getDeliveryTypes(): array
+    {
+        return [];
+    }
+
+    public function getDateOfShipment(): array
+    {
+        return [];
+    }
+
+    public function getOrdersStatuses(): array
+    {
+        return [];
+    }
+
+    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    {
+        $items = $this->searchItems('k1279', 'FILTRON', 'full', true);
+
+        dd($items);
     }
 }

@@ -25,8 +25,8 @@ class ProductDialog extends Modal {
             focused.focus();
             focused.select();
         }
-        helper.initTabs('product_tabs');
-        var fn = window.helper.debounce(function (e) {
+        helper.initTabs('product_tabs', false);
+        let fn = window.helper.debounce(function (e) {
             object.fapiSearch();
         }, 800);
 
@@ -44,12 +44,66 @@ class ProductDialog extends Modal {
         this.article_input.addEventListener("paste", fn);
         this.article_input.addEventListener("delete", fn);
 
+        this.initShopDiscountRecalculate();
+
         this.linked();
     }
+
+    initShopDiscountRecalculate() {
+
+        this.recalculateShopDiscountDebounce = window.helper.debounce( (e) => {
+            this.recalculateShopDiscount();
+        }, 500);
+
+        let stocks_element = this.current_dialog.querySelector('.stocks');
+
+        let discount_element = stocks_element.querySelector('.discount');
+
+        discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
+        discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
+        discount_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
+    }
+
+    recalculateShopDiscount() {
+
+        let stocks_element = this.current_dialog.querySelector('.stocks');
+
+        let price_element = stocks_element.querySelector('.price');
+        let discount_element = stocks_element.querySelector('.discount');
+        let total_element = stocks_element.querySelector('.total');
+        let type_element = stocks_element.querySelector('.type');
+
+        let price = parseFloat(price_element.value);
+        let discount = parseFloat(discount_element.value);
+        let total = 0;
+
+        if(type_element.value == 1) { //Если скидка в процентах
+
+            if(discount < 0 || discount > 100) discount = discount_element.value = 0;
+
+            total = price - (price / 100 * discount);
+        }
+        else {
+
+            if(discount < 0 || discount > price) discount = discount_element.value = 0;
+
+            total = price - discount;
+        }
+
+        total_element.value = total;
+    }
+
 
     linked()
     {
         if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');
+    }
+
+    toggleStock(element) {
+
+        let target_element = this.current_dialog.querySelector('.stocks');
+
+        target_element.classList.toggle('d-none');
     }
 
     save(elem) {
@@ -60,17 +114,35 @@ class ProductDialog extends Modal {
         });
     }
 
-    clickFile(element) {
-        let target_element = this.current_dialog.querySelector('.upload_file');
+    changeFile(input) {
 
-        target_element.innerHTML = 'Файл не выбран <div></div>';
-    }
+        let data = new FormData();
 
-    changeFile(element) {
+        data.append('image[]', input.files[0]);
+        data.append('refer', 'shop');
 
-        let target_element = this.current_dialog.querySelector('.upload_file');
+        let image_element = this.current_dialog.querySelector('.image');
+        let image_input = this.current_dialog.querySelector('[name="image_id"]');
+        let preloader_element = image_input.closest('div');
 
-        target_element.innerHTML = element.files[0].name + '<div></div>';
+        togglePreloader(preloader_element, true);
+
+        axios({
+            method: 'POST',
+            url: '/system/image_upload',
+            data: data
+        }).then((response) => {
+
+            let image_id = response.data.images[0].id;
+            let image_url = response.data.images[0].url;
+
+            image_element.src = image_url;
+
+            image_input.value = image_id;
+        })
+        .finally(() => {
+            togglePreloader(preloader_element, false);
+        });
     }
 
     addSpecificationField(element) {
@@ -104,8 +176,10 @@ class ProductDialog extends Modal {
 
     toggleShopSettings(element, store_id) {
 
-        element.classList.toggle('fa-angle-down');
-        element.classList.toggle('fa-angle-up');
+        let i_element = element.querySelector('i');
+
+        i_element.classList.toggle('fa-angle-down');
+        i_element.classList.toggle('fa-angle-up');
 
         let target_element = this.current_dialog.querySelector('#toggle_' + store_id);
 
@@ -116,23 +190,22 @@ class ProductDialog extends Modal {
 
         document.getElementById('trin_preload').classList.remove('hide');
 
+        this.provider_search_container.classList.add('show');
+
         window.axios({
             method: 'get',
             url: '/api/manufacturers/' + this.article_input.value,
         }).then(response => {
             let data = response.data;
 
-            this.provider_search_container.classList.add('show');
-
             let html = '';
 
-            Object.keys(data).forEach(key => {
-                let m_name = data[key].m_name;
-                let m_id = data[key].m_id;
-                let p_article = data[key].p_article;
-                let p_name = data[key].p_name;
+            Object.values(data.articles).forEach(item => {
+                let m_name = item.brand;
+                let p_article = item.article;
+                let p_name = item.description;
 
-                html += '<div class="tr_result" data-ident="' + p_name + '" data-article="' + p_article + '" data-producer="' + m_name + '" onclick="window.productDialog.appendArticle(this)">' +
+                html += '<div class="tr_result" data-ident="' + p_name + '" data-article="' + p_article + '" data-producer="' + m_name + '" onclick="window.' + this.current_dialog.id + '.appendArticle(this);">' +
                     '<span class="article">' + p_name + '</span>' +
                     '<span class="article">Артикул: ' + p_article + '</span>' +
                     '<span class="article">Производитель: ' + m_name + '</span>' +
@@ -149,15 +222,10 @@ class ProductDialog extends Modal {
             else {
                 search_element.classList.remove('d-none');
             }
-
-            // var badge = '<b class="badge badge-sm badge-pill warn">' + resp.data.brands.count + '</b>';
-            // let providertab = document.querySelector('#provider-tab .nav-badge');
-            // if(providertab){
-            //     providertab.innerHTML = badge;
-            // }
         }).catch(function (error) {
             console.log(error);
-        }).then(function () {
+        }).finally(() => {
+
             document.getElementById('trin_preload').classList.add('hide');
             window.isXHRloading = false;
         });

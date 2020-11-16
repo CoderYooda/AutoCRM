@@ -8,7 +8,7 @@
 
     @php $class = 'store' @endphp
 
-    <div id="ajax-table-store" class="bottom-container" style="height: calc(100% - 79px) !important;">
+    <div id="ajax-table-store" class="bottom-container">
         @include(get_template() . '.store.elements.table_container')
     </div>
 

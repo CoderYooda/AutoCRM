@@ -15,7 +15,7 @@ class Entrance extends Model
     use OwnedTrait, HasManagerAndPartnerTrait;
 
     protected $casts = [
-        'created_at'  => 'date:d.m.Y H:i',
+        'created_at' => 'date:d.m.Y H:i',
         'updated_at' => 'date:d.m.Y H:i'
     ];
 
@@ -45,16 +45,22 @@ class Entrance extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
-            ->withPivot('count', 'price', 'released_count');
+            ->withPivot('id', 'count', 'price', 'released_count', 'provider_pivot_id');
+    }
+
+    public function articlesJson()
+    {
+        return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')
+            ->withPivot('count as count', 'price as price', 'released_count as released_count');
     }
 
     public static function decrementReleasedCount(int $entrance_id, int $article_id, int $count)
     {
         return DB::table('article_entrance')->where([
             'entrance_id' => $entrance_id,
-            'article_id' => $article_id
+            'article_id'  => $article_id
         ])
-        ->decrement('released_count', $count);
+            ->decrement('released_count', $count);
     }
 
     public function entrancerefunds()
@@ -77,8 +83,9 @@ class Entrance extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function normalizedData(){
-       return $this->created_at->format('d.m.Y (H:i)');
+    public function normalizedData()
+    {
+        return $this->created_at->format('d.m.Y (H:i)');
     }
 
     public function freshPriceByArticleId($article_id, $price)
@@ -107,7 +114,7 @@ class Entrance extends Model
 
     public function warrants()
     {
-        return $this->belongsToMany(Warrant::class, 'entrance_warrant',  'entrance_id', 'warrant_id' );
+        return $this->belongsToMany(Warrant::class, 'entrance_warrant', 'entrance_id', 'warrant_id');
     }
 }
 

@@ -2,6 +2,7 @@
 
 @section('content')
     <div id="ajax-table-provider_orders" class="bottom-container">
+
         <div class="content-menu box w-290">
             <div id="t2able-container" class="box-content">
                 <div class="search-panel">
@@ -18,9 +19,13 @@
             </div>
         </div>
         <div class="box-lister box">
-            <div id="actions-container" class="box-content">
-                @include(get_template() . '.history.actions')
+
+            <div id="tab_actions" class="tab active">
+                <div id="actions-container" class="box-content">
+                    @include(get_template() . '.history.actions')
+                </div>
             </div>
+
         </div>
         <div class="box-lister box ml-0">
             <div id="system_messages-container" class="box-content">
@@ -39,7 +44,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="pay_status">Тип записи</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input id="type" type="text" name="type" value="{{ request('type') }}" class="form-control type input_as_link" placeholder="не выбрано" disabled>
+                        <input id="type" type="text" name="type" value="{{ request('type') }}" class="form-control type input_as_link" placeholder="не выбрано" >
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="actions.setField('type', null, 'не выбрано', this)" class="element">Не выбрано</span>

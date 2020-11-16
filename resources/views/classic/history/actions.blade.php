@@ -1,5 +1,5 @@
 <div class="streamline p-15 pr-0">
-    <div  data-simplebar style="max-height: calc(100vh - 112px);">
+    <div  data-simplebar style="max-height: calc(100vh - 155px);">
         @foreach($actions as $action)
             <div class="sl-item mr-15
                             @switch($action->type)

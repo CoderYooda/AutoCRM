@@ -3,7 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\CompanyHasPayedDays;
-use App\Http\Middleware\StoreLimit;
+use App\Http\Middleware\RequestLimit;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,7 +64,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'banned' => \App\Http\Middleware\banned::class,
         'superAdmin' => \App\Http\Middleware\SuperAdmin::class,
-        'hasPayedDays' => CompanyHasPayedDays::class
+        'hasPayedDays' => CompanyHasPayedDays::class,
+        'requestLimit' => RequestLimit::class
     ];
 
     /**

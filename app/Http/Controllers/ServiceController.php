@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Services\SaveRequest;
 use App\Http\Requests\Services\ToggleRequest;
 use App\Http\Requests\Services\UpdateSortRequest;
 use App\Models\Company;
 use App\Models\Service;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +26,9 @@ class ServiceController extends Controller
     {
         $provider_service = $service->getProviderService();
 
-        $view = view(get_template() . '.system.includes.settings_provider_dialog_inner', compact('service', 'provider_service'))
+        $class = 'settings';
+
+        $view = view(get_template() . '.system.includes.settings_provider_dialog_inner', compact('service', 'provider_service', 'class'))
             ->with('company', $this->company);
 
         return response()->json([
@@ -40,10 +40,35 @@ class ServiceController extends Controller
     {
         $enabled = (int)!$request->enabled;
 
-        if(!$this->company->serviceproviders()->where('service_id', $service->id)->exists()) {
-            throw new HttpResponseException(
-                response()->json(['message' => 'Для активации сервиса его нужно сохранить.', 'type' => 'error'], 422)
-            );
+        $this->company->serviceproviders()->sync([
+            $service->id => [
+                'enabled' => $request->enabled
+            ]
+        ], false);
+
+        if($enabled) {
+
+            $fields = DB::table('service_fields')
+                ->where('service_key', $service->key)
+                ->whereIn('name', array_keys($request->fields))
+                ->get();
+
+            foreach ($fields as $field) {
+
+                $value = $request->fields[$field->name];
+
+                DB::table('service_field_values')->updateOrInsert([
+                    'company_id' => $this->company->id,
+                    'service_key' => $service->key,
+                    'field_id' => $field->id
+                ], ['value' => $value ]);
+            }
+        }
+        else {
+            DB::table('service_field_values')->where([
+                'company_id' => $this->company->id,
+                'service_key' => $service->key
+            ])->delete();
         }
 
         $this->company->serviceproviders()->updateExistingPivot($service->id, [
@@ -53,39 +78,8 @@ class ServiceController extends Controller
         return response()->json([
             'enabled' => $enabled,
             'type' => 'success',
-            'message' => 'Сервис активен'
+            'message' => 'Сервис ' . ($enabled ? 'активирован' : 'деактивирован')
         ]);
-    }
-
-    public function save(Service $service, SaveRequest $request)
-    {
-        $this->company->serviceproviders()->sync([
-            $service->id  => [
-                'enabled' => $request->enabled
-            ]
-        ], false);
-
-        $fields = DB::table('service_fields')
-            ->where('service_key', $service->key)
-            ->whereIn('name', array_keys($request->fields))
-            ->get();
-
-        foreach ($fields as $field) {
-
-            $value = $request->fields[$field->name];
-
-            DB::table('service_field_values')->updateOrInsert([
-                'company_id' => $this->company->id,
-                'service_key' => $service->key,
-                'field_id' => $field->id
-            ], ['value' => $value ]);
-        }
-
-        return response()->json([
-            'message' => 'Настройка успешно сохранена.',
-            'type' => 'success',
-            'service' => $service
-        ], 200);
     }
 
     public function updateSort(UpdateSortRequest $request)

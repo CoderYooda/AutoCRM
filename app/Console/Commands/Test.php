@@ -2,16 +2,26 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Partner;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use mysql_xdevapi\Exception;
+use App\Models\Category;
+use Illuminate\Support\Str;
+use App\Models\Article;
 
 class Test extends Command
 {
     protected $signature = 'command:test';
 
     protected $description = 'Command description';
+
+    protected $host = 'http://id8341.public.api.abcp.ru/';
+
+    protected $login = 'audi-31@yandex.ru';
+    protected $password = 'i7r7o7n7';
 
     public function __construct()
     {
@@ -20,33 +30,64 @@ class Test extends Command
 
     public function handle()
     {
+//        $orders = Partner::find(141)->user->getProvidersCartOrders;
+//
+//        $params = [
+//            'orders' => $orders->pluck('number')->toArray()
+//        ];
+//
+//        $result = $this->query('orders/list/', $params, 'GET');
+//
+//        dd($result);
+        foreach (Article::all() as $product) {
 
-        $params = [
-            'Search_Code' => 'k1279',
-            'ClientID'  => '25288',
-            'Password'  => '9524245038',
-            'FromStockOnly'  => 'FromStockAndByOrder'
+            $productName = $product->name;
+
+            $nameUsing = Article::where(['name' => $productName, 'company_id' => $product->company_id])
+                ->where('id', '!=', $product->id)
+                ->exists();
+
+            if($nameUsing) $productName .= '-' . $product->id;
+
+            $product->update(['slug' => Str::slug($productName)]);
+        }
+    }
+
+    private function query($path, $params, $method): array
+    {
+        $params['userlogin'] = $this->login;
+        $params['userpsw'] = md5($this->password);
+        $params['locale'] = 'ru_RU';
+
+        $full_path = $this->host . $path;
+
+        if($method == 'GET') $full_path .= ('?' . http_build_query($params));
+
+        $context = [
+            'http' => [
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'method' => $method
+            ],
         ];
 
-        $header = "Content-Type: application/x-www-form-urlencoded";
-
-        $handle = curl_init();
-
-        curl_setopt($handle, CURLOPT_URL, 'https://mikado-parts.ru/ws1/service.asmx/Code_Search');
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($handle, CURLOPT_POST, 1);
-        curl_setopt($handle,CURLOPT_FOLLOWLOCATION,TRUE);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-        curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($params));
-        $result = curl_exec($handle);
-
-        curl_close($handle);
-
-        $brands = simplexml_load_string($result);
-
-        foreach ($brands->List->Code_List_Row as $brand) {
-            dd($brand);
+        if($method == 'POST') {
+            $context['http']['content'] = http_build_query($params);
         }
 
+        try {
+            $result = file_get_contents($full_path, null, stream_context_create($context));
+        }
+        catch (\Exception $exception)
+        {
+            dd($exception->getMessage());
+        }
+
+        $result = (array)json_decode($result, true);
+
+        if(array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
+            throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
+        }
+
+        return $result;
     }
 }

@@ -102,7 +102,7 @@ const ajaxRequest = new (function () {
                 history.pushState(oPageInfo, oPageInfo.title, oPageInfo.url);
                 bUpdateURL = false;
             }
-            let tabs = document.querySelectorAll('.nav li');
+            let tabs = document.querySelectorAll('.nav li:not(.nav-item)');
             [].forEach.call(tabs, function (li) {
                 li.classList.remove('active');
                 if (window.helper.findGetParameter('active_tab') === li.dataset.tab) {
@@ -258,10 +258,13 @@ const ajaxRequest = new (function () {
     oLoadingBox.appendChild(oCover);
 
     onpopstate = function (oEvent) {
-        bUpdateURL = false;
-        oPageInfo.title = oEvent.state.title;
-        oPageInfo.url = oEvent.state.url;
-        getPage();
+        if(oEvent.state){
+            bUpdateURL = false;
+            oPageInfo.title = oEvent.state ? oEvent.state.title : null;
+            oPageInfo.url = oEvent.state.url.replace(/&target=ajax-tab-content/gi, '');
+            getPage();
+        }
+
     };
 
     window.addEventListener ? addEventListener("load", init, false) : window.attachEvent ? attachEvent("onload", init) : (onload = init);

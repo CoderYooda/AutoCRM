@@ -3,19 +3,19 @@
 @section('tab')
     <div id="ajax-table-provider_orders" class="bottom-container" style="height: calc(100% - 79px)!important;">
         <div class="box-lister" style="width: 1px!important;">
-            <div class="w-100 box box-search mb-15">
+            <div class="w-100 mb-15">
                 <input id="search" name="search" placeholder="Поиск по контактам" class="input w-100" value="{{ request('search') }}" type="text">
                 <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
                     <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
                 </span>
             </div>
             <div id="table-container" class="box box-content">
-                <div id="provider_orders-table"></div>
+                <div data-data="{{ $data }}" id="provider_ordersTable"></div>
             </div>
         </div>
         <div class="content-rightside">
             @can('Создавать заявки поставщикам')
-                <button onclick="openDialog('providerorderDialog')" class="button primary mb-15 w-100">Создать заявку</button>
+                <button onclick="openDialog('providerOrderDialog')" class="button primary mb-15 w-100">Создать заявку</button>
             @endcan
             <div class="box w-290 p-15 filter-panel">
                 <div class="box-title">Фильтр</div>
@@ -27,7 +27,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="pay_status">Статус оплаты</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input id="pay_status" type="text" name="pay_status" value="{{ request('pay_status') }}" class="form-control pay_status input_as_link" placeholder="не выбрано" disabled>
+                        <input id="pay_status" type="text" name="pay_status" value="{{ request('pay_status') }}" class="form-control pay_status input_as_link" placeholder="не выбрано">
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('pay_status', null, 'не выбрано', this)" class="element">Не выбрано</span>
@@ -42,7 +42,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="entrance_status">Статус поступления</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input readonly id="entrance_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано" disabled>
+                        <input readonly id="entrance_status" type="text" name="entrance_status" value="{{ request('pay_status') }}" class="form-control entrance_status input_as_link" placeholder="не выбрано">
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('entrance_status', null, 'не выбрано', this)" class="element">не выбрано</span>

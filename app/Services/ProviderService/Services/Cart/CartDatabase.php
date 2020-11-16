@@ -7,7 +7,7 @@ use App\Services\ProviderService\Contract\CartInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class Cart implements CartInterface
+class CartDatabase implements CartInterface
 {
     protected $table = 'providers_cart';
     protected $user_id = null;
@@ -47,7 +47,7 @@ class Cart implements CartInterface
         // TODO: Implement getProductsIds() method.
     }
 
-    public function addProduct($provider_key, $article, $product)
+    public function addProduct($provider_key, $article, $product, $count)
     {
         $hash = md5($product['hash_info']['stock'] . $product['hash_info']['manufacturer'] . $article . $product['hash_info']['days'] . $product['hash_info']['price']);
 
@@ -61,7 +61,7 @@ class Cart implements CartInterface
             'data' => json_encode($product)
         ]);
 
-        return DB::table($this->table)->where($values)->increment('count', 1);
+        return DB::table($this->table)->where($values)->update(['count' => $count]);
     }
 
     public function getProductsCount()
@@ -95,6 +95,11 @@ class Cart implements CartInterface
         return DB::table($this->table)->where($values)->exists();
     }
 
+    public function removeProductById($id)
+    {
+        return DB::table('providers_cart')->where('id', $id)->delete();
+    }
+
     public function removeProduct($provider, $delivery_key, $manufacturer, $article)
     {
         $values = [
@@ -111,5 +116,13 @@ class Cart implements CartInterface
     public function clear()
     {
         return DB::table($this->table)->where('user_id', $this->user_id)->delete();
+    }
+
+    public function clearByProviderKey($key)
+    {
+        return DB::table($this->table)->where([
+            'user_id' => $this->user_id,
+            'provider_key' => $key
+        ])->delete();
     }
 }

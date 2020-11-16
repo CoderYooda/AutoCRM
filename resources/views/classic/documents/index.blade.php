@@ -18,7 +18,7 @@
             <div class="box h-100">
                 <div class="box-header" id="breadcrumbs-nav"></div>
                 <div id="table-container" class="box-content h-100">
-                    <div id="documents-table"></div>
+                    <div data-data="{{ $data }}" id="documentsTable"></div>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="entrance_status">Тип документа</label>
                     <div class="dropdown" onclick="window.helper.openModal(this, event)">
-                        <input readonly="" id="document_filter" type="text" name="entrance_status" value="" class="form-control entrance_status input_as_link" placeholder="не выбрано" disabled="">
+                        <input readonly="" id="document_filter" type="text" name="entrance_status" value="" class="form-control entrance_status input_as_link" placeholder="не выбрано">
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('document_filter', null, 'Не выбрано', this)" class="element">Не выбрано</span>

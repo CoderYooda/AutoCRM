@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientOrdersRequest;
+use App\Mail\Shop\RoadOrder;
+use App\Mail\Shop\WaitOrder;
 use App\Models\ClientOrder;
+use App\Models\Order;
 use App\Models\Partner;
 use App\Models\Store;
 use App\Models\Supplier;
@@ -15,27 +18,52 @@ use Carbon\Carbon;
 use App\Models\Article;
 use App\Http\Controllers\UserActionsController as UA;
 use Auth;
+use Illuminate\Support\Facades\Mail;
 
 class ClientOrdersController extends Controller
 {
-    public static function clientorderDialog($request)
+    public static function clientorderDialog(Request $request)
     {
-        $tag = 'clientorderDialog';
+        $co_id = $request['client_order_id'] ?? $request['clientorder_id'];
 
-        if ($request['client_order_id'] || $request['clientorder_id']) {
+        $client_order = ClientOrder::find($co_id);
 
-            $co_id = isset($request['client_order_id']) ? $request['client_order_id'] : $request['clientorder_id'];
+        $tag = 'clientorderDialog' . ($client_order->id ?? '');
 
-            $client_order = ClientOrder::find((int)$co_id);
+        $items = $client_order ? $client_order->articles->load('supplier') : collect();
 
-            $tag .= $client_order->id;
-        } else {
-            $client_order = null;
+        foreach ($items as $key => $item) {
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['product_id'] = $item['id'];
+//            $items[$key]['name'] = $item['name'];
+//            $items[$key]['article'] = $item['article'];
+            $items[$key]['supplier_name'] = $item->supplier->name;
+//            $items[$key]['count'] = $item['count'];
+//            $items[$key]['price'] = $item['price'];
+//            $items[$key]['total'] = $item['total'];
+            $items[$key]['available'] = $item->getCountInCurrentStore();
+            $items[$key]['shipped_count'] = $item['shipped_count'];
         }
 
+        $items = $items->toArray();
+
+        $prefs = [
+            'index' => 'ordinal',
+            'use_nds' => false,
+            'can_add_items' => true,
+            'nds' => 0,
+            'freeze' => false,
+            'nds_included' => false
+        ];
+
+        $view = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))
+            ->with('class', $tag)
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items))
+            ->with('statuses', Order::$statuses);
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'request'))->render()
+            'html' => $view->render()
         ]);
     }
 
@@ -72,84 +100,77 @@ class ClientOrdersController extends Controller
         ], 200);
     }
 
-
     public function fresh(ClientOrder $client_order, Request $request)
     {
-        $client_order->articles = $client_order->articles()->get();
+        $request['clientorder_id'] = $client_order->id;
+        $request['inner'] = 1;
 
-        foreach ($client_order->articles as $article) {
-            $article->instock = $article->getCountInStoreId($client_order->store_id);
-
-            $article->complited = ($article->instock >= $article->pivot->count) ? true : false;
-        }
-
-        $request['fresh'] = true;
-        $class = 'clientorderDialog' . $client_order->id;
-        $content = view(get_template() . '.client_orders.dialog.form_client_order', compact('client_order', 'class', 'request'))->render();
-        return response()->json([
-            'html' => $content,
-            'target' => 'clientorderDialog' . $client_order->id,
-        ], 200);
+        return self::clientorderDialog($request);
     }
 
     public function store(ClientOrdersRequest $request)
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать заказ клиента' : 'Создавать заказ клиента');
 
-        $request['phone'] = str_replace(array('(', ')', ' ', '-'), '', $request['phone']);
-        $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
+        return DB::transaction(function () use($request) {
+            $request['phone'] = str_replace(['(', ')', ' ', '-'], '', $request['phone']);
 
-        if($client_order && $client_order->isShipped){
-            return response()->json([
-                'system_message' => ['Действия с заказом запрещены, заказ был отгружен']
-            ], 422);
-        }
+            /** @var ClientOrder $client_order */
+            $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
-        #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
-        if( $client_order->IsAnyProductShipped()) {
-            $has_missed_article = false;
-            foreach ($client_order->getShippedArticlesIds() as $id) {
-                $has_missed_article = collect(array_column($request->products, 'id'))->contains($id) ? false : true;
-                if ($has_missed_article) {
-                    break;
-                }
-            }
-            if($has_missed_article) {
+            if($request->shipping && $client_order->status < 2) {
                 return response()->json([
-                    'system_message' => ['Удаление отгруженного товара невозможно']
+                    'system_message' => ['В данный момент отгрузка недоступна.']
                 ], 422);
             }
-        }
-        #Конец проверки
 
-
-        if($client_order->IsAllProductsShipped()){
-            $client_order->status = 'complete';
-        }
-
-        if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
-            $request['inpercents'] = false;
-        } else {
-            $request['inpercents'] = true;
-        }
-
-        if ($request['inpercents']) {
-            if ((int)$request['discount'] >= 100) {
-                $request['discount'] = 100;
+            if($client_order && $client_order->isShipped){
+                return response()->json([
+                    'system_message' => ['Действия с заказом запрещены, заказ был отгружен']
+                ], 422);
             }
-            if ((int)$request['discount'] <= 0) {
-                $request['discount'] = 0;
+
+            #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
+            if( $client_order->IsAnyProductShipped()) {
+                $has_missed_article = false;
+                foreach ($client_order->getShippedArticlesIds() as $id) {
+                    $has_missed_article = collect(array_column($request->products, 'id'))->contains($id) ? false : true;
+                    if ($has_missed_article) {
+                        break;
+                    }
+                }
+
+                if($has_missed_article) {
+                    return response()->json([
+                        'system_message' => ['Удаление отгруженного товара невозможно']
+                    ], 422);
+                }
             }
-        }
+            #Конец проверки
 
-        if ($request['do_date'] == null) {
-            $request['do_date'] = Carbon::now();
-        }
+            if ($request['inpercents'] === null || $request['inpercents'] === false || $request['inpercents'] === 0 || $request['inpercents'] === '0') {
+                $request['inpercents'] = false;
+            } else {
+                $request['inpercents'] = true;
+            }
 
-        if ($client_order->exists) {
-            $this->message = 'Заказ обновлен';
-            $wasExisted = true;
-            #Возвращаем на склад все товары из заказа
+            if ($request['inpercents']) {
+                if ((int)$request['discount'] >= 100) {
+                    $request['discount'] = 100;
+                }
+                if ((int)$request['discount'] <= 0) {
+                    $request['discount'] = 0;
+                }
+            }
+
+            if ($request['do_date'] == null) {
+                $request['do_date'] = Carbon::now();
+            }
+
+            if ($client_order->exists) {
+                $this->message = 'Заказ обновлен';
+                $wasExisted = true;
+                #Возвращаем на склад все товары из заказа
 //            if ($client_order->status === 'complete') {
 //                foreach ($client_order->articles()->get() as $article) {
 //                    $store = $client_order->store()->first();
@@ -157,104 +178,119 @@ class ClientOrdersController extends Controller
 //                }
 //            }
 
-        } else {
-            $client_order->company_id = Auth::user()->company->id;
-            $client_order->manager_id = Auth::user()->partner->id;
-            $this->message = 'Заказ сохранен';
-            $wasExisted = false;
-        }
-
-
-        $client_order->fill($request->only($client_order->fields));
-        $client_order->store_id = Auth::user()->getStoreFirst()->id;
-        $client_order->summ = 0;
-        $client_order->balance = 0;
-        $client_order->itogo = 0;
-        $client_order->save();
-
-        UA::makeUserAction($client_order, $wasExisted ? 'fresh' : 'create');
-        $store = $client_order->store()->first();
-
-        # Собираем товары в массив id шников из Request`a
-        $plucked_articles = [];
-        foreach ($request['products'] as $id => $products) {
-            if ($id !== 'new') {
-                $plucked_articles[] = $id;
+            } else {
+                $client_order->company_id = Auth::user()->company->id;
+                $client_order->manager_id = Auth::user()->partner->id;
+                $this->message = 'Заказ сохранен';
+                $wasExisted = false;
             }
-        }
 
-        # Синхронизируем товары к складу
-        $store->articles()->syncWithoutDetaching($plucked_articles, false);
+            $client_order->fill($request->only($client_order->fields));
+            $client_order->store_id = Auth::user()->getStoreFirst()->id;
+            $client_order->summ = 0;
+            $client_order->balance = 0;
+            $client_order->itogo = 0;
+            $client_order->save();
 
-        $client_order_data = [];
+            if($client_order->order) {
 
-        $rp = $request->products;
-        foreach ($rp as $id => $product) {
-                $vcount = $product['count'];
-
-                if($vcount < $client_order->getShippedCount($id)){
-                    $name = 'products.' . $product['id'] . '.count';
-                    return response()->json([
-                        'messages' => [$name => ['Отгружено более ' . $vcount . ' товаров, декремент невозможен']]
-                    ], 422);
+                if($request->status == Order::WAIT_PICKUP_STATUS && $client_order->order->status != Order::WAIT_PICKUP_STATUS) {
+                    Mail::to($client_order->order->email)->send(new WaitOrder($client_order->order));
                 }
 
-            if($client_order && $client_order->getShippedCount($id)){
-                $vprice = $client_order->getProductPriceFromClientOrder($id);
+                if($request->status == Order::DELIVERY_STATUS && $client_order->order->status != Order::DELIVERY_STATUS) {
+                    Mail::to($client_order->order->email)->send(new RoadOrder($client_order->order));
+                }
+
+                $client_order->order->update(['status' => $request->status]);
+            }
+
+            UA::makeUserAction($client_order, $wasExisted ? 'fresh' : 'create');
+            $store = $client_order->store()->first();
+
+            # Собираем товары в массив id шников из Request`a
+            $plucked_articles = [];
+            foreach ($request['products'] as $id => $products) {
+                if ($id !== 'new') {
+                    $plucked_articles[] = $id;
+                }
+            }
+
+            # Синхронизируем товары к складу
+            $store->articles()->syncWithoutDetaching($plucked_articles, false);
+
+            $rp = array_reverse($request['products'], true);
+
+            $client_order->articles()->sync([]);
+
+            foreach ($rp as $index => $product) {
+
+                $product_id = $product['product_id'];
+                $count = $product['count'];
+                $price = (double)$product['price'];
+
+                if(isset($product['pivot_id'])) {
+
+                    $pivot_id = $product['pivot_id'];
+
+                    if ($count < $client_order->getShippedCountByPivotId($pivot_id)) {
+                        $name = 'products.' . $index . '.count';
+                        return response()->json([
+                            'messages' => [$name => ['Отгружено более ' . $count . ' товаров, декремент невозможен']]
+                        ], 422);
+                    }
+
+                    if($client_order && $client_order->getShippedCountByPivotId($pivot_id)){
+                        $price = $client_order->getProductPriceFromClientOrderByPivotId($pivot_id);
+                    }
+                }
+
+                $total = $price * $count;
+                $client_order->summ += $total;
+
+                $pivot_data = [
+                    'store_id' => null,
+                    'count' => (int)$count,
+                    'price' => (double)$price,
+                    'total' => (double)$total,
+                    'shipped_count' => isset($product['pivot_id']) ? $client_order->getShippedCountByPivotId($pivot_id) : 0
+                ];
+
+                $client_order->articles()->attach($product_id, $pivot_data);
+            }
+
+            if ($request['inpercents']) {
+                $client_order->itogo = $client_order->summ - ($client_order->summ / 100 * $request['discount']);
             } else {
-                $vprice = (double)$product['price'];
+                if ($request['discount'] >= $client_order->summ) {
+                    $request['discount'] = $client_order->summ;
+                }
+                if ($request['discount'] <= 0) {
+                    $request['discount'] = 0;
+                }
+                $client_order->discount = $request['discount'];
+                $client_order->itogo = $client_order->summ - $request['discount'];
             }
 
-            $vtotal = $vprice * $vcount;
-            $client_order->summ += $vtotal;
-            $pivot_data = [
-                'store_id' => $client_order->store()->first()->id,
-                'article_id' => (int)$product['id'],
-                'client_order_id' => $client_order->id,
-                'count' => (int)$vcount,
-                'price' => (double)$vprice,
-                'total' => (double)$vtotal,
-                'shipped_count' => $client_order->getShippedCount($id)
-            ];
-            $client_order_data[] = $pivot_data;
-        }
-        #Удаление всех отношений и запись новых (кастомный sync)
-        $client_order->syncArticles($client_order->id, $client_order_data);
+            $client_order->save();
 
-        if ($request['inpercents']) {
-            $client_order->itogo = $client_order->summ - ($client_order->summ / 100 * $request['discount']);
-        } else {
-            if ($request['discount'] >= $client_order->summ) {
-                $request['discount'] = $client_order->summ;
-            }
-            if ($request['discount'] <= 0) {
-                $request['discount'] = 0;
-            }
-            $client_order->discount = $request['discount'];
-            $client_order->itogo = $client_order->summ - $request['discount'];
-        }
-
-        $client_order->save();
-
-        #Отнимаем со склада товары из заказа
+            #Отнимаем со склада товары из заказа
 
 //        $client_order->partner()->first()
 //            ->subtraction($client_order->itogo);
 
-        if($request->shipping){
-            $response = $client_order->makeShipped();
-            $client_order->setShiped();
-            return response()->json($response['data'], $response['status']);
-        }
-        if ($request->expectsJson()) {
+            if($request->shipping){
+                $response = $client_order->makeShipped();
+                $client_order->setShiped();
+                return response()->json($response['data'], $response['status']);
+            }
+
             return response()->json([
                 'message' => $this->message,
                 'id' => $client_order->id,
                 'event' => 'ClientOrderStored',
             ], 200);
-        } else {
-            return redirect()->back();
-        }
+        });
     }
 
 //    public function makeShipped(Request $request){
@@ -335,14 +371,7 @@ class ClientOrdersController extends Controller
             client_orders.*, client_orders.created_at as date, client_orders.id as coid
         '))
             ->from(DB::raw('(
-            SELECT client_orders.*, IF(partners.type = 0, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' ₽\')) as discount_formatted,
-            (CASE
-                WHEN client_orders.status = "active" THEN "Активен"
-                WHEN client_orders.status = "canceled" THEN "Отменен"
-                WHEN client_orders.status = "full" THEN "Укомплектован"
-                WHEN client_orders.status = "complete" THEN "Выполнен"
-                ELSE "Статус не определён"
-            END) AS status_formatted
+            SELECT client_orders.*, IF(partners.type = 0, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' ₽\')) as discount_formatted
             FROM client_orders
             left join partners on partners.id = client_orders.partner_id
             GROUP BY client_orders.id)
@@ -370,6 +399,10 @@ class ClientOrdersController extends Controller
 
             //dd($entrances);
             ->paginate($size);
+
+        foreach ($client_orders as $key => $client_order) {
+            $client_orders[$key]['status'] = Order::$statuses[$client_order->status];
+        }
 
         return $client_orders;
     }

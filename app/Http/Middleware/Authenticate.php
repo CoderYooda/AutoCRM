@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-use Closure;
-use Auth;
+use App\Services\ShopManager\ShopManager;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
@@ -17,7 +16,13 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            return route('login');
+
+            /** @var ShopManager $shopManager */
+            $shopManager = app(ShopManager::class);
+
+            $shop = $shopManager->getCurrentShop();
+
+            return route($shop ? 'pages.index' : 'login');
         }
     }
 }

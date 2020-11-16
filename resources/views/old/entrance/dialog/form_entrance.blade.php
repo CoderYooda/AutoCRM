@@ -91,7 +91,7 @@
                             </div>
                             <div class="form-group row mb-0">
 
-                                <label class="col-sm-3 no-pr col-form-label">Коментарий к поступлению</label>
+                                <label class="col-sm-3 no-pr col-form-label">Комментарий к поступлению</label>
                                 <div class="col-sm-9">
                                     <textarea style="resize: none;" class="form-control" name="comment" id="comment" cols="30" rows="5">@if(isset($entrance)){{ $entrance->comment }}@endif</textarea>
                                 </div>

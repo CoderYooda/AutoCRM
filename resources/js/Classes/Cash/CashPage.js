@@ -31,8 +31,11 @@ class cashPage extends Page{
 
         let container = 'ajax-table-' + this.active_tab;
 
-        this.readData(container);
 
+
+
+
+        this.readData(container);
         this.table = new Table({
             container: this.active_tab,
             data: this.data,

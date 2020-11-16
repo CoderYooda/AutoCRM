@@ -8,7 +8,6 @@
     vertical-align: top;
     text-align: center;
     text-decoration: none;
-    border-radius: 4px;
 }
 .uppercase-btn{
     font-size: 10px;
@@ -22,6 +21,7 @@
 .button.primary {
     background-color: #1F98E9;
     color: #fff;
+    border: 1px solid #1981c7;
 }
 .button.primary:hover {
     background-color: #0F8CDF;
@@ -30,6 +30,11 @@
 
 .button.green {
     background-color: #63C054;
+    color: #fff;
+}
+
+.button.red {
+    background-color: red;
     color: #fff;
 }
 
@@ -44,7 +49,8 @@
 }
 .active .button, .button:active, .button.active{
     padding-top: 1px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
+    background: #1369a2;
 }
 //button .active .button.primary, .button.primary:active, .button.primary.active{
 //    background-color: #0e7fca!important;

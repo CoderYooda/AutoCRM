@@ -494,8 +494,23 @@ h5{
 .no-pl{
     padding-left: 0!important;
 }
+.helper_danger .fa-warning:before, .fa-exclamation-triangle:before {
+    content: "\F071";
+    background: rgb(255 255 255 / 35%);
+    border-radius: 3px;
+    padding: 3px;
+}
+.dialog_tab_holder{
+    width: calc(100% - 200px);
+}
 .tab-content{
     padding: 15px;
+    position: relative;
+    width: 100%;
+}
+.link-tabs{
+    width: 200px;
+    min-width: 200px;
 }
 .text-danger{
     color: #FF4949;
@@ -514,21 +529,38 @@ h5{
     border-spacing: 0;
 }
 .modal-body .nav{
-    background-color: #F7F7F7;
+    background-color: #ffffff;
+    border-right: 1px solid #E7E8EC;
     margin: 15px;
     border-radius: 3px;
     overflow: hidden;
-    padding: 10px 0;
+    height: calc(100% - 30px);
     flex: 1;
 }
+
 .modal-body .nav-link{
-    padding: 10px 15px;
+    padding: 5px 15px;
     display: block;
-    border-bottom: 1px solid #FFFFFF;
+    border-right: 3px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.modal-body .nav-link:hover, .modal-body .active .nav-link{
-    background-color: #1F98E9;
+.modal-body .active .nav-link{
+    background-color: #0289CE;
+    border-color: #005E8E;
+    color: #fff;
+}
+
+.modal-body .nav-link:hover{
+    background-color: #F0F0F3;
+    border-color: #B7B7B7;
+    color: #404040;
+}
+
+.modal-body .active .nav-link:hover{
+    background-color: #0275AF;
+    border-color: #005079;
     color: #fff;
 }
 
@@ -587,6 +619,7 @@ label.label-sm{
     align-items: stretch;
     width: 100%;
 }
+
 .input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control, .input-group>.form-control-plaintext {
     position: relative;
     -webkit-box-flex: 1;
@@ -615,6 +648,11 @@ label.label-sm{
 [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
     cursor: pointer;
 }
+
+button:disabled, textarea:disabled {
+    cursor: not-allowed;
+}
+
 .no-items-text{
     text-align: center;
     font-weight: 600;
@@ -1197,7 +1235,7 @@ button.form-control{
 .top-nav-item:hover, .top-nav-item.show{
     background-color: #3d6898;
 }
-.top-nav-item .stack_item{
+.top-nav-item .stack_item {
     color: #404040 !important;
     display: block;
     text-overflow: ellipsis;
@@ -1205,6 +1243,7 @@ button.form-control{
     white-space: nowrap;
     padding: 5px 10px;
 }
+
 .badge-pill{
     top: 10px;
     right: 4px;
@@ -1217,9 +1256,17 @@ button.form-control{
     padding: 6px 4px;
     display: none;
 }
-.active .badge-pill{
-    display: block;
+
+.active, .ajax-nav {
+    .badge-pill {
+        display: block;
+    }
 }
+
+.ajax-nav .badge-pill {
+    right: 40px;
+}
+
 .box-content.partner_page_content{
     max-width: calc(100vw - 787px)!important;
 }

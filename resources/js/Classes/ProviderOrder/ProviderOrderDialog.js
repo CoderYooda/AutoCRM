@@ -1,20 +1,19 @@
 import Modal from "../Modal/Modal";
+import Tabs from "../../Tools/Tabs";
+import BBlist from "../BBitems";
 
 class providerOrderDialog extends Modal{
 
     constructor(dialog, response){
         super(dialog);
         console.log('Окно штрихкода инициализировано');
-        this.items = [];
+        // this.items = [];
         this.nds = true;
         this.nds_included = true;
-        this.totalPrice = 0.0;
-        this.itogo = 0.0;
         this.refer = null;
 
-        if(response.products != undefined) {
+        if(response && response.products != undefined) {
             Object.values(response.products).forEach(product_id => {
-                console.log(product_id.id);
                 window.entity.addProductToList(product_id.id, this, 'providerOrder');
             });
         }
@@ -23,15 +22,6 @@ class providerOrderDialog extends Modal{
     }
 
     init(){
-        let object = this;
-
-        var fn = window.helper.debounce(function(e) {object.recalculate(e);}, 50);
-        ///Вешаем обрабочик на поле скидки/////////////
-        // let discount = object.root_dialog.querySelector('input[name=discount]');
-        // discount.addEventListener("keydown", fn);
-        // discount.addEventListener("paste", fn);
-        // discount.addEventListener("delete", fn);
-        ////////////////////////////////////////////////
 
         ///Вешаем обработчик на чекбокс/////////////////
         // let inpercents = object.root_dialog.querySelector('input[name=inpercents]');
@@ -49,25 +39,38 @@ class providerOrderDialog extends Modal{
         //     object.finitaLaComedia();
         // });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  function(e){
+        this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  e => {
             if (e.which == 13) {
                 e.preventDefault();
-                object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+                this.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
+        this.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  () => {
+            let id = this.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
+                let root_id = this.root_dialog.id;
+                this.freshContent(id,function(){
                     delete window[root_id];
                     window.helper.initDialogMethods();
                 });
             }
         });
 
-        this.loadItemsIfExists();
+        this.tabs = window.helper.initTabs('po_tabs');
+
+        let header = [
+            {min_with: NaN, width: NaN, name: 'pivot_id', table_name: 'pivot_id', type: 'hidden'},
+            {min_with: NaN, width: NaN, name: 'product_id', table_name: 'product_id', type: 'hidden'},
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'price',},
+            {min_with: 70, width: 70, name: 'НДС, %', table_name: 'nds_percent', type: 'passive',},
+            {min_with: 70, width: 70, name: 'НДС', table_name: 'nds', type: 'passive',},
+            {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
+        ];
+        this.items = new BBlist(this, 'po_list', 'products', header);
     }
 
     scanOperation(product_id){
@@ -83,15 +86,15 @@ class providerOrderDialog extends Modal{
         //data.store_id = store_id;
         if(object.refer){
             data.refer = object.refer;
+            data.inner = 1;
         }
 
         window.axios({
             method: 'post',
             url: 'providerorder/' + id + '/fresh',
             data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
-            console.log('Вставили html');
+        }).then(resp => {
+            this.current_dialog.innerHTML = resp.data.html;
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {
@@ -201,73 +204,62 @@ class providerOrderDialog extends Modal{
         });
     }
 
-    loadItemsIfExists(){
-        window.entity.loadItemsToList(this, 'providerorder');
-    }
-
     setTotalPrice(count){
         let container = this.root_dialog.querySelector('#total_price');
         container.innerHTML = Number(count).toFixed(2);
     }
 
-    setItogo(count){
-        // let container = this.root_dialog.querySelector('#itogo_price');
-        // container.innerHTML = Number(count).toFixed(2);
-    }
+    addItem(data){
+        let product_list = this.root_dialog.querySelector('.element-list');
+        this.items.push(data);
 
-    setDiscount(count){
-        let container = this.root_dialog.querySelector('#percents_price');
-        container.innerHTML = count;
-    }
+        try {
+            window.selectProductDialog.markAsAdded();
+        }
+        catch (e) {
+            //console.log(e);
+        }
 
-    setNDS() {
-        this.nds = this.root_dialog.querySelector('input[name=nds]').checked;
-        this.nds_included = this.root_dialog.querySelector('input[name=nds_included]').checked;
+        product_list.insertAdjacentHTML('afterbegin', data.html);
+
+        this.addInputsMask();
         this.recalculate();
-    }
 
-    addItem(elem){
-        let object = this;
-        let product_list = this.root_dialog.querySelector('.product_list');
-        this.items.push(elem);
-        let tbody = document.createElement('tbody');
-        tbody.innerHTML = elem.html;
-        product_list.prepend(tbody.firstChild);
         window.notification.notify( 'success', 'Товар добавлен к списку');
-        let item = this.root_dialog.querySelector('#product_selected_' + elem.id);
-        let inputs = item.getElementsByTagName('input');
+    }
 
-        [].forEach.call(inputs, function(elem){
-            var fn = window.helper.debounce(function(e) {
-                object.recalculate(e);
-            }, 50);
-            elem.addEventListener("keydown", fn);
-            elem.addEventListener("paste", fn);
-            elem.addEventListener("delete", fn);
+    addInputsMask()
+    {
+        let inputs = this.current_dialog.querySelectorAll('.element-list input');
+
+        inputs.forEach(element => {
+
+            let fn = window.helper.debounce(e => this.recalculate(e), 300);
+
+            element.addEventListener("keyup", fn);
+            element.addEventListener("change", fn);
+            element.addEventListener("paste", fn);
+            element.addEventListener("delete", fn);
+
+            this.addInputPriceMask(element);
         });
-        this.recalculate();
-        if(this.refer != null){
-            window[this.refer].markAsAdded();
-        }
     }
 
-    removeItem(id){
-        this.items.splice(
-            this.items.map(function(e){
-                return e.id
-            }).indexOf(id), 1
-        );
-        this.root_dialog.querySelector('#product_selected_' + id).remove();
-        this.recalculate();
+    addInputPriceMask(element) {
+        let options = {
+            mask: Number,
+            min: 0,
+            max: 9999999,
+            radix: '.'
+        };
+
+        IMask(element, options);
     }
 
-    addProduct(elem_or_id, refer = null){
-        let object = this;
-        window.entity.addProductToList(elem_or_id, this, 'providerOrder');
-        if(refer != null){
-            object.refer = refer;
-        }
-    };
+
+    addProduct(elem_or_id, refer = null) {
+        window.entity.addProductToList(elem_or_id, this, 'providerOrder', this.root_dialog.id);
+    }
 
     selectPartner(id){
         var object = this;
@@ -300,86 +292,5 @@ class providerOrderDialog extends Modal{
     openSelectPartnerModal(){
         window.openDialog('selectPartner', '&only_current_category=1&refer=' + this.root_dialog.id + '&category_id=6');
     }
-
-    recalculate(){
-        console.log("Пересчет...");
-        var object = this;
-        this.items.forEach(function(elem){
-            object.recalculateItem(elem.id);
-        });
-        var total_price = object.totalPrice;
-        var itogo = object.itogo;
-        // var inpercents = object.root_dialog.querySelector('input[name=inpercents]');
-        // var discount = object.root_dialog.querySelector('input[name=discount]');
-
-        object.items.map(function(e){
-            total_price = total_price + Number(e.total);
-        });
-
-        // if(inpercents.checked){
-        //     itogo = total_price - (total_price / 100 * Number(discount.value).toFixed(2));
-        // } else {
-        //itogo = total_price - Number(discount.value).toFixed(2);
-        // }
-
-        // var discount_val;
-        //
-        // if(inpercents.checked){
-        //     discount_val = discount.value + '%';
-        // } else {
-        //     discount_val = discount.value + 'р';
-        // }
-
-
-        object.setTotalPrice(total_price);
-        object.setItogo(itogo);
-        // object.setDiscount(discount_val);
-    }
-
-    recalculateItem(id){
-        let object = this;
-        let item = this.root_dialog.querySelector('#product_selected_' + id);
-        let total = item.querySelector("input[name='products[" + id + "][total_price]']");
-        let count = item.querySelector("input[name='products[" + id + "][count]']");
-        let price = item.querySelector("input[name='products[" + id + "][price]']");
-
-        let nds_percent = item.querySelector("input[name='products[" + id + "][nds_percent]']");
-        let nds = item.querySelector("input[name='products[" + id + "][nds]']");
-
-        let vcount = Number(count.value);
-        let vprice = Number(price.value);
-        let vnds_percent = Number(nds_percent.value);
-        let vnds = Number(nds.value);
-        let vtotal = Number(total.value);
-
-        if(object.nds && !object.nds_included){
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = vtotal / 100 * vnds_percent;
-            vtotal = vnds + vtotal;
-        } else if(object.nds && object.nds_included){
-            vnds_percent = 20;
-            vtotal = vprice * vcount;
-            vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
-        } else {
-            vtotal = vprice * vcount;
-            vnds = 0.00;
-            vnds_percent = 0;
-        }
-
-        nds_percent.value = vnds_percent.toFixed(2);
-        nds.value = vnds.toFixed(2);
-        total.value = vtotal.toFixed(2);
-
-        object.items.map(function(e){
-            if(e.id === id){
-                e.total = vtotal;
-                e.count = vcount;
-                e.price = vprice;
-            }
-        });
-    }
-
-
 }
 export default providerOrderDialog;

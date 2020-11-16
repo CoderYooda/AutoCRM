@@ -312,11 +312,14 @@ class schedulePage{
             } else {
                 date = day.getDate();
             }
-            if(day.getMonth().toString().length === 1){
+
+
+            if((day.getMonth() + 1).toString().length === 1){
                 month = '0' + (day.getMonth() + 1)
             } else {
                 month = day.getMonth() + 1
             }
+
             dates.push(day.getFullYear() + '-' + month + '-' + date);
 
             dates_html += '<th class="date_num header_item cell-width">' + weekNames[day.getDay()] + ", " + date + "." + month + '</th>';
@@ -407,7 +410,6 @@ class schedulePage{
     }
 
     addSchedule(data){
-
         let cell = document.querySelector('#cell_' + data.date + '_' + data.partner_id);
         if(cell){
             if(data.dayType === 'work'){

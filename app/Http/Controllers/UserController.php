@@ -6,13 +6,9 @@ use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\PasswordRequest;
 use App\Models\Partner;
 use App\Models\Payment;
-use App\Models\SalarySchema;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Contracts\Auth\Authenticatable as SystemAuth;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -96,6 +92,19 @@ class UserController extends Controller
             return $content;
         }
 
+    }
+
+    public function updateImage(Request $request)
+    {
+        Auth::user()->partner->update([
+            'avatar_id' => $request->image_id,
+            'pic_id' => $request->image_id
+        ]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Фотография успешно обновлена.'
+        ]);
     }
 
     public function passwordEdit(Request $request)

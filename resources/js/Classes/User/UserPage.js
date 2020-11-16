@@ -150,20 +150,43 @@ class userPage{
             method: 'POST',
             url: '/system/crop_image',
             data: cropdata
-        }).then(function (response){
-            // let div = document.getElementById(response.data.target);
-            // div.innerHTML = response.data.html;
+        }).then(response => {
+            let image = response.data.file;
+
             var pics = document.getElementsByClassName('user_thumb');
-            [].forEach.call(pics, function(elem){
-                elem.src = response.data.avatar.thumb_url;
+            [].forEach.call(pics, elem => {
+                elem.src = image.image_path;
             });
-            document.getElementsByClassName('user_avatar')[0].src = response.data.avatar.url;
+            document.getElementsByClassName('user_avatar')[0].src = image.image_path;
+
+            this.updateUserImage(image);
+
             object.crop_modal.hide();
+
         }).catch(function(response){
             dd(response);
         }).finally(function () {
             window.isXHRloading = false;
         });
+    }
+
+    updateUserImage(image) {
+
+        let data = {
+            image_id: image.id
+        };
+
+        axios.post('/user/update-image', data)
+            .then(response => {
+
+            })
+            .catch(response => {
+
+            });
+        //        $user->partner->update([
+//            'avatar_id' => $imageobject->id,
+//            'pic_id' => $imageobject->id
+//        ]);
     }
 }
 export default userPage;

@@ -27,6 +27,12 @@ class EntranceRefund extends Model
             ->withPivot('count', 'price', 'total');
     }
 
+    public function articlesJson()
+    {
+        return $this->belongsToMany(Article::class, 'article_entrance_refund', 'entrance_refund_id')
+            ->withPivot('count as count', 'price as price', 'total as total');
+    }
+
     public function freshWsumm(){
         //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
     }

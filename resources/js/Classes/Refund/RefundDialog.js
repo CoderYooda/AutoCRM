@@ -1,4 +1,5 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class refundDialog extends Modal{
 
@@ -13,10 +14,6 @@ class refundDialog extends Modal{
 
     init(){
         let object = this;
-
-        document.addEventListener("WarrantStored", function(){
-            object.save(object.root_dialog.form);
-        });
 
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
@@ -35,6 +32,24 @@ class refundDialog extends Modal{
                 object.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
             }
         });
+
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('refund_tabs' + prefix);
+
+        let header = [
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            {min_with: 80, width: 80, name: 'Всего ед.', table_name: 'shipment_count', type: 'passive-count',},
+            {min_with: 125, width: 125, name: 'Возвращено ед.', table_name: 'refunded_count', type: 'passive-count',},
+            // {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'passive',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'total', type: 'passive',},
+        ];
+
+        this.items = new BBlist(this, 'refund_list' + prefix, 'products', header);
     }
 
     freshContent(id, callback = null){
@@ -71,7 +86,7 @@ class refundDialog extends Modal{
                 this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 this.root_dialog.setAttribute('id', 'refundDialog' + resp.data.id);
                 this.root_dialog.setAttribute('data-id', resp.data.id);
-                this.freshContent(resp.data.id, function () {
+                this.freshContent(resp.data.id,  () => {
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];
@@ -171,7 +186,8 @@ class refundDialog extends Modal{
 
     setTotalPrice(count){
         let container = this.root_dialog.querySelector('#total_price');
-        container.innerHTML = Number(count).toFixed(2);
+        if(container)
+            container.innerHTML = Number(count).toFixed(2);
     }
 
     setItogo(count){
@@ -312,7 +328,8 @@ class refundDialog extends Modal{
             method: 'post',
             url: 'shipment/'+ id +'/select',
             data: {refer:this.root_dialog.id}
-        }).then(function (resp) {
+        }).then(resp => {
+            this.items.setItems(resp.data.items);
             object.touch();
             let select = object.root_dialog.querySelector('button[name=shipment_id]');
             let partner_butt = object.root_dialog.querySelector('#partner_butt');
@@ -327,29 +344,29 @@ class refundDialog extends Modal{
             window.notification.notify( 'success', 'Продажа выбрана');
             document.dispatchEvent(new Event('ShipmentSelected', {bubbles: true}));
             console.log("Событие ShipmentSelected вызвано");
-            object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
+            // object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
             balance.innerHTML = resp.data.balance + ' р';
-            [].forEach.call(resp.data.items, function (elem) {
-                object.items.push({
-                    id: elem.id,
-                    count: elem.pivot.count,
-                    price: elem.pivot.price,
-                    total: elem.pivot.total,
-                });
-
-                let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-                let inputs = item.getElementsByTagName('input');
-
-                [].forEach.call(inputs, function (elem) {
-                    var fn = window.helper.debounce(function (e) {
-                        object.recalculate(e);
-                    }, 50);
-                    elem.addEventListener("keydown", fn);
-                    elem.addEventListener("paste", fn);
-                    elem.addEventListener("delete", fn);
-                });
-
-            });
+            // [].forEach.call(resp.data.items, function (elem) {
+            //     object.items.push({
+            //         id: elem.id,
+            //         count: elem.pivot.count,
+            //         price: elem.pivot.price,
+            //         total: elem.pivot.total,
+            //     });
+            //
+            //     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+            //     let inputs = item.getElementsByTagName('input');
+            //
+            //     [].forEach.call(inputs, function (elem) {
+            //         var fn = window.helper.debounce(function (e) {
+            //             object.recalculate(e);
+            //         }, 50);
+            //         elem.addEventListener("keydown", fn);
+            //         elem.addEventListener("paste", fn);
+            //         elem.addEventListener("delete", fn);
+            //     });
+            //
+            // });
 
         }).catch(function (error) {
             console.log(error);

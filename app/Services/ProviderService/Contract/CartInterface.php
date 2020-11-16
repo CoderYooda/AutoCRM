@@ -10,7 +10,7 @@ interface CartInterface
 
     public function getProductsIds();
 
-    public function addProduct($provider_key, $article, $data);
+    public function addProduct($provider_key, $article, $data, $count);
 
     public function getProductsCount();
 
@@ -22,5 +22,9 @@ interface CartInterface
 
     public function removeProduct($provider, $delivery_key, $manufacturer, $article);
 
+    public function removeProductById($id);
+
     public function clear();
+
+    public function clearByProviderKey($key);
 }

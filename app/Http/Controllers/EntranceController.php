@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\EntranceWasSaved;
+use App\Events\RecalculateEntranceAvailableCount;
 use App\Http\Requests\EntranceRequest;
 use App\Models\EntranceRefund;
 use App\Models\ProviderOrder;
@@ -13,21 +15,46 @@ use App\Models\Entrance;
 use Carbon\Carbon;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Models\ArticleStock;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 
 class EntranceController extends Controller
 {
-    public static function entranceDialog($request)
+    public static function entranceDialog(Request $request)
     {
         $entrance = Entrance::find($request['entrance_id']);
-        $tag = 'entranceDialog' . ($entrance->id ?? '');
+        $class = 'entranceDialog' . ($entrance->id ?? '');
 
+        /** @var ProviderOrder $providerorder */
         $providerorder = $entrance->providerorder ?? null;
 
+        $items = $entrance ? $entrance->articles->toArray() : [];
+
+        foreach ($items as $key => $item) {
+            $items[$key]['product_id'] = $item['id'];
+            $items[$key]['pivot_id'] = $item['pivot']['id'];
+            $items[$key]['price'] = $item['pivot']['price'];
+            $items[$key]['entered_count'] = $providerorder->getArticleEnteredCountByPivotId($item['pivot']['provider_pivot_id'] ?? $item['pivot']['id']);
+            $items[$key]['total_count'] = $providerorder->getArticleCountByPivotId($item['pivot']['provider_pivot_id'] ?? $item['pivot']['id']);
+            $items[$key]['count'] = $providerorder ? $item['pivot']['count'] : ($item['total_count'] - $item['entered_count']);
+        }
+
+        $prefs = [
+            'use_nds' => false,
+            'can_add_items' => false,
+            'nds' => 0,
+            'freeze' => $entrance ? true : false,
+            'nds_included' => false
+        ];
+
+        $view = view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request', 'class'))
+            ->with('items', json_encode($items))
+            ->with('prefs', json_encode($prefs));
+
         return response()->json([
-            'tag' => $tag,
-            'html' => view(get_template() . '.entrance.dialog.form_entrance', compact('entrance', 'providerorder', 'request'))->with('class', $tag)->render()
+            'tag' => $class,
+            'html' => $view->render()
         ]);
     }
 
@@ -49,79 +76,84 @@ class EntranceController extends Controller
     {
         PermissionController::canByPregMatch( 'Создавать поступления');
 
-        $store = Store::find(Auth::user()->current_store);
+        return DB::transaction(function () use($request) {
+            $user = Auth::user();
 
-        $providerorder = ProviderOrder::find($request['providerorder_id']);
+            $providerorder = ProviderOrder::find($request['providerorder_id']);
 
-        #проверка валидации
-        $messages = [];
+            //Проверка валидации
+            $messages = [];
 
-        foreach($request['products'] as $id => $product) {
-            $entrance_count = $providerorder->getArticleEntredCount($id);
-            $providers_count = $providerorder->getArticleCount($id);
-            $form_count = (int)$product['count'];
-            if($entrance_count + $form_count > $providers_count){
-                $messages['products[' . $id . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
+            $providerPivotProducts = DB::table('article_provider_orders')->whereIn('id', array_column($request->products, 'pivot_id'))->get();
+
+            foreach($request['products'] as $index => $product) {
+
+                $pivot_id = $product['pivot_id'];
+
+                $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
+
+                $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
+
+                $form_count = (int)$product['count'];
+
+                if($entrance_count + $form_count > $provider_count){
+                    $messages['products[' . $index . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
+                }
             }
-        }
 
-        if(count($messages)){
-            return response()->json(['messages' => $messages], 422);
-        }
+            if(count($messages)){
+                return response()->json(['messages' => $messages], 422);
+            }
 
-        $entrance = Entrance::create([
-            'manager_id' => Auth::user()->partner->id,
-            'partner_id' => $providerorder->partner->id,
-            'company_id' => Auth::user()->company->id,
-            'comment' => $request->comment,
-            'providerorder_id' => $providerorder->id,
-            'invoice' => $request->invoice
-        ]);
-
-        foreach ($request->products as $product) {
-            $price = $providerorder->articles->find($product['id'])->pivot->price;
-
-            $entrance->articles()->attach($product['id'], [
-                'store_id' => $providerorder->store_id,
-                'company_id' => $entrance->company_id,
-                'count' => $product['count'],
-                'price' => $price
+            $entrance = Entrance::create([
+                'manager_id' => $user->partner->id,
+                'partner_id' => $providerorder->partner->id,
+                'company_id' => $user->company_id,
+                'comment' => $request->comment,
+                'providerorder_id' => $providerorder->id,
+                'invoice' => $request->invoice
             ]);
-        }
 
-        $product_ids = array_column($request->products, 'id');
-        $store->articles()->syncWithoutDetaching($product_ids, false);
+            $totalPrice = 0;
 
-        #Обработка ответа
-        $entrance->company_id = Auth::user()->company_id;
+            foreach ($request->products as $index => $product) {
 
-        #Добавляем к балансу контакта
-        $entrance->providerorder->partner->addition($entrance->totalPrice);
-        UA::makeUserAction($entrance,'create');
+                $pivot_id = $product['pivot_id'];
 
-        $entrance->providerorder->updateIncomeStatus();
+                $price = $providerorder->articles->find($product['product_id'])->pivot->price;
 
-        #Ответ сервера
-        return response()->json([
-            'message' => 'Поступление было успешно создано.',
-            'id' => $entrance->id,
-            'event' => 'EntranceStored',
-        ], 200);
+                $entrance->articles()->attach($product['product_id'], [
+                    'store_id' => $user->current_store,
+                    'company_id' => $entrance->company_id,
+                    'count' => $product['count'],
+                    'price' => $price,
+                    'provider_pivot_id' => $pivot_id
+                ]);
+
+                $totalPrice += $product['count'] * $price;
+            }
+
+            #Добавляем к балансу контакта
+            $entrance->providerorder->partner->addition($totalPrice);
+            UA::makeUserAction($entrance,'create');
+
+            $entrance->providerorder->updateIncomeStatus();
+
+            #Ответ сервера
+            return response()->json([
+                'message' => 'Поступление было успешно создано.',
+                'id' => $entrance->id,
+                'event' => 'EntranceStored',
+            ], 200);
+        });
     }
 
     public function fresh(Entrance $entrance, Request $request)
     {
-        $request['fresh'] = true;
-        $class = 'entranceDialog' . $entrance->id;
+        $request['inner'] = 1;
+        $request['entrance_id'] = $entrance->id;
 
-        $content = view(get_template() . '.entrance.includes.inner_entrance_dialog', compact( 'entrance', 'class', 'request'))
-            ->with('providerorder', $entrance->providerorder)
-            ->render();
-
-        return response()->json([
-            'html' => $content,
-            'target' => $class,
-        ], 200);
+        return self::entranceDialog($request);
     }
 
     private static function calculatePivotArticleEntrance($request, $store, $product){
@@ -146,7 +178,7 @@ class EntranceController extends Controller
 
     public function select(Entrance $entrance, Request $request)
     {
-        $products = null;
+        $products = [];
 
         if(!$entrance) {
             return response()->json([
@@ -173,12 +205,18 @@ class EntranceController extends Controller
                 }
             }
 
-            $view = view(get_template() . '.entrance_refunds.dialog.products_element', compact('entrance', 'available_count', 'products', 'request'))->render();
+            foreach ($products as $key => $product) {
+                $products[$key]['pivot_id'] = $product['pivot']['id'];
+                $products[$key]['product_id'] = $product['id'];
+                $products[$key]['price'] = $product['pivot']['price'];
+                $products[$key]['count'] = $product['pivot']['count'];
+                $products[$key]['released_count'] = $product['pivot']['released_count'];
+                $products[$key]['provider_pivot_id'] = $product['pivot']['provider_pivot_id'];
+            }
         }
 
         return response()->json([
             'id' => $entrance->id,
-            'items_html' => $view,
             'items' => $products,
             'partner' => $entrance->partner->outputName(),
             'partner_id' => $entrance->partner->id,
@@ -252,16 +290,13 @@ class EntranceController extends Controller
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
-
         if($field === null &&  $dir === null){
             $field = 'created_at';
             $dir = 'DESC';
         }
-
         if($request['provider'] == null){
             $request['provider'] = [];
         }
-
         if($request['accountable'] == null){
             $request['accountable'] = [];
         }

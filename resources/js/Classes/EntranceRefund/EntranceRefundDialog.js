@@ -1,25 +1,47 @@
 import Modal from "../Modal/Modal";
+import BBlist from "../BBitems";
 
 class entranceRefundDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
         console.log('Окно возврата поступления инициализировано');
-
         this.items = [];
-
         this.init();
     }
 
     init(){
+
         this.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored', () => {
             let id = this.root_dialog.querySelector('input[name=id]').value;
             if(id !== null) this.fresh(id);
         });
+
+        let id = this.current_dialog.dataset.id;
+        let prefix = id ? id : '';
+
+        this.tabs = window.helper.initTabs('entrance_refund_tabs' + prefix);
+
+        let header = [
+            {min_with: NaN, width: NaN, name: '',    table_name: 'pivot_id',     type:'hidden'},
+            {min_with: NaN, width: NaN, name: '',    table_name: 'product_id',     type:'hidden'},
+            {min_with: 100, width: 'auto', name: 'Наименование',    table_name: 'name',     type:'text'},
+            {min_with: 100, width: 100,    name: 'Артикул',         table_name: 'article',  type:'text'},
+            {min_with: 65, width: 65, name: 'Кол-во', table_name: 'count', type: 'counter',},
+            // {min_with: 150, width: 150, name: 'Поступило / Ожидается', table_name: 'count', type: 'text',},
+            {min_with: 80, width: 80, name: 'Цена', table_name: 'price', type: 'passive',},
+        ];
+
+        this.items = new BBlist(this, 'entrance_refund_list' + prefix, 'products', header);
+
     }
 
     openSelectEntranceRefundModal() {
         window.openDialog('selectEntranceDialog', '&refer=' + this.root_dialog.id);
+    }
+
+    setTotalPrice(){
+
     }
 
     selectEntrance(id) {
@@ -31,6 +53,7 @@ class entranceRefundDialog extends Modal{
                 refer: this.root_dialog.id
             }
         }).then(resp => {
+            this.items.setItems(resp.data.items);
 
             object.touch();
             let select = object.root_dialog.querySelector('button[name=entrance_id]');
@@ -48,34 +71,34 @@ class entranceRefundDialog extends Modal{
             window.notification.notify( 'success', 'Поступление выбрано');
             document.dispatchEvent(new Event('EntranceSelected', {bubbles: true}));
             console.log("Событие EntranceSelected вызвано");
-            object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
+            // object.root_dialog.querySelector('.product_list').innerHTML = resp.data.items_html;
             balance.innerHTML = resp.data.balance + ' р';
 
-            [].forEach.call(resp.data.items, function (elem) {
-                object.items.push({
-                    id: elem.id,
-                    count: elem.pivot.count,
-                    price: elem.pivot.price,
-                    total: elem.pivot.count * elem.pivot.price
-                });
-
-                let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
-
-                if(item) {
-                    let inputs = item.getElementsByTagName('input');
-
-                    [].forEach.call(inputs, function (elem) {
-                        let fn = window.helper.debounce(function (e) {
-                            object.recalculate(e);
-                        }, 50);
-                        elem.addEventListener("keydown", fn);
-                        elem.addEventListener("paste", fn);
-                        elem.addEventListener("delete", fn);
-                    });
-                }
-
-                object.recalculate();
-            });
+            // [].forEach.call(resp.data.items, function (elem) {
+            //     object.items.push({
+            //         id: elem.id,
+            //         count: elem.pivot.count,
+            //         price: elem.pivot.price,
+            //         total: elem.pivot.count * elem.pivot.price
+            //     });
+            //
+            //     let item = object.root_dialog.querySelector('#product_selected_' + elem.id);
+            //
+            //     if(item) {
+            //         let inputs = item.getElementsByTagName('input');
+            //
+            //         [].forEach.call(inputs, function (elem) {
+            //             let fn = window.helper.debounce(function (e) {
+            //                 object.recalculate(e);
+            //             }, 50);
+            //             elem.addEventListener("keydown", fn);
+            //             elem.addEventListener("paste", fn);
+            //             elem.addEventListener("delete", fn);
+            //         });
+            //     }
+            //
+            //     object.recalculate();
+            // });
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

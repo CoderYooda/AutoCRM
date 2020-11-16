@@ -8,9 +8,8 @@ class Phone extends Model
 {
     protected $guarded = [];
 
-    public $fields = [
-        'company_id',
-        'number',
-        'main',
-    ];
+    public function phoneable()
+    {
+        return $this->morphTo();
+    }
 }

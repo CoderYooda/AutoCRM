@@ -7,6 +7,7 @@ use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ProviderOrder extends Model
 {
@@ -37,16 +38,61 @@ class ProviderOrder extends Model
 
     //protected $dateFormat = 'Y-m-d/H:i';
 
+    public function freshWsumm(){
+        //TODO Сложить сумму платежей в отдельное поле сущности (Оптимизация)
+    }
+
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
-            ->withPivot('count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
+            ->withPivot('id', 'count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
+    }
+
+    public function getArticleCountByPivotId($id)
+    {
+        $product = $this->articles()->wherePivot('id', $id)->first();
+
+        return $product->pivot->count;
+    }
+
+    public function getArticleEnteredCountByPivotId($id)
+    {
+        return DB::table('article_entrance')->where('provider_pivot_id', $id)->sum('count');
+    }
+
+    public function articlesJson()
+    {
+        return$this->belongsToMany(Article::class, 'article_provider_orders', 'provider_order_id', 'article_id')
+            ->withPivot('count as count', 'price as price', 'nds as nds', 'nds_percent as nds_percent', 'nds_included as nds_included', 'total as total');
+    }
+    #Получить еще не оприходованные товары
+    public function getNotEnteredArticles()
+    {
+        $articles = $this->articles;
+
+        foreach($articles as $key => $article){
+
+            $count = $article->pivot->count - $this->getArticleEntredCount($article->id);
+
+            if($count){
+                $article->pivot->count = $count;
+            } else {
+                unset($articles[$key]);
+            }
+        }
+        return $articles;
     }
 
     public function getArticleCount($article_id)
     {
         $article = $this->articles()->where('article_id', $article_id)->first();
-        return $article != null ? $article->pivot->count : 0;
+        return $article->pivot->count ?? 0;
+    }
+
+    public function articlesCount()
+    {
+        $count = $this->articles()->sum('count');
+        return $count;
     }
 
     public function getPlanArticleCount()
@@ -63,8 +109,10 @@ class ProviderOrder extends Model
                 $entered_count += $article->pivot->count;
             }
         }
+
         return $entered_count;
     }
+
 
     public function updateIncomeStatus()
     {
@@ -125,22 +173,6 @@ class ProviderOrder extends Model
     public function outputName() //Вывод имени или наименования
     {
         return 'Заявка поставщику №' . $this->id;
-    }
-
-    public function freshWsumm(){
-
-        if(isset($this->pays)){
-            if(-$this->wsumm <= 0) {
-                $this->pays = 0;
-            } else if(-$this->wsumm > 0 && -$this->wsumm < $this->summ){
-                $this->pays = 1;
-            } else if(-$this->wsumm == $this->summ){
-                $this->pays = 2;
-            } else if(-$this->wsumm > $this->summ){
-                $this->pays = 3;
-            }
-        }
-        $this->save();
     }
 
     public function getArticlesCountById($id){
