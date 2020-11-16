@@ -40,7 +40,7 @@ class Order extends Model
     ];
 
     public static $statuses = [
-        'На подтверждение',
+        'На подтверждении',
         'Ожидает оплаты',
         'В работе',
         'В пути',

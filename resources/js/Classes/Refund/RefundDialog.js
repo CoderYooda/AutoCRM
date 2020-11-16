@@ -15,10 +15,6 @@ class refundDialog extends Modal{
     init(){
         let object = this;
 
-        document.addEventListener("WarrantStored", function(){
-            object.save(object.root_dialog.form);
-        });
-
         object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
             let id = object.root_dialog.querySelector('input[name=id]').value;
             if(id !== null){
@@ -90,7 +86,7 @@ class refundDialog extends Modal{
                 this.root_dialog.querySelector('input[name=id]').value = resp.data.id;
                 this.root_dialog.setAttribute('id', 'refundDialog' + resp.data.id);
                 this.root_dialog.setAttribute('data-id', resp.data.id);
-                this.freshContent(resp.data.id, function () {
+                this.freshContent(resp.data.id,  () => {
                     delete window[root_id];
                     let drag_dialog = window.dialogs[root_id];
                     delete window.dialogs[root_id];

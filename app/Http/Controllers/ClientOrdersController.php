@@ -41,7 +41,7 @@ class ClientOrdersController extends Controller
 //            $items[$key]['count'] = $item['count'];
 //            $items[$key]['price'] = $item['price'];
 //            $items[$key]['total'] = $item['total'];
-            $items[$key]['store_count'] = $item->getCountInCurrentStore();
+            $items[$key]['available'] = $item->getCountInCurrentStore();
             $items[$key]['shipped_count'] = $item['shipped_count'];
         }
 

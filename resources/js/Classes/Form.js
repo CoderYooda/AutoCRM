@@ -117,8 +117,6 @@ class AxForm{
                         iteration++;
                     });
 
-                    console.log(error_prepared);
-
                     try{
                         var el = dialog.querySelector('[name="'+error_prepared+'"]:not([type="hidden"])');
                     } catch (e) {

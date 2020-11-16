@@ -106,7 +106,6 @@ class createEntrance extends Modal{
             url: 'entrance/' + id + '/fresh',
             data: data,
         }).then(resp => {
-            console.log(resp.data);
             this.current_dialog.innerHTML = resp.data.html;
         }).catch(function (error) {
             console.log(error);
