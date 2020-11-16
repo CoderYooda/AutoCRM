@@ -86,6 +86,9 @@
                     </div>
                 </div>
             @endforeach
+
+            {{ $categories->links() }}
+
         </div>
     </div>
 </div>

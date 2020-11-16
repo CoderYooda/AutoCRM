@@ -3312,7 +3312,7 @@ input:-moz-placeholder { /* Firefox 18- */
         }
 
         img {
-            object-fit: scale-down;
+            object-fit: cover;
             border: 1px solid #E7E8EC;
             border-bottom: 0 !important;
         }
@@ -3744,6 +3744,7 @@ div.is-invalid {
 .category_dialog {
 
     .image {
+        object-fit: cover;
         border: 1px solid #e7e8ec;
         border-bottom: unset;
     }

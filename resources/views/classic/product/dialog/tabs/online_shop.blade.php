@@ -72,7 +72,7 @@
                 <div class="flex-1">
                     <label class="mb-5">Основное фото</label>
                     <div style="width: 110px; height: 110px;">
-                        <img class="h-100 w-100 image" src="{{ $product->image_path ?? asset('/images/product-placeholder.svg') }}" />
+                        <img class="h-100 w-100 image" src="{{ $product->image_path ?? asset('/images/placeholder_product.svg') }}" />
                     </div>
                     <label class="upload_file pointer" for="shop[image]">Выберите файл<div></div></label>
                     <input type="file" id="shop[image]" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png,image/gif" hidden/>
