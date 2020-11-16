@@ -11,7 +11,7 @@ class ChangeOrderArticlesTable extends Migration
         if(Schema::hasColumn('order_articles', 'article_id')) {
 
             Schema::table('order_articles', function (Blueprint $table) {
-                $table->dropForeign('article_id');
+//                $table->dropForeign('article_id');
                 $table->dropColumn('article_id');
             });
         }
