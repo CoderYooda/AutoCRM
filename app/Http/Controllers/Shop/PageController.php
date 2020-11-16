@@ -34,7 +34,7 @@ class PageController extends Controller
             'company_id' => $this->shop->company_id
         ];
 
-        $categories = Category::with('image', 'parent')->where($params)->limit(9)->get();
+        $categories = Category::with('image', 'parent')->where($params)->paginate(9);
 
         $stockProducts = Article::with('stores', 'supplier', 'image')
             ->where('company_id', $this->shop->company_id)

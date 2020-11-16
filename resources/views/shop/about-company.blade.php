@@ -9,14 +9,18 @@
         <div class="about container bg-white">
             <div class="title">
                 <h2>О компании</h2>
-                <div class="d-flex">
-                    <div class="text">{!! $shop->about_desc !!}</div>
-                    @if(count($shop->aboutImages))
-                        <div class="main_picture flex-1">
-                            <img src="{{ $shop->aboutImages->first()->url }}" alt="">
-                        </div>
-                    @endif
-                </div>
+                @if($shop->about_desc)
+                    <div class="d-flex">
+                        <div class="text">{!! $shop->about_desc !!}</div>
+                        @if(count($shop->aboutImages))
+                            <div class="main_picture flex-1">
+                                <img src="{{ $shop->aboutImages->first()->url }}" alt="">
+                            </div>
+                        @endif
+                    </div>
+                @else
+                    <div class="empty_table">Пусто</div>
+                @endif
             </div>
         </div>
 

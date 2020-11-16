@@ -15,6 +15,7 @@ use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -129,6 +130,8 @@ class CategoryController extends Controller
                 'message' => 'Категория защищена от редактирования'
             ], 200);
         }
+
+        $category->slug = Str::slug($request->name . '-' . $category->id);
 
         $category->fill($request->except('image'));
         $category->creator_id = Auth::id();

@@ -9,9 +9,13 @@
         <div class="universal-text container bg-white">
             <div class="title">
                 <h2>Гарантии и возврат</h2>
-                <div class="d-flex">
-                    <div class="text">{!! $shop->warranty_desc !!}</div>
-                </div>
+                @if($shop->warranty_desc)
+                    <div class="d-flex">
+                        <div class="text">{!! $shop->warranty_desc !!}</div>
+                    </div>
+                @else
+                    <div class="empty_table">Пусто</div>
+                @endif
             </div>
         </div>
     </div>
