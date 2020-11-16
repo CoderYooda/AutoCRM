@@ -8,7 +8,7 @@ class Items {
     }
     add(elemWithData, refer){
 
-        let cell_item = JSON.parse(elemWithData.dataset.product);
+        let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);
 
         this.obj.addProduct(cell_item.id);
 
