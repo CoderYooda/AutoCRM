@@ -47,7 +47,7 @@ class ProductRequest extends FormRequest
             'shop.specifications' => ['array'],
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.settings.*.*' => ['accepted'],
-            'shop.image' => ['file', 'mimes:jpeg,bmp,png', 'max:5120'],
+            'shop.image_id' => ['nullable', 'exists:images,id'],
 
 //            'shop.discounts.price' => ['required', 'numeric', 'between:0,999999'],
             'shop.discounts.discount' => ['required', 'numeric', 'between:0,999999'],

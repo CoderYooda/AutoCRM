@@ -44,8 +44,7 @@ trait CartProviderOrderCreator
                 'creator_id' => $this->user->id,
                 'supplier_id' => $supplier->id,
                 'article' => $orderInfo['hash_info']['article'],
-                'name' => $orderInfo['hash_info']['desc'],
-                'fapi_id' => $supplier->fapi_id ?? null
+                'name' => $orderInfo['hash_info']['desc']
             ];
 
             $product = Article::firstOrCreate($uniqueFields, $dataFields);

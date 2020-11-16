@@ -3740,3 +3740,38 @@ div.is-invalid {
         line-height: 30px;
     }
 }
+
+.category_dialog {
+
+    .image {
+        border: 1px solid #e7e8ec;
+        border-bottom: unset;
+    }
+
+    .upload_file {
+        border: 1px solid #E7E8EC;
+        font-size: 10px;
+        line-height: 12px;
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.04em;
+        color: #656565;
+        height: 20px;
+        padding: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 110px;
+
+        &:hover > div {
+            background: url(/images/add_file_hover.svg);
+        }
+
+        div {
+            background: url(/images/add_file.svg);
+            width: 10px;
+            height: 10px;
+            margin-left: auto;
+        }
+    }
+
+}

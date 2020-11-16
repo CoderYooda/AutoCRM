@@ -19,7 +19,8 @@ class Category extends Model
     public $fields = [
         'company_id',
         'name',
-        'balance'
+        'balance',
+        'image_id'
     ];
 
     public function image()
@@ -29,7 +30,7 @@ class Category extends Model
 
     public function getImagePathAttribute()
     {
-        return $this->image ? $this->image->path : asset('/images/shop/no-photo.svg');
+        return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
     }
 
     public function parents()

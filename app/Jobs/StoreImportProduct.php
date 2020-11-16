@@ -114,8 +114,7 @@ class StoreImportProduct implements ShouldQueue
 
         $search_manufacturer_name = mb_strtoupper($attributes['manufacturer']);
 
-        $fapi_id = $this->vehicle_marks->where('name', 'like', "%{$search_manufacturer_name}%")->first()->id ?? null;
-        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name, 'fapi_id' => $fapi_id]);
+        $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name]);
 
         #Создание категорий по товару
         $category = Category::find((count($attributes['categories']) != 0 ? 2 : 10));
@@ -136,7 +135,6 @@ class StoreImportProduct implements ShouldQueue
         }
 
         $article = Article::updateOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
-            'fapi_id' => $fapi_id,
             'name' => $attributes['name'],
             'creator_id' => $user_id,
             'supplier_id' => $supplier->id,

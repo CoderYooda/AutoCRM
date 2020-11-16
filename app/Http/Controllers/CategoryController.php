@@ -135,14 +135,6 @@ class CategoryController extends Controller
         $category->company_id = Auth::user()->company_id;
         $category->type = $type;
 
-        if($request->hasFile('image')) {
-            $imageParams = $category->uploadImage($request->image, true, false);
-
-            $image = Image::create($imageParams);
-
-            $category->image_id = $image->id;
-        }
-
         $category->save();
 
         UA::makeUserAction($category, 'create');
@@ -189,26 +181,27 @@ class CategoryController extends Controller
         ], $this->status);
     }
 
-    public static function categoryDialog($request)
+    public static function categoryDialog(Request $request)
     {
-        $tag = 'categoryDialog';
+        $category = Category::find($request['category_id']);
 
-        if($request['category_id']){
-            $tag .= $request['category_id'];
-            $category = Category::owned()->where('id', (int)$request['category_id'])->first();
-            $parent = Category::owned()->where('id', $category->category_id)->first();
-        } else {
-            $category = null;
-            $parent = null;
+        $parent = null;
+
+        if($category) {
+            $parent = Category::find($category->category_id);
         }
+
+        $class = 'categoryDialog' . ($category->id ?? '');
 
         if($request['category_select']){
-            $parent = Category::owned()->where('id', $request['category_select'])->first();
+            $parent = Category::find($request['category_select']);
         }
 
+        $view = view(get_template() . '.category.dialog.form_category', compact('category', 'parent', 'class', 'request'));
+
         return response()->json([
-            'tag' => $tag,
-            'html' => view(get_template() . '.category.dialog.form_category', compact('category', 'parent', 'request'))->render()
+            'tag' => $class,
+            'html' => $view->render()
         ]);
     }
 

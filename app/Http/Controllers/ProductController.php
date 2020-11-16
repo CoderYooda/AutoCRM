@@ -272,8 +272,6 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $supplier = Supplier::find($request['supplier_id']);
-
             $article = Article::with('specifications')->firstOrNew($compare);
             if ($article->exists) {
                 $this->message = 'Товар обновлен';
@@ -286,7 +284,6 @@ class ProductController extends Controller
             self::$product = $article;
 
             #Кроссы
-            $article->fapi_id = $supplier->fapi_id;
             $article->fill($request->only($article->fields));
 
             $article->fillShopFields($request);
@@ -294,14 +291,6 @@ class ProductController extends Controller
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
-
-            if($request->hasFile('shop.image')) {
-                $imageParams = $article->uploadImage($request->shop['image'], true, false);
-
-                $image = Image::create($imageParams);
-
-                $article->update(['image_id' => $image->id]);
-            }
 
             if(isset($request->shop['specifications'])) {
 

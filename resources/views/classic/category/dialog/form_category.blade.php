@@ -1,12 +1,4 @@
-<div
-    @if(isset($category) && $category->id != NULL)
-        @php $class = 'categoryDialog' . $category->id @endphp
-        id="categoryDialog{{$category->id}}"
-    @else
-        @php $class = 'categoryDialog' @endphp
-        id="categoryDialog"
-    @endif
-    class="dialog" style="width:380px;">
+<div id="{{ $class }}" class="dialog category_dialog" style="width:380px;">
     @if(isset($category))
         <div class="titlebar">Редактирование "{{ $category->name }}"</div>
     @else
@@ -39,15 +31,13 @@
                     <input type="text" id="category_dialog_focused" value="{{ $category->name ?? '' }}" name="name" class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
                 </div>
                 <div class="form-group mb-0">
-                    <label for="image">Изображение (Инетрнет-магазин)</label>
-
-                    @isset($category->image->image_path)
-                        <div class="mb-10" style="width: 110px; height: 110px;">
-                            <img class="w-100 h-100" src="{{ $category->image->image_path }}" />
-                        </div>
-                    @endisset
-
-                    <input type="file" name="image" accept="image/jpeg,image/png" />
+                    <label class="mb-5">Основное фото</label>
+                    <div style="width: 110px; height: 110px;">
+                        <img class="h-100 w-100 image" src="{{ $category->image_path ?? asset('/images/product-placeholder.svg') }}" />
+                    </div>
+                    <label class="upload_file pointer" for="shop[image]">Выберите файл<div></div></label>
+                    <input type="file" id="shop[image]" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png,image/gif" hidden/>
+                    <input type="hidden" name="image_id" value="{{ $product->image->id ?? null }}" />
                 </div>
             </div>
         </div>
