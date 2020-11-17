@@ -57,11 +57,13 @@ class ProductDialog extends Modal {
 
         let stocks_element = this.current_dialog.querySelector('.stocks');
 
-        let discount_element = stocks_element.querySelector('.discount');
+        if(stocks_element) {
+            let discount_element = stocks_element.querySelector('.discount');
 
-        discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
-        discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
-        discount_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
+            discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
+            discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
+            discount_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
+        }
     }
 
     recalculateShopDiscount() {
