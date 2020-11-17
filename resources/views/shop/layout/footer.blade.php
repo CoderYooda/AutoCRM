@@ -32,11 +32,11 @@
                     <a href="tel: +{{ $shop->phone->number }}" title="{{ $shop->phone->number  }}">{{ display_phone($shop->phone->number) }}</a>
                 </div>
             @endisset
-            @isset($shop->contactEmail)
+            @if($shop->contactEmail->count())
                 <div class="mini-card mail pl-30">
                     <a href="mailto:{{ $shop->contactEmail->first()->email }}" title="{{ $shop->contactEmail->first()->email }}">{{ $shop->contactEmail->first()->email }}</a>
                 </div>
-            @endisset
+            @endif
         </div>
         <div class="menu">
             <a title="О компании" href="{{ route('pages.about') }}">О компании</a>

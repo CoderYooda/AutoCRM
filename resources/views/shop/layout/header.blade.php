@@ -9,11 +9,11 @@
                     <a href="tel: +{{ $shop->phone->number }}">{{ display_phone($shop->phone->number) }}</a>
                 </div>
             @endisset
-            @isset($shop->contactEmail)
+            @if($shop->contactEmail->count())
                 <div class="mini-card float-r pr-50 mail">
                     <a href="mailto:{{ $shop->contactEmail->first()->email }}" >{{ $shop->contactEmail->first()->email }}</a>
                 </div>
-            @endisset
+            @endif
         </div>
     </div>
     <div class="header-mid">
