@@ -14,7 +14,7 @@
                         <div class="text">{!! $shop->warranty_desc !!}</div>
                     </div>
                 @else
-                    <div class="empty_table">Пусто</div>
+                    <div class="empty_table">Раздел на стадии заполнения</div>
                 @endif
             </div>
         </div>

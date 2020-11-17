@@ -2,7 +2,7 @@
     <div class="header-top">
         <div class="container">
             <div class="mini-card pin">
-                <a href="{{ route('pages.about') }}" title="{{ $shop->address_name }}">{{ $shop->address_name }}</a>
+                <a href="{{ route('pages.about') }}" title="{{ $shop->name() }}">{{ $shop->name() }}</a>
             </div>
             @isset($shop->phone->number)
                 <div class="mini-card float-r phone">

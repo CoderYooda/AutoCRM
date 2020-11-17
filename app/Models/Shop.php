@@ -22,6 +22,11 @@ class Shop extends Model
         return 'http://' . $this->subdomain . '/';
     }
 
+    public function name()
+    {
+        return $this->address_name ? $this->address_name : 'Название магазина';
+    }
+
     public function company()
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
