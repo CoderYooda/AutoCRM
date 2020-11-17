@@ -49,10 +49,8 @@ class ProductRequest extends FormRequest
             'shop.settings.*.*' => ['accepted'],
             'shop.image_id' => ['nullable', 'exists:images,id'],
 
-//            'shop.discounts.price' => ['required', 'numeric', 'between:0,999999'],
-            'shop.discounts.discount' => ['required', 'numeric', 'between:0,999999'],
-            'shop.discounts.type' => ['required', 'integer', 'between:0,1'],
-//            'shop.discounts.total' => ['required', 'integer', 'between:0,999999'],
+            'shop.discounts.discount' => ['numeric', 'between:0,999999'],
+            'shop.discounts.type' => ['integer', 'between:0,1'],
         ];
     }
 

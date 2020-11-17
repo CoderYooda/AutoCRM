@@ -102,11 +102,11 @@ class Article extends Model
         $this->sp_name = $request->shop['name'] ?? '';
         $this->sp_desc = $request->shop['desc'] ?? '';
 
-        $shop_discount = $request->shop['discounts'];
+        $shop_discount = $request->shop['discounts'] ?? [];
 
         $price = $this->getPrice();
-        $this->sp_discount = $shop_discount['discount'];
-        $this->sp_discount_type = $shop_discount['type'];
+        $this->sp_discount = $shop_discount['discount'] ?? 0;
+        $this->sp_discount_type = $shop_discount['type'] ?? 0;
 
         if($this->sp_discount_type == 0) { //В рублях
             $this->sp_discount_total = $price - $this->sp_discount;
