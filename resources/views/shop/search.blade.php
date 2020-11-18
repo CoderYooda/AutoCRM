@@ -13,8 +13,9 @@
         @if(count($products))
             <div class="search_header">
 
-                <div class="w-20">Бренд</div>
-                <div class="w-80">Название</div>
+                <div class="w-20">Производитель</div>
+                <div class="w-20">Артикул</div>
+                <div class="w-60">Название</div>
 
             </div>
 
@@ -26,13 +27,14 @@
                         <a class="d-none redirect_link" href="{{ $product->path() }}"></a>
 
                         <div class="w-20 brand">
-
                             <div>{{ $product->supplier->name }}</div>
-                            <div>{{ $product->article }}</div>
-
                         </div>
 
-                        <div class="w-80 name">
+                        <div class="w-20 article">
+                            <div>{{ $product->article }}</div>
+                        </div>
+
+                        <div class="w-60 name">
                             {{ $product->name }}
                         </div>
 

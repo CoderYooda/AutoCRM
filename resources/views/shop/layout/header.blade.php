@@ -89,11 +89,11 @@
         </div>
         <div class="container bg-white">
             <div class="main-menu">
-                <a href="{{ route('pages.catalogue') }}" title="Каталог продукции" class="menu-item catalogue">Каталог продукции</a>
-                <a href="{{ route('pages.about') }}" title="Каталог продукции" class="menu-item">о компании</a>
-                <a href="{{ route('pages.delivery') }}" title="Каталог продукции" class="menu-item">оплата и доставка</a>
-                <a href="{{ route('pages.warranty') }}" title="Каталог продукции" class="menu-item">гарантия и возврат</a>
-                <a href="{{ route('pages.contacts') }}" title="Каталог продукции" class="menu-item">контакты</a>
+                <a href="{{ route('pages.catalogue') }}" title="Каталог продукции" class="menu-item catalogue @if(request()->routeIs('pages.catalogue')) active @endif">Каталог продукции</a>
+                <a href="{{ route('pages.about') }}" title="О компании" class="menu-item @if(request()->routeIs('pages.about')) active @endif">О компании</a>
+                <a href="{{ route('pages.delivery') }}" title="Оплата и доставка" class="menu-item @if(request()->routeIs('pages.delivery')) active @endif">Оплата и доставка</a>
+                <a href="{{ route('pages.warranty') }}" title="Гарантия и возврат" class="menu-item @if(request()->routeIs('pages.warranty')) active @endif">Гарантия и возврат</a>
+                <a href="{{ route('pages.contacts') }}" title="Контакты" class="menu-item @if(request()->routeIs('pages.contacts')) active @endif">Контакты</a>
             </div>
         </div>
     </div>

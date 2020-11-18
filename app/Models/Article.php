@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
@@ -104,21 +105,26 @@ class Article extends Model
 
         $shop_discount = $request->shop['discounts'] ?? [];
 
-        $price = $this->getPrice();
+        $this->sp_discount_price = $shop_discount['price'] ?? 0;
         $this->sp_discount = $shop_discount['discount'] ?? 0;
         $this->sp_discount_type = $shop_discount['type'] ?? 0;
 
         if($this->sp_discount_type == 0) { //В рублях
-            $this->sp_discount_total = $price - $this->sp_discount;
+            $this->sp_discount_total = $this->sp_discount_price - $this->sp_discount;
         }
         else {
-            $this->sp_discount_total = $price - ($price / 100 * $this->sp_discount);
+            $this->sp_discount_total = $this->sp_discount_price - ($this->sp_discount_price / 100 * $this->sp_discount);
         }
 
         $shop_settings = $request->shop['settings'];
 
         $this->sp_main = $shop_settings['sp_main'];
         $this->sp_stock = $shop_settings['sp_stock'];
+    }
+
+    public function getShopName()
+    {
+        return $this->sp_name ?? $this->name ?? 'Название отсутствует';
     }
 
     public function getImagePathAttribute()
@@ -265,14 +271,28 @@ class Article extends Model
         return $this->stores->find($store_id)->pivot->sp_stock ?? 0;
     }
 
+    public function getPriceWithDiscount()
+    {
+        $price = $this->getPrice();
+
+        if($this->sp_discount_type == 0) { //в рублях
+            $price -= $this->sp_discount;
+        }
+        else {
+            $price -= ($price / 100) * $this->sp_discount;
+        }
+
+        return $price;
+    }
+
     public function getPrice(int $count = 1)
     {
         /** @var ShopManager $shopManager */
         $shopManager = app(ShopManager::class);
 
-        if(!$shopManager->isWatchShop() && isset($this->pivot->price)) {
-            return $this->pivot->price;
-        }
+//        if(!$shopManager->isWatchShop() && isset($this->pivot->price)) {
+//            return $this->pivot->price;
+//        }
 
         $shop = $shopManager->getCurrentShop();
 
@@ -284,13 +304,15 @@ class Article extends Model
 
         $store_id = Auth::user()->current_store ?? null;
 
+        $price = 0;
+
         if($price_source == 'retail') {
 
             if($shopManager->isWatchShop()) {
                 return $this->stores->sum('pivot.retail_price') / $this->stores->count();
             }
 
-            return $this->stores->find($store_id)->pivot->retail_price ?? 0;
+            $price = $this->stores->find($store_id)->pivot->retail_price ?? 0;
         }
         else { /* FIFO-LIFO */
 
@@ -326,8 +348,10 @@ class Article extends Model
 
             $total = $found_count ? ($retail_price / $found_count) : 0;
 
-            return (double)($total + ($total / 100 * $markup_value));
+            $price = (double)($total + ($total / 100 * $markup_value));
         }
+
+        return $price;
     }
 
     public function entrances()

@@ -63,6 +63,12 @@ class ProductDialog extends Modal {
             discount_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
             discount_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
             discount_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
+
+            let price_element = stocks_element.querySelector('.price');
+
+            price_element.addEventListener('keyup', this.recalculateShopDiscountDebounce);
+            price_element.addEventListener('paste', this.recalculateShopDiscountDebounce);
+            price_element.addEventListener('delete', this.recalculateShopDiscountDebounce);
         }
     }
 

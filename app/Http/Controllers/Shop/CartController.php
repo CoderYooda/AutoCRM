@@ -123,7 +123,7 @@ class CartController extends Controller
 
                 $types = ['fl', 'ip', 'ul'];
 
-                $updateFields = $request->except('rules', 'password', 'delivery_address', 'register', 'pay_type', 'delivery_type', 'pickup_id', 'register_type', 'name', 'surname', 'middlename');
+                $updateFields = $request->except('rules', 'password', 'delivery_address', 'basePhone', 'register', 'pay_type', 'delivery_type', 'pickup_id', 'register_type', 'name', 'surname', 'middlename');
                 $updateFields['category_id'] = BUYER_CATEGORY;
                 $updateFields['type'] = array_search($request->register_type, $types);
 
@@ -140,6 +140,15 @@ class CartController extends Controller
 
                 /** @var Partner $partner */
                 $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
+
+                $phones = [
+                    [
+                        'number' => $request->basePhone,
+                        'main' => 1
+                    ]
+                ];
+
+                $partner->upsertPhones($phones);
 
                 if ($request->delivery_address) {
                     $deliveryAddress = $partner->deliveryAddresses()->create(['text' => $request->delivery_address]);
@@ -178,7 +187,9 @@ class CartController extends Controller
                 $cartOrder = collect($cartOrder)->except('image', 'store_id');
                 $cartOrder['order_id'] = $order->id;
 
-                DB::table('order_positions')->insert($cartOrder->toArray());
+                $fields = $cartOrder->except('max_count')->toArray();
+
+                DB::table('order_positions')->insert($fields);
             }
 
             Mail::to($partner->email)->send(new ModerateOrder($order));
@@ -202,7 +213,7 @@ class CartController extends Controller
 
             if (isset($order['data']['store_id'])) $store = Store::find($order['data']['store_id']);
 
-            $price = $order['data']['model']['hash_info']['price'] ?? $product->stores->find($store->id)->pivot->retail_price;
+            $price = $order['data']['model']['hash_info']['price'] ?? $product->getPriceWithDiscount();
             $count = $cart->getProductCount($hash);
 
             if ($store) {

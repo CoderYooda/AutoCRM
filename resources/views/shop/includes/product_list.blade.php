@@ -15,7 +15,7 @@
 
                     <a class="redirect_link d-none" href="{{ $product->path() }}"></a>
 
-                    <img class="product-img" title="{{ $product->name }}" src="{{ $product->image_path }}" alt="{{ $product->name }}">
+                    <img class="product-img" title="{{ $product->getShopName() }}" src="{{ $product->image_path }}" alt="{{ $product->getShopName() }}">
 
                     <div class="top-left-label">
                         @if($product->getEntrancesCount())
@@ -35,11 +35,13 @@
                         <div class="article">{{ $product->article }}</div>
                     </div>
 
-                    <h3 class="product-name" title="{{ $product->name }}">{{ $product->name }}</h3>
+                    <h3 class="product-name" title="{{ $product->getShopName() }}">{{ $product->getShopName() }}</h3>
 
                     <div class="top-right-label">
                         <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
-                        <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
+                        @if($product->sp_desc)
+                            <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
+                        @endif
                     </div>
 
                     <div class="link">

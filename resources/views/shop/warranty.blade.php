@@ -1,5 +1,8 @@
 @extends('shop.layout.app')
 
+@section('title', $shop->seo_warranty_title)
+@section('description', $shop->seo_warranty_desc)
+
 @section('content')
 
     <div class="body">

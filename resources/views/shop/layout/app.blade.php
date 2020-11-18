@@ -2,7 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Интернет магазин</title>
+    <title>@yield('title', 'Интернет магазин')</title>
+    <meta name="description" content="@yield('description', '')">
 
     <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
 

@@ -1,5 +1,8 @@
 @extends('shop.layout.app')
 
+@section('title', $shop->seo_contacts_title)
+@section('description', $shop->seo_contacts_desc)
+
 @section('content')
 
     <script>

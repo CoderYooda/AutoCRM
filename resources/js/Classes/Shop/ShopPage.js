@@ -486,12 +486,6 @@ class shopPage {
                             country: 'Россия'
                         },
                         {
-                            mask: '{8}(000)000-00-00',
-                            startsWith: '8',
-                            lazy: true,
-                            country: 'Россия'
-                        },
-                        {
                             mask: '+{380}(000)000-00-00',
                             startsWith: '3',
                             lazy: true,

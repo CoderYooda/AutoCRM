@@ -1,5 +1,8 @@
 @extends('shop.layout.app')
 
+@section('title', $shop->seo_delivery_title)
+@section('description', $shop->seo_delivery_desc)
+
 @section('content')
 <script>
     window.coordinates = [52.751574, 37.573856];

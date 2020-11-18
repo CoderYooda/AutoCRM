@@ -51,6 +51,7 @@ class ProductRequest extends FormRequest
         ];
 
         if(isset($this['shop']['discounts']['discount'])) {
+            $rules['shop.discounts.price'] = ['numeric', 'between:0,999999'];
             $rules['shop.discounts.discount'] = ['numeric', 'between:0,999999'];
             $rules['shop.discounts.type'] = ['integer', 'between:0,1'];
         }
