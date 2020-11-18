@@ -60,7 +60,7 @@ class Image extends Model
 
         $img = ImageInt::make($image->getRealPath());
 
-        $img->resize(null, 800, function ($constraint) {
+        $img->resize(1920, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });

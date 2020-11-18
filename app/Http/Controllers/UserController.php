@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index($id, Request $request)
     {
         $page = 'Пользователь';
         if($request['search'] == 'undefined'){
@@ -29,8 +29,13 @@ class UserController extends Controller
             $request['active_tab'] = 'profile';
         }
 
+        $user = Partner::owned()->with('passport')->where(function($q) use ($id){
+            $q->where('user_id', $id);
+        })->first();
+
+
         $classname = $request['active_tab'] . 'Tab';
-        $user = self::getUser($request);
+//        $user = self::getUser($id);
 
         if(!$user){
             abort(404);

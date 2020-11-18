@@ -14,7 +14,7 @@
 
                 <h2 class="mt-0 style_header">Заказы и каталог</h2>
 
-                <div class="form-group mt-10 addable" id="emails_addable">
+                <div class="form-group w-350 mt-10 addable" id="emails_addable">
                     <label>Email адрес для заказов <span onclick="{{ $class }}.addEmail(this)" class="input_as_link pointer">добавить</span></label>
                     <div class="emails">
                         @if($shop && count($shop->orderEmails))
@@ -38,9 +38,10 @@
                             </span>
                             </div>
                         @endif
+                    </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <label>Показывать товары, которых нет в наличии</label>
                     <label data-error="show_empty" class="custom_checkbox">
                         <input type="checkbox" class="not_default" name="show_empty" @if($shop->show_empty ?? true) checked @endif value="1" />
@@ -48,7 +49,7 @@
                     </label>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <label>Показывать количество товаров в наличии</label>
                     <label data-error="show_amount" class="custom_checkbox">
                         <input type="checkbox" class="not_default" name="show_amount" @if($shop->show_amount ?? true) checked @endif value="1" />
@@ -56,12 +57,12 @@
                     </label>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <label>Сколько дней хранить не подтвержденные заказы</label>
                     <input type="number" class="form-control" name="storage_days" value="{{ $shop->storage_days ?? 7 }}">
                 </div>
 
-                <div class="form-group d-flex flex-column">
+                <div class="form-group w-350 d-flex flex-column">
 
                     <div>
                         <label>Показывать предложения поставщиков</label>
@@ -93,24 +94,24 @@
 
                 </div>
 
-
                 <h2 class="style_header mb-10">Оформление сайта</h2>
 
-                <div class="form-group d-flex">
+                <div class="form-group w-350 d-flex">
 
                     <div class="flex-1">
                         <label>Логотип</label>
-
-                        <div class="text-center all-center p-10" style="height: 122px; border: 1px solid #e7e8ec;">
-                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->path ?? 'http://via.placeholder.com/52x52' }}" />
+                        <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
+                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->image_path ?? 'http://via.placeholder.com/52x52' }}" />
                         </div>
 
                         <label class="upload_file pointer" for="image_logotype">Файл не выбран<div></div></label>
                         <input type="file" id="image_logotype" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
                         <input type="hidden" name="image_logotype_id" value="{{ $shop->logotypeImage->id ?? '' }}">
                     </div>
+                </div>
 
-                    <div class="flex-3 ml-10">
+                <div class="form-group w-350 d-flex">
+                    <div class="flex-1">
                         <label>Шапка сайта</label>
 
                         <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
@@ -121,10 +122,9 @@
                         <input type="file" id="image_header" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
                         <input type="hidden" name="image_header_id" value="{{ $shop->headerImage->id ?? '' }}">
                     </div>
-
                 </div>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <label>Фоновое изображение</label>
 
                     <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
@@ -178,17 +178,17 @@
 
                 <h2 class="style_header mb-10">Адрес сайта</h2>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <label>URL адрес</label>
                     <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? '' }}">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <label>Свой домен</label>
                     <input type="text" name="domain" data-error="domain" class="form-control" placeholder="www.пример.рф" value="{{ $shop->domain ?? '' }}">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group w-350">
                     <button type="button" onclick="{{ $class }}.saveSettings(this);" class="button primary">Сохранить</button>
                 </div>
 
