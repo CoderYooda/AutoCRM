@@ -30,9 +30,9 @@
     margin: 52px auto;
 }
 #croppr-container{
-    max-height: 500px!important;
-    min-height: 500px;
-    display: flex;
+    //max-height: 500px!important;
+    //min-height: 500px;
+    //display: flex;
     .croppr-container{
         margin: auto;
     }
@@ -40,6 +40,8 @@
 #croppr-container img{
     //max-height: 500px!important;
     //min-height: 500px;
+    max-height: 400px;
+    max-width: 648px;
     object-fit: contain;
 }
 .modal-content {

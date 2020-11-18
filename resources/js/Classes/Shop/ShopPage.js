@@ -71,7 +71,6 @@ class shopPage {
     }
 
     changeFile(input){
-
         this.clicked_input = input;
 
         let data = new FormData();
@@ -80,8 +79,7 @@ class shopPage {
         data.append('refer', 'shop');
 
         let size = this.sizes[input.id];
-
-        let img = new Image()
+        let img = new Image();
         img.src = window.URL.createObjectURL(input.files[0]);
         img.onload = () => {
 
@@ -104,6 +102,7 @@ class shopPage {
 
                 document.getElementById('croppr-container').innerHTML = '';
                 let crop = document.createElement('img');
+                //crop.setAttribute("src", response.data.images[0].url);
                 crop.setAttribute("src", response.data.images[0].url);
                 crop.setAttribute("id", 'croppr');
 
@@ -115,7 +114,7 @@ class shopPage {
                 input.value = '';
 
                 window.croppr = new Croppr('#croppr', {
-                    startSize: [100, 100, '%'],
+                    startSize: [size[1], size[0], 'px'],
                     aspectRatio: size[1] / size[0],
                     onCropStart: function(){
                         // document.getElementById('crop_form_modal').classList.add('moving');
@@ -144,22 +143,22 @@ class shopPage {
                             clearInterval(timer);
 
                             let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
-                            // let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
+
+                            let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
                             let orig_h = document.getElementsByClassName('croppr-image')[0].naturalHeight;
 
-                            let scale_ratio_h = orig_h / h;
+                            console.log(orig_w, w);
 
-                            let min_side_size = (w > h ? h : w) / scale_ratio_h;
 
-                            instance.moveTo(w/2, h/2);
+                            let scalar_index_w = w / orig_w;
+                            let scalar_index_h = h / orig_h;
 
-                            instance.resizeTo(min_side_size * (size[0] / size[1]), min_side_size);
 
-                            croppr.options.minSize = {
-                                width: min_side_size * (size[0] / size[1]),
-                                height: min_side_size
-                            };
 
+                            instance.resizeTo(size[0] * scalar_index_w, size[1] * scalar_index_h);
+                            croppr.options.minSize = {width:size[0] * scalar_index_w, height: size[1] * scalar_index_h};
+
+                            instance.moveTo(w/2 - (size[0] / 2 * scalar_index_w), h/2 - (size[1] / 2 * scalar_index_h));
                             croppr.options.maxSize = {
                                 width: w,
                                 height: h

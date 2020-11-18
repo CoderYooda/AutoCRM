@@ -31,7 +31,7 @@ Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->na
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     #Пользователь
-    Route::get('/user', 'UserController@index')->name('UserIndex');
+    Route::get('/user/{id}', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
     Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 

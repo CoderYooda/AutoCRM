@@ -141,8 +141,8 @@
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
 
-                                <a class="element ajax-nav" href="{{ route('UserIndex') }}">Личный кабинет</a>
-                                <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'service']) }}">Мои услуги</a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => auth()->user()->id, 'active_tab' => 'service']) }}">Личный кабинет</a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'service', 'id' => auth()->user()->id]) }}">Мои услуги</a>
 
                                 @canany(['Смотреть настройки'])
                                     <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}" onclick="window.helper.closeModal(this, event)">
@@ -151,7 +151,7 @@
                                 @endcanany
 
                                 @if(auth()->user()->partner->category_id == 7)
-                                    <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'vehicles']) }}">Гараж</a>
+                                    <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'vehicles', 'id' => Auth::user()->partner_id]) }}">Гараж</a>
                                 @endif
 
                                 @if(session()->has('auth_from_id'))
