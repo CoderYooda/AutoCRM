@@ -1,6 +1,7 @@
 import ymaps from 'ymaps';
 import TextEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
-import Croppr from "croppr";
+// import Croppr from "croppr";
+import Cropper from 'cropperjs';
 
 class shopPage {
 
@@ -103,79 +104,80 @@ class shopPage {
                 togglePreloader(another_element, false);
 
                 document.getElementById('croppr-container').innerHTML = '';
-                let crop = document.createElement('img');
-                crop.setAttribute("src", response.data.images[0].url);
-                crop.setAttribute("id", 'croppr');
 
-                document.getElementById('croppr-container').appendChild(crop);
+                let cropper_element = document.createElement('img');
+                cropper_element.setAttribute("src", response.data.images[0].url);
+                cropper_element.setAttribute("id", 'croppr');
+
+                document.getElementById('croppr-container').appendChild(cropper_element);
 
                 document.querySelector('#croppr_dialog .save').setAttribute('onclick', 'shop.cropImage(this, window.cropdata);');
                 document.querySelector('#croppr_dialog .reload').setAttribute('onclick', 'shop.anotherPicture(this);');
 
-                input.value = '';
+                let timer = setInterval(() => {
 
-                window.croppr = new Croppr('#croppr', {
-                    startSize: [100, 100, '%'],
-                    aspectRatio: size[1] / size[0],
-                    onCropStart: function(){
-                        // document.getElementById('crop_form_modal').classList.add('moving');
-                        // document.getElementById('modal-container').classList.add('freeze');
-                        // clearTimeout(window.freezeTimer);
-                    },
-                    onCropEnd: (value) => {
-                        window.cropdata = {
-                            url: response.data.images[0].url,
-                            filename: response.data.images[0].filename,
-                            coords : value,
-                            target: input.id,
-                            fit_sizes: this.sizes[input.id]
-                        };
-                        // document.getElementById('crop_form_modal').classList.remove('moving');
-                        // window.freezeTimer = setTimeout(function() { document.getElementById('modal-container').classList.remove('freeze') }, 3000);
-                    },
-                    onInitialize: (instance) => {
+                    let orig_w = cropper_element.naturalWidth;
+                    let orig_h = cropper_element.naturalHeight;
+
+                    let w = cropper_element.clientWidth;
+                    let h = cropper_element.clientHeight;
+
+                    if(orig_w == 0) return;
+
+                    console.log(w, h, orig_w, orig_h);
+
+                    let scale_index = orig_w / 677;
+
+                    console.log(scale_index, orig_w, orig_h, orig_w /scale_index, orig_h / scale_index);
+
+                    clearInterval(timer);
+
+                    input.value = '';
+
+                    window.croppr = new Cropper(cropper_element, {
+                        // minContainerWidth: 677,
+                        //minContainerHeight: 300,
+                        minCropBoxWidth: orig_w / scale_index,
+                        minCropBoxHeight: orig_h / scale_index,
+                        aspectRatio: size[0] / size[1],
+                        viewMode: 2,
+                        // autoCropArea: 1,
+                        center: true,
+                        cropBoxMovable: true,
+                        // cropBoxResizable: false,
+                        zoomable: false
+                    });
+
+                    cropper_element.addEventListener('ready',() => {
                         this.crop_modal.show();
-                        let timer = setInterval(() => {
+                    });
 
-                            let w = document.getElementsByClassName('croppr-image')[0].clientWidth;
+                    cropper_element.addEventListener('crop',(event) => {
 
-                            if(w == 0) return;
+                        // let detail = event.detail;
+                        //
+                        // let min_w = orig_w / scale_index;
+                        // let min_h = orig_h / scale_index;
+                        //
+                        // if(detail.width < min_w || detail.height < min_h) {
+                        //     window.croppr.setCropBoxData({
+                        //         "left":detail.x,
+                        //         "top":detail.y,
+                        //         "width":min_w,
+                        //         "height":min_h
+                        //     });
+                        // }
 
-                            clearInterval(timer);
+                        // console.log(event.detail.x);
+                        // console.log(event.detail.y);
+                        // console.log(event.detail.width);
+                        // console.log(event.detail.height);
+                        // console.log(event.detail.rotate);
+                        // console.log(event.detail.scaleX);
+                        // console.log(event.detail.scaleY);
+                    });
 
-                            let h = document.getElementsByClassName('croppr-image')[0].clientHeight;
-                            // let orig_w = document.getElementsByClassName('croppr-image')[0].naturalWidth;
-                            let orig_h = document.getElementsByClassName('croppr-image')[0].naturalHeight;
-
-                            let scale_ratio_h = orig_h / h;
-
-                            let min_side_size = (w > h ? h : w) / scale_ratio_h;
-
-                            instance.moveTo(w/2, h/2);
-
-                            instance.resizeTo(min_side_size * (size[0] / size[1]), min_side_size);
-
-                            croppr.options.minSize = {
-                                width: min_side_size * (size[0] / size[1]),
-                                height: min_side_size
-                            };
-
-                            croppr.options.maxSize = {
-                                width: w,
-                                height: h
-                            }
-
-                        },50);
-
-                        window.cropdata = {
-                            url: response.data.images[0].url,
-                            filename: response.data.images[0].filename,
-                            coords: instance.getValue(),
-                            target: input.id,
-                            fit_sizes: this.sizes[input.id]
-                        };
-                    }
-                });
+                }, 50);
 
                 // $('#pick-button').hide();
                 // $('#save-button').show();

@@ -32,9 +32,17 @@
 #croppr-container{
     max-height: 500px!important;
     min-height: 500px;
+    max-width: 100%;
     display: flex;
+    align-items: center;
     .croppr-container{
         margin: auto;
+    }
+
+    img {
+        //display: block !important;
+        //width: 100% !important;
+        width: 100%;
     }
 }
 #croppr-container img{
