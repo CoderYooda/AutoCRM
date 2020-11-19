@@ -30,7 +30,6 @@ const ajaxRequest = new (function () {
 
     function ajaxLoad () {
         var vMsg, nStatus = this.status;
-
         switch (nStatus) {
             case 200:
                 vMsg = JSON.parse(this.responseText);
@@ -44,8 +43,10 @@ const ajaxRequest = new (function () {
 
 
                 let tabs = document.querySelectorAll('.nav li');
+
                 [].forEach.call(tabs, function(li){
                     li.classList.remove('active');
+                    dd(window.helper.findGetParameter('active_tab'));
                     if(window.helper.findGetParameter('active_tab') === li.dataset.tab){
                         li.classList.add('active');
                     } else if(window.helper.findGetParameter('active_tab') === null && li.dataset.default){

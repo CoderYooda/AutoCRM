@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
-    public function index($id, Request $request)
+    public function index(Request $request)
     {
         $page = 'Пользователь';
         if($request['search'] == 'undefined'){
@@ -29,17 +29,17 @@ class UserController extends Controller
             $request['active_tab'] = 'profile';
         }
 
-        $user = Partner::owned()->with('passport')->where(function($q) use ($id){
-            $q->where('user_id', $id);
-        })->first();
-
+//        $user = Partner::owned()->with('passport')->where(function($q) use ($request){
+//            $q->where('user_id', $request['id']);
+//        })->first();
 
         $classname = $request['active_tab'] . 'Tab';
-//        $user = self::getUser($id);
+        $user = self::getUserById($request);
 
         if(!$user){
             abort(404);
         }
+
         $content = self::$classname($request, $user);
 
         $target = HC::selectTarget();
@@ -226,6 +226,13 @@ class UserController extends Controller
     {
         $partner = Partner::owned()->with('passport')->where(function($q) use ($request){
             $q->where('id', $request['id']);
+        })->first();
+        return $partner;
+    }
+    public static function getUserById($request)
+    {
+        $partner = Partner::owned()->with('passport')->where(function($q) use ($request){
+            $q->where('user_id', $request['id']);
         })->first();
         return $partner;
     }

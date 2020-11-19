@@ -57,7 +57,7 @@
                             <button onclick="window.useredit.save(this)" class="button success">Сохранить</button>
                         @else
                             @if($user->id === Auth::user()->partner->id)
-                                <a href="{{ route('UserEdit') }}" class="button primary ajax-nav">Редактировать</a>
+                                <a href="{{ route('UserEdit', ['id' => $user->id]) }}" class="button primary ajax-nav">Редактировать</a>
                             @endif
                         @endif
                     </div>

@@ -141,7 +141,7 @@
                             <div class="dropdown_container">
                                 <div class="arrow"></div>
 
-                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => auth()->user()->id, 'active_tab' => 'service']) }}">Личный кабинет</a>
+                                <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => auth()->user()->id, 'active_tab' => 'profile']) }}">Личный кабинет</a>
                                 <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'service', 'id' => auth()->user()->id]) }}">Мои услуги</a>
 
                                 @canany(['Смотреть настройки'])
