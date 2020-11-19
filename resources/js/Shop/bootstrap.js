@@ -68,6 +68,10 @@ if(head_slider){
         });
         activatePin();
     }
+
+    setInterval(() => {
+        window.headSlider.next();
+    }, 5000);
 }
 
 function activatePin(){
@@ -170,7 +174,7 @@ if(map){
     ymaps.ready(function () {
         window.myMap = new ymaps.Map('map', {
             center: window.coordinates,
-            zoom: 9
+            zoom: 15
         }, {
             searchControlProvider: 'yandex#search'
         });

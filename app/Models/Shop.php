@@ -19,7 +19,11 @@ class Shop extends Model
             return 'http://' . $this->domain . '/';
         }
 
-        return 'http://' . $this->subdomain . '/';
+        $domainData = parse_url(request()->getUri());
+
+        $domain = explode('.', $domainData['host'])[1];
+
+        return 'http://' . $this->subdomain . '.' . $domain .  '.ru/';
     }
 
     public function name()

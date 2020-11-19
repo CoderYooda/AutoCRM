@@ -29,7 +29,7 @@
                 <button type="submit" class="w-100" onclick="auth.login(this);">Войти</button>
             </div>
             <div class="form-group mb-0">
-                <span class="recover-link mr-20"><a href="#">Забыли пароль?</a></span>
+                <span class="recover-link mr-20"><a href="{{ route('restore.index') }}">Забыли пароль?</a></span>
                 <span class="recover-link"><a href="{{ route('user.registerForm') }}">Регистрация</a></span>
             </div>
         </form>

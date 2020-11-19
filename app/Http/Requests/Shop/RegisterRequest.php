@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
     {
         $rules = [
             'basePhone' => ['required', 'unique:users,phone'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:32'],
             //
             'rules' => ['required', 'integer', 'between:0,1'],

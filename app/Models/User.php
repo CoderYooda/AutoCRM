@@ -56,4 +56,32 @@ class User extends Authenticatable
         $this->update(['company_id' => $company->id]);
         return 1;
     }
+
+    public function createPartnerIfNotExists()
+    {
+        if($this->companyPartner) return;
+
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $params = $this->partner->getAttributes();
+
+        unset($params['id'], $params['created_at'], $params['updated_at'], $params['deleted_at']);
+        $params['company_id'] = $shop->company_id;
+        $params['category_id'] = 7; //Категория покупателей
+        $params['balance'] = 0;
+        $params['store_id'] = null;
+
+        $partner = Partner::create($params);
+
+        $phones = [
+            [
+                'number' => $this->phone,
+                'main' => 1
+            ]
+        ];
+
+        $partner->upsertPhones($phones);
+    }
 }

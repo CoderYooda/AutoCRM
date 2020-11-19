@@ -112,7 +112,7 @@ return [
     'starts_with'          => 'Поле :attribute должно начинаться из одного из следующих значений: :values',
     'string'               => 'Поле :attribute должно быть строкой.',
     'timezone'             => 'Поле :attribute должно быть действительным часовым поясом.',
-    'unique'               => 'Такое значение поля :attribute уже существует.',
+    'unique'               => 'Такое значение поля :attribute уже занято.',
     'uploaded'             => 'Загрузка поля :attribute не удалась.',
     'url'                  => 'Поле :attribute имеет ошибочный формат.',
     'uuid'                 => 'Поле :attribute должно быть корректным UUID.',
@@ -161,7 +161,10 @@ return [
 
     'attributes' => [
         'name'                  => 'Имя',
+        'basePhone'             => 'Телефон',
         'username'              => 'Никнейм',
+        'surname'               => 'Фамилия',
+        'middlename'            => 'Отчество',
         'email'                 => 'E-Mail адрес',
         'first_name'            => 'Имя',
         'last_name'             => 'Фамилия',
@@ -194,8 +197,8 @@ return [
         'article'               => 'Артикул',
         'supplier_id'           => 'Производитель',
         'location'              => 'Местоположение',
-        'store.12.location'      => 'Местоположение',
-        'in_cashbox_id'      => 'Касса отправитель',
-        'out_cashbox_id'      => 'Касса получатель',
+        'store.12.location'     => 'Местоположение',
+        'in_cashbox_id'         => 'Касса отправитель',
+        'out_cashbox_id'        => 'Касса получатель',
     ],
 ];

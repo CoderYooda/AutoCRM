@@ -24,8 +24,8 @@ class SmsController extends Controller
         $sms = $smsru->send_one($data);
         if ($sms->status == "OK") {
             $smsMessage = new SMSMessages();
-            $smsMessage->partner_id = Auth::user()->partner()->first()->id;
-            $smsMessage->company_id = Auth::user()->company()->first()->id;
+            $smsMessage->partner_id = Auth::user()->partner->id;
+            $smsMessage->company_id = Auth::user()->company_id;
             $smsMessage->phone = $phone;
             $smsMessage->status_code = $sms->status_code;
             $smsMessage->sms_id = $sms->sms_id;
