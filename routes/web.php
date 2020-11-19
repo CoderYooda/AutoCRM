@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+//Точка входа
+Route::get('/{any?}/{an2y?}/{a3ny?}', function(){
+    return view('index');
+})->name('Index');
+
+
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
