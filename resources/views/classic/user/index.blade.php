@@ -37,7 +37,7 @@
                 {{--</a>--}}
             {{--</li>--}}
             <li id="service-tab" data-tab="service" class="@if($request['active_tab'] == 'service') active @endif nav-item tab">
-                <a href="{{ route('UserIndex', ['active_tab' => 'service', 'target' => 'ajax-tab-content']) }}"
+                <a href="{{ route('UserIndex', ['id' => $request['id'], 'active_tab' => 'service', 'target' => 'ajax-tab-content']) }}"
                    class="nav-link ajax-nav update_url">
                     Мои услуги
                 </a>
@@ -58,8 +58,7 @@
         </ul>
     </div>
     <div class="main-content ">
-        @php $user = \App\Http\Controllers\UserController::getUser($request) @endphp
-
+        @php $user = !isset($user) ? \App\Http\Controllers\UserController::getUserById($request) : $user @endphp
         <div id="user_index_page" class="d-flex flex">
             <div class="content-menu w-260">
                 <div class="box mb-15">

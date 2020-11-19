@@ -194,8 +194,8 @@ return [
         'article'               => 'Артикул',
         'supplier_id'           => 'Производитель',
         'location'              => 'Местоположение',
-        'store.12.location'      => 'Местоположение',
-        'in_cashbox_id'      => 'Касса отправитель',
-        'out_cashbox_id'      => 'Касса получатель',
+        'store.12.location'     => 'Местоположение',
+        'in_cashbox_id'         => 'Касса отправитель',
+        'out_cashbox_id'        => 'Касса получатель',
     ],
 ];
