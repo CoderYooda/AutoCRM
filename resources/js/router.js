@@ -36,8 +36,14 @@ export default new Router({
         {
             path: '/cash',
             name: 'cash',
+            redirect: 'cash/warrant',
             meta: {layout: 'main'},
-            component: () => import('./components/views/Cash.vue')
+            component: () => import('./components/views/Cash.vue'),
+            children:[
+                {path: '/cash/warrant',             name: 'warrant', meta: {layout: 'main'},            component: () => import('./components/views/Cash/Warrant'), props: true},
+                {path: '/cash/cash_move',           name: 'cash_move', meta: {layout: 'main'},          component: () => import('./components/views/Cash/CashMove'), props: true},
+                {path: '/cash/salary_payments',     name: 'salary_payments', meta: {layout: 'main'},    component: () => import('./components/views/Cash/SalaryPayment'), props: true},
+            ]
         },
         {
             path: '/contact',

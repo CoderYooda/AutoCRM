@@ -33,6 +33,30 @@ class CategoryController extends Controller
         dd($categories);
     }
 
+    public function getCashAside(){
+        return response()->json([
+            ['name' => 'Кассовые ордера', 'link' => '/cash/warrant'],
+            ['name' => 'Перемещения', 'link' => '/cash/cash_move'],
+            ['name' => 'Начисление зарплат', 'link' => '/cash/salary_payments'],
+        ]);
+    }
+
+    public function getStoreAside(){
+        return response()->json([
+            ['name' => 'База товаров', 'link' => '/store/base'],
+            ['name' => 'Склады поставщиков', 'link' => '/store/provider_store'],
+            ['name' => 'Заявки поставщикам', 'link' => '/store/provider_order'],
+            ['name' => 'Поступления', 'link' => '/store/entrance'],
+            ['name' => 'Возвраты поступлений', 'link' => '/store/entrance_refund'],
+            ['name' => 'Продажи', 'link' => '/store/shipment'],
+            ['name' => 'Возвраты по продажам', 'link' => '/store/shipment_refund'],
+            ['name' => 'Заказы клиентов', 'link' => '/store/client_order'],
+            ['name' => 'Корректировки', 'link' => '/store/adjustment'],
+            ['name' => 'Документы', 'link' => '/store/document'],
+            ['name' => 'Онлайн заказы', 'link' => '/store/shop_order'],
+        ]);
+    }
+
     public function loadAside(Request $request)
     {
         $categories = CategoryController::getCategories($request, $request['class']);

@@ -1,6 +1,6 @@
 //window.bootstrap = require("bootstrap.native");                     // Обращение к методам Bootstrap без jQuery
 //require('./variables');                                             // Стартовая инициализация
-//require('./bootstrap');                                             // Стартовая инициализация
+require('./bootstrap');                                             // Стартовая инициализация
 //require('../modules/draggable-dialog/dialog');                      // Диалоговые окна
 //require('./navigation');                                            // Навигация XHR
 //require('./select');                                            // Селекты
@@ -81,12 +81,12 @@ window.app_version = 0.9;
 Vue.prototype.$eventBus = new Vue();
 
 Vue.prototype.saveToLocalStorage = (key, value)=>{
-    localStorage.setItem(key, value);
+    localStorage.setItem(key, JSON.stringify(value));
 };
 
 Vue.prototype.getFromLocalStorage = (key)=>{
     let val = localStorage[key];
-    return val ? val : null;
+    return val ? JSON.parse(val) : null;
 };
 
 new Vue({

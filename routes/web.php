@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 
 //Точка входа
+
+Route::get('data/cash/aside', 'CategoryController@getCashAside')->name('getCashAside');
+Route::get('data/store/aside', 'CategoryController@getStoreAside')->name('getStoreAside');
+
 Route::get('/{any?}/{an2y?}/{a3ny?}', function(){
     return view('index');
 })->name('Index');
