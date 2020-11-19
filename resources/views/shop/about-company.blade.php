@@ -1,5 +1,8 @@
 @extends('shop.layout.app')
 
+@section('title', $shop->seo_about_title)
+@section('description', $shop->seo_about_desc)
+
 @section('content')
 
     <div class="body">
@@ -19,7 +22,7 @@
                         @endif
                     </div>
                 @else
-                    <div class="empty_table">Пусто</div>
+                    <div class="empty_table">Раздел на стадии заполнения</div>
                 @endif
             </div>
         </div>
@@ -36,7 +39,7 @@
                                 @continue($loop->first)
 
                                 <div class="photo">
-                                    <img class="photo-img" title="сюда имя картинки" src="{{ $image->url }}" alt="">
+                                    <img class="photo-img" src="{{ $image->url }}" alt="">
                                 </div>
 
                             @endforeach

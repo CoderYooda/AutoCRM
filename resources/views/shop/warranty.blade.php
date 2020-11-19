@@ -1,5 +1,8 @@
 @extends('shop.layout.app')
 
+@section('title', $shop->seo_warranty_title)
+@section('description', $shop->seo_warranty_desc)
+
 @section('content')
 
     <div class="body">
@@ -14,7 +17,7 @@
                         <div class="text">{!! $shop->warranty_desc !!}</div>
                     </div>
                 @else
-                    <div class="empty_table">Пусто</div>
+                    <div class="empty_table">Раздел на стадии заполнения</div>
                 @endif
             </div>
         </div>

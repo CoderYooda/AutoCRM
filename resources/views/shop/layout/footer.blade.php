@@ -25,7 +25,7 @@
     <div class="container">
         <div class="contacts">
             <div class="mini-card pin pl-30">
-                <a href="{{ route('pages.about') }}" title="{{ $shop->address_name }}">{{ $shop->address_name }}</a>
+                <a href="{{ route('pages.about') }}" title="{{ $shop->name() }}">{{ $shop->name() }}</a>
             </div>
             @isset($shop->phone->number )
                 <div class="mini-card phone pl-30">
@@ -39,10 +39,10 @@
             @endif
         </div>
         <div class="menu">
-            <a title="О компании" href="{{ route('pages.about') }}">О компании</a>
-            <a title="Оплата и доставка" href="{{ route('pages.delivery') }}">Оплата и доставка</a>
-            <a title="Гарантия и возврат" href="{{ route('pages.warranty') }}">Гарантия и возврат</a>
-            <a title="Контакты" href="{{ route('pages.contacts') }}">Контакты</a>
+            <a title="О компании" href="{{ route('pages.about') }}" class="@if(request()->routeIs('pages.about')) active @endif">О компании</a>
+            <a title="Оплата и доставка" href="{{ route('pages.delivery') }}" class="@if(request()->routeIs('pages.delivery')) active @endif">Оплата и доставка</a>
+            <a title="Гарантия и возврат" href="{{ route('pages.warranty') }}" class="@if(request()->routeIs('pages.warranty')) active @endif">Гарантия и возврат</a>
+            <a title="Контакты" href="{{ route('pages.contacts') }}" class="@if(request()->routeIs('pages.contacts')) active @endif">Контакты</a>
         </div>
     </div>
 </div>
@@ -67,7 +67,7 @@
         <div class="footer-elem"></div>
         <div class="copyright-data footer-elem">
             <span>
-                © «{{ $shop->name }}» 2020, работает на <a title="Лучшая программа для автозапчастей" href="https://bbcrm.ru/">#bbcrm</a>
+                © «{{ $shop->name }}» 2020, работает на <a title="Лучшая программа для автозапчастей" target="_blank" href="https://bbcrm.ru/">#bbcrm</a>
             </span>
         </div>
         <div class="personal-data footer-elem">

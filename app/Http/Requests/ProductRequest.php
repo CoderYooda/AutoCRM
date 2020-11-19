@@ -27,7 +27,7 @@ class ProductRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'name' => ['required', 'min:4', 'string', 'max:255'],
             'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
@@ -48,12 +48,15 @@ class ProductRequest extends FormRequest
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.settings.*.*' => ['accepted'],
             'shop.image_id' => ['nullable', 'exists:images,id'],
-
-//            'shop.discounts.price' => ['required', 'numeric', 'between:0,999999'],
-            'shop.discounts.discount' => ['required', 'numeric', 'between:0,999999'],
-            'shop.discounts.type' => ['required', 'integer', 'between:0,1'],
-//            'shop.discounts.total' => ['required', 'integer', 'between:0,999999'],
         ];
+
+        if(isset($this['shop']['discounts']['discount'])) {
+            $rules['shop.discounts.price'] = ['numeric', 'between:0,999999'];
+            $rules['shop.discounts.discount'] = ['numeric', 'between:0,999999'];
+            $rules['shop.discounts.type'] = ['integer', 'between:0,1'];
+        }
+
+        return $rules;
     }
 
     protected function passedValidation()

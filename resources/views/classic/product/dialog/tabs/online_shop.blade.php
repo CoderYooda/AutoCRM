@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="number" class="form-control total" name="shop[discounts][total]" value="{{ $product->sp_discount_total ?? 0 }}" disabled />
+                            <input type="number" class="form-control total" name="shop[discounts][total]" value="{{ $product->getPriceWithDiscount() }}" disabled />
                         </div>
                     </div>
                 </div>

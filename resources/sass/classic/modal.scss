@@ -30,11 +30,19 @@
     margin: 52px auto;
 }
 #croppr-container{
+
     //max-height: 500px!important;
     //min-height: 500px;
     //display: flex;
+
     .croppr-container{
         margin: auto;
+    }
+
+    img {
+        //display: block !important;
+        //width: 100% !important;
+        width: 100%;
     }
 }
 #croppr-container img{

@@ -10,7 +10,7 @@
 
         <div class="box w-100 m-15 p-15">
 
-            <form action="#" method="POST">
+            <form action="#" method="POST" data-simplebar style="height: 100%;">
 
                 <div class="form-group">
                     <label>Название магазина</label>

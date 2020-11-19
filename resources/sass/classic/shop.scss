@@ -157,6 +157,7 @@ body{
     padding: 0;
     width: 100%;
     background: #fff;
+    user-select: none;
     font-family: 'Open Sans';
     font-size: $default-font-size;
     overflow-x: hidden;
@@ -436,7 +437,8 @@ body{
                     top: 22px;
                     background: #5F5F5F;
                 }
-                &:before{
+
+                &:before, &.active:before {
                     transition: 0.2s;
                     opacity: 0;
                     content: "";
@@ -446,7 +448,7 @@ body{
                     bottom: 0;
                     background: #fff;
                 }
-                &:hover:before{
+                &:hover:before, &.active:before {
                     opacity: 1;
                     width: 54px;
                 }
@@ -921,7 +923,7 @@ body{
         height: 420px;
         background: #fff;
         .product-name{
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
         }
         .brand{
@@ -1102,8 +1104,10 @@ body{
 
     .product-name{
         text-align: center;
-        line-height: 22px;
-        margin-bottom: 6px;
+        line-height: 16px;
+        overflow: hidden;
+        height: 32px;
+        margin-bottom: 10px;
         margin-top: 10px;
     }
     .brand{
@@ -1183,8 +1187,11 @@ body{
             height: 24px;
             cursor: pointer;
             background: url("/images/shop/heart-gray.svg") center no-repeat;
-            &:hover, &.active{
-                background: url("/images/shop/heart-active.svg") center no-repeat;
+            &:hover{
+                background: url("/images/shop/heart-hover.svg") center no-repeat;
+            }
+            &.active {
+                background: url('/images/shop/heart-active.svg') center no-repeat;
             }
         }
         .info{
@@ -1396,6 +1403,15 @@ body{
             color: #989898;
         }
 
+        .article {
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 22px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #989898;
+        }
+
         .name {
             font-weight: 600;
             font-size: 14px;
@@ -1407,6 +1423,10 @@ body{
 
 .w-20 {
     width: 20% !important;
+}
+
+.w-60 {
+    width: 60% !important;
 }
 
 .w-80 {
@@ -1751,7 +1771,7 @@ body{
             font-weight: 600;
             display: inline-block;
             position: relative;
-            &:hover:after{
+            &:hover:after, &.active:after{
                 position: absolute;
                 content: "";
                 height: 4px;

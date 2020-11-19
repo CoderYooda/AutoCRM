@@ -100,7 +100,6 @@
 
                     <div class="flex-1">
                         <label>Логотип</label>
-
                         <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
                             <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->image_path ?? 'http://via.placeholder.com/52x52' }}" />
                         </div>
@@ -116,7 +115,7 @@
                         <label>Шапка сайта</label>
 
                         <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
-                            <img class="image_main" src="{{ $shop->headerImage->image_path ?? 'http://via.placeholder.com/1920x220' }}" />
+                            <img class="image_main" src="{{ $shop->headerImage->path ?? 'http://via.placeholder.com/1920x220' }}" />
                         </div>
 
                         <label class="upload_file pointer" for="image_header">Файл не выбран<div></div></label>
@@ -129,7 +128,7 @@
                     <label>Фоновое изображение</label>
 
                     <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
-                        <img class="image_main" src="{{ $shop->backgroundImage->image_path ?? 'http://via.placeholder.com/1920x500' }}" />
+                        <img class="image_main" src="{{ $shop->backgroundImage->path ?? 'http://via.placeholder.com/1920x500' }}" />
                     </div>
 
                     <label class="upload_file pointer" for="image_background">Файл не выбран<div></div></label>

@@ -101,7 +101,7 @@
                             @if(!$product->sp_stock)
                                 <span class="current">{{ correct_price($product->getPrice()) }} ₽</span>
                             @else
-                                <span class="current">{{ correct_price($product->getPrice() - $product->sp_discount_total) }} ₽</span>
+                                <span class="current">{{ correct_price($product->getPriceWithDiscount()) }} ₽</span>
                                 <span class="old">{{ correct_price($product->getPrice()) }} ₽</span>
                             @endif
                         </div>

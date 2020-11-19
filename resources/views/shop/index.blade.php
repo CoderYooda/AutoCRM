@@ -33,8 +33,8 @@
                         @foreach($stockProducts as $product)
                             <div class="product">
                                 <a href="{{ $product->path() }}">
-                                    <img class="product-img" title="{{ $product->name }}" src="{{ $product->image_path }}" alt="{{ $product->name }}">
-                                    <h3 class="product-name" title="{{ $product->name }}">{{ $product->name }}</h3>
+                                    <img class="product-img" title="{{ $product->getShopName() }}" src="{{ $product->image_path }}" alt="{{ $product->getShopName() }}">
+                                    <h3 class="product-name" title="{{ $product->getShopName() }}">{{ $product->getShopName() }}</h3>
                                     <div class="brand">{{ $product->supplier->name }}</div>
                                     <div class="article">{{ $product->article }}</div>
                                     <div class="price-container">
@@ -55,7 +55,9 @@
                                     </div>
                                     <div class="top-right-label">
                                         <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
-                                        <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
+                                        @if($product->sp_desc)
+                                            <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
+                                        @endif
                                     </div>
                                 </a>
                             </div>

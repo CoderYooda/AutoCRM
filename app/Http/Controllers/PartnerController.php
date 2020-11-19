@@ -149,8 +149,6 @@ class PartnerController extends Controller
 
         //SystemMessage::sendToAllButOne();
 
-        $partner->save();
-
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
 
         if($request['access']){

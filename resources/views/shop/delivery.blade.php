@@ -1,5 +1,8 @@
 @extends('shop.layout.app')
 
+@section('title', $shop->seo_delivery_title)
+@section('description', $shop->seo_delivery_desc)
+
 @section('content')
 <script>
     window.coordinates = [52.751574, 37.573856];
@@ -16,7 +19,7 @@
                     <div class="text">{!! $shop->delivery_desc !!}</div>
                 </div>
             @else
-                <div class="empty_table">Пусто</div>
+                <div class="empty_table">Раздел на стадии заполнения</div>
             @endif
         </div>
     </div>
