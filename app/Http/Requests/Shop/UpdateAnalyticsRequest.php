@@ -15,7 +15,8 @@ class UpdateAnalyticsRequest extends FormRequest
     {
         return [
             'yandex_verification' => ['nullable', 'string'],
-            'yandex_metrics' => ['nullable', 'string']
+            'yandex_metrics' => ['nullable', 'string'],
+            'google_analytics' => ['nullable', 'string']
         ];
     }
 }

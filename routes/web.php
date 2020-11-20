@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
-    $order = \App\Models\Order::latest()->first();
 
-//    dd(getenv('MAIL_HOST'), getenv('MAIL_USERNAME'), getenv('MAIL_FROM_ADDRESS'));
+    $pdf = App::make('dompdf.wrapper');
+    $pdf->loadHTML('<h1>Test</h1>');
+    return $pdf->stream();
 
-    Mail::to($order->email)->send(new PayedOrder($order));
 });
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

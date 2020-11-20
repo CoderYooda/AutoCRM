@@ -80,6 +80,8 @@ return [
 
         Barryvdh\Debugbar\ServiceProvider::class,
 
+        Barryvdh\DomPDF\ServiceProvider::class,
+
         //CRM
         AppProviderStoreService::class,
         AppServiceProvider::class,

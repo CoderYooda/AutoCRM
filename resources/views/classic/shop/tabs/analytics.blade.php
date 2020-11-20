@@ -24,6 +24,11 @@
                     <input type="text" name="yandex_metrics" placeholder="69589330" class="form-control" value="{{ $shop->yandex_metrics ?? '' }}">
                 </div>
 
+                <div class="form-group">
+                    <label>Код аналитики Google</label>
+                    <input type="text" name="google_analytics" placeholder="G-TMZTM3E3K7" class="form-control" value="{{ $shop->google_analytics ?? '' }}">
+                </div>
+
                 <div>
                     <button type="button" onclick="{{ $class }}.saveAnalytics(this);" class="button primary">Сохранить</button>
                 </div>

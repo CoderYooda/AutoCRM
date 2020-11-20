@@ -21,6 +21,20 @@
         <meta name="yandex-verification" content="{{ $shop->yandex_verification }}" />
     @endif
 
+    @if($shop->google_analytics)
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $shop->google_analytics }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '{{ $shop->google_analytics }}');
+        </script>
+
+    @endif
+
     @isset($shop->headerImage)
         <link href="{{ $shop->headerImage->path }}" rel="headImage">
     @endisset

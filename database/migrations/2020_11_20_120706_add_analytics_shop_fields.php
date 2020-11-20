@@ -11,6 +11,7 @@ class AddAnalyticsShopFields extends Migration
         Schema::table('shops', function (Blueprint $table) {
             $table->string('yandex_metrics')->nullable();
             $table->string('yandex_verification')->nullable();
+            $table->string('google_analytics')->nullable();
         });
     }
 
@@ -19,6 +20,7 @@ class AddAnalyticsShopFields extends Migration
         Schema::table('shops', function (Blueprint $table) {
             $table->dropColumn('yandex_metrics');
             $table->dropColumn('yandex_verification');
+            $table->dropColumn('google_analytics');
         });
     }
 }
