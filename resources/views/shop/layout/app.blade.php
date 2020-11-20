@@ -17,6 +17,10 @@
     <script src="{{ asset('js/shop.js') }}" defer></script>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=c2977ace-5964-4b2c-aa49-c50ad494239f" type="text/javascript"></script>
 
+    @if($shop->yandex_verification)
+        <meta name="yandex-verification" content="{{ $shop->yandex_verification }}" />
+    @endif
+
     @isset($shop->headerImage)
         <link href="{{ $shop->headerImage->path }}" rel="headImage">
     @endisset

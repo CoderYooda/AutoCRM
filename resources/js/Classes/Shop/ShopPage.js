@@ -567,6 +567,15 @@ class shopPage {
         });
     }
 
+    saveAnalytics(element) {
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        });
+    }
+
     saveSettings(element) {
 
         let image_ids = [];

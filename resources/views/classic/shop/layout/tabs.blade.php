@@ -21,6 +21,9 @@
             <li id="settings-tab" data-tab="settings" class="@if($request['active_tab'] == 'settings') active @endif">
                 <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'settings', 'target' => 'ajax-tab-content']) }}">Настройки</a>
             </li>
+            <li id="analytics-tab" data-tab="analytics" class="@if($request['active_tab'] == 'analytics') active @endif">
+                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'analytics', 'target' => 'ajax-tab-content']) }}">Аналитика</a>
+            </li>
         </ul>
         <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
     </div>

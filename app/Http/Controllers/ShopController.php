@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
+use App\Http\Requests\Shop\UpdateAnalyticsRequest;
 use App\Http\Requests\Shop\UpdateDeliveryRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
@@ -88,6 +89,11 @@ class ShopController extends Controller
     public function settingsTab(Request $request)
     {
         return view(get_template() . '.shop.tabs.settings', compact('request'));
+    }
+
+    public function analyticsTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.analytics', compact('request'));
     }
 
     public function update(UpdateRequest $request)
@@ -189,6 +195,16 @@ class ShopController extends Controller
             'seo_warranty_title' => $request->seo_warranty_title,
             'seo_warranty_desc'  => $request->seo_warranty_desc
         ]);
+
+        return response()->json([
+            'type'    => 'success',
+            'message' => 'Настройки успешно сохранены.'
+        ]);
+    }
+
+    public function updateAnalytics(UpdateAnalyticsRequest $request)
+    {
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
 
         return response()->json([
             'type'    => 'success',

@@ -12,7 +12,9 @@
 
             <form action="{{ route('ShopUpdateWarranty') }}" method="POST">
 
-                <div class="form-group">
+                <h2 class="mt-0 style_header">Гарантия и возврат</h2>
+
+                <div class="form-group mt-10">
                     <label>Гарантии и способы возврата</label>
                     <div data-error="warranty_desc">
                         <div id="editor">{!! $shop->warranty_desc ?? '' !!}</div>
