@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Компания</label>
+                    <label>Компания (ID {{ $user->company->id }})</label>
                     <div class="input-group mb-3">
                         <input type="text" onclick="this.select();" name="company" value="{{ $user->company->name }}" class="form-control" placeholder="Компания" disabled />
                     </div>

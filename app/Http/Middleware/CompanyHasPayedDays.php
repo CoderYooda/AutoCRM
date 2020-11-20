@@ -27,7 +27,7 @@ class CompanyHasPayedDays
                 ]);
             }
 
-            return redirect()->route('UserIndex', ['active_tab' => 'service']);
+            return redirect()->route('UserIndex', ['id' => Auth::user()->id, 'active_tab' => 'service']);
         }
 
         return $next($request);
