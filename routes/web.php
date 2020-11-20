@@ -8,7 +8,7 @@ Route::get('/test', function () {
 
     $pdf = App::make('dompdf.wrapper');
     $pdf->loadHTML('<h1>Test</h1>');
-    return $pdf->stream();
+    return $pdf->stream();  
 
 });
 
