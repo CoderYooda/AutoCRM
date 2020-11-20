@@ -12,7 +12,9 @@
 
             <form action="{{ route('ShopUpdateAbout') }}" method="POST">
 
-                <div class="form-group">
+                <h2 class="mt-0 style_header">О компании</h2>
+
+                <div class="form-group mt-10">
                     <label>Описание компании</label>
                     <div data-error="about_desc">
                         <div id="editor">{!! $shop->about_desc ?? '' !!}</div>

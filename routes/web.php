@@ -1,6 +1,16 @@
 <?php
 
+use App\Mail\Shop\PayedOrder;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/test', function () {
+    $order = \App\Models\Order::latest()->first();
+
+//    dd(getenv('MAIL_HOST'), getenv('MAIL_USERNAME'), getenv('MAIL_FROM_ADDRESS'));
+
+    Mail::to($order->email)->send(new PayedOrder($order));
+});
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
@@ -14,8 +24,6 @@ Route::get('password/reset', 'Auth\ForgotPasswordController@resetForm')->name('P
 Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('PassResetPost');
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
-
-Route::view('/test', 'shop.emails.success_order');
 
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
@@ -309,6 +317,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
         Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
         Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+        Route::post('/shop/analytics', 'ShopController@updateAnalytics')->name('ShopUpdateAnalytics');
 
         Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
         Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');

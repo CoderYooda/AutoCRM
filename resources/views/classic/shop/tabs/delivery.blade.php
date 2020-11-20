@@ -12,7 +12,9 @@
 
             <form action="{{ route('ShopUpdateDelivery') }}" method="POST">
 
-                <div class="form-group">
+                <h2 class="mt-0 style_header">Оплата и доставка</h2>
+
+                <div class="form-group mt-10">
                     <label>Способы оплаты и доставки</label>
                     <div data-error="delivery_desc">
                         <div id="editor">{!! $shop->delivery_desc ?? '' !!}</div>

@@ -22,8 +22,9 @@ class PayedOrder extends Mailable implements ShouldQueue
 
     public function build()
     {
-        return $this->view('shop.email.order.payed')
+        return $this->view('shop.emails.order.payed')
             ->subject('Заказ №' . $this->order->id . ' успешно оплачен.')
+            ->from('support@bbcrm.ru')
             ->with([
                 'order' => $this->order,
                 'shop' => $this->order->shop
