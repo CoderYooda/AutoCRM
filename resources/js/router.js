@@ -46,6 +46,17 @@ export default new Router({
             ]
         },
         {
+            path: '/lk',
+            name: 'lk',
+            redirect: 'lk/profile',
+            meta: {layout: 'main'},
+            component: () => import('./components/views/Lk.vue'),
+            children:[
+                {path: '/cash/profile',             name: 'profile', meta: {layout: 'main'},            component: () => import('./components/views/Lk/Profile'), props: true},
+                {path: '/cash/service',             name: 'service', meta: {layout: 'main'},            component: () => import('./components/views/Lk/Services'), props: true},
+            ]
+        },
+        {
             path: '/contact',
             name: 'contact',
             meta: {layout: 'main'},
