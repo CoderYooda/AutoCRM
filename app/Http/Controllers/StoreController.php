@@ -27,48 +27,20 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
-
 class StoreController extends Controller
 {
     public function index(StoreGetRequest $request)
     {
-        // точка входа в страницу
-        $page_title = 'Склад';
+        $products = ProductController::getArticles($request);
+        $response = [
+            'data' => $products,
+        ];
 
-        // На всякий случай
-        if ($request['search'] == 'undefined') {
-            $request['search'] = null;
-        }
-
-        // цель динамической подгрузки
-        $target = HC::selectTarget();
-
-        // Определяем табуляцию
-        if ($request['active_tab'] === NULL || $request['active_tab'] == 'undefined') {
-            $request['active_tab'] = 'store';
-        }
-
-        $classname = $request['active_tab'] . 'Tab';
-
-        $content = self::$classname($request);
-
-        if (class_basename($content) == "JsonResponse") {
-            return $content;
-        }
-
-        if ($request['view_as'] != null && $request['view_as'] == 'json') {
-            return response()->json([
-                'target' => $target,
-                'page' => $page_title,
-                'html' => $content->render()
-            ]);
-        } else {
-            return $content;
-        }
+        return response()->json($response);
     }
 
     public static function getAllowedPage()

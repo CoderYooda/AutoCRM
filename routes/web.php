@@ -4,12 +4,31 @@ use Illuminate\Support\Facades\Route;
 
 //Точка входа
 
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+// Registration Routes...
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
+Route::post('sms_retry', 'Auth\RegisterController@smsRetry');
+// Password Reset Routes...
+Route::get('password/reset', 'Auth\ForgotPasswordController@resetForm')->name('PassReset');
+Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('PassResetPost');
+Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
+Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
+
+
+
 Route::get('data/cash/aside', 'CategoryController@getCashAside')->name('getCashAside');
 Route::get('data/store/aside', 'CategoryController@getStoreAside')->name('getStoreAside');
+Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
+    Route::post('/store/index', 'StoreController@index')->name('StoreIndex');
+});
 
 Route::get('/{any?}/{an2y?}/{a3ny?}', function(){
     return view('index');
 })->name('Index');
+
 
 
 

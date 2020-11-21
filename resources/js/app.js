@@ -89,8 +89,44 @@ Vue.prototype.getFromLocalStorage = (key)=>{
     return val ? JSON.parse(val) : null;
 };
 
-new Vue({
+let app = new Vue({
     router,
     store,
     render: h => h(App)
 }).$mount('#app');
+
+window.axios.interceptors.response.use(function (response) {
+    // if(response.data.event){
+    //     let event = new CustomEvent(response.data.event, {
+    //         'detail' : {
+    //             data: response.data
+    //         },
+    //     });
+    //
+    //     let listns = document.getElementsByClassName(response.data.event + 'Listner');
+    //     [].forEach.call(listns, function(elem){
+    //         elem.dispatchEvent(event);
+    //     });
+    //     document.dispatchEvent(event);
+    //     console.log("Событие " + response.data.event + " объявлено");
+    // }
+    return response;
+}, function (error) {
+    if (error.response.status === 401 || error.response.status === 419) {
+        app.$eventBus.$emit('NoAuthEvent', true);
+    }
+    // if (error.response.status === 422 || error.response.status === 200) {
+    //     if(error.response.data.message && error.response.data.type){
+    //         window.notification.notify( error.response.data.type, error.response.data.message);
+    //     }
+    // }
+    //
+    // if (error.response.status === 403) {
+    //     if(error.response.data.type == "gateClosed"){
+    //         window.notification.notify( 'error', error.response.data.message);
+    //     }
+    // }
+    return Promise.reject(error);
+}, function(e){
+
+});

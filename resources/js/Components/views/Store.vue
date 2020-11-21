@@ -2,9 +2,7 @@
     <div id="ajax-content">
         <AsideMenu menu="store"/>
         <div class="main-content">
-            <div class="box-lister box">
-                <router-view></router-view>
-            </div>
+            <router-view></router-view>
         </div>
     </div>
 </template>
