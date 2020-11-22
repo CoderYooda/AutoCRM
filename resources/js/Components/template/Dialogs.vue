@@ -61,17 +61,26 @@
             dragMouseDown: function (dialog) {
                 event.preventDefault();
                 this.moved_dialog = dialog;
-                this.moved_dialog.left = window.event.clientX;
-                this.moved_dialog.top = window.event.clientY;
+                this.moved_dialog.left = window.event.clientX - window.event.offsetX;
+                this.moved_dialog.top = window.event.clientY - window.event.offsetY;
                 document.onmousemove = this.elementDrag;
                 document.onmouseup = this.closeDragElement;
             },
             elementDrag: function (event) {
                 event.preventDefault();
                 let ref = this.$refs[this.moved_dialog.name + this.moved_dialog.id];
-                console.log( ref[0].offsetLeft);
-                // this.moved_dialog.left = ref[0].offsetLeft - event.clientX;
-                // this.moved_dialog.top = ref[0].offsetTop - event.clientY;
+
+                let movX = this.moved_dialog.left - event.clientX;
+                let movY = this.moved_dialog.top - event.clientY;
+
+                this.moved_dialog.left = this.moved_dialog.left - movX;
+                this.moved_dialog.top = this.moved_dialog.top - movY;
+
+                // this.moved_dialog.left = event.clientX + event.offsetX;
+                // this.moved_dialog.top = event.clientY + event.offsetY;
+                // this.moved_dialog.left = event.clientX - event.offsetX;
+                // this.moved_dialog.top = event.clientY - event.offsetY;
+                //this.moved_dialog.top = ref[0].offsetTop - (event.clientY - event.offsetY);
 
 
                 //
