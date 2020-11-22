@@ -42,7 +42,7 @@
             <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
             <Clock/>
             <ul class="top-nav-bar right-nav">
-                <StackModals/>
+                <DialogsStack/>
                 <SystemMessages/>
                 <UserMenu/>
             </ul>
@@ -52,14 +52,14 @@
 
 <script>
     import Clock from "./Clock"
-    import StackModals from "./StackModals"
+    import DialogsStack from "./DialogsStack"
     import SystemMessages from "./SystemMessages"
     import UserMenu from "./UserMenu"
     import HeadLogo from "./HeadLogo"
     export default {
         name: "Header",
         components:{
-            Clock, StackModals, SystemMessages, UserMenu, HeadLogo
+            Clock, DialogsStack, SystemMessages, UserMenu, HeadLogo
         }
     }
 </script>

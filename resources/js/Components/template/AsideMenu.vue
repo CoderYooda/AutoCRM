@@ -1,7 +1,7 @@
 <template>
     <div class="side-menu">
         <ul class="nav">
-            <router-link  v-for="item in menu" tag="li" active-class="active" :to="item.link">
+            <router-link  v-for="item in menu" v-bind:key="item.link" tag="li" active-class="active" :to="item.link">
                 <a href="#">{{ item.name }}</a>
             </router-link>
         </ul>
@@ -11,10 +11,10 @@
 
 <script>
     export default {
-        name: "Aside",
+        name: "AsideMenu",
         data: ()=> {
             return {
-                menu: null,
+                menu: {},
             }
         },
         computed:{

@@ -1,0 +1,48 @@
+// Dropdown
+
+.dropdown_menu{
+    position: absolute;
+    border: 1px solid #AFCDE4;
+    border-radius: 4px;
+    padding: 6px 0;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(44, 64, 129, 0.12);
+    top: calc(100% + 26px);
+    right: 0;
+    z-index: 999999999;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 100ms linear,top 100ms linear,visibility 100ms linear;
+    animation: show_dropdown 1s;
+    &.show{
+        top: calc(100% + 6px);
+        opacity: 1;
+        visibility: visible;
+    }
+    .element {
+        display: block;
+        white-space: nowrap;
+        padding: 4px 15px;
+        cursor: pointer;
+        color: #2d76a8;
+        line-height: 24px;
+    }
+    .arrow:before {
+        border-width: 0 .5rem .5rem;
+        border-bottom-color: #afcde4;
+    }
+    .arrow:after, .arrow:before {
+        position: absolute;
+        display: block;
+        content: "";
+        border-color: transparent;
+        border-style: solid;
+        top: -8px;
+        right: 10px;
+    }
+    .arrow:after {
+        border-width: 0 .5rem .5rem;
+        border-bottom-color: #fff;
+        top: -6.5px;
+    }
+}

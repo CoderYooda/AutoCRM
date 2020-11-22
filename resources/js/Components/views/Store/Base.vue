@@ -1,6 +1,7 @@
 <template>
     <div class="bottom-container">
         <Categories/>
+        <button v-on:click="newDialog('product')">Новый товар</button>
         <div class="box-lister box">
             wad
         </div>
@@ -16,8 +17,7 @@
         },
 
         mounted(){
-            console.log(this.$route.query);
-            this.getData()
+            //this.getData()
         },
         methods:{
             getData(){
@@ -26,7 +26,14 @@
                     url: '/store/index',
                     data: this.$route.query
                 }).then((resp) =>  {
-                    console.log(resp);
+
+                });
+            },
+            newDialog(tag){
+                let params = null;
+                this.$eventBus.$emit('openDialog', {
+                    tag: tag,
+                    params: params
                 });
             }
         }

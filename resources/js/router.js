@@ -46,14 +46,16 @@ export default new Router({
             ]
         },
         {
-            path: '/lk',
-            name: 'lk',
-            redirect: 'lk/profile',
+            path: '/user',
+            name: 'user',
+            redirect: 'user/profile',
             meta: {layout: 'main'},
-            component: () => import('./components/views/Lk.vue'),
+            component: () => import('./components/views/User.vue'),
             children:[
-                {path: '/cash/profile',             name: 'profile', meta: {layout: 'main'},            component: () => import('./components/views/Lk/Profile'), props: true},
-                {path: '/cash/service',             name: 'service', meta: {layout: 'main'},            component: () => import('./components/views/Lk/Services'), props: true},
+                {path: '/user/profile',             name: 'profile', meta: {layout: 'main'},            component: () => import('./components/views/User/Profile'), props: true},
+                {path: '/user/service',             name: 'service', meta: {layout: 'main'},            component: () => import('./components/views/User/Services'), props: true},
+                {path: '/user/settings',            name: 'settings', meta: {layout: 'main'},            component: () => import('./components/views/User/Settings'), props: true},
+                {path: '/user/garage',              name: 'garage', meta: {layout: 'main'},            component: () => import('./components/views/User/Garage'), props: true},
             ]
         },
         {

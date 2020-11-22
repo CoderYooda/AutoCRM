@@ -61,6 +61,7 @@
         "tippy.js": "^5.2.1",
         "tooltip-js": "^3.0.0",
         "tooltips-js": "^1.0.6",
+        "v-mask": "^2.2.3",
         "vue": "^2.6.11",
         "vue-router": "^3.4.7",
         "vuex": "^3.5.1",

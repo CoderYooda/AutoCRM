@@ -1,10 +1,12 @@
 <template>
-    <div>вфцв</div>
+    <div class="dialog">
+        CategoryDialog
+    </div>
 </template>
 
 <script>
     export default {
-        name: "Profile"
+        name: "CategoryDialog"
     }
 </script>
 

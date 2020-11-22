@@ -19,11 +19,7 @@ Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmS
 
 
 
-Route::get('data/cash/aside', 'CategoryController@getCashAside')->name('getCashAside');
-Route::get('data/store/aside', 'CategoryController@getStoreAside')->name('getStoreAside');
-Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
-    Route::post('/store/index', 'StoreController@index')->name('StoreIndex');
-});
+
 
 Route::get('/{any?}/{an2y?}/{a3ny?}', function(){
     return view('index');

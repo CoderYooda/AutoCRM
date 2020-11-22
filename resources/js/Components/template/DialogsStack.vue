@@ -1,5 +1,5 @@
 <template>
-    <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
+    <li class="top-nav-item dropdown pointer">
         <a id="stack_badge" class="ico_link stack">
             <span id="stack_badge_count" class="badge-pill"></span>
         </a>
@@ -16,7 +16,17 @@
 
 <script>
     export default {
-        name: "StackModals"
+        name: "DialogsStack",
+        data: ()=> {
+            return {
+                modals:[]
+            }
+        },
+        mounted() {
+            this.$eventBus.$on('NoAuthEvent', ()=>{
+                this.showLogin = true;
+            });
+        }
     }
 </script>
 

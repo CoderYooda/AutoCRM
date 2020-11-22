@@ -1,20 +1,21 @@
 <template>
     <div id="app">
         <component :is="layout" />
-        <Login/>
+        <login/>
+        <Dialogs/>
     </div>
 </template>
 
 <script>
     import MainLayout from './layouts/MainLayout'
-    import Login from "../../../../manager/resources/js/components/Auth/Login";
+    import Login from './auth/Login'
+    import Dialogs from './template/Dialogs'
     export default {
         data: ()=> {
             return {
             }
         },
         created(){
-
         },
         methods: {
         },
@@ -25,7 +26,8 @@
         },
         components: {
             Login,
-            MainLayout
+            MainLayout,
+            Dialogs
         }
     }
 </script>

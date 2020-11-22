@@ -57,6 +57,15 @@ class CategoryController extends Controller
         ]);
     }
 
+    public function getUserAside(){
+        return response()->json([
+            ['name' => 'Профиль', 'link' => '/user/profile'],
+            ['name' => 'Мои услуги', 'link' => '/user/service'],
+            ['name' => 'Настройки', 'link' => '/user/settings'],
+            ['name' => 'Гараж', 'link' => '/user/garage'],
+        ]);
+    }
+
     public function loadAside(Request $request)
     {
         $categories = CategoryController::getCategories($request, $request['class']);
