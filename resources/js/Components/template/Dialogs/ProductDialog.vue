@@ -4,7 +4,7 @@
             <div class="modal-alt-header">
                 <span class="item-title _500">Розничная цена</span>
                 <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
+                    <span id="awd">
                        23
                     </span>
                 </div>
@@ -14,7 +14,7 @@
             <div class="modal-alt-header">
                 <span class="item-title _500">На своем складе / на других</span>
                 <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
+                    <span id="gsaegsegse">
                       1 1
                     </span>
                 </div>
@@ -24,7 +24,7 @@
             <div class="modal-alt-header">
                 <span class="item-title _500">Хранение</span>
                 <div class="item-except font-weight-bolder h-1x">
-                    <span id="total_price">
+                    <span id="gaw">
                        23
                     </span>
                 </div>
@@ -55,13 +55,6 @@
             }
         },
         methods:{
-            dragDialog(){
-                this.$parent.dragMouseDown(event, this.$attrs.dialog);
-            }
         }
     }
 </script>
-
-<style scoped>
-
-</style>
