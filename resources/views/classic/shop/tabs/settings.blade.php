@@ -180,7 +180,7 @@
 
                 <div class="form-group w-350">
                     <label>URL адрес</label>
-                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? '' }}">
+                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? 'name.bbcrm.ru' }}">
                 </div>
 
                 <div class="form-group w-350">
