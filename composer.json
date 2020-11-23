@@ -20,8 +20,7 @@
         "laravel/tinker": "^1.0",
         "milon/barcode": "^6.0",
         "predis/predis": "^1.1",
-        "spatie/laravel-permission": "^3.10",
-      "ext-mysql_xdevapi": "*"
+        "spatie/laravel-permission": "^3.10"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",
