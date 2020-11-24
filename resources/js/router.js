@@ -20,6 +20,7 @@ export default new Router({
             meta: {layout: 'main'},
             component: () => import(/* webpackChunkName: "Store" */ './components/views/Store.vue'),
             children:[
+                {path: '/store/base',               redirect: '/store/base/all'},
                 {path: '/store/base/:category_id',  name: 'base', meta: {layout: 'main'},               component: () => import(/* webpackChunkName: "Base" */ './components/views/Store/Base'), props: true},
                 {path: '/store/provider_store',     name: 'provider_store', meta: {layout: 'main'},     component: () => import(/* webpackChunkName: "ProviderStore" */ './components/views/Store/ProviderStore'), props: true},
                 {path: '/store/provider_order',     name: 'provider_order', meta: {layout: 'main'},     component: () => import(/* webpackChunkName: "ProviderOrder" */ './components/views/Store/ProviderOrder'), props: true},

@@ -1,24 +1,97 @@
 <template>
     <div class="content-menu box w-250" id="category-nav">
         <div class="box-header store">
-            Номенклатуры
+
+            <div v-if="only_name">{{ name }}</div>
+            <router-link class="category-back-button" v-if="!only_name" tag="a" :to="{ name: 'base', params: { category_id: parent_id }}">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span title="Автокрепеж">{{ name }}</span>
+            </router-link>
         </div>
-        <div class="box-content" data-simplebar="init" style="max-height: calc(100% - 54px);"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: -17px; bottom: 0px;"><div class="simplebar-content-wrapper" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 0px;">
+        <div class="box-content" data-simplebar style="max-height: calc(100% - 54px);">
             <ul class="nav" id="category-block">
-                <li id="category_14543" class="category-item" data-id="14543">
-                    <a onclick="window.store.loadCategory(14543, true, true)" class="ajax-nav category-linked-item">
-                        <i class="fa fa-folder-o" aria-hidden="true"></i>
-                        <span title="ДВС">ДВС</span>
-                    </a>
-                </li>
+                <router-link v-for="category in categories" v-bind:key="category.id" tag="li" :to="{ name: 'base', params: { category_id: category.id }}">
+                    <a href="#">{{ category.name }}</a>
+                </router-link>
             </ul>
-        </div></div></div></div><div class="simplebar-placeholder" style="width: auto; height: 991px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 713px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Categories"
+        name: "Categories",
+        data: ()=> {
+            return {
+                category: 2,
+                name: null,
+                parent_id: null,
+                parent_name: null,
+                only_name: true,
+                categories:{}
+            }
+        },
+        watch: {
+            $route(to, from) {
+                this.setRootCategory();
+                this.getCategories();
+            }
+        },
+        mounted(){
+
+            this.setRootCategory();
+            this.getCategories();
+        },
+        computed: {
+            category_id(){
+                this.category = (this.$route.params.category_id === 'all') ? this.root_category : this.$route.params.category_id;
+                return this.category;
+            },
+        },
+        methods:{
+            isOnlyName(){
+                this.only_name = this.$attrs.category_id == this.$attrs.root_id;
+            },
+            setRootCategory(){
+                let category = this.getFromLocalStorage('category_' + this.$attrs.category_id + '_meta');
+                this.category = this.$attrs.category_id;
+                if(category){
+                    this.name = category.name;
+                    this.parent_id = category.parent_id;
+                    this.parent_name = category.parent_name;
+                    this.isOnlyName();
+                } else {
+                    window.axios({
+                        method: 'get',
+                        url: '/data/categories/show',
+                        params: {
+                            category_id: this.category
+                        }
+                    }).then((resp) =>  {
+                        this.name = resp.data.name;
+                        this.parent_id = resp.data.parent_id;
+                        this.parent_name = resp.data.parent_name;
+                        this.saveToLocalStorage('category_' + this.$attrs.category_id + '_meta', resp.data);
+                        this.isOnlyName();
+                    });
+                }
+            },
+            getCategories(){
+                let categories = this.getFromLocalStorage('categories_' + this.category);
+                if(categories){
+                    this.categories = categories;
+                } else {
+                    window.axios({
+                        method: 'get',
+                        url: '/data/categories/get',
+                        params: {category_id: this.$attrs.category_id}
+                    }).then((resp) =>  {
+                        this.categories = resp.data;
+                        this.saveToLocalStorage('categories_' + this.category, this.categories);
+                    });
+                }
+            },
+        }
     }
 </script>
 

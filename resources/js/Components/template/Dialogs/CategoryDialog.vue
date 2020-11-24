@@ -53,7 +53,7 @@
             this.dialog = this.$attrs.dialog;
         },
         mounted(){
-
+            console.log(1);
             let route_category = this.$route.params.category_id;
             if(route_category && route_category !== 'all'){
                 this.root_category = route_category;

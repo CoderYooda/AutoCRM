@@ -16,7 +16,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('data/user/aside', 'CategoryController@getUserAside')->name('getUserAside');
 
 
-    Route::get('data/categories/show', 'Api_v2\CategoryController@show')->name('showCategory');
-
+    Route::get('data/categories/show',  'Api_v2\CategoryController@show')->name('showCategory');
+    Route::get('data/categories/get',   'Api_v2\CategoryController@get')->name('getCategories');
+    Route::get('store/base/table_data',   'Api_v2\StoreController@tableData')->name('getStoreData');
 
 });

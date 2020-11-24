@@ -74,14 +74,19 @@
                     </a>
                 </li>
             </ul>
+            <Debug/>
             <div class="version">version <br>23</div>
         </div>
     </div>
 </template>
 
 <script>
+    import Debug from './Debug';
     export default {
-        name: "Aside"
+        name: "Aside",
+        components:{
+            Debug
+        }
     }
 </script>
 

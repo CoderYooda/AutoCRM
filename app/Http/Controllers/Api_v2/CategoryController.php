@@ -5,25 +5,17 @@ namespace App\Http\Controllers\Api_v2;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public static function show(Request $request)
+    public function show(Request $request)
     {
+//        $category = Category::with('parent')->find($request['category_id']);
+//        $parent = Category::find($category->category_id);
+
         $category = Category::find($request['category_id']);
         $parent = Category::find($category->category_id);
-//
-//        $parent = null;
-//
-//        if($category) {
-//            $parent = Category::find($category->category_id);
-//        }
-//
-//        $class = 'categoryDialog' . ($category->id ?? '');
-//
-//        if($request['category_select']){
-//            $parent = Category::find($request['category_select']);
-//        }
 
         return response()->json([
             'id' => $category->id,
@@ -31,6 +23,15 @@ class CategoryController extends Controller
             'parent_id' => $parent->id,
             'parent_name' => $parent->name,
         ]);
-    }
 
+//        return response()->json($category);
+    }
+    public function get(Request $request)
+    {
+        $categories = Category::where('category_id', $request['category_id'])
+            ->where('company_id', Auth::user()->company_id)
+            ->get();
+
+        return response()->json($categories);
+    }
 }
