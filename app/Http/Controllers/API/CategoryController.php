@@ -7,11 +7,6 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function __construct()
-    {
-
-    }
-
     /**
      * @OA\Get(
      *     path="/api/categories/{category_id}/breadcrumbs",
@@ -53,6 +48,25 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($category_id);
 
-        return response()->json($category->getParentsSlugs());
+        $slugs = $category->getParentsSlugs();
+
+        $slugs = explode('/', $slugs);
+
+        unset($slugs[0]);
+
+        return response()->json($slugs);
+    }
+
+    public function show($category_id)
+    {
+        $category = Category::findOrFail($category_id);
+
+        return response()->json([
+            'name' => $category->name,
+            'category_id' => $category->id,
+            'shop' => [
+                'image_id' => $category->image->id
+            ]
+        ]);
     }
 }

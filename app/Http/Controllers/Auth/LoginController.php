@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -84,8 +85,9 @@ class LoginController extends Controller
         return '/store';
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
+
         $this->validateLogin($request);
         $user = User::where('phone', $request['phone'])->first();
 
@@ -106,6 +108,10 @@ class LoginController extends Controller
                 $request->session()->regenerate();
                 $this->clearLoginAttempts($request);
                 return response()->json([
+                    'pic' => $user->partner()->first()->getPicUrl(),
+                    'name' => $user->partner()->first()->outputName(),
+                    'role' => $user->roles->first()->name,
+                    'api_token' => $user->api_token,
                     'status' => 'success'
                 ]);
             }
