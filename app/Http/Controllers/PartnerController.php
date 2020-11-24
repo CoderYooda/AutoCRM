@@ -166,7 +166,7 @@ class PartnerController extends Controller
                     'password' => bcrypt($password)
                 ]);
 
-                if($request['role']) {
+                if($request->category_id == 5 && $request['role']) {
                     $role = Role::where('name', $request['role'])->first();
                     $user->syncRoles([ $role->id ]);
                 }
