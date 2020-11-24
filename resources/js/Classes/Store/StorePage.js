@@ -370,11 +370,15 @@ class storePage extends Page{
 
     searchProviderStores() {
 
+        console.log(window.isXHRloading);
+
+        if(window.isXHRloading == true) return;
+
+        window.isXHRloading = true;
+
         let service_input = document.querySelector('[name="service_key"]');
 
         let table_element = document.getElementById('table-container');
-
-        document.querySelector('.out_of_search').classList.add('d-none');
 
         togglePreloader(table_element, true);
 
@@ -388,11 +392,22 @@ class storePage extends Page{
 
             if(!response.data.html.length) {
                 document.getElementById('table_body').innerHTML = '';
-                document.querySelector('.out_of_search').classList.remove('d-none');
+
+                document.querySelector('.empty_table').classList.remove('d-none');
             }
             else {
-
                 document.getElementById('table_body').innerHTML = response.data.html;
+
+                let counts = response.data.counts;
+
+                document.querySelector('.empty_table').classList.add('d-none');
+
+                Object.keys(counts).forEach(service_key => {
+
+                    let manufacturers = counts[service_key];
+
+                    document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
+                });
             }
 
             let errors = response.data.errors;
@@ -409,6 +424,8 @@ class storePage extends Page{
         })
         .finally(() => {
             togglePreloader(table_element, false);
+
+            window.isXHRloading = false;
         });
     }
 
