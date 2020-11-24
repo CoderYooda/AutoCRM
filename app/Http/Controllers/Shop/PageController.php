@@ -140,28 +140,26 @@ class PageController extends Controller
 
     protected function showProductPage(Article $product)
     {
-        /** @var Providers $providers */
-        $providers = app(Providers::class);
-
         $selectedCategory = $product->category->load('childs');
-
-        //TEST
-//        $providersOrders = Cache::remember('orders', Carbon::now()->addHours(1), function () use($providers, $product) {
-//            /** @var ProviderInterface $provider */
-//            foreach ($providers->activated() as $provider_key => $provider) {
-//                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
-//            }
-//
-//            return $providersOrders;
-//        });
 
         $providersOrders = [];
 
-//        dd(Auth::user());
+        if($this->shop->supplier_offers) {
+            /** @var Providers $providers */
+            $providers = app(Providers::class);
 
-        /** @var ProviderInterface $provider */
-        foreach ($providers->activated() as $provider_key => $provider) {
-            $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+            /** @var ProviderInterface $provider */
+            foreach ($providers->activated() as $provider_key => $provider) {
+                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+
+                foreach ($providersOrders[$provider_key] as $key => $order) {
+
+                    $price = $providersOrders[$provider_key][$key]['price'];
+
+                    $providersOrders[$provider_key][$key]['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
+                    $providersOrders[$provider_key][$key]['model']['hash_info']['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
+                }
+            }
         }
 
         return view('shop.product', compact('product', 'selectedCategory', 'providersOrders'))

@@ -247,7 +247,7 @@ class shopPage {
                 prepare: function (str) {
                     return str.toLowerCase();
                 },
-                lazy: true,
+                lazy: false,
                 blocks: {
                     NAME: {
                         mask: /^[0-9a-zA-Z]+$/

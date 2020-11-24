@@ -130,69 +130,73 @@
 
         </div>
 
-        @foreach($providersOrders as $providerKey => $orders)
+        @if($shop->supplier_offers)
 
-            <div class="table">
+            @foreach($providersOrders as $providerKey => $orders)
 
-                <div class="name">
-                    {{ $providerKey }}
-                </div>
+                <div class="table">
 
-                <div class="header">
-                    <div class="flex-1 availability">
-                        <span>Наличие</span>
-                        <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                    <div class="name">
+                        {{ $providerKey }}
                     </div>
 
-                    <div class="flex-1 price">
-                        <span>Срок поставки</span>
-                        <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                    <div class="header">
+                        <div class="flex-1 availability">
+                            <span>Наличие</span>
+                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="flex-1 price">
+                            <span>Срок поставки</span>
+                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="flex-2 shop">
+                            <span>Цена</span>
+                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                        </div>
+
                     </div>
 
-                    <div class="flex-2 shop">
-                        <span>Цена</span>
-                        <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
-                    </div>
+                    <div data-simplebar class="body" style="max-height: 300px;">
 
-                </div>
+                        @forelse($orders as $order)
 
-                <div data-simplebar class="body" style="max-height: 300px;">
+                            <div class="element" id="product_{{ $order['hash'] }}">
 
-                    @forelse($orders as $order)
-
-                        <div class="element" id="product_{{ $order['hash'] }}">
-
-                            <div class="flex-1 availability">{{ $order['model']['hash_info']['rest'] }} шт.</div>
-                            <div class="flex-1 shop">{{ $order['days_min'] }} дн.</div>
-                            <div class="flex-2 price">
-                                <span class="current">{{ correct_price($order['price']) }} ₽</span>
-                            </div>
-
-                            <div class="absolute shipping-container">
-                                <div class="counter-container">
-                                    <div class="button minus" onclick="cart.decrement(this, '{{ $order['hash'] }}');"></div>
-                                    <input type="text" data-max="{{ $order['model']['hash_info']['rest'] }}" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
-                                    <div class="button plus" onclick="cart.increment(this, '{{ $order['hash'] }}');"></div>
+                                <div class="flex-1 availability">{{ $order['model']['hash_info']['rest'] }} шт.</div>
+                                <div class="flex-1 shop">{{ $order['days_min'] }} дн.</div>
+                                <div class="flex-2 price">
+                                    <span class="current">{{ correct_price($order['price']) }} ₽</span>
                                 </div>
-                                <div class="cart-button @if($cart->isProductExists($order['hash'])) incart @endif" onclick="cart.add(this, '{{ $order['hash'] }}');"></div>
+
+                                <div class="absolute shipping-container">
+                                    <div class="counter-container">
+                                        <div class="button minus" onclick="cart.decrement(this, '{{ $order['hash'] }}');"></div>
+                                        <input type="text" data-max="{{ $order['model']['hash_info']['rest'] }}" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
+                                        <div class="button plus" onclick="cart.increment(this, '{{ $order['hash'] }}');"></div>
+                                    </div>
+                                    <div class="cart-button @if($cart->isProductExists($order['hash'])) incart @endif" onclick="cart.add(this, '{{ $order['hash'] }}');"></div>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                        @empty
 
-                    @empty
+                            <div class="empty_table">
+                                <span>Нет предложений по этому поставщику</span>
+                            </div>
 
-                        <div class="empty_table">
-                            <span>Нет предложений по этому поставщику</span>
-                        </div>
+                        @endforelse
 
-                    @endforelse
+                    </div>
 
                 </div>
 
-            </div>
+            @endforeach
 
-        @endforeach
+        @endif
 
     </div>
 </div>

@@ -1,13 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-Route::get('/test', function () {
-    dd(\App\Models\Shop::latest()->first()->getUrl());
-
-//    \Illuminate\Support\Facades\Auth::logout();
-});
-
 Route::namespace('Shop')->group(function () {
 
     Route::middleware('auth')->group(function () {
@@ -58,6 +50,7 @@ Route::namespace('Shop')->group(function () {
     Route::post('/cart/order', 'CartController@order')->name('cart.order');
 
     Route::get('/orders/{hash}', 'OrderController@show')->name('orders.success');
+    Route::get('/orders/{hash}/print', 'OrderController@print')->name('orders.print');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
 

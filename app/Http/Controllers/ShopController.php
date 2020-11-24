@@ -226,8 +226,7 @@ class ShopController extends Controller
                 'domain'              => $request->domain,
                 'subdomain'           => $request->subdomain,
                 'supplier_offers'     => $request->supplier_offers,
-                'supplier_percent'    => $request->supplier_percent,
-                'supplier_id'         => $request->supplier_id
+                'supplier_percent'    => $request->supplier_percent
             ]);
 
             $images = [];

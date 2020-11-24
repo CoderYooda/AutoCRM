@@ -1,9 +1,5 @@
 <?php
 
-use App\Mail\Shop\PayedOrder;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Route;
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');

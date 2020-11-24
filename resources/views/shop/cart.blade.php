@@ -114,7 +114,7 @@
                             <div class="form-group-flex">
                                 <label>Телефон</label>
                                 <div class="float-r w-50">
-                                    <span>{{ display_phone(auth()->user()->companyPartner->firstActivePhoneNumber()) }}</span>
+                                    <span>{{ display_phone(auth()->user()->phone) }}</span>
                                 </div>
                             </div>
 

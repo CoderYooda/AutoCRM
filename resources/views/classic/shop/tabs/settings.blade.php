@@ -76,18 +76,7 @@
                     <div class="select_supplier @if(!($shop->supplier_offers ?? true)) d-none @endif">
 
                         <div class="form-group">
-                            <label>Выберите поставщика для работы с проценкой</label>
-                            <select custom_select name="supplier_id">
-                                @forelse(auth()->user()->company->getActiveServicesByCategory() as $service)
-                                    <option @if($shop && $shop->supplier_id == $service->id) selected @endif value="{{ $service->id }}">{{ $service->name }}</option>
-                                @empty
-                                    <option value="">Нет активных поставщиков</option>
-                                @endforelse
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Процент наценки стоимости товара</label>
+                            <label>Процент наценки стоимости товара у поставщиков</label>
                             <input type="number" class="form-control" name="supplier_percent" value="{{ $shop->supplier_percent ?? 30 }}" />
                         </div>
                     </div>
