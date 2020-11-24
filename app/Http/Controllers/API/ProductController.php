@@ -12,8 +12,53 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    /** @var Article $product */
-    public static $product = null;
+    /**
+     * @OA\Info(title="CRM API", version="1.0")
+     */
+
+    /**
+     * @OA\Get(
+     *     path="/api/products/{product_id}",
+     *     tags={"Products"},
+     *     summary="Find product by ID",
+     *     description="Returns a single product",
+     *     operationId="show",
+     *     @OA\Parameter(
+     *         name="product_id",
+     *         in="path",
+     *         description="ID of product to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplier"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     }
+     * )
+     * @param $product_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function show($product_id)
+    {
+        $product = Article::findOrFail($product_id);
+
+        return response()->json($product);
+    }
 
     public function store(ProductRequest $request)
     {
@@ -42,8 +87,6 @@ class ProductController extends Controller
                 $article->company_id = Auth::user()->company_id;
                 $this->message = 'Товар сохранён';
             }
-
-            self::$product = $article;
 
             #Кроссы
             $article->fill($request->only($article->fields));
