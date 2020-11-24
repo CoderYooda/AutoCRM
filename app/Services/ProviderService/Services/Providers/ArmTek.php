@@ -112,6 +112,7 @@ class ArmTek implements ProviderInterface
                 'delivery'     => $delivery_days,
                 'days_min'     => $delivery_days,
                 'price'        => $item['PRICE'],
+                'packing'        => $item['RDPRF'],
                 'manufacturer' => $item['BRAND'],
                 'stock'        => $item['KEYZAK'],
                 'model'        => $item,
