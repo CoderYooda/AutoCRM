@@ -39,6 +39,7 @@ class UpdateSettingsRequest extends FormRequest
             'show_empty' => ['required', 'integer', 'between:0,1'],
             'show_amount' => ['required', 'integer', 'between:0,1'],
             'storage_days' => ['required', 'integer', 'between:7,31'],
+            'image_favicon_id' => ['nullable', 'exists:images,id'],
             'image_logotype_id' => ['nullable', 'exists:images,id'],
             'image_header_id' => ['nullable', 'exists:images,id'],
             'image_background_id' => ['nullable', 'exists:images,id'],

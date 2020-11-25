@@ -135,6 +135,7 @@ class Mikado implements ProviderInterface
                 'stock'        => $item['ZakazCode'],
                 'model'        => $items[$key],
                 'hash'         => md5($item['ZakazCode'] . $item['Supplier'] . $article . $delivery . $item['PriceRUR']),
+                'is_analogue'  => $item['CodeType'] == 'Analog'
             ];
         }
 

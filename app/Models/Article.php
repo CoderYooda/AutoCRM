@@ -124,7 +124,7 @@ class Article extends Model
 
     public function getShopName()
     {
-        return $this->sp_name ?? $this->name ?? 'Название отсутствует';
+        return strlen($this->sp_name) ? $this->sp_name : ($this->name ?? 'Название отсутствует');
     }
 
     public function getImagePathAttribute()

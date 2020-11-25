@@ -417,4 +417,17 @@ class ProductController extends Controller
             ->get();
     }
 
+    public function move(Request $request)
+    {
+        $products = json_decode($request->products);
+        $category_id = $request->category_id;
+
+        Article::whereIn('id', $products)->update(['category_id' => $category_id]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Перемещение произошло успешно.',
+            'event' => 'CategorySelected'
+        ]);
+    }
 }

@@ -42,6 +42,11 @@ class Shop extends Model
         return $this->belongsToMany(Image::class, 'shop_images_slider')->withPivot('target_url');
     }
 
+    public function faviconImage()
+    {
+        return $this->hasOne(Image::class, 'id', 'image_favicon_id');
+    }
+
     public function logotypeImage()
     {
         return $this->hasOne(Image::class, 'id', 'image_logotype_id');

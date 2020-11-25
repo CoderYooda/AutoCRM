@@ -45,7 +45,7 @@ class ProviderStoreController extends Controller
             }
         }
 
-        $view = view(get_template() . '.provider_stores.includes.products_element', compact('manufacturers', 'request'));
+        $view = view(get_template() . '.provider_stores.includes.manufacturers', compact('manufacturers', 'request'));
 
         return response()->json([
             'counts' => $counts,
@@ -93,7 +93,14 @@ class ProviderStoreController extends Controller
             $stores[$key]['count'] = $amount;
         }
 
-        $view = view(get_template() . '.provider_stores.includes.table_element', compact('provider','stores', 'cart', 'request'));
+        $analogueCount = 0;
+        $originalCount = 0;
+
+        foreach ($stores as $store) {
+            $store['is_analogue'] ? $analogueCount++ : $originalCount++;
+        }
+
+        $view = view(get_template() . '.provider_stores.includes.warehouses', compact('provider','stores', 'cart', 'request', 'analogueCount', 'originalCount'));
 
         return response()->json([
             'html' => $view->render(),

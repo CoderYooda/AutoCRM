@@ -52,26 +52,30 @@
 
     .table_body {
 
-        display: flex;
         line-height: 30px;
 
-        .item {
-            flex: 1;
-            color: #272727;
-            position: relative;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .table_item {
 
-            .add-to-cart {
-                cursor: pointer;
-                height: 30px;
-                background: url(/images/icons/provider-cart-add.svg) left no-repeat;
-            }
+            display: flex;
 
-            .edit-cart-count {
-                width: 60%;
-                display: flex;
+            .item {
+                flex: 1;
+                color: #272727;
+                position: relative;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                .add-to-cart {
+                    cursor: pointer;
+                    height: 30px;
+                    background: url(/images/icons/provider-cart-add.svg) left no-repeat;
+                }
+
+                .edit-cart-count {
+                    width: 60%;
+                    display: flex;
+                }
             }
         }
     }

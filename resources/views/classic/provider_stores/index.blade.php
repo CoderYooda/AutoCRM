@@ -45,7 +45,7 @@
 
 {{--                @include(get_template() . '.provider_stores.includes.manufacturers')--}}
 
-                @include(get_template() . '.provider_stores.includes.warehouses')
+{{--                @include(get_template() . '.provider_stores.includes.warehouses')--}}
 
             </div>
 

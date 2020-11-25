@@ -7,6 +7,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Requests\ProductRequest;
 use App\Models\Article;
 use App\Models\Store;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
