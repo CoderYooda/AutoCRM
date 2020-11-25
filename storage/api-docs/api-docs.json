@@ -178,7 +178,7 @@
                 ]
             }
         },
-        "/api/products/{product_id}": {
+        "/api/products/{id}": {
             "get": {
                 "tags": [
                     "Products"
@@ -202,8 +202,8 @@
                     "200": {
                         "description": "successful operation"
                     },
-                    "400": {
-                        "description": "Invalid ID supplier"
+                    "403": {
+                        "description": "Нет доступа к этому методу"
                     },
                     "404": {
                         "description": "Product not found"

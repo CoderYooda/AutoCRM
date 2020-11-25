@@ -26,7 +26,7 @@ class ProductController extends Controller
      *     description="Returns a single product",
      *     operationId="show",
      *     @OA\Parameter(
-     *         name="product_id",
+     *         name="id",
      *         in="path",
      *         description="ID of product to return",
      *         required=true,
