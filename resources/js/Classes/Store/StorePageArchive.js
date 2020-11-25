@@ -164,7 +164,7 @@ class storePage{
 
     changeArticleCartAmount(element, count) {
 
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let current_count = Number(input_element.value);
@@ -183,7 +183,7 @@ class storePage{
 
     saveArticleCartAmount(element, count) {
 
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
 
         let service_input = document.querySelector('[name="service_key"]');
 
@@ -192,6 +192,8 @@ class storePage{
         for(let i = Object.keys(this.items).length - 1; i != -1; i--) {
             if(this.items[i].index == target_element.id) index = target_element.id;
         }
+
+        console.log(this.items[index], count);
 
         let data = {
             provider_key: service_input.value,

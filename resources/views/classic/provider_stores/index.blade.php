@@ -43,31 +43,9 @@
 
             <div id="table-container" class="box box-content preloader-block">
 
-                <div data-simplebar style="max-height: 778px;" >
+{{--                @include(get_template() . '.provider_stores.includes.manufacturers')--}}
 
-                    <div id="provider_stores-table">
-
-                        <table cellspacing="0" cellpadding="0" border="0" class="w-100 pt-15">
-
-                            <thead>
-                                <tr>
-                                    <th style="color: #2D76A8;">ID</th>
-                                    <th style="color: #2D76A8;">Производитель</th>
-                                    <th style="color: #2D76A8;">Артикул</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="table_body">
-
-                            </tbody>
-
-                    </table>
-
-                    </div>
-
-                </div>
-
-                <div class="out_of_search" style="margin-top: 250px;"></div>
+{{--                @include(get_template() . '.provider_stores.includes.warehouses')--}}
 
             </div>
 

@@ -392,9 +392,8 @@ class CategoryController extends Controller
 
         $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
         $categories['parent'] = $parent;
-        $categories['parent_root'] = $parent->id == $root_category ? true : false;
+        $categories['parent_root'] = $parent->id == $root_category;
 
         return $categories;
     }
-
 }

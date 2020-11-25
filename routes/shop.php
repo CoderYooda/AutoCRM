@@ -1,15 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-Route::get('/test', function () {
-
-    return view('shop.emails.order.road')->with([
-        'shop' => \App\Models\Shop::latest()->first(),
-        'order' => \App\Models\Order::latest()->first()
-    ]);
-});
-
 Route::namespace('Shop')->group(function () {
 
     Route::middleware('auth')->group(function () {
@@ -23,6 +13,8 @@ Route::namespace('Shop')->group(function () {
         Route::get('/user/vehicles/{vehicle}/edit', 'VehicleController@edit')->name('vehicles.edit');
         Route::patch('/user/vehicles/{vehicle}', 'VehicleController@update')->name('vehicles.update');
 
+        Route::get('/restore/success', 'RestoreController@success')->name('restore.success');
+
         Route::get('/models/{mark}/list', 'VehicleController@modelList');
         Route::get('/modifies/{mark}/{model}/list', 'VehicleController@modifyList');
     });
@@ -32,6 +24,10 @@ Route::namespace('Shop')->group(function () {
         Route::post('/user/login', 'UserController@loginAction')->name('user.loginAction');
         Route::get('/user/register', 'UserController@registerForm')->name('user.registerForm');
         Route::post('/user/register', 'UserController@registerAction')->name('user.registerAction');
+
+        Route::get('/restore', 'RestoreController@index')->name('restore.index');
+        Route::post('/restore', 'RestoreController@sendCode')->name('restore.sendCode');
+        Route::post('/restore/code', 'RestoreController@acceptCode')->name('restore.acceptCode');
     });
 
     Route::get('/', 'PageController@index')->name('pages.index');
@@ -54,6 +50,7 @@ Route::namespace('Shop')->group(function () {
     Route::post('/cart/order', 'CartController@order')->name('cart.order');
 
     Route::get('/orders/{hash}', 'OrderController@show')->name('orders.success');
+    Route::get('/orders/{hash}/print', 'OrderController@print')->name('orders.print');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
 

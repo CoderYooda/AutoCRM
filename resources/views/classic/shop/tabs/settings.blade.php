@@ -76,18 +76,7 @@
                     <div class="select_supplier @if(!($shop->supplier_offers ?? true)) d-none @endif">
 
                         <div class="form-group">
-                            <label>Выберите поставщика для работы с проценкой</label>
-                            <select custom_select name="supplier_id">
-                                @forelse(auth()->user()->company->getActiveServicesByCategory() as $service)
-                                    <option @if($shop && $shop->supplier_id == $service->id) selected @endif value="{{ $service->id }}">{{ $service->name }}</option>
-                                @empty
-                                    <option value="">Нет активных поставщиков</option>
-                                @endforelse
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Процент наценки стоимости товара</label>
+                            <label>Процент наценки стоимости товара у поставщиков</label>
                             <input type="number" class="form-control" name="supplier_percent" value="{{ $shop->supplier_percent ?? 30 }}" />
                         </div>
                     </div>
@@ -99,9 +88,23 @@
                 <div class="form-group w-350 d-flex">
 
                     <div class="flex-1">
+                        <label>Favicon</label>
+                        <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
+                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->faviconImage->path ?? 'http://via.placeholder.com/32x32' }}" />
+                        </div>
+
+                        <label class="upload_file pointer" for="image_favicon">Файл не выбран<div></div></label>
+                        <input type="file" id="image_favicon" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
+                        <input type="hidden" name="image_favicon_id" value="{{ $shop->faviconImage->id ?? '' }}">
+                    </div>
+                </div>
+
+                <div class="form-group w-350 d-flex">
+
+                    <div class="flex-1">
                         <label>Логотип</label>
                         <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
-                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->image_path ?? 'http://via.placeholder.com/52x52' }}" />
+                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->path ?? 'http://via.placeholder.com/52x52' }}" />
                         </div>
 
                         <label class="upload_file pointer" for="image_logotype">Файл не выбран<div></div></label>
@@ -180,7 +183,7 @@
 
                 <div class="form-group w-350">
                     <label>URL адрес</label>
-                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? '' }}">
+                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? 'name.bbcrm.ru' }}">
                 </div>
 
                 <div class="form-group w-350">

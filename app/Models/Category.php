@@ -8,7 +8,6 @@ use App\Traits\Imageable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
@@ -75,6 +74,7 @@ class Category extends Model
         $builder = $this->belongsTo(Category::class, 'category_id');
 
         $builder->where(function (Builder $query) use($shop) {
+
             $company_id = $shop->company_id ?? Auth::user()->company_id;
 
             $query->where('company_id', $company_id)

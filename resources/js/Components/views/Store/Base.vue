@@ -1,6 +1,6 @@
 <template>
     <div class="bottom-container">
-        <Categories v-bind:category_id="category_id" root_id="2" />
+        <Categories v-bind="{category:category, root_category:root_category}" />
         <div class="box-lister">
             <div class="d-flex mb-15">
                 <div class="search-field-container w-100">

@@ -118,7 +118,8 @@ class Trinity implements ProviderInterface
                 'manufacturer' => $store['producer'],
                 'model' => $store,
                 'stock' => $store['stock'],
-                'hash' => md5($store['stock'] . $store['producer'] . $article . $store['deliverydays'] . $store['price'])
+                'hash' => md5($store['stock'] . $store['producer'] . $article . $store['deliverydays'] . $store['price']),
+                'is_analogue' => false
             ];
         }
 

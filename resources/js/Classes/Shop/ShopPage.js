@@ -14,6 +14,7 @@ class shopPage {
         this.linked();
 
         this.sizes = {
+            image_favicon: [32, 32],
             image_logotype: [52, 52],
             image_header: [1920, 220],
             image_background: [1920, 500]
@@ -559,6 +560,15 @@ class shopPage {
     }
 
     saveContacts(element) {
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        });
+    }
+
+    saveAnalytics(element) {
 
         axform.send(element, response => {
             if (response.status == 200) {

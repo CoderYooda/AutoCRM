@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
+use App\Http\Requests\Shop\UpdateAnalyticsRequest;
 use App\Http\Requests\Shop\UpdateDeliveryRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
@@ -88,6 +89,11 @@ class ShopController extends Controller
     public function settingsTab(Request $request)
     {
         return view(get_template() . '.shop.tabs.settings', compact('request'));
+    }
+
+    public function analyticsTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.analytics', compact('request'));
     }
 
     public function update(UpdateRequest $request)
@@ -196,6 +202,16 @@ class ShopController extends Controller
         ]);
     }
 
+    public function updateAnalytics(UpdateAnalyticsRequest $request)
+    {
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
+
+        return response()->json([
+            'type'    => 'success',
+            'message' => 'Настройки успешно сохранены.'
+        ]);
+    }
+
     public function updateSettings(UpdateSettingsRequest $request)
     {
         return DB::transaction(function () use ($request) {
@@ -204,14 +220,14 @@ class ShopController extends Controller
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,
                 'storage_days'        => $request->storage_days,
+                'image_favicon_id'   => $request->image_favicon_id,
                 'image_logotype_id'   => $request->image_logotype_id,
                 'image_header_id'     => $request->image_header_id,
                 'image_background_id' => $request->image_background_id,
                 'domain'              => $request->domain,
                 'subdomain'           => $request->subdomain,
                 'supplier_offers'     => $request->supplier_offers,
-                'supplier_percent'    => $request->supplier_percent,
-                'supplier_id'         => $request->supplier_id
+                'supplier_percent'    => $request->supplier_percent
             ]);
 
             $images = [];

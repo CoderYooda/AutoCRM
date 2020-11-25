@@ -79,6 +79,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
+        L5Swagger\L5SwaggerServiceProvider::class,
 
         //CRM
         AppProviderStoreService::class,

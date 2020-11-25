@@ -12,7 +12,9 @@
 
             <form action="#" method="POST" data-simplebar style="height: 100%;">
 
-                <div class="form-group">
+                <h2 class="mt-0 style_header">Контакты</h2>
+
+                <div class="form-group mt-10">
                     <label>Название магазина</label>
                     <input name="name" type="text" class="form-control" placeholder="Название магазина" value="{{ $shop->name ?? '' }}">
                 </div>

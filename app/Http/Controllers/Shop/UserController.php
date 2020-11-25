@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Models\DeliveryAddress;
+use App\Interfaces\Shop\CartInterface;
 use App\Http\Requests\Shop\LoginRequest;
 use App\Http\Requests\Shop\RegisterRequest;
 use App\Http\Requests\Shop\SaveDeliveryRequest;
 use App\Http\Requests\Shop\SaveUserRequest;
-use App\Models\Company;
 use App\Models\Partner;
 use App\Models\Shop;
 use App\Models\User;
@@ -15,10 +14,8 @@ use App\Models\VehicleMark;
 use App\Models\VehicleModel;
 use App\Models\VehicleModify;
 use App\Services\ShopManager\ShopManager;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 const BUYER_CATEGORY = 7;
@@ -76,18 +73,7 @@ class UserController extends Controller
 
         $user = User::where(['phone' => $request['phone']])->first();
 
-        if($user->companyPartner == null) {
-
-            $params = $user->partner->getAttributes();
-
-            unset($params['id'], $params['created_at'], $params['updated_at'], $params['deleted_at']);
-            $params['company_id'] = $this->shop->company_id;
-            $params['category_id'] = BUYER_CATEGORY;
-            $params['balance'] = 0;
-            $params['store_id'] = null;
-
-            Partner::create($params);
-        }
+        $user->createPartnerIfNotExists();
 
         Auth::login($user, true);
 
@@ -104,35 +90,47 @@ class UserController extends Controller
             ->with('shop', $this->shop);
     }
 
-    public function registerAction(RegisterRequest $request)
+    public function registerAction(RegisterRequest $request, CartInterface $cart)
     {
         $company = $this->shop->company;
 
-        $uniqueFields = [
-            'basePhone' => $request->phone,
-            'company_id' => $company->id,
-            'store_id' => $request->store_id
-        ];
-
         $types = ['fl', 'ip', 'ul'];
 
-        $updateFields = $request->except('rules', 'password', 'register_type', 'name', 'surname', 'middlename');
-        $updateFields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
-        $updateFields['category_id'] = BUYER_CATEGORY;
-        $updateFields['type'] = array_search($request->register_type, $types);
+        $fields = $request->except('rules', 'password', 'register_type', 'name', 'basePhone', 'surname', 'middlename');
+        $fields['fio'] = $request->surname . ' ' . $request->name . ' ' . $request->middlename;
+        $fields['category_id'] = BUYER_CATEGORY;
+        $fields['type'] = array_search($request->register_type, $types);
+        $fields['company_id'] = $company->id;
 
         $user = User::updateOrCreate(['phone' => $request->basePhone], [
             'password' => bcrypt($request->password),
             'company_id' => null
         ]);
 
-        $updateFields['user_id'] = $user->id;
+        $fields['user_id'] = $user->id;
 
-        $partner = Partner::updateOrCreate($uniqueFields, $updateFields);
+        $partner = Partner::create($fields);
+
+        $phones = [
+            [
+                'number' => $request->basePhone,
+                'main' => 1
+            ]
+        ];
+
+        $partner->upsertPhones($phones);
+
+        $products = $cart->all();
+
+        $cart->clear();
 
         Auth::loginUsingId($user->id, true);
 
         Session::flush();
+
+        foreach ($products as $hash => $product) {
+            $cart->addProduct($hash, $product['data'], $product['count']);
+        }
 
         return redirect()->route('pages.index');
     }

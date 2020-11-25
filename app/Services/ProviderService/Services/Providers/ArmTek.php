@@ -109,13 +109,15 @@ class ArmTek implements ProviderInterface
                 'name'         => $item['KEYZAK'],
                 'code'         => $item['ARTID'],
                 'rest'         => $item['RVALUE'],
-                'delivery'     => $delivery_days,
+                'delivery'     => $delivery_days . ' дн.',
                 'days_min'     => $delivery_days,
                 'price'        => $item['PRICE'],
+                'packing'        => $item['RDPRF'],
                 'manufacturer' => $item['BRAND'],
                 'stock'        => $item['KEYZAK'],
                 'model'        => $item,
-                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $article . $item['DLVDT'] . $item['PRICE'])
+                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $article . $item['DLVDT'] . $item['PRICE']),
+                'is_analogue'  => $item['ANALOG'] == 'X'
             ];
         }
 
@@ -223,9 +225,7 @@ class ArmTek implements ProviderInterface
             'ITEMS'     => $orders
         ];
 
-        $items = $this->query('/ws_order/createTestOrder', $params, 'POST');
-
-        dd($items);
+        $items = $this->query('/ws_order/createOrder', $params, 'POST');
 
         $this->createProviderOrder($data);
 

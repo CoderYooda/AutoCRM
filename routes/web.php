@@ -3,31 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 //Точка входа
-
-Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-// Registration Routes...
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
-Route::post('sms_retry', 'Auth\RegisterController@smsRetry');
-// Password Reset Routes...
-Route::get('password/reset', 'Auth\ForgotPasswordController@resetForm')->name('PassReset');
-Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('PassResetPost');
-Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
-Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
-
-
-
-
-
 Route::get('/{any?}/{an2y?}/{a3ny?}', function(){
     return view('index');
 })->name('Index');
 
 
-
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
@@ -40,8 +20,6 @@ Route::get('password/reset', 'Auth\ForgotPasswordController@resetForm')->name('P
 Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('PassResetPost');
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
-
-Route::view('/test', 'shop.emails.success_order');
 
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
@@ -108,6 +86,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
         Route::post('/product/getByUpc', 'ProductController@getByUpc')->name('GetProductByUpc');
         Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
+        Route::post('/products/move', 'ProductController@move')->name('MoveProducts');
 
         #Поступления товаров
         Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
@@ -335,6 +314,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
         Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
         Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+        Route::post('/shop/analytics', 'ShopController@updateAnalytics')->name('ShopUpdateAnalytics');
 
         Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
         Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');

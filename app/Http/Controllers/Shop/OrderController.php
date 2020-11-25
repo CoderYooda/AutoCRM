@@ -11,6 +11,7 @@ use App\Models\Shop;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Mpdf\Mpdf;
 
 class OrderController extends Controller
 {
@@ -61,5 +62,24 @@ class OrderController extends Controller
         return view('shop.success_order', compact('order', 'positions'))
             ->with('shop', $this->shop)
             ->with('statuses', Order::$statuses);
+    }
+
+    public function print($hash)
+    {
+        $order = Order::where('hash', $hash)->firstOrFail();
+
+        $totalPrice = 0;
+
+        foreach ($order->positions as $position) {
+            $totalPrice += $position->count * $position->price;
+        }
+
+        $view = view('shop.print.order', compact('order', 'totalPrice'));
+
+        $html = str_replace("\n", '', $view->render());
+
+        $mpdf = new Mpdf([]);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
     }
 }

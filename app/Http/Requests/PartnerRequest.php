@@ -19,13 +19,6 @@ class PartnerRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if ($this['number']) {
-            $this['number'] = (int)str_replace(' ', '', $this['number']);
-        }
-        if ($this->access && $this['phone'] != null) {
-            $this['phone'] = clear_phone_number($this['phone']);
-        }
-
         if ($this['issued_date'] == '__.__.____') {
             $this['issued_date'] = null;
         }
@@ -33,6 +26,20 @@ class PartnerRequest extends FormRequest
         if ($this['birthday'] == '__.__.____') {
             $this['birthday'] = null;
         }
+
+        //Номер для выдачи доступа
+        if($this->access == 1 && !isset($partner->user)) {
+            $this['phone'] = clear_phone_number($this['phone']);
+        }
+
+        //Номера партнёра
+        $phones = $this->phones ?? [];
+
+        foreach ($phones as $key => $phone) {
+            $phones[$key] = clear_phone_number($phone);
+        }
+
+        $this['phones'] = $phones;
     }
 
     public function rules()
@@ -42,12 +49,12 @@ class PartnerRequest extends FormRequest
         $rules = [];
 
         $rules['phones'] = ['array'];
-        $rules['phones.*.number'] = ['nullable', 'regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];
+        $rules['phones.*.number'] = ['nullable', 'string', 'min:11'];
 
         #Проверка для доступа в систему
         if($this->access == 1 && !isset($partner->user)) {
 
-            $rules['phone'] = ['regex:/^(\+?[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\- ]*$/'];
+            $rules['phone'] = ['required', 'string', 'between:11,11'];
             if($this->category_id == 5) $rules['role'] = ['exists:roles,name'];
             $rules['store_id'] = ['integer', 'exists:stores,id'];
         }
@@ -56,12 +63,11 @@ class PartnerRequest extends FormRequest
             $rules += [
                 'fio' => ['required', 'min:2', 'string', 'max:255'],
                 'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
-                'number' => ['nullable', 'min:0', 'digits:10', 'integer'],
                 'issued_by' => ['nullable', 'min:0', 'max:250'],
                 'issued_date' => ['nullable', 'min:0', 'max:250', 'date_format:d.m.Y'],
                 'issued_place' => ['nullable', 'min:0', 'max:250']
             ];
-        } elseif ($this->type == 2) {
+        } else if ($this->type == 2) {
             $rules += [
                 'ur_fio' => ['required', 'min:4', 'string', 'max:255'],
                 'companyName' => ['required', 'min:4', 'string', 'max:255'],

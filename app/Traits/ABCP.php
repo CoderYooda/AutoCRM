@@ -74,7 +74,7 @@ trait ABCP
             'number'          => $article,
             'brand'           => $brand,
             'useOnlineStocks' => 1,
-            'withOutAnalogs'  => 1
+            'withOutAnalogs'  => 0
         ];
 
         $items = $this->query('search/articles/', $params, 'GET');
@@ -110,14 +110,15 @@ trait ABCP
                 'code'         => $item['number'],
                 'rest'         => $item['availability'],
                 'packing'      => $item['packing'],
-                'delivery'     => $min_days . ($max_days > $min_days ? ('/' . $max_days) : ''),
+                'delivery'     => $min_days . ($max_days > $min_days ? ('/' . $max_days) : '') . ' дн.',
                 'days_min'     => $min_days,
                 'days_max'     => $max_days,
                 'price'        => $item['price'],
                 'manufacturer' => $item['brand'],
                 'stock'        => $item['supplierCode'],
                 'model'        => $item,
-                'hash'         => md5($item['supplierCode'] . $item['brand'] . $article . $item['deliveryPeriod'] . $item['price'])
+                'hash'         => md5($item['supplierCode'] . $item['brand'] . $item['number'] . $item['deliveryPeriod'] . $item['price']),
+                'is_analogue'  => strtolower($article) != strtolower($item['number'])
             ];
         }
 

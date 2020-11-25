@@ -19,7 +19,7 @@ class Shop extends Model
             return 'http://' . $this->domain . '/';
         }
 
-        return 'http://' . $this->subdomain . '/';
+        return 'http://' . $this->subdomain . '.' . getenv('APP_DOMAIN') .  '.ru/';
     }
 
     public function name()
@@ -40,6 +40,11 @@ class Shop extends Model
     public function sliderImages()
     {
         return $this->belongsToMany(Image::class, 'shop_images_slider')->withPivot('target_url');
+    }
+
+    public function faviconImage()
+    {
+        return $this->hasOne(Image::class, 'id', 'image_favicon_id');
     }
 
     public function logotypeImage()

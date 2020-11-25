@@ -1,0 +1,100 @@
+
+.restore_form {
+    margin-top: 32px;
+    background: #FAFAFA;
+
+    form {
+        padding: 62px;
+
+        .form-group {
+
+            overflow: hidden;
+
+            label {
+                line-height: 52px;
+                font-weight: 600;
+                font-size: 14px;
+                letter-spacing: 0.06em;
+                color: #404040;
+
+                .required_field {
+                    color: red;
+                }
+            }
+
+            .input-group {
+                position: relative;
+                float: right;
+                width: 50%;
+
+                .field {
+                    width: 60%;
+                }
+            }
+
+            &.is-invalid {
+
+                .field::before {
+                    content: "!";
+                    position: absolute;
+                    top: 16px;
+                    color: #E23414;
+                    font-size: 18px;
+                    height: 20px;
+                    width: 20px;
+                    line-height: 20px;
+                    text-align: center;
+                    left: 240px;
+                }
+
+                .error {
+                    display: block !important;
+                }
+            }
+        }
+
+        .sms_actions {
+
+            position: absolute;
+            right: 0;
+            height: 52px;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .timer {
+                font-size: 14px;
+                line-height: 19px;
+                letter-spacing: 0.04em;
+                color: #272727;
+            }
+
+            .resend {
+                line-height: 19px;
+
+                a {
+                    font-weight: bold;
+                    font-size: 14px;
+                    letter-spacing: 0.04em;
+                    text-transform: uppercase;
+                    color: #BDBDBD;
+
+                    &:hover {
+                        color: #e23414;
+                    }
+                }
+            }
+        }
+
+        .restore_button {
+            width: 50%;
+            float: right;
+
+            button {
+                width: 256px !important;
+                background: white !important;
+            }
+        }
+    }
+}

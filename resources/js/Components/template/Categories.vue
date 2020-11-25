@@ -21,12 +21,11 @@
 <script>
     export default {
         name: "Categories",
+        props:['category', 'root_category'],
         data: ()=> {
             return {
-                category: 2,
                 name: null,
                 parent_id: null,
-                parent_name: null,
                 only_name: true,
                 categories:{}
             }
@@ -43,48 +42,47 @@
             this.getCategories();
         },
         computed: {
+            parent_id(){
+                return this.parent_id ? this.parent_id : this.root_category;
+            },
             category_id(){
-                this.category = (this.$route.params.category_id === 'all') ? this.root_category : this.$route.params.category_id;
-                return this.category;
+                return (this.$route.params.category_id === 'all') ? this.root_category : this.$route.params.category_id;
             },
         },
         methods:{
             isOnlyName(){
-                this.only_name = this.$attrs.category_id == this.$attrs.root_id;
+                this.only_name = this.category === this.root_category;
             },
             setRootCategory(){
-                let category = this.getFromLocalStorage('category_' + this.$attrs.category_id + '_meta');
-                this.category = this.$attrs.category_id;
+                let category = this.getFromLocalStorage('category_' + this.category + '_meta');
                 if(category){
                     this.name = category.name;
-                    this.parent_id = category.parent_id;
-                    this.parent_name = category.parent_name;
+                    this.parent_id = category.category_id;
                     this.isOnlyName();
                 } else {
                     window.axios({
                         method: 'get',
-                        url: '/data/categories/show',
-                        params: {
-                            category_id: this.category
-                        }
+                        url: '/categories/' + this.category_id,
                     }).then((resp) =>  {
                         this.name = resp.data.name;
-                        this.parent_id = resp.data.parent_id;
-                        this.parent_name = resp.data.parent_name;
-                        this.saveToLocalStorage('category_' + this.$attrs.category_id + '_meta', resp.data);
+                        this.parent_id = resp.data.category_id;
+                        this.saveToLocalStorage('category_' + this.category + '_meta', resp.data);
                         this.isOnlyName();
                     });
                 }
             },
             getCategories(){
+                console.log(this.category);
                 let categories = this.getFromLocalStorage('categories_' + this.category);
                 if(categories){
                     this.categories = categories;
                 } else {
                     window.axios({
                         method: 'get',
-                        url: '/data/categories/get',
-                        params: {category_id: this.$attrs.category_id}
+                        url: '/categories',
+                        params: {
+                            category_id: this.category_id
+                        }
                     }).then((resp) =>  {
                         this.categories = resp.data;
                         this.saveToLocalStorage('categories_' + this.category, this.categories);

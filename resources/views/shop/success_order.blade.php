@@ -82,7 +82,7 @@
                     @endif
 
                     <div class="print_orders">
-                        Распечатать
+                        <a target="_blank" href="{{ route('orders.print', $order->hash) }}">Распечатать</a>
                     </div>
                 </div>
             </div>

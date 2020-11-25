@@ -5,12 +5,6 @@
 
         @include('shop.includes.breadcrumbs')
 
-        @foreach($errors as $error)
-
-            {{ $error }}
-
-        @endforeach
-
         <div class="in-category container bg-white mb-0">
 
             <div class="title">
