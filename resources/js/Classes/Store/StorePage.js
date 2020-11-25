@@ -155,7 +155,7 @@ class storePage extends Page{
     };
 
     incrementArticleCartAmount(element, count) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
@@ -164,7 +164,7 @@ class storePage extends Page{
     }
 
     decrementArticleCartAmount(element, count) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
@@ -174,7 +174,7 @@ class storePage extends Page{
 
     changeArticleCartAmount(element, count) {
 
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let current_count = Number(input_element.value);
@@ -193,7 +193,7 @@ class storePage extends Page{
 
     saveArticleCartAmount(element, count) {
 
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
 
         let service_input = document.querySelector('[name="service_key"]');
 
@@ -236,7 +236,7 @@ class storePage extends Page{
     }
 
     addToCart(element, count) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
 
         let service_input = document.querySelector('[name="service_key"]');
 
@@ -255,8 +255,6 @@ class storePage extends Page{
         this.items.forEach((model, array_index) => {
             if(model.index == element_index) index = array_index;
         });
-
-        console.log(this.items);
 
         let data = {
             provider_key: service_input.value,
@@ -370,11 +368,13 @@ class storePage extends Page{
 
     searchProviderStores() {
 
+        if(window.isXHRloading == true) return;
+
+        window.isXHRloading = true;
+
         let service_input = document.querySelector('[name="service_key"]');
 
         let table_element = document.getElementById('table-container');
-
-        document.querySelector('.out_of_search').classList.add('d-none');
 
         togglePreloader(table_element, true);
 
@@ -386,14 +386,16 @@ class storePage extends Page{
         })
         .then(response => {
 
-            if(!response.data.html.length) {
-                document.getElementById('table_body').innerHTML = '';
-                document.querySelector('.out_of_search').classList.remove('d-none');
-            }
-            else {
+            document.getElementById('table-container').innerHTML = response.data.html;
 
-                document.getElementById('table_body').innerHTML = response.data.html;
-            }
+            let counts = response.data.counts;
+
+            Object.keys(counts).forEach(service_key => {
+
+                let manufacturers = counts[service_key];
+
+                document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
+            });
 
             let errors = response.data.errors;
 
@@ -409,10 +411,13 @@ class storePage extends Page{
         })
         .finally(() => {
             togglePreloader(table_element, false);
+
+            window.isXHRloading = false;
         });
     }
 
     showProvider(button, service_key) {
+
         let button_elements = document.querySelectorAll('.provider_tabs button');
 
         button_elements.forEach(element => {
@@ -430,72 +435,32 @@ class storePage extends Page{
 
     showManufactureStores(element, manufacturer, sort = null) {
 
+        if(window.isXHRloading == true) return;
+
+        window.isXHRloading = true;
+
         let is_desc = false;
 
-        let target_element = document.getElementById('brand_context_' + manufacturer);
-
-        element = element.querySelector('i');
-
-        let table_element = target_element.querySelector('.preloader-block');
+        let table_element = document.getElementById('table-container');
 
         togglePreloader(table_element, true);
 
-        let sort_elements = document.querySelectorAll('.sort_arrow');
+        let service_input = document.querySelector('[name="service_key"]');
 
-        sort_elements.forEach(element => {
-
-            if(element.classList.contains(sort)) {
-
-                if(element.classList.contains('active')) {
-                    if(element.classList.contains('up')) {
-                        element.classList.remove('up');
-                        element.classList.add('down');
-
-                        is_desc = true;
-                    }
-                    else {
-                        element.classList.add('up');
-                        element.classList.remove('down');
-
-                        is_desc = false;
-                    }
-                }
-                else {
-                    element.classList.add('active');
-                }
-            }
-            else {
-                element.classList.remove('active');
-                element.classList.remove('up');
-                element.classList.remove('down');
-
-                element.classList.add('down');
-            }
-        });
-
-        if(element.classList.contains('fa-angle-down') || sort != null) {
-
-            let service_input = document.querySelector('[name="service_key"]');
-
-            target_element.classList.remove('d-none');
-
-            axios.post('/provider_stores/stores', {
-                manufacturer: manufacturer,
-                article: this.search,
-                selected_service: service_input.value,
-                sort: sort,
-                is_desc: is_desc
-            })
+        axios.post('/provider_stores/stores', {
+            manufacturer: manufacturer,
+            article: this.search,
+            selected_service: service_input.value,
+            sort: sort,
+            is_desc: is_desc
+        })
             .then(response => {
 
                 let data = response.data;
 
                 this.items = data.stores;
 
-                element.classList.remove('fa-angle-down');
-                element.classList.add('fa-angle-up');
-
-                target_element.querySelector('tbody').innerHTML = data.html;
+                table_element.innerHTML = data.html;
 
                 let inputs = document.querySelectorAll('.provider-cart-input');
 
@@ -508,18 +473,9 @@ class storePage extends Page{
             })
             .finally(()=> {
                 togglePreloader(table_element, false);
+
+                window.isXHRloading = false;
             });
-        }
-        else {
-
-            element.classList.remove('fa-angle-up');
-            element.classList.add('fa-angle-down');
-
-            target_element.classList.add('d-none');
-
-            //Очищаем внутренний список
-            target_element.querySelector('tbody').innerHTML = '';
-        }
     }
 
     addInputCountMask(element) {
@@ -728,6 +684,12 @@ class storePage extends Page{
                 }},
                 {name:'Показать аналоги в наличии', action: (data) => {
                     this.showAnalogues(data);
+                }},
+                {name:'Переместить в категорию', action: (data) => {
+
+                    openDialog('selectCategory', '&refer=store&root_category=2');
+
+                    this.selected = data.selected;
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
@@ -1035,5 +997,27 @@ class storePage extends Page{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
+    selectCategory(selected_category) {
+
+        let data = {
+            products: JSON.stringify(this.selected),
+            category_id: selected_category
+        };
+
+        axios.post('/products/move', data)
+            .then(response => {
+
+                let data = response.data;
+
+                window.notification.notify(data.type, data.message);
+
+                if(this.category_id != 2) {
+                    this.table.freshData();
+                }
+            })
+            .then(error => {
+                console.log(error);
+            });
+    }
 }
 export default storePage;

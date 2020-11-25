@@ -21,6 +21,10 @@
         <meta name="yandex-verification" content="{{ $shop->yandex_verification }}" />
     @endif
 
+    @if($shop->image_favicon_id)
+        <link rel="shortcut icon" href="{{ $shop->faviconImage->path }}" type="image/png">
+    @endif
+
     @if($shop->google_analytics)
 
         <!-- Global site tag (gtag.js) - Google Analytics -->

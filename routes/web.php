@@ -82,6 +82,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
         Route::post('/product/getByUpc', 'ProductController@getByUpc')->name('GetProductByUpc');
         Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
+        Route::post('/products/move', 'ProductController@move')->name('MoveProducts');
 
         #Поступления товаров
         Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название

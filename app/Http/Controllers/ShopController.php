@@ -220,6 +220,7 @@ class ShopController extends Controller
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,
                 'storage_days'        => $request->storage_days,
+                'image_favicon_id'   => $request->image_favicon_id,
                 'image_logotype_id'   => $request->image_logotype_id,
                 'image_header_id'     => $request->image_header_id,
                 'image_background_id' => $request->image_background_id,
