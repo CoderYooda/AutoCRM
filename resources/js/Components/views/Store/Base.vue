@@ -4,15 +4,15 @@
         <div class="box-lister">
             <div class="d-flex mb-15">
                 <div class="search-field-container w-100">
-                    <input v-model="search" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="" type="text">
+                    <input v-model.lazy="search" v-debounce="450" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="" type="text">
                 </div>
                 <div class="actions">
                     <button type="button" class="button primary ml-15" v-on:click="newDialog('category')">Новая категория</button>
                     <button type="button" class="button primary ml-15" v-on:click="newDialog('product')">Новый товар</button>
                 </div>
             </div>
-            <div class="box h-100 d-flex">
-                <Table v-bind:search="search"/>
+            <div class="box d-flex" style="height: calc(100% - 45px);">
+                <Table v-bind:search="search" v-bind:root_id="root_category"/>
             </div>
         </div>
     </div>
@@ -21,6 +21,7 @@
 <script>
     import Categories from "./../../template/Categories"
     import Table from "../../service/Table";
+    import debounce from './../../../debounce'
     export default {
         name: "Base",
         components:{
@@ -59,7 +60,8 @@
                     params: params
                 });
             }
-        }
+        },
+        directives: {debounce}
     }
 </script>
 

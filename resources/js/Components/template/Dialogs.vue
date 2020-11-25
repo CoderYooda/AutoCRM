@@ -12,8 +12,8 @@
 </template>
 
 <script>
-    import productDialog from './Dialogs/ProductDialog';
-    import categoryDialog from './Dialogs/CategoryDialog';
+    // import productDialog from './Dialogs/ProductDialog';
+    // import categoryDialog from './Dialogs/CategoryDialog';
     export default {
         name: "Dialogs",
         data: ()=> {
@@ -23,14 +23,15 @@
             }
         },
         mounted() {
+            console.log(33333);
             this.$eventBus.$on('openDialog', (data)=>{
                this.openDialog(data.tag, data.params);
             });
         },
         components: {
-            productDialog, categoryDialog
-            // 'productDialog': () => import(/* webpackChunkName: "productDialog" */'./Dialogs/ProductDialog'),
-            // 'categoryDialog': () => import(/* webpackChunkName: "categoryDialog" */'./Dialogs/CategoryDialog'),
+            // productDialog, categoryDialog
+            'productDialog': () => import(/* webpackChunkName: "productDialog" */'./Dialogs/ProductDialog'),
+            'categoryDialog': () => import(/* webpackChunkName: "categoryDialog" */'./Dialogs/CategoryDialog'),
         },
         methods:{
             openDialog(tag, params = null){

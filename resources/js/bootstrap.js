@@ -26,3 +26,15 @@ if (token) {
 } else {
     console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
 }
+
+/* Prototype */
+Array.prototype.unique = function() {
+    let a = this.concat();
+    for(let i = 0; i < a.length; ++i) {
+        for(let j = i + 1; j < a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+    return a;
+};

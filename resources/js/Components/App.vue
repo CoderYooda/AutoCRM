@@ -3,6 +3,7 @@
         <component :is="layout" />
         <login/>
         <Dialogs/>
+        <notifications group="main" position="bottom left" />
     </div>
 </template>
 
@@ -14,6 +15,15 @@
         data: ()=> {
             return {
             }
+        },
+        mounted() {
+            this.$eventBus.$on('TooManyAttempts', ()=>{
+                this.$notify({
+                    group: 'main',
+                    title: 'Ошибка сервера!',
+                    text: 'Слишком много запросов, повторите попытку позже.'
+                });
+            });
         },
         created(){
         },

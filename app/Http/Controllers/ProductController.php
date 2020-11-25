@@ -366,10 +366,9 @@ class ProductController extends Controller
         $field = null;
         $dir = null;
 
-        if(isset($request['sorters'])){
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
+        $field = $request['field'];
+        $dir = $request['dir'];
+
         if($field === null &&  $dir === null){
             $field = 'id';
             $dir = 'DESC';

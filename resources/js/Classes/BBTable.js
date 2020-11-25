@@ -475,50 +475,51 @@ class Table {
     drawPaginator(){
         let paginator = document.createElement('div');
         paginator.className = 'paginator';
-            let firstButton = document.createElement('button');
-            firstButton.innerText = 'Первая';
-            firstButton.setAttribute('data-page', 1);
-            if(this.data.current_page === 1){
-                firstButton.classList.add('disabled');
-            } else {
-                firstButton.addEventListener('click', (e) => {
-                    this.setRequest('page', firstButton.getAttribute('data-page'));
-                });
-            }
-            let lastButton = document.createElement('button');
-            lastButton.innerText = 'Последняя';
-            lastButton.setAttribute('data-page', this.data.last_page);
-            if(this.data.current_page === this.data.last_page){
-                lastButton.classList.add('disabled');
-            } else {
-                lastButton.addEventListener('click', (e) => {
-                    this.setRequest('page', lastButton.getAttribute('data-page'));
-                });
-            }
-            let backButton = document.createElement('button');
-            backButton.innerText = 'Назад';
-            let backPage = this.data.current_page - 1;
-            backButton.setAttribute('data-page', backPage);
-            if(backPage <= 0){
-                backButton.classList.add('disabled');
-            } else {
-                backButton.addEventListener('click', (e) => {
-                    this.setRequest('page', backButton.getAttribute('data-page'));
-                });
-            }
-            let forwardButton = document.createElement('button');
-            forwardButton.innerText = 'Вперёд';
-            let forwardPage = this.data.current_page + 1;
-            forwardButton.setAttribute('data-page', forwardPage);
-            if(forwardPage > this.data.last_page){
-                forwardButton.classList.add('disabled');
-            } else {
-                forwardButton.addEventListener('click', (e) => {
-                    this.setRequest('page', forwardButton.getAttribute('data-page'));
-                });
-            }
+        let firstButton = document.createElement('button');
+        firstButton.innerText = 'Первая';
+        firstButton.setAttribute('data-page', 1);
+        if(this.data.current_page === 1){
+            firstButton.classList.add('disabled');
+        } else {
+            firstButton.addEventListener('click', (e) => {
+                this.setRequest('page', firstButton.getAttribute('data-page'));
+            });
+        }
+        let lastButton = document.createElement('button');
+        lastButton.innerText = 'Последняя';
+        lastButton.setAttribute('data-page', this.data.last_page);
+        if(this.data.current_page === this.data.last_page){
+            lastButton.classList.add('disabled');
+        } else {
+            lastButton.addEventListener('click', (e) => {
+                this.setRequest('page', lastButton.getAttribute('data-page'));
+            });
+        }
+        let backButton = document.createElement('button');
+        backButton.innerText = 'Назад';
+        let backPage = this.data.current_page - 1;
+        backButton.setAttribute('data-page', backPage);
+        if(backPage <= 0){
+            backButton.classList.add('disabled');
+        } else {
+            backButton.addEventListener('click', (e) => {
+                this.setRequest('page', backButton.getAttribute('data-page'));
+            });
+        }
+        let forwardButton = document.createElement('button');
+        forwardButton.innerText = 'Вперёд';
+        let forwardPage = this.data.current_page + 1;
+        forwardButton.setAttribute('data-page', forwardPage);
+        if(forwardPage > this.data.last_page){
+            forwardButton.classList.add('disabled');
+        } else {
+            forwardButton.addEventListener('click', (e) => {
+                this.setRequest('page', forwardButton.getAttribute('data-page'));
+            });
+        }
         paginator.appendChild(firstButton);
         paginator.appendChild(backButton);
+
         let paginate_array = [];
         let prev_array = [];
         for (let i = 1; i < 2; i++) {
@@ -538,6 +539,8 @@ class Table {
                 last_array.push(i);
             }
         }
+
+
         paginate_array = paginate_array.concat(prev_array).unique();
         paginate_array = paginate_array.concat(pages_array).unique();
         paginate_array = paginate_array.concat(last_array).unique();

@@ -76,6 +76,7 @@ import VueMask from 'v-mask'
 import App from './components/App'
 import router from './router';
 import store from './store';
+import Notifications from 'vue-notification';
 
 window.app_version = 0.9;
 window.api_url = '/api';
@@ -95,6 +96,7 @@ Vue.prototype.getFromLocalStorage = (key)=>{
 };
 
 Vue.use(VueMask);
+Vue.use(Notifications);
 
 let app = new Vue({
     router,
@@ -144,6 +146,9 @@ window.axios.interceptors.response.use(function (response) {
 }, function (error) {
     if (error.response && error.response.status === 401 || error.response && error.response.status === 419) {
         app.$eventBus.$emit('NoAuthEvent', true);
+    }
+    if (error.response && error.response.status === 429 ) {
+        app.$eventBus.$emit('TooManyAttempts', true);
     }
     // if (error.response.status === 422 || error.response.status === 200) {
     //     if(error.response.data.message && error.response.data.type){

@@ -4,7 +4,7 @@
             <div class="">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="category_id">В категории</label>
+                        <label >В категории</label>
                         <div class="input-group mb-3">
                             <button type="button" name="category_id" class="category_select form-control text-left button_select">
                                 {{ parent_name }}
@@ -12,8 +12,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="category_dialog_focused">Наименование</label>
-                        <input type="text" v-model="name" class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
+                        <label >Наименование</label>
+                        <input type="text" v-model="name" class="form-control" placeholder="Наименование (не более 255 символов)">
                     </div>
                     <div class="form-group mb-0">
                         <label class="mb-5">Основное фото</label>
@@ -39,6 +39,7 @@
 <script>
     export default {
         name: "CategoryDialog",
+        props:['dialog'],
         data: ()=> {
             return {
                 root_category: 2,
@@ -46,14 +47,13 @@
                 parent_name: null,
                 id: null,
                 name: null,
-                dialog: null,
             }
         },
-        beforeMount(){
-            this.dialog = this.$attrs.dialog;
-        },
+        // beforeMount(){
+        //     this.dialog = this.$attrs.dialog;
+        // },
         mounted(){
-            console.log(1);
+            console.log(this.dialog.id);
             let route_category = this.$route.params.category_id;
             if(route_category && route_category !== 'all'){
                 this.root_category = route_category;

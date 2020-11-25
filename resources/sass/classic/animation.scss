@@ -16,7 +16,14 @@
     }
 }
 
-
+@keyframes left-right {
+    0%{
+        left: calc(0% - 250px);
+    }
+    100%{
+        left: calc(100% + 200px);
+    }
+}
 
 @keyframes add {
     10%, 90% {
