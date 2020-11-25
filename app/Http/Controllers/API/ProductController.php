@@ -7,6 +7,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Requests\ProductRequest;
 use App\Models\Article;
 use App\Models\Store;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class ProductController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/products/{product_id}",
+     *     path="/api/products/{id}",
      *     tags={"Products"},
      *     summary="Find product by ID",
      *     description="Returns a single product",
@@ -39,8 +40,8 @@ class ProductController extends Controller
      *         description="successful operation",
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Invalid ID supplier"
+     *         response=403,
+     *         description="Нет доступа к этому методу"
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -50,14 +51,12 @@ class ProductController extends Controller
      *         {"api_key": {}}
      *     }
      * )
-     * @param $product_id
-     * @return \Illuminate\Http\JsonResponse
+     * @param Article $product
+     * @return JsonResponse
      */
 
-    public function show($product_id)
+    public function show(Article $product)
     {
-        $product = Article::findOrFail($product_id);
-
         return response()->json($product);
     }
 

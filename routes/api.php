@@ -7,8 +7,11 @@ Route::post('/evotor/setWarrantPayed', 'API\EvotorController@setWarrantPayed');
 
 Route::namespace('API')->middleware('auth:api')->group(function() {
 
-    Route::get('/categories/{category_id}/breadcrumbs', 'CategoryController@breadcrumbs')->name('categories.breadcrumbs');
+    Route::get('/categories/{category}', 'CategoryController@show')->name('categories.show');
+    Route::patch('/categories/{category}', 'CategoryController@update')->name('categories.update');
+    Route::get('/categories', 'CategoryController@all')->name('categories.all');
+    Route::post('/categories', 'CategoryController@store')->name('categories.store');
 
     Route::post('/products/store', 'ProductController@store')->name('products.store');
-    Route::get('/products/{product_id}', 'ProductController@show')->name('products.show');
+    Route::get('/products/{product}', 'ProductController@show')->name('products.show');
 });

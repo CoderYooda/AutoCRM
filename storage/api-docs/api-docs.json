@@ -5,19 +5,92 @@
         "version": "1.0"
     },
     "paths": {
-        "/api/categories/{category_id}/breadcrumbs": {
+        "/api/categories": {
             "get": {
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Хлебные крошки",
-                "description": "Возвращает хлебные крошки категории",
-                "operationId": "breadcrumbs",
+                "summary": "Полный список категорий",
+                "description": "Полный список категорий",
+                "operationId": "all",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Создание категории",
+                "description": "Создание категории",
+                "operationId": "store",
                 "parameters": [
                     {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Наименование",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "category_id",
+                        "in": "query",
+                        "description": "ID родительской категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "image_id",
+                        "in": "query",
+                        "description": "ID изображения",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "403": {
+                        "description": "Нет доступа к этому методу"
+                    },
+                    "422": {
+                        "description": "Неправильные входные данные"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Информация о категории",
+                "description": "Информация о категории",
+                "operationId": "show",
+                "parameters": [
+                    {
+                        "name": "id",
                         "in": "path",
-                        "description": "ID of category",
+                        "description": "ID категории",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -34,6 +107,68 @@
                     },
                     "404": {
                         "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Обновление категории",
+                "description": "Обновление категории",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID категории для обновления",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Наименование",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "ID родительской категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "image_id",
+                        "in": "query",
+                        "description": "ID изображения",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "403": {
+                        "description": "Нет доступа к этому методу"
+                    },
+                    "422": {
+                        "description": "Неправильные входные данные"
                     }
                 },
                 "security": [
