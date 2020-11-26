@@ -1,14 +1,14 @@
 <template>
     <div id="table-container" class="flex-1 h-100">
-        <div id="storeTable" class="h-100">
+        <div ref="ofsetter" class="h-100">
             <div class="bbtable-container">
                 <div class="bbtable-header">
-                    <div class="header-elem checkbox"><input type="checkbox" id="check_all" name="check_all"><label
-                        for="check_all"></label></div>
-
-                    <div v-bind:class="{'active' : isSortField(item)}" v-for="item in header" v-bind:key="item.name" v-bind:style="getHeaderStyle(item)" class="header-elem" data-field="id" style="width: 90px; min-width: 90px;">
+                    <div class="header-elem checkbox">
+                        <input v-bind:checked="isAnyChecked" type="checkbox">
+                        <label v-on:click="toggleSelectAll()"></label>
+                    </div>
+                    <div v-bind:class="{'active' : isSortField(item)}" v-for="item in table_data.header" v-bind:key="item.name" v-bind:style="getHeaderStyle(item)" class="header-elem" data-field="id" style="width: 90px; min-width: 90px;">
                         <div v-on:click="toggleSort(item)" class="title">{{ item.name }}</div>
-
                         <div v-if="!isSortField(item)" class="arrow down"></div>
                         <div v-if="isSortField(item) && dir === 'DESC'" v-bind:class="{'active' : isSortField(item)}" class="arrow down"></div>
                         <div v-if="isSortField(item) && dir === 'ASC'" v-bind:class="{'active' : isSortField(item)}" class="arrow up"></div>
@@ -16,25 +16,51 @@
                 </div>
                 <div class="bbtable-body" data-simplebar style="height: calc(100% - 59px);" >
                     <div>
-                        <div v-on:click="selectItem(elem)" v-for="elem in items" v-bind:key="elem.id" v-bind:class="{ 'selected' : isSelected(elem)}" class="body-elem">
-                            <div class="cell checkbox"><input type="checkbox"><label></label></div>
-                            <div v-for="item in header" v-bind:key="item.name + elem.id" class="cell" v-bind:style="getHeaderStyle(item)">
+                        <div v-on:dblclick="dblClick(elem)"
+                             v-on:contextmenu="openContext"
+                             v-on:click="selectItem(elem)"
+                             v-for="(elem, index) in items"
+                             :ref="setRef(elem, index)"
+                             v-bind:key="'item_' + index"
+                             v-bind:class="{ 'selected' : isSelected(elem)}"
+                             class="body-elem">
+                            <div class="cell checkbox">
+                                <input type="checkbox" v-bind:checked="isSelected(elem)">
+                                <label></label>
+                            </div>
+                            <div
+                                v-for="item in table_data.header"
+                                v-bind:key="item.name + elem.id" class="cell"
+                                v-bind:style="getHeaderStyle(item)">
                                 <div class="title">{{ elem[item.table_name] }}</div>
                             </div>
                         </div>
                         <div v-if="loading" class="list-placeholder">
                             <div v-for="elem in 12" v-bind:key="elem" class="list-placeholder_item">
                                 <div class="list-placeholder_cell" style="width: 30px" ></div>
-                                <div v-for="item in header" v-bind:key="item.name + 'placeholder'" class="list-placeholder_cell" v-bind:style="getHeaderStyle(item)" ></div>
+                                <div v-for="item in table_data.header"
+                                     v-bind:key="item.name + 'placeholder'"
+                                     v-bind:style="getHeaderStyle(item)" class="list-placeholder_cell" >
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div ref="cont" class="context" id="context" v-bind:style="context_style">
+                    <div v-on:click="menu.action"
+                         v-for="menu in table_data.context_menu"
+                         v-bind:key="menu.name" class="context_item">
+                        <div class="title">{{ menu.name }}</div>
+                    </div>
+                </div>
+
                 <div class="paginator">
                     <button v-on:click="setPage(1)" v-bind:disabled="firstButtonDisabled" >Первая</button>
                     <button v-on:click="setPage(current_page - 1)" v-bind:disabled="prevButtonDisabled">Назад</button>
 
-                    <button v-for="page in paginate_array" v-bind:class="isPageActive(page)" v-on:click="setPage(page)">{{ page }}</button>
+                    <button v-for="page in paginate_array"
+                            v-bind:class="isPageActive(page)" v-on:click="setPage(page)">{{ page }}</button>
 
                     <button v-on:click="setPage(current_page + 1)" v-bind:disabled="nextButtonDisabled" >Вперёд</button>
                     <button v-on:click="setPage(last_page)" v-bind:disabled="lastButtonDisabled">Последняя</button>
@@ -46,23 +72,10 @@
 
 <script>
     export default {
+        props:['table_data'],
         name: "Table",
         data: ()=> {
             return {
-                header: [
-                    {min_width: 90, width: 90, name: 'ID',table_name: 'id'},
-                    {min_width: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
-                    {min_width: 150, width: 200, name: 'Артикул', table_name: 'article'},
-                    {min_width: 150, width: 200, name: 'Производитель', table_name: 'supplier'},
-                ],
-                context_menu: [
-                    {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                    {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
-                    {name:'Создать заявку поставщику', action: (data) => {openDialog('providerOrderDialog', '&products=' + this.table.getSelectedIDs())}},
-                    {name:'Печать ценников', action: (data) => {window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())}},
-                    {name:'Показать аналоги в наличии', action: (data) => {this.showAnalogues(data);}},
-                ],
-                dbl_click: function(id){openDialog('productDialog', '&product_id=' + id)},
                 items: [],
                 search: null,
                 last_page: null,
@@ -73,18 +86,16 @@
                 loading: false,
                 selected: [],
                 last_selected:null,
-                index:0
+                index:0,
+                context_opened:false,
+                context_style:{},
             }
         },
         watch: {
             $route(to, from) {
                 this.getItems();
+
             },
-
-            // $attrs: _.debounce(function(){
-            //
-            // }, 550)
-
             $attrs:function(){
                 this.search = this.$attrs.search;
                 this.getItems();
@@ -92,8 +103,12 @@
         },
         mounted(){
             this.getItems();
+            document.addEventListener('click', this.closeContext)
         },
         computed:{
+            isAnyChecked(){
+              return Boolean(this.selected.length);
+            },
             lastButtonDisabled(){
                 return this.current_page >= this.last_page;
             },
@@ -108,6 +123,27 @@
             }
         },
         methods:{
+            dblClick(elem){
+                return this.table_data['dbl_click'] ? this.table_data.dbl_click(elem.id) : void(0) ;
+            },
+            unsetSelected(){
+                this.last_selected = null;
+                this.selected = [];
+                this.search = null;
+            },
+            toggleSelectAll(){
+                if(this.selected.length){
+                    this.selected = [];
+                } else {
+                    this.items.forEach((item)=>{
+                       this.selected.push(item.id);
+                    });
+                }
+            },
+            setRef(item, index){
+                item.index = index;
+                return 'item_' + index;
+            },
             isSortField(item){
                 return this.field === item.table_name;
             },
@@ -163,6 +199,7 @@
                 return style;
             },
             getItems(){
+                this.unsetSelected();
                 this.loading = true;
                 this.items = [];
                 window.axios({
@@ -183,8 +220,6 @@
                     this.loading = false;
                 });
             },
-            // Setters
-
             setPage(num){
                 this.current_page = num;
                 this.getItems();
@@ -212,10 +247,10 @@
                 });
             },
             selectItem(item){
+                this.closeContext();
                 if(!window.ctrl_pressed && !window.shift_pressed){
                     this.unselectAll();
                 }
-
                 if(window.ctrl_pressed){
                     if(this.selected.includes(item.id)){
                         this.unselect(item.id)
@@ -225,27 +260,46 @@
                 } else {
                     this.selected.push(item.id);
                 }
-
                 if(window.shift_pressed && this.last_selected != null){
                     let indexes = [];
-
-                    let max = (this.last_selected > item.id) ? this.last_selected : index;
-                    let min = (this.last_selected < index) ? this.last_selected : index;
-
+                    let max = (this.last_selected > item.index) ? this.last_selected : item.index;
+                    let min = (this.last_selected < item.index) ? this.last_selected : item.index;
                     for (let i = min; i <= max; i++) {
                         indexes.push(parseInt(i));
                     }
-
-                    indexes.forEach((i) => {
-                        this.markAsSelect(i);
+                    this.selected = [];
+                    this.items.forEach((item) => {
+                        if(indexes.includes(item.index)){
+                            this.selected.push(item.id);
+                        }
                     });
+                } else {
+                    this.last_selected = item.index;
                 }
-                this.last_selected = item.id;
+            },
+            openContext(event){
+                event.preventDefault();
+                this.context_opened = true;
+                let ofsetter = this.$refs.ofsetter;
+                if(ofsetter){
+                    let contextY = event.clientY - ofsetter.getBoundingClientRect().top + window.scrollY;
+                    if(event.clientY + this.$refs.cont.offsetHeight + 100 >= window.innerHeight){
+                        contextY -= this.$refs.cont.offsetHeight;
+                    }
+                    this.context_style = {
+                        top: contextY + 'px',
+                        left: event.clientX - ofsetter.getBoundingClientRect().left + window.scrollX + 'px'
+                    };
+
+                }
+
+            },
+            closeContext(e){
+                this.context_style = {
+                    top: '-1200px',
+                    left: '-1200px',
+                };
             }
         },
     }
 </script>
-
-<style scoped>
-
-</style>

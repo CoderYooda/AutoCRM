@@ -32,7 +32,6 @@
         },
         watch: {
             $route(to, from) {
-                console.log(2);
                 this.setRootCategory();
                 this.getCategories();
             }

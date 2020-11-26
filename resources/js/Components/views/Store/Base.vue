@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="box d-flex" style="height: calc(100% - 45px);">
-                <Table v-bind:search="search" v-bind:root_id="root_category"/>
+                <Table v-bind:table_data="table_data" v-bind:search="search" v-bind:root_id="root_category"/>
             </div>
         </div>
     </div>
@@ -33,8 +33,25 @@
                 root_category: 2,
                 category: null,
                 search: '',
-                categories:null
+                categories:null,
+                table_data:{}
             }
+        },
+        mounted(){
+            this.table_data.header = [
+                {min_width: 90, width: 90, name: 'ID',table_name: 'id'},
+                {min_width: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
+                {min_width: 150, width: 200, name: 'Артикул', table_name: 'article'},
+                {min_width: 150, width: 200, name: 'Производитель', table_name: 'supplier'},
+            ];
+            this.table_data.context_menu = [
+                {name:'Редактировать', action: function(data){alert(12)}},
+                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Создать заявку поставщику', action: (data) => {openDialog('providerOrderDialog', '&products=' + this.table.getSelectedIDs())}},
+                {name:'Печать ценников', action: (data) => {window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())}},
+                {name:'Показать аналоги в наличии', action: (data) => {this.showAnalogues(data);}},
+            ];
+            this.table_data.dbl_click = function(id){console.log(id)};
         },
         computed:{
             category_id(){
