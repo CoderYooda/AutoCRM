@@ -257,24 +257,63 @@ class CategoryController extends Controller
         return response()->json($category);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/categories/{id}/children",
+     *     tags={"Categories"},
+     *     summary="Получение дочерних категорий",
+     *     description="Получение дочерних категорий",
+     *     operationId="children",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID категории",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Нет доступа к этому методу"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Неправильные входные данные"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     }
+     * )
+     * @param Category $category
+     * @return JsonResponse
+     */
+
     public function children(Category $category)
     {
-        $categories = $category->childs;
+        $childrenCategories = $category->childs;
 
-        foreach ($categories as $key => $category) {
+        foreach ($childrenCategories as $key => $childrenCategory) {
 
             $categories[$key]['shop'] = [
-                'image_id' => $category->image_id,
-                'image_url' => $category->image->path ?? null
+                'image_id' => $childrenCategory->image_id,
+                'image_url' => $childrenCategory->image->path ?? null
             ];
 
-            unset($categories[$key]['image_id']);
-            unset($categories[$key]['image']);
+            unset($childrenCategories[$key]['image_id']);
+            unset($childrenCategories[$key]['image']);
         }
 
         return response()->json([
-            'parent' => $category,
-            'children' => $categories
+            'parent' => [
+                'id' => $category->id,
+                'name' => $category->name
+            ],
+            'children' => $childrenCategories
         ]);
     }
 }
