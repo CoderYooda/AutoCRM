@@ -57,7 +57,46 @@ class ProductController extends Controller
 
     public function show(Article $product)
     {
-        return response()->json($product);
+        $storePrices = [];
+
+        foreach ($product->stores as $store) {
+            $storePrices[$store->id] = $store->pivot->retail_price;
+        }
+
+        $specifications = [];
+
+        foreach ($product->specifications as $specification) {
+            $specifications[$specification->id] = [
+                'name' => $specification->name,
+                'label' => $specification->label,
+                'value' => $specification->value,
+            ];
+        }
+
+        return response()->json([
+            'name' => $product->name,
+            'article' => $product->article,
+            'supplier' => $product->supplier->name,
+            'category_id' => $product->category_id,
+            'prices' => [
+                'default' => $product->getPrice(),
+                'retail' => $storePrices,
+                'shop' => $product->getPriceWithDiscount()
+            ],
+            'shop' => [
+                'name' => $product->sp_name,
+                'desc' => $product->sp_desc,
+                'show_main' => $product->sp_main,
+                'stock' => $product->sp_stock,
+                'discount' => $product->sp_discount,
+                'discount_type' => $product->sp_discount_type,
+                'image' => [
+                    'image_id' => $product->image_id,
+                    'image_path' => $product->image->url ?? null
+                ],
+                'specifications' => $specifications
+            ]
+        ]);
     }
 
     public function store(ProductRequest $request)

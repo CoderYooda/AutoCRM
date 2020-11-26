@@ -9,6 +9,7 @@ Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 
 Route::namespace('API')->middleware('auth:api')->group(function() {
     Route::get('/categories/{category}', 'CategoryController@show')->name('categories.show');
+    Route::get('/categories/{category}/children', 'CategoryController@children')->name('categories.children');
     Route::patch('/categories/{category}', 'CategoryController@update')->name('categories.update');
     Route::get('/categories', 'CategoryController@all')->name('categories.all');
     Route::post('/categories', 'CategoryController@store')->name('categories.store');

@@ -256,4 +256,64 @@ class CategoryController extends Controller
 
         return response()->json($category);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/categories/{id}/children",
+     *     tags={"Categories"},
+     *     summary="Получение дочерних категорий",
+     *     description="Получение дочерних категорий",
+     *     operationId="children",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID категории",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Нет доступа к этому методу"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Неправильные входные данные"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     }
+     * )
+     * @param Category $category
+     * @return JsonResponse
+     */
+
+    public function children(Category $category)
+    {
+        $childrenCategories = $category->childs;
+
+        foreach ($childrenCategories as $key => $childrenCategory) {
+
+            $categories[$key]['shop'] = [
+                'image_id' => $childrenCategory->image_id,
+                'image_url' => $childrenCategory->image->path ?? null
+            ];
+
+            unset($childrenCategories[$key]['image_id']);
+            unset($childrenCategories[$key]['image']);
+        }
+
+        return response()->json([
+            'parent' => [
+                'id' => $category->id,
+                'name' => $category->name
+            ],
+            'children' => $childrenCategories
+        ]);
+    }
 }
