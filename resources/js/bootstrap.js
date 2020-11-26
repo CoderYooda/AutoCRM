@@ -27,6 +27,15 @@ if (token) {
     console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
 }
 
+document.addEventListener('keydown', (e) => {
+    window.shift_pressed = e.shiftKey;
+    window.ctrl_pressed = e.ctrlKey;
+});
+document.addEventListener('keyup', (e) => {
+    window.shift_pressed = e.shiftKey;
+    window.ctrl_pressed = e.ctrlKey;
+});
+
 /* Prototype */
 Array.prototype.unique = function() {
     let a = this.concat();

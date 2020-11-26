@@ -6,14 +6,17 @@
                     <div class="header-elem checkbox"><input type="checkbox" id="check_all" name="check_all"><label
                         for="check_all"></label></div>
 
-                    <div v-for="item in header" v-bind:key="item.name" v-bind:style="getHeaderStyle(item)" class="header-elem" data-field="id" style="width: 90px; min-width: 90px;">
+                    <div v-bind:class="{'active' : isSortField(item)}" v-for="item in header" v-bind:key="item.name" v-bind:style="getHeaderStyle(item)" class="header-elem" data-field="id" style="width: 90px; min-width: 90px;">
                         <div v-on:click="toggleSort(item)" class="title">{{ item.name }}</div>
-                        <div class="arrow down"></div>
+
+                        <div v-if="!isSortField(item)" class="arrow down"></div>
+                        <div v-if="isSortField(item) && dir === 'DESC'" v-bind:class="{'active' : isSortField(item)}" class="arrow down"></div>
+                        <div v-if="isSortField(item) && dir === 'ASC'" v-bind:class="{'active' : isSortField(item)}" class="arrow up"></div>
                     </div>
                 </div>
                 <div class="bbtable-body" data-simplebar style="height: calc(100% - 59px);" >
                     <div>
-                        <div v-on:click="toggleSelectItem(elem)" v-for="elem in items" v-bind:key="elem.id" class="body-elem">
+                        <div v-on:click="selectItem(elem)" v-for="elem in items" v-bind:key="elem.id" v-bind:class="{ 'selected' : isSelected(elem)}" class="body-elem">
                             <div class="cell checkbox"><input type="checkbox"><label></label></div>
                             <div v-for="item in header" v-bind:key="item.name + elem.id" class="cell" v-bind:style="getHeaderStyle(item)">
                                 <div class="title">{{ elem[item.table_name] }}</div>
@@ -69,16 +72,19 @@
                 dir:null,
                 loading: false,
                 selected: [],
+                last_selected:null,
+                index:0
             }
         },
         watch: {
-            // $route(to, from) {
-            //     this.getItems();
-            // },
+            $route(to, from) {
+                this.getItems();
+            },
 
             // $attrs: _.debounce(function(){
             //
             // }, 550)
+
             $attrs:function(){
                 this.search = this.$attrs.search;
                 this.getItems();
@@ -102,6 +108,12 @@
             }
         },
         methods:{
+            isSortField(item){
+                return this.field === item.table_name;
+            },
+            isSelected(item){
+                return this.selected.includes(item.id);
+            },
             isPageActive(page){
                 return (page === this.current_page) ? 'active' : '';
             },
@@ -179,18 +191,56 @@
             },
             toggleSort(item){
                 if(!item.sort){
-                    item.sort = 'DESC';
-                } else if(item.sort === 'DESC') {
-                    item.sort = 'ASC'
-                } else {
+                    item.sort = 'ASC';
+                } else if(item.sort === 'ASC') {
                     item.sort = 'DESC'
+                } else {
+                    item.sort = 'ASC'
                 }
                 this.field = item.table_name;
                 this.dir = item.sort;
                 this.getItems();
             },
-            toggleSelectItem(item){
-                this.selected[item.id] = item;
+            unselectAll(){
+                this.selected = [];
+            },
+            unselect(id){
+                this.selected.forEach((val, key)=>{
+                    if (val === id){
+                        this.selected.splice(key, 1)
+                    }
+                });
+            },
+            selectItem(item){
+                if(!window.ctrl_pressed && !window.shift_pressed){
+                    this.unselectAll();
+                }
+
+                if(window.ctrl_pressed){
+                    if(this.selected.includes(item.id)){
+                        this.unselect(item.id)
+                    } else {
+                        this.selected.push(item.id);
+                    }
+                } else {
+                    this.selected.push(item.id);
+                }
+
+                if(window.shift_pressed && this.last_selected != null){
+                    let indexes = [];
+
+                    let max = (this.last_selected > item.id) ? this.last_selected : index;
+                    let min = (this.last_selected < index) ? this.last_selected : index;
+
+                    for (let i = min; i <= max; i++) {
+                        indexes.push(parseInt(i));
+                    }
+
+                    indexes.forEach((i) => {
+                        this.markAsSelect(i);
+                    });
+                }
+                this.last_selected = item.id;
             }
         },
     }

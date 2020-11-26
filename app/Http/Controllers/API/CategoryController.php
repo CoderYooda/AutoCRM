@@ -33,9 +33,12 @@ class CategoryController extends Controller
      * @return JsonResponse
      */
 
-    public function all()
+    public function all(Category $category)
     {
-        $categories = Category::owned()->get();
+
+        $categories = Category::owned()
+            ->when()
+            ->get();
 
         foreach ($categories as $key => $category) {
 
@@ -90,15 +93,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return response()->json([
-            'id' => $category->id,
-            'name' => $category->name,
-            'category_id' => $category->category_id,
-            'shop' => [
-                'image_id' => $category->image_id,
-                'image_url' => $category->image->path ?? null
-            ]
-        ]);
+        return response()->json($category->load('image', 'parent'));
     }
 
     /**
@@ -295,25 +290,6 @@ class CategoryController extends Controller
 
     public function children(Category $category)
     {
-        $childrenCategories = $category->childs;
-
-        foreach ($childrenCategories as $key => $childrenCategory) {
-
-            $categories[$key]['shop'] = [
-                'image_id' => $childrenCategory->image_id,
-                'image_url' => $childrenCategory->image->path ?? null
-            ];
-
-            unset($childrenCategories[$key]['image_id']);
-            unset($childrenCategories[$key]['image']);
-        }
-
-        return response()->json([
-            'parent' => [
-                'id' => $category->id,
-                'name' => $category->name
-            ],
-            'children' => $childrenCategories
-        ]);
+        return response()->json($category->childs->load('image'));
     }
 }
