@@ -93,7 +93,7 @@ class CategoryController extends Controller
         return response()->json([
             'id' => $category->id,
             'name' => $category->name,
-            'category_id' => $category->id,
+            'category_id' => $category->category_id,
             'shop' => [
                 'image_id' => $category->image_id,
                 'image_url' => $category->image->path ?? null
@@ -255,5 +255,26 @@ class CategoryController extends Controller
         UA::makeUserAction($category, 'fresh');
 
         return response()->json($category);
+    }
+
+    public function children(Category $category)
+    {
+        $categories = $category->childs;
+
+        foreach ($categories as $key => $category) {
+
+            $categories[$key]['shop'] = [
+                'image_id' => $category->image_id,
+                'image_url' => $category->image->path ?? null
+            ];
+
+            unset($categories[$key]['image_id']);
+            unset($categories[$key]['image']);
+        }
+
+        return response()->json([
+            'parent' => $category,
+            'children' => $categories
+        ]);
     }
 }
