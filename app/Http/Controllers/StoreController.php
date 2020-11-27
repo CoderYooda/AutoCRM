@@ -35,12 +35,39 @@ class StoreController extends Controller
 {
     public function index(StoreGetRequest $request)
     {
-        $products = ProductController::getArticles($request);
-        $response = [
-            'data' => $products,
-        ];
+        // точка входа в страницу
+        $page_title = 'Склад';
 
-        return response()->json($response);
+        // На всякий случай
+        if ($request['search'] == 'undefined') {
+            $request['search'] = null;
+        }
+
+        // цель динамической подгрузки
+        $target = HC::selectTarget();
+
+        // Определяем табуляцию
+        if ($request['active_tab'] === NULL || $request['active_tab'] == 'undefined') {
+            $request['active_tab'] = 'store';
+        }
+
+        $classname = $request['active_tab'] . 'Tab';
+
+        $content = self::$classname($request);
+
+        if (class_basename($content) == "JsonResponse") {
+            return $content;
+        }
+
+        if ($request['view_as'] != null && $request['view_as'] == 'json') {
+            return response()->json([
+                'target' => $target,
+                'page' => $page_title,
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
     }
 
     public static function getAllowedPage()

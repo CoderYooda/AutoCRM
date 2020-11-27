@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SupplierController;
 use App\Models\Store;
 use Illuminate\Contracts\Validation\Validator;
@@ -14,7 +15,7 @@ class ProductRequest extends FormRequest
 {
     public function authorize()
     {
-        return true;
+        return PermissionController::canByPregMatch('Редактировать товары');
     }
 
     public function prepareForValidation()
@@ -31,7 +32,14 @@ class ProductRequest extends FormRequest
             'name' => ['required', 'min:4', 'string', 'max:255'],
             'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
-            'article' => ['required', 'string', 'max:64'],
+            'article' => [
+                'required',
+                'string',
+                'max:64',
+                Rule::unique('articles', 'article')
+                    ->where('company_id', Auth::user()->company_id)
+                    ->where('supplier_id', $this->supplier_id)
+            ],
 
             'storage_zone' => ['string', 'max:2'],
             'storage_rack' => ['string', 'max:2'],
@@ -80,4 +88,6 @@ class ProductRequest extends FormRequest
 
         parent::failedValidation($validator);
     }
+
+
 }

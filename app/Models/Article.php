@@ -18,19 +18,17 @@ class Article extends Model
 {
     use OwnedTrait, SoftDeletes, Imageable;
 
-    public $fields = [
+    public static $fields = [
         'company_id',
         'category_id',
         'creator_id',
         'supplier_id',
         'measurement_id',
         'article',
-        'oem',
         'storeCode',
         'barcode_local',
         'barcode',
         'name',
-        'blockedCount',
         'image_id'
     ];
 
@@ -98,28 +96,70 @@ class Article extends Model
         return md5($stock . $manufacturer . $article . $days . $price);
     }
 
-    public function fillShopFields($request)
+    public static function fillShopFields($request, &$array)
     {
-        $this->sp_name = $request->shop['name'] ?? '';
-        $this->sp_desc = $request->shop['desc'] ?? '';
-
         $shop_discount = $request->shop['discounts'] ?? [];
-
-        $this->sp_discount_price = $shop_discount['price'] ?? 0;
-        $this->sp_discount = $shop_discount['discount'] ?? 0;
-        $this->sp_discount_type = $shop_discount['type'] ?? 0;
-
-        if($this->sp_discount_type == 0) { //В рублях
-            $this->sp_discount_total = $this->sp_discount_price - $this->sp_discount;
-        }
-        else {
-            $this->sp_discount_total = $this->sp_discount_price - ($this->sp_discount_price / 100 * $this->sp_discount);
-        }
-
         $shop_settings = $request->shop['settings'];
 
-        $this->sp_main = $shop_settings['sp_main'];
-        $this->sp_stock = $shop_settings['sp_stock'];
+        $array['sp_name'] = $request->shop['name'] ?? '';
+        $array['sp_desc'] = $request->shop['desc'] ?? '';
+
+        $array['sp_discount_price'] = $shop_discount['price'] ?? 0;
+        $array['sp_discount'] = $shop_discount['discount'] ?? 0;
+        $array['sp_discount_type'] = $shop_discount['type'] ?? 0;
+
+        if($array['sp_discount_type'] == 0) { //В рублях
+            $array['sp_discount_total'] = $array['sp_discount_price'] - $array['sp_discount'];
+        }
+        else {
+            $array['sp_discount_total'] = $array['sp_discount_price'] - ($array['sp_discount_price'] / 100 * $array['sp_discount']);
+        }
+
+        $array['sp_main'] = $shop_settings['sp_main'];
+        $array['sp_stock'] = $shop_settings['sp_stock'];
+    }
+
+    public function freshSpecifications($request)
+    {
+        $attributes = [];
+
+        if(isset($request['shop']['specifications'])) {
+
+            foreach ($request['shop']['specifications'] as $key => $specification) {
+                $attributes[$key]['name'] = Str::slug($specification['label']);
+                $attributes[$key]['label'] = $specification['label'];
+                $attributes[$key]['value'] = $specification['value'];
+            }
+        }
+
+        $this->specifications()->sync($attributes);
+    }
+
+    public function freshStoreges($request)
+    {
+        if(!$request['storage']) return;
+
+        $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
+
+        foreach ($stores as $store) {
+
+            $storage = $request['storage'][$store->id];
+
+            $store->articles()->syncWithoutDetaching($this->id);
+
+            $pivot_data = [
+                'storage_zone' => $storage['storage_zone'],
+                'storage_rack' => $storage['storage_rack'],
+                'storage_vertical' => $storage['storage_vertical'],
+                'storage_horizontal' => $storage['storage_horizontal']
+            ];
+
+            if(isset($storage['retail_price'])){
+                $pivot_data['retail_price'] = $storage['retail_price'];
+            }
+
+            $this->stores()->updateExistingPivot($store->id, $pivot_data);
+        }
     }
 
     public function getShopName()

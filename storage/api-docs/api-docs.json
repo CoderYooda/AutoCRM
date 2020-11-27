@@ -220,14 +220,14 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Find product by ID",
-                "description": "Returns a single product",
+                "summary": "Поиск продукта по ID",
+                "description": "Поиск продукта по ID",
                 "operationId": "show",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of product to return",
+                        "description": "ID продукта",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -244,6 +244,312 @@
                     },
                     "404": {
                         "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Обновление продукта",
+                "description": "Обновление продукта",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "supplier_id",
+                        "in": "query",
+                        "description": "ID производителя",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "article",
+                        "in": "query",
+                        "description": "Артикул",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "barcode",
+                        "in": "query",
+                        "description": "Штрихкод производителя",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "barcode_local",
+                        "in": "query",
+                        "description": "Штрихкод на складе",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sp_name",
+                        "in": "query",
+                        "description": "Наименование в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sp_desc",
+                        "in": "query",
+                        "description": "Описание в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "image_id",
+                        "in": "query",
+                        "description": "ID изображения",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sp_discount_price",
+                        "in": "query",
+                        "description": "Цена в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "numeric"
+                        }
+                    },
+                    {
+                        "name": "sp_discount",
+                        "in": "query",
+                        "description": "Сумма скидки(рубли/проценты)",
+                        "required": false,
+                        "schema": {
+                            "type": "numeric"
+                        }
+                    },
+                    {
+                        "name": "sp_discount_type",
+                        "in": "query",
+                        "description": "Тип скидки(рубли - 0, проценты - 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sp_main",
+                        "in": "query",
+                        "description": "Отображение на главной странице в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "bool"
+                        }
+                    },
+                    {
+                        "name": "sp_stock",
+                        "in": "query",
+                        "description": "Статус акционного товара в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "bool"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "403": {
+                        "description": "Нет доступа к этому методу"
+                    },
+                    "404": {
+                        "description": "Продукт не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/api/products": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Создание продукта",
+                "description": "Создание продукта",
+                "operationId": "store",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Наименование",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "supplier_id",
+                        "in": "query",
+                        "description": "ID производителя",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "article",
+                        "in": "query",
+                        "description": "Артикул",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "barcode",
+                        "in": "query",
+                        "description": "Штрихкод производителя",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "barcode_local",
+                        "in": "query",
+                        "description": "Штрихкод на складе",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sp_name",
+                        "in": "query",
+                        "description": "Наименование в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sp_desc",
+                        "in": "query",
+                        "description": "Описание в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "image_id",
+                        "in": "query",
+                        "description": "ID изображения",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sp_discount_price",
+                        "in": "query",
+                        "description": "Цена в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "numeric"
+                        }
+                    },
+                    {
+                        "name": "sp_discount",
+                        "in": "query",
+                        "description": "Сумма скидки(рубли/проценты)",
+                        "required": false,
+                        "schema": {
+                            "type": "numeric"
+                        }
+                    },
+                    {
+                        "name": "sp_discount_type",
+                        "in": "query",
+                        "description": "Тип скидки(рубли - 0, проценты - 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sp_main",
+                        "in": "query",
+                        "description": "Отображение на главной странице в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "bool"
+                        }
+                    },
+                    {
+                        "name": "sp_stock",
+                        "in": "query",
+                        "description": "Статус акционного товара в интернет магазине",
+                        "required": false,
+                        "schema": {
+                            "type": "bool"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "403": {
+                        "description": "Нет доступа к этому методу"
+                    },
+                    "404": {
+                        "description": "Продукт не найден"
                     }
                 },
                 "security": [

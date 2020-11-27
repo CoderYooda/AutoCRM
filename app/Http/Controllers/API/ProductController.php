@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserActionsController as UA;
 use App\Http\Requests\ProductRequest;
 use App\Models\Article;
-use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,13 +21,57 @@ class ProductController extends Controller
      * @OA\Get(
      *     path="/api/products/{id}",
      *     tags={"Products"},
-     *     summary="Find product by ID",
-     *     description="Returns a single product",
+     *     summary="Поиск продукта по ID",
+     *     description="Поиск продукта по ID",
+     *     operationId="show",
+     *     @OA\Parameter(
+     *         name="size",
+     *         in="query",
+     *         description="Количество на странице",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Нет доступа к этому методу"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     }
+     * )
+     * @param Article $product
+     * @return JsonResponse
+     */
+
+    public function all(Request $request)
+    {
+        $products = Article::with('supplier')->owned()->paginate($request->size ?? 30);
+
+        return response()->json($products);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Поиск продукта по ID",
+     *     description="Поиск продукта по ID",
      *     operationId="show",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of product to return",
+     *         description="ID продукта",
      *         required=true,
      *         @OA\Schema(
      *             type="integer",
@@ -57,143 +100,364 @@ class ProductController extends Controller
 
     public function show(Article $product)
     {
-        $storePrices = [];
-
-        foreach ($product->stores as $store) {
-            $storePrices[$store->id] = $store->pivot->retail_price;
-        }
-
-        $specifications = [];
-
-        foreach ($product->specifications as $specification) {
-            $specifications[$specification->id] = [
-                'name' => $specification->name,
-                'label' => $specification->label,
-                'value' => $specification->value,
-            ];
-        }
-
-        return response()->json([
-            'name' => $product->name,
-            'article' => $product->article,
-            'supplier' => $product->supplier->name,
-            'category_id' => $product->category_id,
-            'prices' => [
-                'default' => $product->getPrice(),
-                'retail' => $storePrices,
-                'shop' => $product->getPriceWithDiscount()
-            ],
-            'shop' => [
-                'name' => $product->sp_name,
-                'desc' => $product->sp_desc,
-                'show_main' => $product->sp_main,
-                'stock' => $product->sp_stock,
-                'discount' => $product->sp_discount,
-                'discount_type' => $product->sp_discount_type,
-                'image' => [
-                    'image_id' => $product->image_id,
-                    'image_path' => $product->image->url ?? null
-                ],
-                'specifications' => $specifications
-            ]
-        ]);
+        return response()->json($product->load('image', 'stores'));
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/products",
+     *     tags={"Products"},
+     *     summary="Создание продукта",
+     *     description="Создание продукта",
+     *     operationId="store",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Наименование",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="supplier_id",
+     *         in="query",
+     *         description="ID производителя",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="article",
+     *         in="query",
+     *         description="Артикул",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         description="ID категории",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="barcode",
+     *         in="query",
+     *         description="Штрихкод производителя",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="barcode_local",
+     *         in="query",
+     *         description="Штрихкод на складе",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_name",
+     *         in="query",
+     *         description="Наименование в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_desc",
+     *         in="query",
+     *         description="Описание в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="image_id",
+     *         in="query",
+     *         description="ID изображения",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_discount_price",
+     *         in="query",
+     *         description="Цена в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="numeric"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_discount",
+     *         in="query",
+     *         description="Сумма скидки(рубли/проценты)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="numeric"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_discount_type",
+     *         in="query",
+     *         description="Тип скидки(рубли - 0, проценты - 1)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_main",
+     *         in="query",
+     *         description="Отображение на главной странице в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="bool"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_stock",
+     *         in="query",
+     *         description="Статус акционного товара в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="bool"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Нет доступа к этому методу"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Продукт не найден"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     }
+     * )
+     * @param Article $product
+     * @return JsonResponse
+     */
 
     public function store(ProductRequest $request)
     {
-        PermissionController::canByPregMatch('Редактировать товары');
-
         return DB::transaction(function () use($request) {
 
-            if ($request['id'] != null) { //товар редактируется
-                $compare = ['id' => $request['id']];
-            } else {
-                $compare = ['article' => $request['article'], 'supplier_id' => (int)$request['supplier_id']];
-            }
+            $params = $request->only(Article::$fields);
 
-            $existed_article = self::checkArticleUnique($request['id'], $request['article'], (int)$request['supplier_id']);
-            if ($existed_article) {
-                return response()->json([
-                    'system_message' => view(get_template() . '.messages.product_already_exist', compact('existed_article'))->render(),
-                ], 422);
-            }
+            Article::fillShopFields($request, $params);
 
-            $article = Article::with('specifications')->firstOrNew($compare);
-            if ($article->exists) {
-                $this->message = 'Товар обновлен';
-            } else {
-                $article->creator_id = Auth::id();
-                $article->company_id = Auth::user()->company_id;
-                $this->message = 'Товар сохранён';
-            }
+            $params['creator_id'] = \Auth::id();
+            $params['company_id'] = Auth::user()->company_id;
 
-            #Кроссы
-            $article->fill($request->only($article->fields));
+            $product = Article::create($params);
 
-            $article->fillShopFields($request);
+            $product->update(['slug' => Str::slug($request->name . '-' . $product->id)]);
 
-            $article->slug = Str::slug($request->name . '-' . $article->id);
+            $product->freshSpecifications($request);
 
-            $article->save();
+            $product->freshStoreges($request);
 
-            if(isset($request->shop['specifications'])) {
-
-                $attributes = [];
-
-                foreach ($request->shop['specifications'] as $key => $specification) {
-                    $attributes[$key]['name'] = Str::slug($specification['label']);
-                    $attributes[$key]['label'] = $specification['label'];
-                    $attributes[$key]['value'] = $specification['value'];
-                }
-
-                $article->specifications()->delete();
-                $article->specifications()->createMany($attributes);
-            }
-
-            $this->status = 200;
-            if($request['storage']) {
-
-                $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
-
-                foreach ($stores as $store) {
-
-                    $storage = $request['storage'][$store->id];
-
-                    $store->articles()->syncWithoutDetaching($article->id);
-
-                    $pivot_data = [
-                        'storage_zone' => $storage['storage_zone'],
-                        'storage_rack' => $storage['storage_rack'],
-                        'storage_vertical' => $storage['storage_vertical'],
-                        'storage_horizontal' => $storage['storage_horizontal']
-                    ];
-
-                    if(isset($storage['retail_price'])){
-                        $pivot_data['retail_price'] = $storage['retail_price'];
-                    }
-
-                    $article->stores()->updateExistingPivot($store->id, $pivot_data);
-                }
-            }
+            UA::makeUserAction($product, 'create');
 
             return response()->json([
-                'message' => $this->message,
+                'message' => 'Товар создан.',
                 'event' => 'ProductStored',
-            ], $this->status);
-
+            ]);
         });
     }
 
-    public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
-    {
-        $article = Article::where('article', $article)->where('supplier_id', $brand_id)
-            ->where('company_id', Auth::user()->company()->first()->id)
-            ->first();
+    /**
+     * @OA\Patch(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Обновление продукта",
+     *     description="Обновление продукта",
+     *     operationId="update",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID продукта",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="supplier_id",
+     *         in="query",
+     *         description="ID производителя",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="article",
+     *         in="query",
+     *         description="Артикул",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         description="ID категории",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="barcode",
+     *         in="query",
+     *         description="Штрихкод производителя",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="barcode_local",
+     *         in="query",
+     *         description="Штрихкод на складе",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_name",
+     *         in="query",
+     *         description="Наименование в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_desc",
+     *         in="query",
+     *         description="Описание в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="image_id",
+     *         in="query",
+     *         description="ID изображения",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_discount_price",
+     *         in="query",
+     *         description="Цена в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="numeric"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_discount",
+     *         in="query",
+     *         description="Сумма скидки(рубли/проценты)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="numeric"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_discount_type",
+     *         in="query",
+     *         description="Тип скидки(рубли - 0, проценты - 1)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_main",
+     *         in="query",
+     *         description="Отображение на главной странице в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="bool"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="sp_stock",
+     *         in="query",
+     *         description="Статус акционного товара в интернет магазине",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="bool"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Нет доступа к этому методу"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Продукт не найден"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     }
+     * )
+     * @param Article $product
+     * @return JsonResponse
+     */
 
-        if ($article && $article->id != $id) {
-            return $article;
-        } else {
-            return false;
-        }
+    public function update(Article $product, ProductRequest $request)
+    {
+        return DB::transaction(function () use($product, $request) {
+
+            $params = $request->only(Article::$fields);
+            $params['slug'] = Str::slug($request->name . '-' . $product->id);
+
+            Article::fillShopFields($request, $params);
+
+            $product->update($params);
+
+            $product->freshSpecifications($request);
+
+            $product->freshStoreges($request);
+
+            UA::makeUserAction($product, 'fresh');
+
+            return response()->json([
+                'message' => 'Товар Обновлён.',
+                'event' => 'ProductStored',
+            ]);
+        });
     }
 }

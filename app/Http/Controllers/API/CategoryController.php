@@ -37,17 +37,6 @@ class CategoryController extends Controller
     {
         $categories = Category::owned()->get();
 
-        foreach ($categories as $key => $category) {
-
-            $categories[$key]['shop'] = [
-                'image_id' => $category->image_id,
-                'image_url' => $category->image->path ?? null
-            ];
-
-            unset($categories[$key]['image_id']);
-            unset($categories[$key]['image']);
-        }
-
         return response()->json($categories);
     }
 
@@ -90,15 +79,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return response()->json([
-            'id' => $category->id,
-            'name' => $category->name,
-            'category_id' => $category->category_id,
-            'shop' => [
-                'image_id' => $category->image_id,
-                'image_url' => $category->image->path ?? null
-            ]
-        ]);
+        return response()->json($category->load('image', 'parent'));
     }
 
     /**
@@ -295,25 +276,6 @@ class CategoryController extends Controller
 
     public function children(Category $category)
     {
-        $childrenCategories = $category->childs;
-
-        foreach ($childrenCategories as $key => $childrenCategory) {
-
-            $categories[$key]['shop'] = [
-                'image_id' => $childrenCategory->image_id,
-                'image_url' => $childrenCategory->image->path ?? null
-            ];
-
-            unset($childrenCategories[$key]['image_id']);
-            unset($childrenCategories[$key]['image']);
-        }
-
-        return response()->json([
-            'parent' => [
-                'id' => $category->id,
-                'name' => $category->name
-            ],
-            'children' => $childrenCategories
-        ]);
+        return response()->json($category->load('childs'));
     }
 }
