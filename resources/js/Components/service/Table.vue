@@ -182,7 +182,7 @@
                 return (this.$route.params.category_id === 'all') ? this.$attrs.root_id : this.$route.params.category_id;
             },
             getSearchString(){
-                return (this.search === '') ? null : this.search;
+                return (this.search === '') ? null : this.$attrs.search;
             },
             getHeaderStyle(item){
                 let style = {};
