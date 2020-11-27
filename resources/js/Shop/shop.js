@@ -13,6 +13,11 @@ window.$ = window.jQuery = require('jquery');
 
 window.select2 = require('select2');
 
+window.axios = require('axios');
+window.notification = require('notification-js/src/notification.js');
+window.simplebar = require('simplebar/dist/simplebar.min');
+window.tippy = Tippy;
+
 window.feedback = new Feedback();
 window.axform = new AxForm();
 window.helper = new Helper();
@@ -22,10 +27,6 @@ window.product = new Product();
 window.auth = new Auth();
 window.user = new User();
 window.vehicle = new Vehicle();
-window.tippy = Tippy;
-window.axios = require('axios');
-window.notification = require('notification-js/src/notification.js');
-window.simplebar = require('simplebar/dist/simplebar.min');
 
 require('./functions');
 require('./bootstrap');

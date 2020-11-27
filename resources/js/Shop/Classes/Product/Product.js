@@ -23,6 +23,33 @@ class Product {
                 specifications_element.querySelector('.show').classList.add('d-none');
             }
         }
+
+        this.loadProviderOffers();
+    }
+
+    loadProviderOffers() {
+
+        let product_element = document.querySelector('[name="product_id"]');
+
+        if(!product_element) return;
+
+        let analogues_element = document.querySelector('.analogue_list');
+
+        helper.togglePreloader(analogues_element, true);
+
+        axios.get('/products/' + product_element.value + '/analogues')
+            .then(response => {
+
+                let data = response.data;
+
+                analogues_element.innerHTML = data.html;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                helper.togglePreloader(analogues_element, false);
+            });
     }
 
     getInfo(product_id) {

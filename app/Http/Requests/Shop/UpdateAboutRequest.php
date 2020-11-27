@@ -23,9 +23,9 @@ class UpdateAboutRequest extends FormRequest
     public function rules()
     {
         return [
-            'about_desc' => ['required', 'string', 'max:255'],
-            'seo_about_title' => ['nullable', 'string', 'max:255'],
-            'seo_about_desc' => ['nullable', 'string', 'max:255'],
+            'about_desc' => ['required', 'string', 'max:65535'],
+            'seo_about_title' => ['nullable', 'string', 'max:65535'],
+            'seo_about_desc' => ['nullable', 'string', 'max:65535'],
             'image_ids' => ['array'],
             'image_ids.*' => ['exists:images,id'],
             'delete_image_ids' => ['nullable', 'array'],

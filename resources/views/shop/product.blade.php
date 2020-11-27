@@ -1,15 +1,18 @@
 @extends('shop.layout.app')
 
 @section('content')
-<div class="body product_page" data-providers="{{ json_encode($providersOrders) }}" data-product="{{ json_encode($product) }}">
+<div class="body product_page" data-product="{{ json_encode($product) }}">
 
     @include('shop.includes.breadcrumbs')
 
     <div class="in-category container bg-white">
         <div class="product_title">
             <h2>{{ $product->name }}</h2>
+            <h3>Производитель {{ $product->supplier->name }}</h3>
             <h3>Артикул {{ $product->article }}</h3>
         </div>
+
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
 
         @if($product->image != null || strlen($product->sp_desc) || count($product->specifications))
 
@@ -68,17 +71,17 @@
 
             <div class="header">
                 <div class="flex-1 availability">
-                    <span>Наличие</span>
-                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+                    <span>Наличии</span>
+{{--                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
                 </div>
 
                 <div class="flex-1 shop">
-                    Магазин
+                    Адрес
                 </div>
 
                 <div class="flex-2 price">
                     <span>Цена</span>
-                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
+{{--                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
                 </div>
 
             </div>
@@ -92,10 +95,10 @@
                             @if($shop->show_amount)
                                 {{ $product->getCountInStoreId($store->id) }} шт.
                             @else
-                                {{ $product->getCountInStoreId($store->id) ? 'В наличие' : 'Нет в наличие' }}
+                                {{ $product->getCountInStoreId($store->id) ? 'В Наличии' : 'Нет в Наличии' }}
                             @endif
                         </div>
-                        <div class="flex-1 shop">{{ $store->name }}</div>
+                        <div class="flex-1 shop">{{ $shop->address_name }}</div>
 
                         <div class="flex-2 price">
                             @if(!$product->sp_stock)
@@ -130,73 +133,9 @@
 
         </div>
 
-        @if($shop->supplier_offers)
-
-            @foreach($providersOrders as $providerKey => $orders)
-
-                <div class="table">
-
-                    <div class="name">
-                        {{ $providerKey }}
-                    </div>
-
-                    <div class="header">
-                        <div class="flex-1 availability">
-                            <span>Наличие</span>
-                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
-                        </div>
-
-                        <div class="flex-1 price">
-                            <span>Срок поставки</span>
-                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
-                        </div>
-
-                        <div class="flex-2 shop">
-                            <span>Цена</span>
-                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>
-                        </div>
-
-                    </div>
-
-                    <div data-simplebar class="body" style="max-height: 300px;">
-
-                        @forelse($orders as $order)
-
-                            <div class="element" id="product_{{ $order['hash'] }}">
-
-                                <div class="flex-1 availability">{{ $order['model']['hash_info']['rest'] }} шт.</div>
-                                <div class="flex-1 shop">{{ $order['days_min'] }} дн.</div>
-                                <div class="flex-2 price">
-                                    <span class="current">{{ correct_price($order['price']) }} ₽</span>
-                                </div>
-
-                                <div class="absolute shipping-container">
-                                    <div class="counter-container">
-                                        <div class="button minus" onclick="cart.decrement(this, '{{ $order['hash'] }}');"></div>
-                                        <input type="text" data-max="{{ $order['model']['hash_info']['rest'] }}" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
-                                        <div class="button plus" onclick="cart.increment(this, '{{ $order['hash'] }}');"></div>
-                                    </div>
-                                    <div class="cart-button @if($cart->isProductExists($order['hash'])) incart @endif" onclick="cart.add(this, '{{ $order['hash'] }}');"></div>
-
-                                </div>
-
-                            </div>
-
-                        @empty
-
-                            <div class="empty_table">
-                                <span>Нет предложений по этому поставщику</span>
-                            </div>
-
-                        @endforelse
-
-                    </div>
-
-                </div>
-
-            @endforeach
-
-        @endif
+        <div class="analogue_list">
+            {{--        @include('shop.includes.product_analogues')--}}
+        </div>
 
     </div>
 </div>

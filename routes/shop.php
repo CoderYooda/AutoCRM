@@ -53,6 +53,7 @@ Route::namespace('Shop')->group(function () {
     Route::get('/orders/{hash}/print', 'OrderController@print')->name('orders.print');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
+    Route::get('/products/{product}/analogues', 'ProductController@analogues')->name('products.analogues');
 
     Route::get('/search', 'PageController@search')->name('pages.search');
 

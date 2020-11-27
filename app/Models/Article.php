@@ -243,20 +243,14 @@ class Article extends Model
 
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
-        $store_id = Auth::user()->current_store ?? null;
+        $entrances = $this->entrances;
 
-        $count_info = DB::table('article_entrance')
-            ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
-            ->where('article_id', $this->id)
-            ->where('company_id', $company->id)
-            ->where(function (Builder $builder) use($store_id) {
-                if($store_id) $builder->where('store_id', $store_id);
-            })
-            ->whereRaw('count != released_count')
-            ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
-            ->first();
+        if($method_cost_of_goods == 'lifo') $entrances = $entrances->sortDesc();
 
-        return $count_info->count - $count_info->released_count;
+        $count = $entrances->sum('pivot.count');
+        $released_count = $entrances->sum('pivot.released_count');
+
+        return $count - $released_count;
     }
 
     public function getCount()

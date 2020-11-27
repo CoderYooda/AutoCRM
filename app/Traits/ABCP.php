@@ -86,7 +86,7 @@ trait ABCP
             $items[$key]['hash_info'] = [
                 'stock'        => $item['supplierCode'],
                 'manufacturer' => $item['brand'],
-                'article'      => $article,
+                'article'      => $item['number'],
                 'days'         => $item['deliveryPeriod'],
                 'price'        => $item['price'],
                 'packing'      => $item['packing'],
@@ -115,6 +115,7 @@ trait ABCP
                 'days_max'     => $max_days,
                 'price'        => $item['price'],
                 'manufacturer' => $item['brand'],
+                'article'      => $item['number'],
                 'stock'        => $item['supplierCode'],
                 'model'        => $item,
                 'hash'         => md5($item['supplierCode'] . $item['brand'] . $item['number'] . $item['deliveryPeriod'] . $item['price']),

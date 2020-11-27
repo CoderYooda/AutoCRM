@@ -126,6 +126,7 @@ class PageController extends Controller
 
         $products = $selectedCategory
             ->articles()
+            ->with('company', 'supplier', 'entrances')
             ->with('image')
             ->when(!$this->shop->show_empty, function (Builder $query) {
                 $query->whereHas('entrances', function (Builder $query) {
@@ -142,27 +143,7 @@ class PageController extends Controller
     {
         $selectedCategory = $product->category->load('childs');
 
-        $providersOrders = [];
-
-        if($this->shop->supplier_offers) {
-            /** @var Providers $providers */
-            $providers = app(Providers::class);
-
-            /** @var ProviderInterface $provider */
-            foreach ($providers->activated() as $provider_key => $provider) {
-                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
-
-                foreach ($providersOrders[$provider_key] as $key => $order) {
-
-                    $price = $providersOrders[$provider_key][$key]['price'];
-
-                    $providersOrders[$provider_key][$key]['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-                    $providersOrders[$provider_key][$key]['model']['hash_info']['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-                }
-            }
-        }
-
-        return view('shop.product', compact('product', 'selectedCategory', 'providersOrders'))
+        return view('shop.product', compact('product', 'selectedCategory'))
             ->with('shop', $this->shop);
     }
 }

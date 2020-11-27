@@ -147,7 +147,7 @@
                                 <div class="float-r w-50">
                                     <select name="pickup_id">
                                         @foreach($stores as $store)
-                                            <option value="{{ $store->id }}">{{ $store->name }}</option>
+                                            <option value="{{ $store->id }}">{{ $shop->address_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

@@ -68,10 +68,11 @@ class ArmTek implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'VKORG'    => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
-            'BRAND'    => $brand,
-            'KUNNR_RG' => $this->getApiKunnr(),
-            'PIN'      => $article
+            'VKORG'      => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'BRAND'      => $brand,
+            'KUNNR_RG'   => $this->getApiKunnr(),
+            'PIN'        => $article,
+            'QUERY_TYPE' => 2
         ];
 
         $items = $this->query('/ws_search/search', $params, 'POST');
@@ -85,7 +86,7 @@ class ArmTek implements ProviderInterface
             $items['RESP'][$key]['hash_info'] = [
                 'stock'        => $item['KEYZAK'],
                 'manufacturer' => $item['BRAND'],
-                'article'      => $article,
+                'article'      => $item['PIN'],
                 'days'         => $item['DLVDT'],
                 'price'        => $item['PRICE'],
                 'packing'      => $item['RDPRF'],
@@ -112,11 +113,12 @@ class ArmTek implements ProviderInterface
                 'delivery'     => $delivery_days . ' дн.',
                 'days_min'     => $delivery_days,
                 'price'        => $item['PRICE'],
-                'packing'        => $item['RDPRF'],
+                'packing'      => $item['RDPRF'],
                 'manufacturer' => $item['BRAND'],
+                'article'      => $item['PIN'],
                 'stock'        => $item['KEYZAK'],
                 'model'        => $item,
-                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $article . $item['DLVDT'] . $item['PRICE']),
+                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $item['PIN'] . $item['DLVDT'] . $item['PRICE']),
                 'is_analogue'  => $item['ANALOG'] == 'X'
             ];
         }

@@ -16,9 +16,9 @@ class UpdateDeliveryRequest extends FormRequest
     public function rules()
     {
         return [
-            'delivery_desc' => ['required', 'string', 'max:1024'],
-            'seo_delivery_title' => ['nullable', 'string', 'max:2048'],
-            'seo_delivery_desc' => ['nullable', 'string', 'max:2048']
+            'delivery_desc' => ['required', 'string', 'max:65535'],
+            'seo_delivery_title' => ['nullable', 'string', 'max:65535'],
+            'seo_delivery_desc' => ['nullable', 'string', 'max:65535']
         ];
     }
 

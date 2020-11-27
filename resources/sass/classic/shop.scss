@@ -669,6 +669,7 @@ body{
 .tab .form-group:last-child{
     margin-bottom: 0px;
 }
+
 .w-100{
     width: 100%!important;
 }
@@ -2260,9 +2261,11 @@ body{
     }
 
     & > .header {
+        position: relative;
         height: 44px;
         background: #F8F8F8;
         border: 1px solid #E1E1E1;
+        border-top: unset;
         display: flex;
         padding-left: 30px;
 
@@ -2271,6 +2274,16 @@ body{
         line-height: 44px;
         letter-spacing: 0.04em;
         color: #272727;
+
+        .originals, .analogues {
+            position: absolute;
+            right: 30px;
+            top: 0;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 0.04em;
+            color: #A6A6A6;
+        }
     }
 
     & > .body {
@@ -2278,8 +2291,8 @@ body{
         border-bottom: 1px solid #E1E1E1;
 
         .element {
-            height: 74px;
-            line-height: 74px;
+            height: 60px;
+            line-height: 60px;
             display: flex;
             padding-left: 30px;
             position: relative;
@@ -2325,15 +2338,15 @@ body{
 
             .shipping-container{
 
-                height: 74px !important;
+                height: 60px !important;
                 display: flex;
                 right: 30px;
                 align-items: center;
 
                 .counter-container{
 
-                    height: 42px;
-                    line-height: 42px;
+                    height: 38px;
+                    line-height: 38px;
 
                     display: flex;
                     width: 168px;
@@ -2606,7 +2619,7 @@ body{
     text-align: center;
     font-weight: 800;
     font-size: 28px;
-    height: 200px;
+    height: 150px;
     letter-spacing: 0.06em;
     color: #DEDEDE;
     display: flex;

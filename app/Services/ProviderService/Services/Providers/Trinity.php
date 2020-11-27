@@ -85,7 +85,7 @@ class Trinity implements ProviderInterface
             $items['data'][$key]['hash_info'] = [
                 'stock' => $item['stock'],
                 'manufacturer' => $item['producer'],
-                'article' => $article,
+                'article' => $item['code'],
                 'days' => $item['deliverydays'],
                 'price' => $item['price'],
                 'packing' => $item['minOrderCount'],
@@ -113,13 +113,14 @@ class Trinity implements ProviderInterface
                 'days_max' => $days_max,
                 'packing' => $store['minOrderCount'],
                 'min_count' => $store['minOrderCount'],
-                'delivery' => $store['deliverydays'] . 'дн.',
+                'delivery' => $store['deliverydays'] . ' дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['producer'],
+                'article' => $store['code'],
                 'model' => $store,
                 'stock' => $store['stock'],
-                'hash' => md5($store['stock'] . $store['producer'] . $article . $store['deliverydays'] . $store['price']),
-                'is_analogue' => false
+                'hash' => md5($store['stock'] . $store['producer'] . $store['code'] . $store['deliverydays'] . $store['price']),
+                'is_analogue' => $store['producer'] != $brand
             ];
         }
 

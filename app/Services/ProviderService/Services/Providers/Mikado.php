@@ -84,8 +84,8 @@ class Mikado implements ProviderInterface
 
         $brand = strtoupper($brand);
 
-        $items = $items->filter(function ($item) use($brand) {
-             return strpos($item['Brand'], $brand) !== false;
+        $items = $items->filter(function ($item) use ($brand) {
+            return strpos($item['Brand'], $brand) !== false;
         });
 
         $items = $items->toArray();
@@ -112,14 +112,14 @@ class Mikado implements ProviderInterface
 
             $items[$key]['hash_info'] = [
                 'stock'        => $item['ZakazCode'],
-                'manufacturer' => $item['Supplier'],
-                'article'      => $article,
+                'manufacturer' => $item['ProducerBrand'],
+                'article'      => $item['ProducerCode'],
                 'days'         => $delivery,
                 'price'        => $item['PriceRUR'],
                 'packing'      => $item['MinZakazQTY'] ?? 1,
                 'desc'         => $item['Name'],
                 'rest'         => $rest,
-                'supplier'     =>  $this->name
+                'supplier'     => $this->name
             ];
 
             $results[] = [
@@ -131,10 +131,11 @@ class Mikado implements ProviderInterface
                 'days_min'     => $delivery,
                 'packing'      => $item['MinZakazQTY'] ?? 1,
                 'price'        => $item['PriceRUR'],
-                'manufacturer' => $item['Supplier'],
+                'manufacturer' => $item['ProducerBrand'],
+                'article'      => $item['ProducerCode'],
                 'stock'        => $item['ZakazCode'],
                 'model'        => $items[$key],
-                'hash'         => md5($item['ZakazCode'] . $item['Supplier'] . $article . $delivery . $item['PriceRUR']),
+                'hash'         => md5($item['ZakazCode'] . $item['ProducerBrand'] . $item['ProducerCode'] . $delivery . $item['PriceRUR']),
                 'is_analogue'  => $item['CodeType'] == 'Analog'
             ];
         }

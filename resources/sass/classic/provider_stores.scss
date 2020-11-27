@@ -31,6 +31,7 @@
 .result_info {
     margin-left: 15px;
     margin-top: 15px;
+    margin-bottom: 0;
 }
 
 .table {
@@ -47,6 +48,17 @@
             flex: 1;
             color: #2D76A8;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.price {
+                max-width: 100px;
+            }
+
+            &:last-child {
+                max-width: 130px;
+            }
         }
     }
 
@@ -73,8 +85,15 @@
                 }
 
                 .edit-cart-count {
-                    width: 60%;
                     display: flex;
+                }
+
+                &.price {
+                    max-width: 100px;
+                }
+
+                &:last-child {
+                    max-width: 130px;
                 }
             }
         }
