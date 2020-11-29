@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api_v2;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Requests\StoreGetRequest;

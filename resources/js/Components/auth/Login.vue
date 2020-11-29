@@ -62,9 +62,11 @@
                 }).then((resp) =>  {
                     if(resp.data.status === 'success' && resp.data.api_token){
                         this.saveToLocalStorage('api_token', resp.data.api_token);
+                        this.saveToLocalStorage('company_id', resp.data.company_id);
                         this.saveToLocalStorage('user_pic', resp.data.pic);
                         this.saveToLocalStorage('user_name', resp.data.name);
                         this.saveToLocalStorage('user_role', resp.data.role);
+                        this.saveToLocalStorage('user_id', resp.data.id);
                         this.showLogin = false;
                         this.$router.go();
                     }

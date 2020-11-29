@@ -18,23 +18,9 @@ Route::namespace('API')->middleware('auth:api')->group(function() {
     Route::get('/products/{product}', 'ProductController@show')->name('products.show');
 
 
-});
-Route::group(['middleware' => ['auth:api']], function () {
-    Route::get('/store/base/table_data',   'Api_v2\StoreController@tableData')->name('getStoreData');
-    Route::get('data/cash/aside', 'CategoryController@getCashAside')->name('getCashAside');
-    Route::get('data/store/aside', 'CategoryController@getStoreAside')->name('getStoreAside');
-    Route::get('data/user/aside', 'CategoryController@getUserAside')->name('getUserAside');
+
+    Route::get('/store/base/table_data',   'StoreController@tableData')->name('getStoreData');
+    Route::get('/provider_order/base/table_data',   'ProviderOrderController@tableData')->name('getPOData');
 });
 
-//
-//
-//Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
-//
-//Route::group(['middleware' => ['auth:api']], function () {
-//    Route::post('/store/index', 'StoreController@index')->name('StoreIndex');
 
-//
-//
-//    Route::get('data/categories/show',  'Api_v2\CategoryController@show')->name('showCategory');
-//    Route::get('data/categories/get',   'Api_v2\CategoryController@get')->name('getCategories');
-//    Route::get('store/base/table_data',   'Api_v2\StoreController@tableData')->name('getStoreData');

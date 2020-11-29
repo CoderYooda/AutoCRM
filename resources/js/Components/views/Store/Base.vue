@@ -30,14 +30,17 @@
         },
         data: ()=> {
             return {
+                table_data:{},
                 root_category: 2,
                 category: null,
                 search: '',
                 categories:null,
-                table_data:{}
+                table_loading:false,
+                category_loading:false,
+                categories_loading:false,
             }
         },
-        mounted(){
+        beforeMount(){
             this.table_data.header = [
                 {min_width: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_width: 100, width: 'auto', name: 'Наименование', table_name: 'name'},
@@ -52,8 +55,12 @@
                 {name:'Показать аналоги в наличии', action: (data) => {this.showAnalogues(data);}},
             ];
             this.table_data.dbl_click = function(id){console.log(id)};
+            this.table_data.url = '/store/base/table_data';
         },
         computed:{
+            loading(){
+                return this.table_loading || this.category_loading || this.categories_loading;
+            },
             category_id(){
                 this.category = (this.$route.params.category_id === 'all') ? this.root_category : this.$route.params.category_id;
                 return this.category;

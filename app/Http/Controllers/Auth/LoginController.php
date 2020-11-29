@@ -108,6 +108,8 @@ class LoginController extends Controller
                 $request->session()->regenerate();
                 $this->clearLoginAttempts($request);
                 return response()->json([
+                    'id' => $user->id,
+                    'company_id' => $user->company_id,
                     'pic' => $user->partner()->first()->getPicUrl(),
                     'name' => $user->partner()->first()->outputName(),
                     'role' => $user->roles->first()->name,

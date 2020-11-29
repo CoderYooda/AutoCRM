@@ -34,14 +34,7 @@ class SystemMessage implements ShouldBroadcast
     {
         $message = $this->message;
         return [
-            'view' => view(get_template() . '.system.message.message', compact('message'))->render()
+            'message' => $message
         ];
     }
-
-//    public function broadcastWith()
-//    {
-//        return [
-//            'view' => view('classic.tasks.system_message.index')->render()
-//        ];
-//    }
 }

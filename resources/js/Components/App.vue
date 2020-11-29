@@ -29,11 +29,10 @@
             });
         },
         created(){
-            // this.$echo.channel("test-event").listen("ExampleEvent", e => {
-            //     console.log(e);
-            // });
-            let token = localStorage['api_token'];
-            if(token){
+            let token = this.getFromLocalStorage('api_token');
+            let user_id = this.getFromLocalStorage('user_id');
+            let company_id = this.getFromLocalStorage('company_id');
+            if(token && user_id){
                 this.echo = new Echo({
                     broadcaster: 'socket.io',
                     auth: {
@@ -41,66 +40,19 @@
                             Authorization: 'Bearer ' + token
                         }
                     },
-                    host: window.location.hostname + ':6001'
+                    host: window.location.hostname + ':6001',
                 });
             } else {
                 console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
             }
-            // private-system_message.3
             this.echo
-                .private('system_message.' + 3)
-                .listen('SystemMessage', function(e){
-                    console.log(1111);
-                    // let block = helper.createElementFromHTML(e.view);
-                    // var sp2 = document.querySelector("#system_messages > div");
-                    // var parentDiv = sp2.parentNode;
-                    // parentDiv.insertBefore(block, sp2);
-                    // window.systemMessages.loadMessages();
-                    // window.systemMessages.bellCall();
-                    let audio = new Audio('sounds/system_message.mp3');
-                    audio.play();
+                .private('system_message.' + user_id)
+                .listen('SystemMessage', (data)=>{
+                    this.$eventBus.$emit('systemMessage', data);
+                    console.log(data);
+                    // let audio = new Audio('/sounds/system_message.mp3');
+                    // audio.play();
                 });
-                // .listen('StoreImportIteration', function(e){
-                //     try {
-                //         window.storeImportDialog.incrementImportPercent(e.percent);
-                //     }
-                //     catch (e) {
-                //         console.log(e);
-                //     }
-                // })
-                // .listen('StoreImportFinish', function(e){
-                //     try {
-                //         window.storeImportDialog.finishUpload(e.info, e.html);
-                //     }
-                //     catch (e) {
-                //         console.log(e);
-                //     }
-                // })
-                // .listen('OrderUpdated', function(e){
-                //
-                //     try {
-                //         document.querySelector('#orders_count').innerHTML = e.orders_count;
-                //     }
-                //     catch (e) {
-                //         console.log(e);
-                //     }
-                // });
-
-            // Echo.join('survey.')
-            //     .here((users) => {
-            //         this.users_viewing = users;
-            //         this.$forceUpdate();
-            //     })
-            //     .joining((user) => {
-            //         if (this.checkIfUserAlreadyViewingSurvey(user)) {
-            //             this.users_viewing.push(user);
-            //             this.$forceUpdate();
-            //         }
-            //     })
-            //     .leaving((user) => {
-            //         this.removeViewingUser(user);
-            //         this.$forceUpdate();
-            //     });
         },
         methods: {
         },

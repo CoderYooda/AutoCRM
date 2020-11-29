@@ -634,11 +634,11 @@ label.label-sm{
     background: none;
     border: none;
     color: #5b88bd;
-    margin: 0;
     float: right;
     line-height: 22px!important;
     height: 22px!important;
     padding: 0px 6px;
+    margin: 4px 0px 4px 10px;
 }
 .right-remove:hover{
     background: #eee;
@@ -707,6 +707,27 @@ button:disabled {
 .form-control::placeholder{
     color: #B4B4B4;
 }
+.filter_pos:hover .clear_filter{
+    opacity: 1;
+}
+.clear_filter{
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #888888;
+    height: 22px!important;
+    line-height: 17px!important;
+    padding: 0px;
+    outline: none !important;
+    box-shadow: none !important;
+    margin-bottom: 5px;
+    opacity: 0;
+    transition: 0.2s opacity;
+}
+.checkbox_label{
+    font-weight: 400;
+    cursor: pointer
+}
 .button_select:after {
     font-family: FontAwesome;
     font-weight: 400;
@@ -735,7 +756,7 @@ select:not(.is-valid):not(.is-invalid):focus, textarea:not(.is-valid):not(.is-in
     border-color: #2d76a8;
 }
 .filter-panel label{
-    margin-bottom: 0px!important;
+    margin-bottom: 5px !important;
 }
 .filter-panel input{
      margin-bottom: 0px!important;

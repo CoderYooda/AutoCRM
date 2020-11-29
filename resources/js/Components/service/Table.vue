@@ -15,8 +15,8 @@
                     </div>
                 </div>
                 <div class="bbtable-body" data-simplebar style="height: calc(100% - 59px);" >
-                    <div>
-                        <div v-on:dblclick="dblClick(elem)"
+                    <div >
+                        <div v-if="!loading" v-on:dblclick="dblClick(elem)"
                              v-on:contextmenu="openContext"
                              v-on:click="selectItem(elem)"
                              v-for="(elem, index) in items"
@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-                <div ref="cont" class="context" id="context" v-bind:style="context_style">
+                <div v-if="!loading" ref="cont" class="context" id="context" v-bind:style="context_style">
                     <div v-on:click="menu.action"
                          v-for="menu in table_data.context_menu"
                          v-bind:key="menu.name" class="context_item">
@@ -83,7 +83,6 @@
                 paginate_array: null,
                 field: null,
                 dir:null,
-                loading: false,
                 selected: [],
                 last_selected:null,
                 index:0,
@@ -94,7 +93,6 @@
         watch: {
             $route(to, from) {
                 this.getItems();
-
             },
             $attrs:function(){
                 this.search = this.$attrs.search;
@@ -106,6 +104,9 @@
             document.addEventListener('click', this.closeContext)
         },
         computed:{
+            loading(){
+                return this.$parent.loading;
+            },
             isAnyChecked(){
               return Boolean(this.selected.length);
             },
@@ -200,11 +201,11 @@
             },
             getItems(){
                 this.unsetSelected();
-                this.loading = true;
                 this.items = [];
+                this.$parent.table_loading = true;
                 window.axios({
                     method: 'get',
-                    url: '/store/base/table_data',
+                    url: this.table_data.url,
                     params: {
                         category_id: this.getCategoryId(),
                         search: this.getSearchString(),
@@ -217,7 +218,7 @@
                     this.last_page = resp.data.last_page;
                     this.getPaginator();
                 }).then(()=>{
-                    this.loading = false;
+                    this.$parent.table_loading = false;
                 });
             },
             setPage(num){

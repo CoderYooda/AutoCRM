@@ -1,6 +1,6 @@
 <template>
     <div id="ajax-content">
-        <AsideMenu menu="cash"/>
+        <AsideMenu v-bind:menu="menu"/>
         <div class="main-content">
             <div class="box-lister box">
                 <router-view></router-view>
@@ -14,22 +14,17 @@
     export default {
         data: ()=> {
             return {
-                menu: null,
+                menu: [
+                    {name: 'Кассовые ордера',       link: '/cash/warrant'},
+                    {name: 'Перемещения',           link: '/cash/cash_move'},
+                    {name: 'Начисление зарплат',    link: '/cash/salary_payments'},
+                ],
             }
         },
         mounted() {
             this.$eventBus.$emit('set-title', 'Главная страница');
-            this.menuElements();
         },
         methods: {
-            menuElements(){
-                this.menu = [
-                    {
-                        name:"Перемещения",
-                        link:"/"
-                    }
-                ]
-            }
         },
         components:{
             AsideMenu

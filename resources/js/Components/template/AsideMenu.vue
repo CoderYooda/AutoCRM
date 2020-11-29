@@ -12,9 +12,9 @@
 <script>
     export default {
         name: "AsideMenu",
+        props:['menu'],
         data: ()=> {
             return {
-                menu: {},
             }
         },
         computed:{
@@ -23,20 +23,8 @@
 
         },
         mounted() {
-            this.getCategories();
         },
         methods:{
-          getCategories(){
-              let stored_data = this.getFromLocalStorage(this.$attrs.menu + '_aside_data');
-              if(!stored_data){
-                  axios.get('/data/' + this.$attrs.menu +  '/aside').then((response) => {
-                      this.menu = response.data;
-                      this.saveToLocalStorage(this.$attrs.menu + '_aside_data', this.menu);
-                  });
-              } else {
-                  this.menu = stored_data;
-              }
-          }
         }
     }
 </script>

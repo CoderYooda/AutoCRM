@@ -73,6 +73,7 @@ window.simplebar = require('simplebar/dist/simplebar.min');
 
 import Vue from 'vue';
 import VueMask from 'v-mask'
+import VCalendar from 'v-calendar';
 import App from './components/App'
 import router from './router';
 import store from './store';
@@ -95,9 +96,13 @@ Vue.prototype.getFromLocalStorage = (key)=>{
     return val ? JSON.parse(val) : null;
 };
 
+Vue.prototype.removeFromLocalStorage = (key)=>{
+    return localStorage.removeItem(key);
+};
+
 Vue.use(VueMask);
 Vue.use(Notifications);
-
+Vue.use(VCalendar);
 let app = new Vue({
     router,
     store,
