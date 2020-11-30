@@ -1,5 +1,7 @@
 @extends('shop.layout.app')
 
+@section('title', 'Поиск')
+
 @section('content')
 <div class="body">
 

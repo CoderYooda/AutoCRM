@@ -2,7 +2,7 @@
 
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.shop.layout.tabs')
 
-@section('title', $page ?? 'Интернет-магазин')
+@section('title', $page ?? 'Оплата и доставка')
 
 @section('tab')
 
@@ -16,7 +16,7 @@
 
                 <div class="form-group mt-10">
                     <label>Способы оплаты и доставки</label>
-                    <div data-error="delivery_desc">
+                    <div data-error="delivery_desc" style="max-width: 800px;">
                         <div id="editor">{!! $shop->delivery_desc ?? '' !!}</div>
                     </div>
                 </div>

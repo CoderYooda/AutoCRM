@@ -16,7 +16,7 @@
 
                 <div class="form-group mt-10">
                     <label>Описание компании</label>
-                    <div data-error="about_desc">
+                    <div data-error="about_desc" style="max-width: 800px;">
                         <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
                     </div>
                 </div>

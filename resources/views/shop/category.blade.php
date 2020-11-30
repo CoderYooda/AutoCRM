@@ -1,5 +1,7 @@
 @extends('shop.layout.app')
 
+@section('title', $selectedCategory->name)
+
 @section('content')
 <div class="body">
 

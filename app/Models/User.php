@@ -42,6 +42,11 @@ class User extends Authenticatable
         return $this->belongsTo(Partner::class, 'id', 'user_id')->where('company_id', $shop->company_id);
     }
 
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'company_id', 'company_id');
+    }
+
     public function getStoreFirst(){
         return $this->partner->store()->first();
     }

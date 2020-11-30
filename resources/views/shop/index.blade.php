@@ -79,7 +79,7 @@
         </div>
         <div class="categories-container">
             @foreach($categories as $category)
-                <div class="category">
+                <div class="category pointer" onclick="window.location.href = '{{ $category->path() }}';">
                     <div class="description relative">
                         <div class="title">{{ $category->name }}</div>
                         <div class="link">
@@ -91,7 +91,7 @@
                 </div>
             @endforeach
 
-            <div class="category">
+            <div class="category pointer" onclick="window.location.href = '{{ route('pages.catalogue') }}';">
                 <div class="description relative">
                     <div class="title">+{{ $categories->total() }} категорий</div>
                     <div class="link">

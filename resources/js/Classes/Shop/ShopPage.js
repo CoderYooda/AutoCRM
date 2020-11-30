@@ -577,6 +577,18 @@ class shopPage {
         });
     }
 
+    savePaymentMethods(element) {
+
+        axform.send(element, response => {
+            if(response.status == 200) {
+
+                let data = response.data;
+
+                notification.notify(data.type, data.message);
+            }
+        });
+    }
+
     saveSettings(element) {
 
         let image_ids = [];

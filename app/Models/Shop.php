@@ -76,4 +76,22 @@ class Shop extends Model
     {
         return $this->belongsToMany(Email::class, 'shop_emails_order');
     }
+
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class, 'shop_id', 'id');
+    }
+
+    public function getActivePaymentMethod()
+    {
+        $paymentMethod = $this->paymentMethods()->where('main', 1)->first();
+
+        if($paymentMethod) {
+            $paymentMethod = $paymentMethod->toArray();
+            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+            return $paymentMethod;
+        }
+
+        return [];
+    }
 }

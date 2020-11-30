@@ -7,6 +7,7 @@ use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
 use App\Http\Requests\Shop\UpdateAnalyticsRequest;
 use App\Http\Requests\Shop\UpdateDeliveryRequest;
+use App\Http\Requests\Shop\UpdatePaymentMethodsRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
 use App\Http\Requests\Shop\UpdateWarrantyRequest;
@@ -94,6 +95,24 @@ class ShopController extends Controller
     public function analyticsTab(Request $request)
     {
         return view(get_template() . '.shop.tabs.analytics', compact('request'));
+    }
+
+    public function payment_methodsTab(Request $request)
+    {
+        $shop = Auth::user()->shop;
+
+        $paymentMethods = $shop->paymentMethods->toArray();
+
+        $filteredArray = [];
+
+        foreach ($paymentMethods as $paymentMethod) {
+            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+            $filteredArray[$paymentMethod['name']] = $paymentMethod;
+        }
+
+        $paymentMethods = $filteredArray;
+
+        return view(get_template() . '.shop.tabs.payment_methods', compact('request', 'paymentMethods'));
     }
 
     public function update(UpdateRequest $request)
@@ -258,6 +277,34 @@ class ShopController extends Controller
         });
     }
 
+    public function updatePaymentMethods(UpdatePaymentMethodsRequest $request)
+    {
+        $params = $request->validated();
+
+        $user = Auth::user();
+
+        /** @var Shop $shop */
+        $shop = $user->shop;
+
+        $methods = [];
+
+        foreach ($params['methods'] as $method_name => $method_params) {
+            $methods[] = [
+                'name' => $method_name,
+                'params' => json_encode($method_params),
+                'main' => $request->methods_main == $method_name
+            ];
+        }
+
+        $shop->paymentMethods()->delete();
+        $shop->paymentMethods()->createMany($methods);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Настройки успешно сохранены'
+        ]);
+    }
+
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
@@ -267,6 +314,18 @@ class ShopController extends Controller
 
             /** @var Order $order */
             $order = Order::find($request->order_id);
+
+            /** @var Shop $shop */
+            $shop = $order->shop;
+
+            $paymentMethod = $shop->getActivePaymentMethod();
+
+            if($order->pay_type == Order::PAYMENT_TYPE_ONLINE && $paymentMethod == []) {
+                return response()->json([
+                    'type' => 'error',
+                    'message' => 'Нет активных способов оплаты'
+                ], 422);
+            }
 
             /** @var ClientOrder $clientOrder */
             $clientOrder = null;

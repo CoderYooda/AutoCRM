@@ -1,5 +1,7 @@
 @extends('shop.layout.app')
 
+@section('title', $product->name)
+
 @section('content')
 <div class="body product_page" data-product="{{ json_encode($product) }}">
 

@@ -1,6 +1,6 @@
 @extends('shop.layout.app')
 
-@section('title', $shop->seo_warranty_title)
+@section('title', $shop->seo_warranty_title ?? 'Гарантии и возврат')
 @section('description', $shop->seo_warranty_desc)
 
 @section('content')

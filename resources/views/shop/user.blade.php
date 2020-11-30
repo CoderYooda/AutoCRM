@@ -1,5 +1,7 @@
 @extends('shop.layout.app')
 
+@section('title', 'Личный кабинет')
+
 @section('content')
 
     <div class="body user_page">

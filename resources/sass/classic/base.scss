@@ -1714,6 +1714,10 @@ input:-moz-placeholder { /* Firefox 18- */
     max-width: 100px !important;
 }
 
+.w-50 {
+    width: 50% !important;
+}
+
 .w-100{
     width: 100% !important;
 }
@@ -3425,7 +3429,7 @@ input:-moz-placeholder { /* Firefox 18- */
     border-radius: unset !important;
 }
 
-#ajax-table-shop {
+#ajax-table-shop, #ajax-shop-payment_methods {
     .custom_checkbox {
         span {
             margin-top: 7px;

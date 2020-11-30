@@ -2,7 +2,7 @@
 
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.shop.layout.tabs')
 
-@section('title', $page ?? 'Интернет-магазин')
+@section('title', $page ?? 'Гарантия и возврат')
 
 @section('tab')
 
@@ -16,7 +16,7 @@
 
                 <div class="form-group mt-10">
                     <label>Гарантии и способы возврата</label>
-                    <div data-error="warranty_desc">
+                    <div data-error="warranty_desc" style="max-width: 800px;">
                         <div id="editor">{!! $shop->warranty_desc ?? '' !!}</div>
                     </div>
                 </div>

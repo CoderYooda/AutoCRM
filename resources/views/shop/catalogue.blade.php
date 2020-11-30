@@ -12,7 +12,7 @@
         <div class="categories-container">
 
             @foreach($categories as $category)
-                <div class="category">
+                <div class="category pointer" onclick="window.location.href='{{ $category->path() }}';">
                     <div class="description">
                         <div class="title">{{ $category->name }}</div>
                         <div class="url">

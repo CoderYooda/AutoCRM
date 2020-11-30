@@ -1,6 +1,6 @@
 @extends('shop.layout.app')
 
-@section('title', $shop->seo_about_title)
+@section('title', $shop->seo_about_title ?? 'О компании')
 @section('description', $shop->seo_about_desc)
 
 @section('content')

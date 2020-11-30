@@ -27,34 +27,40 @@ class OrderController extends Controller
     {
         $order = Order::where('hash', $hash)->firstOrFail();
 
+        /** @var Shop $shop */
+        $shop = $order->shop;
+
         $positions = DB::table('order_positions')->where('order_id', $order->id)->get();
 
-        $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
+        $paymentMethod = $shop->getActivePaymentMethod();
 
-        if($order->tinkoff_id && $order->status == 1) {
+        if($paymentMethod != [] && $paymentMethod['name'] == 'tinkoff') {
 
-            $params = [
-                'TerminalKey' => env('TINKOFF_TERMINAL_KEY'),
-                'PaymentId'   => $order->tinkoff_id,
-            ];
+            $api = new TinkoffMerchantAPI($paymentMethod['params']['terminal_key'], $paymentMethod['params']['secret_key']);
 
-            $api->getState($params);
+            if ($order->tinkoff_id && $order->status == 1) {
 
-            if($api->status == 'CONFIRMED') {
-                $order->update(['status' => 2]);
-
-                Mail::to($order->email)->send(new PayedOrder($order));
-            }
-            else {
-                $canceled_statuses = [
-                    'DEADLINE_EXPIRED',
-                    'REJECTED',
-                    'CANCELED',
-                    'AUTH_FAIL'
+                $params = [
+                    'PaymentId'   => $order->tinkoff_id,
                 ];
 
-                if (in_array($api->status, $canceled_statuses)) {
-                    $order->update(['status' => 3]);
+                $api->getState($params);
+
+                if ($api->status == 'CONFIRMED') {
+                    $order->update(['status' => 2]);
+
+                    Mail::to($order->email)->send(new PayedOrder($order));
+                } else {
+                    $canceled_statuses = [
+                        'DEADLINE_EXPIRED',
+                        'REJECTED',
+                        'CANCELED',
+                        'AUTH_FAIL'
+                    ];
+
+                    if (in_array($api->status, $canceled_statuses)) {
+                        $order->update(['status' => 3]);
+                    }
                 }
             }
         }
