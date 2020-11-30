@@ -4,6 +4,7 @@ namespace App\Http\Requests\Shop;
 
 use App\Rules\DomainDnsRule;
 use App\Rules\DomainRule;
+use App\Rules\Shop\CorrectSubdomainName;
 use App\Rules\SubdomainRule;
 use App\Rules\TabooSubdomainRule;
 use Illuminate\Contracts\Validation\Validator;
@@ -50,7 +51,7 @@ class UpdateSettingsRequest extends FormRequest
             'delete_image_ids' => ['nullable', 'array'],
             'delete_image_ids.*' => ['integer', 'exists:images,id'],
             'domain' => ['nullable', 'string', new DomainRule, new DomainDnsRule],
-            'subdomain' => ['nullable', 'string', new SubdomainRule, new TabooSubdomainRule]
+            'subdomain' => ['nullable', 'string', new SubdomainRule, new TabooSubdomainRule, new CorrectSubdomainName]
         ];
 
         if($this->supplier_offers == 1) {

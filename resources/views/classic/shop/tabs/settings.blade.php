@@ -182,12 +182,12 @@
                 <h2 class="style_header mb-10">Адрес сайта</h2>
 
                 <div class="form-group w-350">
-                    <label>URL адрес</label>
+                    <label>Бесплатный поддомен в BBCRM</label>
                     <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? 'name.bbcrm.ru' }}">
                 </div>
 
                 <div class="form-group w-350">
-                    <label>Свой домен</label>
+                    <label>Собственное доменное имя</label>
                     <input type="text" name="domain" data-error="domain" class="form-control" placeholder="www.пример.рф" value="{{ $shop->domain ?? '' }}">
                 </div>
 
