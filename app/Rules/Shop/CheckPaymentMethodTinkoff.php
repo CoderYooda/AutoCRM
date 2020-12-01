@@ -12,6 +12,8 @@ class CheckPaymentMethodTinkoff implements Rule
         $terminal_key = $value['terminal_key'];
         $secret_key = $value['secret_key'];
 
+        if($terminal_key == null && $secret_key == null) return true;
+
         $api = new TinkoffMerchantAPI($terminal_key, $secret_key);
 
         $params = [
