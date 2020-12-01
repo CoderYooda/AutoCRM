@@ -2355,6 +2355,9 @@ body{
                 font-size: 14px;
                 letter-spacing: 0.04em;
                 color: #272727;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
 
             .shipping-container{

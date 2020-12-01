@@ -9,7 +9,7 @@
         <div class="header">
 
             <div class="flex-1 availability">
-                <span>Наличии</span>
+                <span>В наличии</span>
                 {{--                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
             </div>
 
@@ -80,7 +80,7 @@
             </div>
 
             <div class="flex-1 availability">
-                <span>Наличии</span>
+                <span>В наличии</span>
                 {{--                            <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
             </div>
 

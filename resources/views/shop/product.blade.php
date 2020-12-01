@@ -100,7 +100,7 @@
                                 {{ $product->getCountInStoreId($store->id) ? 'В Наличии' : 'Нет в Наличии' }}
                             @endif
                         </div>
-                        <div class="flex-1 shop">{{ $shop->address_name }}</div>
+                        <div class="flex-1 shop" title="{{ $shop->address_name }}">{{ $shop->address_name }}</div>
 
                         <div class="flex-2 price">
                             @if(!$product->sp_stock)
