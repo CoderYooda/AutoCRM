@@ -4,7 +4,7 @@ import IMask from 'imask';
 /* Notification settings */
 notification.configProfile( 'global', {
     behaviour: {
-        autoHide: 3,
+        autoHide: 99,
         limit: 5
     },
     animations: {

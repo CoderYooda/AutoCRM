@@ -65,6 +65,15 @@ h2{
 @import "shop/modals/edit_vehicle";
 @import "shop/restore";
 
+.notification-symbol {
+    width: 20px !important;
+}
+
+.notification-btn {
+    width: 20px !important;
+    height: 20px !important;
+}
+
 .select2-container--default .select2-selection--single {
     .select2-selection__rendered,
     .select2-selection__arrow {
