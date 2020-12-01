@@ -1,6 +1,6 @@
 @foreach($providersOrders as $providerKey => $orders)
 
-    <div class="table">
+    <div class="table @if($loop->first) mt-0 @endif">
 
         <div class="name mt-0">
             Склад {{ $loop->index + 1 }}

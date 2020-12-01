@@ -135,7 +135,7 @@
 
         </div>
 
-        <div class="analogue_list">
+        <div class="analogue_list mt-20">
             {{--        @include('shop.includes.product_analogues')--}}
         </div>
 
