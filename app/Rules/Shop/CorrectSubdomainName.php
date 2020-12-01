@@ -8,13 +8,11 @@ class CorrectSubdomainName implements Rule
 {
     public function passes($attribute, $value)
     {
-        if(strpos($value, '.bbcrm.ru') === false) return false;
-
-        return true;
+        return !preg_match("/[^A-Za-z0-9]/", $value);
     }
 
     public function message()
     {
-        return 'Поддоменное имя должно быть формата: example.bbcrm.ru';
+        return 'Поддоменное имя может содержать только латинские буквы и цифры.';
     }
 }

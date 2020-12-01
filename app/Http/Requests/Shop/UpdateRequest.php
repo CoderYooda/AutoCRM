@@ -29,7 +29,11 @@ class UpdateRequest extends FormRequest
             'emails.*.desc' => ['required', 'string'],
             'emails_main' => ['required'],
             'seo_contacts_title' => ['nullable', 'string', 'max:255'],
-            'seo_contacts_desc' => ['nullable', 'string', 'max:255']
+            'seo_contacts_desc' => ['nullable', 'string', 'max:255'],
+            'work_hour_from' => ['required', 'integer', 'between:0,23'],
+            'work_hour_to' => ['required', 'integer', 'between:0,23'],
+            'work_minute_from' => ['required', 'integer', 'between:0,59'],
+            'work_minute_to' => ['required', 'integer', 'between:0,59']
         ];
     }
 
@@ -42,6 +46,10 @@ class UpdateRequest extends FormRequest
         }
 
         $this->phones = $phones;
+
+        foreach (['work_hour_from', 'work_hour_to', 'work_minute_from', 'work_minute_to'] as $key) {
+            $this[$key] = sprintf('%02d', $this[$key]);
+        }
     }
 
     protected function failedValidation(Validator $validator)

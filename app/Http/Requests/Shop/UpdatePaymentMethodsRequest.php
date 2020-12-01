@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests\Shop;
 
-use App\Rules\Shop\CheckPaymentMethod;
+use App\Rules\Shop\CheckPaymentMethodTinkoff;
+use App\Rules\Yandex\CheckPaymentMethodYandex;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePaymentMethodsRequest extends FormRequest
@@ -18,7 +19,8 @@ class UpdatePaymentMethodsRequest extends FormRequest
 //            'methods.tinkoff.api_key' => ['nullable', 'string'],
 //            'methods.tinkoff.terminal_key' => ['nullable', 'string'],
             'methods_main' => ['required', 'string'],
-            'methods.tinkoff' => ['array', new CheckPaymentMethod],
+            'methods.tinkoff' => ['array', new CheckPaymentMethodTinkoff],
+            'methods.yandex' => ['array', new CheckPaymentMethodYandex]
         ];
     }
 }

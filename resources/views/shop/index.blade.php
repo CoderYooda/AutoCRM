@@ -41,7 +41,7 @@
                                         @if(!$product->sp_stock)
                                             <span class="price">{{ correct_price($product->getPrice()) }}</span>
                                         @else
-                                            <span class="price action">{{ correct_price($product->sp_discount_total) }}</span>
+                                            <span class="price action">{{ correct_price($product->getPriceWithDiscount()) }}</span>
                                             <span class="strikethrough-price">{{ correct_price($product->getPrice()) }}</span>
                                         @endif
                                     </div>

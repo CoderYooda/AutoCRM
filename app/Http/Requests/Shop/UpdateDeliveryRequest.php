@@ -13,12 +13,20 @@ class UpdateDeliveryRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        $this['has_pickup'] = $this['has_pickup'] ?? 0;
+        $this['has_delivery'] = $this['has_delivery'] ?? 0;
+    }
+
     public function rules()
     {
         return [
             'delivery_desc' => ['required', 'string', 'max:65535'],
             'seo_delivery_title' => ['nullable', 'string', 'max:65535'],
-            'seo_delivery_desc' => ['nullable', 'string', 'max:65535']
+            'seo_delivery_desc' => ['nullable', 'string', 'max:65535'],
+            'has_pickup' => ['required', 'integer', 'between:0,1'],
+            'has_delivery' => ['required', 'integer', 'between:0,1'],
         ];
     }
 

@@ -42,19 +42,23 @@
                 </div>
 
                 <div class="form-group w-350">
-                    <label>Показывать товары, которых нет в наличии</label>
-                    <label data-error="show_empty" class="custom_checkbox">
-                        <input type="checkbox" class="not_default" name="show_empty" @if($shop->show_empty ?? true) checked @endif value="1" />
-                        <span></span>
-                    </label>
+                    <div class="input-group">
+                        <label>Показывать товары, которых нет в наличии</label>
+                        <label data-error="show_empty" class="custom_checkbox ml-15">
+                            <input type="checkbox" class="not_default" name="show_empty" @if($shop->show_empty ?? true) checked @endif value="1" />
+                            <span></span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group w-350">
-                    <label>Показывать количество товаров в наличии</label>
-                    <label data-error="show_amount" class="custom_checkbox">
-                        <input type="checkbox" class="not_default" name="show_amount" @if($shop->show_amount ?? true) checked @endif value="1" />
-                        <span></span>
-                    </label>
+                    <div class="input-group">
+                        <label>Показывать количество товаров в наличии</label>
+                        <label data-error="show_amount" class="custom_checkbox ml-15">
+                            <input type="checkbox" class="not_default" name="show_amount" @if($shop->show_amount ?? true) checked @endif value="1" />
+                            <span></span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group w-350">
@@ -64,10 +68,9 @@
 
                 <div class="form-group w-350 d-flex flex-column">
 
-                    <div>
+                    <div class="input-group">
                         <label>Показывать предложения поставщиков</label>
-
-                        <label class="custom_checkbox">
+                        <label class="custom_checkbox ml-15">
                             <input type="checkbox" name="supplier_offers" class="not_default" @if($shop->supplier_offers ?? true) checked @endif onchange="{{ $class }}.toggleSupplierOffers(this);" value="1" />
                             <span></span>
                         </label>
@@ -183,7 +186,10 @@
 
                 <div class="form-group w-350">
                     <label>Бесплатный поддомен в BBCRM</label>
-                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? 'name.bbcrm.ru' }}">
+                    <div class="d-flex">
+                        <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name" value="{{ $shop->subdomain ?? 'name' }}">
+                        <input type="text" class="form-control subdomain_desc" placeholder="name" value=".bbcrm.ru" disabled>
+                    </div>
                 </div>
 
                 <div class="form-group w-350">

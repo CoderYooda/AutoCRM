@@ -259,10 +259,9 @@ class CategoryController extends Controller
             ->when($request['category_id'], function(Builder $q) use ($request){
                 $q->where('category_id', $request['category_id']);
             })
+            ->orderBy('name')
             ->limit(30)
             ->get();
-
-//        dd($request->all(), $cats);
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
 
@@ -330,11 +329,8 @@ class CategoryController extends Controller
             }else if($type != null) {
                 $category_id = Category::owned()->where('type', $type)->first()->id;
             }
-            $parent = Category::owned()->where('id',$category_id)->first();
-            if($parent == null){
-                abort(404);
-            }
-            $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
+            $parent = Category::owned()->where('id',$category_id)->firstOrFail();
+            $categories['stack'] = $parent->childs()->orderBy('name')->get();
             $categories['parent'] = $parent;
         } else {
             $categories['stack'] = Category::owned()->where(function($q) use ($request){
@@ -357,7 +353,7 @@ class CategoryController extends Controller
             abort(404);
         }
 
-        $categories['stack'] = $parent->childs()->orderBy('created_at', 'DESC')->get();
+        $categories['stack'] = $parent->childs()->orderBy('name')->get();
         $categories['parent'] = $parent;
         $categories['parent_root'] = $parent->id == $root_category;
 

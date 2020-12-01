@@ -15,7 +15,7 @@
                 <h2 class="mt-0 style_header">Способы оплаты</h2>
 
                 <div class="methods mt-10">
-                    <label>Tinkoff</label>
+                    <label>Tinkoff Merchant</label>
                     <div data-error="methods[tinkoff]" class="input-group mb-10 method">
 
                         <input type="text" name="methods[tinkoff][terminal_key]" class="form-control mr-5" placeholder="Ключ терминала" value="{{ $paymentMethods['tinkoff']['params']['terminal_key'] ?? '' }}">
@@ -27,6 +27,20 @@
                         </label>
 
                     </div>
+
+                    <label>Yandex Checkout</label>
+                    <div data-error="methods[yandex]" class="input-group mb-10 method">
+
+                        <input type="text" name="methods[yandex][shop_id]" class="form-control mr-5" placeholder="ID магазина" value="{{ $paymentMethods['yandex']['params']['shop_id'] ?? '' }}">
+                        <input type="text" name="methods[yandex][secret_key]" class="form-control mr-5" placeholder="Секретный ключ" value="{{ $paymentMethods['yandex']['params']['secret_key'] ?? '' }}">
+
+                        <label data-error="methods_main" class="custom_checkbox">
+                            <input type="radio" class="not_default" name="methods_main" @if($paymentMethods['yandex']['main'] ?? false) checked @endif value="yandex" />
+                            <span></span>
+                        </label>
+
+                    </div>
+
                 </div>
 
                 <div>

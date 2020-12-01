@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9409913db1711bc4f0593c1bc92f1f6",
+    "content-hash": "4ef1e5274f7aadf60d4ea0aac8280bed",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -4629,6 +4629,44 @@
                 "environment"
             ],
             "time": "2019-09-10T21:37:39+00:00"
+        },
+        {
+            "name": "yandex-money/yandex-checkout-sdk-php",
+            "version": "1.6.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yoomoney/yandex-checkout-sdk-php.git",
+                "reference": "798ac4d08314188d6f237fde99bfa761386fa9ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yoomoney/yandex-checkout-sdk-php/zipball/798ac4d08314188d6f237fde99bfa761386fa9ab",
+                "reference": "798ac4d08314188d6f237fde99bfa761386fa9ab",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "ext-xml": "*",
+                "mockery/mockery": "^0.9.9",
+                "phpunit/phpunit": "^4.8.35 || ^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "YandexCheckout\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "time": "2020-11-26T07:53:16+00:00"
         }
     ],
     "packages-dev": [

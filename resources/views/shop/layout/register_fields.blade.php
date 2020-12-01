@@ -183,14 +183,14 @@
         @if(request()->routeIs('cart*'))
 
             <div class="form-group-flex">
-                <label for="delivery_type">Способ доставки <span class="required_field">*</span></label>
+                <label for="delivery_type">Способ получения товара <span class="required_field">*</span></label>
                 <select onchange="cart.changeDeliveryType(this);" name="delivery_type">
-                    <option value="0">Самовывоз</option>
-                    <option value="1">Доставка</option>
+                    <option @if(!$shop->has_pickup) disabled @endif value="0">Самовывоз</option>
+                    <option @if(!$shop->has_delivery) disabled @endif value="1">Доставка</option>
                 </select>
             </div>
 
-            <div class="form-group-flex @if(old('delivery_type')) d-none @endif">
+            <div class="form-group-flex @if(!$shop->has_pickup) d-none @endif">
                 <label for="store_id">Точка получения заказа <span class="required_field">*</span></label>
                 <select name="pickup_id">
                     @foreach($stores as $store)
@@ -199,7 +199,7 @@
                 </select>
             </div>
 
-            <div class="form-group-flex @if(!old('delivery_type')) d-none @endif">
+            <div class="form-group-flex @if($shop->has_pickup || !$shop->has_delivery) d-none @endif">
                 <label for="delivery_address">Адрес доставки <span class="required_field">*</span></label>
                 <div class="float-r">
                     <div class="field">

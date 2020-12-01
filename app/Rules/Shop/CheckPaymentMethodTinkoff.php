@@ -5,7 +5,7 @@ namespace App\Rules\Shop;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use Illuminate\Contracts\Validation\Rule;
 
-class CheckPaymentMethod implements Rule
+class CheckPaymentMethodTinkoff implements Rule
 {
     public function passes($attribute, $value)
     {

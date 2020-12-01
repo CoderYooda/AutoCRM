@@ -137,6 +137,9 @@ class User {
         axios.post('/user/delivery/save', data)
             .then(response => {
 
+                let data = response.data;
+
+                window.notification.notify(data.type, data.message);
             })
             .catch(response => {
                 console.log(response);

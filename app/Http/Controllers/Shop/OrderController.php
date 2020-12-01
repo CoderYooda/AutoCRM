@@ -12,6 +12,7 @@ use App\Services\ShopManager\ShopManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Mpdf\Mpdf;
+use YandexCheckout\Client;
 
 class OrderController extends Controller
 {
@@ -27,21 +28,18 @@ class OrderController extends Controller
     {
         $order = Order::where('hash', $hash)->firstOrFail();
 
-        /** @var Shop $shop */
-        $shop = $order->shop;
-
         $positions = DB::table('order_positions')->where('order_id', $order->id)->get();
 
-        $paymentMethod = $shop->getActivePaymentMethod();
+        if($order->payment_type && $order->status == 1) {
 
-        if($paymentMethod != [] && $paymentMethod['name'] == 'tinkoff') {
+            $paymentMethod = $this->shop->getPaymentMethodByName($order->payment_type);
 
-            $api = new TinkoffMerchantAPI($paymentMethod['params']['terminal_key'], $paymentMethod['params']['secret_key']);
+            if($order->payment_type == 'tinkoff') {
 
-            if ($order->tinkoff_id && $order->status == 1) {
+                $api = new TinkoffMerchantAPI($paymentMethod['params']['terminal_key'], $paymentMethod['params']['secret_key']);
 
                 $params = [
-                    'PaymentId'   => $order->tinkoff_id,
+                    'PaymentId' => $order->payment_id,
                 ];
 
                 $api->getState($params);
@@ -61,6 +59,21 @@ class OrderController extends Controller
                     if (in_array($api->status, $canceled_statuses)) {
                         $order->update(['status' => 3]);
                     }
+                }
+            }
+            else if($paymentMethod['name'] == 'yandex') {
+                $client = new Client();
+                $client->setAuth($paymentMethod['params']['shop_id'], $paymentMethod['params']['secret_key']);
+
+                $response = $client->getPaymentInfo($order->payment_id);
+
+                if($response->status == 'succeeded') {
+                    $order->update(['status' => 2]);
+
+                    Mail::to($order->email)->send(new PayedOrder($order));
+                }
+                else if($response->status == 'canceled') {
+                    $order->update(['status' => 3]);
                 }
             }
         }

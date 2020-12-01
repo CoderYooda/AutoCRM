@@ -94,4 +94,17 @@ class Shop extends Model
 
         return [];
     }
+
+    public function getPaymentMethodByName($name)
+    {
+        $paymentMethod = $this->paymentMethods()->where('name', $name)->first();
+
+        if($paymentMethod) {
+            $paymentMethod = $paymentMethod->toArray();
+            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+            return $paymentMethod;
+        }
+
+        return [];
+    }
 }

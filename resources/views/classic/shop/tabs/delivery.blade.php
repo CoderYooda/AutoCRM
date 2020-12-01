@@ -22,6 +22,27 @@
                 </div>
 
                 <div class="form-group">
+
+                    <label>Варианты выдачи товаров</label>
+
+                    <div class="input-group">
+                        <label style="width: 100px;">Самовывоз</label>
+                        <label data-error="has_pickup" class="custom_checkbox">
+                            <input type="checkbox" class="not_default" name="has_pickup" @if($shop->has_pickup) checked @endif value="1" />
+                            <span></span>
+                        </label>
+                    </div>
+
+                    <div class="input-group">
+                        <label style="width: 100px;">Доставка</label>
+                        <label data-error="has_delivery" class="custom_checkbox">
+                            <input type="checkbox" class="not_default" name="has_delivery" @if($shop->has_delivery) checked @endif value="1" />
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label>SEO Заголовок</label>
                     <textarea name="seo_delivery_title" class="form-control resize-none" rows="4" placeholder="Заголовок">{{ $shop->seo_delivery_title ?? '' }}</textarea>
                 </div>

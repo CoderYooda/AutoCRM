@@ -52,7 +52,7 @@ class shopPage {
                 });
         }
         else if(this.active_tab == 'settings') {
-            this.addSubdomainMask();
+            // this.addSubdomainMask();
             this.addEmailMask();
         }
 
@@ -580,11 +580,8 @@ class shopPage {
     savePaymentMethods(element) {
 
         axform.send(element, response => {
-            if(response.status == 200) {
-
-                let data = response.data;
-
-                notification.notify(data.type, data.message);
+            if (response.status == 200) {
+                //
             }
         });
     }

@@ -15,7 +15,7 @@
                 <h2 class="mt-0 style_header">Гарантия и возврат</h2>
 
                 <div class="form-group mt-10">
-                    <label>Гарантии и способы возврата</label>
+                    <label>Гарантия и способы возврата</label>
                     <div data-error="warranty_desc" style="max-width: 800px;">
                         <div id="editor">{!! $shop->warranty_desc ?? '' !!}</div>
                     </div>

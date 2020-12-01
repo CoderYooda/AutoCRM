@@ -94,6 +94,41 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Время работы</label>
+                    <div class="input-group d-flex">
+
+                        <span class="work_time_desc ml-0">С</span>
+
+                        <select name="work_hour_from" class="hour_from">
+                            @for($i = 0; $i <= 23; $i ++)
+                                <option @if(explode(':', $shop->work_time_from)[0] == $i) selected @endif value="{{ $i }}">{{ $i }} ч.</option>
+                            @endfor
+                        </select>
+
+                        <select name="work_minute_from" class="minute_from">
+                            @for($i = 0; $i <= 55; $i += 5)
+                                <option @if(explode(':', $shop->work_time_from)[1] == $i) selected @endif value="{{ $i }}">{{ $i }} мин.</option>
+                            @endfor
+                        </select>
+
+                        <span class="work_time_desc">ДО</span>
+
+                        <select name="work_hour_to" class="hour_from">
+                            @for($i = 0; $i <= 23; $i ++)
+                                <option @if(explode(':', $shop->work_time_to)[0] == $i) selected @endif value="{{ $i }}">{{ $i }} ч.</option>
+                            @endfor
+                        </select>
+
+                        <select name="work_minute_to" class="minute_from">
+                            @for($i = 0; $i <= 55; $i += 5)
+                                <option @if(explode(':', $shop->work_time_to)[1] == $i) selected @endif value="{{ $i }}">{{ $i }} мин.</option>
+                            @endfor
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
 
                     <label>Адрес торговой точки</label>
 

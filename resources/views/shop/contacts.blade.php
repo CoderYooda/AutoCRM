@@ -22,11 +22,16 @@
             @if($shop->phones->count() || $shop->contactEmails->count())
                 <div class="contacts-container">
                     <div class="info-block">
+                        <div class="work_time">
+                            Режим работы: с {{ $shop->work_time_from }} до {{ $shop->work_time_to }}
+                        </div>
                         <div class="store-name">
                             {{ $shop->name }}
                         </div>
                         <div class="address">
                             {{ $shop->address_name }}
+                            <br/>
+                            {{ $shop->address_desc }}
                         </div>
                         <div class="mail-phone-container">
                             @foreach($shop->phones as $phone)

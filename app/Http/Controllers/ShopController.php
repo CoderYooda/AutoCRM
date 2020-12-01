@@ -125,7 +125,9 @@ class ShopController extends Controller
                 'address_coords'     => $request->address_coords,
                 'address_desc'       => $request->address_desc,
                 'seo_contacts_title' => $request->seo_contacts_title,
-                'seo_contacts_desc'  => $request->seo_contacts_desc
+                'seo_contacts_desc'  => $request->seo_contacts_desc,
+                'work_time_from' => $request->work_hour_from . ':' . $request->work_minute_from,
+                'work_time_to' => $request->work_hour_to . ':' . $request->work_minute_to
             ]);
 
             $shop->phones()->delete();
@@ -195,11 +197,7 @@ class ShopController extends Controller
 
     public function updateDelivery(UpdateDeliveryRequest $request)
     {
-        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
-            'delivery_desc'      => $request->delivery_desc,
-            'seo_delivery_title' => $request->seo_delivery_title,
-            'seo_delivery_desc'  => $request->seo_delivery_desc
-        ]);
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
 
         return response()->json([
             'type'    => 'success',

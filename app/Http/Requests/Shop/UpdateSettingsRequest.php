@@ -61,11 +61,6 @@ class UpdateSettingsRequest extends FormRequest
         return $rules;
     }
 
-    protected function passedValidation()
-    {
-        $this['subdomain'] = explode('.', $this['subdomain'])[0];
-    }
-
     protected function failedValidation(Validator $validator)
     {
         if ($this->expectsJson()) {

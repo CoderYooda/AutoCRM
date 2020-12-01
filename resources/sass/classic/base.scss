@@ -3429,6 +3429,23 @@ input:-moz-placeholder { /* Firefox 18- */
     border-radius: unset !important;
 }
 
+#ajax-table-shop {
+
+    .work_time_desc {
+        line-height: 30px;
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+
+    .hour_from {
+        margin-right: 5px;
+    }
+
+    .hour_from, .minute_from {
+        border: 1px solid #e7e8ec;
+    }
+}
+
 #ajax-table-shop, #ajax-shop-payment_methods {
     .custom_checkbox {
         span {
@@ -3438,6 +3455,9 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 .custom_checkbox {
+
+    display: flex;
+    align-items: center;
 
     &.is-invalid span {
         border: 1px solid red;
@@ -3556,6 +3576,11 @@ input:-moz-placeholder { /* Firefox 18- */
             height: 10px;
             margin-left: auto;
         }
+    }
+
+    .subdomain_desc {
+        width: 72px;
+        border-left: 0;
     }
 }
 
