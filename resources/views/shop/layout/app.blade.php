@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Styles -->
-    <link href="{{ asset('css/shop.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/shop.css') }}?{{ getenv('VERSION') }}" rel="stylesheet">
 
     <!-- Scripts -->
     <script src="{{ asset('js/shop.js') }}?{{ getenv('VERSION') }}" defer></script>
