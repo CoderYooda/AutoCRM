@@ -8,9 +8,9 @@
 
     <div id="ajax-table-shop" class="bottom-container contacts-shop-page" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
-            <form action="#" method="POST" data-simplebar style="height: 100%;">
+            <form action="#" method="POST" style="height: 100%;">
 
                 <h2 class="mt-0 style_header">Контакты</h2>
 
@@ -94,41 +94,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Время работы</label>
-                    <div class="input-group d-flex">
-
-                        <span class="work_time_desc ml-0">С</span>
-
-                        <select name="work_hour_from" class="hour_from">
-                            @for($i = 0; $i <= 23; $i ++)
-                                <option @if(explode(':', $shop->work_time_from)[0] == $i) selected @endif value="{{ $i }}">{{ $i }} ч.</option>
-                            @endfor
-                        </select>
-
-                        <select name="work_minute_from" class="minute_from">
-                            @for($i = 0; $i <= 55; $i += 5)
-                                <option @if(explode(':', $shop->work_time_from)[1] == $i) selected @endif value="{{ $i }}">{{ $i }} мин.</option>
-                            @endfor
-                        </select>
-
-                        <span class="work_time_desc">ДО</span>
-
-                        <select name="work_hour_to" class="hour_from">
-                            @for($i = 0; $i <= 23; $i ++)
-                                <option @if(explode(':', $shop->work_time_to)[0] == $i) selected @endif value="{{ $i }}">{{ $i }} ч.</option>
-                            @endfor
-                        </select>
-
-                        <select name="work_minute_to" class="minute_from">
-                            @for($i = 0; $i <= 55; $i += 5)
-                                <option @if(explode(':', $shop->work_time_to)[1] == $i) selected @endif value="{{ $i }}">{{ $i }} мин.</option>
-                            @endfor
-                        </select>
-
-                    </div>
-                </div>
-
-                <div class="form-group">
 
                     <label>Адрес торговой точки</label>
 
@@ -140,6 +105,13 @@
 
                     </div>
 
+                </div>
+
+                <div class="form-group">
+                    <label>Описание</label>
+                    <div data-error="contacts_desc">
+                        <div id="editor">{!! $shop->contacts_desc ?? '' !!}</div>
+                    </div>
                 </div>
 
                 <div class="form-group">

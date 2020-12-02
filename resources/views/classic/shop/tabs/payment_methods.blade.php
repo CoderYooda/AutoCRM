@@ -41,6 +41,19 @@
 
                     </div>
 
+                    <label>Sberbank Merchant</label>
+                    <div data-error="methods[sberbank]" class="input-group mb-10 method">
+
+                        <input type="text" name="methods[sberbank][login]" class="form-control mr-5" placeholder="Логин" value="{{ $paymentMethods['sberbank']['params']['login'] ?? '' }}">
+                        <input type="text" name="methods[sberbank][password]" class="form-control mr-5" placeholder="Пароль" value="{{ $paymentMethods['sberbank']['params']['password'] ?? '' }}">
+
+                        <label data-error="methods_main" class="custom_checkbox">
+                            <input type="radio" class="not_default" name="methods_main" @if($paymentMethods['sberbank']['main'] ?? false) checked @endif value="sberbank" />
+                            <span></span>
+                        </label>
+
+                    </div>
+
                 </div>
 
                 <div>

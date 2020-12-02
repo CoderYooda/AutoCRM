@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Http\Controllers\API\SberbankController;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\ShowOrderRequest;
 use App\Mail\Shop\PayedOrder;
@@ -74,6 +75,29 @@ class OrderController extends Controller
                 }
                 else if($response->status == 'canceled') {
                     $order->update(['status' => 3]);
+                }
+            }
+            else if($paymentMethod['name'] == 'sberbank') {
+
+                $api = new SberbankController($paymentMethod['params']['login'], $paymentMethod['params']['password']);
+
+                $response = $api->getOrderStatus($order->payment_id);
+
+                if($response['OrderStatus'] == 2) {
+                    $order->update(['status' => 2]);
+
+                    Mail::to($order->email)->send(new PayedOrder($order));
+                }
+                else {
+                    $canceled_statuses = [
+                        3,
+                        4,
+                        6
+                    ];
+
+                    if (in_array($response['OrderStatus'], $canceled_statuses)) {
+                        $order->update(['status' => 3]);
+                    }
                 }
             }
         }

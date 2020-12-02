@@ -8,7 +8,7 @@
 
     <div id="ajax-shop-about" class="bottom-container" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
             <form action="{{ route('ShopUpdateAbout') }}" method="POST">
 
@@ -16,7 +16,7 @@
 
                 <div class="form-group mt-10">
                     <label>Описание компании</label>
-                    <div data-error="about_desc" style="max-width: 800px;">
+                    <div data-error="about_desc">
                         <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
                     </div>
                 </div>

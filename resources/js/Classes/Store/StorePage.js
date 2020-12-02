@@ -195,20 +195,22 @@ class storePage extends Page{
 
         let target_element = element.closest('.table_item');
 
+        let type = target_element.dataset.type;
+
         let service_input = document.querySelector('[name="service_key"]');
 
         let element_index = parseInt(target_element.id);
 
         let index = -1;
 
-        this.items.forEach((model, array_index) => {
+        this.items[type].forEach((model, array_index) => {
             if(model.index == element_index) index = array_index;
         });
 
         let data = {
             provider_key: service_input.value,
             article: this.search,
-            product: this.items[index],
+            product: this.items[type][index],
             count: count
         };
 
@@ -221,13 +223,59 @@ class storePage extends Page{
             });
     }
 
-    sortBy(element, type) {
+    sortBy(element, type, field) {
 
-        let brand_element = document.querySelector('.fa-angle-up').parentElement;
+        if(window.isXHRloading) return;
+        window.isXHRloading = true;
 
-        let brand_name = brand_element.dataset.manufacturer;
+        let target_element = element.querySelector('i');
 
-        this.showManufactureStores(brand_element, brand_name, type);
+        target_element.classList.toggle('fa-caret-down');
+        target_element.classList.toggle('fa-caret-up');
+
+        let body_element = element.closest('.table').querySelector('.table_body');
+        let header_element = element.closest('.table_header');
+
+        togglePreloader(body_element, true);
+
+        let i_elements = header_element.querySelectorAll('i');
+
+        i_elements.forEach(i_element => {
+            if(target_element == i_element) return;
+            i_element.classList.remove('fa-caret-down');
+            i_element.classList.add('fa-caret-up');
+        });
+
+        let service_input = document.querySelector('[name="service_key"]');
+        let manufacturer_element = document.getElementById('manufacturer');
+        let is_desc = target_element.classList.contains('fa-caret-down');
+
+        let data = {
+            manufacturer: manufacturer_element.innerHTML,
+            article: this.search,
+            selected_service: service_input.value,
+            type: type,
+            field: field,
+            is_desc: is_desc
+        };
+
+        axios.post('/provider_stores/stores/filter', data)
+            .then(response => {
+                let data = response.data;
+
+                body_element.outerHTML = data.html;
+
+                this.items = data.stores;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                togglePreloader(body_element, false);
+                window.isXHRloading = false;
+            });
+
+        // this.showManufactureStores(brand_element, brand_element.innerHTML, type, field, sort_desc);
     }
 
     registerProviderOrder(element) {
@@ -238,28 +286,32 @@ class storePage extends Page{
     addToCart(element, count) {
         let target_element = element.closest('.table_item');
 
+        let type = target_element.dataset.type;
+
         let service_input = document.querySelector('[name="service_key"]');
 
         target_element.querySelector('.add-to-cart').classList.add('d-none');
         target_element.querySelector('.edit-cart-count').classList.remove('d-none');
 
-        let input = target_element.querySelector('input');
-        this.addInputCountMask(input);
+        let input_element = target_element.querySelector('input');
+        this.addInputCountMask(input_element);
 
-        input.value = count;
+        input_element.value = count;
 
         let element_index = parseInt(target_element.id);
 
         let index = -1;
 
-        this.items.forEach((model, array_index) => {
+        this.items[type].forEach((model, array_index) => {
             if(model.index == element_index) index = array_index;
         });
 
+        let model = this.items[type][index];
+
         let data = {
             provider_key: service_input.value,
-            article: this.search,
-            product: this.items[index],
+            article: model.article,
+            product: model,
             count: count
         };
 
@@ -418,6 +470,8 @@ class storePage extends Page{
 
     showProvider(button, service_key) {
 
+        if(window.isXHRloading) return;
+
         let button_elements = document.querySelectorAll('.provider_tabs button');
 
         button_elements.forEach(element => {
@@ -433,13 +487,11 @@ class storePage extends Page{
         this.searchProviderStores();
     }
 
-    showManufactureStores(element, manufacturer, sort = null) {
+    showManufactureStores(element, manufacturer) {
 
         if(window.isXHRloading == true) return;
 
         window.isXHRloading = true;
-
-        let is_desc = false;
 
         let table_element = document.getElementById('table-container');
 
@@ -450,9 +502,7 @@ class storePage extends Page{
         axios.post('/provider_stores/stores', {
             manufacturer: manufacturer,
             article: this.search,
-            selected_service: service_input.value,
-            sort: sort,
-            is_desc: is_desc
+            selected_service: service_input.value
         })
             .then(response => {
 
@@ -605,9 +655,10 @@ class storePage extends Page{
 
                     let sorts = {};
 
-                    let button_elements = available_list.querySelectorAll('button');
+                    let button_elements = available_list.querySelectorAll('button.relative');
 
                     button_elements.forEach((element, index) => {
+
                         if (element.dataset.sort != index) {
                             sorts[index] = {
                                 id: element.dataset.id,
@@ -863,16 +914,6 @@ class storePage extends Page{
         this.table.draw(this.active_tab + 'Table', this.data);
     }
 
-
-    // sortBy(element, type) {
-    //
-    //     let brand_element = document.querySelector('.fa-angle-up').parentElement;
-    //
-    //     let brand_name = brand_element.dataset.manufacturer;
-    //
-    //     this.showManufactureStores(brand_element, brand_name, type);
-    // }
-
     checkActive(){
         let className = window.location.pathname.substring(1);
         let link = document.getElementById('store_link');
@@ -884,10 +925,6 @@ class storePage extends Page{
             this.active = false;
         }
     }
-
-    // showBrands() {
-    //     if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
-    // }
 
     searchInit() {
         let object = this;

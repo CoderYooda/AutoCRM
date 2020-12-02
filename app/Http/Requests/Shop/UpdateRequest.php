@@ -30,10 +30,7 @@ class UpdateRequest extends FormRequest
             'emails_main' => ['required'],
             'seo_contacts_title' => ['nullable', 'string', 'max:255'],
             'seo_contacts_desc' => ['nullable', 'string', 'max:255'],
-            'work_hour_from' => ['required', 'integer', 'between:0,23'],
-            'work_hour_to' => ['required', 'integer', 'between:0,23'],
-            'work_minute_from' => ['required', 'integer', 'between:0,59'],
-            'work_minute_to' => ['required', 'integer', 'between:0,59']
+            'contacts_desc' => ['required', 'string', 'max:65535']
         ];
     }
 

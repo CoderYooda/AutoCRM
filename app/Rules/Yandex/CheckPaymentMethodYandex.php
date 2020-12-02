@@ -26,6 +26,6 @@ class CheckPaymentMethodYandex implements Rule
 
     public function message()
     {
-        return 'Неправильно введены данные от Yandex кассы.';
+        return 'Неправильно введены данные от Yandex Checkout.';
     }
 }

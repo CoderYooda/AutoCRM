@@ -126,8 +126,7 @@ class ShopController extends Controller
                 'address_desc'       => $request->address_desc,
                 'seo_contacts_title' => $request->seo_contacts_title,
                 'seo_contacts_desc'  => $request->seo_contacts_desc,
-                'work_time_from' => $request->work_hour_from . ':' . $request->work_minute_from,
-                'work_time_to' => $request->work_hour_to . ':' . $request->work_minute_to
+                'contacts_desc'      => $request->contacts_desc
             ]);
 
             $shop->phones()->delete();
@@ -237,7 +236,7 @@ class ShopController extends Controller
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,
                 'storage_days'        => $request->storage_days,
-                'image_favicon_id'   => $request->image_favicon_id,
+                'image_favicon_id'    => $request->image_favicon_id,
                 'image_logotype_id'   => $request->image_logotype_id,
                 'image_header_id'     => $request->image_header_id,
                 'image_background_id' => $request->image_background_id,
@@ -288,9 +287,9 @@ class ShopController extends Controller
 
         foreach ($params['methods'] as $method_name => $method_params) {
             $methods[] = [
-                'name' => $method_name,
+                'name'   => $method_name,
                 'params' => json_encode($method_params),
-                'main' => $request->methods_main == $method_name
+                'main'   => $request->methods_main == $method_name
             ];
         }
 
@@ -298,7 +297,7 @@ class ShopController extends Controller
         $shop->paymentMethods()->createMany($methods);
 
         return response()->json([
-            'type' => 'success',
+            'type'    => 'success',
             'message' => 'Настройки успешно сохранены'
         ]);
     }
@@ -318,9 +317,9 @@ class ShopController extends Controller
 
             $paymentMethod = $shop->getActivePaymentMethod();
 
-            if($order->pay_type == Order::PAYMENT_TYPE_ONLINE && $paymentMethod == []) {
+            if ($order->pay_type == Order::PAYMENT_TYPE_ONLINE && $paymentMethod == []) {
                 return response()->json([
-                    'type' => 'error',
+                    'type'    => 'error',
                     'message' => 'Нет активных способов оплаты'
                 ], 422);
             }
@@ -379,14 +378,14 @@ class ShopController extends Controller
 
                     $product = Article::firstOrCreate($uniqueFields, $updateFields);
 
-                    if($product->wasRecentlyCreated) {
+                    if ($product->wasRecentlyCreated) {
                         $product->update(['category_id' => 10]);
                     }
 
                     $pivotData = [
-                        'price'      => $position['price'],
-                        'count'      => $position['count'],
-                        'total'      => $position['price'] * $position['count'],
+                        'price' => $position['price'],
+                        'count' => $position['count'],
+                        'total' => $position['price'] * $position['count'],
                     ];
 
                     $clientOrder->articles()->attach($product->id, $pivotData);
@@ -396,14 +395,12 @@ class ShopController extends Controller
 
                 if ($status == Order::PAYMENT_TYPE_ONLINE) {
                     $order->initPayment();
-                }
-                else {
+                } else {
                     Mail::to($order->email)->send(new ConfirmOrder($order));
                 }
 
                 $clientOrder->update(['status' => $status]);
-            }
-            else {
+            } else {
                 Mail::to($order->email)->send(new CanceledOrder($order));
             }
 

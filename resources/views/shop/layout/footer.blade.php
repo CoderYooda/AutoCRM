@@ -71,7 +71,7 @@
             </span>
         </div>
         <div class="personal-data footer-elem">
-            <a title="Обработка персональных данных" href="javascript:void(0)">Обработка персональных данных</a>
+            <a title="Обработка персональных данных" href="{{ route('pages.personalData') }}">Обработка персональных данных</a>
         </div>
     </div>
 </div>

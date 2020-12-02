@@ -8,7 +8,7 @@
 
     <div id="ajax-shop-warranty" class="bottom-container" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
             <form action="{{ route('ShopUpdateWarranty') }}" method="POST">
 
@@ -16,7 +16,7 @@
 
                 <div class="form-group mt-10">
                     <label>Гарантия и способы возврата</label>
-                    <div data-error="warranty_desc" style="max-width: 800px;">
+                    <div data-error="warranty_desc">
                         <div id="editor">{!! $shop->warranty_desc ?? '' !!}</div>
                     </div>
                 </div>

@@ -64,6 +64,7 @@ h2{
 @import "shop/success_order";
 @import "shop/modals/edit_vehicle";
 @import "shop/restore";
+@import "shop/personal_data";
 
 .notification-symbol {
     width: 20px !important;
@@ -1645,7 +1646,7 @@ body{
     .contacts-container{
         display: flex;
         .info-block{
-            width: 520px;
+            width: 600px;
             .store-name{
                 font-weight: 700;
                 margin-bottom: 15px;

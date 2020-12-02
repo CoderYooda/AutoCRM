@@ -8,7 +8,7 @@
 
     <div id="ajax-shop-delivery" class="bottom-container" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
             <form action="{{ route('ShopUpdateDelivery') }}" method="POST">
 
@@ -16,7 +16,7 @@
 
                 <div class="form-group mt-10">
                     <label>Способы оплаты и доставки</label>
-                    <div data-error="delivery_desc" style="max-width: 800px;">
+                    <div data-error="delivery_desc">
                         <div id="editor">{!! $shop->delivery_desc ?? '' !!}</div>
                     </div>
                 </div>

@@ -18,13 +18,9 @@
                 <h2>Контакты компании</h2>
             </div>
 
-
             @if($shop->phones->count() || $shop->contactEmails->count())
                 <div class="contacts-container">
                     <div class="info-block">
-                        <div class="work_time">
-                            Режим работы: с {{ $shop->work_time_from }} до {{ $shop->work_time_to }}
-                        </div>
                         <div class="store-name">
                             {{ $shop->name }}
                         </div>
@@ -49,6 +45,9 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                        <div class="description">
+                            {!! $shop->contacts_desc !!}
                         </div>
                     </div>
                     <div class="map-holder">

@@ -40,7 +40,9 @@ class shopPage {
 
             this.loadYandexMapAddress();
             this.addPhoneMask();
-        } else if (this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
+        }
+
+        if (this.active_tab == 'contacts' || this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
 
             let editor_element = document.querySelector('#editor');
 
@@ -561,11 +563,15 @@ class shopPage {
 
     saveContacts(element) {
 
+        let data = {
+            contacts_desc: this.texteditor.getData()
+        };
+
         axform.send(element, response => {
             if (response.status == 200) {
                 //
             }
-        });
+        }, null, data);
     }
 
     saveAnalytics(element) {

@@ -79,6 +79,12 @@ class PageController extends Controller
             ->with('shop', $this->shop);
     }
 
+    public function personalData()
+    {
+        return view('shop.personal_data')
+            ->with('shop', $this->shop);
+    }
+
     public function search(Request $request)
     {
         $products = Article::where('company_id', $this->shop->company_id)

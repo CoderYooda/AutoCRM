@@ -33,7 +33,7 @@
 
                     @can('Создавать заявки поставщикам')
                         @if(count($services))
-                            <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>
+                            <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Корзина</button>
                         @endif
                     @endcan
 

@@ -10,6 +10,10 @@
             <span class="item">Личный кабинет</span>
         @endif
 
+        @if(request()->routeIs('pages.personalData'))
+            <span class="item">Обработка персональных данных</span>
+        @endif
+
         @if(request()->routeIs('pages.catalogue'))
             <span class="item">Каталог</span>
         @endif

@@ -30,6 +30,8 @@ Route::namespace('Shop')->group(function () {
         Route::post('/restore/code', 'RestoreController@acceptCode')->name('restore.acceptCode');
     });
 
+    Route::get('/personal_data', 'PageController@personalData')->name('pages.personalData');
+
     Route::get('/', 'PageController@index')->name('pages.index');
     Route::get('/about', 'PageController@about')->name('pages.about');
     Route::get('/delivery', 'PageController@delivery')->name('pages.delivery');

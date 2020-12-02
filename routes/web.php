@@ -117,6 +117,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
             Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
             Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
+            Route::post('/provider_stores/stores/filter', 'ProviderStoreController@getStoresFilter')->name('getProviderStoresFilter');
             Route::get('/provider_stores/armtek/sales_organization', 'ProviderStoreController@getArmTekSerialSales')->name('getArmTekSerialSales');
         });
 

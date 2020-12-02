@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\API\SberbankController;
 use App\Mail\Shop\PaymentOrder;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use Carbon\Carbon;
@@ -203,6 +204,25 @@ class Order extends Model
 
                 $paymentId = $response->id;
                 $paymentUrl = $response->getConfirmation()->getConfirmationUrl();
+            }
+            else if($paymentMethod['name'] == 'sberbank') {
+
+                $api = new SberbankController($paymentMethod['params']['login'], $paymentMethod['params']['password']);
+
+                $totalPrice = 0;
+
+                foreach ($this->positions as $position) {
+                    $totalPrice += $position->price * $position->count;
+                }
+
+                if ($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
+                    $totalPrice += $this->delivery_price;
+                }
+
+                $response = $api->registerOrder($this->id, $totalPrice, $this->path());
+
+                $paymentId = $response['orderId'];
+                $paymentUrl = $response['formUrl'];
             }
 
             $this->update([

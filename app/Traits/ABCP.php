@@ -97,15 +97,25 @@ trait ABCP
 
         }
 
-        $results = [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items as $key => $item) {
 
             $min_days = $item['deliveryPeriod'] / 24;
             $max_days = $item['deliveryPeriodMax'] ?? 1 / 24;
 
-            $results[] = [
-                'index'        => $item['index'],
+            $is_analogue = strtolower($article) != strtolower($item['number']);
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
+
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
                 'name'         => $item['supplierCode'],
                 'code'         => $item['number'],
                 'rest'         => $item['availability'],
@@ -118,9 +128,10 @@ trait ABCP
                 'article'      => $item['number'],
                 'stock'        => $item['supplierCode'],
                 'model'        => $item,
-                'hash'         => md5($item['supplierCode'] . $item['brand'] . $item['number'] . $item['deliveryPeriod'] . $item['price']),
-                'is_analogue'  => strtolower($article) != strtolower($item['number'])
+                'hash'         => md5($item['supplierCode'] . $item['brand'] . $item['number'] . $item['deliveryPeriod'] . $item['price'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;
