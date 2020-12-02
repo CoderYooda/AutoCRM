@@ -689,6 +689,38 @@ button:disabled {
     color: grey;
 }
 
+.img_upload_cat_container{
+    width: 94px;
+    height: 94px;
+    position: relative;
+    overflow: hidden;
+    .image{
+        border: 1px solid rgb(231, 232, 236);
+        object-fit: cover;
+    }
+    .upload_btn{
+        background: rgba(29,32,34,.7);
+        color: #fff;
+        padding: 0px 10px;
+        width: 100%;
+        position: absolute;
+        bottom: -27px;
+        opacity: 0;
+        left: 0;
+        display: block;
+        text-align: center;
+        line-height: 23px;
+        padding-bottom: 3px;
+        cursor: pointer;
+        transition: 0.2s;
+
+    }
+    &:hover .upload_btn{
+        bottom: 0px;
+        opacity: 1;
+    }
+}
+
 .form-control:focus{
     outline-color: #2D76A8;
 }

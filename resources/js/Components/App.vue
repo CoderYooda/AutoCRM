@@ -1,9 +1,10 @@
 <template>
-    <div @keydown.esc="console.log(1)" id="app">
+    <div id="app">
         <component :is="layout" />
         <login/>
         <Dialogs/>
         <notifications group="main" position="bottom left" />
+        <vue-confirm-dialog class="v-confirm"></vue-confirm-dialog>
     </div>
 </template>
 
@@ -55,6 +56,23 @@
                 });
         },
         methods: {
+            targetAction(target, method, args) {
+
+
+
+                // let component = null;
+                // let children = this.$children;
+                // children.forEach((child)=>{
+                //
+                // });
+                // while (parent && !component) {
+                //     if (parent.$options.name === componentName) {
+                //         component = parent
+                //     }
+                //     parent = parent.$parent;
+                // }
+                // return component
+            },
         },
         computed: {
             layout() {

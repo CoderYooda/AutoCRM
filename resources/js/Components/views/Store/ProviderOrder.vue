@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="d-flex" style="height: calc(100% - 45px);">
-                <Table v-bind:table_data="table_data" v-bind:search="search" />
+                <Table v-bind:table_data="table_data" v-bind:filter_data="filter_data" v-bind:search="search" />
                 <FilterBox v-bind:filter_data="filter_data"/>
             </div>
         </div>
@@ -60,29 +60,29 @@
             this.filter_data = {
                 dates: {
                     start: null,
-                        end: null,
+                    end: null,
                 },
-                filters:{
-                    payments:{
+                filters:[
+                    {
                         title:'Статус оплаты',
-                            filed:'payment',
-                            collection:[
-                            {val:false, title:'Оплачен'},
-                            {val:false, title:'Не оплачен'},
-                            {val:false, title:'Оплачен частично'},
-                            {val:false, title:'Переплачен'},
+                        filed:'payment',
+                        collection:[
+                            {bool:false, val:0, title:'Оплачен'},
+                            {bool:false, val:1, title:'Не оплачен'},
+                            {bool:false, val:2, title:'Оплачен частично'},
+                            {bool:false, val:3, title:'Переплачен'},
                         ]
                     },
-                    entrances:{
+                    {
                         title:'Статус поступления',
-                            filed:'entrance',
-                            collection:[
-                            {val:false, title:'Частично'},
-                            {val:false, title:'Полностью'},
-                            {val:false, title:'Без поступлений'},
+                        filed:'entrance',
+                        collection:[
+                            {bool:false, val:0, title:'Частично'},
+                            {bool:false, val:1, title:'Полностью'},
+                            {bool:false, val:2, title:'Без поступлений'},
                         ]
                     },
-                }
+                ]
             };
         },
         directives: {debounce}

@@ -18,11 +18,11 @@
             <div v-for="filter in filter_data.filters" v-bind:key="filter.filed" class="filter_pos mb-10">
                 <div class="form-group d-flex mb-0">
                     <label class="no-wrap" >{{ filter.title }}</label>
-                    <button type="button" class="clear_filter" v-on:click="unsetPayment()" >очистить</button>
+                    <button type="button" class="clear_filter" v-on:click="unset(filter)" >очистить</button>
                 </div>
                 <div v-for="item in filter.collection" class="form-group d-flex mb-0">
                     <div class="header-elem checkbox">
-                        <input v-model="item.val" v-bind:id="filter.filed + item.title" type="checkbox">
+                        <input v-model="item.bool" v-bind:id="filter.filed + item.title" type="checkbox">
                         <label v-bind:for="filter.filed + item.title"></label>
                     </div>
                     <label v-bind:for="filter.filed + item.title" class="checkbox_label flex-1" >{{ item.title }}</label>
@@ -60,7 +60,6 @@
                 return this.filter_data.dates.end ? date.ddmmyyy() : 'до';
             },
             dates_applied(){
-                console.log(Boolean(this.filter_data.dates));
                 return Boolean(this.filter_data.dates);
             },
             isAllPeriod(){
@@ -79,10 +78,10 @@
                     text: 'Дата очищена'
                 });
             },
-            unsetPayment(){
-                this.filter_data.payments = {
-                    payed: false,
-                };
+            unset(filter){
+                filter.collection.forEach((item)=>{
+                    item.bool = false;
+                });
                 this.$notify({
                     group: 'main',
                     title: 'Фильтр',

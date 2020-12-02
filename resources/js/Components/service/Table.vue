@@ -72,7 +72,7 @@
 
 <script>
     export default {
-        props:['table_data'],
+        props:['table_data', 'filter_data'],
         name: "Table",
         data: ()=> {
             return {
@@ -97,6 +97,13 @@
             $attrs:function(){
                 this.search = this.$attrs.search;
                 this.getItems();
+            },
+            filter_data: {
+                handler(newVal, oldVal){
+                    this.current_page = 1;
+                    this.getItems();
+                },
+                deep: true
             }
         },
         mounted(){
@@ -199,20 +206,43 @@
                 }
                 return style;
             },
+            filterMutator(params){
+                if(this.filter_data){
+                    if(this.filter_data.dates && this.filter_data.dates.start && this.filter_data.dates.end){
+                        params.dates = [];
+                        params.dates[0] = Date.parse(this.filter_data.dates.start) / 1000;
+                        params.dates[1] = Date.parse(this.filter_data.dates.end) / 1000;
+                    }
+                    if(this.filter_data.filters){
+                        this.filter_data.filters.forEach((filter)=>{
+                            let collection = [];
+                            filter.collection.forEach((item)=>{
+                                if(item.bool)
+                                    collection.push(item.val);
+                            });
+                            params[filter.filed] = collection;
+                        })
+                    }
+                }
+                return params;
+            },
             getItems(){
                 this.unsetSelected();
                 this.items = [];
                 this.$parent.table_loading = true;
+
+                let params = {
+                    category_id: this.getCategoryId(),
+                    search: this.getSearchString(),
+                    page: this.current_page,
+                    field: this.field,
+                    dir: this.dir,
+                };
+                params = this.filterMutator(params);
                 window.axios({
                     method: 'get',
                     url: this.table_data.url,
-                    params: {
-                        category_id: this.getCategoryId(),
-                        search: this.getSearchString(),
-                        page: this.current_page,
-                        field: this.field,
-                        dir: this.dir,
-                    }
+                    params: params
                 }).then((resp) =>  {
                     this.items = resp.data.data;
                     this.last_page = resp.data.last_page;

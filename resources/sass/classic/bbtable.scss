@@ -56,6 +56,28 @@
         background-position-y: 4px;
     }
 }
+.context{
+    position: absolute;
+    left: -3300px;
+    border: 1px solid #e7e8ec;
+    background: #fff;
+    z-index: 99999;
+    padding: 2px;
+    box-shadow: 2px 4px 9px #00000061;
+    min-width: 180px;
+    .context_item{
+        width: 100%;
+        padding: 2px 10px;
+        cursor: pointer;
+        color: #0000009c;
+    }
+    .context_item:not(.hide):not(:last-child){
+        border-bottom: 1px solid #e7e8ec;
+    }
+    .context_item:hover{
+        background: #fafafa;
+    }
+}
 .bbtable-container{
     overflow: hidden;
     position: relative;
@@ -109,28 +131,7 @@
         background: #2d76a8;
         opacity: 0.2;
     }
-    .context{
-        position: absolute;
-        left: -300px;
-        border: 1px solid #e7e8ec;
-        background: #fff;
-        z-index: 99999;
-        padding: 2px;
-        box-shadow: 2px 4px 9px #00000061;
-        min-width: 180px;
-        .context_item{
-            width: 100%;
-            padding: 2px 10px;
-            cursor: pointer;
-            color: #0000009c;
-        }
-        .context_item:not(.hide):not(:last-child){
-            border-bottom: 1px solid #e7e8ec;
-        }
-        .context_item:hover{
-            background: #fafafa;
-        }
-    }
+
     .bbtable-header{
         display: flex;
         height: 30px;

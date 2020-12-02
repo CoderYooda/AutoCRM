@@ -346,17 +346,15 @@ class ProviderOrdersController extends Controller
 
     public static function getPoviderOrders($request)
     {
-        $field = $request['sorters'][0]['field'] ?? 'created_at';
-        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
+        $field = $request['field'] ?? 'created_at';
+        $dir = $request['dir'] ?? 'DESC';
         $size = $request['size'] ? (int)$request['size'] : 30;
 
-        if ($request['dates_range'] !== null) {
-            $dates = explode('|', $request['dates_range']);
-            $dates[0] .= ' 00:00:00';
-            $dates[1] .= ' 23:59:59';
+        if ($request['dates'] !== null) {
+            $dates[0] = Carbon::createFromTimestamp((int)$request['dates'][0])->setTime(0,0,0);
+            $dates[1] = Carbon::createFromTimestamp((int)$request['dates'][1])->setTime(23,59,59);
             $request['dates'] = $dates;
         }
-
         return ProviderOrder::leftJoin('partners as partner', 'partner.id', '=', 'provider_orders.partner_id')
             ->leftJoin('partners as manager', 'manager.id', '=', 'provider_orders.manager_id')
             ->select(DB::raw('provider_orders.*, partner.fio, partner.foundstring as p_foundstring, manager.foundstring as m_foundstring, manager.fio, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
@@ -371,15 +369,14 @@ class ProviderOrdersController extends Controller
                     ->orWhere('partner.foundstring', 'like', '%' . $request['search'] . '%')
                     ->orWhere('manager.foundstring', 'like', '%' . $request['search'] . '%');
             })
-            ->when($request['dates_range'] != null, function ($query) use ($request) {
-                $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]),
-                    Carbon::parse($request['dates'][1])]);
+            ->when($request['dates'] != null, function ($query) use ($request) {
+                $query->whereBetween('provider_orders.created_at', [$request['dates'][0], $request['dates'][1]]);
             })
-            ->when($request['pay_status'] != null, function ($query) use ($request) {
-                $query->where('provider_orders.pays', $request['pay_status']);
+            ->when($request['payment'] != null, function ($query) use ($request) {
+                $query->whereIn('provider_orders.pays', $request['payment']);
             })
-            ->when($request['entrance_status'] != null, function ($query) use ($request) {
-                $query->where('provider_orders.incomes', $request['entrance_status']);
+            ->when($request['entrance'] != null, function ($query) use ($request) {
+                $query->whereIn('provider_orders.incomes', $request['entrance']);
             })
             ->where('provider_orders.company_id', Auth::user()->company_id)
             ->orderBy($field, $dir)

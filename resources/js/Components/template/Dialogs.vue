@@ -21,7 +21,7 @@
             }
         },
         mounted() {
-            this.$eventBus.$on('openDialog', (data)=>{
+            this.$eventBus.$on('openDialog', (data)=>{;
                this.openDialog(data.tag, data.params);
             });
             this.$eventBus.$on('restoreDialog', (dialog_name)=>{
@@ -33,8 +33,9 @@
             });
         },
         components: {
-            'productDialog': () => import(/* webpackChunkName: "productDialog" */'./Dialogs/ProductDialog'),
-            'categoryDialog': () => import(/* webpackChunkName: "categoryDialog" */'./Dialogs/CategoryDialog'),
+            'productDialog':        () => import(/* webpackChunkName: "productDialog" */        './Dialogs/ProductDialog'),
+            'categoryDialog':       () => import(/* webpackChunkName: "categoryDialog" */       './Dialogs/CategoryDialog'),
+            'selectCategoryDialog': () => import(/* webpackChunkName: "selectCategoryDialog" */ './Dialogs/SelectCategoryDialog'),
         },
         computed:{
         },
@@ -53,6 +54,10 @@
             openDialog(tag, params = null){
                 let id = (params && params.id) ? params.id : 0;
 
+                // let selected_category = params.selected_category;
+                // console.log(selected_category);
+
+
                 let isset = false;
                 this.dialogs.forEach((elem) => {
                     if(elem.name === tag + 'Dialog' && elem.id === id){
@@ -64,7 +69,7 @@
                     let dialog = {
                         name:tag + 'Dialog',
                         entity:'empty',
-                        title:'Без названия',
+                        title:'',
                         id:id,
                         active: false,
                         hidden: false,
@@ -77,6 +82,7 @@
                     };
                     dialog.left = window.innerWidth / 2 - dialog.width / 2;
                     this.dialogs.push(dialog);
+                    this.selectDialog(dialog);
                 }
             },
             selectDialog(dialog){

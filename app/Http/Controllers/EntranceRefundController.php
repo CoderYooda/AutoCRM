@@ -165,15 +165,15 @@ class EntranceRefundController extends Controller
 
     public static function getEntranceRefunds(Request $request)
     {
-        if($request['dates_range']) {
-            $dates = explode('|', $request['dates_range']);
-            $dates[0] .= ' 00:00:00';
-            $dates[1] .= ' 23:59:59';
+        $field = $request['field'] ?? 'created_at';
+        $dir = $request['dir'] ?? 'DESC';
+
+        if ($request['dates'] !== null) {
+            $dates[0] = Carbon::createFromTimestamp((int)$request['dates'][0])->setTime(0,0,0);
+            $dates[1] = Carbon::createFromTimestamp((int)$request['dates'][1])->setTime(23,59,59);
             $request['dates'] = $dates;
         }
 
-        $field = $request['sorters'][0]['field'] ?? 'created_at';
-        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
         $size = $request['size'] ? (int)$request['size'] : 30;
 
         $company_id = Auth::user()->company_id;
@@ -194,8 +194,8 @@ class EntranceRefundController extends Controller
                     $query->whereIn('entrance_refunds.id', $request['accountable']);
                 });
             })
-            ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('entrance_refunds.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            ->when($request['dates'] != null, function($query) use ($request) {
+                $query->whereBetween('entrance_refunds.created_at', [$request['dates'][0], $request['dates'][1]]);
             })
             ->groupBy('entrance_refunds.id')
             ->orderBy($field, $dir)

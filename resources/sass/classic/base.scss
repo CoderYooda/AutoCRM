@@ -860,7 +860,7 @@ input {
     }
 
     &.is-invalid {
-        border: 1px solid red;
+        border: 1px solid red!important;
     }
 
 }
@@ -1029,6 +1029,14 @@ input:-moz-placeholder { /* Firefox 18- */
     position: relative;
     border-bottom: 1px solid #E7E8EC;
     color: #404040;
+}
+.content-menu .nav > li:hover > a{
+    background: #f6f7f8;
+}
+
+.content-menu .nav > li > a.active{
+    background: #5181b8;
+    color: #fff;
 }
 
 .content-menu .nav > li > a span{

@@ -95,3 +95,168 @@
     width: 15px;
     margin: 14px 8px;
 }
+.v-confirm{
+    .vc-container {
+        width: 286px!important;
+        border-radius: 1rem!important;
+    }
+    .vc-title{
+        font-weight: 500;
+        color: red!important;
+        font-size: 17px!important;
+    }
+}
+//Recurse
+.recurse_categories{
+    .base_cat{
+        position: absolute;
+        cursor: pointer;
+        left: 16px;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border: 2px solid #eee;
+        top: 0px;
+        z-index: 99;
+        transition: 0.2s all;
+        overflow: hidden;
+        border-radius: 50%;
+
+    }
+    padding: 15px;
+    & > ul{
+        margin-left: 3px!important;
+    }
+    .new_cat{
+        height: calc(100% - 4px);
+        padding: 3px 3px;
+        margin: 2px 0;
+        border: 2px solid transparent!important;
+        color: #404040;
+        display: block;
+        float: left;
+        &.is-invalid{
+            border: 2px solid red!important;
+        }
+    }
+    ul{
+        padding: 0;
+        margin: 0;
+        position: relative;
+        margin-left: 8px;
+    }
+    li > .category {
+        line-height: 26px;
+        height: 26px;
+        margin-left: 25px;
+        padding-left: 10px;
+        position: relative;
+        &.new button{
+            display: inline-block;
+            height: 26px!important;
+            line-height: 20px!important;
+            padding: 2px 8px;
+            margin-left: 10px;
+            color: #535353;
+            background: #f5ce85;
+            border: 2px solid #d3b172;
+        }
+        &:before{
+            content: "";
+            position: absolute;
+            background: url(/images/icons/closed.svg) center no-repeat;
+            width: 17px;
+            height: 17px;
+            left: -17px;
+            top: 5px;
+            z-index: 99;
+        }
+        &.opened:before{
+            background: url(/images/icons/opened.svg) center no-repeat;
+        }
+        &.new:before{
+            background: url(/images/icons/new_cat.svg) center no-repeat;
+        }
+    }
+    li{
+        list-style: none;
+        padding-left: 8px;
+        position: relative;
+    }
+    li:before{
+        content: "";
+        position: absolute;
+        width: 21px;
+        height: 2px;
+        left: 0;
+        top: 13px;
+        background: #eee;
+    }
+    ul > li > ul{
+        margin-left: 15px;
+        display: none;
+    }
+    .ic{
+        position: absolute;
+        cursor: pointer;
+        left: -7px;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border: 2px solid #eee;
+        top: 6px;
+        z-index: 99;
+        transition: 0.2s all;
+        overflow: hidden;
+        &:hover{
+            border: 2px solid #404040;
+        }
+        &:before{
+            content: "";
+            display: block;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(#404040, #404040), linear-gradient(#404040, #404040), #fff;
+            background-position: center;
+            background-size: 8px 2px, 2px 8px;
+            background-repeat: no-repeat;
+        }
+        &.open:before{
+            content: '-';
+            background-size: 8px 2px, 2px 2px;
+        }
+        &.new{
+            border-radius: 50%;
+            &:hover{
+                border: 2px solid #eee;
+            }
+            &:before{
+                display: none;
+            }
+        }
+    }
+
+    .loading{
+        .ic{
+            animation: rotating 0.5s linear infinite!important;
+            border-radius: 50%;
+            &:before{
+                height: 2px;
+                background: linear-gradient(#404040, #404040), linear-gradient(#404040, #404040), #fff;
+                background-position: center;
+                background-size: 0px 0px, 2px 2px;
+                background-repeat: no-repeat;
+            }
+        }
+    }
+
+    ul:before{
+        height: 100%;
+        position: absolute;
+        content: '';
+        width: 2px;
+        left: 0;
+        background: #eee;
+        top: -12px;
+    }
+}

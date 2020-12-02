@@ -7,7 +7,7 @@
                     <input v-model.lazy="search" v-debounce="450" id="search" name="search" placeholder="Поиск по складу" class="input w-100" value="" type="text">
                 </div>
                 <div class="actions">
-                    <button type="button" class="button primary ml-15" v-on:click="newDialog('category')">Новая категория</button>
+                    <button type="button" class="button primary ml-15" v-on:click="newDialog('category',  {root_category:root_category, selected_category: category_id, })">Новая категория</button>
                     <button type="button" class="button primary ml-15" v-on:click="newDialog('product')">Новый товар</button>
                 </div>
             </div>
@@ -74,8 +74,6 @@
                     params: {category_id: this.category}
                 }).then((resp) =>  {
                     this.categories = resp.data;
-
-                    console.log(this.categories);
                 });
             },
             newDialog(tag, params = null){

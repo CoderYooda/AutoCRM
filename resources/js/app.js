@@ -78,6 +78,7 @@ import App from './components/App'
 import router from './router';
 import store from './store';
 import Notifications from 'vue-notification';
+import VueConfirmDialog from 'vue-confirm-dialog'
 
 window.app_version = 0.9;
 window.api_url = '/api';
@@ -103,6 +104,9 @@ Vue.prototype.removeFromLocalStorage = (key)=>{
 Vue.use(VueMask);
 Vue.use(Notifications);
 Vue.use(VCalendar);
+Vue.use(VueConfirmDialog);
+Vue.component('vue-confirm-dialog', VueConfirmDialog.default);
+
 let app = new Vue({
     router,
     store,

@@ -292,4 +292,15 @@ class CategoryController extends Controller
     {
         return response()->json($category->childs->load('image'));
     }
+
+    public function delete(Category $category)
+    {
+        PermissionController::canByPregMatch('Удалять категории');
+
+        $category->delete();
+
+        UA::makeUserAction($category, 'delete');
+
+        return response()->json(['success' => true]);
+    }
 }
