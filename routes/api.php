@@ -19,6 +19,9 @@ Route::namespace('API')->middleware('auth:api')->group(function() {
     Route::get('/products/{product}', 'ProductController@show')->name('products.show');
 
 
+    Route::get('/settings', 'SettingController@show')->name('settings.show');
+
+
     Route::post('/image/upload',   'ImageController@upload')->name('uploadImage');
 
     Route::get('/store/base/table_data',   'StoreController@tableData')->name('getStoreData');

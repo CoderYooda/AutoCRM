@@ -8,7 +8,7 @@
                 </div>
                 <div class="actions">
                     <button type="button" class="button primary ml-15" v-on:click="newDialog('category',  {root_category:root_category, selected_category: category_id, })">Новая категория</button>
-                    <button type="button" class="button primary ml-15" v-on:click="newDialog('product')">Новый товар</button>
+                    <button type="button" class="button primary ml-15" v-on:click="newDialog('product', {id:25118})">Новый товар</button>
                 </div>
             </div>
             <div class="box d-flex" style="height: calc(100% - 45px);">

@@ -77,7 +77,11 @@ class ProductController extends Controller
             'name' => $product->name,
             'article' => $product->article,
             'supplier' => $product->supplier->name,
-            'category_id' => $product->category_id,
+            'supplier_id' => $product->supplier->id,
+            'category' => $product->category->name,
+            'category_id' => $product->category->id,
+            'barcode' => $product->barcode,
+            'barcode_local' => $product->barcode_local,
             'prices' => [
                 'default' => $product->getPrice(),
                 'retail' => $storePrices,

@@ -151,7 +151,7 @@
                     //     }}
                 });
             },
-            setParent(category){
+            setCategory(category){
                 this.category_id = category.id;
                 this.parent_name = category.name;
                 this.$notify({

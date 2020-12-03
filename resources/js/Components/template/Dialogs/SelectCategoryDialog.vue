@@ -53,7 +53,7 @@
         },
         methods:{
             pick(category){
-                this.dialog.params.ref.setParent(category);
+                this.dialog.params.ref.setCategory(category);
                 this.$parent.closeDialog(this.dialog);
             }
         },

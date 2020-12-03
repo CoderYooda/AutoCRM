@@ -24,13 +24,14 @@ notification.configProfile( 'global', {
 
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
+
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = 'application/json';
 window.axios.defaults.baseURL = '/api/';
 let token = localStorage['api_token'];
 if (token) {
-    window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token.replace(/\"/g, "");
 } else {
     console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
 }

@@ -125,16 +125,7 @@ let app = new Vue({
 //     return request;
 // });
 
-window.axios.interceptors.request.use((config) => {
-    let token = localStorage['api_token'];
-    if(token){
-        config.headers.common['Authorization'] = 'Bearer ' + token.replace(/\"/g, "");
-    }
-    return config;
-}, (error) => {
-    if (debug) { console.error("✉️ ", error); }
-    return Promise.reject(error);
-});
+
 
 window.axios.interceptors.response.use(function (response) {
     // if(response.data.event){

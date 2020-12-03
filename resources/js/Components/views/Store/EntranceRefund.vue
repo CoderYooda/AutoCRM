@@ -1,7 +1,7 @@
 <template>
     <div class="bottom-container">
         <div class="box-lister">
-            <div class="d-flex" style="height: calc(100% - 45px);">
+            <div class="d-flex">
                 <Table v-bind:table_data="table_data" v-bind:filter_data="filter_data" v-bind:search="search" />
                 <div>
                     <button type="button" class="button primary ml-15 mb-15 w-290" v-on:click="newDialog('product')">Создать возврат поступления</button>
