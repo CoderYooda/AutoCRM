@@ -15,6 +15,8 @@
         </div>
 
         <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <input type="hidden" name="manufacturer" value="{{ $product->supplier->name }}">
+        <input type="hidden" name="article" value="{{ $product->article }}">
 
         @if($product->image != null || strlen($product->sp_desc) || count($product->specifications))
 
@@ -73,7 +75,7 @@
 
             <div class="header">
                 <div class="flex-1 availability">
-                    <span>Наличии</span>
+                    <span>В наличии</span>
 {{--                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
                 </div>
 
@@ -136,7 +138,7 @@
         </div>
 
         <div class="analogue_list mt-20">
-            {{--        @include('shop.includes.product_analogues')--}}
+{{--            @include('shop.includes.product_analogues')--}}
         </div>
 
     </div>

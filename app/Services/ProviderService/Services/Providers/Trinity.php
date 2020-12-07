@@ -76,7 +76,13 @@ class Trinity implements ProviderInterface
 
         if($items == []) return [];
 
-        $results = [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items['data'] as $key => $item) {
 
@@ -99,13 +105,17 @@ class Trinity implements ProviderInterface
 
             if(!strlen($store['bid'])) continue;
 
+            $is_analogue = $store['producer'] != $brand;
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
+
             preg_match_all('/\d+/', $store['deliverydays'], $days);
 
             $days_min = $days[0][0];
             $days_max = $days[0][1] ?? 9999;
 
-            $results[] = [
-                'index' => $key,
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
                 'name' => $store['stock'],
                 'code' => $store['code'],
                 'rest' => $store['rest'],
@@ -119,9 +129,10 @@ class Trinity implements ProviderInterface
                 'article' => $store['code'],
                 'model' => $store,
                 'stock' => $store['stock'],
-                'hash' => md5($store['stock'] . $store['producer'] . $store['code'] . $store['deliverydays'] . $store['price']),
-                'is_analogue' => $store['producer'] != $brand
+                'hash' => md5($store['stock'] . $store['producer'] . $store['code'] . $store['deliverydays'] . $store['price'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;

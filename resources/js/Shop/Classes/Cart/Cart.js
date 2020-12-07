@@ -1,5 +1,3 @@
-import Tabs from "../../../Tools/Tabs";
-
 class Cart {
 
     constructor() {
@@ -13,13 +11,10 @@ class Cart {
 
         if(data_element) {
 
-            let providers = data_element.dataset.providers;
             let product = data_element.dataset.product;
 
-            if(providers) this.providers = JSON.parse(providers);
             if(product) this.product = JSON.parse(data_element.dataset.product);
 
-            data_element.removeAttribute('data-data');
             data_element.removeAttribute('data-product');
         }
     }
@@ -42,12 +37,14 @@ class Cart {
         if(element.classList.contains('incart')) return;
         element.classList.add('incart');
 
-        let order = this.getOrderByHash(hash);
-
-        order.product_id = this.product.id;
-
         let product_element = element.closest('.element');
         let store_id = product_element.dataset.store_id;
+
+        let type = product_element.dataset.type;
+
+        let order = this.getOrderByHash(hash, type);
+
+        order.product_id = this.product.id;
 
         if(store_id) order.store_id = store_id;
 
@@ -99,6 +96,8 @@ class Cart {
                 target_element.remove();
 
                 let cart_elements = document.querySelectorAll('.cart_element');
+
+                this.recalculate();
 
                 if(cart_elements.length == 0) this.clear(true);
             })
@@ -265,14 +264,19 @@ class Cart {
         delivery_group.classList.toggle('d-none');
     }
 
-    getOrderByHash(hash) {
+    getOrderByHash(hash, type) {
 
         let order = {};
 
         Object.values(this.providers).forEach(orders => {
 
-            Object.values(orders).forEach(element => {
-                if(element.hash == hash) order = element;
+            ['originals', 'analogues'].forEach(type => {
+
+                Object.values(orders[type]).forEach(element => {
+
+                    if(element.hash == hash) order = element;
+                });
+
             });
 
         });

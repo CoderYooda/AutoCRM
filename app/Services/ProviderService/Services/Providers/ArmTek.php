@@ -77,7 +77,12 @@ class ArmTek implements ProviderInterface
 
         $items = $this->query('/ws_search/search', $params, 'POST');
 
-        if (isset($items['RESP']['MSG'])) return [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        if (isset($items['RESP']['MSG'])) return $results;
 
         foreach ($items['RESP'] as $key => $item) {
 
@@ -97,16 +102,21 @@ class ArmTek implements ProviderInterface
 
         }
 
-        $results = [];
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items['RESP'] as $key => $item) {
+
+            $is_analogue = $item['ANALOG'] == 'X';
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
 
             $delivery_timestamp = Carbon::parse($item['DLVDT']);
 
             $delivery_days = Carbon::now()->diffInDays($delivery_timestamp);
 
-            $results[] = [
-                'index'        => $item['index'],
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
                 'name'         => $item['KEYZAK'],
                 'code'         => $item['ARTID'],
                 'rest'         => $item['RVALUE'],
@@ -118,9 +128,10 @@ class ArmTek implements ProviderInterface
                 'article'      => $item['PIN'],
                 'stock'        => $item['KEYZAK'],
                 'model'        => $item,
-                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $item['PIN'] . $item['DLVDT'] . $item['PRICE']),
-                'is_analogue'  => $item['ANALOG'] == 'X'
+                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $item['PIN'] . $item['DLVDT'] . $item['PRICE'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;

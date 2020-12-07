@@ -106,15 +106,13 @@ class PageController extends Controller
 
         $categories = Category::where('company_id', $this->shop->company_id)->whereIn('slug', $slugs)->get();
 
-        //Проверка наследия категорий
-        if(count($categories) > 1) {
-            for ($i = count($categories) - 1; $i != -1; $i--) {
-
-                abort_if($categories[$i]->category_id != $categories[--$i]->id, 404, 'Страница не найдена.');
-            }
-        }
-
         $product = Article::where('slug', end($slugs))->first();
+
+        $checkPath = $product ? $product->path() : $categories->last()->path();
+
+        $slugCorrect = strpos($checkPath, $path) !== false;
+
+        abort_if(!$slugCorrect, 404, 'Страница не найдена.');
 
         abort_if(!$categories->count() && $product == null, 404, "Страница не найдена.");
 

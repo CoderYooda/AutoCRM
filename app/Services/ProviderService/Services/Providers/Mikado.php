@@ -90,7 +90,13 @@ class Mikado implements ProviderInterface
 
         $items = $items->toArray();
 
-        $results = [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items as $key => $item) {
 
@@ -108,6 +114,10 @@ class Mikado implements ProviderInterface
             $rest = (int)preg_replace('/[^0-9]/', '', $rest);
             $delivery = (int)preg_replace('/[^0-9]/', '', $delivery);
 
+            $is_analogue = $item['CodeType'] == 'Analog';
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
+
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
@@ -122,8 +132,8 @@ class Mikado implements ProviderInterface
                 'supplier'     => $this->name
             ];
 
-            $results[] = [
-                'index'        => $key,
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
                 'name'         => $item['Supplier'],
                 'code'         => $item['ZakazCode'],
                 'rest'         => $rest,
@@ -135,9 +145,10 @@ class Mikado implements ProviderInterface
                 'article'      => $item['ProducerCode'],
                 'stock'        => $item['ZakazCode'],
                 'model'        => $items[$key],
-                'hash'         => md5($item['ZakazCode'] . $item['ProducerBrand'] . $item['ProducerCode'] . $delivery . $item['PriceRUR']),
-                'is_analogue'  => $item['CodeType'] == 'Analog'
+                'hash'         => md5($item['ZakazCode'] . $item['ProducerBrand'] . $item['ProducerCode'] . $delivery . $item['PriceRUR'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;

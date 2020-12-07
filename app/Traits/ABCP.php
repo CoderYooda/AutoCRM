@@ -89,7 +89,7 @@ trait ABCP
                 'article'      => $item['number'],
                 'days'         => $item['deliveryPeriod'],
                 'price'        => $item['price'],
-                'packing'      => $item['packing'],
+                'packing'      => $item['packing'] >= 1 ? $item['packing'] : 1,
                 'desc'         => $item['description'],
                 'rest'         => $item['availability'],
                 'supplier'     => $this->name
@@ -119,7 +119,7 @@ trait ABCP
                 'name'         => $item['supplierCode'],
                 'code'         => $item['number'],
                 'rest'         => $item['availability'],
-                'packing'      => $item['packing'],
+                'packing'      => $item['packing'] >= 1 ? $item['packing'] : 1,
                 'delivery'     => $min_days . ($max_days > $min_days ? ('/' . $max_days) : '') . ' дн.',
                 'days_min'     => $min_days,
                 'days_max'     => $max_days,

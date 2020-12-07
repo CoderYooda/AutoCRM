@@ -7,6 +7,18 @@
 
     .analogue_list {
         min-height: 150px;
+
+        .table {
+            .header {
+                .pointer {
+                    i {
+                        &.active {
+                            color: red;
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
