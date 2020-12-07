@@ -8,7 +8,7 @@
                 </div>
                 <div class="actions">
                     <button type="button" class="button primary ml-15" v-on:click="newDialog('category',  {root_category:root_category, selected_category: category_id, })">Новая категория</button>
-                    <button type="button" class="button primary ml-15" v-on:click="newDialog('product', {id:25118})">Новый товар</button>
+                    <button type="button" class="button primary ml-15" v-on:click="newDialog('product')">Новый товар</button>
                 </div>
             </div>
             <div class="box d-flex" style="height: calc(100% - 45px);">
@@ -48,13 +48,13 @@
                 {min_width: 150, width: 200, name: 'Производитель', table_name: 'supplier'},
             ];
             this.table_data.context_menu = [
-                {name:'Редактировать', action: function(data){alert(12)}},
-                {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: (id) => {this.newDialog('product', {id:id})}},
+                {name:'Открыть', action: (id) => {this.newDialog('product', {id:id})}},
                 {name:'Создать заявку поставщику', action: (data) => {openDialog('providerOrderDialog', '&products=' + this.table.getSelectedIDs())}},
                 {name:'Печать ценников', action: (data) => {window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())}},
                 {name:'Показать аналоги в наличии', action: (data) => {this.showAnalogues(data);}},
             ];
-            this.table_data.dbl_click = function(id){console.log(id)};
+            this.table_data.dbl_click = (id) => {this.newDialog('product', {id:id})};
             this.table_data.url = '/store/base/table_data';
         },
         computed:{

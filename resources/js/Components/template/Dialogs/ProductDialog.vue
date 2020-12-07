@@ -33,7 +33,7 @@
         <!--            </div>-->
         <!--        </div>-->
 
-        <form>
+        <div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-4 no-pr d-flex">
@@ -61,34 +61,10 @@
                                 <!--                                    </div>-->
                                 <!--                                </div>-->
 
-                                <div class="form-group">
-                                    <label>Артикул</label>
-                                    <input v-model="entity.article" type="text" name="article" class="form-control"
-                                           placeholder="Артикул детали (не более 64 символов)">
-                                </div>
-                                <div class="form-group">
-                                    <label>Наименование</label>
-                                    <input v-model="entity.name" type="text" name="name" class="form-control"
-                                           placeholder="Наименование (не более 255 символов)" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <label>В категории</label>
-                                    <div class="input-group mb-3">
-                                        <button v-on:click="selectCategory()" type="button"
-                                                class="category_select form-control text-left button_select">{{
-                                            entity.category }}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Производитель</label>
-                                    <div class="input-group mb-3">
-                                        <button type="button" name="supplier_id"
-                                                class="supplier_select form-control text-left button_select">{{
-                                            entity.supplier }}
-                                        </button>
-                                    </div>
-                                </div>
+                                <FormInput v-bind:inputData="{type:'input',label:'Артикул',name:'article', messages:messages, placeholder:'Артикул детали (не более 64 символов)'}" />
+                                <FormInput v-bind:inputData="{type:'input',label:'Наименование',name:'name', messages:messages, placeholder:'Наименование (не более 255 символов)'}" />
+                                <FormInput v-bind:inputData="{type:'selector',label:'В категории',name:'category', messages:messages, onClick:'selectCategory'}" />
+                                <FormInput v-bind:inputData="{type:'selector',label:'Производитель',name:'supplier', messages:messages, onClick:'selectSupplier'}" />
                                 <!--                                <div class="form-group">-->
                                 <!--                                    @foreach($stores as $store)-->
                                 <!--                                    <label>Розничная цена для магазина "{{ $store->name }}"</label>-->
@@ -370,13 +346,13 @@
             <div class="system_message">
 
             </div>
-        </form>
+        </div>
     </div>
 </template>
 
 <script>
     import categoryMixin from "./../../mixins/categoryMixin"
-
+    import FormInput from "./../../service/FormInput"
     export default {
         name: "ProductDialog",
         props: ['dialog'],
@@ -397,6 +373,7 @@
                 ],
                 root_category: 2,
                 entity: {},
+                messages:{},
             }
         },
         mounted() {
@@ -413,6 +390,11 @@
                     this.id = resp.data.id;
                     this.entity = resp.data;
                     this.loading = false;
+                }).catch((error) => {
+                    if(error.response.status === 404){
+                        this.$parent.closeDialog(this.dialog);
+                    }
+                    this.loading = false;
                 });
             }
         },
@@ -423,7 +405,28 @@
                     tab.state = false;
                 });
                 tab.state = true;
+            },
+            save(){
+                let method = this.entity.id ? 'patch' : 'post';
+                let url = this.entity.id ? '/' + this.entity.id : '';
+                this.loading = true;
+                window.axios({
+                    method: method,
+                    url: '/products' + url,
+                    data:this.entity,
+                }).then((resp) =>  {
+                    this.id = resp.data.id;
+                    this.$eventBus.$emit('ProductUpdated', {id: this.id, category_id:this.category_id});
+                    this.$parent.closeDialog(this.dialog);
+                    this.loading = false;
+                }).catch((error) => {
+                    this.loading = false;
+                    this.messages = error.response.data.messages;
+                });
             }
+        },
+        components:{
+            FormInput
         }
     }
 </script>

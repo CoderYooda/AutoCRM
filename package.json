@@ -63,6 +63,7 @@
         "tooltips-js": "^1.0.6",
         "v-calendar": "^2.1.1",
         "v-mask": "^2.2.3",
+        "v-tooltip": "^2.0.3",
         "vue": "^2.6.11",
         "vue-confirm-dialog": "^1.0.2",
         "vue-notification": "^1.3.20",

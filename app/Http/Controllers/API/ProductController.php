@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Auth;
 
 class ProductController extends Controller
 {
@@ -74,6 +75,7 @@ class ProductController extends Controller
         }
 
         return response()->json([
+            'id' => $product->id,
             'name' => $product->name,
             'article' => $product->article,
             'supplier' => $product->supplier->name,
@@ -186,6 +188,14 @@ class ProductController extends Controller
             ], $this->status);
 
         });
+    }
+
+    public function update(Article $product, ProductRequest $request)
+    {
+        PermissionController::canByPregMatch('Редактировать товары');
+
+
+        return response()->json($product);
     }
 
     public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе

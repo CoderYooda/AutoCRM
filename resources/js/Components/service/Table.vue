@@ -46,9 +46,8 @@
                         </div>
                     </div>
                 </div>
-
                 <div v-if="!loading" ref="cont" class="context" id="context" v-bind:style="context_style">
-                    <div v-on:click="menu.action"
+                    <div v-on:click="menu.action(elem.id)"
                          v-for="menu in table_data.context_menu"
                          v-bind:key="menu.name" class="context_item">
                         <div class="title">{{ menu.name }}</div>

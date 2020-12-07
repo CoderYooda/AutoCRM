@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form>
+        <div>
             <input class="d-none" ref="cat_img_upload" type="file" @change="sync" accept="image/jpeg,image/png,image/gif"/>
             <div class="">
                 <div class="box-body">
@@ -19,15 +19,8 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label >Наименование</label>
-                                <div v-if="loading" class="list-placeholder" style="height: 30px;">
-                                    <div class="list-placeholder_item" style="height: 30px;">
-                                        <div class="list-placeholder_cell" style="width: 100%" ></div>
-                                    </div>
-                                </div>
-                                <input v-if="!loading" type="text" v-model="name" class="form-control" placeholder="Наименование (не более 255 символов)">
-                            </div>
+                            <FormInput v-bind:inputData="{type:'input',label:'Название',name:'name', messages:messages}" />
+
                         </div>
                         <div class="ml-15">
                             <div class="form-group mb-0">
@@ -52,14 +45,17 @@
             </div>
             <div class="system_message">
             </div>
-        </form>
+        </div>
     </div>
 </template>
 
 <script>
+    import validateMixin from "./../../mixins/validateMixin"
+    import FormInput from "./../../service/FormInput"
     export default {
         name: "CategoryDialog",
         props:['dialog'],
+        mixins: [validateMixin],
         data: ()=> {
             return {
                 category_id: 1,
@@ -70,6 +66,7 @@
                 image_file: null,
                 name: null,
                 loading:false,
+                messages:{},
             }
         },
         // beforeMount(){
@@ -105,7 +102,17 @@
                 });
             }
         },
+        watch: {
+            name: {
+                handler(newVal, oldVal){
+                    this.messages['name'] = null;
+                }
+            }
+        },
         computed: {
+            nameHasError(){
+                return this.messages.name && this.messages.name.length;
+            }
         },
         methods:{
             getParentCategory(){
@@ -177,8 +184,14 @@
                     this.$eventBus.$emit('CategoryUpdated', {id: this.id, category_id:this.category_id});
                     this.$parent.closeDialog(this.dialog);
                     this.loading = false;
+                }).catch((error) => {
+                    this.loading = false;
+                    this.messages = error.response.data.messages;
                 });
             }
+        },
+        components:{
+            FormInput
         }
     }
 </script>

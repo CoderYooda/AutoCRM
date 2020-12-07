@@ -15,7 +15,9 @@ Route::namespace('API')->middleware('auth:api')->group(function() {
     Route::post('/categories', 'CategoryController@store')->name('categories.store');
     Route::delete('/categories/{category}', 'CategoryController@delete')->name('categories.delete');
 
-    Route::post('/products/store', 'ProductController@store')->name('products.store');
+
+    Route::patch('/products/{product}', 'ProductController@update')->name('products.update');
+    Route::post('/products', 'ProductController@store')->name('products.store');
     Route::get('/products/{product}', 'ProductController@show')->name('products.show');
 
 
