@@ -329,7 +329,10 @@ class Items {
             window.notification.notify('error', 'Товар уже в списке');
         } else {
 
-            if(check_isset) this.items.push(cell_item);
+            if(check_isset) {
+                this.items.push(cell_item);
+                window.notification.notify('success', 'Товар успешно добавлен в список.');
+            }
 
 
             let body_elem = document.createElement('div');

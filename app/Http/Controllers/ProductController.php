@@ -217,7 +217,6 @@ class ProductController extends Controller
             ->when($request['string'], function($q) use ($request){
                 $q->where('foundstring', 'LIKE', '%' .  str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
             })
-
             ->when(!$request['string'], function($q) use ($request){
                 $q->when($request['category_id'], function ($q) use ($request) {
                     $q->where('category_id', $request['category_id']);
@@ -230,17 +229,17 @@ class ProductController extends Controller
 
         $availableCounts = DB::table('article_entrance')
             ->whereIn('article_id', $products->pluck('id'))
-            ->selectRaw('article_id, SUM(count) as count, SUM(released_count) as released_count')
+            ->groupBy(['article_id'])
+            ->selectRaw('id, article_id, SUM(count) as count, SUM(released_count) as released_count')
             ->get();
 
-        foreach ($products as $product){
+        foreach ($products as $product) {
 
             $availableCount = $availableCounts->where('article_id', $product->id)->first();
 
             $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
             $product->price = $product->getPrice();
             $product->supplier_name = $product->supplier->name;
-            $product->store_count = $product->available;
             $product->product_id = $product->id;
             $product->shipped_count = 0;
         }

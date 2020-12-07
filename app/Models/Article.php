@@ -350,7 +350,8 @@ class Article extends Model
 
     public function entrances()
     {
-        return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
+        return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id')
+            ->leftJoin('article_entrance as ae', 'articles.id', '=', 'ae.article_id')
             ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 

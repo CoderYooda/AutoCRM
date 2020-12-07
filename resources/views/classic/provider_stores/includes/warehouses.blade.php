@@ -9,6 +9,10 @@
 <div class="table">
 
     <div class="table_header">
+        <div class="item pointer" onclick="store.sortBy(this, 'originals', 'days_min');">
+            <span>Возможность возврата</span>
+            <i class="fa fa-caret-up" aria-hidden="true"></i>
+        </div>
         <div class="item pointer" onclick="store.sortBy(this, 'originals', 'rest');">
             <span>Остаток на складе</span>
             <i class="fa fa-caret-up" aria-hidden="true"></i>

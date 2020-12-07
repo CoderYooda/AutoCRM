@@ -128,6 +128,7 @@ trait ABCP
                 'article'      => $item['number'],
                 'stock'        => $item['supplierCode'],
                 'model'        => $item,
+                'can_return'   => $item['noReturn'] == 0 ? 'Есть' : 'Нет',
                 'hash'         => md5($item['supplierCode'] . $item['brand'] . $item['number'] . $item['deliveryPeriod'] . $item['price'])
             ];
 

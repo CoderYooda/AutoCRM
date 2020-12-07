@@ -46,6 +46,7 @@
                                         @endif
                                     </div>
                                     <div class="top-left-label">
+                                        @dd($product, $product->getEntrancesCount())
                                         @if($product->getEntrancesCount())
                                             <div class="in-stock">В наличии</div>
                                         @else
