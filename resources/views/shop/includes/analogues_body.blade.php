@@ -18,7 +18,7 @@
             <div class="absolute shipping-container">
                 <div class="counter-container">
                     <div class="button minus" onclick="cart.decrement(this, '{{ $order['hash'] }}');"></div>
-                    <input type="text" data-max="{{ $order['model']['hash_info']['rest'] }}" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
+                    <input type="text" class="counter" value="{{ $cart->getProductCount($order['hash']) }}" />
                     <div class="button plus" onclick="cart.increment(this, '{{ $order['hash'] }}');"></div>
                 </div>
                 <div class="cart-button @if($cart->isProductExists($order['hash'])) incart @endif" onclick="cart.add(this, '{{ $order['hash'] }}');"></div>

@@ -114,19 +114,12 @@
                         </div>
 
                         <div class="absolute shipping-container">
-                            @if($product->getCountInStoreId($store->id))
-                                <div class="counter-container">
-                                    <div class="button minus" onclick="cart.decrement(this, '{{ $product->getHash($store->id) }}');"></div>
-                                    <input class="counter" data-max="{{ $product->getCountInStoreId($store->id) }}" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
-                                    <div class="button plus" onclick="cart.increment(this, '{{ $product->getHash($store->id) }}');"></div>
-                                </div>
-                                <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
-                            @else
-                                <div class="counter-container">
-                                    &#8212;
-                                </div>
-                            @endif
-
+                            <div class="counter-container">
+                                <div class="button minus" onclick="cart.decrement(this, '{{ $product->getHash($store->id) }}');"></div>
+                                <input class="counter" value="{{ $cart->getProductCount($product->getHash($store->id)) }}" type="text" />
+                                <div class="button plus" onclick="cart.increment(this, '{{ $product->getHash($store->id) }}');"></div>
+                            </div>
+                            <div class="cart-button @if($cart->isProductExists($product->getHash($store->id))) incart @endif" onclick="cart.add(this, '{{ $product->getHash($store->id) }}');"></div>
                         </div>
 
                     </div>

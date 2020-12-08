@@ -27,12 +27,12 @@ class Cart {
 
         let count = parseInt(input_element.value);
 
-        let max_count = input_element.dataset.max;
-
-        if(count > max_count) {
-            window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
-            return;
-        }
+        // let max_count = input_element.dataset.max;
+        //
+        // if(count > max_count) {
+        //     window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+        //     return;
+        // }
 
         if(element.classList.contains('incart')) return;
         element.classList.add('incart');
@@ -114,12 +114,12 @@ class Cart {
         let count_element = target_element.querySelector('.counter');
         let count = parseInt(count_element.value) + 1;
 
-        let max_count = count_element.dataset.max;
-
-        if((count - 1) >= max_count) {
-            window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
-            return;
-        }
+        // let max_count = count_element.dataset.max;
+        //
+        // if((count - 1) >= max_count) {
+        //     window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+        //     return;
+        // }
 
         count_element.value = count;
 
@@ -298,8 +298,6 @@ class Cart {
 
         let total_price = 0;
 
-        let total_stores = {};
-
         elements.forEach(element => {
 
             let store_id = element.dataset.store_id;
@@ -309,32 +307,20 @@ class Cart {
             let count = parseInt(count_element.value);
             let price = parseFloat(element.querySelector('.current_price span').innerHTML.replace(' ', ''));
 
-            let max_count = count_element.dataset.max;
-
-            if(count > max_count) {
-                count = max_count;
-                count_element.value = max_count;
-                window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
-            }
+            // let max_count = count_element.dataset.max;
+            //
+            // if(count > max_count) {
+            //     count = max_count;
+            //     count_element.value = max_count;
+            //     window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+            // }
 
             let total = count * price;
 
             total_price += total;
 
             element.querySelector('.total_price span').innerHTML = total.toFixed(2);
-
-            // if(store_id) {
-            //     if(isNaN(total_stores[store_id])) total_stores[store_id] = 0;
-            //     total_stores[store_id] += total;
-            // }
-
         });
-
-        // Object.keys(total_stores).forEach(store_id => {
-        //      let value = total_stores[store_id];
-        //
-        //      document.getElementById('total_store_' + store_id).innerHTML = value.toFixed(2);
-        // });
 
         let total_element = document.getElementById('count');
 

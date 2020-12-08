@@ -243,12 +243,15 @@ class Article extends Model
 
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
-        $entrances = $this->entrances;
+        $entrances = DB::table('article_entrance')
+            ->where('article_id', $this->id)
+            ->when($method_cost_of_goods == 'lifo', function (Builder $query) {
+                $query->orderByDesc('id');
+            })
+            ->get();
 
-        if($method_cost_of_goods == 'lifo') $entrances = $entrances->sortDesc();
-
-        $count = $entrances->sum('pivot.count');
-        $released_count = $entrances->sum('pivot.released_count');
+        $count = $entrances->sum('count');
+        $released_count = $entrances->sum('released_count');
 
         return $count - $released_count;
     }
@@ -351,7 +354,6 @@ class Article extends Model
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id')
-            ->leftJoin('article_entrance as ae', 'articles.id', '=', 'ae.article_id')
             ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 
