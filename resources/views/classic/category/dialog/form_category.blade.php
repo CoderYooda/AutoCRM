@@ -30,6 +30,10 @@
                     <label for="category_id">Наименование</label>
                     <input type="text" id="category_dialog_focused" value="{{ $category->name ?? '' }}" name="name" class="form-control" placeholder="Наименование (не более 255 символов)" autofocus>
                 </div>
+                <div class="form-group">
+                    <label for="category_id">Наценка на товары этой категории (%)</label>
+                    <input type="number" value="{{ decimal_price($category->markup ?? 0) }}" name="markup" class="form-control" autofocus>
+                </div>
                 <div class="form-group mb-0">
                     <label class="mb-5">Основное фото</label>
                     <div style="width: 110px; height: 110px;">

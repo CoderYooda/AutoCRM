@@ -48,6 +48,8 @@ class ProductRequest extends FormRequest
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.settings.*.*' => ['accepted'],
             'shop.image_id' => ['nullable', 'exists:images,id'],
+            'markup' => ['required', 'numeric', 'between:0,100'],
+            'markup_source' => ['required', Rule::in(['global', 'category', 'product'])]
         ];
 
         if(isset($this['shop']['discounts']['discount'])) {

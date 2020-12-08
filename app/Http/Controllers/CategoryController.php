@@ -218,7 +218,8 @@ class CategoryController extends Controller
         }
         return response()->json([
             'id' => $category->id,
-            'name' => $category->name
+            'name' => $category->name,
+            'markup' => $category->markup
         ]);
     }
 

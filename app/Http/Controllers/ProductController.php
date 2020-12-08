@@ -172,6 +172,13 @@ class ProductController extends Controller
 
         $company = Auth::user()->company;
 
+        $priceSource = $company->getSettingField('Источник цены');
+        $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
+
+        $lastEntrance = DB::table('article_entrance')->where('article_id', $product->id)->orderByDesc('id')->first();
+
+        $lastEntrancePrice = $lastEntrance->price ?? 0;
+
         $category = Category::find($category_select);
 
         $shopFields = [
@@ -186,7 +193,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields', 'globalMarkup', 'lastEntrancePrice', 'priceSource'))->render(),
             'product' => $product
         ]);
     }

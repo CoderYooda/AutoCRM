@@ -31,7 +31,9 @@ class Article extends Model
         'barcode',
         'name',
         'blockedCount',
-        'image_id'
+        'image_id',
+        'markup',
+        'markup_source'
     ];
 
     protected $guarded = [];
@@ -282,14 +284,10 @@ class Article extends Model
         return $price;
     }
 
-    public function getPrice(int $count = 1)
+    public function getPrice()
     {
         /** @var ShopManager $shopManager */
         $shopManager = app(ShopManager::class);
-
-//        if(!$shopManager->isWatchShop() && isset($this->pivot->price)) {
-//            return $this->pivot->price;
-//        }
 
         $shop = $shopManager->getCurrentShop();
 
@@ -297,13 +295,14 @@ class Article extends Model
         $company = $shop->company ?? Auth::user()->company;
 
         $price_source = $company->getSettingField('Источник цены');
-        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $store_id = Auth::user()->current_store ?? null;
 
+        $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
+
         $price = 0;
 
-        if($price_source == 'retail') {
+        if($price_source == 'purchase') {
 
             if($shopManager->isWatchShop()) {
                 return $this->stores->sum('pivot.retail_price') / $this->stores->count();
@@ -311,41 +310,21 @@ class Article extends Model
 
             $price = $this->stores->find($store_id)->pivot->retail_price ?? 0;
         }
-        else { /* FIFO-LIFO */
+        else {
 
-            $query = DB::table('article_entrance')
-                ->where('article_id', $this->id)
-                ->whereRaw('count != released_count')
-                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'));
+            $lastEntrance = DB::table('article_entrance')->where('article_id', $this->id)->orderByDesc('id')->first();
 
-            if(!$shopManager->isWatchShop()) {
-                $query->where(function (Builder $builder) use($store_id) {
-                    if($store_id) $builder->where('store_id', $store_id);
-                });
-            }
+            $price = $lastEntrance->price ?? 0;
+        }
 
-            $products = $query->get();
-
-            $retail_price = 0;
-            $found_count = 0;
-
-            foreach ($products as $product) {
-
-                for($i = $product->count; $i != -1; $i--) {
-
-                    $retail_price += $product->price;
-
-                    $found_count++;
-
-                    if ($count == $found_count) break 2;
-                }
-            }
-
-            $markup_value = $company->getSettingField('Стандартная наценка (%)');
-
-            $total = $found_count ? ($retail_price / $found_count) : 0;
-
-            $price = (double)($total + ($total / 100 * $markup_value));
+        if($this->markup_source == 'global') {
+            $price += sum_percent($price, $globalMarkup);
+        }
+        else if($this->markup_source == 'category') {
+            $price += sum_percent($price, $this->category->markup);
+        }
+        else {
+            $price += sum_percent($price, $this->markup);
         }
 
         return $price;

@@ -20,7 +20,8 @@ class Category extends Model
         'company_id',
         'name',
         'balance',
-        'image_id'
+        'image_id',
+        'markup'
     ];
 
     public function image()
