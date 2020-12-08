@@ -149,7 +149,36 @@ class shipmentDialog extends Modal{
             {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
         ];
 
-        this.items = new BBlist(this, 'shipment_list' + prefix, 'products', header);
+        let events = [{
+            field: 'count',
+            action: {
+                target: this,
+                method: 'freshPrice'
+            }
+        }];
+
+        this.items = new BBlist(this, 'shipment_list' + prefix, 'products', header, events);
+    }
+
+    freshPrice(product_id, index) {
+
+        let price_element = this.current_dialog.querySelector('[name="products[' + index + '][price]"]');
+        let count_element = this.current_dialog.querySelector('[name="products[' + index + '][count]"]');
+
+        let data = {
+            count: count_element.value
+        };
+
+        axios.post('/product/' + product_id + '/price', data)
+            .then(response => {
+                let data = response.data;
+
+                price_element.value = data.price;
+                this.items.recalculateItem(index);
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     save(elem){

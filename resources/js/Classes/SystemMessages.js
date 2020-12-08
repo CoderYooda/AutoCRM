@@ -51,15 +51,23 @@ class SystemMessages{
 
     }
 
-    readMessage(id){
-        let object = this;
+    readMessage(element, id){
+
+        element.closest('.aside_message').remove();
+
         axios({
             method: 'post',
             url: '/systemMessages/read',
             data:{id:id}
-        }).then(function (resp) {
-            object.loadMessages();
         })
+            .then(resp => {
+                let element_counter = document.getElementById('stack_bell_count');
+
+                element_counter.innerHTML = parseInt(element_counter.innerHTML) - 1;
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 }
 export default SystemMessages;

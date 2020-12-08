@@ -128,6 +128,7 @@ class ArmTek implements ProviderInterface
                 'article'      => $item['PIN'],
                 'stock'        => $item['KEYZAK'],
                 'model'        => $item,
+                'can_return'   => $item['RETDAYS'] ? 'Есть' : 'Нет',
                 'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $item['PIN'] . $item['DLVDT'] . $item['PRICE'])
             ];
 

@@ -7,6 +7,7 @@
                 <div class="item">{{ $store['manufacturer'] }}</div>
                 <div class="item">{{ $store['article'] }}</div>
             @endif
+            <div class="item">{{ $store['can_return'] }}</div>
             <div class="item">{{ $store['rest'] }} шт.</div>
             <div class="item">{{ $store['packing'] }} шт.</div>
             <div class="item">{{ $store['delivery'] }}</div>

@@ -106,6 +106,8 @@ class PageController extends Controller
 
         $categories = Category::where('company_id', $this->shop->company_id)->whereIn('slug', $slugs)->get();
 
+        abort_if(!count($categories), 404);
+
         $product = Article::where('slug', end($slugs))->first();
 
         $checkPath = $product ? $product->path() : $categories->last()->path();

@@ -1,5 +1,5 @@
 class Items {
-    constructor(object, container, form_name, header){
+    constructor(object, container, form_name, header, events){
         this.container = document.getElementById(container);
 
         if(!form_name)
@@ -11,6 +11,7 @@ class Items {
         if(!this.container.hasAttribute('data-items'))
             throw new Error('Не передан параметр items');
 
+        this.events = events;
         this.form_name = form_name;
         this.header = header;
         this.parent_object = object;
@@ -356,6 +357,7 @@ class Items {
             }
 
             this.header.forEach((item) => {
+
                 let cell = document.createElement('div');
                 cell.classList.add('cell');
 
@@ -401,6 +403,19 @@ class Items {
                         input.setAttribute('min', '1');
 
                         input.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
+
+                        this.events.forEach(event_item => {
+                            if(event_item.field == item.table_name) {
+
+                                let types = ['keyup', 'delete', 'paste'];
+
+                                types.forEach(type => {
+                                    input.addEventListener(type, (event) => {
+                                        event_item.action.target[event_item.action.method](cell_item.id, this.key);
+                                    });
+                                });
+                            }
+                        });
 
                         input.addEventListener('keyup', () => {
                             this.recalculateItem(body_elem.dataset.id);
