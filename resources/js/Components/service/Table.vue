@@ -71,7 +71,7 @@
 
 <script>
     export default {
-        props:['table_data', 'filter_data'],
+        props:['table_data', 'filter_data', 'event_data'],
         name: "Table",
         data: ()=> {
             return {
@@ -108,6 +108,14 @@
         mounted(){
             this.getItems();
             document.addEventListener('click', this.closeContext)
+            this.$eventBus.$on('TooManyAttempts', ()=>{
+                this.$notify({
+                    group: 'main',
+                    title: 'Ошибка сервера!',
+                    text: 'Слишком много запросов, повторите попытку позже.'
+                });
+            });
+            // ProductUpdated
         },
         computed:{
             loading(){

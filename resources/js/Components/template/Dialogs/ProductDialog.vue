@@ -340,8 +340,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="submit" class="button white">Закрыть</button>
-                <button type="submit" class="button primary pull-right">Сохранить</button>
+                <button @click="$parent.closeDialog(dialog)" type="submit" class="button white">Закрыть</button>
+                <button @click="save()" type="submit" class="button primary pull-right">Сохранить</button>
             </div>
             <div class="system_message">
 
@@ -352,11 +352,12 @@
 
 <script>
     import categoryMixin from "./../../mixins/categoryMixin"
+    import supplierMixin from "./../../mixins/supplierMixin"
     import FormInput from "./../../service/FormInput"
     export default {
         name: "ProductDialog",
         props: ['dialog'],
-        mixins: [categoryMixin],
+        mixins: [categoryMixin, supplierMixin],
         data: () => {
             return {
                 get shop_activated(){
@@ -372,14 +373,23 @@
                     {slug: "entrance", name: "Поступления", state: false},
                 ],
                 root_category: 2,
-                entity: {},
+                entity: {
+                    name:null,
+                    article:null,
+                    category_id:2,
+                    category:null,
+                    supplier_id:null,
+                    supplier:'Не выбран',
+                },
                 messages:{},
+                loading:false,
             }
         },
         mounted() {
             this.dialog.width = 700;
             if (this.dialog.id === 0) {
                 this.dialog.title = "Новый продукт";
+                this.getParentCategory();
             } else {
                 this.loading = true;
                 window.axios({
@@ -415,7 +425,6 @@
                     url: '/products' + url,
                     data:this.entity,
                 }).then((resp) =>  {
-                    this.id = resp.data.id;
                     this.$eventBus.$emit('ProductUpdated', {id: this.id, category_id:this.category_id});
                     this.$parent.closeDialog(this.dialog);
                     this.loading = false;

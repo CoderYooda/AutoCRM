@@ -35,6 +35,7 @@
         components: {
             'productDialog':        () => import(/* webpackChunkName: "productDialog" */        './Dialogs/ProductDialog'),
             'categoryDialog':       () => import(/* webpackChunkName: "categoryDialog" */       './Dialogs/CategoryDialog'),
+            'selectSupplierDialog': () => import(/* webpackChunkName: "selectSupplierDialog" */ './Dialogs/SelectSupplierDialog'),
             'selectCategoryDialog': () => import(/* webpackChunkName: "selectCategoryDialog" */ './Dialogs/SelectCategoryDialog'),
         },
         computed:{

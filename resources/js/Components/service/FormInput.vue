@@ -17,7 +17,7 @@
                 v-model="parentModel"
                 v-bind:placeholder="inputData.placeholder"
                 type="text" class="form-control">
-        <div v-if="!$parent.loading && isSelector" class="input-group mb-3">
+        <div v-if="!$parent.loading && isSelector" class="input-group">
             <button
                 v-bind:class="{'is-invalid':errorMsg}"
                 v-tooltip="{
@@ -30,8 +30,6 @@
                 class="category_select form-control text-left button_select">{{ parentModel }}</button>
         </div>
     </div>
-
-
 </template>
 
 <script>
@@ -70,9 +68,25 @@
                 return this.inputData.type === 'selector';
             }
         },
+        mounted(){
+            this.$watch('$parent.entity.' + this.inputData.name, (val) => {
+                this.error = null;
+            }, {
+                deep: true
+            })
+        },
         watch: {
+            // '$parent.entity':{
+            //     handler(entity){
+            //         this.error = null;
+            //     },
+            //     deep: true
+            // },
             '$parent.messages':function (messages){
-                this.setError(messages[this.inputData.name][0]);
+                if(messages[this.inputData.name] || messages[this.inputData.name + '_id']) {
+                    let message = messages[this.inputData.name] || messages[this.inputData.name + '_id'];
+                    this.setError(message);
+                }
             },
         },
         methods:{

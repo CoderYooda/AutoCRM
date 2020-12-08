@@ -76,7 +76,7 @@
             },
             pick(category){
                 let wm = this.getUnrecursiveComponent('SelectCategoryDialog');
-                wm.pick(category);
+                wm.pickCategory(category);
             },
             getUnrecursiveComponent(componentName) {
                 let component = null;

@@ -41,7 +41,7 @@
             </div>
             <div class="modal-footer">
                 <button @click="$parent.closeDialog(dialog)" type="button" class="button white" >Закрыть</button>
-                <button v-on:click="save()" type="button" class="button primary pull-right">Сохранить</button>
+                <button @click="save()" type="button" class="button primary pull-right">Сохранить</button>
             </div>
             <div class="system_message">
             </div>
