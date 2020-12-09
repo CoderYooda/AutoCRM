@@ -61,10 +61,10 @@
                                 <!--                                    </div>-->
                                 <!--                                </div>-->
 
-                                <FormInput v-bind:inputData="{type:'input',label:'Артикул',name:'article', messages:messages, placeholder:'Артикул детали (не более 64 символов)'}" />
-                                <FormInput v-bind:inputData="{type:'input',label:'Наименование',name:'name', messages:messages, placeholder:'Наименование (не более 255 символов)'}" />
-                                <FormInput v-bind:inputData="{type:'selector',label:'В категории',name:'category', messages:messages, onClick:'selectCategory'}" />
-                                <FormInput v-bind:inputData="{type:'selector',label:'Производитель',name:'supplier', messages:messages, onClick:'selectSupplier'}" />
+                                <FormInput v-bind:inputData="{type:'input',label:'Артикул',name:'entity.article', placeholder:'Артикул детали (не более 64 символов)'}" />
+                                <FormInput v-bind:inputData="{type:'input',label:'Наименование',name:'entity.name', placeholder:'Наименование (не более 255 символов)'}" />
+                                <FormInput v-bind:inputData="{type:'selector',label:'В категории',name:'entity.category', onClick:'selectCategory'}" />
+                                <FormInput v-bind:inputData="{type:'selector',label:'Производитель',name:'entity.supplier', onClick:'selectSupplier'}" />
                                 <!--                                <div class="form-group">-->
                                 <!--                                    @foreach($stores as $store)-->
                                 <!--                                    <label>Розничная цена для магазина "{{ $store->name }}"</label>-->
@@ -111,24 +111,24 @@
                             </div>
                             <div class="tab-pane p-3" v-bind:class="{'active' : tabs[2].state}">
                                 <div v-if="shop_activated" id="tab_main" data-simplebar style="height: 310px;">
-
-<!--                                    <label>Настройки продукта</label>-->
+                                    <FormInput v-bind:inputData="{type:'checkbox',label:'Показать на главной странице',name:'entity.shop.settings.sp_main'}" />
+                                    <FormInput v-bind:inputData="{type:'checkbox',label:'Акционный товар',name:'entity.shop.settings.sp_stock'}" />
+                                    <div>
+                                        awd{{ entity.shop.settings }}
+                                    </div>
+                                    <!--<label>Настройки продукта</label>-->
+                                    <!--<div class="form-group relative">-->
+                                        <!--<label class="w-100">Показать на главной странице</label>-->
+                                        <!--<label class="absolute custom_checkbox" style="right: 0; top: 3px;">-->
+                                            <!--<input type="checkbox" class="not_default"/>-->
+                                            <!--<span></span>-->
+                                        <!--</label>-->
+                                    <!--</div>-->
 <!--                                    <div class="shop_params">-->
 
 <!--                                        @foreach($shopFields as $field => $params)-->
 
-<!--                                        <div class="form-group relative">-->
-<!--                                            <div>-->
-<!--                                                <span>{{ $params['name'] }}</span>-->
-<!--                                            </div>-->
-<!--                                            <label class="absolute custom_checkbox" style="right: 0; top: 3px;">-->
-<!--                                                <input type="checkbox" class="not_default"-->
-<!--                                                       name="shop[settings][{{ $field }}]" @isset($params['onclick'])-->
-<!--                                                onclick="{{ $class . '.' . $params['onclick'] }}(this);" @endisset-->
-<!--                                                @if($product && $product->$field) checked @endif />-->
-<!--                                                <span></span>-->
-<!--                                            </label>-->
-<!--                                        </div>-->
+
 
 <!--                                        @endforeach-->
 
@@ -282,26 +282,8 @@
 
                             </div>
                             <div class="tab-pane p-3" v-bind:class="{'active' : tabs[3].state}">
-
-                                <div class="form-group">
-                                    <label>Штрих-код производителя (EAN 13)</label>
-                                    <input v-model="entity.barcode" type="text" class="form-control" placeholder="Штрих код">
-                                </div>
-<!--                                <div class="form-group">-->
-<!--                                    <img style="max-width: 100%"-->
-<!--                                         src="data:image/png;base64,{!! getBarCodePNG($product->barcode) !!}"-->
-<!--                                         alt="barcode"/>-->
-<!--                                </div>-->
-
-                                <div class="form-group">
-                                    <label>Внутренний штрих-код (EAN 13)</label>
-                                    <input type="text" v-model="entity.barcode_local" class="form-control" placeholder="Штрих код склада">
-                                </div>
-<!--                                <div class="form-group">-->
-<!--                                    <img style="max-width: 100%"-->
-<!--                                         src="data:image/png;base64,{!! getBarCodePNG($product->barcode_local) !!}"-->
-<!--                                         alt="barcode"/>-->
-<!--                                </div>-->
+                                <FormInput v-bind:inputData="{type:'input',label:'Штрих-код производителя (EAN 13)',name:'barcode', messages:messages, placeholder:'Штрихкод'}" />
+                                <FormInput v-bind:inputData="{type:'input',label:'Внутренний штрих-код (EAN 13)',name:'barcode_local', messages:messages, placeholder:'Штрихкод склада'}" />
                             </div>
 
                             <!--<div class="tab-pane" id="{{ $class }}_tab_entrances" data-simplebar
@@ -380,13 +362,19 @@
                     category:null,
                     supplier_id:null,
                     supplier:'Не выбран',
+                    shop:{
+                        settings:{
+                            sp_main:false,
+                            sp_stock:false,
+                        }
+                    }
                 },
                 messages:{},
                 loading:false,
             }
         },
         mounted() {
-            this.dialog.width = 700;
+            this.dialog.width = 600;
             if (this.dialog.id === 0) {
                 this.dialog.title = "Новый продукт";
                 this.getParentCategory();

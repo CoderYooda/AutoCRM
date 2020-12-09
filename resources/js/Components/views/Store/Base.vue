@@ -48,14 +48,15 @@
                 {min_width: 150, width: 200, name: 'Производитель', table_name: 'supplier'},
             ];
             this.table_data.context_menu = [
-                {name:'Редактировать', action: (id) => {this.newDialog('product', {id:id})}},
+                {name:'Редактировать', action: (elem)=>{this.newDialog('product', {id:elem.id})}},
                 {name:'Открыть', action: (id) => {this.newDialog('product', {id:id})}},
-                {name:'Создать заявку поставщику', action: (data) => {openDialog('providerOrderDialog', '&products=' + this.table.getSelectedIDs())}},
-                {name:'Печать ценников', action: (data) => {window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())}},
-                {name:'Показать аналоги в наличии', action: (data) => {this.showAnalogues(data);}},
+                {name:'Создать заявку поставщику', action: (id) => {openDialog('providerOrderDialog', '&products=' + this.table.getSelectedIDs())}},
+                {name:'Печать ценников', action: (id) => {window.openDialog('chequeDialog', '&products=' + this.table.getSelectedIDs())}},
+                {name:'Показать аналоги в наличии', action: (id) => {this.showAnalogues(id);}},
             ];
             this.table_data.dbl_click = (id) => {this.newDialog('product', {id:id})};
             this.table_data.url = '/store/base/table_data';
+            this.table_data.event_tag = 'Product';
         },
         computed:{
             loading(){

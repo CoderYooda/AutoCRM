@@ -190,21 +190,22 @@ class ProductController extends Controller
         });
     }
 
-    public function update(Article $article, ProductRequest $request)
+    public function update(Article $product, ProductRequest $request)
     {
+
         PermissionController::canByPregMatch('Редактировать товары');
-        return DB::transaction(function () use($request, $article) {
+        return DB::transaction(function () use($request, $product) {
 
             $this->message = 'Товар обновлен';
 
             #Кроссы
-            $article->fill($request->only($article->fields));
+            $product->fill($request->only($product->fields));
 
-            $article->fillShopFields($request);
+            $product->fillShopFields($request);
 
-            $article->slug = Str::slug($request->name . '-' . $article->id);
+            $product->slug = Str::slug($request->name . '-' . $product->id);
 
-            $article->save();
+            $product->save();
 
             if(isset($request->shop['specifications'])) {
 
@@ -216,8 +217,8 @@ class ProductController extends Controller
                     $attributes[$key]['value'] = $specification['value'];
                 }
 
-                $article->specifications()->delete();
-                $article->specifications()->createMany($attributes);
+                $product->specifications()->delete();
+                $product->specifications()->createMany($attributes);
             }
 
             $this->status = 200;
@@ -229,7 +230,7 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
-                    $store->articles()->syncWithoutDetaching($article->id);
+                    $store->articles()->syncWithoutDetaching($product->id);
 
                     $pivot_data = [
                         'storage_zone' => $storage['storage_zone'],
@@ -242,9 +243,11 @@ class ProductController extends Controller
                         $pivot_data['retail_price'] = $storage['retail_price'];
                     }
 
-                    $article->stores()->updateExistingPivot($store->id, $pivot_data);
+                    $product->stores()->updateExistingPivot($store->id, $pivot_data);
                 }
             }
+
+
 
             return response()->json([
                 'message' => $this->message,

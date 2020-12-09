@@ -15,14 +15,14 @@
                     </div>
                 </div>
                 <div class="bbtable-body" data-simplebar style="height: calc(100% - 59px);" >
-                    <div >
+                    <div>
                         <div v-if="!loading" v-on:dblclick="dblClick(elem)"
-                             v-on:contextmenu="openContext"
+                             v-on:contextmenu="openContext($event, elem)"
                              v-on:click="selectItem(elem)"
                              v-for="(elem, index) in items"
                              :ref="setRef(elem, index)"
                              v-bind:key="'item_' + index"
-                             v-bind:class="{ 'selected' : isSelected(elem)}"
+                             v-bind:class="{ 'selected' : isSelected(elem), 'updated' : isItemUpdated(elem)}"
                              class="body-elem">
                             <div class="cell checkbox">
                                 <input type="checkbox" v-bind:checked="isSelected(elem)">
@@ -47,20 +47,17 @@
                     </div>
                 </div>
                 <div v-if="!loading" ref="cont" class="context" id="context" v-bind:style="context_style">
-                    <div v-on:click="menu.action(elem.id)"
+                    <div v-on:click="menu.action(contexted_elem)"
                          v-for="menu in table_data.context_menu"
                          v-bind:key="menu.name" class="context_item">
                         <div class="title">{{ menu.name }}</div>
                     </div>
                 </div>
-
                 <div class="paginator">
                     <button v-on:click="setPage(1)" v-bind:disabled="firstButtonDisabled" >Первая</button>
                     <button v-on:click="setPage(current_page - 1)" v-bind:disabled="prevButtonDisabled">Назад</button>
-
                     <button v-for="page in paginate_array"
                             v-bind:class="isPageActive(page)" v-on:click="setPage(page)">{{ page }}</button>
-
                     <button v-on:click="setPage(current_page + 1)" v-bind:disabled="nextButtonDisabled" >Вперёд</button>
                     <button v-on:click="setPage(last_page)" v-bind:disabled="lastButtonDisabled">Последняя</button>
                 </div>
@@ -86,7 +83,9 @@
                 last_selected:null,
                 index:0,
                 context_opened:false,
+                contexted_elem:null,
                 context_style:{},
+                updated_id:null,
             }
         },
         watch: {
@@ -103,9 +102,13 @@
                     this.getItems();
                 },
                 deep: true
-            }
+            },
         },
         mounted(){
+            this.$eventBus.$on(this.table_data.event_tag + 'Updated', (data)=>{
+                this.updated_id = data.id;
+                this.getItems();
+            });
             this.getItems();
             document.addEventListener('click', this.closeContext)
             this.$eventBus.$on('TooManyAttempts', ()=>{
@@ -138,6 +141,9 @@
             }
         },
         methods:{
+            isItemUpdated(item){
+               return item.id === this.updated_id;
+            },
             dblClick(elem){
                 return this.table_data['dbl_click'] ? this.table_data.dbl_click(elem.id) : void(0) ;
             },
@@ -254,6 +260,9 @@
                     this.items = resp.data.data;
                     this.last_page = resp.data.last_page;
                     this.getPaginator();
+                    setTimeout(()=>{
+                        this.updated_id = null;
+                    }, 1000);
                 }).then(()=>{
                     this.$parent.table_loading = false;
                 });
@@ -285,6 +294,7 @@
                 });
             },
             selectItem(item){
+                this.updated_id = null;
                 this.closeContext();
                 if(!window.ctrl_pressed && !window.shift_pressed){
                     this.unselectAll();
@@ -315,8 +325,9 @@
                     this.last_selected = item.index;
                 }
             },
-            openContext(event){
+            openContext(event, elem){
                 event.preventDefault();
+                this.contexted_elem = elem;
                 this.context_opened = true;
                 let ofsetter = this.$refs.ofsetter;
                 if(ofsetter){
@@ -341,3 +352,16 @@
         },
     }
 </script>
+<style scoped>
+    .updated:before{
+        content: '';
+        border-bottom: 1px solid transparent!important;
+        position: absolute;
+        background: #63a049;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        z-index: 0!important;
+        animation: 1s updated_table linear;
+    }
+</style>

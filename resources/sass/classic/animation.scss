@@ -33,6 +33,17 @@
         transform: scale(1.3);
     }
 }
+
+@keyframes updated_table {
+    0% {
+        opacity: 1;
+    }
+
+    100%{
+        opacity: 0;
+    }
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);

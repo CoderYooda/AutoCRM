@@ -1,33 +1,48 @@
 <template>
     <div class="form-group">
-        <label>{{ inputData.label }}</label>
-        <div v-if="$parent.loading" class="list-placeholder" style="height: 30px;">
-            <div class="list-placeholder_item" style="height: 30px;">
-                <div class="list-placeholder_cell w-100" style="width: 100%" ></div>
+        <div v-if="!$parent.loading && isInput">
+            <label>{{ inputData.label }}</label>
+            <div v-if="$parent.loading" class="list-placeholder" style="height: 30px;">
+                <div class="list-placeholder_item" style="height: 30px;">
+                    <div class="list-placeholder_cell w-100" style="width: 100%" ></div>
+                </div>
+            </div>
+            <input  @keypress.enter="$parent.save()"
+                    v-bind:class="{'is-invalid':errorMsg}"
+                    v-tooltip="{
+                        content: errorMsg,
+                        placement: 'left',
+                        classes: ['error'],
+                    }"
+                    v-model="parentModel"
+                    v-bind:placeholder="inputData.placeholder"
+                    type="text" class="form-control">
+        </div>
+
+
+        <div v-if="!$parent.loading && isSelector" >
+            <label>{{ inputData.label }}</label>
+            <div class="input-group">
+                <button
+                    v-bind:class="{'is-invalid':errorMsg}"
+                    v-tooltip="{
+                        content: errorMsg,
+                        placement: 'left',
+                        classes: ['error'],
+                    }"
+                    v-on:click="$parent[inputData.onClick]()"
+                    type="button"
+                    class="category_select form-control text-left button_select">{{ parentModel }}</button>
             </div>
         </div>
-        <input  @keypress.enter="$parent.save()"
-                v-bind:class="{'is-invalid':errorMsg}"
-                v-if="!$parent.loading && isInput"
-                v-tooltip="{
-                    content: errorMsg,
-                    placement: 'left',
-                    classes: ['error'],
-                }"
-                v-model="parentModel"
-                v-bind:placeholder="inputData.placeholder"
-                type="text" class="form-control">
-        <div v-if="!$parent.loading && isSelector" class="input-group">
-            <button
-                v-bind:class="{'is-invalid':errorMsg}"
-                v-tooltip="{
-                    content: errorMsg,
-                    placement: 'left',
-                    classes: ['error'],
-                }"
-                v-on:click="$parent[inputData.onClick]()"
-                type="button"
-                class="category_select form-control text-left button_select">{{ parentModel }}</button>
+
+
+        <div v-if="!$parent.loading && isCheckbox" class="relative">
+            <label v-bind:for="inputData.name" class="w-100">{{ inputData.label }}</label>
+            <label class="absolute custom_checkbox" style="right: 0; top: 3px;">
+                <input v-bind:id="inputData.name" v-model="parentModel" v-bind:name="inputData.name" type="checkbox" class="not_default"/>
+                <span></span>
+            </label>
         </div>
     </div>
 </template>
@@ -44,18 +59,26 @@
         computed:{
             parentModel:{
                 get: function () {
-                    if(this.$parent.entity){
-                        return this.$parent.entity[this.inputData.name]
-                    } else {
-                        return this.$parent[this.inputData.name]
-                    }
+                    let name_arr = this.inputData.name.split('.');
+                    let target = this.$parent;
+                    name_arr.forEach((item, index)=>{
+                        if(!target[item] && name_arr[index + 1]){
+                            target[item] = {};
+                        }
+                        target = target[item];
+                    });
+                    return target;
                 },
-                set: function (newValue) {
-                    if(this.$parent.entity){
-                        this.$parent.entity[this.inputData.name] = newValue;
-                    } else {
-                        this.$parent[this.inputData.name] = newValue;
-                    }
+                set: function (val) {
+                    let name_arr = this.inputData.name.split('.');
+                    let target = this.$parent;
+                    name_arr.forEach((item, index)=>{
+                        if(name_arr[index + 1]){
+                            target = target[item]
+                        } else {
+                            target[item] = val;
+                        }
+                    });
                 }
             },
             errorMsg(){
@@ -66,10 +89,13 @@
             },
             isSelector(){
                 return this.inputData.type === 'selector';
+            },
+            isCheckbox(){
+                return this.inputData.type === 'checkbox';
             }
         },
         mounted(){
-            this.$watch('$parent.entity.' + this.inputData.name, (val) => {
+            this.$watch('$parent.' + this.inputData.name, (val) => {
                 this.error = null;
             }, {
                 deep: true
@@ -83,13 +109,18 @@
             //     deep: true
             // },
             '$parent.messages':function (messages){
-                if(messages[this.inputData.name] || messages[this.inputData.name + '_id']) {
-                    let message = messages[this.inputData.name] || messages[this.inputData.name + '_id'];
+                let name = this.getTargetName();
+                if(messages[name] || messages[name + '_id']) {
+                    let message = messages[name] || messages[name + '_id'];
                     this.setError(message);
                 }
             },
         },
         methods:{
+            getTargetName(){
+                let name_arr = this.inputData.name.split('.');
+                return name_arr.slice(-1);
+            },
             setError(error){
                 this.error = error;
             }
