@@ -48,11 +48,6 @@ trait ABCP
         return array_column($result, 'brand');
     }
 
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
-    {
-        //
-    }
-
     public function getName(): string
     {
         return $this->name;

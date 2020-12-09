@@ -25,8 +25,8 @@ class OrderCartRequest extends FormRequest
             'providers' => ['array'],
             'providers.*.delivery_type_id' => ['nullable', 'string', 'max:144'],
             'providers.*.payment_type_id' => ['nullable', 'string', 'max:144'],
-            'providers.*.pickup_address_id' => ['nullable', 'string', 'max:144'],
-            'providers.*.delivery_address_id' => ['nullable', 'string', 'max:144'],
+            'providers.*.pickup_address_id' => ['nullable', 'string', 'max:500'],
+            'providers.*.delivery_address_id' => ['nullable', 'string', 'max:500'],
             'providers.*.date_shipment_id' => ['nullable', 'string', 'max:144'],
         ];
     }

@@ -275,9 +275,4 @@ class Mikado implements ProviderInterface
     {
         return [];
     }
-
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
-    {
-        // TODO: Implement searchAnaloguesByBrandAndArticle() method.
-    }
 }

@@ -11,17 +11,13 @@ use mysql_xdevapi\Exception;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use App\Models\Article;
+use SoapClient;
 
 class Test extends Command
 {
     protected $signature = 'command:test';
 
     protected $description = 'Command description';
-
-    protected $host = 'http://id8341.public.api.abcp.ru/';
-
-    protected $login = 'audi-31@yandex.ru';
-    protected $password = 'i7r7o7n7';
 
     public function __construct()
     {
@@ -30,20 +26,40 @@ class Test extends Command
 
     public function handle()
     {
-        $path = 'https://api.autoeuro.ru/api/v-1.0/shop/stock_items/json/4hhfL7REY7sHFAukNu8159GoFRusPQb88xWYxTofErMEyUShCnUR1fDnlXEo?';
+//        $path = 'https://api.autoeuro.ru/api/v-1.0/shop/stock_items/json/4hhfL7REY7sHFAukNu8159GoFRusPQb88xWYxTofErMEyUShCnUR1fDnlXEo?';
+//
+//        $params = [
+//            'code' => 'k1279',
+////            'brand' => 'RUVILLE',
+//            'with_crosses' => 1
+//        ];
+//
+//        $params = http_build_query($params);
+//
+//        $response = file_get_contents($path . $params);
+//
+//        $response = json_decode($response, true);
+//
+//        dd($response);
 
-        $params = [
-            'code' => 'k1279',
-//            'brand' => 'RUVILLE',
-            'with_crosses' => 1
-        ];
+        $client = new SoapClient('https://api.forum-auto.ru/wsdl', ["exceptions" => false]);
 
-        $params = http_build_query($params);
+        // Выполнение запроса к серверу API Форум-Авто
 
-        $response = file_get_contents($path . $params);
+        $result = $client->listGoods('485977_bordyan', 'BJpUgRHkqS', 'k1279', 1);
 
-        $response = json_decode($response, true);
+        if (is_soap_fault($result)) {
 
-        dd($response);
+            // Обработка ошибки
+
+            echo "SOAP Fault: (faultcode: {$result->faultcode}, faultstring: {$result->faultstring}, detail: {$result->detail})";
+
+        } else {
+
+            // Результат запроса
+
+            echo '<pre>' . var_export($result, true) . '</pre>';
+
+        }
     }
 }

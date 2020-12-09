@@ -74,12 +74,12 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
-        if($items == []) return [];
-
         $results = [
             'originals' => [],
             'analogues' => []
         ];
+
+        if($items == []) return $results;
 
         $originalIndex = 0;
         $analogueIndex = 0;
@@ -286,12 +286,5 @@ class Trinity implements ProviderInterface
     public function getOrdersStatuses(): array
     {
         return [];
-    }
-
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
-    {
-        $items = $this->searchItems('k1279', 'FILTRON', 'full', true);
-
-        dd($items);
     }
 }

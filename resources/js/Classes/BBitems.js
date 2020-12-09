@@ -1,5 +1,5 @@
 class Items {
-    constructor(object, container, form_name, header, events){
+    constructor(object, container, form_name, header, events = []){
         this.container = document.getElementById(container);
 
         if(!form_name)

@@ -15,7 +15,7 @@ class AutoEuro implements ProviderInterface
 {
     use CartProviderOrderCreator;
 
-    protected $host = 'https://api.autoeuro.ru/api/';
+    protected $host = 'https://api.autoeuro.ru/api/v-1.0/shop/';
 
     protected $name = 'Auto Euro';
     protected $service_key = 'autoeuro';
@@ -46,13 +46,16 @@ class AutoEuro implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'searchCode' => $article,
-            'online' => true ? 'allow' : 'disallow'
+            'code' => $article
         ];
 
-        $results = $this->query('search/byCode', $this->createParams($params), true);
+        $response = $this->query('stock_items', $params);
 
-        return array_column($results['data'], 'producer');
+        $brands = array_column($response['DATA']['CODES'], 'maker');
+
+        $brands = array_unique($brands);
+
+        return $brands;
     }
 
     public function getName(): string
@@ -72,65 +75,79 @@ class AutoEuro implements ProviderInterface
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
-        $items = $this->searchItems($article, $brand, 'full', true);
+        $params = [
+            'code' => $article,
+            'brand' => $brand,
+            'with_crosses' => 1
+        ];
 
-        if($items == []) return [];
+        $response = $this->query('stock_items', $params);
 
         $results = [
             'originals' => [],
             'analogues' => []
         ];
 
+        $items = $response['DATA']['CODES'];
+
+        $items = array_merge($items, $response['DATA']['CROSSES']);
+
+        if($items == []) return $results;
+
         $originalIndex = 0;
         $analogueIndex = 0;
 
-        foreach ($items['data'] as $key => $item) {
+        foreach ($items as $key => $item) {
 
-            $items['data'][$key]['index'] = $key;
+            $items[$key]['index'] = $key;
 
-            $items['data'][$key]['hash_info'] = [
-                'stock' => $item['stock'],
-                'manufacturer' => $item['producer'],
+            $items[$key]['hash_info'] = [
+                'stock' => $item['from_warehouse_id'],
+                'manufacturer' => $item['maker'],
                 'article' => $item['code'],
-                'days' => $item['deliverydays'],
+                'days' => $item['order_time'],
                 'price' => $item['price'],
-                'packing' => $item['minOrderCount'],
-                'desc' => $item['caption'],
-                'rest' => $item['rest'],
+                'packing' => $item['packing'] > 0 ? $item['packing'] : 1,
+                'desc' => $item['name'],
+                'rest' => $item['amount'],
                 'supplier' => $this->name
             ];
         }
 
-        foreach ($items['data'] as $key => $store) {
+        foreach ($items as $store) {
 
-            if(!strlen($store['bid'])) continue;
-
-            $is_analogue = $store['producer'] != $brand;
+            $is_analogue = $store['maker'] != $brand;
 
             $listName = $is_analogue ? 'analogues' : 'originals';
 
-            preg_match_all('/\d+/', $store['deliverydays'], $days);
+            if(strlen($store['order_time']) > 8) {
+                $days_min = 0;
+                $days_max = 0;
+            }
+            else {
+                $days = explode('-', $store['order_time']);
 
-            $days_min = $days[0][0];
-            $days_max = $days[0][1] ?? 9999;
+                $days_min = $days[0];
+                $days_max = $days[1];
+            }
 
             $results[$listName][] = [
-                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['stock'],
+                'index' => $is_analogue ? $analogueIndex : $originalIndex,
+                'name' => $store['from_warehouse_id'],
                 'code' => $store['code'],
-                'rest' => $store['rest'],
+                'rest' => $store['amount'],
                 'days_min' => $days_min,
                 'days_max' => $days_max,
-                'packing' => $store['minOrderCount'],
-                'min_count' => $store['minOrderCount'],
-                'delivery' => $store['deliverydays'] . ' дн.',
+                'packing' => $item['packing'] > 0 ? $item['packing'] : 1,
+                'min_count' => $item['packing'] > 0 ? $item['packing'] : 1,
+                'delivery' => $days_min . '-' . $days_max . ' дн.',
                 'price' => $store['price'],
-                'manufacturer' => $store['producer'],
+                'manufacturer' => $store['maker'],
                 'article' => $store['code'],
                 'model' => $store,
-                'stock' => $store['stock'],
+                'stock' => $store['from_warehouse_id'],
                 'can_return' => 'n/a',
-                'hash' => md5($store['stock'] . $store['producer'] . $store['code'] . $store['deliverydays'] . $store['price'])
+                'hash' => md5($store['from_warehouse_id'] . $store['maker'] . $store['code'] . $store['order_time'] . $store['price'])
             ];
 
             $is_analogue ? $analogueIndex++ : $originalIndex++;
@@ -139,61 +156,20 @@ class AutoEuro implements ProviderInterface
         return $results;
     }
 
-    public function searchItems($article, $brand, $searchType = 'full', $asArray = true)
+    protected function query($action, $params = [])
     {
-        $article = strtoupper($article);
-        $brand = strtoupper($brand);
-        $searchParams = new stdClass();
-        $searchParams->$article = $brand;
-        $params = [
-            'searchCode' => $searchParams,
-            'onlyStock' => '0',
-        ];
+        $url = $this->host . $action . '/json/' . $this->api_key . '?';
 
-        switch ($searchType) {
-            case 'onlyStock':
-                $params['onlyStock'] = '1';
-                break;
-            case 'prices':
-                $params['online'] = 'disallow';
-                $params['analogs'] = [];
-                break;
-            case 'full':
-                $params['online'] = 'allow';
-                break;
-        }
-
-        return $this->query('search/byCodeBrand', $this->createParams($params), $asArray);
-    }
-
-    protected function createParams(array $params = [])
-    {
-        $params['clientCode'] = $this->api_key;
-
-        return stream_context_create([
-            'http' => [
-                'header' => "Content-Type:application/json\r\n\User-Agent:Trinity/1.0",
-                'method' => "POST",
-                'content' => json_encode($params)
-            ]
-        ]);
-    }
-
-    protected function query($url, $context, $asArray = true)
-    {
-        $data = null;
+        $params = http_build_query($params);
 
         try {
-            $url .= (strpos($url, 'cart/saveGoods') !== false ? '?v=2' : '');
-
-            $data = file_get_contents($this->host . $url, false, $context);
+            $response = file_get_contents($url . $params);
         }
         catch (\Exception $exception) {
-            dd($exception);
-            $data = json_encode([]);
+            return [];
         }
 
-        return json_decode($data, $asArray);
+        return json_decode($response, true);
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -208,50 +184,25 @@ class AutoEuro implements ProviderInterface
         $this->api_key = $fields['api_key'];
 
         //Если эксепшен не был выкинут, то пропускаем
-        $this->searchBrandsCount('k1279');
+        $response = $this->searchBrandsCount('k1279');
 
         return true;
     }
 
     public function sendOrder(array $data): bool
     {
-        $orders = [];
-
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
 
-            $orders[] = [
-                'internal_id' => $product->id,
-                'bid' => $orderInfo['bid'],
-                'code' => $orderInfo['code'],
-                'producer' => $orderInfo['producer'],
-                'caption' => $orderInfo['caption'],
-                'supplier_id' => $orderInfo['supplier_id'],
-                'stock' => $orderInfo['stock'],
-                'price' => $orderInfo['price'],
-                'saled_price' => $orderInfo['price'] + sum_percent($orderInfo['price'], 20),
+            $params = [
+                'order_key' => $orderInfo['model']['order_key'],
                 'quantity' => $product->count,
-                'source' => $orderInfo['source'],
-                'comment' => $data['comment'] ?? '',
-                'deliverydays' => $orderInfo['deliverydays'],
-                'minOrderCount' => $orderInfo['minOrderCount'],
+                'item_note' => $data['comment']
             ];
+
+            $this->query('basket_put', $params);
         }
-
-        $params = [
-            'parts' => $orders
-        ];
-
-        $results = $this->query('cart/saveGoods', $this->createParams($params), true);
-
-        $idList = collect($results['data'])->collapse()->toArray();
-
-        $params = [
-            'IDs' => $idList
-        ];
-
-        $results = $this->query('cart/confirm', $this->createParams($params), true);
 
         $this->createProviderOrder($data);
 
@@ -260,12 +211,36 @@ class AutoEuro implements ProviderInterface
 
     public function getPickupAddresses(): array
     {
-        return [];
+        $response = $this->query('deliveries');
+
+        $pickups = collect($response['DATA']);
+
+        $pickups = $pickups->where('delivery_method', 'Точка выдачи');
+
+        $formattedArray = [];
+
+        foreach ($pickups as $pickup) {
+            $formattedArray[$pickup['delivery_key']] = $pickup['delivery_name'];
+        }
+
+        return $formattedArray;
     }
 
     public function getDeliveryToAddresses(): array
     {
-        return [];
+        $response = $this->query('deliveries');
+
+        $pickups = collect($response['DATA']);
+
+        $pickups = $pickups->where('delivery_method', 'Доставка');
+
+        $formattedArray = [];
+
+        foreach ($pickups as $pickup) {
+            $formattedArray[$pickup['delivery_key']] = $pickup['delivery_name'];
+        }
+
+        return $formattedArray;
     }
 
     public function getPaymentTypes(): array
@@ -275,7 +250,10 @@ class AutoEuro implements ProviderInterface
 
     public function getDeliveryTypes(): array
     {
-        return [];
+        return [
+            'Самовывоз',
+            'Доставка'
+        ];
     }
 
     public function getDateOfShipment(): array
@@ -286,12 +264,5 @@ class AutoEuro implements ProviderInterface
     public function getOrdersStatuses(): array
     {
         return [];
-    }
-
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
-    {
-        $items = $this->searchItems('k1279', 'FILTRON', 'full', true);
-
-        dd($items);
     }
 }

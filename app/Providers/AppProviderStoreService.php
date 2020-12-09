@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services\Cart\CartDatabase;
+use App\Services\ProviderService\Services\Providers\AutoEuro;
 use App\Services\ProviderService\Services\Providers\AutoRus;
 use App\Services\ProviderService\Services\Providers\Mikado;
 use App\Services\ProviderService\Services\Providers\AvtoImport;
@@ -24,7 +25,8 @@ class AppProviderStoreService extends ServiceProvider
             AvtoImport::class,
             ArmTek::class,
             Mikado::class,
-            AutoRus::class
+            AutoRus::class,
+            AutoEuro::class
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {

@@ -436,4 +436,17 @@ class ProductController extends Controller
             'event' => 'CategorySelected'
         ]);
     }
+
+    public function changeMarkupSource(Request $request)
+    {
+        $products = json_decode($request->products);
+        $source = $request->markup_source;
+
+        Article::whereIn('id', $products)->update(['markup_source' => $source]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Источник наценки успешно изменен.'
+        ]);
+    }
 }

@@ -591,6 +591,16 @@ class storePage extends Page{
         if(this.active_tab == 'provider_stores') {
             this.searchProviderStores();
         }
+
+        if(this.active_tab == 'store') {
+
+            let modal_element = document.getElementById('markup_source_dialog');
+
+            this.modal = new bootstrap.Modal(modal_element, {
+                backdrop: true,
+                keyboard: true
+            });
+        }
     }
 
     load(){
@@ -741,6 +751,12 @@ class storePage extends Page{
                     openDialog('selectCategory', '&refer=store&root_category=2');
 
                     this.selected = data.selected;
+                }},
+                {name:'Изменить источник наценки стоимости', action: (data) => {
+
+                    this.selected = data.selected;
+
+                    this.modal.show();
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
@@ -1055,6 +1071,20 @@ class storePage extends Page{
             .then(error => {
                 console.log(error);
             });
+    }
+
+    changeProductsMarkupSource(element) {
+
+        let dataset = {
+            products: JSON.stringify(this.selected),
+        };
+
+        axform.send(element, response => {
+            if(response.status == 200) {
+                this.modal.hide();
+            }
+        }, null, dataset);
+
     }
 }
 export default storePage;
