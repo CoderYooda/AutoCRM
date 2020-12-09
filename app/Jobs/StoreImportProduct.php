@@ -117,7 +117,7 @@ class StoreImportProduct implements ShouldQueue
         $supplier = Supplier::firstOrCreate(['company_id' => $company_id, 'name' => $search_manufacturer_name]);
 
         #Создание категорий по товару
-        $category = Category::find((count($attributes['categories']) != 0 ? 2 : 10));
+        $category_id = count($attributes['categories']) != 0 ? 2 : 10;
 
         foreach ($attributes['categories'] as $category_name) {
 
@@ -132,6 +132,8 @@ class StoreImportProduct implements ShouldQueue
                 'category_id' => $category->id,
                 'type'        => 'store'
             ]);
+
+            $category_id = $category->id;
         }
 
         $article = Article::updateOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
@@ -140,7 +142,6 @@ class StoreImportProduct implements ShouldQueue
             'supplier_id'   => $supplier->id,
             'barcode'       => $attributes['barcode_manufacturer'],
             'barcode_local' => $attributes['barcode_warehouse'],
-            'category_id'   => $category->id
         ]);
 
         if ((int)$attributes['count'] > 0) {
@@ -163,6 +164,8 @@ class StoreImportProduct implements ShouldQueue
 
         #Запись склада по товару
         $store->articles()->syncWithoutDetaching($article->id);
+
+        $article->update(['category_id' => $category_id]);
 
         $article->stores()->updateExistingPivot($store->id, [
             'retail_price'       => $attributes['price'],

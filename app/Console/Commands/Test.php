@@ -30,9 +30,17 @@ class Test extends Command
 
     public function handle()
     {
-        $path = 'https://api.autoeuro.ru/api/v-1.0/shop/brands/json/4hhfL7REY7sHFAukNu8159GoFRusPQb88xWYxTofErMEyUShCnUR1fDnlXEo';
+        $path = 'https://api.autoeuro.ru/api/v-1.0/shop/stock_items/json/4hhfL7REY7sHFAukNu8159GoFRusPQb88xWYxTofErMEyUShCnUR1fDnlXEo?';
 
-        $response = file_get_contents($path);
+        $params = [
+            'code' => 'k1279',
+//            'brand' => 'RUVILLE',
+            'with_crosses' => 1
+        ];
+
+        $params = http_build_query($params);
+
+        $response = file_get_contents($path . $params);
 
         $response = json_decode($response, true);
 
