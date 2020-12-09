@@ -910,6 +910,7 @@ class storePage extends Page{
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 90, width: 'auto', name: 'Статус',table_name: 'status'},
                 {min_with: 130, width: 250, name: 'Заказчик', table_name: 'partner_name'},
+                {min_with: 130, width: 250, name: 'Заказ клиента (№)', table_name: 'clientorder_id'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 

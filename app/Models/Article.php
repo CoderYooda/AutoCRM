@@ -274,11 +274,12 @@ class Article extends Model
     {
         $price = $this->getPrice();
 
-        if($this->sp_discount_type == 0) { //в рублях
-            $price -= $this->sp_discount;
-        }
-        else {
-            $price -= ($price / 100) * $this->sp_discount;
+        if($this->sp_stock) {
+            if ($this->sp_discount_type == 0) { //в рублях
+                $price -= $this->sp_discount;
+            } else {
+                $price -= ($price / 100) * $this->sp_discount;
+            }
         }
 
         return $price;
@@ -305,10 +306,11 @@ class Article extends Model
         if($price_source == 'purchase') {
 
             if($shopManager->isWatchShop()) {
-                return $this->stores->sum('pivot.retail_price') / $this->stores->count();
+                $price = $this->stores->sum('pivot.retail_price') / $this->stores->count();
             }
-
-            $price = $this->stores->find($store_id)->pivot->retail_price ?? 0;
+            else {
+                $price = $this->stores->find($store_id)->pivot->retail_price ?? 0;
+            }
         }
         else {
 

@@ -275,4 +275,9 @@ class Mikado implements ProviderInterface
     {
         return [];
     }
+
+    public function getSubdivisions(): array
+    {
+        return [];
+    }
 }

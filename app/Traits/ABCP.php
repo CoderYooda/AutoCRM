@@ -321,4 +321,9 @@ trait ABCP
 
         return true;
     }
+
+    public function getSubdivisions(): array
+    {
+        return [];
+    }
 }

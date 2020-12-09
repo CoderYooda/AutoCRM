@@ -311,4 +311,9 @@ class ArmTek implements ProviderInterface
     {
         return [];
     }
+
+    public function getSubdivisions(): array
+    {
+        return [];
+    }
 }

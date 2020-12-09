@@ -245,7 +245,8 @@ class ProviderStoreController extends Controller
                 'payment_type_id' => $providerParams['payment_type_id'] ?? null,
                 'pickup_address_id' => $providerParams['pickup_address_id'] ?? null,
                 'delivery_address_id' => $providerParams['delivery_address_id'] ?? null,
-                'date_shipment_id' => $providerParams['date_shipment_id'] ?? null
+                'date_shipment_id' => $providerParams['date_shipment_id'] ?? null,
+                'subdivision_id' => $providerParams['subdivision_id'] ?? null,
             ];
 
             $provider->sendOrder($data);
@@ -295,7 +296,11 @@ class ProviderStoreController extends Controller
                 'Список дат отгрузки' => [
                     'params' => $provider->getDateOfShipment(),
                     'field' => 'date_shipment_id'
-                ]
+                ],
+                'Выставление счёта' => [
+                    'params' => $provider->getSubdivisions(),
+                    'field' => 'subdivision_id'
+                ],
             ];
         }
 

@@ -175,9 +175,13 @@ class ProductController extends Controller
         $priceSource = $company->getSettingField('Источник цены');
         $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
 
-        $lastEntrance = DB::table('article_entrance')->where('article_id', $product->id)->orderByDesc('id')->first();
+        $lastEntrancePrice = 0;
 
-        $lastEntrancePrice = $lastEntrance->price ?? 0;
+        if($product) {
+            $lastEntrance = DB::table('article_entrance')->where('article_id', $product->id)->orderByDesc('id')->first();
+
+            $lastEntrancePrice = $lastEntrance->price ?? 0;
+        }
 
         $category = Category::find($category_select);
 

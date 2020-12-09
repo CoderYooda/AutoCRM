@@ -32,4 +32,6 @@ interface ProviderInterface
     public function checkConnect(array $fields): bool;
 
     public function sendOrder(array $products): bool;
+
+    public function getSubdivisions(): array;
 }

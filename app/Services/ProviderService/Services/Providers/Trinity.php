@@ -287,4 +287,9 @@ class Trinity implements ProviderInterface
     {
         return [];
     }
+
+    public function getSubdivisions(): array
+    {
+        return [];
+    }
 }

@@ -156,16 +156,35 @@ class AutoEuro implements ProviderInterface
         return $results;
     }
 
-    protected function query($action, $params = [])
+    protected function query($action, $params = [], $method = 'GET')
     {
-        $url = $this->host . $action . '/json/' . $this->api_key . '?';
+        $url = $this->host . $action . '/json/' . $this->api_key;
 
         $params = http_build_query($params);
 
         try {
-            $response = file_get_contents($url . $params);
+
+            $context = null;
+
+            if($method == 'POST') {
+                $opts = [
+                    'http' => [
+                        'method' => 'POST',
+                        'header' => 'Content-Type: application/x-www-form-urlencoded',
+                        'content' => $params
+                    ]
+                ];
+
+                $context = stream_context_create($opts);
+            }
+            else {
+                $url .= '?' . $params;
+            }
+
+            $response = file_get_contents($url, false, $context);
         }
         catch (\Exception $exception) {
+            dd($url . $params, $exception->getMessage());
             return [];
         }
 
@@ -191,6 +210,8 @@ class AutoEuro implements ProviderInterface
 
     public function sendOrder(array $data): bool
     {
+        $orderIds = [];
+
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
@@ -198,11 +219,23 @@ class AutoEuro implements ProviderInterface
             $params = [
                 'order_key' => $orderInfo['model']['order_key'],
                 'quantity' => $product->count,
-                'item_note' => $data['comment']
+                'item_note' => ''
             ];
 
-            $this->query('basket_put', $params);
+            $response = $this->query('basket_put', $params, 'POST');
+
+            $orderIds[] = $response['DATA']['basket_item_key'];
         }
+
+        $params = [
+            'delivery_key' => $data[$data['delivery_type_id'] == 0 ? 'pickup_address_id' : 'delivery_address_id'],
+            'subdivision_key' => $data['subdivision_id'],
+            'wait_all_goods' => 1,
+            'comment' => $data['comment'],
+            'basket_item_keys ' => $orderIds
+        ];
+
+        $this->query('order_basket', $params);
 
         $this->createProviderOrder($data);
 
@@ -264,5 +297,20 @@ class AutoEuro implements ProviderInterface
     public function getOrdersStatuses(): array
     {
         return [];
+    }
+
+    public function getSubdivisions(): array
+    {
+        $response = $this->query('subdivisions');
+
+        $subdivisions = collect($response['DATA']);
+
+        $formattedArray = [];
+
+        foreach ($subdivisions as $subdivision) {
+            $formattedArray[$subdivision['subdivision_key']] = $subdivision['subdivision_name'];
+        }
+
+        return $formattedArray;
     }
 }
