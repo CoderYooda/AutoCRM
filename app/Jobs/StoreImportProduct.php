@@ -125,11 +125,11 @@ class StoreImportProduct implements ShouldQueue
 
             $category_name = trim($category_name, ' ');
 
-            $category = Category::updateOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store', 'category_id' => $category->id], [
+            $category = Category::updateOrCreate(['name' => $category_name, 'company_id' => $company_id, 'type' => 'store', 'category_id' => $category_id], [
                 'name'        => $category_name,
                 'company_id'  => $company_id,
                 'creator_id'  => $user_id,
-                'category_id' => $category->id,
+                'category_id' => $category_id,
                 'type'        => 'store'
             ]);
 
