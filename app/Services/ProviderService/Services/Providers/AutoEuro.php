@@ -235,7 +235,7 @@ class AutoEuro implements ProviderInterface
             'basket_item_keys ' => $orderIds
         ];
 
-        $this->query('order_basket', $params);
+        $this->query('order_basket', $params, 'POST');
 
         $this->createProviderOrder($data);
 
