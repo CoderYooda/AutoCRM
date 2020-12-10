@@ -49,7 +49,10 @@ class ProductRequest extends FormRequest
             'shop.settings.*.*' => ['accepted'],
             'shop.image_id' => ['nullable', 'exists:images,id'],
             'markup' => ['required', 'numeric', 'between:0,100'],
-            'markup_source' => ['required', Rule::in(['global', 'category', 'product'])]
+            'markup_source' => ['required', Rule::in(['global', 'category', 'product'])],
+            'entrances' => ['array'],
+            'entrances.*.price' => ['required', 'numeric', 'between:0,999999'],
+            'entrances.*.count' => ['required', 'integer', 'between:0,100'],
         ];
 
         if(isset($this['shop']['discounts']['discount'])) {

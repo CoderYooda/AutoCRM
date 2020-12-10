@@ -172,6 +172,8 @@ class ProductController extends Controller
 
         $company = Auth::user()->company;
 
+        //Цена
+
         $priceSource = $company->getSettingField('Источник цены');
         $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
 
@@ -185,6 +187,21 @@ class ProductController extends Controller
 
         $category = Category::find($category_select);
 
+        //Поступления
+
+        $entrances = [];
+
+        if($product) {
+
+            $entrances = DB::table('article_entrance')
+                ->where('article_id', $product->id)
+                ->whereRaw('count != released_count')
+                ->get();
+
+        }
+
+        //Интернет-магазин
+
         $shopFields = [
             'sp_main' => [
                 'name' => 'Показать на главной странице',
@@ -197,7 +214,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields', 'globalMarkup', 'lastEntrancePrice', 'priceSource'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields', 'globalMarkup', 'lastEntrancePrice', 'priceSource', 'entrances'))->render(),
             'product' => $product
         ]);
     }
@@ -296,6 +313,8 @@ class ProductController extends Controller
                 $this->message = 'Товар сохранён';
             }
 
+            $currentStore = Store::find(Auth::user()->current_store);
+
             self::$product = $article;
 
             #Кроссы
@@ -306,6 +325,35 @@ class ProductController extends Controller
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
+
+            if($request->entrances) {
+
+                foreach ($request->entrances as $entrance_id => $params) {
+                    if($entrance_id == 'new') {
+
+                        if($params['price'] < 1 || $params['count'] < 1) continue;
+
+                        $fields = [
+                            'article_id' => $article->id,
+                            'entrance_id' => null,
+                            'company_id' => $article->company_id,
+                            'store_id' => $currentStore->id,
+                            'count' => $params['count'],
+                            'price' => $params['price']
+                        ];
+
+                        DB::table('article_entrance')->insert($fields);
+                    }
+                    else {
+                        DB::table('article_entrance')
+                            ->where('id', $entrance_id)
+                            ->update([
+                                'price' => $params['price'],
+                                'count' => $params['count']
+                            ]);
+                    }
+                }
+            }
 
             if(isset($request->shop['specifications'])) {
 

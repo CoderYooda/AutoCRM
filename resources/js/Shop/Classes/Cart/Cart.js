@@ -3,7 +3,7 @@ class Cart {
     constructor() {
         this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 200);
 
-        $('select').select2();
+        // $('select').select2();
 
         this.providers = {};
 

@@ -53,6 +53,8 @@
             @endforeach
         </div>
 
+        {{ $products->links('shop.pagination.default') }}
+
     @endif
 
 </div>

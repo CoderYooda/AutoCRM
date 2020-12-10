@@ -55,7 +55,7 @@ Route::namespace('Shop')->group(function () {
     Route::get('/orders/{hash}/print', 'OrderController@print')->name('orders.print');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
-    Route::get('/products/{product}/analogues', 'ProductController@analogues')->name('products.analogues');
+    Route::post('/products/{product}/analogues', 'ProductController@analogues')->name('products.analogues');
     Route::post('/products/{product}/analogues/filter', 'ProductController@analoguesFilter')->name('products.analoguesFilter');
 
     Route::get('/search', 'PageController@search')->name('pages.search');

@@ -127,6 +127,14 @@ class ProductDialog extends Modal {
         if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');
     }
 
+    addAdjustmentField(element) {
+        let copy_element = this.current_dialog.querySelector('.entrance.copy');
+
+        copy_element.classList.remove('d-none');
+
+        element.classList.add('d-none');
+    }
+
     toggleStock(element) {
 
         let target_element = this.current_dialog.querySelector('.stocks');

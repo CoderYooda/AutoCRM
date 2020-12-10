@@ -9,7 +9,12 @@
 
     <div class="in-category container bg-white">
         <div class="product_title">
-            <h2>{{ $product->name }}</h2>
+            <h2 class="d-flex">
+                {{ $product->name }}
+                <div class="discount">
+                    Акция
+                </div>
+            </h2>
             <h3>Производитель {{ $product->supplier->name }}</h3>
             <h3>Артикул {{ $product->article }}</h3>
         </div>

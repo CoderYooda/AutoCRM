@@ -5,6 +5,17 @@
         border-right: 1px solid #E1E1E1;
     }
 
+    .discount {
+        background: #E23414;
+        padding: 0px 8px 1px 8px;
+        color: #fff;
+        border-radius: 4px;
+        width: -webkit-fit-content;
+        width: -moz-fit-content;
+        width: fit-content;
+        margin-left: 10px;
+    }
+
     .analogue_list {
         min-height: 150px;
 

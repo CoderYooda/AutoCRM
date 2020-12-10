@@ -37,7 +37,7 @@ class Product {
 
         helper.togglePreloader(analogues_element, true);
 
-        axios.get('/products/' + product_element.value + '/analogues')
+         axios.post('/products/' + product_element.value + '/analogues')
             .then(response => {
 
                 let data = response.data;
