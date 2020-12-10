@@ -104,7 +104,7 @@ class PageController extends Controller
             $slugs = array_slice($slugs, 1);
         }
 
-        $categories = Category::where('company_id', $this->shop->company_id)->whereIn('slug', $slugs)->get();
+        $categories = Category::where('company_id', $this->shop->company_id)->orderBy('id')->whereIn('slug', $slugs)->get();
 
         abort_if(!count($categories), 404);
 
