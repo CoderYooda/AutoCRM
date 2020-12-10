@@ -210,32 +210,27 @@ class AutoEuro implements ProviderInterface
 
     public function sendOrder(array $data): bool
     {
-        $orderIds = [];
+        $orders = [];
 
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
 
-            $params = [
+            $orders[] = [
                 'order_key' => $orderInfo['model']['order_key'],
-                'quantity' => $product->count,
-                'item_note' => ''
+                'quantity' => $product->count
             ];
-
-            $response = $this->query('basket_put', $params, 'POST');
-
-            $orderIds[] = $response['DATA']['basket_item_key'];
         }
 
         $params = [
             'delivery_key' => $data[$data['delivery_type_id'] == 0 ? 'pickup_address_id' : 'delivery_address_id'],
             'subdivision_key' => $data['subdivision_id'],
             'wait_all_goods' => 1,
-            'comment' => $data['comment'],
-            'basket_item_keys ' => $orderIds
+            'comment' => $data['comment'] ?? '',
+            'stock_items' => json_encode($orders)
         ];
 
-        $this->query('order_basket', $params, 'POST');
+        $response = $this->query('order_stock', $params, 'POST');
 
         $this->createProviderOrder($data);
 

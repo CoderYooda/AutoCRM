@@ -26,7 +26,7 @@ trait CartProviderOrderCreator
             $orderInfo = json_decode($order->data, true);
 
             //Создание производителя
-            $supplierRequest['name'] = $orderInfo['hash_info']['manufacturer'];
+            $supplierRequest['name'] = $orderInfo['model']['hash_info']['manufacturer'];
 
             $supplierController->store($supplierRequest);
             $supplier = $supplierController::$supplier;
@@ -35,7 +35,7 @@ trait CartProviderOrderCreator
 
             $uniqueFields = [
                 'supplier_id' => $supplier->id,
-                'article' => $orderInfo['hash_info']['article']
+                'article' => $orderInfo['model']['hash_info']['article']
             ];
 
             $dataFields = [
@@ -43,8 +43,8 @@ trait CartProviderOrderCreator
                 'category_id' => 2,
                 'creator_id' => $this->user->id,
                 'supplier_id' => $supplier->id,
-                'article' => $orderInfo['hash_info']['article'],
-                'name' => $orderInfo['hash_info']['desc']
+                'article' => $orderInfo['model']['hash_info']['article'],
+                'name' => $orderInfo['model']['hash_info']['desc']
             ];
 
             $product = Article::firstOrCreate($uniqueFields, $dataFields);
@@ -52,10 +52,10 @@ trait CartProviderOrderCreator
             $products[] = [
                 'id' => $product->id,
                 'count' => $order->count,
-                'price' => $orderInfo['hash_info']['price']
+                'price' => $orderInfo['model']['hash_info']['price']
             ];
 
-            $totalPrice += $orderInfo['hash_info']['price'] * $order->count;
+            $totalPrice += $orderInfo['model']['hash_info']['price'] * $order->count;
             $totalCount += $order->count;
         }
 
