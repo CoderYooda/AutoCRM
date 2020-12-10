@@ -13,7 +13,7 @@ import Notifications from 'vue-notification';
 import VueConfirmDialog from 'vue-confirm-dialog';
 import { VTooltip, VPopover, VClosePopover } from 'v-tooltip';
 import ValidateAction from './Components/directives/ValidateAction';
-
+import Selector from './Components/service/Selector';
 
 window.app_version = 0.9;
 window.api_url = '/api';
@@ -45,6 +45,7 @@ Vue.directive('close-popover', VClosePopover);
 Vue.directive('validate', ValidateAction);
 Vue.component('v-popover', VPopover);
 Vue.component('vue-confirm-dialog', VueConfirmDialog.default);
+Vue.component('Selector', Selector);
 
 let app = new Vue({
     router,

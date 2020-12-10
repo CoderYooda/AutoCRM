@@ -1,8 +1,8 @@
 let categoryMixin = {
     methods: {
         setCategory(category){
-            this.entity.category_id = category.id;
-            this.entity.category = category.name;
+            this.entity.category.id = category.id;
+            this.entity.category.name = category.name;
             this.$notify({
                 group: 'main',
                 type: 'success',
@@ -19,10 +19,10 @@ let categoryMixin = {
             this.loading = true;
             window.axios({
                 method: 'get',
-                url: '/categories/' + this.entity.category_id,
+                url: '/categories/' + this.entity.category.id,
             }).then((resp) =>  {
-                this.entity.category_id = resp.data.id;
-                this.entity.category = resp.data.name;
+                this.entity.category.id = resp.data.id;
+                this.entity.category.name = resp.data.name;
                 this.loading = false;
             });
         },

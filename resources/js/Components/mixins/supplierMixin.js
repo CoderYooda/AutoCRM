@@ -1,8 +1,8 @@
 let supplierMixin = {
     methods: {
         setSupplier(supplier){
-            this.entity.supplier_id = supplier.id;
-            this.entity.supplier = supplier.name;
+            this.entity.supplier.id = supplier.id;
+            this.entity.supplier.name = supplier.name;
             this.$notify({
                 group: 'main',
                 type: 'success',
