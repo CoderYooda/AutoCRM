@@ -111,7 +111,6 @@
                                 </span>
                             </a>
                         </li>
-                        @if($product)
                         <li class="nav-item">
                             <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
                                 Журнал поступлений
@@ -120,7 +119,6 @@
                                 </span>
                             </a>
                         </li>
-                        @endif
                     </ul>
                 </div>
                 <div class="col-sm-8 no-pl">
@@ -130,9 +128,7 @@
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')
                         @include(get_template() . '.product.dialog.tabs.online_shop')
-                        @if($product)
-                            @include(get_template() . '.product.dialog.tabs.entrances')
-                        @endif
+                        @include(get_template() . '.product.dialog.tabs.entrances')
                     </div>
                 </div>
             </div>

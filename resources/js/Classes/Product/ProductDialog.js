@@ -133,6 +133,8 @@ class ProductDialog extends Modal {
         copy_element.classList.remove('d-none');
 
         element.classList.add('d-none');
+
+        copy_element.focus();
     }
 
     toggleStock(element) {

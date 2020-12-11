@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
+use App\Models\Adjustment;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\ProviderOrder;
@@ -12,6 +13,7 @@ use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -200,6 +202,8 @@ class ProductController extends Controller
 
         }
 
+        Cache::put('user[' . Auth::id() . '][entrances]', $entrances);
+
         //Интернет-магазин
 
         $shopFields = [
@@ -328,7 +332,12 @@ class ProductController extends Controller
 
             if($request->entrances) {
 
+                $oldEntrancesState = Cache::get('user[' . Auth::id() . '][entrances]');
+
+                $adjustmentData = [];
+
                 foreach ($request->entrances as $entrance_id => $params) {
+
                     if($entrance_id == 'new') {
 
                         if($params['price'] < 1 || $params['count'] < 1) continue;
@@ -342,16 +351,46 @@ class ProductController extends Controller
                             'price' => $params['price']
                         ];
 
-                        DB::table('article_entrance')->insert($fields);
+                        $articleEntranceId = DB::table('article_entrance')->insertGetId($fields);
                     }
                     else {
+
+                        $oldEntranceState = $oldEntrancesState->where('id', $entrance_id)->first();
+
+                        $articleEntranceId = $oldEntranceState->id;
+
+                        if($oldEntranceState->count == $params['count'] && $oldEntranceState->price == $params['price']) continue;
+
                         DB::table('article_entrance')
                             ->where('id', $entrance_id)
                             ->update([
                                 'price' => $params['price'],
-                                'count' => $params['count']
+                                'count' => $oldEntranceState->released_count + $params['count']
                             ]);
                     }
+
+                    if(!isset($adjustment)) {
+                        $adjustment = Adjustment::create([
+                            'company_id' => Auth::user()->company_id,
+                            'manager_id' => Auth::user()->partner->id,
+                            'store_id'   => Auth::user()->current_store,
+                            'comment'    => ''
+                        ]);
+                    }
+
+                    DB::table('article_adjustment')->insert([
+                        'article_id'          => $article->id,
+                        'adjustment_id'       => $adjustment->id,
+                        'article_entrance_id' => $articleEntranceId,
+                        'store_id'            => Auth::user()->current_store,
+                        'count'               => $params['count'],
+                        'prev_count'          => $entrance_id == 'new' ? 0 : $oldEntranceState->count,
+                        'deviation_count'     => $entrance_id == 'new' ? 0 : $params['count'] - $oldEntranceState->count,
+                        'price'               => $params['price'],
+                        'prev_price'          => $entrance_id == 'new' ? 0 : $oldEntranceState->price,
+                        'deviation_price'     => $entrance_id == 'new' ? 0 : $params['price'] - $oldEntranceState->price,
+                        'total'               => $params['price'] * $params['count']
+                    ]);
                 }
             }
 
