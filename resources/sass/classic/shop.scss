@@ -65,6 +65,7 @@ h2{
 @import "shop/modals/edit_vehicle";
 @import "shop/restore";
 @import "shop/personal_data";
+@import "shop/search";
 
 .notification-symbol {
     width: 20px !important;
@@ -1377,64 +1378,6 @@ body{
         margin-left: 16px;
     }
 
-}
-
-.search_header {
-    display: flex;
-    height: 44px;
-    border: 1px solid #E1E1E1;
-    background: #F3F3F3;
-    padding-left: 30px;
-
-    div {
-        font-weight: bold;
-        font-size: 14px;
-        line-height: 44px;
-        letter-spacing: 0.04em;
-        color: #272727;
-    }
-}
-
-.search_body {
-
-    .product {
-
-        display: flex;
-        position: relative;
-        height: 78px;
-        align-items: center;
-        cursor: pointer;
-        border-left: 1px solid #E1E1E1;
-        border-right: 1px solid #E1E1E1;
-        border-bottom: 1px solid #E1E1E1;
-
-        .brand {
-            padding-left: 30px;
-
-            font-weight: bold;
-            font-size: 16px;
-            line-height: 22px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #989898;
-        }
-
-        .article {
-            font-weight: bold;
-            font-size: 16px;
-            line-height: 22px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #989898;
-        }
-
-        .name {
-            font-weight: 600;
-            font-size: 14px;
-            letter-spacing: 0.04em;
-            color: #272727;
-        }
-    }
 }
 
 .w-20 {

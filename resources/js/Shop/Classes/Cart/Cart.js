@@ -44,7 +44,9 @@ class Cart {
 
         let order = this.getOrderByHash(hash, type);
 
-        order.product_id = this.product.id;
+        console.log(order);
+
+        if(this.product) order.product_id = this.product.id;
 
         if(store_id) order.store_id = store_id;
 
@@ -267,6 +269,8 @@ class Cart {
     getOrderByHash(hash, type) {
 
         let order = {};
+
+        console.log(this.providers);
 
         Object.values(this.providers).forEach(orders => {
 

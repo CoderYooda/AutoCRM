@@ -7,11 +7,13 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\Shop;
 use App\Http\Controllers\Controller;
+use App\Models\Supplier;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ShopManager\ShopManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -82,16 +84,6 @@ class PageController extends Controller
     public function personalData()
     {
         return view('shop.personal_data')
-            ->with('shop', $this->shop);
-    }
-
-    public function search(Request $request)
-    {
-        $products = Article::where('company_id', $this->shop->company_id)
-            ->where('foundstring', 'like', "%{$request->search}%")
-            ->paginate(15);
-
-        return view('shop.search', compact('products'))
             ->with('shop', $this->shop);
     }
 

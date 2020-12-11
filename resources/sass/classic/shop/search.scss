@@ -1,0 +1,91 @@
+.search_page {
+
+    .empty_table {
+        border-left: 1px solid #e1e1e1;
+        border-right: 1px solid #e1e1e1;
+        border-bottom: 1px solid #e1e1e1;
+    }
+
+    .search_header {
+        display: flex;
+        height: 44px;
+        border: 1px solid #E1E1E1;
+        background: #F3F3F3;
+        padding-left: 30px;
+
+        div {
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 44px;
+            letter-spacing: 0.04em;
+            color: #272727;
+        }
+    }
+
+    .search_body {
+
+        .brand {
+
+            display: flex;
+            position: relative;
+            height: 78px;
+            align-items: center;
+            cursor: pointer;
+            border-left: 1px solid #E1E1E1;
+            border-right: 1px solid #E1E1E1;
+            border-bottom: 1px solid #E1E1E1;
+
+            .name {
+                padding-left: 30px;
+
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 22px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: #989898;
+            }
+        }
+    }
+
+    .table {
+
+        .title {
+            margin-top: 30px;
+            height: 56px;
+            line-height: 56px;
+            background: #404040;
+            padding-left: 30px;
+            padding-right: 30px;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 0.04em;
+            color: #FFFFFF;
+
+            .name {
+                float: right;
+            }
+
+            .back {
+                float: left;
+                background: #E23414;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                line-height: 36px;
+                margin: 10px 0;
+                padding: 0 10px;
+                cursor: pointer;
+
+                .arrow {
+                    width: 20px;
+                    height: 10px;
+                    background: url(/images/shop/arrow-back.svg) center no-repeat;
+                }
+            }
+        }
+
+    }
+
+}

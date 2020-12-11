@@ -58,7 +58,10 @@ Route::namespace('Shop')->group(function () {
     Route::post('/products/{product}/analogues', 'ProductController@analogues')->name('products.analogues');
     Route::post('/products/{product}/analogues/filter', 'ProductController@analoguesFilter')->name('products.analoguesFilter');
 
-    Route::get('/search', 'PageController@search')->name('pages.search');
+    Route::get('/search', 'SearchController@index')->name('pages.search');
+    Route::post('/search/provider_brands', 'SearchController@providerBrands')->name('pages.providerBrands');
+    Route::post('/search/provider_offers', 'SearchController@providerOffers')->name('pages.providerOffers');
+    Route::post('/search/provider_offers/filter', 'SearchController@providerOffersFilter')->name('pages.providerOffersFilter');
 
     Route::get('/{path}', 'PageController@show')->where('path', '(.*)')->name('pages.path');
 });

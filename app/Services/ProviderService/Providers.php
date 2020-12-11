@@ -4,11 +4,12 @@
 namespace App\Services\ProviderService;
 
 use App\Services\ProviderService\Contract\ProviderInterface;
+use NunoMaduro\Collision\Provider;
 
 class Providers
 {
     /** @var ProviderInterface[] */
-    private $providers = [];
+    private $providers;
 
     public function __construct($providers)
     {
@@ -34,13 +35,13 @@ class Providers
         return $providers;
     }
 
-    public function find(string $key)
+    public function find(string $key) : ?ProviderInterface
     {
         foreach ($this->providers as $provider) {
             $provider_key = $provider->getServiceKey();
             if($provider_key == $key) return $provider;
         }
 
-        return false;
+        return null;
     }
 }

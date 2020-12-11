@@ -117,7 +117,7 @@ class ArmTek implements ProviderInterface
 
             $results[$listName][] = [
                 'index'        => $is_analogue ? $analogueIndex : $originalIndex,
-                'name'         => $item['KEYZAK'],
+                'name'         => $item['NAME'],
                 'code'         => $item['ARTID'],
                 'rest'         => $item['RVALUE'],
                 'delivery'     => $delivery_days . ' дн.',

@@ -11,9 +11,11 @@
         <div class="product_title">
             <h2 class="d-flex">
                 {{ $product->name }}
-                <div class="discount">
-                    Акция
-                </div>
+                @if($product->sp_stock)
+                    <div class="discount">
+                        Акция
+                    </div>
+                @endif
             </h2>
             <h3>Производитель {{ $product->supplier->name }}</h3>
             <h3>Артикул {{ $product->article }}</h3>

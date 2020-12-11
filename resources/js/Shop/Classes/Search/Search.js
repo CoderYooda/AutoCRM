@@ -1,84 +1,62 @@
-class Product {
+class Search {
 
-    constructor() {
+    showProviderBrands(element, provider) {
 
-        let description_element = document.querySelector('.description');
+        let search_element = document.querySelector('[name="article"]');
 
-        if(description_element) {
+        let table_element = document.querySelector('.table.' + provider);
 
-            let target_element = description_element.querySelector('.param_desc');
+        helper.togglePreloader(table_element, true);
 
-            if(target_element && target_element.style.height < 140) {
-                description_element.querySelector('.show').classList.add('d-none');
-            }
-        }
+        let data = {
+            selected_provider: provider,
+            search: search_element.value
+        };
 
-        let specifications_element = document.querySelector('.specifications');
-
-        if(specifications_element) {
-
-            let target_element = specifications_element.querySelector('.specifications_table');
-
-            if(target_element && target_element.style.height < 140) {
-                specifications_element.querySelector('.show').classList.add('d-none');
-            }
-        }
-
-        this.loadProviderOffers();
-    }
-
-    loadProviderOffers() {
-
-        let product_element = document.querySelector('[name="product_id"]');
-
-        if(!product_element) return;
-
-        let analogues_element = document.querySelector('.analogue_list');
-
-        helper.togglePreloader(analogues_element, true);
-
-         axios.post('/products/' + product_element.value + '/analogues')
+        axios.post('/search/provider_brands', data)
             .then(response => {
-
                 let data = response.data;
 
-                analogues_element.innerHTML = data.html;
+                table_element.innerHTML = data.html;
 
-                cart.providers = data.providers;
+                cart.providers[provider] = [];
             })
             .catch(error => {
                 console.log(error);
             })
             .finally(() => {
-                helper.togglePreloader(analogues_element, false);
+                helper.togglePreloader(table_element, false);
             });
     }
 
-    getInfo(product_id) {
+    showProvidersOffers(element, manufacturer) {
 
-        event.preventDefault();
+        let search_element = document.querySelector('[name="article"]');
 
-        axios.get('/products/' + product_id + '/info')
-            .then(response => {
+        let result_element = document.querySelector('.result');
 
-                console.log(response);
-                window.createModal('Информация о продукте', response.data.html);
+        helper.togglePreloader(result_element, true);
 
-            }).catch(error => {
-                console.log(error);
-            });
-    }
-
-    showFullText(element) {
-        let target_element = element.closest('div');
-        target_element.classList.add('is-full');
-
-        let callback = (event) => {
-            target_element.classList.remove('is-full');
-            target_element.removeEventListener('mouseleave', callback);
+        let data = {
+            manufacturer: manufacturer,
+            article: search_element.value
         };
 
-        target_element.addEventListener('mouseleave', callback);
+        axios.post('/search/provider_offers', data)
+            .then(response => {
+                let data = response.data;
+
+                result_element.innerHTML = data.html;
+
+                cart.providers = data.providers;
+                cart.product = data.product;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                helper.togglePreloader(result_element, false);
+            });
     }
 
     sortBy(element, type, field) {
@@ -141,5 +119,4 @@ class Product {
             });
     }
 }
-
-export default Product;
+export default Search;

@@ -29,15 +29,12 @@ class ProductController extends Controller
         ]);
     }
 
-    public function analogues(Article $product)
+    public function analogues(Article $product, Providers $providers)
     {
         $providersOrders = [];
 
         if($this->shop->supplier_offers) {
-            /** @var Providers $providers */
-            $providers = app(Providers::class);
 
-            /** @var ProviderInterface $provider */
             foreach ($providers->activated() as $provider_key => $provider) {
 
                 $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
@@ -61,50 +58,6 @@ class ProductController extends Controller
         return response()->json([
             'html' => $view->render(),
             'providers' => $providersOrders
-        ]);
-    }
-
-    public function analoguesFilter(Article $product, Request $request)
-    {
-        /** @var Providers $providers */
-        $providers = app(Providers::class);
-
-        /** @var ProviderInterface $provider */
-        $provider = $providers->find($request->selected_service);
-
-        $orders = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
-
-        foreach (['originals', 'analogues'] as $type) {
-
-            foreach ($orders[$type] as $key => $order) {
-
-                $price = $order['price'];
-
-                $orders[$type][$key]['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-                $orders[$type][$key]['model']['hash_info']['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-            }
-        }
-
-        $orders = collect($orders);
-
-        foreach (['originals', 'analogues'] as $type) {
-
-            if($request->field) {
-                $orders[$type] = collect($orders[$type])->sortBy($request->field, $request->is_desc ? SORT_DESC : SORT_ASC)->toArray();
-            }
-
-            if($request->is_desc == true) $orders[$type] = array_reverse($orders[$type]);
-        }
-
-        $orders = $orders->toArray();
-
-        $view = view('shop.includes.analogues_body', compact('orders'))
-            ->with('shop', $this->shop)
-            ->with('type', $request->type);
-
-        return response()->json([
-            'html' => $view->render(),
-            'orders' => $orders
         ]);
     }
 }

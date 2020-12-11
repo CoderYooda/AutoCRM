@@ -8,6 +8,7 @@ import Product from "./Classes/Product/Product";
 import Auth from "./Classes/Auth";
 import User from "./Classes/User/User";
 import Vehicle from "./Classes/Vehicle/Vehicle";
+import Search from "./Classes/Search/Search";
 
 window.$ = window.jQuery = require('jquery');
 
@@ -27,6 +28,7 @@ window.product = new Product();
 window.auth = new Auth();
 window.user = new User();
 window.vehicle = new Vehicle();
+window.search = new Search();
 
 require('./functions');
 require('./bootstrap');
