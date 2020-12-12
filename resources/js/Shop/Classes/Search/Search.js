@@ -1,15 +1,14 @@
 class Search {
 
-    showProviderBrands(element, provider) {
+    showProviderBrands(element) {
 
         let search_element = document.querySelector('[name="article"]');
 
-        let table_element = document.querySelector('.table.' + provider);
+        let result_element = document.querySelector('.result');
 
-        helper.togglePreloader(table_element, true);
+        helper.togglePreloader(result_element, true);
 
         let data = {
-            selected_provider: provider,
             search: search_element.value
         };
 
@@ -17,15 +16,15 @@ class Search {
             .then(response => {
                 let data = response.data;
 
-                table_element.innerHTML = data.html;
+                result_element.innerHTML = data.html;
 
-                cart.providers[provider] = [];
+                cart.providers = [];
             })
             .catch(error => {
                 console.log(error);
             })
             .finally(() => {
-                helper.togglePreloader(table_element, false);
+                helper.togglePreloader(result_element, false);
             });
     }
 

@@ -131,8 +131,6 @@ class CategoryController extends Controller
             ], 200);
         }
 
-        $category->slug = Str::slug($request->name . '-' . $category->id);
-
         $category->fill($request->except('image'));
         $category->creator_id = Auth::id();
         $category->company_id = Auth::user()->company_id;

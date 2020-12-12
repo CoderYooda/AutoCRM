@@ -45,8 +45,6 @@ class CreateBaseCategories extends Command
 
     private function createCategory($name, $category_id, $company_id, $creator_id)
     {
-        $slug = Str::slug($name . '-' . $company_id);
-
         return Category::create([
             'name' => $name,
             'category_id' => $category_id,
@@ -54,7 +52,7 @@ class CreateBaseCategories extends Command
             'creator_id' => $creator_id,
             'locked' => false,
             'type' => 'store',
-            'slug' => $slug
+            'slug' => null
         ]);
     }
 }

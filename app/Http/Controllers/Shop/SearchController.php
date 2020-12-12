@@ -43,12 +43,20 @@ class SearchController extends Controller
 
     public function providerBrands(Request $request, Providers $providers)
     {
-        $provider = $providers->find($request->selected_provider);
+        $brands = [];
 
-        $brands = $provider->searchBrandsCount($request->search);
+        if($this->shop->supplier_offers) {
 
-        $view = view('shop.includes.search.brands', compact('brands'))
-            ->with('provider_key', $request->selected_provider);
+            /** @var ProviderInterface $provider */
+            foreach ($providers->activated() as $provider_key => $provider) {
+
+                $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
+            }
+        }
+
+        $brands = array_unique($brands);
+
+        $view = view('shop.includes.search.brands', compact('brands'));
 
         return response()->json([
             'html' => $view->render(),

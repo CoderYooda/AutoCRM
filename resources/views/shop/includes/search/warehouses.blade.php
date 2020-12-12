@@ -3,6 +3,11 @@
     <input type="hidden" name="manufacturer" value="{{ request()->manufacturer }}">
     <input type="hidden" name="article" value="{{ request()->article }}">
 
+    <div class="back" onclick="search.showProviderBrands(this);">
+        <div class="arrow"></div>
+        <span class="float-r">Назад</span>
+    </div>
+
     <div class="name">
         На нашем складе
     </div>
@@ -65,7 +70,7 @@
         @else
 
             <div class="empty_table">
-                <span>Нет предложений по этому поставщику</span>
+                <span>Нет предложений с нешего склада</span>
             </div>
 
         @endif

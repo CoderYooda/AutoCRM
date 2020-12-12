@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Article;
 use App\Models\Cashbox;
+use App\Models\Category;
 use App\Models\Company;
 use App\Models\DocumentType;
 use App\Models\Entrance;
@@ -15,6 +16,7 @@ use App\Models\User;
 use App\Models\Warrant;
 use App\Observers\ArticleObserver;
 use App\Observers\CashboxObserver;
+use App\Observers\CategoryObserver;
 use App\Observers\CompanyObserver;
 use App\Observers\EntranceObserver;
 use App\Observers\OrderObserver;
@@ -62,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
         Entrance::observe(EntranceObserver::class);
         Cashbox::observe(CashboxObserver::class);
         Order::observe(OrderObserver::class);
+        Category::observe(CategoryObserver::class);
         ProviderOrder::observe(ProviderOrderObserver::class);
 
         \View::composer([get_template() . '.documents.index'], function ($view) {
