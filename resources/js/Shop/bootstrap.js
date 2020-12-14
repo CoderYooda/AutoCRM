@@ -50,7 +50,16 @@ if(head_slider){
         rtl: false,
         onInit: () => {
         },
-        onChange: () => {activatePin()},
+        onChange: () => {
+
+            window.block_redirect = true;
+
+            setTimeout(() => {
+                window.block_redirect = false;
+            }, 1000);
+
+            activatePin();
+        },
     });
     let pinsContainer = document.querySelector('.pins-container');
     if(pinsContainer){
@@ -71,6 +80,7 @@ if(head_slider){
 
     setInterval(() => {
         window.headSlider.next();
+        window.popularSlider.next();
     }, 5000);
 }
 
@@ -101,7 +111,15 @@ if(pop_products){
             rtl: false,
             onInit: () => {
             },
-            onChange: () => {},
+            onChange: () => {
+
+                window.block_redirect = true;
+
+                setTimeout(() => {
+                    window.block_redirect = false;
+                }, 1000);
+
+            },
         });
     } else {
         let controls = pop_products.parentElement.querySelector('.controls');
