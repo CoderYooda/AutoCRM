@@ -7,6 +7,7 @@ use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services\Cart\CartDatabase;
 use App\Services\ProviderService\Services\Providers\AutoEuro;
 use App\Services\ProviderService\Services\Providers\AutoRus;
+use App\Services\ProviderService\Services\Providers\ForumAuto;
 use App\Services\ProviderService\Services\Providers\Mikado;
 use App\Services\ProviderService\Services\Providers\AvtoImport;
 use App\Services\ProviderService\Services\Providers\ArmTek;
@@ -26,7 +27,8 @@ class AppProviderStoreService extends ServiceProvider
             ArmTek::class,
             Mikado::class,
             AutoRus::class,
-            AutoEuro::class
+            AutoEuro::class,
+            ForumAuto::class
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {

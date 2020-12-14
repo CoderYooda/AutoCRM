@@ -56,6 +56,8 @@ class Test extends Command
 
         } else {
 
+            dd($result);
+
             // Результат запроса
 
             echo '<pre>' . var_export($result, true) . '</pre>';
