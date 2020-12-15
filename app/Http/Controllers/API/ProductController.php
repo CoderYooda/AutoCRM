@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PermissionController;
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\API\ProductRequest;
 use App\Models\Article;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;

@@ -735,6 +735,16 @@ li.active .header-tab{
 .dialog .box-body, .dialog .box-footer{
     padding: 15px;
 }
+.modal-body .contented{
+    padding: 4px 10px;
+    border: 1px solid #e7e8ec;
+}
+.modal-body hr{
+    margin: 10px 0px;
+    border: none;
+    height: 1px;
+    background: #ababab;
+}
 .modal-footer {
     padding: 15px;
     border-top: 1px solid #E7E8EC;

@@ -5,7 +5,7 @@ Route::get('/evotor/getWarrantToPrint/{uuid}', 'API\EvotorController@getWarrantT
 Route::get('/evotor/getWarrantItems/{id}', 'API\EvotorController@getWarrantItems');
 Route::post('/evotor/setWarrantPayed', 'API\EvotorController@setWarrantPayed');
 
-Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
+Route::post('login', 'Auth\LoginController@login')->middleware('web')->name('PostLogin');
 
 Route::namespace('API')->middleware('auth:api')->group(function() {
     #Категории

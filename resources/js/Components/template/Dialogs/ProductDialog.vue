@@ -36,6 +36,7 @@
         <div>
             <div class="modal-body">
                 <div class="row">
+                    <input class="d-none" ref="product_img_upload" type="file" @change="sync" accept="image/jpeg,image/png,image/gif"/>
                     <div class="col-sm-4 no-pr d-flex">
                         <ul class="nav">
                             <li v-for="tab in tabs" v-bind:key="tab.slug" v-bind:class="{'active' : tab.state}"
@@ -111,21 +112,31 @@
                             </div>
                             <div class="tab-pane p-3" v-bind:class="{'active' : tabs[2].state}">
                                 <div v-if="shop_activated" id="tab_main" data-simplebar style="height: 310px;">
-                                    <FormInput v-bind:inputData="{type:'checkbox',label:'Показать на главной странице',name:'entity.sp_main'}" />
-                                    <FormInput v-bind:inputData="{type:'checkbox',label:'Акционный товар',name:'entity.sp_stock'}" />
-                                    <div v-bind:class="{'d-none':!entity.sp_stock}" class="stocks" >
-                                        <div class="form-group row">
-                                            <label class="col-sm-4">Цена</label>
-                                            <div class="input-group col-sm-8">
-                                                <input type="number" class="form-control discount" />
-                                            </div>
+                                    <div class="contented mb-10">
+                                        <FormInput v-bind:inputData="{type:'checkbox',mb:false, label:'Показать на главной странице',name:'entity.sp_main'}" />
+                                    </div>
+                                    <div class="contented mb-10">
+                                        <div class="relative">
+                                            <label for="sp_stock" class="w-100 mb-0 pointer">Акционный товар</label>
+                                            <label class="absolute custom_checkbox" style="right: 0; top: 3px;">
+                                                <input id="sp_stock" v-model="entity.sp_stock" type="checkbox" class="not_default"/>
+                                                <span></span>
+                                            </label>
                                         </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4">Скидка</label>
-                                            <div class="input-group col-sm-8">
-                                                <input type="number" class="form-control discount mr-10" />
 
-                                                <Selector v-bind:data="{
+                                        <div v-bind:class="{'d-none':!entity.sp_stock}" class="stocks mb-5 mt-10" >
+                                            <div  class="form-group d-flex">
+                                                <label class="col-sm-4 no-pl">Цена</label>
+                                                <div class="input-group col-sm-8 no-pr">
+                                                    <input type="number" class="form-control discount" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="form-group d-flex">
+                                                <label class="col-sm-4 no-pl">Скидка</label>
+                                                <div class="input-group col-sm-8 no-pr">
+                                                    <input type="number" class="form-control discount mr-10" />
+
+                                                    <Selector v-bind:data="{
                                                     model:'entity.sp_discount_type',
                                                     default_value:1,
                                                     elements:[
@@ -133,36 +144,37 @@
                                                         {name:'в процентах', value:0}
                                                     ]
                                                 }" />
-                                            </div>
-                                        </div>
-
-                                        <div class="flex-1">
-                                            <div class="form-group">
-                                                <label>Цена</label>
-                                                <input type="number" class="form-control discount" />
-                                            </div>
-                                        </div>
-
-                                        <div class="flex-3">
-                                            <div class="form-group">
-                                                <input type="number" class="form-control price" disabled />
-                                            </div>
-
-                                            <div class="form-group d-flex">
-                                                <div class="flex-1">
-
-                                                </div>
-
-                                                <div class="ml-5 flex-1">
-                                                    <select class="type" >
-                                                        <option>345</option>
-                                                    </select>
                                                 </div>
                                             </div>
-
-                                            <div class="form-group">
-                                                <input type="number" class="form-control total" disabled />
+                                            <div  class="form-group d-flex">
+                                                <label class="col-sm-4 no-pl">Итого</label>
+                                                <div class="input-group col-sm-8 no-pr">
+                                                    <input type="number" class="form-control" disabled />
+                                                </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+
+                                    <FormInput v-bind:inputData="{type:'input',label:'Наименование продукта',name:'entity.article', placeholder:'Наименование продукта'}" />
+                                    <div class="d-flex mt-10">
+                                        <div class="form-group">
+                                            <div class="form-group mb-0">
+                                                <label>Основное фото</label>
+                                                <div class="img_upload_cat_container">
+                                                    <div v-if="loading" class="list-placeholder mb-3" style="height: 100px;">
+                                                        <div class="list-placeholder_item" style="height: 100px;">
+                                                            <div class="list-placeholder_cell" style="width: 100%" ></div>
+                                                        </div>
+                                                    </div>
+                                                    <img v-if="!loading" class="h-100 w-100 image" :src="entity.image" />
+                                                    <span v-if="!loading" @click="uploadClick()" class="upload_btn">Загрузить</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-3 ml-15">
+                                            <label>Описание продукта</label>
+                                            <textarea class="form-control p-5 resize-none border-radius-none" placeholder="Введите описание" style="height: 94px;"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -250,6 +262,7 @@
                     sp_discount_type:"1",
                     sp_main:false,
                     sp_stock:false,
+                    image: '/images/no_image.png',
                     category:{
                         id:2,
                         name:null,
@@ -288,6 +301,28 @@
         },
         computed: {},
         methods: {
+            sync(e){
+                e.preventDefault();
+                this.image_file = e.target.files[0];
+                this.syncImage();
+            },
+            uploadClick(){
+                this.$refs.product_img_upload.click();
+            },
+            syncImage(){
+                let data = new FormData();
+                data.append('image', this.image_file);
+                this.loading = true;
+                window.axios({
+                    method: 'post',
+                    url: '/image/upload',
+                    data:data
+                }).then((resp) =>  {
+                    this.entity.image = resp.data.images[0].url;
+                    this.entity.image_id = resp.data.images[0].id;
+                    this.loading = false;
+                });
+            },
             selectTab(tab) {
                 this.tabs.forEach((tab) => {
                     tab.state = false;

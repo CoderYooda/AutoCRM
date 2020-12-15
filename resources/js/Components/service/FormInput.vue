@@ -35,10 +35,8 @@
                     class="category_select form-control text-left button_select">{{ parentModel }}</button>
             </div>
         </div>
-
-
         <div v-if="!$parent.loading && isCheckbox" class="relative">
-            <label v-bind:for="inputData.name" class="w-100">{{ inputData.label }}</label>
+            <label v-bind:for="inputData.name" class="w-100" v-bind:class="{'mb-0' : !inputData.mb}">{{ inputData.label }}</label>
             <label class="absolute custom_checkbox" style="right: 0; top: 3px;">
                 <input v-bind:id="inputData.name" v-model="parentModel" v-bind:name="inputData.name" type="checkbox" class="not_default"/>
                 <span></span>
