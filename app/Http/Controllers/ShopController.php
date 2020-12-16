@@ -232,6 +232,12 @@ class ShopController extends Controller
     {
         return DB::transaction(function () use ($request) {
 
+            $shop = Shop::where('company_id', Auth::user()->company_id)->first();
+
+            if(!$shop || $shop->domain != $request->domain) {
+                exec('sh test.sh ' . $request->domain);
+            }
+
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,
