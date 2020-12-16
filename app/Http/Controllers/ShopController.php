@@ -235,7 +235,12 @@ class ShopController extends Controller
             $shop = Shop::where('company_id', Auth::user()->company_id)->first();
 
             if(!$shop || $shop->domain != $request->domain) {
-                exec('sh test.sh ' . $request->domain);
+
+                $domain = $request->domain;
+
+                if(str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain);
+
+                exec('sh test.sh ' . $domain);
             }
 
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
