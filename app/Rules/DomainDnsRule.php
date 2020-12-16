@@ -17,13 +17,7 @@ class DomainDnsRule implements Rule
     {
         if($this->server_ip == '127.0.0.1') return true;
 
-        if(str_contains_cyrillic($value)) {
-
-            $json = file_get_contents('http://ip-api.com/json/' . idn_to_ascii($value) . '?lang=ru');
-            $response = json_decode($json, TRUE);
-
-            return $response['query'] == $this->server_ip;
-        }
+        if(str_contains_cyrillic($value)) $value = idn_to_ascii($value);
 
         return gethostbyname($value) == $this->server_ip;
     }
