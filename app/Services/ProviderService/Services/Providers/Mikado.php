@@ -249,7 +249,7 @@ class Mikado implements ProviderInterface
             $orderInfo = json_decode($order->data, true);
 
             $params = [
-                'ZakazCode'    => $orderInfo['ZakazCode'],
+                'ZakazCode'    => $orderInfo['model']['ZakazCode'],
                 'QTY'          => $order->count,
                 'DeliveryType' => 1,
                 'Notes'        => $data['comment'] ?? '',
