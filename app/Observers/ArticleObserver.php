@@ -16,7 +16,7 @@ class ArticleObserver
         $product->freshFoundString();
     }
 
-    public function saving(Article $product)
+    public function saved(Article $product)
     {
         $product->freshFoundString();
     }

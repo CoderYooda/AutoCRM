@@ -44,19 +44,24 @@
                 }
             },
         },
+        watch:{
+            model: function (Val) {
+                this.select_val();
+            }
+        },
         mounted() {
             this.select_val();
             document.addEventListener('click', this.close)
         },
         methods:{
             select_val(){
-                let selected = this.model != null ? this.model : this.default_value;
+                let selected = this.model !== null ? this.model : this.default_value;
                 this.data.elements.forEach((elem) => {
-                    if(elem.value == selected){
+                    if(elem.value === selected){
                         this.selected = elem.name;
                     }
                 });
-
+                this.model = selected;
             },
             close (e) {
                 if (!this.$el.contains(e.target)) {

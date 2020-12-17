@@ -6,7 +6,7 @@
                     <input v-model.lazy="search" v-debounce="450" id="search" name="search" placeholder="Поиск по заявкам поставщику" class="input w-100" value="" type="text">
                 </div>
                 <div class="actions">
-                    <button type="button" class="button primary ml-15 w-290" v-on:click="newDialog('product')">Создать заявку</button>
+                    <button type="button" class="button primary ml-15 w-290" @click="newDialog('providerOrder')">Создать заявку</button>
                 </div>
             </div>
             <div class="d-flex" style="height: calc(100% - 45px);">
@@ -84,6 +84,14 @@
                     },
                 ]
             };
+        },
+        methods:{
+            newDialog(tag, params = null){
+                this.$eventBus.$emit('openDialog', {
+                    tag: tag,
+                    params: params
+                });
+            }
         },
         directives: {debounce}
     }

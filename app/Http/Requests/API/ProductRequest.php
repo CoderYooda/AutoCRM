@@ -2,7 +2,13 @@
 
 namespace App\Http\Requests\API;
 
+use App\Http\Controllers\SupplierController;
+use App\Models\Store;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ProductRequest extends FormRequest
 {
@@ -17,14 +23,27 @@ class ProductRequest extends FormRequest
             $supplier = SupplierController::silent_store($this);
             $this['supplier_id'] = $supplier->id;
         }
+
+        $this->sp_name = $request->sp_name ?? '';
+        $this->sp_desc = $request->sp_desc ?? '';
+        $this->sp_discount_price = $request->sp_discount_price ?? 0;
+        $this->sp_discount = $request->sp_discount ?? 0;
+        $this->sp_discount_type = $request->sp_discount_type ?? 0;
+
+        if($this->sp_discount_type == 0) { //В рублях
+            $this->sp_discount_total = $this->sp_discount_price - $this->sp_discount;
+        }
+        else {
+            $this->sp_discount_total = $this->sp_discount_price - ($this->sp_discount_price / 100 * $this->sp_discount);
+        }
     }
 
     public function rules()
     {
         $rules = [
             'name' => ['required', 'min:4', 'string', 'max:255'],
-            'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
-            'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
+            'category.id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
+            'supplier.id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
             'article' => ['required', 'string', 'max:64'],
 
             'storage_zone' => ['string', 'max:2'],

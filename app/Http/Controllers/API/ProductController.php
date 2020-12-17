@@ -15,87 +15,9 @@ use Auth;
 
 class ProductController extends Controller
 {
-    /**
-     * @OA\Info(title="CRM API", version="1.0")
-     */
-
-    /**
-     * @OA\Get(
-     *     path="/api/products/{id}",
-     *     tags={"Products"},
-     *     summary="Find product by ID",
-     *     description="Returns a single product",
-     *     operationId="show",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of product to return",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Нет доступа к этому методу"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Product not found"
-     *     ),
-     *     security={
-     *         {"api_key": {}}
-     *     }
-     * )
-     * @param Article $product
-     * @return JsonResponse
-     */
-
     public function show(Article $product)
     {
-//        $storePrices = [];
-//
-//        foreach ($product->stores as $store) {
-//            $storePrices[$store->id] = $store->pivot->retail_price;
-//        }
-
-
-        return response()->json($product->load('specifications', 'supplier', 'image', 'category'));
-
-//        return response()->json([
-//            'id' => $product->id,
-//            'name' => $product->name,
-//            'article' => $product->article,
-//            'supplier' => $product->supplier->name,
-//            'supplier_id' => $product->supplier->id,
-//            'category' => $product->category->name,
-//            'category_id' => $product->category->id,
-//            'barcode' => $product->barcode,
-//            'barcode_local' => $product->barcode_local,
-//            'prices' => [
-//                'default' => $product->getPrice(),
-//                'retail' => $storePrices,
-//                'shop' => $product->getPriceWithDiscount()
-//            ],
-//            'shop' => [
-//                'name' => $product->sp_name,
-//                'desc' => $product->sp_desc,
-//                'show_main' => $product->sp_main,
-//                'stock' => $product->sp_stock,
-//                'discount' => $product->sp_discount,
-//                'discount_type' => $product->sp_discount_type,
-//                'image' => [
-//                    'image_id' => $product->image_id,
-//                    'image_path' => $product->image->url ?? null
-//                ],
-//                'specifications' => $specifications
-//            ]
-//        ]);
+        return response()->json($product->load('specifications', 'supplier', 'image', 'category', 'stores'));
     }
 
     public function store(ProductRequest $request)
@@ -135,19 +57,7 @@ class ProductController extends Controller
 
             $article->save();
 
-            if(isset($request->shop['specifications'])) {
-
-                $attributes = [];
-
-                foreach ($request->shop['specifications'] as $key => $specification) {
-                    $attributes[$key]['name'] = Str::slug($specification['label']);
-                    $attributes[$key]['label'] = $specification['label'];
-                    $attributes[$key]['value'] = $specification['value'];
-                }
-
-                $article->specifications()->delete();
-                $article->specifications()->createMany($attributes);
-            }
+            $article->syncSpecifications($request);
 
             $this->status = 200;
             if($request['storage']) {
@@ -189,32 +99,11 @@ class ProductController extends Controller
         PermissionController::canByPregMatch('Редактировать товары');
         return DB::transaction(function () use($request, $product) {
 
-            $this->message = 'Товар обновлен';
-
-            #Кроссы
             $product->fill($request->only($product->fields));
-
-            $product->fillShopFields($request);
-
-            $product->slug = Str::slug($request->name . '-' . $product->id);
-
+            $product->category()->associate($request->category['id']);
+            $product->supplier()->associate($request->supplier['id']);
+            $product->syncSpecifications($request->specifications);
             $product->save();
-
-            if(isset($request->shop['specifications'])) {
-
-                $attributes = [];
-
-                foreach ($request->shop['specifications'] as $key => $specification) {
-                    $attributes[$key]['name'] = Str::slug($specification['label']);
-                    $attributes[$key]['label'] = $specification['label'];
-                    $attributes[$key]['value'] = $specification['value'];
-                }
-
-                $product->specifications()->delete();
-                $product->specifications()->createMany($attributes);
-            }
-
-            $this->status = 200;
             if($request['storage']) {
 
                 $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
@@ -243,23 +132,11 @@ class ProductController extends Controller
 
 
             return response()->json([
-                'message' => $this->message,
+                'message' => 'Товар обновлен',
                 'event' => 'ProductStored',
-            ], $this->status);
+            ]);
 
         });
     }
 
-    public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
-    {
-        $article = Article::where('article', $article)->where('supplier_id', $brand_id)
-            ->where('company_id', Auth::user()->company()->first()->id)
-            ->first();
-
-        if ($article && $article->id != $id) {
-            return $article;
-        } else {
-            return false;
-        }
-    }
 }

@@ -36,7 +36,6 @@
         <div>
             <div class="modal-body">
                 <div class="row">
-                    <input class="d-none" ref="product_img_upload" type="file" @change="sync" accept="image/jpeg,image/png,image/gif"/>
                     <div class="col-sm-4 no-pr d-flex">
                         <ul class="nav">
                             <li v-for="tab in tabs" v-bind:key="tab.slug" v-bind:class="{'active' : tab.state}"
@@ -111,7 +110,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane p-3" v-bind:class="{'active' : tabs[2].state}">
-                                <div v-if="shop_activated" id="tab_main" data-simplebar style="height: 310px;">
+                                <div v-if="shop_activated" ref="tabmain" id="tab_main" data-simplebar style="height: 310px;">
                                     <div class="contented mb-10">
                                         <FormInput v-bind:inputData="{type:'checkbox',mb:false, label:'Показать на главной странице',name:'entity.sp_main'}" />
                                     </div>
@@ -128,20 +127,20 @@
                                             <div  class="form-group d-flex">
                                                 <label class="col-sm-4 no-pl">Цена</label>
                                                 <div class="input-group col-sm-8 no-pr">
-                                                    <input type="number" class="form-control discount" disabled />
+                                                    <input v-model="entity.sp_discount_price" type="number" class="form-control discount" disabled />
                                                 </div>
                                             </div>
                                             <div class="form-group d-flex">
                                                 <label class="col-sm-4 no-pl">Скидка</label>
                                                 <div class="input-group col-sm-8 no-pr">
-                                                    <input type="number" class="form-control discount mr-10" />
+                                                    <input v-model="entity.sp_discount" type="number" style="flex: 0.6;" class="form-control discount mr-10" />
 
                                                     <Selector v-bind:data="{
                                                     model:'entity.sp_discount_type',
                                                     default_value:1,
                                                     elements:[
-                                                        {name:'в рублях', value:1},
-                                                        {name:'в процентах', value:0}
+                                                        {name:'в рублях', value:0},
+                                                        {name:'в процентах', value:1}
                                                     ]
                                                 }" />
                                                 </div>
@@ -149,14 +148,14 @@
                                             <div  class="form-group d-flex">
                                                 <label class="col-sm-4 no-pl">Итого</label>
                                                 <div class="input-group col-sm-8 no-pr">
-                                                    <input type="number" class="form-control" disabled />
+                                                    <input v-model="entity.sp_discount_total" type="number" class="form-control" disabled />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
 
-                                    <FormInput v-bind:inputData="{type:'input',label:'Наименование продукта',name:'entity.article', placeholder:'Наименование продукта'}" />
+                                    <FormInput v-bind:inputData="{type:'input',label:'Наименование продукта',name:'entity.sp_name', placeholder:'Наименование продукта'}" />
                                     <div class="d-flex mt-10">
                                         <div class="form-group">
                                             <div class="form-group mb-0">
@@ -167,14 +166,31 @@
                                                             <div class="list-placeholder_cell" style="width: 100%" ></div>
                                                         </div>
                                                     </div>
-                                                    <img v-if="!loading" class="h-100 w-100 image" :src="entity.image" />
+                                                    <img v-if="!loading" class="h-100 w-100 image" :src="image" />
                                                     <span v-if="!loading" @click="uploadClick()" class="upload_btn">Загрузить</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="flex-3 ml-15">
                                             <label>Описание продукта</label>
-                                            <textarea class="form-control p-5 resize-none border-radius-none" placeholder="Введите описание" style="height: 94px;"></textarea>
+                                            <textarea v-model="entity.sp_desc" class="form-control p-5 resize-none border-radius-none" placeholder="Введите описание" style="height: 94px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Характеристики</label>
+                                        <a href="javascript:void(0)" @click="addSpecification()" class="float-right">Добавить</a>
+                                        <div v-for="specification in entity.specifications" class="specifications">
+                                            <div class="element copy d-flex mb-10">
+                                                <div>
+                                                    <span>Наименование</span>
+                                                    <span class="mt-5">Значение</span>
+                                                </div>
+                                                <div class="ml-15 flex-1">
+                                                    <input type="text" v-model="specification.label" class="form-control" placeholder="Вязкость">
+                                                    <input type="text" v-model="specification.value" class="form-control mt-5" placeholder="5W40">
+                                                </div>
+                                                <div class="remove pointer ml-10"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -183,8 +199,8 @@
 
                             </div>
                             <div class="tab-pane p-3" v-bind:class="{'active' : tabs[3].state}">
-                                <FormInput v-bind:inputData="{type:'input',label:'Штрих-код производителя (EAN 13)',name:'barcode', messages:messages, placeholder:'Штрихкод'}" />
-                                <FormInput v-bind:inputData="{type:'input',label:'Внутренний штрих-код (EAN 13)',name:'barcode_local', messages:messages, placeholder:'Штрихкод склада'}" />
+                                <FormInput v-bind:inputData="{type:'input',label:'Штрих-код производителя (EAN 13)',name:'entity.barcode', messages:messages, placeholder:'Штрихкод'}" />
+                                <FormInput v-bind:inputData="{type:'input',label:'Внутренний штрих-код (EAN 13)',name:'entity.barcode_local', messages:messages, placeholder:'Штрихкод склада'}" />
                             </div>
 
                             <!--<div class="tab-pane" id="{{ $class }}_tab_entrances" data-simplebar
@@ -259,10 +275,15 @@
                 entity: {
                     name:null,
                     article:null,
-                    sp_discount_type:"1",
                     sp_main:false,
                     sp_stock:false,
-                    image: '/images/no_image.png',
+                    sp_discount:0,
+                    sp_discount_type:null,
+                    specifications:[],
+                    image: {
+                        id: null,
+                        path: '/images/no_image.png',
+                    },
                     category:{
                         id:2,
                         name:null,
@@ -299,8 +320,15 @@
                 });
             }
         },
-        computed: {},
+        computed: {
+            image(){
+                return this.entity.image && this.entity.image.url ? this.entity.image.url : '/images/no_image.png';
+            }
+        },
         methods: {
+            addSpecification(){
+                this.entity.specifications.unshift({label:null, value:null});
+            },
             sync(e){
                 e.preventDefault();
                 this.image_file = e.target.files[0];
@@ -318,8 +346,9 @@
                     url: '/image/upload',
                     data:data
                 }).then((resp) =>  {
-                    this.entity.image = resp.data.images[0].url;
-                    this.entity.image_id = resp.data.images[0].id;
+                    this.entity.image = {};
+                    this.entity.image.url = resp.data.images[0].url;
+                    this.entity.image.id = resp.data.images[0].id;
                     this.loading = false;
                 });
             },

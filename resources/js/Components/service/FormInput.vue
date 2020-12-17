@@ -1,13 +1,13 @@
 <template>
     <div class="form-group">
-        <div v-if="!$parent.loading && isInput">
+        <div v-if="isInput">
             <label>{{ inputData.label }}</label>
             <div v-if="$parent.loading" class="list-placeholder" style="height: 30px;">
                 <div class="list-placeholder_item" style="height: 30px;">
                     <div class="list-placeholder_cell w-100" style="width: 100%" ></div>
                 </div>
             </div>
-            <input  @keypress.enter="$parent.save()"
+            <input v-if="!$parent.loading" @keypress.enter="$parent.save()"
                     v-bind:class="{'is-invalid':errorMsg}"
                     v-tooltip="{
                         content: errorMsg,
@@ -35,7 +35,7 @@
                     class="category_select form-control text-left button_select">{{ parentModel }}</button>
             </div>
         </div>
-        <div v-if="!$parent.loading && isCheckbox" class="relative">
+        <div v-if="isCheckbox" class="relative">
             <label v-bind:for="inputData.name" class="w-100" v-bind:class="{'mb-0' : !inputData.mb}">{{ inputData.label }}</label>
             <label class="absolute custom_checkbox" style="right: 0; top: 3px;">
                 <input v-bind:id="inputData.name" v-model="parentModel" v-bind:name="inputData.name" type="checkbox" class="not_default"/>

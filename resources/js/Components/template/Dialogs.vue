@@ -37,6 +37,7 @@
             'categoryDialog':       () => import(/* webpackChunkName: "categoryDialog" */       './Dialogs/CategoryDialog'),
             'selectSupplierDialog': () => import(/* webpackChunkName: "selectSupplierDialog" */ './Dialogs/SelectSupplierDialog'),
             'selectCategoryDialog': () => import(/* webpackChunkName: "selectCategoryDialog" */ './Dialogs/SelectCategoryDialog'),
+            'providerOrderDialog':  () => import(/* webpackChunkName: "providerOrderDialog" */  './Dialogs/ProviderOrderDialog'),
         },
         computed:{
         },

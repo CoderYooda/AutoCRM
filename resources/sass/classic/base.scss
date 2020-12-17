@@ -3284,7 +3284,47 @@ input:-moz-placeholder { /* Firefox 18- */
         }
     }
 }
+.specifications {
+    .element {
 
+        background: #FCFCFC;
+        border: 1px solid #E7E8EC;
+        padding: 10px;
+
+        .remove {
+
+            height: 12px;
+            width: 12px;
+
+            background: url(/images/remove_specification.svg);
+
+            &:hover {
+                background: url(/images/remove_specification_hover.svg);
+            }
+        }
+
+        span {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 13px;
+            line-height: 20px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.04em;
+
+            /* Form_label_text */
+
+            color: #656565;
+        }
+
+        input {
+            line-height: 20px;
+            height: 20px;
+            border-radius: unset !important;
+        }
+    }
+}
 .form_product_dialog {
     .tab_links {
 
@@ -3373,48 +3413,6 @@ input:-moz-placeholder { /* Firefox 18- */
                 width: 10px;
                 height: 10px;
                 margin-left: auto;
-            }
-        }
-
-        .specifications {
-            .element {
-
-                background: #FCFCFC;
-                border: 1px solid #E7E8EC;
-                padding: 10px;
-
-                .remove {
-
-                    height: 12px;
-                    width: 12px;
-
-                    background: url(/images/remove_specification.svg);
-
-                    &:hover {
-                        background: url(/images/remove_specification_hover.svg);
-                    }
-                }
-
-                span {
-                    font-family: Roboto;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-size: 13px;
-                    line-height: 20px;
-                    display: flex;
-                    align-items: center;
-                    letter-spacing: 0.04em;
-
-                    /* Form_label_text */
-
-                    color: #656565;
-                }
-
-                input {
-                    line-height: 20px;
-                    height: 20px;
-                    border-radius: unset !important;
-                }
             }
         }
     }

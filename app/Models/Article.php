@@ -19,29 +19,23 @@ class Article extends Model
     use OwnedTrait, SoftDeletes, Imageable;
 
     public $fields = [
-        'company_id',
-        'category_id',
-        'creator_id',
-        'supplier_id',
-        'measurement_id',
         'article',
         'oem',
-        'storeCode',
-        'barcode_local',
         'barcode',
+        'barcode_local',
         'name',
         'blockedCount',
-        'image_id'
+        'sp_name',
+        'sp_desc',
+        'sp_discount',
+        'sp_discount_price',
+        'sp_discount_type',
+        'sp_discount_total',
+        'sp_main',
+        'sp_stock',
     ];
 
     protected $guarded = [];
-
-    public static function bootSoftDeletes()
-    {
-//        static::addGlobalScope(new SoftDeletingScope);
-
-        return false;
-    }
 
     public function path()
     {
@@ -98,28 +92,20 @@ class Article extends Model
         return md5($stock . $manufacturer . $article . $days . $price);
     }
 
-    public function fillShopFields($request)
+    public function syncSpecifications($specifications)
     {
-        $this->sp_name = $request->shop['name'] ?? '';
-        $this->sp_desc = $request->shop['desc'] ?? '';
-
-        $shop_discount = $request->shop['discounts'] ?? [];
-
-        $this->sp_discount_price = $shop_discount['price'] ?? 0;
-        $this->sp_discount = $shop_discount['discount'] ?? 0;
-        $this->sp_discount_type = $shop_discount['type'] ?? 0;
-
-        if($this->sp_discount_type == 0) { //В рублях
-            $this->sp_discount_total = $this->sp_discount_price - $this->sp_discount;
+        if(isset($specifications)) {
+            $attributes = [];
+            foreach ($specifications as $key => $specification) {
+                if(isset($specification['label']) && isset($specification['value'])){
+                    $attributes[$key]['name'] = \Str::slug($specification['label']);
+                    $attributes[$key]['label'] = $specification['label'];
+                    $attributes[$key]['value'] = $specification['value'];
+                }
+            }
+            $this->specifications()->delete();
+            $this->specifications()->createMany($attributes);
         }
-        else {
-            $this->sp_discount_total = $this->sp_discount_price - ($this->sp_discount_price / 100 * $this->sp_discount);
-        }
-
-        $shop_settings = $request->shop['settings'];
-
-        $this->sp_main = $shop_settings['sp_main'];
-        $this->sp_stock = $shop_settings['sp_stock'];
     }
 
     public function getShopName()
@@ -369,11 +355,15 @@ class Article extends Model
 
     public function freshFoundString()
     {
-        $string = $this->supplier->name . $this->article . $this->name . $this->barcode . $this->barcode_local;
+        $string = $this->supplier->name ?? '' . $this->article ?? '' . $this->name ?? '' . $this->barcode ?? '' . $this->barcode_local ?? '';
 
         $chars = ["-","!","?",".",""," "];
 
         $this->foundstring = mb_strtolower(str_replace($chars, '', $string));
+    }
+
+    public function freshSlug(){
+        $this->slug = \Str::slug($this->name . '-' . $this->id);
     }
 
     public function shipment()

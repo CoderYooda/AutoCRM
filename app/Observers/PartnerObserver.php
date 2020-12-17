@@ -10,11 +10,13 @@ class PartnerObserver
     public function creating(Partner $partner)
     {
         $partner->freshFoundString();
+        $partner->freshSlug();
     }
 
     public function updating(Partner $partner)
     {
         $partner->freshFoundString();
+        $partner->freshSlug();
     }
 
     public function saving(Partner $partner)
@@ -28,5 +30,6 @@ class PartnerObserver
 
 
         $partner->freshFoundString();
+        $partner->freshSlug();
     }
 }
