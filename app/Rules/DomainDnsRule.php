@@ -17,7 +17,7 @@ class DomainDnsRule implements Rule
     {
         if($this->server_ip == '127.0.0.1') return true;
 
-        if(str_contains_cyrillic($value)) $value = idn_to_ascii($value);
+        if(str_contains_cyrillic($value)) $value = idn_to_ascii($value, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
 
         return gethostbyname($value) == $this->server_ip;
     }

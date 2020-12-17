@@ -9,7 +9,7 @@
             <div class="silder-content">
                 <div class="head-slider-container">
                     @foreach($shop->sliderImages as $image)
-                        <img style="display: block;" onclick="if(!window.block_redirect) window.location.href = '{{ $image->pivot->target_url }}';" src="{{ $image->url }}" alt="">
+                        <img class="block pointer" onclick="if(!window.block_redirect) window.location.href = '{{ $image->pivot->target_url }}';" src="{{ $image->url }}" alt="">
                     @endforeach
                 </div>
                 <div class="controls">

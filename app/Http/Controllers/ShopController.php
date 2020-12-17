@@ -238,8 +238,7 @@ class ShopController extends Controller
 
                 $domain = $request->domain;
 
-                if(str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain);
-
+                if(str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
                 exec('sh test.sh ' . $domain);
             }
 

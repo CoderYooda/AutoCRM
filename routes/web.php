@@ -1,9 +1,5 @@
 <?php
 
-Route::get('/test', function () {
-    dd(Auth::user()->company_id);
-});
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');

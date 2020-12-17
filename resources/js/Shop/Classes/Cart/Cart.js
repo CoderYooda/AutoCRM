@@ -245,6 +245,15 @@ class Cart {
         if(type != 'auth') {
             let buttons_element = document.querySelector('.order_types');
             buttons_element.classList.add('d-none');
+
+            let target_element = document.querySelector('.order_register');
+
+            let top = $(".order_register").offset().top;
+            $("html, body").animate({ scrollTop: top }, 1000);
+
+            let phone_element = target_element.querySelector('[name="basePhone"]');
+            phone_element.focus();
+
         }
     }
 

@@ -194,7 +194,7 @@
                 <label for="store_id">Точка получения заказа <span class="required_field">*</span></label>
                 <select name="pickup_id">
                     @foreach($stores as $store)
-                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                        <option value="{{ $store->id }}">{{ $shop->address_name }}</option>
                     @endforeach
                 </select>
             </div>

@@ -157,6 +157,8 @@ class ForumAuto implements ProviderInterface
            $result = [];
         }
 
+        if(isset($result['errors'])) return [];
+
         return $result;
     }
 

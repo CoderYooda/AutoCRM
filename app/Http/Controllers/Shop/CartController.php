@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Mail\Shop\FeedbackMail;
+use App\Mail\Shop\NewOrderEmail;
 use App\Models\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\CartDeleteRequest;
@@ -191,6 +193,10 @@ class CartController extends Controller
 
                 DB::table('order_positions')->insert($fields);
             }
+
+            $orderEmails = $this->shop->orderEmails->pluck('email');
+
+            Mail::to($orderEmails)->send(new NewOrderEmail($order));
 
             Mail::to($partner->email)->send(new ModerateOrder($order));
 

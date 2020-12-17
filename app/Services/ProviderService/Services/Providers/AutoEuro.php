@@ -88,6 +88,8 @@ class AutoEuro implements ProviderInterface
             'analogues' => []
         ];
 
+        if($response == []) return $results;
+
         $items = $response['DATA']['CODES'];
 
         $items = array_merge($items, $response['DATA']['CROSSES']);
@@ -184,7 +186,7 @@ class AutoEuro implements ProviderInterface
             $response = file_get_contents($url, false, $context);
         }
         catch (\Exception $exception) {
-            dd($url . $params, $exception->getMessage());
+//            dd($url . $params, $exception->getMessage());
             return [];
         }
 
