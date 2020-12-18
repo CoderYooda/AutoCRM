@@ -4,10 +4,10 @@
 
         <div class="element" id="product_{{ $order['hash'] }}" data-type="{{ $type }}">
 
-            @if($type == 'analogues')
+{{--            @if($type == 'analogues')--}}
                 <div class="flex-1 manufacturer">{{ $order['manufacturer'] }}</div>
                 <div class="flex-1 article">{{ $order['article'] }}</div>
-            @endif
+{{--            @endif--}}
 
             <div class="flex-1 availability">{{ $order['model']['hash_info']['rest'] }} шт.</div>
             <div class="flex-1 shop">{{ $order['days_min'] }} дн.</div>

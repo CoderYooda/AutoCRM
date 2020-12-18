@@ -13,6 +13,17 @@
     </div>
 
     <div class="header">
+
+        <div class="flex-1 manufacturer">
+            <span>Производитель</span>
+            {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
+        </div>
+
+        <div class="flex-1 article">
+            <span>Артикул</span>
+            {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
+        </div>
+
         <div class="flex-1 availability">
             <span>В наличии</span>
             {{--                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
@@ -36,6 +47,15 @@
             @foreach($product->stores as $store)
 
                 <div class="element" id="product_{{ $product->getHash($store->id) }}" data-store_id="{{ $store->id }}">
+                    <div class="flex-1 manufacturer">
+                        <span>{{ $product->supplier->name }}</span>
+                        {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
+                    </div>
+
+                    <div class="flex-1 article">
+                        <span>{{ $product->article }}</span>
+                        {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
+                    </div>
                     <div class="flex-1 availability">
                         @if($shop->show_amount)
                             {{ $product->getCountInStoreId($store->id) }} шт.
@@ -70,7 +90,7 @@
         @else
 
             <div class="empty_table">
-                <span>Нет предложений с нешего склада</span>
+                <span>Нет предложений с нашего склада</span>
             </div>
 
         @endif
@@ -88,6 +108,16 @@
         </div>
 
         <div class="header">
+
+            <div class="flex-1 manufacturer">
+                <span>Производитель</span>
+                {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
+            </div>
+
+            <div class="flex-1 article">
+                <span>Артикул</span>
+                {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
+            </div>
 
             <div class="flex-1 availability pointer" onclick="search.sortBy(this, 'originals', 'rest');">
                 <span>В наличии</span>

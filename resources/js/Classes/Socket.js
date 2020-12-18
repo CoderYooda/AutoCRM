@@ -57,6 +57,7 @@ class Socket{
                     .listen('OrderUpdated', function(e){
 
                         try {
+                            window.notification.notify('success', 'Поступил новый заказ.');
                             document.querySelector('#orders_count').innerHTML = e.orders_count;
                         }
                         catch (e) {

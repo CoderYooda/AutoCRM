@@ -24,7 +24,11 @@ class SearchController extends Controller
 
     public function index(Request $request, Providers $providers)
     {
-        $brands = [];
+        $products = Article::with('supplier')->where('company_id', $this->shop->company_id)
+            ->where('article', $request->search)
+            ->get();
+
+        $brands = $products->pluck('supplier.name')->toArray();
 
         if($this->shop->supplier_offers) {
 

@@ -474,7 +474,13 @@ class ProductController extends Controller
 
         $company_id = Auth::user()->company_id;
 
-        //$search = str_replace(['-'], '', $request->search));
+        $category = Category::find($request->category_id);
+
+        $childrenCategories = collect();
+
+        if($category && !$category->isRoot()) {
+            $childrenCategories = Category::descendantsAndSelf($category->id);
+        }
 
         $articles = Article::selectRaw('articles.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
@@ -482,8 +488,8 @@ class ProductController extends Controller
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
-            ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
-                $q->where('articles.category_id', (int)$request['category_id']);
+            ->when($category && !$category->isRoot(), function ($q) use($request, $childrenCategories) {
+                $q->whereIn('articles.category_id', $childrenCategories->pluck('id'));
             })
             ->when($request->analogues, function (Builder $query) use($request) {
                 $query->whereIn('articles.id', json_decode($request->analogues));

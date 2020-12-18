@@ -7,7 +7,7 @@
     </div>
 
     <div class="search_body">
-        @foreach($brands as $brand)
+        @forelse($brands as $brand)
 
             <div class="brand" onclick="search.showProvidersOffers(this, '{{ $brand }}');">
 
@@ -15,7 +15,13 @@
 
             </div>
 
-        @endforeach
+        @empty
+
+            <div class="empty_table">
+                Результат поиска пуст
+            </div>
+
+        @endforelse
 
     </div>
 

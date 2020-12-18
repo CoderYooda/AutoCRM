@@ -8,11 +8,13 @@ use App\Traits\Imageable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Kalnoy\Nestedset\NodeTrait;
 
 class Category extends Model
 {
     use Imageable;
+
+    use NodeTrait;
 
     protected $guarded = [];
 
@@ -23,6 +25,16 @@ class Category extends Model
         'image_id',
         'markup'
     ];
+
+    public function isRoot()
+    {
+        return $this->id < 3;
+    }
+
+    public function getParentIdName()
+    {
+        return 'category_id';
+    }
 
     public function image()
     {
@@ -154,7 +166,7 @@ class Category extends Model
     }
 
     public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
+        $company_id = Auth::user()->company_id;
         return self::where(function($q) use ($company_id){
             $q->where('company_id', $company_id)->orWhere('company_id', NUll);
         });
