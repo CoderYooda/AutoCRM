@@ -24,8 +24,13 @@ Route::namespace('API')->middleware('auth:api')->group(function() {
     Route::get('/suppliers',                        'SupplierController@get')->name('suppliers.get');
     Route::post('/suppliers',                       'SupplierController@store')->name('StoreSupplier');
 
+    #Заявки поставщикам
+    Route::get('/provider_orders/{providerOrder}',  'ProviderOrderController@show')->name('provider_orders.show');
 
+
+    #Служебные роуты
     Route::get('/settings',                         'SettingController@show')->name('settings.show');
+    Route::get('/stores',                           'StoreController@show')->name('stores.show');
 
 
     Route::post('/image/upload',                    'ImageController@upload')->name('uploadImage');

@@ -29,6 +29,7 @@
                 });
             });
             this.loadSettings();
+            this.loadStores();
         },
         created(){
             let token = this.getFromLocalStorage('api_token');
@@ -67,6 +68,14 @@
                     url: '/settings',
                 }).then((resp) => {
                     this.saveToLocalStorage('settings', resp.data);
+                });
+            },
+            loadStores(){
+                window.axios({
+                    method: 'get',
+                    url: '/stores',
+                }).then((resp) => {
+                    this.saveToLocalStorage('stores', resp.data);
                 });
             },
             updateSetting(setting){

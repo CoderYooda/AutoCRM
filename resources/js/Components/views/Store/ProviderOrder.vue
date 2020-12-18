@@ -50,12 +50,12 @@
                 {min_width: 90, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
             this.table_data.context_menu = [
-                {name:'Редактировать', action: function(data){openDialog('providerOrderDialog', '&provider_order_id=' + data.contexted.id)}},
-                {name:'Открыть', action: function(data){openDialog('providerOrderDialog', '&provider_order_id=' + data.contexted.id)}},
+                {name:'Редактировать', action: (elem)=>{this.newDialog('providerOrder', {id:elem.id})}},
+                {name:'Открыть', action: (elem)=>{this.newDialog('providerOrder', {id:elem.id})}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
-            this.table_data.dbl_click = id => openDialog('providerOrderDialog', '&provider_order_id=' + id);
+            this.table_data.dbl_click = id => this.newDialog('providerOrder', {id:id});
             this.table_data.url = '/provider_order/base/table_data';
             this.filter_data = {
                 dates: {

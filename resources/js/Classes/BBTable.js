@@ -390,7 +390,8 @@ class Table {
         });
     }
 
-    drawHeader(){
+    drawHeader()
+    {
         let header = document.createElement('div');
         header.className = 'bbtable-header';
         if(this.isSelectable){

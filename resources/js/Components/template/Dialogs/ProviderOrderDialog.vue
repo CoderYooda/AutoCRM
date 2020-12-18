@@ -17,32 +17,14 @@
                 </div>
                 <div class="col-sm-8 no-pl">
                     <div class="tab-content no-pl">
-                        <div class="tab-pane active" id="tab_base">
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-4 label-sm">Поставщик</label>
-                                <div class="input-group col-sm-8">
-                                    <button type="button" name="partner_id" class="partner_select form-control text-left button_select">
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="form-group row row-sm">
-                                <label for="category_id" class="col-sm-4 label-sm">Склад</label>
-                                <div class="input-group col-sm-8">
-                                    <div class="w-100">
-                                        <select class="form-control input-c">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row row-sm">
-                                <div class="col-sm-12">
-                                    <textarea placeholder="Комментарий" style="resize: none;height: 70px;" class="form-control" name="comment" cols="20" rows="6">23</textarea>
-                                </div>
-                            </div>
+                        <div class="tab-pane" v-bind:class="{'active' : tabs[0].state}">
+                            <FormInput v-bind:inputData="{type:'selector',label:'Поставщик',name:'partner_name', onClick:'selectPartner'}" />
+                            <FormInput v-bind:inputData="{type:'input',label:'Склад',name:'store.name', onClick:'selectPartner', disabled:true}" />
+                            <FormInput v-bind:inputData="{type:'textarea',label:'Комментарий',name:'entity.comment', onClick:'selectPartner', height: 75}" />
                         </div>
-
-                        <div class="tab-pane" id="tab_items">
+                        <div class="tab-pane"  v-bind:class="{'active' : tabs[1].state}">
                             <div  id="po_list">
+                                в
                             </div>
                         </div>
                     </div>
@@ -63,13 +45,16 @@
 </template>
 
 <script>
+    import storeMixin from "./../../mixins/storeMixin"
     import categoryMixin from "./../../mixins/categoryMixin"
+    import partnerMixin from "./../../mixins/partnerMixin"
     import supplierMixin from "./../../mixins/supplierMixin"
     import FormInput from "./../../service/FormInput"
+    import List from "./../../service/List"
     export default {
         name: "ProviderOrderDialog",
         props: ['dialog'],
-        mixins: [categoryMixin, supplierMixin],
+        mixins: [categoryMixin, supplierMixin, partnerMixin, storeMixin],
         data: () => {
             return {
                 get shop_activated(){
@@ -79,31 +64,39 @@
                 },
                 tabs: [
                     {slug: "base", name: "Основные", state: true},
-                    {slug: "store", name: "Склад", state: false},
-                    {slug: "shop", name: "Интернет магазин", state: false},
-                    {slug: "barcode", name: "Штрихкод", state: false},
-                    {slug: "entrance", name: "Поступления", state: false},
+                    {slug: "items", name: "Позиции", state: false},
                 ],
                 entity: {
-                    name:null,
-                    article:null,
-                    sp_main:false,
-                    sp_stock:false,
-                    sp_discount:0,
-                    sp_discount_type:null,
-                    specifications:[],
-                    image: {
+                    id:null,
+                    articles: [],
+                    store: {
                         id: null,
-                        path: '/images/no_image.png',
+                        name: "Не выбран",
                     },
-                    category:{
-                        id:2,
-                        name:null,
-                    },
-                    supplier:{
-                        id:null,
-                        name:'Не выбран',
-                    },
+                    partner: {
+                        id: null,
+                        companyName:'Не выбран',
+                        fio:'Не выбран',
+                        type: 2
+                    }
+                },
+                header: [
+                    {min_with: NaN,  width: NaN,    name: 'pivot_id',      table_name: 'pivot_id',    type: 'hidden'},
+                    {min_with: NaN,  width: NaN,    name: 'product_id',    table_name: 'product_id',  type: 'hidden'},
+                    {min_with: 100,  width: 'auto', name: 'Наименование',  table_name: 'name',        type:'text'},
+                    {min_with: 100,  width: 100,    name: 'Артикул',       table_name: 'article',     type:'text'},
+                    {min_with: 65,   width: 65,     name: 'Кол-во',        table_name: 'count',       type: 'counter',},
+                    {min_with: 80,   width: 80,     name: 'Цена',          table_name: 'price',       type: 'price',},
+                    {min_with: 70,   width: 70,     name: 'НДС, %',        table_name: 'nds_percent', type: 'passive',},
+                    {min_with: 70,   width: 70,     name: 'НДС',           table_name: 'nds',         type: 'passive',},
+                    {min_with: 100,  width: 100,    name: 'Итого',         table_name: 'total',       type: 'passive',},
+                ],
+                prefs:{
+                    index:'ordinal',
+                    use_nds:true,
+                    can_add_items:true,
+                    nds:true,
+                    nds_included:true
                 },
                 messages:{},
                 loading:false,
@@ -112,17 +105,16 @@
         mounted() {
             this.dialog.width = 600;
             if (this.dialog.id === 0) {
-                this.dialog.title = "Новый продукт";
-                this.getParentCategory();
+                this.dialog.title = "Новая заявка поставщику";
             } else {
                 this.loading = true;
                 window.axios({
                     method: 'get',
-                    url: '/products/' + this.dialog.id,
+                    url: '/provider_orders/' + this.dialog.id,
                 }).then((resp) => {
-                    this.dialog.title = "Редактирование товара '" + resp.data.name + "'";
                     this.id = resp.data.id;
                     this.entity = resp.data;
+                    this.dialog.title = "Редактирование заказа поставщику №'" + this.entity.id + "'";
                     this.loading = false;
                 }).catch((error) => {
                     if(error.response.status === 404){
@@ -160,7 +152,7 @@
             }
         },
         components:{
-            FormInput
+            FormInput, List
         }
     }
 </script>

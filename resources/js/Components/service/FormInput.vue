@@ -16,13 +16,28 @@
                     }"
                     v-model="parentModel"
                     v-bind:placeholder="inputData.placeholder"
+                    v-bind:disabled="inputData.disabled"
                     type="text" class="form-control">
         </div>
 
-
-        <div v-if="!$parent.loading && isSelector" >
+        <div v-if="isTextArea" class="form-group">
             <label>{{ inputData.label }}</label>
-            <div class="input-group">
+            <div v-if="$parent.loading" class="list-placeholder"  v-bind:style="{ height: inputData.height + 'px' }">
+                <div class="list-placeholder_item" v-bind:style="{ height: inputData.height + 'px' }">
+                    <div class="list-placeholder_cell w-100" style="width: 100%" ></div>
+                </div>
+            </div>
+            <textarea v-if="!$parent.loading" placeholder="Комментарий" v-bind:style="{ height: inputData.height + 'px' }" style="resize: none;" class="form-control" name="comment" v-model="parentModel" ></textarea>
+        </div>
+
+        <div v-if="isSelector" >
+            <label>{{ inputData.label }}</label>
+            <div v-if="$parent.loading" class="list-placeholder" style="height: 30px;">
+                <div class="list-placeholder_item" style="height: 30px;">
+                    <div class="list-placeholder_cell w-100" style="width: 100%" ></div>
+                </div>
+            </div>
+            <div v-if="!$parent.loading" class="input-group">
                 <button
                     v-bind:class="{'is-invalid':errorMsg}"
                     v-tooltip="{
@@ -84,6 +99,9 @@
             },
             isInput(){
                 return this.inputData.type === 'input';
+            },
+            isTextArea(){
+                return this.inputData.type === 'textarea';
             },
             isSelector(){
                 return this.inputData.type === 'selector';
