@@ -12,6 +12,7 @@ use App\Models\DdsArticle;
 use App\Models\Partner;
 use App\Models\Payment;
 use App\Models\ImportHistory;
+use App\Models\Price;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Store;
@@ -54,7 +55,7 @@ class SettingsController extends Controller
         }
     }
 
-    public static function indexTab($request)
+    public static function indexTab(Request $request)
     {
         $company = Auth::user()->company;
 
@@ -66,7 +67,16 @@ class SettingsController extends Controller
         return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
     }
 
-    public static function cashboxTab($request)
+    public function pricesTab(Request $request)
+    {
+        $company = Auth::user()->company;
+
+        $prices = Price::where('company_id', $company->id)->paginate(10);
+
+        return view(get_template() . '.settings.prices', compact('request', 'prices'));
+    }
+
+    public static function cashboxTab(Request $request)
     {
         $cashboxes = Cashbox::owned()->orderBy('deleted_at', 'ASC')->withTrashed()->get();
 
@@ -76,7 +86,7 @@ class SettingsController extends Controller
         return view(get_template() . '.settings.cashbox', compact('cashboxes','request'));
     }
 
-    public static function servicesTab($request)
+    public static function servicesTab(Request $request)
     {
         $services = Service::all();
         $company = Auth::user()->company->load('serviceproviders');

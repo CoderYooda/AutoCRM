@@ -19,6 +19,8 @@ class DialogController extends Controller
             'selectCompany'             => [CompanyController::class, 'selectDialog'],
             'companyDialog'             => [CompanyController::class, 'dialog'],
             'userDialog'                => [UserController::class, 'dialog'],
+            //Price
+            'priceDialog'               => [PriceController::class, 'dialog'],
             //Order
             'orderDialog'               => [OrderController::class, 'dialog'],
             //Warrant
