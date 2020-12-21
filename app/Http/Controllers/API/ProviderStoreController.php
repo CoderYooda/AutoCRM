@@ -22,7 +22,7 @@ class ProviderStoreController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть склады поставщиков');
 
-        $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
+//        $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
 
         $counts = [];
         $manufacturers = [];

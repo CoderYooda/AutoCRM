@@ -160,14 +160,23 @@ trait ABCP
             $result = file_get_contents($full_path, null, stream_context_create($context));
             $result = (array)json_decode($result, true);
         } catch (Exception $exception) {
-//            dd($exception);
+            $result = $exception;
         }
 
-        if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
-            throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
-        }
+        $this->errorHandler($result);
 
         return $result;
+    }
+    private function errorHandler($response) : void
+    {
+        dd($response);
+        if(array_key_exists('errorCode', $response) && $response['errorMessage'] != 'No results') {
+            throw new \Exception('Not auth', 401);
+        }
+
+//        if(empty($response['result'])) {
+//            throw new \Exception('Not found', 404);
+//        }
     }
 
     public function getSelectFieldValues(string $field_name): array
