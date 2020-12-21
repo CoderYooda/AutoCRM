@@ -38,7 +38,7 @@
                     <div class="flex-2 description">
                         <div class="relative"> {{-- is-full --}}
                             <div class="param_title">Описание</div>
-                            <div class="param_desc">{{ strlen($product->sp_desc) ? $product->sp_desc : 'Описание не указано' }}</div>
+                            <div class="param_desc"><span>{{ strlen($product->sp_desc) ? $product->sp_desc : 'Описание не указано' }}</span></div>
                             <span class="show pointer" onclick="product.showFullText(this);">...</span>
                         </div>
                     </div>

@@ -69,7 +69,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($request['category_id']);
 
-        $parentCategories = $category->ancestors;
+        $parentCategories = $category->getAncestors();
 
         return view(get_template() . '.category.includes.breadcrumbs', compact('parentCategories'))->render();
     }
@@ -100,7 +100,9 @@ class CategoryController extends Controller
                 ], 200);
             }
 
-            dd($category->category_id, $request->category_id);
+            if($parent && $category->category_id != $request->category_id) {
+                $category->makeChildOf($parent);
+            }
 
             $category->fill($request->except('image'));
             $category->creator_id = Auth::id();
@@ -108,10 +110,6 @@ class CategoryController extends Controller
             $category->type = $parent->type ?? null;
 
             $category->save();
-
-            if($category->hasMoved()) {
-                dd(1);
-            }
 
             UA::makeUserAction($category, 'create');
 

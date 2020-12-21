@@ -1436,6 +1436,9 @@ body{
                         padding-left: 32px;
                         font-size: 16px;
                         box-sizing: border-box;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                     & > ul{
                         list-style: none;

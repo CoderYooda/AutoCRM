@@ -20,7 +20,7 @@ class ShopManager
 
         $query = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
 
-        $this->shop = $domainParams[0] == 'online' ? $query->first() : $query->firstOrFail();
+        $this->shop = $query->first();
     }
 
     public function getCurrentShop()

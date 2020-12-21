@@ -6,9 +6,9 @@ class Product {
 
         if(description_element) {
 
-            let target_element = description_element.querySelector('.param_desc');
+            let target_element = description_element.querySelector('.param_desc span');
 
-            if(target_element && target_element.style.height < 140) {
+            if(target_element && target_element.getBoundingClientRect().height < 140) {
                 description_element.querySelector('.show').classList.add('d-none');
             }
         }
@@ -19,7 +19,7 @@ class Product {
 
             let target_element = specifications_element.querySelector('.specifications_table');
 
-            if(target_element && target_element.style.height < 140) {
+            if(target_element && target_element.getBoundingClientRect().height < 140) {
                 specifications_element.querySelector('.show').classList.add('d-none');
             }
         }

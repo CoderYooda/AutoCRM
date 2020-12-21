@@ -479,10 +479,10 @@ class ProductController extends Controller
         $childrenCategories = collect();
 
         if($category && !$category->isRoot()) {
-            $childrenCategories = Category::descendantsAndSelf($category->id);
+            $childrenCategories = $category->getDescendantsAndSelf();
         }
 
-        $articles = Article::selectRaw('articles.*, supplier.name as supplier')
+        return Article::selectRaw('articles.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
             ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
@@ -497,8 +497,6 @@ class ProductController extends Controller
             ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir)
             ->paginate($size);
-
-        return $articles;
     }
 
     public static function searchByArticleAndBrand($articles)
