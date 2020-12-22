@@ -11,18 +11,8 @@
                 </div>
             </div>
             <div class="list-header">
-                <div class="header-elem" style="flex: 1 1 0%; min-width: 100px;"><span
-                    class="head-title">Наименование</span></div>
-                <div class="header-elem" style="width: 100px; min-width: 100px;"><span class="head-title">Артикул</span>
-                </div>
-                <div class="header-elem" style="width: 65px; min-width: 65px;"><span class="head-title">Кол-во</span>
-                </div>
-                <div class="header-elem" style="width: 80px; min-width: 80px;"><span class="head-title">Цена</span>
-                </div>
-                <div class="header-elem" style="width: 70px; min-width: 70px;"><span class="head-title">НДС, %</span>
-                </div>
-                <div class="header-elem" style="width: 70px; min-width: 70px;"><span class="head-title">НДС</span></div>
-                <div class="header-elem" style="width: 100px; min-width: 100px;"><span class="head-title">Итого</span>
+                <div v-for="item in data.header" class="header-elem" v-bind:style="getHeaderStyle(item)">
+                    <span class="head-title">{{ item.name }}</span>
                 </div>
             </div>
             <div class="list-body">
@@ -30,6 +20,13 @@
                     <div class="list-actions">
                         <button class="button list-remove">✖</button>
                     </div>
+
+
+
+
+
+
+
                     <input type="hidden" value="101" name="products[2][pivot_id]"><input type="hidden" value="16954"
                                                                                          name="products[2][product_id]">
                     <div class="cell" style="flex: 1 1 0%; min-width: 100px;">
@@ -70,13 +67,30 @@
 <script>
 
     export default {
-        props:['list_data'],
+        props:['data'],
         name: "List",
         data: ()=> {
             return {
                 items: [],
             }
         },
+        methods:{
+            getHeaderStyle(item){
+                let style = {};
+                if(item.type === 'hidden')
+                    style.display = 'none';
+
+                if(item.width === 'auto'){
+                    style.flex = 1;
+                } else {
+                    style.width = item.width + 'px';
+                }
+                if(item.min_with)
+                    style.minWidth = item.min_with + 'px';
+
+                return style;
+            },
+        }
     }
 </script>
 

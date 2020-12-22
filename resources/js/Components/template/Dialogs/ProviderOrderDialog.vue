@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="modal-body">
-            <div class="row">
-                <div class="col-sm-4 no-pr d-flex">
+            <div class="d-flex">
+                <div class="link-tabs no-pr">
                     <ul class="nav">
                         <li v-for="tab in tabs" v-bind:key="tab.slug" v-bind:class="{'active' : tab.state}"
                             class="nav-item">
@@ -15,7 +15,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-sm-8 no-pl">
+                <div class="dialog_tab_holder">
                     <div class="tab-content no-pl">
                         <div class="tab-pane" v-bind:class="{'active' : tabs[0].state}">
                             <FormInput v-bind:inputData="{type:'selector',label:'Поставщик',name:'partner_name', onClick:'selectPartner'}" />
@@ -23,9 +23,7 @@
                             <FormInput v-bind:inputData="{type:'textarea',label:'Комментарий',name:'entity.comment', onClick:'selectPartner', height: 75}" />
                         </div>
                         <div class="tab-pane"  v-bind:class="{'active' : tabs[1].state}">
-                            <div  id="po_list">
-                                в
-                            </div>
+                            <List v-bind:data="list_data"/>
                         </div>
                     </div>
 
@@ -80,30 +78,33 @@
                         type: 2
                     }
                 },
-                header: [
-                    {min_with: NaN,  width: NaN,    name: 'pivot_id',      table_name: 'pivot_id',    type: 'hidden'},
-                    {min_with: NaN,  width: NaN,    name: 'product_id',    table_name: 'product_id',  type: 'hidden'},
-                    {min_with: 100,  width: 'auto', name: 'Наименование',  table_name: 'name',        type:'text'},
-                    {min_with: 100,  width: 100,    name: 'Артикул',       table_name: 'article',     type:'text'},
-                    {min_with: 65,   width: 65,     name: 'Кол-во',        table_name: 'count',       type: 'counter',},
-                    {min_with: 80,   width: 80,     name: 'Цена',          table_name: 'price',       type: 'price',},
-                    {min_with: 70,   width: 70,     name: 'НДС, %',        table_name: 'nds_percent', type: 'passive',},
-                    {min_with: 70,   width: 70,     name: 'НДС',           table_name: 'nds',         type: 'passive',},
-                    {min_with: 100,  width: 100,    name: 'Итого',         table_name: 'total',       type: 'passive',},
-                ],
-                prefs:{
-                    index:'ordinal',
-                    use_nds:true,
-                    can_add_items:true,
-                    nds:true,
-                    nds_included:true
+                list_data:{
+                    header: [
+                        {min_with: NaN,  width: NaN,    name: 'pivot_id',      table_name: 'pivot_id',    type: 'hidden'},
+                        {min_with: NaN,  width: NaN,    name: 'product_id',    table_name: 'product_id',  type: 'hidden'},
+                        {min_with: 100,  width: 'auto', name: 'Наименование',  table_name: 'name',        type:'text'},
+                        {min_with: 100,  width: 100,    name: 'Артикул',       table_name: 'article',     type:'text'},
+                        {min_with: 65,   width: 65,     name: 'Кол-во',        table_name: 'count',       type: 'counter',},
+                        {min_with: 80,   width: 80,     name: 'Цена',          table_name: 'price',       type: 'price',},
+                        {min_with: 70,   width: 70,     name: 'НДС, %',        table_name: 'nds_percent', type: 'passive',},
+                        {min_with: 70,   width: 70,     name: 'НДС',           table_name: 'nds',         type: 'passive',},
+                        {min_with: 100,  width: 100,    name: 'Итого',         table_name: 'total',       type: 'passive',},
+                    ],
+                    prefs:{
+                        index:'ordinal',
+                        use_nds:true,
+                        can_add_items:true,
+                        nds:true,
+                        nds_included:true
+                    },
+                    items:[],
                 },
                 messages:{},
                 loading:false,
             }
         },
         mounted() {
-            this.dialog.width = 600;
+            this.dialog.width = 1000;
             if (this.dialog.id === 0) {
                 this.dialog.title = "Новая заявка поставщику";
             } else {
@@ -114,6 +115,7 @@
                 }).then((resp) => {
                     this.id = resp.data.id;
                     this.entity = resp.data;
+                    this.list_data.items = resp.data.articles;
                     this.dialog.title = "Редактирование заказа поставщику №'" + this.entity.id + "'";
                     this.loading = false;
                 }).catch((error) => {
