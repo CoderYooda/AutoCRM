@@ -756,7 +756,16 @@ class storePage extends Page{
 
                     this.selected = data.selected;
 
-                    this.modal.show();
+                    axios.get('/prices/modal')
+                        .then(response => {
+                            let data = response.data;
+
+                            this.modal.setContent(data.html);
+
+                            this.modal.show();
+
+                            window.applySelects();
+                        });
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};

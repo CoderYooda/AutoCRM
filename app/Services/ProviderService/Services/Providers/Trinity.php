@@ -222,19 +222,19 @@ class Trinity implements ProviderInterface
 
             $orders[] = [
                 'internal_id'   => $product->id,
-                'bid'           => $orderInfo['bid'],
-                'code'          => $orderInfo['code'],
-                'producer'      => $orderInfo['producer'],
-                'caption'       => $orderInfo['caption'],
-                'supplier_id'   => $orderInfo['supplier_id'],
-                'stock'         => $orderInfo['stock'],
-                'price'         => $orderInfo['price'],
-                'saled_price'   => $orderInfo['price'] + sum_percent($orderInfo['price'], 20),
+                'bid'           => $orderInfo['model']['bid'],
+                'code'          => $orderInfo['model']['code'],
+                'producer'      => $orderInfo['model']['producer'],
+                'caption'       => $orderInfo['model']['caption'],
+                'supplier_id'   => $orderInfo['model']['supplier_id'],
+                'stock'         => $orderInfo['model']['stock'],
+                'price'         => $orderInfo['model']['price'],
+                'saled_price'   => $orderInfo['model']['price'] + sum_percent($orderInfo['model']['price'], 20),
                 'quantity'      => $product->count,
-                'source'        => $orderInfo['source'],
+                'source'        => $orderInfo['model']['source'],
                 'comment'       => $data['comment'] ?? '',
-                'deliverydays'  => $orderInfo['deliverydays'],
-                'minOrderCount' => $orderInfo['minOrderCount'],
+                'deliverydays'  => $orderInfo['model']['deliverydays'],
+                'minOrderCount' => $orderInfo['model']['minOrderCount'],
             ];
         }
 

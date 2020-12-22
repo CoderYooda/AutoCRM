@@ -9,7 +9,7 @@
             <div class="silder-content">
                 <div class="head-slider-container">
                     @foreach($shop->sliderImages as $image)
-                        <img class="block pointer" onclick="if(!window.block_redirect) window.location.href = '{{ $image->pivot->target_url }}';" src="{{ $image->url }}" alt="">
+                        <img class="block pointer" onclick="helper.redirect(this, '{{ $image->pivot->target_url }}');" src="{{ $image->url }}" alt="">
                     @endforeach
                 </div>
                 <div class="controls">
@@ -31,7 +31,7 @@
                 <div class="products grid-4">
                     <div class="popular-products">
                         @foreach($stockProducts as $product)
-                            <div class="product" onclick="if(!window.block_redirect) window.location.href = '{{ $product->path() }}';">
+                            <div class="product" onclick="helper.redirect(this, '{{ $product->path() }}');">
                                 <img class="product-img" title="{{ $product->getShopName() }}" src="{{ $product->image_path }}" alt="{{ $product->getShopName() }}">
                                 <h3 class="product-name" title="{{ $product->getShopName() }}">{{ $product->getShopName() }}</h3>
                                 <div class="brand">{{ $product->supplier->name }}</div>

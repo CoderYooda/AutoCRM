@@ -75,6 +75,13 @@ class Helper {
             error_element.innerHTML = errors[error][0];
         });
     }
+
+    redirect(element, path) {
+
+        if(event.target != element || window.block_redirect) return;
+
+        window.location.href = path;
+    }
 }
 
 export default Helper;

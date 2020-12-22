@@ -27,6 +27,8 @@ Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->na
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/prices', 'PriceController@store')->name('StorePrice');
+    Route::get('/prices/modal', 'PriceController@modal')->name('GetPriceModalContent');
+    Route::post('/prices/{price}/percent', 'PriceController@percent')->name('GetPricePercent');
 
     #Пользователь
     Route::get('/user/', 'UserController@index')->name('UserIndex');

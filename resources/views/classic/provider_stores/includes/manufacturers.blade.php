@@ -1,6 +1,6 @@
 @if(count($manufacturers))
 
-    <div data-simplebar>
+    <div data-simplebar style="max-height: calc(100% - 20px);">
 
         <div id="provider_stores-table">
 

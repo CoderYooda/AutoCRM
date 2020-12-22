@@ -27,8 +27,7 @@ class Category extends \Baum\Node
         'company_id',
         'name',
         'balance',
-        'image_id',
-        'markup'
+        'image_id'
     ];
 
     public function isRoot()

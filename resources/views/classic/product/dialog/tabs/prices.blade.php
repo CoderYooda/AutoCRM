@@ -16,53 +16,16 @@
         </div>
     </div>
 
-    <div class="block">
+    <div class="form-group">
 
-        <label>Источник наценки на закупочную стоимость товара</label>
+        <label>Источник формирования цены</label>
 
-        <div class="form-group">
-            <label>На все товары на складе (%)</label>
-            <div class="input-group mb-3">
-                <input type="number" min="0" class="form-control ml-0 markup_global" value="{{ decimal_price($globalMarkup) }}" disabled >
-
-                <div class="markup_selector">
-                    <label class="absolute custom_checkbox">
-                        <input type="radio" class="not_default" onclick="{{ $class }}.recalculateMarkup();" name="markup_source" value="global" @if(!$product || $product->markup_source == 'global') checked @endif />
-                        <span></span>
-                    </label>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>На все товары в категории "<span class="category_name">{{ $category->name }}</span>" (%)</label>
-            <div class="input-group mb-3">
-                <input type="number" min="0" class="form-control ml-0 markup_category" value="{{ decimal_price($category->markup) }}" disabled >
-
-                <div class="markup_selector">
-                    <label class="absolute custom_checkbox">
-                        <input type="radio" class="not_default" onclick="{{ $class }}.recalculateMarkup();" name="markup_source" value="category" @if($product && $product->markup_source == 'category') checked @endif />
-                        <span></span>
-                    </label>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Только на этот товар (%)</label>
-            <div class="input-group mb-3">
-                <input type="number" min="0" name="markup" onkeyup="{{ $class }}.recalculateMarkup();" class="form-control ml-0 markup_product" value="{{ decimal_price($product->markup ?? 0) }}" >
-
-                <div class="markup_selector">
-                    <label class="absolute custom_checkbox">
-                        <input type="radio" class="not_default" onclick="{{ $class }}.recalculateMarkup();" name="markup_source" value="product" @if($product && $product->markup_source == 'product') checked @endif />
-                        <span></span>
-                    </label>
-                </div>
-
-            </div>
+        <div class="input-group">
+            <select custom_select name="price_id" onchange="{{ $class }}.recalculateMarkup();">
+                @foreach($prices as $price)
+                    <option value="{{ $price->id }}">{{ $price->name }}</option>
+                @endforeach
+            </select>
         </div>
 
     </div>

@@ -1,7 +1,62 @@
 .form_price_dialog {
+
+    .info {
+        span {
+            font-size: 13px;
+        }
+    }
+
     .table {
         border: 1px solid #d7d8db;
         margin: 0 !important;
         padding: 9px;
+
+        .header {
+
+            display: flex;
+            max-width: 95%;
+
+            .field {
+                flex: 1;
+            }
+
+        }
+
+        .body {
+
+            input {
+                max-width: 150px;
+            }
+
+            .position {
+                position: relative;
+                display: flex;
+                max-width: 95%;
+
+                .field {
+                    flex: 1;
+                }
+
+                &:not(:last-child) {
+                    margin-bottom: 5px;
+                }
+
+                .delete_button {
+                    right: -20px;
+                    top: 0;
+                    width: 30px;
+                    height: 30px;
+                    text-align: center;
+                    background: url(/images/remove_specification.svg) no-repeat center;
+                    cursor: pointer;
+                    position: absolute;
+
+                    &:hover {
+                        background: url(/images/remove_specification_hover.svg) no-repeat center;
+                    }
+                }
+            }
+
+        }
     }
 }

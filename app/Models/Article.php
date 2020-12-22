@@ -32,8 +32,7 @@ class Article extends Model
         'name',
         'blockedCount',
         'image_id',
-        'markup',
-        'markup_source'
+        'price_id'
     ];
 
     protected $guarded = [];
@@ -80,6 +79,11 @@ class Article extends Model
     public function specifications()
     {
         return $this->hasMany(Specification::class);
+    }
+
+    public function price()
+    {
+        return $this->hasOne(Price::class, 'id', 'price_id');
     }
 
     public function currentStore()
@@ -299,8 +303,6 @@ class Article extends Model
 
         $store_id = Auth::user()->current_store ?? null;
 
-        $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
-
         $price = 0;
 
         if($price_source == 'purchase') {
@@ -319,15 +321,9 @@ class Article extends Model
             $price = $lastEntrance->price ?? 0;
         }
 
-        if($this->markup_source == 'global') {
-            $price += sum_percent($price, $globalMarkup);
-        }
-        else if($this->markup_source == 'category') {
-            $price += sum_percent($price, $this->category->markup);
-        }
-        else {
-            $price += sum_percent($price, $this->markup);
-        }
+        $percent = $this->price->getPercentByAmount($price);
+
+        $price += sum_percent($price, $percent);
 
         return $price;
     }

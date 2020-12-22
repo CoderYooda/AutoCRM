@@ -6,6 +6,7 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Adjustment;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Price;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use App\Models\Supplier;
@@ -170,6 +171,8 @@ class ProductController extends Controller
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
+        $user = Auth::user();
+
         $stores = Store::owned()->get();
 
         $company = Auth::user()->company;
@@ -177,7 +180,6 @@ class ProductController extends Controller
         //Цена
 
         $priceSource = $company->getSettingField('Источник цены');
-        $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
 
         $lastEntrancePrice = 0;
 
@@ -204,6 +206,8 @@ class ProductController extends Controller
 
         Cache::put('user[' . Auth::id() . '][entrances]', $entrances);
 
+        $prices = Price::where('company_id', $user->company_id)->get();
+
         //Интернет-магазин
 
         $shopFields = [
@@ -218,7 +222,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields', 'globalMarkup', 'lastEntrancePrice', 'priceSource', 'entrances'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'prices', 'request', 'stores', 'shopFields', 'lastEntrancePrice', 'priceSource', 'entrances'))->render(),
             'product' => $product
         ]);
     }
@@ -535,9 +539,8 @@ class ProductController extends Controller
     public function changeMarkupSource(Request $request)
     {
         $products = json_decode($request->products);
-        $source = $request->markup_source;
 
-        Article::whereIn('id', $products)->update(['markup_source' => $source]);
+        Article::whereIn('id', $products)->update(['price_id' => $request->markup_source]);
 
         return response()->json([
             'type' => 'success',

@@ -61,9 +61,7 @@ class SettingsController extends Controller
 
         $settings = Setting::owned()->orderBy('sort')->get();
         $roles = Role::where('company_id', $company->id)->get();
-        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
-        }
+
         return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
     }
 
@@ -72,6 +70,14 @@ class SettingsController extends Controller
         $company = Auth::user()->company;
 
         $prices = Price::where('company_id', $company->id)->paginate(10);
+
+        if($request['view_as'] == 'json') {
+            $view = view(get_template() . '.settings.elements.prices_inner', compact('request', 'prices'));
+            return response()->json([
+                'html' => $view->render(),
+                'target' => 'ajax-table-prices'
+            ]);
+        }
 
         return view(get_template() . '.settings.prices', compact('request', 'prices'));
     }

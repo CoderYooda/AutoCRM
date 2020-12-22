@@ -15,7 +15,8 @@ class settingsPage{
             'RoleStored',
             'CashboxStored',
             'CashboxFresh',
-            'StoreStored'
+            'StoreStored',
+            'PriceStored'
         ];
 
         events.forEach(name => {

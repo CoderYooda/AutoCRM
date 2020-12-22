@@ -14,6 +14,8 @@ class AddPriceSettingsToCompanies extends Migration
             $table->unsignedInteger('company_id');
 
             $table->unique(['name', 'company_id']);
+
+            $table->timestamps();
         });
 
         Schema::create('price_type', function (Blueprint $table) {
