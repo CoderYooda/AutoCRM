@@ -1,11 +1,5 @@
 <?php
 
-use App\Models\Category;
-
-Route::get('/test', function () {
-    Category::rebuild();
-});
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');

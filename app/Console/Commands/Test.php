@@ -26,11 +26,8 @@ class Test extends Command
 
     public function handle()
     {
-        $client = new SoapClient('http://service.autopiter.ru/v2/price?WSDL', ['trace' => 1]);
+        Category::rebuild();
 
-        $response = $client->Authorization('882153', '441145', true);
-//        $response = $client->Authorization('882153', '441145', true);
-
-        dd($response);
+        dd(1);
     }
 }
