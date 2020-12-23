@@ -78,7 +78,15 @@ class Helper {
 
     redirect(element, path) {
 
-        if(event.target != element || window.block_redirect) return;
+        console.log(event.target, element);
+
+        let excepts = ['product', 'favour'];
+
+        for(let i = 0; i < excepts.length; i++) {
+            if (event.target.classList.contains(excepts[i])) return;
+        }
+
+        if(window.block_redirect) return;
 
         window.location.href = path;
     }
