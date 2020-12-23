@@ -16,7 +16,7 @@ class Category extends \Baum\Node
 
     protected $table = 'categories';
 
-    protected $scoped = ['company_id'];
+//    protected $scoped = ['company_id'];
     protected $parentColumn = 'category_id';
     protected $leftColumn = '_lft';
     protected $rightColumn = '_rgt';
