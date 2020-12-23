@@ -51,12 +51,9 @@ class UpdateSettingsRequest extends FormRequest
             'delete_image_ids' => ['nullable', 'array'],
             'delete_image_ids.*' => ['integer', 'exists:images,id'],
             'domain' => ['nullable', 'string', new DomainRule, new DomainDnsRule],
-            'subdomain' => ['nullable', 'string', new SubdomainRule, new TabooSubdomainRule, new CorrectSubdomainName]
+            'subdomain' => ['nullable', 'string', new SubdomainRule, new TabooSubdomainRule, new CorrectSubdomainName],
+            'price_id' => ['required', 'integer', 'exists:prices,id']
         ];
-
-        if($this->supplier_offers == 1) {
-            $rules['supplier_percent'] = ['required', 'integer', 'between:5,1000'];
-        }
 
         return $rules;
     }

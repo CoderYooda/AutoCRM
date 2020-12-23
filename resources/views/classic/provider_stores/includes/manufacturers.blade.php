@@ -8,6 +8,7 @@
 
                 <thead>
                 <tr>
+                    <th style="color: #2D76A8;">Название</th>
                     <th style="color: #2D76A8;">Производитель</th>
                     <th style="color: #2D76A8;">Артикул</th>
                 </tr>
@@ -15,11 +16,12 @@
 
                 <tbody id="table_body">
 
-                    @foreach($manufacturers as $manufacturer)
+                    @foreach($manufacturers as $manufacturer => $info)
 
                         <tr id="brand_{{ $manufacturer }}" class="pointer" style="height: 40px;" onclick="store.showManufactureStores(this, '{{ $manufacturer }}')">
+                            <td>{{ $info['desc'] }}</td>
                             <td>{{ $manufacturer }}</td>
-                            <td>{{ $request->search }}</td>
+                            <td>{{ $info['article'] }}</td>
                         </tr>
 
                     @endforeach

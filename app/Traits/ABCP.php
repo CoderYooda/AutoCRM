@@ -43,9 +43,18 @@ trait ABCP
             'number' => $article
         ];
 
-        $result = $this->query('search/brands/', $params, 'GET');
+        $response = $this->query('search/brands/', $params, 'GET');
 
-        return array_column($result, 'brand');
+        $results = [];
+
+        foreach ($response as $brand) {
+            $results[$brand['brand']] = [
+                'article' => $brand['numberFix'],
+                'desc' => strlen($brand['description']) ? $brand['description'] : 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string

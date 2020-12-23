@@ -45,15 +45,25 @@ class Mikado implements ProviderInterface
             'FromStockOnly' => 'FromStockAndByOrder'
         ];
 
-        $result = $this->query('ws1/service.asmx/Code_Search', $params);
+        $response = $this->query('ws1/service.asmx/Code_Search', $params);
 
-        $result = array_column($result['List']['Code_List_Row'] ?? [], 'Brand');
+        $response = $response['List']['Code_List_Row'] ?? [];
 
-        $result = array_unique($result);
+        $results = [];
 
-        $result = array_values($result);
+        foreach ($response as $brand) {
 
-        return $result;
+            $results[$brand['Brand']] = [
+                'article' => $brand['ProducerCode'],
+                'desc' => strlen($brand['Name']) ? $brand['Name'] : 'Отсутствует'
+            ];
+        }
+
+        $key = 'АНАЛОГИ ПРОЧИЕ (БРЭНД НЕИЗВЕСТЕН). ВНИМАНИЕ!!! ТОЛЬКО ДЛЯ ИНФОРМАЦИИ! ВОЗМОЖНЫ ОШИБКИ!!!';
+
+        if(array_search($key, array_keys($results)) !== false) unset($results[$key]);
+
+        return $results;
     }
 
     public function getName(): string

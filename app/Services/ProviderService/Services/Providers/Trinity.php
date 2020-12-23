@@ -51,9 +51,18 @@ class Trinity implements ProviderInterface
             'online'     => true ? 'allow' : 'disallow'
         ];
 
-        $results = $this->query('search/byCode', $this->createParams($params), true);
+        $response = $this->query('search/byCode', $this->createParams($params), true);
 
-        return array_column($results['data'], 'producer');
+        $results = [];
+
+        foreach ($response['data'] as $brand) {
+            $results[$brand['producer']] = [
+                'article' => $brand['article'],
+                'desc' => strlen($brand['ident']) ? $brand['ident'] : 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string

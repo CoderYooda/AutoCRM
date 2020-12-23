@@ -17,10 +17,6 @@ class AddProductPriceSource extends Migration
             $table->dropColumn('markup_source');
         });
 
-        Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn('markup');
-        });
-
         $companies = \App\Models\Company::all();
 
         $params = [

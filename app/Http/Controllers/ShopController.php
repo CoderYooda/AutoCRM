@@ -16,6 +16,7 @@ use App\Mail\Shop\ConfirmOrder;
 use App\Models\Article;
 use App\Models\ClientOrder;
 use App\Models\Order;
+use App\Models\Price;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\User;
@@ -89,7 +90,11 @@ class ShopController extends Controller
 
     public function settingsTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.settings', compact('request'));
+        $user = Auth::user();
+
+        $prices = Price::where('company_id', $user->company_id)->get();
+
+        return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
     }
 
     public function analyticsTab(Request $request)
@@ -234,11 +239,11 @@ class ShopController extends Controller
 
             $shop = Shop::where('company_id', Auth::user()->company_id)->first();
 
-            if(!$shop || $shop->domain != $request->domain) {
+            if (!$shop || $shop->domain != $request->domain) {
 
                 $domain = $request->domain;
 
-                if(str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                if (str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
                 exec('sh test.sh ' . $domain);
             }
 
@@ -253,7 +258,7 @@ class ShopController extends Controller
                 'domain'              => $request->domain,
                 'subdomain'           => $request->subdomain,
                 'supplier_offers'     => $request->supplier_offers,
-                'supplier_percent'    => $request->supplier_percent
+                'price_id'            => $request->price_id
             ]);
 
             $images = [];

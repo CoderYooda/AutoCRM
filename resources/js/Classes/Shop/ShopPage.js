@@ -397,7 +397,7 @@ class shopPage {
     }
 
     toggleSupplierOffers(element) {
-        let select_element = element.closest('.form-group').querySelector('.select_supplier');
+        let select_element = document.querySelector('.select_supplier');
 
         select_element.classList.toggle('d-none');
     }

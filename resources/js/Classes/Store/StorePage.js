@@ -446,7 +446,7 @@ class storePage extends Page{
 
                 let manufacturers = counts[service_key];
 
-                document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
+                document.getElementById('service_count_' + service_key).innerText = Object.keys(manufacturers).length;
             });
 
             let errors = response.data.errors;

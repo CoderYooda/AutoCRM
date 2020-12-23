@@ -53,6 +53,8 @@ class ForumAuto implements ProviderInterface
 
         $response = $this->query('listGoods', $params);
 
+        dd($response);
+
         return array_column($response, 'brand');
     }
 

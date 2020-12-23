@@ -1398,7 +1398,7 @@ body{
 }
 
 .in-category{
-    padding: 62px 20px!important;
+    padding: 20px !important;
     .in-category-container{
         display: flex;
         .items{
@@ -2264,14 +2264,18 @@ body{
         border-bottom: 1px solid #E1E1E1;
 
         .element {
-            height: 60px;
-            line-height: 60px;
+            height: 42px;
+            line-height: 42px;
             display: flex;
             padding-left: 30px;
             position: relative;
 
             border-left: 1px solid #E1E1E1;
             border-right: 1px solid #E1E1E1;
+
+            &:hover {
+                background-color: #ececec;
+            }
 
             &:not(:last-child) {
                 border-bottom: 1px solid #E1E1E1;
@@ -2314,27 +2318,28 @@ body{
 
             .shipping-container{
 
-                height: 60px !important;
+                height: 42px !important;
                 display: flex;
                 right: 30px;
                 align-items: center;
 
                 .counter-container{
 
-                    height: 38px;
-                    line-height: 38px;
+                    height: 32px;
+                    line-height: 32px;
 
                     display: flex;
                     width: 168px;
                     position: relative;
                     .button{
                         width: 48px;
-                        max-height: 42px !important;
+                        max-height: 32px !important;
                         border: 2px solid #EBEBEB;
                         border-radius: 4px;
                         cursor: pointer;
                         z-index: 100;
                         transition: 0.1s;
+                        background-color: white !important;
                         &:active{
                             background-color: #404040!important;
                             border: 2px solid #404040!important;
@@ -2374,10 +2379,11 @@ body{
                     background: url(/images/shop/cart.svg) center no-repeat;
                     float: right;
                     width: 46px;
-                    height: 38px;
+                    height: 32px;
                     border: 2px solid #E23414;
                     border-radius: 4px;
                     cursor: pointer;
+                    background-color: white !important;
                     &.incart{
                         background: url("/images/shop/ok.svg") center no-repeat;
                         background-color: #E23414;
