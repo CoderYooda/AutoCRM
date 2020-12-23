@@ -10,9 +10,6 @@
     <input type="hidden" name="article" value="{{ request()->search }}">
 
     <div class="in-category container bg-white">
-        <div class="title">
-            <h2>Результаты поиска</h2>
-        </div>
 
         <div class="result">
 

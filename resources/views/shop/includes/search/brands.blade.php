@@ -1,3 +1,7 @@
+<div class="title">
+    <h2>Результаты поиска</h2>
+</div>
+
 <div class="table">
 
     <div class="search_header">
