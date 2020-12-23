@@ -45,11 +45,26 @@ class Category extends \Baum\Node
         return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
     }
 
+    public function breadcrumbs()
+    {
+        $parents = $this->getAncestors();
+
+        foreach ($parents as $index => $parent) {
+            if($parent->id < 3) unset($parents[$index]);
+        }
+
+        return $parents;
+    }
+
     public function path()
     {
         $parents = $this->getAncestors();
 
         $slugs = '';
+
+        foreach ($parents as $index => $parent) {
+            if($parent->id < 3) unset($parents[$index]);
+        }
 
         if(count($parents)) {
             $slugs = implode('/', $parents->pluck('slug')->toArray()) . '/';
