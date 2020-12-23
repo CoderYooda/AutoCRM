@@ -71,12 +71,8 @@ class SettingsController extends Controller
 
         $prices = Price::where('company_id', $company->id)->paginate(10);
 
-        if($request['view_as'] == 'json') {
-            $view = view(get_template() . '.settings.elements.prices_inner', compact('request', 'prices'));
-            return response()->json([
-                'html' => $view->render(),
-                'target' => 'ajax-table-prices'
-            ]);
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-prices'){
+            return view(get_template() . '.settings.elements.prices_inner', compact('prices', 'request'));
         }
 
         return view(get_template() . '.settings.prices', compact('request', 'prices'));

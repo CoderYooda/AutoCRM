@@ -78,8 +78,6 @@ class Helper {
 
     redirect(element, path) {
 
-        console.log(event.target, element);
-
         let excepts = ['product', 'favour'];
 
         for(let i = 0; i < excepts.length; i++) {

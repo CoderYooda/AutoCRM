@@ -3,9 +3,7 @@
 @section('tab')
 
     <div id="ajax-table-prices">
-
         @include(get_template() . '.settings.elements.prices_inner')
-
     </div>
 
 @endsection

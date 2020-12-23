@@ -41,11 +41,19 @@
 
             </div>
 
-            <div id="table-container" class="box box-content preloader-block">
+            <div class="box box-content preloader-block" style="max-height: calc(100% - 105px)!important;">
 
-{{--                @include(get_template() . '.provider_stores.includes.manufacturers')--}}
+                <div data-simplebar class="h-100">
 
-{{--                @include(get_template() . '.provider_stores.includes.warehouses')--}}
+                    <div id="table-container">
+
+    {{--                @include(get_template() . '.provider_stores.includes.manufacturers')--}}
+
+    {{--                @include(get_template() . '.provider_stores.includes.warehouses')--}}
+
+                    </div>
+
+                </div>
 
             </div>
 
