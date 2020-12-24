@@ -19,7 +19,7 @@ class CompanyHasPayedDays
     {
         $company = Auth::user()->company;
 
-        if(Carbon::now()->timestamp > $company->payed_days && !Auth::user()->hasRole('Суперадмин')) {
+        if($company && Carbon::now()->timestamp > $company->payed_days && !Auth::user()->hasRole('Суперадмин')) {
 
             if($request->expectsJson()) {
                 return response()->json([

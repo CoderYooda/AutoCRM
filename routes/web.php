@@ -341,6 +341,22 @@ Route::post('/user/get_channel', 'UserController@getChannel')->name('GetUserChan
 Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUser');
 Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUser');
 
+#Коморка партнера
+Route::get('/member', function(){
+    dd(222);
+})->name('backToUser');
+
+
+
+Route::middleware(['web', 'auth', 'Partner'])->prefix('member')->namespace('Partner')->name('Partner')->group(function ()
+{
+    //Route::get('/', 'DashboardController@index')->name('Dashboard');
+    Route::post('/store', 'ReferalSystemController@store')->name('StoreReferalPartner');
+    Route::get('/', function(){
+        dd('Партнерка');
+    })->name('Partner');
+});
+
 #Коморка разработчиков
 Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Admin')->name('Admin')->group(function () {
 

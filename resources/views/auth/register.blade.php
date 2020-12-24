@@ -24,7 +24,7 @@
                 </div>
                 <form onsubmit="register.submitForm(this, event)" id="registerForm" method="POST" action="{{ route('register') }}">
                     @csrf
-
+                    <input name="refer" value="{{ request('refer') }}" type="hidden">
                     <div class="mx-auto  animate fadeIn text-left" >
                         <div class="form-group @error('fio') is-invalid @enderror">
                             <label>Фамилия Имя Отчество</label>

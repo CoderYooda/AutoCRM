@@ -9,6 +9,9 @@
             <li id="users-tab" data-tab="users" class="@if($request['active_tab'] == 'users') active @endif">
                 <a class="ajax-nav" href="{{ route('AdminDashboard', ['active_tab' => 'users', 'target' => 'ajax-tab-content']) }}">Пользователи</a>
             </li>
+            <li id="partners-tab" data-tab="partners" class="@if($request['active_tab'] == 'partners') active @endif">
+                <a class="ajax-nav" href="{{ route('AdminDashboard', ['active_tab' => 'partners', 'target' => 'ajax-tab-content']) }}">Партнёры</a>
+            </li>
         </ul>
         <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
     </div>

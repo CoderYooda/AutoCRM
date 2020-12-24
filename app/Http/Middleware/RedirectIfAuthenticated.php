@@ -29,8 +29,12 @@ class RedirectIfAuthenticated
                 return redirect()->route('pages.index');
             }
 
-            if(Auth::user()->roles->first()->name == 'Суперадмин') {
+            if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
                 return redirect('/admin');
+            }
+
+            if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Партнёр') {
+                return redirect('/member');
             }
 
             return redirect('/store');

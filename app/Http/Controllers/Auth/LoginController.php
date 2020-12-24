@@ -77,10 +77,12 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-        if(Auth::user()->roles->first()->name == 'Суперадмин') {
+        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
             return '/admin';
         }
-
+        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Партнёр') {
+            return '/member';
+        }
         return '/store';
     }
 
@@ -135,7 +137,7 @@ class LoginController extends Controller
 
     public function authenticated(Request $request, $user)
     {
-        if(!$user->current_store) {
+        if(!$user->current_store && isset($user->partner)) {
             $user->update(['current_store' => $this->partner->store_id]);
         }
     }
