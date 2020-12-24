@@ -307,15 +307,15 @@ class StoreController extends Controller
                 while (($row = fgetcsv($handle, 1000, ';')) !== FALSE) {
 
                     $products[] = [
-                        'name' => (string)$row[0] ?? '',
-                        'manufacturer' => (string)$row[1],
-                        'article' => (string)$row[2],
+                        'name' => $row[0] ?? '',
+                        'manufacturer' => $row[1],
+                        'article' => $row[2],
                         'categories' => explode(',', $row[3] ?? []),
                         'warehouse' => explode(',', $row[4] ?? []),
-                        'count' => (int)$row[5] ?? 0,
-                        'price' => (float)$row[6] ?? 0.0,
-                        'barcode_manufacturer' => (string)$row[7] ?? '',
-                        'barcode_warehouse' => (string)$row[8] ?? ''
+                        'count' => $row[5] ?? 0,
+                        'price' => $row[6] ?? 0.0,
+                        'barcode_manufacturer' => $row[7] ?? '',
+                        'barcode_warehouse' => $row[8] ?? ''
                     ];
                 }
 

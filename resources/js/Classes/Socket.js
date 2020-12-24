@@ -5,12 +5,15 @@ class Socket{
 
     constructor(){
         console.log('Сокеты подключены');
-        //this.init();
+        this.init();
     }
 
     init(){
         let unprinted = document.getElementById('unprinted');
         if(unprinted){
+
+            console.log(window.socket_host + ':' + window.socket_port);
+
             axios({
                 method: 'get',
                 url: '/whoami'
@@ -47,6 +50,9 @@ class Socket{
                         }
                     })
                     .listen('StoreImportFinish', function(e){
+
+                        console.log(e.info, e.html);
+
                         try {
                             window.storeImportDialog.finishUpload(e.info, e.html);
                         }
