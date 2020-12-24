@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PriceStoreRequest;
-use App\Models\Price;
+use App\Models\Markup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,14 +12,14 @@ class PriceController extends Controller
 {
     public static function dialog(Request $request)
     {
-        $price = Price::find($request->price_id);
+        $price = Markup::find($request->price_id);
 
         $class = 'priceDialog' . ($price->id ?? '');
 
         $types = [];
 
         if($price) {
-            $types = $price->types;
+            $types = $price->options;
         }
 
         $view = view(get_template() . '.prices.dialog.form_price', compact('request', 'price', 'class', 'types'));
@@ -38,21 +38,21 @@ class PriceController extends Controller
 
             $params['company_id'] = Auth::user()->company_id;
 
-            $price = Price::updateOrCreate(['id' => $request->price_id], $params);
+            $price = Markup::updateOrCreate(['id' => $request->price_id], $params);
 
-            $price->types()->delete();
+            $price->options()->delete();
 
-            $price->types()->createMany($request->prices);
+            $price->options()->createMany($request->prices);
         });
 
         return response()->json([
             'type' => 'success',
-            'message' => 'Ценообразование успешно сохранено.',
+            'message' => 'Наценка успешно сохранено.',
             'event' => 'PriceStored'
         ]);
     }
 
-    public function percent(Request $request, Price $price)
+    public function percent(Request $request, Markup $price)
     {
         return response()->json([
             'percent' => $price->getPercentByAmount($request->price)
@@ -63,7 +63,7 @@ class PriceController extends Controller
     {
         $user = Auth::user();
 
-        $prices = Price::where('company_id', $user->company_id)->get();
+        $prices = Markup::where('company_id', $user->company_id)->get();
 
         $view = view(get_template() . '.system.includes.prices', compact('prices'));
 

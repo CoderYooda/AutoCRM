@@ -16,7 +16,7 @@ class PriceStoreRequest extends FormRequest
     {
         return [
             'price_id' => ['nullable', 'integer', 'exists:prices,id'],
-            'name' => ['required', 'string', 'max:255', Rule::unique('prices', 'name')->ignore($this->price_id)],
+            'name' => ['required', 'string', 'max:255'],
             'prices' => ['required', 'array'],
             'prices.*.from' => ['required', 'numeric', 'max:1000000'],
             'prices.*.to' => ['required', 'numeric', 'max:1000000'],

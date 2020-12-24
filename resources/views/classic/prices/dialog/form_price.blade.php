@@ -1,5 +1,5 @@
 <div id="{{ $class }}" class="dialog form_price_dialog" style="width:600px;">
-    <div class="titlebar">{{ $price ? ("Редактирование ценообразования '" . $price->name . "'") : ('Добавление ценообразования') }}</div>
+    <div class="titlebar">{{ $price ? ("Редактирование наценки '" . $price->name . "'") : ('Добавление наценки') }}</div>
 
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
@@ -23,7 +23,7 @@
 
             <div class="form-group">
 
-                <label>Типы:</label>
+                <label>Диапазоны:</label>
 
                 <div class="table">
 

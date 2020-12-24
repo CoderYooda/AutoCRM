@@ -320,6 +320,8 @@ class Items {
             this.key = cell_item.id;
         }
 
+        console.log(cell_item);
+
         cell_item.key = this.key;
 
         let isset = this.items.map(function (e) {

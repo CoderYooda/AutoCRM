@@ -19,6 +19,85 @@
 
     }
 
+    .tab-pane.adjustments {
+
+        .header {
+            display: flex;
+            height: 31px;
+            line-height: 31px;
+            background: #f7f8fa;
+            border: 1px solid #e7e8ec;
+
+            .header_item {
+                flex: 1;
+
+                &:first-child {
+                    padding-left: 10px;
+                }
+            }
+        }
+
+        .body {
+            .entrance {
+                position: relative;
+                display: flex;
+                height: 31px;
+                line-height: 31px;
+
+                border-left: 1px solid #e7e8ec;
+                border-right: 1px solid #e7e8ec;
+                border-bottom: 1px solid #e7e8ec;
+
+                &:first-child {
+                    border-top: 1px solid #e7e8ec;
+                }
+
+                .field {
+                    flex: 1;
+
+                    &:first-child {
+                        padding-left: 10px;
+                    }
+
+                    &.with_input {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    input {
+                        height: 24px !important;
+                        line-height: 24px !important;
+                        width: 60px;
+                    }
+                }
+
+                .remove {
+                    position: absolute;
+                    width: 30px;
+                    height: 30px;
+                    right: 0;
+                    cursor: pointer;
+                    background: url(/images/dialog/remove-element.svg) center no-repeat;
+
+                    &:hover {
+                        background: url(/images/dialog/remove-element-hover.svg) center no-repeat;
+                    }
+                }
+            }
+        }
+
+        .add_button {
+            cursor: pointer;
+            height: 31px;
+            line-height: 31px;
+            text-align: center;
+            border-left: 1px solid #e7e8ec;
+            border-right: 1px solid #e7e8ec;
+            border-bottom: 1px solid #e7e8ec;
+            background: #f7f8fa;
+        }
+    }
+
     .tab-pane.entrances {
 
         .header {

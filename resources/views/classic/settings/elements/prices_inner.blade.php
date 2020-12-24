@@ -2,7 +2,7 @@
 <div class="m-15 box">
     <div class="p-15">
         <div class="d-flex w-100 relative">
-            <h2 class="style_header">Ценообразование</h2>
+            <h2 class="style_header">Наценка</h2>
             <button class="button primary absolute right-0" type="button" onclick="openDialog('priceDialog');">Добавить</button>
         </div>
 

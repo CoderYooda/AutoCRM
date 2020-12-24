@@ -12,7 +12,7 @@ use App\Models\DdsArticle;
 use App\Models\Partner;
 use App\Models\Payment;
 use App\Models\ImportHistory;
-use App\Models\Price;
+use App\Models\Markup;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Store;
@@ -69,7 +69,7 @@ class SettingsController extends Controller
     {
         $company = Auth::user()->company;
 
-        $prices = Price::where('company_id', $company->id)->paginate(10);
+        $prices = Markup::where('company_id', $company->id)->paginate(10);
 
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-prices'){
             return view(get_template() . '.settings.elements.prices_inner', compact('prices', 'request'));

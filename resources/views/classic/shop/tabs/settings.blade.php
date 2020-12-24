@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="input-group w-350 mb-10 select_supplier @if(!$shop || !$shop->supplier_offers) d-none @endif">
-                    <label>Источник формирования цены на предложения поставщиков</label>
+                    <label>Источник наценки к стоимости товара</label>
                     <div class="input-group">
                         <select custom_select name="price_id">
                             @foreach($prices as $price)

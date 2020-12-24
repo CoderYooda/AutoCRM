@@ -81,16 +81,9 @@ class Article extends Model
         return $this->hasMany(Specification::class);
     }
 
-    public function price()
+    public function markup()
     {
-        return $this->hasOne(Price::class, 'id', 'price_id');
-    }
-
-    public function currentStore()
-    {
-        $store_id = Auth::user()->current_store;
-
-        return $this->stores->find($store_id);
+        return $this->hasOne(Markup::class, 'id', 'price_id');
     }
 
     public function getHash($store_id)
@@ -321,7 +314,7 @@ class Article extends Model
             $price = $lastEntrance->price ?? 0;
         }
 
-        $percent = $this->price->getPercentByAmount($price);
+        $percent = $this->markup->getPercentByAmount($price);
 
         $price += sum_percent($price, $percent);
 

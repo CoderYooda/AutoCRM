@@ -23,6 +23,8 @@ class Category extends \Baum\Node
     protected $depthColumn = 'depth';
     protected static $_guarded = ['id', 'category_id', '_lft', '_rgt', 'depth'];
 
+    protected $guarded = [];
+
     public $fields = [
         'company_id',
         'name',

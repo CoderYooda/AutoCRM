@@ -22,9 +22,9 @@ class Shop extends Model
         return 'http://' . $this->subdomain . '.' . getenv('APP_DOMAIN') .  '.ru/';
     }
 
-    public function price()
+    public function markup()
     {
-        return $this->hasOne(Price::class, 'id', 'price_id');
+        return $this->hasOne(Markup::class, 'id', 'price_id');
     }
 
     public function name()

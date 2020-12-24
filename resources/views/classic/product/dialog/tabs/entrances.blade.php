@@ -10,19 +10,9 @@
 
     <div data-simplebar class="body" style="max-height: 124px;">
 
-        <div class="entrance copy d-none">
-            <div class="field">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
-            <div class="field with_input">
-                <input type="number" min="0" name="entrances[new][price]" value="0">
-            </div>
-            <div class="field with_input">
-                <input type="number" min="0" name="entrances[new][count]" value="0">
-            </div>
-        </div>
-
-        @foreach($entrances as $entrance)
+        @forelse($entrances as $entrance)
             <div class="entrance">
-                <div class="field">{{ \Carbon\Carbon::parse($entrance->created_at)->format('d.m.Y') }}</div>
+                <div class="field">{{ $entrance->created_at->format('d.m.Y') }}</div>
                 <div class="field with_input">
                     <input type="number" min="0" name="entrances[{{ $entrance->id }}][price]" value="{{ $entrance->price }}">
                 </div>
@@ -30,12 +20,15 @@
                     <input type="number" min="0" name="entrances[{{ $entrance->id }}][count]" value="{{ $entrance->count }}">
                 </div>
             </div>
-        @endforeach
 
-    </div>
+        @empty
 
-    <div class="add_button" onclick="{{ $class }}.addAdjustmentField(this);">
-        Добавить корректирующую позицию
+            <div class="empty_table">
+                Список поступлений пуст
+            </div>
+
+        @endforelse
+
     </div>
 
 </div>

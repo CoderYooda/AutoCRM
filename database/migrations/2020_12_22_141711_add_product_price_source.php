@@ -26,12 +26,12 @@ class AddProductPriceSource extends Migration
         ];
 
         foreach ($companies as $company) {
-            $price = \App\Models\Price::create([
+            $price = \App\Models\Markup::create([
                 'company_id' => $company->id,
                 'name' => 'Розничная'
             ]);
 
-            $price->types()->create($params);
+            $price->options()->create($params);
 
             \App\Models\Article::where('company_id', $company->id)->update(['price_id' => $price->id]);
         }

@@ -4,7 +4,7 @@ class PriceDialog extends Modal {
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно ценообразования инициализировано');
+        console.log('Окно наценки инициализировано');
         this.init();
     }
 
@@ -28,7 +28,7 @@ class PriceDialog extends Modal {
         let positions = this.current_dialog.querySelectorAll('.position');
 
         if(positions.length < 2) {
-            window.notification.notify('error', 'Должна быть минимум одна вариация');
+            window.notification.notify('error', 'Должен быть минимум один диапазон.');
             return;
         }
 

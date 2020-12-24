@@ -20,7 +20,7 @@ class AddShopPriceSourceField extends Migration
             $table->dropColumn('markup');
         });
 
-        $prices = \App\Models\Price::all();
+        $prices = \App\Models\Markup::all();
 
         foreach (\App\Models\Shop::all() as $shop) {
 

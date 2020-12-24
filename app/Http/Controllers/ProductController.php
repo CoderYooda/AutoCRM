@@ -6,7 +6,7 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Adjustment;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\Price;
+use App\Models\Markup;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use App\Models\Supplier;
@@ -195,18 +195,21 @@ class ProductController extends Controller
 
         $entrances = [];
 
+        $adjustmentEntrances = [];
+
         if($product) {
 
-            $entrances = DB::table('article_entrance')
+            $entrances = $product->entrances;
+
+            $adjustmentEntrances = DB::table('article_entrance')
                 ->where('article_id', $product->id)
                 ->whereRaw('count != released_count')
                 ->get();
-
         }
 
-        Cache::put('user[' . Auth::id() . '][entrances]', $entrances);
+        Cache::put('user[' . Auth::id() . '][entrances]', $adjustmentEntrances);
 
-        $prices = Price::where('company_id', $user->company_id)->get();
+        $prices = Markup::where('company_id', $user->company_id)->get();
 
         //Интернет-магазин
 
@@ -222,7 +225,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'prices', 'request', 'stores', 'shopFields', 'lastEntrancePrice', 'priceSource', 'entrances'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'prices', 'request', 'stores', 'shopFields', 'lastEntrancePrice', 'priceSource', 'adjustmentEntrances', 'entrances'))->render(),
             'product' => $product
         ]);
     }
@@ -269,15 +272,17 @@ class ProductController extends Controller
             ->selectRaw('id, article_id, SUM(count) as count, SUM(released_count) as released_count')
             ->get();
 
-        foreach ($products as $product) {
+        foreach ($products as $index => $product) {
 
             $availableCount = $availableCounts->where('article_id', $product->id)->first();
 
-            $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
-            $product->price = $product->getPrice();
-            $product->supplier_name = $product->supplier->name;
-            $product->product_id = $product->id;
-            $product->shipped_count = 0;
+            $products[$index]['available'] = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
+            $products[$index]['price'] = $product->getPrice();
+            $products[$index]['supplier_name'] = $product->supplier->name;
+            $products[$index]['product_id'] = $product->id;
+            $products[$index]['shipped_count'] = 0;
+
+//            dd($product);
         }
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
@@ -337,8 +342,6 @@ class ProductController extends Controller
             if($request->entrances) {
 
                 $oldEntrancesState = Cache::get('user[' . Auth::id() . '][entrances]');
-
-                $adjustmentData = [];
 
                 foreach ($request->entrances as $entrance_id => $params) {
 

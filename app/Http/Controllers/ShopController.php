@@ -16,7 +16,7 @@ use App\Mail\Shop\ConfirmOrder;
 use App\Models\Article;
 use App\Models\ClientOrder;
 use App\Models\Order;
-use App\Models\Price;
+use App\Models\Markup;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\User;
@@ -92,7 +92,7 @@ class ShopController extends Controller
     {
         $user = Auth::user();
 
-        $prices = Price::where('company_id', $user->company_id)->get();
+        $prices = Markup::where('company_id', $user->company_id)->get();
 
         return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
     }

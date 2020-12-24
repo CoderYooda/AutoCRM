@@ -17,7 +17,7 @@
             </li>
             <li id="setting-index-tab" data-tab="prices" data-default="true" class="@if($request['active_tab'] == 'prices') active @endif tab">
                 <a href="{{ route('SettingsIndex', ['active_tab' => 'prices', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
-                    <span class="nav-text">Ценообразование</span>
+                    <span class="nav-text">Наценка</span>
                 </a>
             </li>
             <li id="setting-cashbox-tab" data-tab="cashbox" class="@if($request['active_tab'] == 'cashbox') active @endif tab">

@@ -56,11 +56,7 @@ class PermissionController extends Controller
 	public static function canByPregMatch($string)
     {
         if(!Gate::allows($string)){
-            throw new HttpResponseException(
-                request()->expectsJson() ?
-                    self::closedResponse('Вам запрещено ' . mb_strtolower($string) . '.') :
-                    abort(403, 'Вам запрещено ' . mb_strtolower($string) . '.')
-            );
+            throw new \Exception('Вам запрещено ' . mb_strtolower($string) . '.', 403);
         }
     }
 

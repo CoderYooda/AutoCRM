@@ -112,8 +112,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#{{$class}}_tab_adjustments" aria-controls="{{$class}}_tab_adjustments" data-toggle="tab" data-target="#{{$class}}_tab_adjustments">
+                                Корректировка остатков
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
-                                Корректировка
+                                Журнал поступлений
                                 <span class="float-right helper_danger d-none-f">
                                     <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                                 </span>
@@ -128,6 +136,7 @@
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')
                         @include(get_template() . '.product.dialog.tabs.online_shop')
+                        @include(get_template() . '.product.dialog.tabs.adjustments')
                         @include(get_template() . '.product.dialog.tabs.entrances')
                     </div>
                 </div>

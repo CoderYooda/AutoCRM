@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\SettingsController;
 use App\Models\Cashbox;
 use App\Models\Partner;
-use App\Models\Price;
+use App\Models\Markup;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -172,7 +172,7 @@ class RegisterController extends Controller
 
         //
 
-        $price = Price::create([
+        $price = Markup::create([
             'company_id' => $company->id,
             'name' => 'Розничная'
         ]);
@@ -183,7 +183,7 @@ class RegisterController extends Controller
             'percent' => 30
         ];
 
-        $price->types()->create($params);
+        $price->options()->create($params);
 
         return $user;
     }

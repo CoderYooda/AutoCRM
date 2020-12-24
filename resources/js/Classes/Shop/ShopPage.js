@@ -1,5 +1,6 @@
 import ymaps from 'ymaps';
 import TextEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import '@ckeditor/ckeditor5-build-classic/build/translations/ru';
 import Croppr from "croppr";
 
 class shopPage {
@@ -44,11 +45,14 @@ class shopPage {
 
         if (this.active_tab == 'contacts' || this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
 
+            const config = {
+                toolbar: [ "heading","|","bold","italic","link","bulletedList","numberedList","|","indent","outdent","|","blockQuote","insertTable","mediaEmbed","undo","redo" ],
+                language: 'ru',
+            };
+
             let editor_element = document.querySelector('#editor');
 
-            TextEditor.create(editor_element, {
-                language: 'ru',
-            })
+            TextEditor.create(editor_element, config)
                 .then(newEditor => {
                     this.texteditor = newEditor
                 });
