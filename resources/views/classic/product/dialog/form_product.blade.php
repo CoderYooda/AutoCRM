@@ -119,14 +119,16 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
-                                Журнал поступлений
-                                <span class="float-right helper_danger d-none-f">
-                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
-                                </span>
-                            </a>
-                        </li>
+                        @if($product)
+                            <li class="nav-item">
+                                <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
+                                    Журнал поступлений
+                                    <span class="float-right helper_danger d-none-f">
+                                        <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                    </span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
                 <div class="col-sm-8 no-pl">

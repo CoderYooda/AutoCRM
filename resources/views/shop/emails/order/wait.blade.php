@@ -16,7 +16,7 @@
 
     <span style="font-weight: 800;font-size: 14px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Ваш заказ №{{ $order->id }} на сумму {{ correct_price($order->total_price, true) }} готов к выдаче.</span>
     <br/>
-    <span style="font-weight: 800;font-size: 14px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Забрать заказ вы можете по адресу: {{ $order->pickupAddress->name }}</span>
+    <span style="font-weight: 800;font-size: 14px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Забрать заказ вы можете по адресу: {{ $order->shop->address_name }}</span>
 
     <div class="form-group" style="margin-top: 20px;text-align: center;">
         <a target="_blank" style="background: #1F98E9;border-radius: 4px;font-weight: bold;font-size: 14px;margin-top: 24px;letter-spacing: 0.04em;padding: 6px 24px;color: #FFFFFF;text-decoration: unset;" href="{{ $order->path() }}">Просмотреть заказ</a>

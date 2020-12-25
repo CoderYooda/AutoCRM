@@ -101,7 +101,7 @@ class StoreImportProduct implements ShouldQueue
             'warehouse'            => ['array'],
             'warehouse.*'          => ['string', 'max:2'],
             'count'                => ['integer', 'between:0,1000000'],
-            'price'                => ['numeric', 'between::0,1000000'],
+            'price'                => ['numeric', 'between:0,1000000'],
             'barcode_manufacturer' => ['string'],
             'barcode_warehouse'    => ['string']
         ]);

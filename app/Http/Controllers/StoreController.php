@@ -322,6 +322,7 @@ class StoreController extends Controller
                 fclose($handle);
             }
         }
+
         $params = [
             'store' => Store::find($request->store_id),
             'user_id' => Auth::id(),

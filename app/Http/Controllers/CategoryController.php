@@ -100,9 +100,7 @@ class CategoryController extends Controller
                 ], 200);
             }
 
-            if($parent && $category->category_id != $request->category_id) {
-                $category->makeChildOf($parent);
-            }
+            $oldCategoryId = $category->id;
 
             $category->fill($request->except('image'));
             $category->creator_id = Auth::id();
@@ -110,6 +108,10 @@ class CategoryController extends Controller
             $category->type = $parent->type ?? null;
 
             $category->save();
+
+            if($parent && $oldCategoryId != $request->category_id) {
+                $category->makeChildOf($parent);
+            }
 
             UA::makeUserAction($category, 'create');
 
