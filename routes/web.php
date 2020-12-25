@@ -369,3 +369,5 @@ Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Ad
     Route::post('/users/{user}/update', 'UserController@update')->name('UpdateUser');
     Route::post('/system_message/send', 'UserController@sendSystemMessageTo')->name('SendMessage');
 });
+
+Route::post('/member/store', 'ReferalSystemController@store')->name('StoreReferalPartner');

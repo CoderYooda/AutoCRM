@@ -10,12 +10,33 @@ class ReferalDialog extends Modal {
     }
 
     init() {
+        this.addPhoneMask();
         this.linked();
     }
 
 
     linked()
     {
+    }
+
+    addPhoneMask(){
+        let phone = document.querySelector('#phone_input');
+        this.phoneMask = window.IMask(phone, {
+
+                mask: '+{7}(000)000-00-00',
+                lazy: false,
+                placeholderChar: '_',
+
+                dispatch: function (appended, dynamicMasked) {
+                    var number = (dynamicMasked.value + appended).replace(/\D/g,'');
+
+                    return dynamicMasked.compiledMasks.find(function (m) {
+                        return number.indexOf(m.startsWith) === 0;
+                    });
+                }
+            }
+        );
+        document.getElementById('phone_input').focus();
     }
 
     save(elem) {

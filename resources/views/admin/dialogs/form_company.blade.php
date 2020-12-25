@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label>Телефон руководителя</label>
                     <div class="input-group mb-3">
-                        <input type="text" onclick="this.select();" name="phone" value="{{ $company->getFirstCompanyMember()->phone }}" class="form-control" placeholder="Телефон руководителя" disabled />
+                        <input type="text" onclick="this.select();" name="phone" id="phone_input" value="{{ $company->getFirstCompanyMember()->phone }}" class="form-control" placeholder="Телефон руководителя" disabled />
                     </div>
                 </div>
 
