@@ -106,13 +106,15 @@ class ShopController extends Controller
     {
         $shop = Auth::user()->shop;
 
-        $paymentMethods = $shop->paymentMethods->toArray();
-
         $filteredArray = [];
 
-        foreach ($paymentMethods as $paymentMethod) {
-            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
-            $filteredArray[$paymentMethod['name']] = $paymentMethod;
+        if($shop) {
+            $paymentMethods = $shop->paymentMethods ? $shop->paymentMethods->toArray() : [];
+
+            foreach ($paymentMethods as $paymentMethod) {
+                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+                $filteredArray[$paymentMethod['name']] = $paymentMethod;
+            }
         }
 
         $paymentMethods = $filteredArray;

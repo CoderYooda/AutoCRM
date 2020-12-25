@@ -133,7 +133,7 @@
                                     </div>
                                 </div>
                                 <div class="pr-10">
-                                    <div style="line-height: 14px;">{{ Auth::user()->name }}</div>
+                                    <div style="line-height: 14px;">{{ Auth::user()->partner->fio }}</div>
                                     <div style="font-size: 12px;font-weight: bold;line-height: 14px;">{{ Auth::user()->roles->first()->name }}</div>
                                 </div>
                             </div>

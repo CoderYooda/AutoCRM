@@ -31,7 +31,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/prices/{price}/percent', 'PriceController@percent')->name('GetPricePercent');
 
     #Пользователь
-    Route::get('/user/', 'UserController@index')->name('UserIndex');
+    Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
     Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 

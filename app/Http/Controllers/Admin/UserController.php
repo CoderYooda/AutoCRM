@@ -49,9 +49,10 @@ class UserController extends Controller
             ->orderBy($field, $dir)
             ->paginate($request->size);
 
-        foreach ($users as &$user) {
-            $user->role = $user->roles->first()->name;
-            $user->company_name = 'ID(' . $user->company_id . '): ' . ($user->company->name ?? 'Новая компания');
+        foreach ($users as $index => $user) {
+            $users[$index]['name'] = $user->partner->fio;
+            $users[$index]['role'] = $user->roles->first()->name;
+            $users[$index]['company_name'] = 'ID(' . $user->company_id . '): ' . ($user->company->name ?? 'Новая компания');
         }
 
         return response()->json([

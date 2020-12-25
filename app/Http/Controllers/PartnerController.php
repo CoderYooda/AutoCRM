@@ -161,7 +161,6 @@ class PartnerController extends Controller
                 $password = rand(10000, 99999);
 
                 $user = User::updateOrCreate(['phone' => $request['phone']], [
-                    'name' => $partner->outputName(),
                     'company_id' => Auth::user()->company->id,
                     'password' => bcrypt($password)
                 ]);

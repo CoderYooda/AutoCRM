@@ -13,10 +13,10 @@
         <div class="entrance copy d-none">
             <div class="field">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
             <div class="field with_input">
-                <input type="number" min="0" name="entrances[new][price]" value="0">
+                <input type="number" min="0" name="entrances[new][price]" value="{{ $product ? $product->getPrice() : 0 }}">
             </div>
             <div class="field with_input">
-                <input type="number" min="0" name="entrances[new][count]" value="0">
+                <input type="number" min="0" name="entrances[new][count]" value="{{ $product ? $product->getCountInCurrentStore() : 0 }}">
             </div>
         </div>
 
