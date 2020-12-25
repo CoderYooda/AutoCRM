@@ -123,8 +123,8 @@ class MskRechie implements ProviderInterface
                 'rest' => $store['stock'],
                 'days_min' => $store['ddays'],
                 'days_max' => $store['ddays'],
-                'packing' => $item['minq'] > 0 ? $item['minq'] : 1,
-                'min_count' => $item['minq'] > 0 ? $item['minq'] : 1,
+                'packing' => $store['minq'] > 0 ? $store['minq'] : 1,
+                'min_count' => $store['minq'] > 0 ? $store['minq'] : 1,
                 'delivery' => $store['ddays'] . ' дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['brand'],
@@ -156,10 +156,8 @@ class MskRechie implements ProviderInterface
             $result = file_get_contents($url);
             $result = json_decode($result, true);
         } catch (\Exception $exception) {
-            $result = [];
+            $result = $exception;
         }
-
-
 
         $this->errorHandler($result);
 
@@ -168,7 +166,6 @@ class MskRechie implements ProviderInterface
 
     private function errorHandler($response) : void
     {
-
         if(isset($response['result']['status'])) {
             if($response['result']['status'] == '1') {
                 throw new \Exception('Not auth', 401);
@@ -196,7 +193,7 @@ class MskRechie implements ProviderInterface
 
         //Если эксепшен не был выкинут, то пропускаем
 
-        $response = $this->searchBrandsCount('k1279');
+        $this->searchBrandsCount('k1279');
 
         return true;
 

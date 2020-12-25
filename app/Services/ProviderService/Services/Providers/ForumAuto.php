@@ -150,18 +150,28 @@ class ForumAuto implements ProviderInterface
 
         try {
             $result = file_get_contents($url);
-
             $result = json_decode($result, true);
         }
         catch (\Exception $exception) {
-           $result = [];
+           $result = $exception;
         }
+//        dd($result);
 
         if(isset($result['errors'])) return [];
 
         return $result;
     }
 
+    private function errorHandler($response) : void
+    {
+        if(!empty($response['Message']) && strcasecmp($response['Message'],"Ошибка авторизации") == 0) {
+            throw new \Exception('Not auth', 401);
+        }
+
+        if(empty($response['List'])) {
+            throw new \Exception('Not found', 404);
+        }
+    }
     public function getSelectFieldValues(string $field_name): array
     {
         return [];
@@ -169,12 +179,13 @@ class ForumAuto implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-//        if(!isset($fields['api_key'])) return false;
-//
-//        $this->api_key = $fields['api_key'];
-//
-//        //Если эксепшен не был выкинут, то пропускаем
-//        $response = $this->searchBrandsCount('k1279');
+        if(!isset($fields['login']) && !isset($fields['password'])) return false;
+
+        $this->login = $fields['login'];
+        $this->password = $fields['password'];
+
+        //Если эксепшен не был выкинут, то пропускаем
+        $this->searchBrandsCount('k1279');
 
         return true;
     }

@@ -23,6 +23,17 @@ trait ABCP
     /** @var User $user */
     protected $user = null;
 
+    protected $errors = [
+        401 => [
+            'search' => 'Forbidden',
+            'return' => 'Not auth'
+        ],
+        404 => [
+            'search' => 'Not Found',
+            'return' => 'Not Found'
+        ],
+    ];
+
     public function __construct()
     {
         /** @var ShopManager $shopManager */
@@ -169,14 +180,15 @@ trait ABCP
     }
     private function errorHandler($response) : void
     {
-        dd($response);
-        if(array_key_exists('errorCode', $response) && $response['errorMessage'] != 'No results') {
-            throw new \Exception('Not auth', 401);
-        }
+        if (is_object($response)) {
 
-//        if(empty($response['result'])) {
-//            throw new \Exception('Not found', 404);
-//        }
+            $errorMessage = $response->getMessage();
+
+            foreach ($this->errors as $code => $info) {
+                if (strpos($errorMessage, $info['search']) === false) continue;
+                throw new \Exception($info['return'], $code);
+            }
+        }
     }
 
     public function getSelectFieldValues(string $field_name): array

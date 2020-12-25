@@ -9,7 +9,7 @@ class StParts implements ProviderInterface
 {
     use ABCP;
 
-    protected $host = 'http://autorus.public.api.abcp.ru/';
+    protected $host = 'http://stparts.ru.public.api.abcp.ru/';
 
     protected $name = 'STparts';
     protected $service_key = 'stparts';

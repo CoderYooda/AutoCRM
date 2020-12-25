@@ -174,22 +174,25 @@ class Mikado implements ProviderInterface
         curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($params));
         $result = curl_exec($handle);
 
-        $info = curl_getinfo($handle);
-
-        curl_close($handle);
-
-        if ($info['http_code'] != 200) {
-            throw_error('Ошибка авторизации.');
-        }
-
         $result = simplexml_load_string($result);
 
         $result = json_encode($result);
         $result = (array)json_decode($result, true);
 
+        $this->errorHandler($result);
         return $result;
     }
 
+    private function errorHandler($response) : void
+    {
+        if(!empty($response['Message']) && strcasecmp($response['Message'],"Ошибка авторизации") == 0) {
+            throw new \Exception('Not auth', 401);
+        }
+
+        if(empty($response['List'])) {
+            throw new \Exception('Not found', 404);
+        }
+    }
     public function getSelectFieldValues(string $field_name): array
     {
         return [];
@@ -206,11 +209,7 @@ class Mikado implements ProviderInterface
             'ZakazCode' => 'xka-k1279'
         ];
 
-        $result = $this->query('ws1/service.asmx/Code_Info', $params);
-
-        if ($result['CodeType'] == 'NotDefined') {
-            throw_error('Mikado: Ошибка авторизации логина или пароля.');
-        }
+        $this->query('ws1/service.asmx/Code_Info', $params);
 
         return true;
     }

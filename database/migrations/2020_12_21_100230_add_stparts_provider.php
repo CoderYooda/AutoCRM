@@ -13,7 +13,7 @@ class AddStpartsProvider extends Migration
         \App\Models\Service::create([
             'category_id' => 0,
             'name' => 'STparts',
-            'url' => '',
+            'url' => 'https://stparts.ru/',
             'key' => $this->key
         ]);
 
@@ -35,6 +35,6 @@ class AddStpartsProvider extends Migration
     public function down()
     {
         \App\Models\Service::where('key', $this->key)->delete();
-        \App\Models\ServiceField::where('key', $this->key)->delete();
+        \App\Models\ServiceField::where('service_key', $this->key)->delete();
     }
 }
