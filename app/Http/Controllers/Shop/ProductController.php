@@ -33,7 +33,7 @@ class ProductController extends Controller
 
         if($this->shop->supplier_offers) {
 
-            $price = $this->shop->price;
+            $markup = $this->shop->markup;
 
             foreach ($providers->activated() as $provider_key => $provider) {
 
@@ -45,7 +45,7 @@ class ProductController extends Controller
 
                         $productPrice = $order['price'];
 
-                        $percent = $price->getPercentByAmount($productPrice);
+                        $percent = $markup->getPercentByAmount($productPrice);
 
                         $providersOrders[$provider_key][$type][$key]['price'] = $productPrice + sum_percent($productPrice, $percent);
                         $providersOrders[$provider_key][$type][$key]['model']['hash_info']['price'] = $productPrice + sum_percent($productPrice, $percent);

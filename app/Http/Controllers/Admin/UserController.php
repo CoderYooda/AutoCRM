@@ -37,8 +37,10 @@ class UserController extends Controller
         $users = User::with('roles')
             ->when(strlen($request->search), function (Builder $q) use ($request) {
                 $q->where('id', 'like', "%{$request->search}%")
-                    ->orWhere('name', 'like', "%{$request->search}%")
-                    ->orWhere('phone', 'like', "%{$request->search}%");
+                    ->orWhere('phone', 'like', "%{$request->search}%")
+                    ->orWhereHas('partner', function (Builder $q) use($request) {
+                        $q->where('fio', 'like', "%{$request->search}%");
+                    });
             })
             ->when($request->has('company_id'), function (Builder $query) use ($request) {
                 $query->where('company_id', $request->company_id);
@@ -46,7 +48,9 @@ class UserController extends Controller
             ->whereHas('partner', function (Builder $query) {
                 $query->where('category_id', 5);
             })
-            ->orderBy($field, $dir)
+            ->when($field != 'name', function (Builder $query) use($field, $dir) {
+                $query->orderBy($field, $dir);
+            })
             ->paginate($request->size);
 
         foreach ($users as $index => $user) {
