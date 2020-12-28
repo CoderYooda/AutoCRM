@@ -30,7 +30,7 @@ trait ABCP
         ],
         404 => [
             'search' => 'Not Found',
-            'return' => 'Not Found'
+            'return' => 'Not found'
         ],
     ];
 

@@ -37,7 +37,7 @@ class Trinity implements ProviderInterface
         ],
         404 => [
             'search' => 0,
-            'return' => 'Not Found'
+            'return' => 'Not found'
         ],
     ];
 

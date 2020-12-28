@@ -36,7 +36,7 @@ class AutoEuro implements ProviderInterface
         ],
         404 => [
             'search' => 'Bad Request',
-            'return' => 'Not Found'
+            'return' => 'Not found'
         ],
     ];
 

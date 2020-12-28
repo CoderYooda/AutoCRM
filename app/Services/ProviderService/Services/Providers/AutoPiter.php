@@ -45,11 +45,12 @@ class AutoPiter implements ProviderInterface
 
     public function searchBrandsCount(string $article): array
     {
-        $params = [
-            'Number' => $article
-        ];
 
-        $response = $this->query('Authorization', $params);
+//        $params = [
+//            'Number' => $article
+//        ];
+
+        $response = $this->query('Authorization');
 
 
         return array_column($response, 'brand');
@@ -138,18 +139,23 @@ class AutoPiter implements ProviderInterface
         return $results;
     }
 
-    protected function query($method, $params)
+    protected function query($method, $params =[])
     {
+        $params['UserID'] = $this->user_id;
+        $params['Password'] = $this->password;
+        $params['Save'] = true;
+
+
         $client = new \SoapClient($this->host);
-        $response = $client->$method($this->user_id, $this->password, true);
+
+        $response = $client->Authorization($this->user_id, $this->password,true);
 
         dd($response);
 
         $url = $this->host;
 
 
-        $params['login'] = $this->user_id;
-        $params['pass'] = $this->password;
+
 
         $url .= '?' . http_build_query($params);
         try {
