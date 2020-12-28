@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Events\ModelWasStored;
 use App\Mail\Shop\FeedbackMail;
 use App\Mail\Shop\NewOrderEmail;
 use App\Models\DeliveryAddress;
@@ -201,6 +202,8 @@ class CartController extends Controller
             Mail::to($partner->email)->send(new ModerateOrder($order));
 
             $cart->clear();
+
+            event(new ModelWasStored($shop->company_id, 'OrderStored'));
 
             return redirect($order->path());
         });
