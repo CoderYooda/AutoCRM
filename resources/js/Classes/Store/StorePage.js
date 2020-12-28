@@ -458,8 +458,8 @@ class storePage extends Page{
                 });
             }
         })
-        .catch(response => {
-            dd(response);
+        .catch(error => {
+            console.log(error);
         })
         .finally(() => {
             togglePreloader(table_element, false);

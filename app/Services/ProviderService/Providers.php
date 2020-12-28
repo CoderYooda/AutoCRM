@@ -11,6 +11,11 @@ class Providers
     /** @var ProviderInterface[] */
     private $providers;
 
+    protected static $errors = [
+        401 => 'Ошибка авторизации',
+        404 => 'Ничего не найдено'
+    ];
+
     public function __construct($providers)
     {
         $this->providers = $providers;
@@ -43,5 +48,14 @@ class Providers
         }
 
         return null;
+    }
+
+    public static function getErrorMessageByCode($code)
+    {
+        foreach (self::$errors as $errorCode => $message) {
+            if($code == $errorCode) return $message;
+        }
+
+        return 'Неизвестная ошибка';
     }
 }

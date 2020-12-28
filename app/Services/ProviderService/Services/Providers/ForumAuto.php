@@ -9,7 +9,7 @@ use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
-use SoapClient;
+use GuzzleHttp\Client;
 
 class ForumAuto implements ProviderInterface
 {
@@ -29,6 +29,20 @@ class ForumAuto implements ProviderInterface
     /** @var User $user */
     protected $user = null;
 
+    /** @var Client */
+    protected $client;
+
+    protected $errors = [
+        401 => [
+            'search' => '10',
+            'return' => 'Not auth'
+        ],
+        404 => [
+            'search' => '27',
+            'return' => 'Not found'
+        ]
+    ];
+
     public function __construct()
     {
         /** @var ShopManager $shopManager */
@@ -42,6 +56,8 @@ class ForumAuto implements ProviderInterface
 
         $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
         $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
+
+        $this->client = new Client();
     }
 
     public function searchBrandsCount(string $article): array
@@ -148,29 +164,45 @@ class ForumAuto implements ProviderInterface
         return $results;
     }
 
-    protected function query($action, $params)
+    protected function query($action, $params = [], $method ='GET')
     {
         $url = $this->host . $action;
 
         $params['login'] = $this->login;
         $params['pass'] = $this->password;
 
-        $url .= '?' . http_build_query($params);
-
         try {
-            $result = file_get_contents($url);
-
-            $result = json_decode($result, true);
+            $result = $this->client->request($method, $url, ['query' => $params]);
         }
         catch (\Exception $exception) {
-           $result = [];
+            $result =$exception;
         }
 
-        if(isset($result['errors'])) return [];
+        $this->errorHandler($result);
+
+        $json = $result->getBody();
+
+        $result = json_decode($json, true);
 
         return $result;
     }
 
+    private function errorHandler($response) : void
+    {
+        $json = $response->getBody();
+
+        $result = json_decode($json, true);
+
+        if(isset($result['errors'])) {
+
+            $errors = $result['errors'];
+
+            foreach ($this->errors as $code => $info) {
+                if ($errors['FaultCode'] != $info['search']) continue;
+                throw new \Exception($info['return'], $code);
+            }
+        }
+    }
     public function getSelectFieldValues(string $field_name): array
     {
         return [];
@@ -178,18 +210,20 @@ class ForumAuto implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-//        if(!isset($fields['api_key'])) return false;
-//
-//        $this->api_key = $fields['api_key'];
-//
-//        //Если эксепшен не был выкинут, то пропускаем
-//        $response = $this->searchBrandsCount('k1279');
+        if(!isset($fields['login']) && !isset($fields['password'])) return false;
+
+        $this->login = $fields['login'];
+        $this->password = $fields['password'];
+
+        //Если эксепшен не был выкинут, то пропускаем
+        $this->searchBrandsCount('k1279');
 
         return true;
     }
 
     public function sendOrder(array $data): bool
     {
+
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
@@ -238,6 +272,11 @@ class ForumAuto implements ProviderInterface
     }
 
     public function getSubdivisions(): array
+    {
+        return [];
+    }
+
+    public function getTimeOfShipment(): array
     {
         return [];
     }

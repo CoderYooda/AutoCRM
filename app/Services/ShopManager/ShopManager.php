@@ -4,6 +4,7 @@
 namespace App\Services\ShopManager;
 
 use App\Models\Shop;
+use Auth;
 
 class ShopManager
 {
@@ -19,8 +20,6 @@ class ShopManager
         $isOurDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
 
         $query = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
-
-//        dd(\Auth::user());
 
         $this->shop = $query->first();
     }

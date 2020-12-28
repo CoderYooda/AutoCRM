@@ -23,6 +23,17 @@ trait ABCP
     /** @var User $user */
     protected $user = null;
 
+    protected $errors = [
+        401 => [
+            'search' => 'Forbidden',
+            'return' => 'Not auth'
+        ],
+        404 => [
+            'search' => 'Not Found',
+            'return' => 'Not found'
+        ],
+    ];
+
     public function __construct()
     {
         /** @var ShopManager $shopManager */
@@ -169,14 +180,24 @@ trait ABCP
             $result = file_get_contents($full_path, null, stream_context_create($context));
             $result = (array)json_decode($result, true);
         } catch (Exception $exception) {
-//            dd($exception);
+            $result = $exception;
         }
 
-        if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
-            throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
-        }
+        $this->errorHandler($result);
 
         return $result;
+    }
+    private function errorHandler($response) : void
+    {
+        if (is_object($response)) {
+
+            $errorMessage = $response->getMessage();
+
+            foreach ($this->errors as $code => $info) {
+                if (strpos($errorMessage, $info['search']) === false) continue;
+                throw new \Exception($info['return'], $code);
+            }
+        }
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -332,6 +353,11 @@ trait ABCP
     }
 
     public function getSubdivisions(): array
+    {
+        return [];
+    }
+
+    public function getTimeOfShipment(): array
     {
         return [];
     }

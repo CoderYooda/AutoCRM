@@ -34,4 +34,6 @@ interface ProviderInterface
     public function sendOrder(array $products): bool;
 
     public function getSubdivisions(): array;
+
+    public function getTimeOfShipment(): array;
 }

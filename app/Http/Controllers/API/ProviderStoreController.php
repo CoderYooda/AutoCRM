@@ -22,7 +22,7 @@ class ProviderStoreController extends Controller
     {
         PermissionController::canByPregMatch('Смотреть склады поставщиков');
 
-        $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
+//        $request->search = preg_replace('/[^a-z\d]/', '', $request->search);
 
         $counts = [];
         $manufacturers = [];
@@ -35,9 +35,10 @@ class ProviderStoreController extends Controller
             }
             catch (\Exception $exception) {
 
-                $counts[$service_key] = [];
+                $code = $exception->getCode();
 
-                $errors[$service_key] = 'Ошибка получения ответа, проверьте соединение интернета и настройки.';
+                $counts[$service_key] = [];
+                if($code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
             }
 
             if ($service_key == $request->selected_service) {
@@ -247,6 +248,7 @@ class ProviderStoreController extends Controller
                 'delivery_address_id' => $providerParams['delivery_address_id'] ?? null,
                 'date_shipment_id' => $providerParams['date_shipment_id'] ?? null,
                 'subdivision_id' => $providerParams['subdivision_id'] ?? null,
+                'pickup_time_id' => $providerParams['pickup_time_id'] ?? null
             ];
 
             $provider->sendOrder($data);
