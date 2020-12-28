@@ -53,7 +53,16 @@ class ForumAuto implements ProviderInterface
 
         $response = $this->query('listGoods', $params);
 
-        return array_column($response, 'brand');
+        $results = [];
+
+        foreach ($response as $product) {
+            $results[$product['brand']] = [
+                'article' => $product['art'],
+                'desc' => $product['name']
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string
