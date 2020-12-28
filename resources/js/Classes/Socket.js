@@ -57,20 +57,8 @@ class Socket{
                     })
                     .listen('StoreImportFinish', function(e){
 
-                        console.log(e.info, e.html);
-
                         try {
                             window.storeImportDialog.finishUpload(e.info, e.html);
-                        }
-                        catch (e) {
-                            console.log(e);
-                        }
-                    })
-                    .listen('OrderUpdated', function(e){
-
-                        try {
-                            window.notification.notify('success', 'Поступил новый заказ');
-                            document.querySelector('#orders_count').innerHTML = e.orders_count;
                         }
                         catch (e) {
                             console.log(e);

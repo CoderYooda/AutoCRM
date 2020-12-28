@@ -569,6 +569,11 @@ class storePage extends Page{
 
         events.forEach((event) => {
             document.addEventListener(event, (e) => {
+
+                if(event == 'OrderStored') {
+                    document.querySelector('#orders_count').innerHTML = e.orders_count;
+                }
+
                 object.table.freshData();
             });
         });
