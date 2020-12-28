@@ -327,4 +327,9 @@ class Trinity implements ProviderInterface
     {
         return [];
     }
+
+    public function getTimeOfShipment(): array
+    {
+        return [];
+    }
 }

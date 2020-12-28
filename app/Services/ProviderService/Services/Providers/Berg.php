@@ -10,6 +10,7 @@ use App\Traits\CartProviderOrderCreator;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 
 class Berg implements ProviderInterface
 {
@@ -28,15 +29,13 @@ class Berg implements ProviderInterface
     /** @var User $user */
     protected $user = null;
 
+    /** @var Client */
+    protected $client;
+
     protected $errors = [
         401 => [
-            'search' => 'Unauthorized',
             'return' => 'Not auth'
-        ],
-        404 => [
-            'search' => [],
-            'return' => 'Not Found'
-        ],
+        ]
     ];
 
 
@@ -52,6 +51,8 @@ class Berg implements ProviderInterface
         $this->company = $shop->company ?? $this->user->company;
 
         $this->api_key = $this->company->getServiceFieldValue($this->service_key, 'api_key');
+
+        $this->client = new Client();
     }
 
     public function searchBrandsCount(string $article): array
@@ -188,63 +189,56 @@ class Berg implements ProviderInterface
 
     protected function query($action, $params = [], $method ='GET')
     {
-        $url = $this->host . $action . '.json?key=' . $this->api_key;
+        $url = $this->host . $action;
 
-        if ($method == 'GET') {
-            $url .= '&' . http_build_query($params);
-        }
-
-        $params['order']['dispatch_at'] = '2013-12-12';
-
-//        dd($params);
-
-//dd(http_build_query($params));
-        $context = [
-            'http' => [
-                'method'  => $method,
-                'header'  => 'Content-Type: application/x-www-form-urlencoded',
-                'content' => http_build_query($params)
-            ],
-        ];
-
-        //dd($context);
+        $bodyType = $method == 'GET' ? 'query': 'body';
 
         try {
+            $result = $this->client->request($method, $url, [
 
-            $result = file_get_contents($url, null, stream_context_create($context));
-            $result = json_decode($result, true);
-
-        } catch (\Exception $exception) {
-
-            dd($exception);
-            $result = $exception;
+                $bodyType => http_build_query($params),
+                'headers' => [
+                    'Content-Type'=>'application/x-www-form-urlencoded',
+                    'X-Berg-API-Key' => '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e730'
+                ]]);
+        }
+        catch (\Exception $exception) {
+          $result =$exception;
         }
 
         $this->errorHandler($result);
+
+        $json = $result->getBody();
+
+        $result = json_decode($json, true);
 
         return $result;
     }
 
     private function errorHandler($response) : void
     {
-        if (is_object($response)) {
+        $methods = [
+            'Response' => 'getStatusCode',
+            'ClientException' => 'getCode'
+        ];
 
-            $errorMessage = $response->getMessage();
+        $class = class_basename($response);
 
-            foreach ($this->errors as $code => $info) {
-                if (strpos($errorMessage, $info['search']) === false) continue;
-                throw new \Exception($info['return'], $code);
-            }
-        } else {
+        $method = $methods[$class];
 
-            $errorMessage = $response;
+        $errorCode = $response->$method();
 
-            foreach ($this->errors as $code => $info) {
-                if (isset($errorMessage['resources']) && $errorMessage['resources'] == $info['search'])
-                    throw new \Exception($info['return'], $code);
-
-            }
+        foreach ($this->errors as $code => $info) {
+            if ($errorCode != $code) continue;
+            throw new \Exception($info['return'], $code);
         }
+
+        $json = $response->getBody();
+
+        $result = json_decode($json, true);
+
+        if (isset($result['resources']) && empty($result['resources']))
+            throw new \Exception('Not found', 404);
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -287,12 +281,17 @@ class Berg implements ProviderInterface
                 'payment_type' => $data['payment_type_id'],
                 'dispatch_type' => $data['delivery_type_id'],
                 'dispatch_at' => $data['date_shipment_id'],
-//                'dispatch_time' => 1, //Тестовое (метод времени отправки не реализован на фронте
+                'dispatch_time' => 1, //Тестовое (метод времени отправки не реализован на фронте
                 'comment' => $data['comment'],
                 'shipment_address_id' => $data['delivery_address_id'],
                 'items' => $products
             ]
         ];
+
+        if($params['order']['dispatch_type'] == 2) {
+
+            unset($params['order']['shipment_address_id']);
+        }
 
         $this->query('/ordering/place_order', $params, 'POST'); //Подтверждение заказа
 
@@ -340,26 +339,24 @@ class Berg implements ProviderInterface
     {
         return [
             '2' => 'Самовывоз',
-            '3' => 'Доставка',
-            '60580' => 'Срочная доставка'
+            '3' => 'Доставка'
         ];
     }
 
     public function getDateOfShipment(): array
     {
-        return [];
-//        $currentDate = Carbon::now();
-//
-//        $dates = [];
-//
-//        for($i = 0; $i < 30; $i++) {
-//
-//            $currentDate = $currentDate->addDay();
-//
-//            $dates[$currentDate->format('Y.M.D')] = $currentDate->format('d.m.Y');
-//        }
-//
-//        return $dates;
+        $currentDate = Carbon::now();
+
+        $dates = [];
+
+        for($i = 0; $i < 30; $i++) {
+
+            $currentDate = $currentDate->addDay();
+
+            $dates[$currentDate->format('Y-m-d')] = $currentDate->format('d.m.Y');
+        }
+
+        return $dates;
     }
 
     public function getTimeOfShipment(): array

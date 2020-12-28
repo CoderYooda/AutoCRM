@@ -264,4 +264,9 @@ class MskRechie implements ProviderInterface
     {
         return [];
     }
+
+    public function getTimeOfShipment(): array
+    {
+        return [];
+    }
 }

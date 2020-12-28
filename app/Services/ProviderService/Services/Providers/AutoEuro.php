@@ -336,4 +336,9 @@ class AutoEuro implements ProviderInterface
 
         return $formattedArray;
     }
+
+    public function getTimeOfShipment(): array
+    {
+        return [];
+    }
 }

@@ -247,6 +247,7 @@ class ProviderStoreController extends Controller
                 'delivery_address_id' => $providerParams['delivery_address_id'] ?? null,
                 'date_shipment_id' => $providerParams['date_shipment_id'] ?? null,
                 'subdivision_id' => $providerParams['subdivision_id'] ?? null,
+                'pickup_time_id' => $providerParams['pickup_time_id'] ?? null
             ];
 
             $provider->sendOrder($data);

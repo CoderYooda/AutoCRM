@@ -237,4 +237,10 @@ class AutoPiter implements ProviderInterface
     {
         return [];
     }
+
+    public function getTimeOfShipment(): array
+    {
+        return [];
+    }
+
 }

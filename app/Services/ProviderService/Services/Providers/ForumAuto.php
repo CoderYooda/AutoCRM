@@ -155,7 +155,7 @@ class ForumAuto implements ProviderInterface
         catch (\Exception $exception) {
            $result = $exception;
         }
-//        dd($result);
+        dd($result);
 
         if(isset($result['errors'])) return [];
 
@@ -240,6 +240,11 @@ class ForumAuto implements ProviderInterface
     }
 
     public function getSubdivisions(): array
+    {
+        return [];
+    }
+
+    public function getTimeOfShipment(): array
     {
         return [];
     }

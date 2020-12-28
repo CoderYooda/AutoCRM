@@ -347,4 +347,9 @@ trait ABCP
     {
         return [];
     }
+
+    public function getTimeOfShipment(): array
+    {
+        return [];
+    }
 }
