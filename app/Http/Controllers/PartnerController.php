@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Category;
 use App\Models\Partner;
@@ -221,17 +222,14 @@ class PartnerController extends Controller
             DB::table('salary_schemas_partner')->insert($salary_schemas);
         }
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $message,
-                //'container' => 'ajax-table-partner',
-                //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
-                'event' => 'PartnerStored',
-                'id' => $partner->id
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($partner->company_id, 'PartnerStored'));
+
+        return response()->json([
+            'message' => $message,
+            //'container' => 'ajax-table-partner',
+            //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
+            'id' => $partner->id
+        ], 200);
     }
 
     public function delete($id, Request $request)
@@ -240,7 +238,6 @@ class PartnerController extends Controller
 
         $returnIds = null;
 
-        $this->status = 200;
         $this->message = 'Удаление выполнено';
         $this->type = 'success';
 
@@ -259,7 +256,7 @@ class PartnerController extends Controller
             $returnIds = $partners->pluck('id');
         } else {
             $partner = Partner::find($id);
-            if($partner->company->id != Auth::user()->company->id || $partner->id == Auth::user()->partner->id){
+            if($partner->company_id != Auth::user()->company_id || $partner->id == Auth::user()->partner->id){
                 $this->message = 'Вам не разрешено удалять контакт';
                 $this->type = 'error';
             }
@@ -274,7 +271,7 @@ class PartnerController extends Controller
             'id' => $returnIds,
             'message' => $this->message,
             'type' => $this->type
-        ], $this->status);
+        ]);
     }
 
     public function checkPhone(Request $request)

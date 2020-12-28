@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Order;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Queue\SerializesModels;
@@ -31,9 +32,20 @@ class ModelWasStored implements ShouldBroadcastNow
 
     public function broadcastWith()
     {
-        return [
+        $data = [
             'company_id' => $this->company_id,
             'model' => $this->event
         ];
+
+        if($this->event == 'OrderStored') {
+
+            $data['count'] = Order::where([
+                'company_id' => $this->company_id,
+                'status' => 0
+            ])
+            ->count();
+        }
+
+        return $data;
     }
 }

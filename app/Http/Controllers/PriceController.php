@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\PriceStoreRequest;
 use App\Models\Markup;
 use Illuminate\Http\Request;
@@ -43,12 +44,13 @@ class PriceController extends Controller
             $price->options()->delete();
 
             $price->options()->createMany($request->prices);
+
+            event(new ModelWasStored($price->company_id, 'PriceStored'));
         });
 
         return response()->json([
             'type' => 'success',
-            'message' => 'Наценка успешно сохранено.',
-            'event' => 'PriceStored'
+            'message' => 'Наценка успешно сохранено.'
         ]);
     }
 

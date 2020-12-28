@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
@@ -367,18 +368,15 @@ class StoreController extends Controller
             $message = 'Склад создан';
         }
         $store->fill($request->all());
-        $store->company_id = Auth::user()->company()->first()->id;
+        $store->company_id = Auth::user()->company_id;
         $store->save();
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'message' => $message,
-                //'container' => 'ajax-table-store',
-                'event' => 'StoreStored',
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($store->company_id, 'StoreStored'));
+
+        return response()->json([
+            'message' => $message,
+            //'container' => 'ajax-table-store'
+        ]);
     }
 
     public function checkstock(Request $request)

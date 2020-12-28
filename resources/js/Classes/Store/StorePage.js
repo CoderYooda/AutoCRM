@@ -571,7 +571,17 @@ class storePage extends Page{
             document.addEventListener(event, (e) => {
 
                 if(event == 'OrderStored') {
-                    document.querySelector('#orders_count').innerHTML = e.orders_count;
+                    let data = e.detail;
+
+                    let new_count = data.count;
+
+                    let count_element = document.getElementById('orders_count');
+
+                    if(new_count > count_element.value) {
+                        helper.notifySound();
+                    }
+
+                    count_element.innerHTML = data.count;
                 }
 
                 object.table.freshData();

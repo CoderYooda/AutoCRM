@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Article;
 use App\Models\System\Image;
@@ -115,9 +116,10 @@ class CategoryController extends Controller
 
             UA::makeUserAction($category, 'create');
 
+            event(new ModelWasStored($category->company_id, 'CategoryStored'));
+
             return response()->json([
-                'message' => 'Категория сохранена',
-                'event' => 'CategoryStored'
+                'message' => 'Категория сохранена'
             ]);
         });
     }

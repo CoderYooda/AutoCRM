@@ -360,8 +360,7 @@ class ShipmentController extends Controller
 
         return response()->json([
             'message' => $this->message,
-            'id' => $shipment->id,
-            'event' => 'ShipmentStored',
+            'id' => $shipment->id
         ], 200);
     }
 

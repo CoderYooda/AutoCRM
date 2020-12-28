@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\DdsarticleRequest;
 use App\Models\Category;
@@ -67,14 +68,12 @@ class DdsarticleController extends Controller
         $Ddsarticle->company_id = Auth::user()->company()->first()->id;
         $Ddsarticle->save();
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $message,
-                'event' => 'DdsarticleStored'
-                ]);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($Ddsarticle->company_id, 'DdsarticleStored'));
+
+        return response()->json([
+            'message' => $message
+        ]);
+
     }
 
     public function delete($id)

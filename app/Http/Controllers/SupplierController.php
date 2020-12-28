@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
 use App\Models\VehicleMark;
@@ -66,14 +67,11 @@ class SupplierController extends Controller
             'company_id' => Auth::user()->company_id
         ]);
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => 'Производитель сохранен',
-                'event' => 'SupplierStored'
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored(Auth::user()->company_id, 'SupplierStored'));
+
+        return response()->json([
+            'message' => 'Производитель сохранен'
+        ]);
     }
 
     public function dialogSearch(Request $request)

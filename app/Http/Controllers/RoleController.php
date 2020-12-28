@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\RoleRequest;
 use App\Models\Company;
 use App\Models\User;
@@ -32,15 +33,16 @@ class RoleController extends Controller
 
         $role = Role::updateOrCreate([
             'id'         => $request->id,
-            'company_id' => Auth::user()->company->id
+            'company_id' => Auth::user()->company_id
         ], ['name' => $request->name]);
 
         $role->syncPermissions($ids);
 
+        event(new ModelWasStored(Auth::user()->company_id, 'RoleStored'));
+
         return response()->json([
-            'message' => $role->exists ? 'Роль обновлена' : 'Роль создана',
-            'event'   => 'RoleStored',
-        ], 200);
+            'message' => $role->exists ? 'Роль обновлена' : 'Роль создана'
+        ]);
     }
 
     public function assignRoleToUser(Request $request)

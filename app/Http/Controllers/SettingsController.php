@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\PartnerRequest;
 use App\Http\Requests\SaveCompanySettingsRequest;
@@ -202,16 +203,13 @@ class SettingsController extends Controller
             }
         }
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => 'Настройки обновлены',
-                'id' => $company->id,
-                'event' => 'SettingsStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($company->id, 'SettingsStored'));
 
+        return response()->json([
+            'message' => 'Настройки обновлены',
+            'id' => $company->id,
+            'event' => 'SettingsStored',
+        ]);
     }
 
     public function freshBaseStore(Request $request)

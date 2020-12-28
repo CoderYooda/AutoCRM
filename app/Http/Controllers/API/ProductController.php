@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PermissionController;
 use App\Http\Requests\ProductRequest;
@@ -69,7 +70,6 @@ class ProductController extends Controller
                 $article->specifications()->createMany($attributes);
             }
 
-            $this->status = 200;
             if($request['storage']) {
 
                 $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
@@ -95,10 +95,11 @@ class ProductController extends Controller
                 }
             }
 
+            event(new ModelWasStored($article->company_id, 'ProductStored'));
+
             return response()->json([
-                'message' => $this->message,
-                'event' => 'ProductStored',
-            ], $this->status);
+                'message' => $this->message
+            ]);
 
         });
     }

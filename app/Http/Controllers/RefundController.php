@@ -175,8 +175,7 @@ class RefundController extends Controller
 
             return response()->json([
                 'message' => $this->message,
-                'id' => $refund->id,
-                'event' => 'RefundStored'
+                'id' => $refund->id
             ]);
         });
     }

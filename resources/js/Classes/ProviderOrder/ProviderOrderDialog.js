@@ -42,7 +42,7 @@ class providerOrderDialog extends Modal{
         this.root_dialog.getElementsByTagName('form')[0].addEventListener('keydown',  e => {
             if (e.which == 13) {
                 e.preventDefault();
-                this.saveAndClose(object.root_dialog.getElementsByTagName('form')[0]);
+                this.saveAndClose(this.root_dialog.getElementsByTagName('form')[0]);
             }
         });
 

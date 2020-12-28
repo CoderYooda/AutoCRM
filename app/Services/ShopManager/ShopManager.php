@@ -30,6 +30,6 @@ class ShopManager
 
     public function isWatchShop()
     {
-        return $this->shop ? true : false;
+        return !is_null($this->shop);
     }
 }

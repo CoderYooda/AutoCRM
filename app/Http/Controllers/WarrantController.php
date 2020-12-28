@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\WarrantRequest;
 use App\Models\Cashbox;
 use App\Models\DdsArticle;
@@ -136,10 +137,11 @@ class WarrantController extends Controller
 //            $warrant->$method()->syncWithoutDetaching($warrant->refer_id);
 //        }
 
+        event(new ModelWasStored($warrant->company_id, 'WarrantStored'));
+
         return response()->json([
-            'message' => $message,
-            'event'   => 'WarrantStored',
-        ], 200);
+            'message' => $message
+        ]);
     }
 
     public function delete($id, Request $request)

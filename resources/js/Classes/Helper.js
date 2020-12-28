@@ -526,6 +526,9 @@ class Helper{
         return parseFloat(n).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1 ");
     };
 
-
+    notifySound() {
+        let audio = new Audio('sounds/system_message.mp3');
+        audio.play();
+    }
 }
 export default Helper;

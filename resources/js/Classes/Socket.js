@@ -32,7 +32,12 @@ class Socket{
                 this.echo
                     .private(`company_message.${response.data.company.id}`)
                     .listen('ModelWasStored', function (e) {
-                        document.dispatchEvent(new CustomEvent(e.model));
+
+                        let detail = {
+                            detail: e
+                        };
+
+                        document.dispatchEvent(new CustomEvent(e.model, detail));
                     });
 
                 this.echo
@@ -44,8 +49,7 @@ class Socket{
                         // parentDiv.insertBefore(block, sp2);
                         window.systemMessages.loadMessages();
                         window.systemMessages.bellCall();
-                        var audio = new Audio('sounds/system_message.mp3');
-                        audio.play();
+                        helper.notifySound();
                     })
                     .listen('StoreImportIteration', function(e){
                         try {
