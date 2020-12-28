@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\ProductRequest;
 use App\Models\Adjustment;
 use App\Models\Article;
@@ -415,7 +416,6 @@ class ProductController extends Controller
                 $article->specifications()->createMany($attributes);
             }
 
-            $this->status = 200;
             if($request['storage']) {
 
                 $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
@@ -441,10 +441,11 @@ class ProductController extends Controller
                 }
             }
 
+            event(new ModelWasStored($article->company_id, 'ProductStored'));
+
             return response()->json([
-                'message' => $this->message,
-                'event' => 'ProductStored',
-            ], $this->status);
+                'message' => $this->message
+            ]);
 
         });
     }

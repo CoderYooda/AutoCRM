@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\ClientOrdersRequest;
 use App\Mail\Shop\RoadOrder;
 use App\Mail\Shop\WaitOrder;
@@ -279,6 +280,8 @@ class ClientOrdersController extends Controller
 //        $client_order->partner()->first()
 //            ->subtraction($client_order->itogo);
 
+            event(new ModelWasStored($client_order->company_id, 'ClientOrderStored'));
+
             if($request->shipping){
                 $response = $client_order->makeShipped();
                 $client_order->setShiped();
@@ -287,8 +290,7 @@ class ClientOrdersController extends Controller
 
             return response()->json([
                 'message' => $this->message,
-                'id' => $client_order->id,
-                'event' => 'ClientOrderStored',
+                'id' => $client_order->id
             ], 200);
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\RefundRequest;
 use App\Models\Article;
 use App\Models\Entrance;
@@ -169,6 +170,8 @@ class RefundController extends Controller
             $refund->partner->addition($refund->summ);
 
             UA::makeUserAction($refund, 'create');
+
+            event(new ModelWasStored($refund->company_id, 'RefundStored'));
 
             return response()->json([
                 'message' => $this->message,

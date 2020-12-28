@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Http\Requests\EntranceRefundStoreRequest;
 use App\Models\Article;
@@ -88,10 +89,11 @@ class EntranceRefundController extends Controller
 
         UA::makeUserAction($entrance_refund, 'create');
 
+        event(new ModelWasStored($entrance_refund->company_id, 'EntranceRefundStored'));
+
         return response()->json([
             'id' => $entrance_refund->id,
             'type' => 'success',
-            'event' => 'EntranceRefundStored',
             'message' => 'Возврат по поступлению успешно создан.'
         ]);
     }

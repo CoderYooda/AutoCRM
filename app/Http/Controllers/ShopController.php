@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
@@ -427,10 +428,11 @@ class ShopController extends Controller
                 'clientorder_id' => $clientOrder->id ?? null
             ]);
 
+            event(new ModelWasStored($shop->company_id, 'OrderStored'));
+
             return response()->json([
                 'type'    => 'success',
-                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.',
-                'event'   => 'OrderStored'
+                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.'
             ], 200);
         });
     }

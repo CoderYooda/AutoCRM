@@ -18,7 +18,7 @@ class Socket{
                 method: 'get',
                 url: '/whoami'
             }).then((response) => {
-                console.log('Здравствуйте, ' + response.data.name + '!');
+                console.log('Здравствуйте, ' + response.data.partner.fio + '!');
                 this.echo = new Echo({
                     broadcaster: 'socket.io',
                     auth: {
@@ -28,6 +28,12 @@ class Socket{
                     },
                     host: window.socket_host + ':' + window.socket_port
                 });
+
+                this.echo
+                    .private(`company_message.${response.data.company.id}`)
+                    .listen('ModelWasStored', function (e) {
+                        document.dispatchEvent(new CustomEvent(e.model));
+                    });
 
                 this.echo
                     .private('system_message.' + response.data.id)

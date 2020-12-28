@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\ShipmentsRequest;
 use App\Models\ClientOrder;
 use App\Models\Entrance;
@@ -354,6 +355,8 @@ class ShipmentController extends Controller
             }
         }
         #Конец перенос
+
+        event(new ModelWasStored($shipment->company_id, 'ShipmentStored'));
 
         return response()->json([
             'message' => $this->message,
