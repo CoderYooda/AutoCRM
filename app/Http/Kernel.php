@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\CompanyHasPayedDays;
+use App\Http\Middleware\DebugBarChecker;
 use App\Http\Middleware\RequestLimit;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -20,7 +21,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\TrustProxies::class
+        \App\Http\Middleware\TrustProxies::class,
+        DebugBarChecker::class
     ];
 
     /**

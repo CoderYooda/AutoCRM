@@ -9,6 +9,7 @@ use App\Models\Partner;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -129,6 +130,13 @@ class PartnerController extends Controller
 
         if($request['birthday']) {
             $request['birthday'] = Carbon::parse($request['birthday']);
+        }
+
+        if($partner && $partner->user && $partner->user->hasRole('Владелец') && $request->category_id != 5) {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Запрещено менять категорию владельцу.'
+            ]);
         }
 
         $partner->fill($request->only($partner->fields));

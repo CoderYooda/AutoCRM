@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\ModelWasStored;
+use App\Http\Requests\AssignedRoleUserRequest;
 use App\Http\Requests\RoleRequest;
 use App\Models\Company;
 use App\Models\User;
@@ -45,17 +46,26 @@ class RoleController extends Controller
         ]);
     }
 
-    public function assignRoleToUser(Request $request)
+    public function assignRoleToUser(AssignedRoleUserRequest $request)
     {
         $user = User::find($request->user_id);
         $role = Role::find($request->role_id);
 
+        if($user->hasRole('Владелец')) {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Запрещено менять роль владельцу.'
+            ]);
+        }
+
         $user->syncRoles([$role->id]);
 
+        event(new ModelWasStored(Auth::user()->company_id, 'RoleAssigned'));
+
         return response()->json([
-            'message' => 'Роль назначена пользователю',
-            'event'   => 'RoleAssigned',
-        ], 200);
+            'type' => 'success',
+            'message' => 'Роль назначена пользователю'
+        ]);
     }
 
     public static function roleDialog($request)
@@ -97,7 +107,7 @@ class RoleController extends Controller
 
     public static function createStartRoles(Company $company)
     {
-        $director_role = LRole::create(['name' => 'Руководитель', 'company_id' => $company->id]);
+        $director_role = LRole::create(['name' => 'Владелец', 'company_id' => $company->id]);
         $manager_role = LRole::create(['name' => 'Менеджер', 'company_id' => $company->id]);
 
         $manager_roles = [

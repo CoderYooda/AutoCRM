@@ -95,6 +95,7 @@ class Mikado implements ProviderInterface
         $brand = strtoupper($brand);
 
         $items = $items->filter(function ($item) use ($brand) {
+            if(!isset($item['Brand'])) return false;
             return strpos($item['Brand'], $brand) !== false;
         });
 
