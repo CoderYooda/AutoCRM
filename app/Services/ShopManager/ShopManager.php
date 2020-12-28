@@ -20,6 +20,8 @@ class ShopManager
 
         $query = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
 
+//        dd(\Auth::user());
+
         $this->shop = $query->first();
     }
 
