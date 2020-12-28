@@ -19,7 +19,8 @@ class DebugBarChecker
 
         $whiteList = [
             '127.0.0.1',
-            '82.151.112.193'
+            '82.151.112.193',
+            '77.222.54.206'
         ];
 
         if(!in_array($ip, $whiteList)) {
