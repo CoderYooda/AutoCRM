@@ -21,24 +21,12 @@ class UserController extends Controller
             $request['search'] = null;
         }
 
-        if(empty($request['id'])){
-            $request['id'] = Auth::user()->partner->id;
-        }
-
         if($request['active_tab'] === NULL || $request['active_tab'] == 'undefined'){ // Определяем табуляцию
             $request['active_tab'] = 'profile';
         }
 
-//        $user = Partner::owned()->with('passport')->where(function($q) use ($request){
-//            $q->where('user_id', $request['id']);
-//        })->first();
-
         $classname = $request['active_tab'] . 'Tab';
-        $user = self::getUserById($request);
-
-        if(!$user){
-            abort(404);
-        }
+        $user = Auth::user()->partner;
 
         $content = self::$classname($request, $user);
 
@@ -56,7 +44,7 @@ class UserController extends Controller
     }
 
     public function whoami(){
-        return Auth::check() ? Auth::user() : abort(403);
+        return Auth::check() ? Auth::user()->load('company', 'partner') : abort(403);
     }
 
     public function edit(Request $request)
@@ -78,11 +66,7 @@ class UserController extends Controller
 
         $classname = $request['active_tab'] . 'Tab';
 
-        $user = self::getUser($request);
-
-        if(!$user){
-            abort(404);
-        }
+        $user = Auth::user()->partner;
 
         $content = view(get_template() . '.user.tabs.profile', compact('request', 'editmode', 'user'));
 

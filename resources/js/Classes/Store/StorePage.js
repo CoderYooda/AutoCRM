@@ -428,7 +428,9 @@ class storePage extends Page{
 
         let table_element = document.getElementById('table-container');
 
-        togglePreloader(table_element, true);
+        let preloader_element = table_element.closest('.box-content');
+
+        togglePreloader(preloader_element, true);
 
         if(this.search == null) this.search = '';
 
@@ -446,7 +448,7 @@ class storePage extends Page{
 
                 let manufacturers = counts[service_key];
 
-                document.getElementById('service_count_' + service_key).innerText = manufacturers.length;
+                document.getElementById('service_count_' + service_key).innerText = Object.keys(manufacturers).length;
             });
 
             let errors = response.data.errors;
@@ -458,11 +460,11 @@ class storePage extends Page{
                 });
             }
         })
-        .catch(response => {
-            dd(response);
+        .catch(error => {
+            console.log(error);
         })
         .finally(() => {
-            togglePreloader(table_element, false);
+            togglePreloader(preloader_element, false);
 
             window.isXHRloading = false;
         });
@@ -487,7 +489,7 @@ class storePage extends Page{
         this.searchProviderStores();
     }
 
-    showManufactureStores(element, manufacturer) {
+    showManufactureStores(element, manufacturer, article) {
 
         if(window.isXHRloading == true) return;
 
@@ -495,13 +497,15 @@ class storePage extends Page{
 
         let table_element = document.getElementById('table-container');
 
-        togglePreloader(table_element, true);
+        let preloader_element = table_element.closest('.box-content');
+
+        togglePreloader(preloader_element, true);
 
         let service_input = document.querySelector('[name="service_key"]');
 
         axios.post('/provider_stores/stores', {
             manufacturer: manufacturer,
-            article: this.search,
+            article: article,
             selected_service: service_input.value
         })
             .then(response => {
@@ -522,7 +526,7 @@ class storePage extends Page{
                 console.log(response);
             })
             .finally(()=> {
-                togglePreloader(table_element, false);
+                togglePreloader(preloader_element, false);
 
                 window.isXHRloading = false;
             });
@@ -569,6 +573,21 @@ class storePage extends Page{
 
         events.forEach((event) => {
             document.addEventListener(event, (e) => {
+
+                if(event == 'OrderStored') {
+                    let data = e.detail;
+
+                    let new_count = data.count;
+
+                    let count_element = document.getElementById('orders_count');
+
+                    if(new_count > count_element.value) {
+                        helper.notifySound();
+                    }
+
+                    count_element.innerHTML = data.count;
+                }
+
                 object.table.freshData();
             });
         });
@@ -756,7 +775,16 @@ class storePage extends Page{
 
                     this.selected = data.selected;
 
-                    this.modal.show();
+                    axios.get('/prices/modal')
+                        .then(response => {
+                            let data = response.data;
+
+                            this.modal.setContent(data.html);
+
+                            this.modal.show();
+
+                            window.applySelects();
+                        });
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};

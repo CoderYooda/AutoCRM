@@ -66,24 +66,23 @@
                     <input type="number" class="form-control" name="storage_days" value="{{ $shop->storage_days ?? 7 }}">
                 </div>
 
-                <div class="form-group w-350 d-flex flex-column">
+                <div class="input-group w-350">
+                    <label>Показывать предложения поставщиков</label>
+                    <label class="custom_checkbox ml-15">
+                        <input type="checkbox" name="supplier_offers" class="not_default" @if($shop->supplier_offers ?? true) checked @endif onchange="{{ $class }}.toggleSupplierOffers(this);" value="1" />
+                        <span></span>
+                    </label>
+                </div>
 
+                <div class="input-group w-350 mb-10 select_supplier @if(!$shop || !$shop->supplier_offers) d-none @endif">
+                    <label>Источник наценки к стоимости товара</label>
                     <div class="input-group">
-                        <label>Показывать предложения поставщиков</label>
-                        <label class="custom_checkbox ml-15">
-                            <input type="checkbox" name="supplier_offers" class="not_default" @if($shop->supplier_offers ?? true) checked @endif onchange="{{ $class }}.toggleSupplierOffers(this);" value="1" />
-                            <span></span>
-                        </label>
+                        <select custom_select name="price_id">
+                            @foreach($prices as $price)
+                                <option @if($shop && $shop->price_id == $price->id) selected @endif value="{{ $price->id }}">{{ $price->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-
-                    <div class="select_supplier @if(!($shop->supplier_offers ?? true)) d-none @endif">
-
-                        <div class="form-group">
-                            <label>Процент наценки стоимости товара у поставщиков</label>
-                            <input type="number" class="form-control" name="supplier_percent" value="{{ $shop->supplier_percent ?? 30 }}" />
-                        </div>
-                    </div>
-
                 </div>
 
                 <h2 class="style_header mb-10">Оформление сайта</h2>

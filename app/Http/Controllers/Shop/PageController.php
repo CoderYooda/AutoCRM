@@ -115,22 +115,15 @@ class PageController extends Controller
 
     protected function showCategoryPage(Category $selectedCategory)
     {
-        $params = [
-            'category_id' => $selectedCategory->category_id,
-            'company_id' => $this->shop->company_id
-        ];
+        $categories = $selectedCategory->getDescendantsAndSelf();
 
-        $categories = Category::with('parent')->where($params)->get();
-
-        $products = $selectedCategory
-            ->articles()
-            ->with('company', 'supplier', 'entrances')
-            ->with('image')
+        $products = Article::with('company', 'supplier', 'entrances', 'image')
             ->when(!$this->shop->show_empty, function (Builder $query) {
                 $query->whereHas('entrances', function (Builder $query) {
                     $query->whereRaw('count != released_count');
                 });
             })
+            ->whereIn('category_id', $categories->pluck('id'))
             ->paginate(15);
 
         return view('shop.category', compact('products', 'selectedCategory', 'categories'))

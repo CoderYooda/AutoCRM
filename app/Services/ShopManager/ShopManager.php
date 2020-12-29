@@ -4,6 +4,7 @@
 namespace App\Services\ShopManager;
 
 use App\Models\Shop;
+use Auth;
 
 class ShopManager
 {
@@ -20,7 +21,7 @@ class ShopManager
 
         $query = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
 
-        $this->shop = $domainParams[0] == 'online' ? $query->first() : $query->firstOrFail();
+        $this->shop = $query->first();
     }
 
     public function getCurrentShop()
@@ -30,6 +31,6 @@ class ShopManager
 
     public function isWatchShop()
     {
-        return $this->shop ? true : false;
+        return !is_null($this->shop);
     }
 }

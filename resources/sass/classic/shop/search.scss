@@ -1,5 +1,9 @@
 .search_page {
 
+    h2 {
+        margin-bottom: 0 !important;
+    }
+
     .empty_table {
         border-left: 1px solid #e1e1e1;
         border-right: 1px solid #e1e1e1;
@@ -11,9 +15,9 @@
         height: 44px;
         border: 1px solid #E1E1E1;
         background: #F3F3F3;
-        padding-left: 30px;
 
         div {
+            padding-left: 30px;
             font-weight: bold;
             font-size: 14px;
             line-height: 44px;
@@ -28,7 +32,7 @@
 
             display: flex;
             position: relative;
-            height: 78px;
+            height: 40px;
             align-items: center;
             cursor: pointer;
             border-left: 1px solid #E1E1E1;
@@ -44,6 +48,10 @@
                 letter-spacing: 0.06em;
                 text-transform: uppercase;
                 color: #989898;
+            }
+
+            &:hover {
+                background-color: #ececec;
             }
         }
     }

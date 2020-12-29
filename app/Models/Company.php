@@ -34,6 +34,11 @@ class Company extends Model
         return $days;
     }
 
+    public function markups()
+    {
+        return $this->hasMany(Markup::class, 'company_id', 'id');
+    }
+
     public function members()
     {
         return $this->hasMany(User::class, 'company_id');

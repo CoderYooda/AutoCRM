@@ -15,7 +15,8 @@ class settingsPage{
             'RoleStored',
             'CashboxStored',
             'CashboxFresh',
-            'StoreStored'
+            'StoreStored',
+            'PriceStored'
         ];
 
         events.forEach(name => {
@@ -138,6 +139,9 @@ class settingsPage{
 
                 let enabled_element = document.querySelector('[name="enabled"]');
                 enabled_element.value = enabled;
+            }
+            else {
+                window.notification.notify('error', 'Ошибка авторизации.');
             }
         });
     }
@@ -313,12 +317,17 @@ class settingsPage{
     }
 
     setRoleToUser(element, user_id, role_id){
+
         window.axios({
             method: 'post',
             url: '/roles/assign',
             data: {user_id:user_id, role_id:role_id}
         }).then(function (resp) {
-            // console.log(resp);
+
+            let data = resp.data;
+
+            window.notification.notify(data.type, data.message);
+
         }).catch(function (error) {
             console.log(error);
         }).finally(function () {

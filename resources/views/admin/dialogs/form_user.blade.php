@@ -16,13 +16,6 @@
             <div id="tab_desc" class="tab active">
 
                 <div class="form-group">
-                    <label>ФИО</label>
-                    <div class="input-group mb-3">
-                        <input type="text" onclick="this.select();" name="name" value="{{ $user->name }}" class="form-control" placeholder="Название компании" disabled />
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label>Телефон</label>
                     <div class="input-group mb-3">
                         <input type="text" onclick="this.select();" name="phone" value="{{ $user->phone }}" class="form-control" placeholder="Телефон" disabled />

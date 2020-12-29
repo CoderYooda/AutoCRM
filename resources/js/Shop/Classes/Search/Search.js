@@ -28,9 +28,7 @@ class Search {
             });
     }
 
-    showProvidersOffers(element, manufacturer) {
-
-        let search_element = document.querySelector('[name="article"]');
+    showProvidersOffers(element, manufacturer, article) {
 
         let result_element = document.querySelector('.result');
 
@@ -38,7 +36,7 @@ class Search {
 
         let data = {
             manufacturer: manufacturer,
-            article: search_element.value
+            article: article
         };
 
         axios.post('/search/provider_offers', data)

@@ -1,5 +1,9 @@
 <?php
 
+Route::get('/test', function () {
+    event(new \App\Events\ModelWasStored(Auth::user()->company_id, 'ProductStored'));
+});
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
@@ -26,8 +30,12 @@ Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->na
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
+    Route::post('/prices', 'PriceController@store')->name('StorePrice');
+    Route::get('/prices/modal', 'PriceController@modal')->name('GetPriceModalContent');
+    Route::post('/prices/{price}/percent', 'PriceController@percent')->name('GetPricePercent');
+
     #Пользователь
-    Route::get('/user/', 'UserController@index')->name('UserIndex');
+    Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
     Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 

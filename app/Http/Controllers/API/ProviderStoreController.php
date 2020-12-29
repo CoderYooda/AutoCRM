@@ -35,9 +35,10 @@ class ProviderStoreController extends Controller
             }
             catch (\Exception $exception) {
 
-                $counts[$service_key] = [];
+                $code = $exception->getCode();
 
-                $errors[$service_key] = 'Ошибка получения ответа, проверьте соединение интернета и настройки.';
+                $counts[$service_key] = [];
+                if($code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
             }
 
             if ($service_key == $request->selected_service) {
@@ -90,7 +91,15 @@ class ProviderStoreController extends Controller
         /** @var ProviderInterface $provider */
         $provider = $providers->find($selected_service);
 
-        $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
+        try {
+            $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
+        }
+        catch (\Exception $exception) {
+            $stores = [
+                'originals' => [],
+                'analogues' => []
+            ];
+        }
 
         $hashes = [];
 

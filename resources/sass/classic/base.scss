@@ -7,6 +7,7 @@
 @import "provider_stores";
 
 @import "product";
+@import "price";
 
 @import "markup_dialog";
 
@@ -1577,6 +1578,11 @@ input:-moz-placeholder { /* Firefox 18- */
 .mb-0 {
     margin-bottom: 0 !important;
 }
+
+.right-0 {
+    right: 0 !important;
+}
+
 .mt-10{
     margin-top: 10px!important;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\AdjustmentRequest;
 use App\Http\Requests\Adjustments\SearchRequest;
 use App\Models\Adjustment;
@@ -187,9 +188,10 @@ class AdjustmentController extends Controller
 
             UA::makeUserAction($adjustment, 'create');
 
+            event(new ModelWasStored($adjustment->company_id, 'AdjustmentStored'));
+
             return response()->json([
-                'id'    => $adjustment->id,
-                'event' => 'AdjustmentStored',
+                'id'    => $adjustment->id
             ], 200);
         });
     }

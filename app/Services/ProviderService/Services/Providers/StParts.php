@@ -13,6 +13,4 @@ class StParts implements ProviderInterface
 
     protected $name = 'STparts';
     protected $service_key = 'stparts';
-
-
 }

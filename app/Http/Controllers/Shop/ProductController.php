@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Shop;
 use App\Models\Article;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
-use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ShopManager\ShopManager;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -35,6 +33,8 @@ class ProductController extends Controller
 
         if($this->shop->supplier_offers) {
 
+            $markup = $this->shop->markup;
+
             foreach ($providers->activated() as $provider_key => $provider) {
 
                 $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
@@ -43,10 +43,12 @@ class ProductController extends Controller
 
                     foreach ($providersOrders[$provider_key][$type] as $key => $order) {
 
-                        $price = $order['price'];
+                        $productPrice = $order['price'];
 
-                        $providersOrders[$provider_key][$type][$key]['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-                        $providersOrders[$provider_key][$type][$key]['model']['hash_info']['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
+                        $percent = $markup->getPercentByAmount($productPrice);
+
+                        $providersOrders[$provider_key][$type][$key]['price'] = $productPrice + sum_percent($productPrice, $percent);
+                        $providersOrders[$provider_key][$type][$key]['model']['hash_info']['price'] = $productPrice + sum_percent($productPrice, $percent);
                     }
                 }
             }

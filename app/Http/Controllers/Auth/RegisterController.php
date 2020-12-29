@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\SettingsController;
 use App\Models\Cashbox;
 use App\Models\Partner;
+use App\Models\Markup;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -168,6 +169,21 @@ class RegisterController extends Controller
         Company::flushEventListeners();
 
         Artisan::call('categories:init', ['company' => $company->id]);
+
+        //
+
+        $price = Markup::create([
+            'company_id' => $company->id,
+            'name' => 'Розничная'
+        ]);
+
+        $params = [
+            'from' => 0,
+            'to' => 1000,
+            'percent' => 30
+        ];
+
+        $price->options()->create($params);
 
         return $user;
     }

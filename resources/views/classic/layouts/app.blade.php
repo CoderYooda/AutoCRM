@@ -75,7 +75,7 @@
                                     <span class="avatar w-32 mr-3">
                                         <img src="{{ asset('images/noavatar.png') }}" alt="...">
                                     </span>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->partner->fio }}
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"

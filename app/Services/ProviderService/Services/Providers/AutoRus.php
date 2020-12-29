@@ -13,6 +13,4 @@ class AutoRus implements ProviderInterface
 
     protected $name = 'AutoRus';
     protected $service_key = 'autorus';
-
-
 }

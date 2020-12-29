@@ -1,21 +1,35 @@
+<div class="title">
+    <h2>Результаты поиска</h2>
+</div>
+
 <div class="table">
 
     <div class="search_header">
 
+        <div class="w-60">Наименование</div>
         <div class="w-20">Производитель</div>
+        <div class="w-20">Артикул</div>
 
     </div>
 
     <div class="search_body">
-        @foreach($brands as $brand)
+        @forelse($brands as $brand => $info)
 
-            <div class="brand" onclick="search.showProvidersOffers(this, '{{ $brand }}');">
+            <div class="brand" onclick="search.showProvidersOffers(this, '{{ $brand }}', '{{ $info['article'] }}');">
 
+                <div class="w-60 name">{{ $info['desc'] }}</div>
                 <div class="w-20 name">{{ $brand }}</div>
+                <div class="w-20 name">{{ $info['article'] }}</div>
 
             </div>
 
-        @endforeach
+        @empty
+
+            <div class="empty_table">
+                Результат поиска пуст
+            </div>
+
+        @endforelse
 
     </div>
 

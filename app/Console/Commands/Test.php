@@ -2,15 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Partner;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Auth;
-use mysql_xdevapi\Exception;
 use App\Models\Category;
-use Illuminate\Support\Str;
-use App\Models\Article;
+use GuzzleHttp\Psr7\Request;
 use SoapClient;
 
 class Test extends Command
@@ -26,8 +21,15 @@ class Test extends Command
 
     public function handle()
     {
-        $test = exec('sh test.sh 12345.ru');
+        $client = new SoapClient("http://service.autopiter.ru/v2/price?WSDL");
 
-        dd($test);
+        //http://service.autopiter.ru/v2/price?op=IsAuthorization
+        if (!($client->IsAuthorization()->IsAuthorizationResult)) {
+            //http://service.autopiter.ru/v2/price?op=Authorization
+            //UserID - ваш клиентский id, Password - ваш пароль
+            $response = $client->Authorization(array("UserID"=>"882153", "Password"=>"441145", "Save"=> "true"));
+
+            dd($response);
+        }
     }
 }

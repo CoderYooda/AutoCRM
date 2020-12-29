@@ -36,6 +36,7 @@ import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 import selectWarrantDialog from "./Warrant/SelectWarrantDialog";
 import salarySchemaDialog from "./Salary/salarySchemaDialog";
 import orderDialog from "./Order/OrderDialog";
+import priceDialog from './Price/PriceDialog';
 
 import partnerPage from "./Partner/PartnerPage";
 import storePage from "./Store/StorePage";
@@ -102,7 +103,8 @@ const classes = {
     companyDialog,
     userDialog,
     selectCompanyDialog,
-    orderDialog
+    orderDialog,
+    priceDialog
 };
 
 const pages = {
@@ -524,6 +526,9 @@ class Helper{
         return parseFloat(n).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1 ");
     };
 
-
+    notifySound() {
+        let audio = new Audio('sounds/system_message.mp3');
+        audio.play();
+    }
 }
 export default Helper;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
@@ -16,6 +17,7 @@ use App\Mail\Shop\ConfirmOrder;
 use App\Models\Article;
 use App\Models\ClientOrder;
 use App\Models\Order;
+use App\Models\Markup;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\User;
@@ -89,7 +91,11 @@ class ShopController extends Controller
 
     public function settingsTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.settings', compact('request'));
+        $user = Auth::user();
+
+        $prices = Markup::where('company_id', $user->company_id)->get();
+
+        return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
     }
 
     public function analyticsTab(Request $request)
@@ -101,13 +107,15 @@ class ShopController extends Controller
     {
         $shop = Auth::user()->shop;
 
-        $paymentMethods = $shop->paymentMethods->toArray();
-
         $filteredArray = [];
 
-        foreach ($paymentMethods as $paymentMethod) {
-            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
-            $filteredArray[$paymentMethod['name']] = $paymentMethod;
+        if($shop) {
+            $paymentMethods = $shop->paymentMethods ? $shop->paymentMethods->toArray() : [];
+
+            foreach ($paymentMethods as $paymentMethod) {
+                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+                $filteredArray[$paymentMethod['name']] = $paymentMethod;
+            }
         }
 
         $paymentMethods = $filteredArray;
@@ -234,11 +242,11 @@ class ShopController extends Controller
 
             $shop = Shop::where('company_id', Auth::user()->company_id)->first();
 
-            if(!$shop || $shop->domain != $request->domain) {
+            if (!$shop || $shop->domain != $request->domain) {
 
                 $domain = $request->domain;
 
-                if(str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                if (str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
                 exec('sh test.sh ' . $domain);
             }
 
@@ -253,7 +261,7 @@ class ShopController extends Controller
                 'domain'              => $request->domain,
                 'subdomain'           => $request->subdomain,
                 'supplier_offers'     => $request->supplier_offers,
-                'supplier_percent'    => $request->supplier_percent
+                'price_id'            => $request->price_id
             ]);
 
             $images = [];
@@ -420,10 +428,11 @@ class ShopController extends Controller
                 'clientorder_id' => $clientOrder->id ?? null
             ]);
 
+            event(new ModelWasStored($shop->company_id, 'OrderStored'));
+
             return response()->json([
                 'type'    => 'success',
-                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.',
-                'event'   => 'OrderStored'
+                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.'
             ], 200);
         });
     }

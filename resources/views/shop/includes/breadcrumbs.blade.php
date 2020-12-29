@@ -37,7 +37,7 @@
         @if(request()->routeIs('pages.path'))
             <span class="item" ><a href="{{ route('pages.catalogue') }}">Каталог</a></span>
 
-            @foreach($selectedCategory->parents() as $parentCategory)
+            @foreach($selectedCategory->breadcrumbs() as $parentCategory)
                 <span class="item" ><a href="{{ $parentCategory->path() }}">{{ $parentCategory->name }}</a></span>
             @endforeach
 

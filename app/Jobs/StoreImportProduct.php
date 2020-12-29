@@ -6,7 +6,7 @@ use App\Events\StoreImportFinish;
 use App\Events\StoreImportIteration;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\Store;
+use App\Models\Company;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Models\VehicleMark;
@@ -16,7 +16,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,7 +52,7 @@ class StoreImportProduct implements ShouldQueue
 
         foreach ($this->products as $index => $attributes) {
 
-            $response = $this->importProduct($this->params, $attributes);
+            $response = $this->importProduct($attributes);
 
             $info[$response][] = [
                 'line'    => $index,
@@ -75,6 +74,12 @@ class StoreImportProduct implements ShouldQueue
 
         $user = User::with('partner', 'company', 'partner.store')->find($this->params['user_id']);
 
+        $company = Company::find($this->params['company_id']);
+
+        Article::where('company_id', $company->id)
+            ->where('price_id', 0)
+            ->update(['price_id' => $company->prices->first()->id]);
+
         DB::table('import_history')->insert([
             'partner_id' => $user->partner->id,
             'company_id' => $user->company_id,
@@ -85,11 +90,11 @@ class StoreImportProduct implements ShouldQueue
         ]);
     }
 
-    public function importProduct(array $params, array $attributes)
+    public function importProduct(array $attributes)
     {
-        $store = $params['store'];
-        $company_id = $params['company_id'];
-        $user_id = $params['user_id'];
+        $store = $this->params['store'];
+        $company_id = $this->params['company_id'];
+        $user_id = $this->params['user_id'];
 
         #Проверка массива на правильность вхождения данных
         $validator = Validator::make($attributes, [
@@ -101,7 +106,7 @@ class StoreImportProduct implements ShouldQueue
             'warehouse'            => ['array'],
             'warehouse.*'          => ['string', 'max:2'],
             'count'                => ['integer', 'between:0,1000000'],
-            'price'                => ['numeric', 'between::0,1000000'],
+            'price'                => ['numeric', 'between:0,1000000'],
             'barcode_manufacturer' => ['string'],
             'barcode_warehouse'    => ['string']
         ]);
@@ -141,7 +146,7 @@ class StoreImportProduct implements ShouldQueue
             'creator_id'    => $user_id,
             'supplier_id'   => $supplier->id,
             'barcode'       => $attributes['barcode_manufacturer'],
-            'barcode_local' => $attributes['barcode_warehouse'],
+            'barcode_local' => $attributes['barcode_warehouse']
         ]);
 
         if ((int)$attributes['count'] > 0) {

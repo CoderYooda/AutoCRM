@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\ProductRequest;
 use App\Models\Adjustment;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Markup;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use App\Models\Supplier;
@@ -170,6 +172,8 @@ class ProductController extends Controller
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
+        $user = Auth::user();
+
         $stores = Store::owned()->get();
 
         $company = Auth::user()->company;
@@ -177,7 +181,6 @@ class ProductController extends Controller
         //Цена
 
         $priceSource = $company->getSettingField('Источник цены');
-        $globalMarkup = $company->getSettingField('Стандартная наценка (%)');
 
         $lastEntrancePrice = 0;
 
@@ -193,16 +196,21 @@ class ProductController extends Controller
 
         $entrances = [];
 
+        $adjustmentEntrances = [];
+
         if($product) {
 
-            $entrances = DB::table('article_entrance')
+            $entrances = $product->entrances;
+
+            $adjustmentEntrances = DB::table('article_entrance')
                 ->where('article_id', $product->id)
                 ->whereRaw('count != released_count')
                 ->get();
-
         }
 
-        Cache::put('user[' . Auth::id() . '][entrances]', $entrances);
+        Cache::put('user[' . Auth::id() . '][entrances]', $adjustmentEntrances);
+
+        $prices = Markup::where('company_id', $user->company_id)->get();
 
         //Интернет-магазин
 
@@ -218,7 +226,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields', 'globalMarkup', 'lastEntrancePrice', 'priceSource', 'entrances'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'prices', 'request', 'stores', 'shopFields', 'lastEntrancePrice', 'priceSource', 'adjustmentEntrances', 'entrances'))->render(),
             'product' => $product
         ]);
     }
@@ -265,15 +273,17 @@ class ProductController extends Controller
             ->selectRaw('id, article_id, SUM(count) as count, SUM(released_count) as released_count')
             ->get();
 
-        foreach ($products as $product) {
+        foreach ($products as $index => $product) {
 
             $availableCount = $availableCounts->where('article_id', $product->id)->first();
 
-            $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
-            $product->price = $product->getPrice();
-            $product->supplier_name = $product->supplier->name;
-            $product->product_id = $product->id;
-            $product->shipped_count = 0;
+            $products[$index]['available'] = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
+            $products[$index]['price'] = $product->getPrice();
+            $products[$index]['supplier_name'] = $product->supplier->name;
+            $products[$index]['product_id'] = $product->id;
+            $products[$index]['shipped_count'] = 0;
+
+//            dd($product);
         }
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
@@ -333,8 +343,6 @@ class ProductController extends Controller
             if($request->entrances) {
 
                 $oldEntrancesState = Cache::get('user[' . Auth::id() . '][entrances]');
-
-                $adjustmentData = [];
 
                 foreach ($request->entrances as $entrance_id => $params) {
 
@@ -408,7 +416,6 @@ class ProductController extends Controller
                 $article->specifications()->createMany($attributes);
             }
 
-            $this->status = 200;
             if($request['storage']) {
 
                 $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
@@ -434,10 +441,11 @@ class ProductController extends Controller
                 }
             }
 
+            event(new ModelWasStored($article->company_id, 'ProductStored'));
+
             return response()->json([
-                'message' => $this->message,
-                'event' => 'ProductStored',
-            ], $this->status);
+                'message' => $this->message
+            ]);
 
         });
     }
@@ -474,16 +482,22 @@ class ProductController extends Controller
 
         $company_id = Auth::user()->company_id;
 
-        //$search = str_replace(['-'], '', $request->search));
+        $category = Category::find($request->category_id);
 
-        $articles = Article::selectRaw('articles.*, supplier.name as supplier')
+        $childrenCategories = collect();
+
+        if($category && !$category->isRoot()) {
+            $childrenCategories = $category->getDescendantsAndSelf();
+        }
+
+        return Article::selectRaw('articles.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
             ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
-            ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
-                $q->where('articles.category_id', (int)$request['category_id']);
+            ->when($category && !$category->isRoot(), function ($q) use($request, $childrenCategories) {
+                $q->whereIn('articles.category_id', $childrenCategories->pluck('id'));
             })
             ->when($request->analogues, function (Builder $query) use($request) {
                 $query->whereIn('articles.id', json_decode($request->analogues));
@@ -491,8 +505,6 @@ class ProductController extends Controller
             ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir)
             ->paginate($size);
-
-        return $articles;
     }
 
     public static function searchByArticleAndBrand($articles)
@@ -531,9 +543,8 @@ class ProductController extends Controller
     public function changeMarkupSource(Request $request)
     {
         $products = json_decode($request->products);
-        $source = $request->markup_source;
 
-        Article::whereIn('id', $products)->update(['markup_source' => $source]);
+        Article::whereIn('id', $products)->update(['price_id' => $request->markup_source]);
 
         return response()->json([
             'type' => 'success',

@@ -22,6 +22,11 @@ class Shop extends Model
         return 'http://' . $this->subdomain . '.' . getenv('APP_DOMAIN') .  '.ru/';
     }
 
+    public function markup()
+    {
+        return $this->hasOne(Markup::class, 'id', 'price_id');
+    }
+
     public function name()
     {
         return $this->address_name ? $this->address_name : 'Название магазина';

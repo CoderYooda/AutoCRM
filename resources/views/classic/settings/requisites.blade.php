@@ -62,8 +62,8 @@
                     </div>
 
                     <div class="form-group mt-15 mb-10">
-                        <label>Руководитель организации</label>
-                        <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя организации" value="{{ !$company->is_company ? $company->owner : '' }}">
+                        <label>Владелец организации</label>
+                        <input name="owner" type="text" class="form-control" placeholder="ФИО владельца организации" value="{{ !$company->is_company ? $company->owner : '' }}">
                     </div>
 
                 </div>
@@ -140,8 +140,8 @@
                     <div class="d-flex">
 
                         <div class="form-group w-350">
-                            <label>Руководитель организации</label>
-                            <input name="owner" type="text" class="form-control" placeholder="ФИО руководителя организации" value="{{ $company->owner }}">
+                            <label>Владелец организации</label>
+                            <input name="owner" type="text" class="form-control" placeholder="ФИО владельца организации" value="{{ $company->owner }}">
                         </div>
 
                         <div class="form-group ml-15 w-350 p_rel">

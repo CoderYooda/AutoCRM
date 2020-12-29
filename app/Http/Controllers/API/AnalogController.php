@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 
 class AnalogController extends Controller
 {
-    protected $host = 'http://id34135.public.api.abcp.ru/';
-    protected $login = 'api@id34135';
-    protected $password = '3f4aa416a24a0bc475793cd6b63b2e33';
+    protected $host = 'http://id8341.public.api.abcp.ru/';
+    protected $login = 'audi-31@yandex.ru';
+    protected $password = 'i7r7o7n7';
 
     public function getManufacturersByArticle(string $article)
     {
@@ -38,21 +38,19 @@ class AnalogController extends Controller
     public function getAnalogues($brand, $article)
     {
         $params = [
-            'brand'  => $brand,
             'number' => $article,
-            'format' => 'bnpchmt',
-            'cross_image' => 0
+            'brand'  => $brand,
+            'useOnlineStocks' => 0,
+            'disableOnlineFiltering' => 1,
+            'withOutAnalogs' => 0
         ];
 
-        $response = $this->query('articles/info/', $params, 'GET');
-
-//        dd($response);
-
-        if(!isset($response['crosses'])) return [];
+        $response = $this->query('search/articles/', $params, 'GET');
 
         $results = [];
 
-        foreach ($response['crosses'] as $article) {
+        foreach ($response as $article) {
+            if($article['brand'] == $brand) continue;
            $results[$article['brand']][] = $article['numberFix'];
         }
 
@@ -62,7 +60,7 @@ class AnalogController extends Controller
     private function query($path, $params, $method): array
     {
         $params['userlogin'] = $this->login;
-        $params['userpsw'] = $this->password;
+        $params['userpsw'] = md5($this->password);
         $params['locale'] = 'ru_RU';
 
         $full_path = $this->host . $path;
@@ -84,9 +82,13 @@ class AnalogController extends Controller
 
         try {
             $result = file_get_contents($full_path, null, stream_context_create($context));
-            $result = (array)json_decode($result, true);
+            $result = json_decode($result, true);
         } catch (\Exception $exception) {
+//            dd($exception);
+        }
 
+        if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {
+            throw_error('AvtoImport: Ошибка авторизации логина или пароля.');
         }
 
         return $result;

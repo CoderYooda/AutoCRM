@@ -45,9 +45,20 @@ class ArmTek implements ProviderInterface
             'PIN'   => $article,
         ];
 
-        $result = $this->query('/ws_search/assortment_search', $params, 'POST');
+        $response = $this->query('/ws_search/assortment_search', $params, 'POST');
 
-        return array_column($result['RESP'], 'BRAND');
+        $response = $response['RESP'];
+
+        $results = [];
+
+        foreach ($response as $brand) {
+            $results[$brand['BRAND']] = [
+                'article' => $brand['PIN'],
+                'desc' => strlen($brand['NAME']) ? $brand['NAME'] : 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string

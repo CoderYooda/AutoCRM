@@ -69,7 +69,16 @@ class ForumAuto implements ProviderInterface
 
         $response = $this->query('listGoods', $params);
 
-        return array_column($response, 'brand');
+        $results = [];
+
+        foreach ($response as $product) {
+            $results[$product['brand']] = [
+                'article' => $product['art'],
+                'desc' => $product['name']
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string
@@ -130,6 +139,8 @@ class ForumAuto implements ProviderInterface
 
             $listName = $is_analogue ? 'analogues' : 'originals';
 
+            $packing = $item['kr'] > 0 ? $item['kr'] : 1;
+
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
                 'name' => $store['name'],
@@ -137,8 +148,8 @@ class ForumAuto implements ProviderInterface
                 'rest' => $store['num'],
                 'days_min' => $store['d_deliv'],
                 'days_max' => $store['d_deliv'],
-                'packing' => $item['kr'] > 0 ? $item['kr'] : 1,
-                'min_count' => $item['kr'] > 0 ? $item['kr'] : 1,
+                'packing' => $packing,
+                'min_count' => $packing,
                 'delivery' => $store['d_deliv'] . ' дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['brand'],

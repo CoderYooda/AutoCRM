@@ -22,39 +22,17 @@ class SearchController extends Controller
         $this->shop = $shopManager->getCurrentShop();
     }
 
-    public function index(Request $request, Providers $providers)
+    public function index(Request $request)
     {
-        $brands = [];
-
-        if($this->shop->supplier_offers) {
-
-            /** @var ProviderInterface $provider */
-            foreach ($providers->activated() as $provider_key => $provider) {
-
-                $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
-            }
-        }
-
-        $brands = array_unique($brands);
+        $brands = $this->getUniqueBrands($request);
 
         return view('shop.search', compact('brands'))
             ->with('shop', $this->shop);
     }
 
-    public function providerBrands(Request $request, Providers $providers)
+    public function providerBrands(Request $request)
     {
-        $brands = [];
-
-        if($this->shop->supplier_offers) {
-
-            /** @var ProviderInterface $provider */
-            foreach ($providers->activated() as $provider_key => $provider) {
-
-                $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
-            }
-        }
-
-        $brands = array_unique($brands);
+        $brands = $this->getUniqueBrands($request);
 
         $view = view('shop.includes.search.brands', compact('brands'));
 
@@ -62,6 +40,51 @@ class SearchController extends Controller
             'html' => $view->render(),
             'brands' => $brands
         ]);
+    }
+
+    private function getUniqueBrands(Request $request)
+    {
+        /** @var Providers $providers */
+        $providers = app(Providers::class);
+
+        $products = Article::with('supplier')->where('company_id', $this->shop->company_id)
+            ->where('article', $request->search)
+            ->get();
+
+        $brands = [];
+
+        if($this->shop->supplier_offers) {
+            /** @var ProviderInterface $provider */
+            foreach ($providers->activated() as $provider_key => $provider) {
+                try {
+                    $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
+                }
+                catch (\Exception $exception) {
+
+                }
+            }
+        }
+
+        foreach ($products as $product) {
+
+            if($this->isBrandAlreadyInArray($product->supplier->name, $product->article, $brands)) continue;
+
+            $brands[$product->supplier->name] = [
+                'article' => $product->article,
+                'desc' => $product->getShopName()
+            ];
+        }
+
+        return $brands;
+    }
+
+    private function isBrandAlreadyInArray($searchBrand, $searchArticle, $brands)
+    {
+        foreach ($brands as $brand => $info) {
+            if(strtoupper($brand) == strtoupper($searchBrand) && strtoupper($info['article']) == strtoupper($searchArticle)) return true;
+        }
+
+        return false;
     }
 
     public function providerOffers(Request $request, Providers $providers)
@@ -77,7 +100,18 @@ class SearchController extends Controller
         $providersOrders = [];
 
         foreach ($providers->activated() as $provider_key => $provider) {
-            $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+
+            try {
+                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+            }
+            catch (\Exception $exception) {
+                $providersOrders[$provider_key] = [
+                    'originals' => [],
+                    'analogues' => []
+                ];
+            }
+
+            $this->applyPriceSettingsOnOrders($providersOrders[$provider_key]);
         }
 
         $view = view('shop.includes.search.warehouses', compact('product', 'providersOrders'))
@@ -94,18 +128,17 @@ class SearchController extends Controller
     {
         $provider = $providers->find($request->selected_service);
 
-        $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
-
-        foreach (['originals', 'analogues'] as $type) {
-
-            foreach ($orders[$type] as $key => $order) {
-
-                $price = $order['price'];
-
-                $orders[$type][$key]['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-                $orders[$type][$key]['model']['hash_info']['price'] = $price + sum_percent($price, $this->shop->supplier_percent);
-            }
+        try {
+            $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
         }
+        catch (\Exception $exception) {
+            $orders = [
+                'originals' => [],
+                'analogues' => []
+            ];
+        }
+
+        $this->applyPriceSettingsOnOrders($orders);
 
         $orders = collect($orders);
 
@@ -128,5 +161,22 @@ class SearchController extends Controller
             'html' => $view->render(),
             'orders' => $orders
         ]);
+    }
+
+    private function applyPriceSettingsOnOrders(array &$orders)
+    {
+        $markup = $this->shop->markup;
+
+        foreach (['originals', 'analogues'] as $type) {
+            foreach ($orders[$type] as $key => $order) {
+
+                $productPrice = $order['price'];
+
+                $percent = $markup->getPercentByAmount($productPrice);
+
+                $orders[$type][$key]['price'] = $productPrice + sum_percent($productPrice, $percent);
+                $orders[$type][$key]['model']['hash_info']['price'] = $productPrice + sum_percent($productPrice, $percent);
+            }
+        }
     }
 }

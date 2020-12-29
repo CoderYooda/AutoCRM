@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\MoneyMoveRequest;
 use App\Models\Cashbox;
 use App\Models\MoneyMoves;
@@ -60,15 +61,11 @@ class MoneyMoveController extends Controller
         $moneymove->created_at = $request['do_date'];
         $moneymove->save();
 
+        event(new ModelWasStored($moneymove->company_id, 'MoneymoveStored'));
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $message,
-                'event' => 'MoneymoveStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+        return response()->json([
+            'message' => $message
+        ]);
     }
 
     public function getSideInfo(Request $request){

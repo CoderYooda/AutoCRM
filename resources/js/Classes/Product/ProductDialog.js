@@ -103,27 +103,42 @@ class ProductDialog extends Modal {
 
     recalculateMarkup() {
 
-        let markup_source = this.current_dialog.querySelector('[name="markup_source"]:checked').value;
+        setTimeout(() => {
 
-        let price_source = this.current_dialog.querySelector('[name="price_source"]').value;
+            let price_source = this.current_dialog.querySelector('[name="price_source"]');
 
-        let markup_percent = this.current_dialog.querySelector('.markup_' + markup_source).value;
+            let price_element = this.current_dialog.querySelector(price_source.value != 'purchase' ? '[name="last_entrance_price"]' : '[name*="retail_price"]');
 
-        let price_element = this.current_dialog.querySelector(price_source != 'purchase' ? '[name="last_entrance_price"]' : '[name*="retail_price"]');
+            let price = parseFloat(price_element.value);
 
-        let price = parseFloat(price_element.value);
+            let data = {
+                price: price
+            };
 
-        this.current_dialog.querySelector('#total_price').innerHTML = price.toFixed(2);
+            let price_id = this.current_dialog.querySelector('[name="price_id"]').value;
 
-        price += (price / 100 * markup_percent);
+            axios.post('/prices/' + price_id + '/percent', data)
+                .then(response => {
 
-        let total_input = this.current_dialog.querySelector('.total_markup');
+                    let data = response.data;
 
-        total_input.value = price.toFixed(2);
+                    let total_element = this.current_dialog.querySelector('#total_price');
+
+                    if(total_element) {
+                        total_element.innerHTML = price.toFixed(2);
+                    }
+
+                    price += (price / 100 * data.percent);
+
+                     let total_input = this.current_dialog.querySelector('.total_markup');
+
+                    total_input.value = price.toFixed(2);
+                });
+
+        }, 200);
     }
 
-    linked()
-    {
+    linked() {
         if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');
     }
 

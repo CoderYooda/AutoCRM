@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Article;
 use App\Models\System\Image;
@@ -20,12 +21,6 @@ use Illuminate\Support\Str;
 class CategoryController extends Controller
 {
     private static $root_category = 1;
-
-    public static $breadcrumbs;
-
-    public function _construct(){
-
-    }
 
     public function index()
     {
@@ -71,35 +66,13 @@ class CategoryController extends Controller
         return response()->json($response);
     }
 
-    public static function loadBreadcrumbs(Request $request){
-        self::$breadcrumbs = collect();
-        if($request['search'] != '' ){
-            $html = '<ol class="breadcrumb nav m-0"><li>Поиск по складу</li></ol>';
-            return response()->json([
-                'html' => $html,
-            ]);
-        }
+    public static function loadBreadcrumbs(Request $request)
+    {
+        $category = Category::find($request['category_id']);
 
-        $html = '<ol class="breadcrumb nav m-0">';
-        $category = Category::owned()->where('id', $request['category_id'])->first();
-        self::rec($category, $request['root_category']);
-        foreach(self::$breadcrumbs as $index => $breadcrumb){
-            if($breadcrumb->id == 1 || $index == self::$breadcrumbs->count()){
-                $html .= '<li class="breadcrumb-item"><span class="ajax-nav">' . $breadcrumb->name . '</span></li>';
-            } else {
-                $html .= '<li class="breadcrumb-item"><a class="ajax-nav" onclick="window.store.loadCategory(' . $breadcrumb->id . ', true, true)">' . $breadcrumb->name . '</a></li>';
-            }
-        }
-        $html .= '</ol>';
-        return $html;
-    }
+        $parentCategories = $category->getAncestors();
 
-    public static function rec($category, $root){
-        self::$breadcrumbs->prepend($category);
-        $parent = $category->parent()->first();
-        if($parent != null && $parent->id != 1 && $category->id != $root){
-            self::rec($parent, $root);
-        }
+        return view(get_template() . '.category.includes.breadcrumbs', compact('parentCategories'))->render();
     }
 
     public function store(CategoryRequest $request)
@@ -112,42 +85,43 @@ class CategoryController extends Controller
             ], 422);
         }
 
-        $type = null;
-        if($request['category_id'] != null){
-            $parent = Category::find($request['category_id']);
-            if($parent && $parent->type != null){
-                $type = $parent->type;
+        return \DB::transaction(function () use($request) {
+            if($request['category_id'] != null){
+                $parent = Category::find($request['category_id']);
             }
-        }
 
-        $category = Category::firstOrNew(['id' => (int)$request['id']]);
+            $category = Category::firstOrNew(['id' => (int)$request['id']]);
 
-        if($category->locked){
+            if($category->locked){
+
+                return response()->json([
+                    'id' => $category->id,
+                    'type' => 'error',
+                    'message' => 'Категория защищена от редактирования'
+                ], 200);
+            }
+
+            $oldCategoryId = $category->id;
+
+            $category->fill($request->except('image'));
+            $category->creator_id = Auth::id();
+            $category->company_id = Auth::user()->company_id;
+            $category->type = $parent->type ?? null;
+
+            $category->save();
+
+            if($parent && $oldCategoryId != $request->category_id) {
+                $category->makeChildOf($parent);
+            }
+
+            UA::makeUserAction($category, 'create');
+
+            event(new ModelWasStored($category->company_id, 'CategoryStored'));
 
             return response()->json([
-                'id' => $category->id,
-                'type' => 'error',
-                'message' => 'Категория защищена от редактирования'
-            ], 200);
-        }
-
-        $category->fill($request->except('image'));
-        $category->creator_id = Auth::id();
-        $category->company_id = Auth::user()->company_id;
-        $category->type = $type;
-
-        $category->save();
-
-        UA::makeUserAction($category, 'create');
-
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => 'Категория сохранена',
-                'event' => 'CategoryStored'
+                'message' => 'Категория сохранена'
             ]);
-        } else {
-            return redirect()->back();
-        }
+        });
     }
 
     public function delete($id)

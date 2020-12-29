@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\CashboxRequest;
 use App\Models\Cashbox;
 use Illuminate\Http\Request;
@@ -37,16 +38,13 @@ class CashboxController extends Controller
 
         $content = view(get_template() . '.settings.cashbox', compact('cashboxes', 'request'))->render();
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $message,
-                //'container' => 'ajax-table',
-                'event' => 'CashboxStored'
-                //'html' => $contentgenerateUuid
-                ]);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($cashbox->company_id, 'CashboxStored'));
+
+        return response()->json([
+            'message' => $message,
+            //'container' => 'ajax-table',
+            //'html' => $contentgenerateUuid
+        ]);
     }
 
 
