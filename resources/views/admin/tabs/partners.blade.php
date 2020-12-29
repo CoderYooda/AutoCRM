@@ -5,7 +5,9 @@
     <div id="ajax-table-companies" class="bottom-container" style="height: calc(100% - 79px) !important;">
         <div class="box box-lister">
             @foreach($partners as $partner)
-                {{ $partner->name }}
+                <div class="box m-15">
+                    {{ $partner->name }}
+                </div>
             @endforeach
         </div>
         <div class="content-rightside">

@@ -363,8 +363,7 @@ input, textarea {
 
 .top_section {
     height: 635px;
-    background: url(/landing/images/bg.jpg) no-repeat;
-    background-size: cover;
+    background: url(/landing/images/bg.jpg) center #032f4c no-repeat;
     margin-bottom: 70px;
     overflow: hidden;
 }
@@ -395,12 +394,18 @@ input, textarea {
     position: relative;
 }
 
+.test_period{
+    color: #fff;
+    padding-bottom: 35px;
+}
+
 .top_left_body {
-    height: 635px;
-    display: flex;
+    margin-top: 170px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
+    text-align: center;
+    flex: 1;
 }
 .top_left_body_shop {
     height: 390px;
@@ -1224,6 +1229,9 @@ input, textarea {
     .top_section, .top_wrap, .top_left_body {
         height: 350px;
     }
+    .top_left_body{
+        margin-top: 94px;
+    }
     .top_left_h1 {
         font-size: 30px;
         line-height: 40px;
@@ -1453,6 +1461,8 @@ input, textarea {
 
     .top_left_body {
         height: 100%;
+        margin-top: 0px;
+        margin-bottom: 32px;
     }
     .top_right {
         flex: 0 0 50%;
