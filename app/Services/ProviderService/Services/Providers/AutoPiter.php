@@ -7,8 +7,12 @@ use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
+use Cache;
+use Exception;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
+use SoapClient;
+use function Couchbase\defaultDecoder;
 
 class AutoPiter implements ProviderInterface
 {
@@ -43,19 +47,6 @@ class AutoPiter implements ProviderInterface
         $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
     }
 
-    public function searchBrandsCount(string $article): array
-    {
-
-//        $params = [
-//            'Number' => $article
-//        ];
-
-        $response = $this->query('Authorization');
-
-
-        return array_column($response, 'brand');
-    }
-
     public function getName(): string
     {
         return $this->name;
@@ -74,19 +65,19 @@ class AutoPiter implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'art' => $article,
-            'br' => $brand,
-            'cross' => 1
+            'ArticleId' => $article,
+            'SearchCross' => 1
         ];
 
-        $items = $this->query('listGoods', $params);
+        $items = $this->query('GetPriceId', $params);
+        dd($items);
 
         $results = [
             'originals' => [],
             'analogues' => []
         ];
 
-        if($items == []) return $results;
+        if ($items == []) return $results;
 
         $originalIndex = 0;
         $analogueIndex = 0;
@@ -139,38 +130,46 @@ class AutoPiter implements ProviderInterface
         return $results;
     }
 
-    protected function query($method, $params =[])
+    protected function query($method, $params = [])
     {
-        $params['UserID'] = $this->user_id;
-        $params['Password'] = $this->password;
-        $params['Save'] = true;
-
-
-        $client = new \SoapClient($this->host);
-
-        $response = $client->Authorization($this->user_id, $this->password,true);
-
-        dd($response);
-
         $url = $this->host;
 
+        $client = new SoapClient($url);
 
+        $response = $client->Authorization([
+            "UserID" => $this->user_id,
+            "Password" => $this->password,
+            "Save" => false
+        ]);
 
+        if (!$response->AuthorizationResult) {
+            throw new Exception('No auth', 401);
+        }
 
-        $url .= '?' . http_build_query($params);
         try {
-            $result = file_get_contents($url);
-            dd($result);
+            $response = $client->$method($params);
+            $result = object_to_array($response);
 
-            $result = json_decode($result, true);
-        }
-        catch (\Exception $exception) {
-            $result = [];
+        } catch (Exception $exception) {
+            $result = $exception;
         }
 
-        if(isset($result['errors'])) return [];
+        $this->errorHandler($result);
 
         return $result;
+    }
+
+    private function errorHandler($response) : void
+    {
+//        if (is_object($response)) {
+//
+//            $errorMessage = $response->getMessage();
+//
+//            foreach ($this->errors as $code => $info) {
+//                if (strpos($errorMessage, $info['search']) === false) continue;
+//                throw new \Exception($info['return'], $code);
+//            }
+//        }
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -180,14 +179,45 @@ class AutoPiter implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-//        if(!isset($fields['api_key'])) return false;
-//
-//        $this->api_key = $fields['api_key'];
-//
-//        //Если эксепшен не был выкинут, то пропускаем
-//        $response = $this->searchBrandsCount('k1279');
+
+        if (!isset($fields['user_id']) && !isset($fields['password'])) return false;
+
+        $this->user_id = $fields['user_id'];
+        $this->password = $fields['password'];
+
+        //Если эксепшен не был выкинут, то пропускаем
+        $this->searchBrandsCount('k1279');
 
         return true;
+    }
+
+    public function searchBrandsCount(string $article): array
+    {
+        $params = [
+            'Number' => $article
+        ];
+
+        $response = $this->query('FindCatalog', $params);
+
+        $results = [];
+
+        $response = $response['FindCatalogResult']['SearchCatalogModel'];
+
+        if (isset($response['CatalogName'])) {
+
+            dd($response);
+            $results[] = $response['CatalogName'];
+
+            return $results;
+        }
+
+        foreach ($response as $index => $item) {
+
+            $results[] = $item['CatalogName'];
+
+        }
+
+        return $results;
     }
 
     public function sendOrder(array $data): bool

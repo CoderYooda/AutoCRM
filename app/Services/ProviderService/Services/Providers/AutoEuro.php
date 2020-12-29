@@ -38,6 +38,10 @@ class AutoEuro implements ProviderInterface
             'search' => 'Bad Request',
             'return' => 'Not found'
         ],
+        419 => [
+            'search' => 'Too Many Requests',
+            'return' => 'Too Many Requests'
+        ],
     ];
 
 

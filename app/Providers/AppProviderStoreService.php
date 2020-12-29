@@ -33,7 +33,7 @@ class AppProviderStoreService extends ServiceProvider
             AutoRus::class,
             AutoEuro::class,
             ForumAuto::class,
-//            AutoPiter::class,
+            AutoPiter::class,
             MskRechie::class,
             StParts::class,
             Berg::class
