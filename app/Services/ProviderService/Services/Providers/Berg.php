@@ -67,12 +67,16 @@ class Berg implements ProviderInterface
 
         $response = $this->query('/ordering/get_stock', $params);
 
+        $results = [];
 
-        $response = array_column($response['resources'], 'brand');
+        foreach ($response['resources'] as $item) {
+            $results[$item['brand']['name']] = [
+                'article' => $item['article'],
+                'desc' => $item['name']
+            ];
+        }
 
-        $response = array_column($response,'name');
-
-        return $response;
+        return $results;
     }
 
     public function getName(): string

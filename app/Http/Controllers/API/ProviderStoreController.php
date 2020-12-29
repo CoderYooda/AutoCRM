@@ -91,7 +91,15 @@ class ProviderStoreController extends Controller
         /** @var ProviderInterface $provider */
         $provider = $providers->find($selected_service);
 
-        $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
+        try {
+            $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
+        }
+        catch (\Exception $exception) {
+            $stores = [
+                'originals' => [],
+                'analogues' => []
+            ];
+        }
 
         $hashes = [];
 

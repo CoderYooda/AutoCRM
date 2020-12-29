@@ -16,7 +16,7 @@
 
                 @foreach($manufacturers as $manufacturer => $info)
 
-                    <tr id="brand_{{ $manufacturer }}" class="pointer" style="height: 40px;" onclick="store.showManufactureStores(this, '{{ $manufacturer }}')">
+                    <tr id="brand_{{ $manufacturer }}" class="pointer" style="height: 40px;" onclick="store.showManufactureStores(this, '{{ $manufacturer }}', '{{ $info['article'] }}')">
                         <td>{{ $info['desc'] }}</td>
                         <td>{{ $manufacturer }}</td>
                         <td>{{ $info['article'] }}</td>

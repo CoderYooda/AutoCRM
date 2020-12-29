@@ -428,7 +428,9 @@ class storePage extends Page{
 
         let table_element = document.getElementById('table-container');
 
-        togglePreloader(table_element, true);
+        let preloader_element = table_element.closest('.box-content');
+
+        togglePreloader(preloader_element, true);
 
         if(this.search == null) this.search = '';
 
@@ -462,7 +464,7 @@ class storePage extends Page{
             console.log(error);
         })
         .finally(() => {
-            togglePreloader(table_element, false);
+            togglePreloader(preloader_element, false);
 
             window.isXHRloading = false;
         });
@@ -487,7 +489,7 @@ class storePage extends Page{
         this.searchProviderStores();
     }
 
-    showManufactureStores(element, manufacturer) {
+    showManufactureStores(element, manufacturer, article) {
 
         if(window.isXHRloading == true) return;
 
@@ -495,13 +497,15 @@ class storePage extends Page{
 
         let table_element = document.getElementById('table-container');
 
-        togglePreloader(table_element, true);
+        let preloader_element = table_element.closest('.box-content');
+
+        togglePreloader(preloader_element, true);
 
         let service_input = document.querySelector('[name="service_key"]');
 
         axios.post('/provider_stores/stores', {
             manufacturer: manufacturer,
-            article: this.search,
+            article: article,
             selected_service: service_input.value
         })
             .then(response => {
@@ -522,7 +526,7 @@ class storePage extends Page{
                 console.log(response);
             })
             .finally(()=> {
-                togglePreloader(table_element, false);
+                togglePreloader(preloader_element, false);
 
                 window.isXHRloading = false;
             });

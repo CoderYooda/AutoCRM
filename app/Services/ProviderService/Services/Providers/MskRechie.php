@@ -51,7 +51,16 @@ class MskRechie implements ProviderInterface
 
         $response = $this->query('brand_by_nr', $params);
 
-        return array_column($response['result'], 'brand');
+        $results = [];
+
+        foreach ($response['result'] as $item) {
+            $results[$item['brand']] = [
+                'article' => $item['nr'],
+                'desc' => 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string

@@ -56,7 +56,12 @@ class SearchController extends Controller
         if($this->shop->supplier_offers) {
             /** @var ProviderInterface $provider */
             foreach ($providers->activated() as $provider_key => $provider) {
-                $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
+                try {
+                    $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
+                }
+                catch (\Exception $exception) {
+
+                }
             }
         }
 
@@ -96,7 +101,16 @@ class SearchController extends Controller
 
         foreach ($providers->activated() as $provider_key => $provider) {
 
-            $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+            try {
+                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+            }
+            catch (\Exception $exception) {
+                $providersOrders[$provider_key] = [
+                    'originals' => [],
+                    'analogues' => []
+                ];
+            }
+
             $this->applyPriceSettingsOnOrders($providersOrders[$provider_key]);
         }
 
@@ -114,7 +128,15 @@ class SearchController extends Controller
     {
         $provider = $providers->find($request->selected_service);
 
-        $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+        try {
+            $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+        }
+        catch (\Exception $exception) {
+            $orders = [
+                'originals' => [],
+                'analogues' => []
+            ];
+        }
 
         $this->applyPriceSettingsOnOrders($orders);
 
@@ -143,14 +165,14 @@ class SearchController extends Controller
 
     private function applyPriceSettingsOnOrders(array &$orders)
     {
-        $price = $this->shop->price;
+        $markup = $this->shop->markup;
 
         foreach (['originals', 'analogues'] as $type) {
             foreach ($orders[$type] as $key => $order) {
 
                 $productPrice = $order['price'];
 
-                $percent = $price->getPercentByAmount($productPrice);
+                $percent = $markup->getPercentByAmount($productPrice);
 
                 $orders[$type][$key]['price'] = $productPrice + sum_percent($productPrice, $percent);
                 $orders[$type][$key]['model']['hash_info']['price'] = $productPrice + sum_percent($productPrice, $percent);
