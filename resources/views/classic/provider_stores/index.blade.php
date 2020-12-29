@@ -33,7 +33,7 @@
 
                     @can('Создавать заявки поставщикам')
                         @if(count($services))
-                            <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Оформить заказ</button>
+                            <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Корзина</button>
                         @endif
                     @endcan
 
@@ -41,33 +41,19 @@
 
             </div>
 
-            <div id="table-container" class="box box-content preloader-block">
+            <div class="box box-content preloader-block" style="max-height: calc(100% - 105px)!important;">
 
-                <div data-simplebar style="max-height: 778px;" >
+                <div data-simplebar class="h-100">
 
-                    <div id="provider_stores-table">
+                    <div id="table-container">
 
-                        <table cellspacing="0" cellpadding="0" border="0" class="w-100 pt-15">
+    {{--                @include(get_template() . '.provider_stores.includes.manufacturers')--}}
 
-                            <thead>
-                                <tr>
-                                    <th style="color: #2D76A8;">ID</th>
-                                    <th style="color: #2D76A8;">Производитель</th>
-                                    <th style="color: #2D76A8;">Артикул</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="table_body">
-
-                            </tbody>
-
-                    </table>
+    {{--                @include(get_template() . '.provider_stores.includes.warehouses')--}}
 
                     </div>
 
                 </div>
-
-                <div class="out_of_search" style="margin-top: 250px;"></div>
 
             </div>
 

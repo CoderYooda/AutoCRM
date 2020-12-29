@@ -180,6 +180,13 @@ if(!function_exists('getBarcodeSVG')) {
     }
 }
 
+if(!function_exists('str_contains_cyrillic'))
+{
+    function str_contains_cyrillic($string) {
+        return preg_match("/[А-Яа-я]/", $string);
+    }
+}
+
 if(!function_exists('phone_format')) {
     function phone_format($sPhone)
     {

@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\API\SberbankController;
 use App\Mail\Shop\PaymentOrder;
-use App\Models\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
-use App\Mail\WaitPaymentMail;
-use App\Services\ShopManager\ShopManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use YandexCheckout\Client;
 
 Carbon::setToStringFormat('d.m.Y H:i');
 
@@ -109,68 +107,133 @@ class Order extends Model
     {
         $shop = $this->shop;
 
-        $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
+        $paymentMethod = $shop->getActivePaymentMethod();
 
-        $companyEmail = $shop->orderEmails->first()->email;
-        $companyPhone = $shop->phone->number;
+        if ($paymentMethod != []) {
 
-        $receiptItems = [];
+            $paymentId = null;
+            $paymentUrl = null;
 
-        $totalPrice = 0;
+            if ($paymentMethod['name'] == 'tinkoff') {
+                $api = new TinkoffMerchantAPI($paymentMethod['params']['terminal_key'], $paymentMethod['params']['secret_key']);
 
-        foreach ($this->positions as $position) {
+                $companyEmail = $shop->orderEmails->first()->email;
+                $companyPhone = $shop->phone->number;
 
-            $price = (int)$position->price * 100;
+                $receiptItems = [];
 
-            $totalPrice += $price;
+                $totalPrice = 0;
 
-            $receiptItems[] = [
-                'Name'          => $position->name,
-                'Price'         => $price,
-                'Quantity'      => $position->count,
-                'Amount'        => $price,
-                'PaymentMethod' => 'full_prepayment',
-                'PaymentObject' => 'commodity',
-                'Tax'           => 'none'
-            ];
+                foreach ($this->positions as $position) {
+
+                    $price = (int)$position->price * 100;
+
+                    $totalPrice += $price;
+
+                    $receiptItems[] = [
+                        'Name'          => $position->name,
+                        'Price'         => $price,
+                        'Quantity'      => $position->count,
+                        'Amount'        => $price,
+                        'PaymentMethod' => 'full_prepayment',
+                        'PaymentObject' => 'commodity',
+                        'Tax'           => 'none'
+                    ];
+                }
+
+                if ($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
+
+                    $receiptItems[] = [
+                        'Name'          => 'Доставка',
+                        'Price'         => $this->delivery_price * 100,
+                        'Quantity'      => 1,
+                        'Amount'        => $this->delivery_price * 100,
+                        'PaymentMethod' => 'full_prepayment',
+                        'PaymentObject' => 'commodity',
+                        'Tax'           => 'none'
+                    ];
+                }
+
+                $receipt = [
+                    'EmailCompany' => $companyEmail,
+                    'Phone'        => $companyPhone,
+                    'Taxation'     => 'osn',
+                    'Items'        => $receiptItems,
+                ];
+
+                $params = [
+                    'OrderId'    => $this->id,
+                    'Amount'     => $totalPrice,
+                    'SuccessURL' => $this->path(),
+                    'Receipt'    => $receipt
+                ];
+
+                $api->init($params);
+
+                $paymentId = $api->paymentId;
+                $paymentUrl = $api->paymentUrl;
+            }
+            else if ($paymentMethod['name'] == 'yandex') {
+
+                $client = new Client();
+                $client->setAuth($paymentMethod['params']['shop_id'], $paymentMethod['params']['secret_key']);
+
+                $totalPrice = 0;
+
+                foreach ($this->positions as $position) {
+                    $totalPrice += $position->price * $position->count;
+                }
+
+                if ($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
+                    $totalPrice += $this->delivery_price;
+                }
+
+                $response = $client->createPayment([
+                    'amount' => [
+                        'value' => $totalPrice,
+                        'currency' => 'RUB',
+                    ],
+                    'confirmation' => [
+                        'type' => 'redirect',
+                        'return_url' => $this->path(),
+                    ],
+                    'capture' => true,
+                    'description' => 'Заказ №' . $this->id,
+                ],
+                uniqid('', true));
+
+                $paymentId = $response->id;
+                $paymentUrl = $response->getConfirmation()->getConfirmationUrl();
+            }
+            else if($paymentMethod['name'] == 'sberbank') {
+
+                $api = new SberbankController($paymentMethod['params']['login'], $paymentMethod['params']['password']);
+
+                $totalPrice = 0;
+
+                foreach ($this->positions as $position) {
+                    $totalPrice += $position->price * $position->count;
+                }
+
+                if ($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
+                    $totalPrice += $this->delivery_price;
+                }
+
+                $response = $api->registerOrder($this->id, $totalPrice, $this->path());
+
+                $paymentId = $response['orderId'];
+                $paymentUrl = $response['formUrl'];
+            }
+
+            $this->update([
+                'payment_type' => $paymentMethod['name'],
+                'payment_id' => $paymentId,
+                'payment_url' => $paymentUrl,
+            ]);
         }
-
-        if($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
-
-            $receiptItems[] = [
-                'Name'          => 'Доставка',
-                'Price'         => $this->delivery_price * 100,
-                'Quantity'      => 1,
-                'Amount'        => $this->delivery_price * 100,
-                'PaymentMethod' => 'full_prepayment',
-                'PaymentObject' => 'commodity',
-                'Tax'           => 'none'
-            ];
-        }
-
-        $receipt = [
-            'EmailCompany' => $companyEmail,
-            'Phone'        => $companyPhone,
-            'Taxation'     => 'osn',
-            'Items'        => $receiptItems,
-        ];
-
-        $params = [
-            'OrderId'    => $this->id,
-            'Amount'     => $totalPrice,
-            'SuccessURL' => $this->path(),
-            'Receipt'    => $receipt
-        ];
-
-        $api->init($params);
-
-        $this->update([
-            'tinkoff_id' => $api->paymentId,
-            'tinkoff_url' => $api->paymentUrl
-        ]);
 
         Mail::to($this->email)->send(new PaymentOrder($this));
 
-        return redirect($api->paymentUrl);
+        return redirect($paymentUrl);
     }
 }

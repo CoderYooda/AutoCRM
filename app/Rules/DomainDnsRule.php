@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class DomainDnsRule implements Rule
 {
-    private $server_ip = null;
+    private $server_ip;
 
     public function __construct()
     {
@@ -16,6 +16,8 @@ class DomainDnsRule implements Rule
     public function passes($attribute, $value)
     {
         if($this->server_ip == '127.0.0.1') return true;
+
+        if(str_contains_cyrillic($value)) $value = idn_to_ascii($value, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
 
         return gethostbyname($value) == $this->server_ip;
     }

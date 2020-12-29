@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\EntranceWasSaved;
+use App\Events\ModelWasStored;
 use App\Events\RecalculateEntranceAvailableCount;
 use App\Http\Requests\EntranceRequest;
 use App\Models\EntranceRefund;
@@ -139,11 +140,12 @@ class EntranceController extends Controller
 
             $entrance->providerorder->updateIncomeStatus();
 
+            event(new ModelWasStored($entrance->company_id, 'EntranceStored'));
+
             #Ответ сервера
             return response()->json([
                 'message' => 'Поступление было успешно создано.',
                 'id' => $entrance->id,
-                'event' => 'EntranceStored',
             ], 200);
         });
     }

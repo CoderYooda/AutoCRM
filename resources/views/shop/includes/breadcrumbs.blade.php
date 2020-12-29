@@ -10,6 +10,10 @@
             <span class="item">Личный кабинет</span>
         @endif
 
+        @if(request()->routeIs('pages.personalData'))
+            <span class="item">Обработка персональных данных</span>
+        @endif
+
         @if(request()->routeIs('pages.catalogue'))
             <span class="item">Каталог</span>
         @endif
@@ -33,7 +37,7 @@
         @if(request()->routeIs('pages.path'))
             <span class="item" ><a href="{{ route('pages.catalogue') }}">Каталог</a></span>
 
-            @foreach($selectedCategory->parents() as $parentCategory)
+            @foreach($selectedCategory->breadcrumbs() as $parentCategory)
                 <span class="item" ><a href="{{ $parentCategory->path() }}">{{ $parentCategory->name }}</a></span>
             @endforeach
 

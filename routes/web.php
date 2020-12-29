@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+Route::get('/test', function () {
+    event(new \App\Events\ModelWasStored(Auth::user()->company_id, 'ProductStored'));
+});
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
@@ -15,8 +17,6 @@ Route::post('password/reset', 'Auth\ForgotPasswordController@reset')->name('Pass
 Route::post('password/reset/sendsms', 'Auth\ForgotPasswordController@sendSMS')->name('PassResetsendSMS');
 Route::post('password/reset/confirmsms', 'Auth\ForgotPasswordController@confirmSMS')->name('PassResetconfirmSMS');
 
-Route::view('/test', 'shop.emails.success_order');
-
 #Шаблон интренет магазина
 Route::get('shop/index', 'TestController@index')->name('ShopIndex');
 
@@ -30,8 +30,12 @@ Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->na
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
+    Route::post('/prices', 'PriceController@store')->name('StorePrice');
+    Route::get('/prices/modal', 'PriceController@modal')->name('GetPriceModalContent');
+    Route::post('/prices/{price}/percent', 'PriceController@percent')->name('GetPricePercent');
+
     #Пользователь
-    Route::get('/user/', 'UserController@index')->name('UserIndex');
+    Route::get('/user', 'UserController@index')->name('UserIndex');
     Route::get('/user/edit', 'UserController@edit')->name('UserEdit');
     Route::post('/user/update-image', 'UserController@updateImage')->name('UserUpdateImage');
 
@@ -82,6 +86,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/product/addtolist', 'ProductController@addToList')->name('ProductAddToList');
         Route::post('/product/getByUpc', 'ProductController@getByUpc')->name('GetProductByUpc');
         Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
+        Route::post('/products/move', 'ProductController@move')->name('MoveProducts');
+        Route::post('/products/change_mark_source', 'ProductController@changeMarkupSource')->name('ChangeMarkupSourceProducts');
 
         #Поступления товаров
         Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
@@ -120,6 +126,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
             Route::post('/provider_stores/tableData', 'ProviderStoreController@tableData')->name('ProviderTableData');
             Route::post('/provider_stores/stores', 'ProviderStoreController@getStores')->name('getProviderStores');
+            Route::post('/provider_stores/stores/filter', 'ProviderStoreController@getStoresFilter')->name('getProviderStoresFilter');
             Route::get('/provider_stores/armtek/sales_organization', 'ProviderStoreController@getArmTekSerialSales')->name('getArmTekSerialSales');
         });
 
@@ -309,6 +316,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
         Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
         Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+        Route::post('/shop/analytics', 'ShopController@updateAnalytics')->name('ShopUpdateAnalytics');
+        Route::post('/shop/payment_methods', 'ShopController@updatePaymentMethods')->name('ShopUpdatePaymentMethods');
 
         Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
         Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');

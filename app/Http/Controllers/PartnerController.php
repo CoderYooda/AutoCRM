@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Category;
 use App\Models\Partner;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -130,6 +132,13 @@ class PartnerController extends Controller
             $request['birthday'] = Carbon::parse($request['birthday']);
         }
 
+        if($partner && $partner->user && $partner->user->hasRole('Владелец') && $request->category_id != 5) {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Запрещено менять категорию владельцу.'
+            ]);
+        }
+
         $partner->fill($request->only($partner->fields));
 
         if($request['type'] == 2) {
@@ -161,12 +170,11 @@ class PartnerController extends Controller
                 $password = rand(10000, 99999);
 
                 $user = User::updateOrCreate(['phone' => $request['phone']], [
-                    'name' => $partner->outputName(),
                     'company_id' => Auth::user()->company->id,
                     'password' => bcrypt($password)
                 ]);
 
-                if($request['role']) {
+                if($request->category_id == 5 && $request['role']) {
                     $role = Role::where('name', $request['role'])->first();
                     $user->syncRoles([ $role->id ]);
                 }
@@ -222,17 +230,14 @@ class PartnerController extends Controller
             DB::table('salary_schemas_partner')->insert($salary_schemas);
         }
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => $message,
-                //'container' => 'ajax-table-partner',
-                //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
-                'event' => 'PartnerStored',
-                'id' => $partner->id
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($partner->company_id, 'PartnerStored'));
+
+        return response()->json([
+            'message' => $message,
+            //'container' => 'ajax-table-partner',
+            //'redirect' => route('PartnerIndex', ['category_id' => $partner->category()->first()->id, 'serach' => $request['search']]),
+            'id' => $partner->id
+        ], 200);
     }
 
     public function delete($id, Request $request)
@@ -241,7 +246,6 @@ class PartnerController extends Controller
 
         $returnIds = null;
 
-        $this->status = 200;
         $this->message = 'Удаление выполнено';
         $this->type = 'success';
 
@@ -260,7 +264,7 @@ class PartnerController extends Controller
             $returnIds = $partners->pluck('id');
         } else {
             $partner = Partner::find($id);
-            if($partner->company->id != Auth::user()->company->id || $partner->id == Auth::user()->partner->id){
+            if($partner->company_id != Auth::user()->company_id || $partner->id == Auth::user()->partner->id){
                 $this->message = 'Вам не разрешено удалять контакт';
                 $this->type = 'error';
             }
@@ -275,7 +279,7 @@ class PartnerController extends Controller
             'id' => $returnIds,
             'message' => $this->message,
             'type' => $this->type
-        ], $this->status);
+        ]);
     }
 
     public function checkPhone(Request $request)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\ProviderOrdersRequest;
 use App\Models\ProviderOrder;
 use Illuminate\Http\Request;
@@ -312,10 +313,11 @@ class ProviderOrdersController extends Controller
 
             $provider_order->save();
 
+            event(new ModelWasStored($provider_order->company_id, 'ProviderOrderStored'));
+
             return response()->json([
                 'message' => $this->message,
-                'id'      => $provider_order->id,
-                'event'   => 'ProviderOrderStored',
+                'id'      => $provider_order->id
             ]);
         });
     }

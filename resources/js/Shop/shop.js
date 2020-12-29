@@ -8,10 +8,16 @@ import Product from "./Classes/Product/Product";
 import Auth from "./Classes/Auth";
 import User from "./Classes/User/User";
 import Vehicle from "./Classes/Vehicle/Vehicle";
+import Search from "./Classes/Search/Search";
 
 window.$ = window.jQuery = require('jquery');
 
 window.select2 = require('select2');
+
+window.axios = require('axios');
+window.notification = require('notification-js/src/notification.js');
+window.simplebar = require('simplebar/dist/simplebar.min');
+window.tippy = Tippy;
 
 window.feedback = new Feedback();
 window.axform = new AxForm();
@@ -22,10 +28,7 @@ window.product = new Product();
 window.auth = new Auth();
 window.user = new User();
 window.vehicle = new Vehicle();
-window.tippy = Tippy;
-window.axios = require('axios');
-window.notification = require('notification-js/src/notification.js');
-window.simplebar = require('simplebar/dist/simplebar.min');
+window.search = new Search();
 
 require('./functions');
 require('./bootstrap');

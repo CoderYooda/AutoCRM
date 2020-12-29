@@ -18,16 +18,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Руководитель</label>
+                    <label>Владелец</label>
                     <div class="input-group mb-3">
-                        <input type="text" onclick="this.select();" name="name" value="{{ $company->getFirstCompanyMember()->name }}" class="form-control" placeholder="Руководитель" disabled />
+                        <input type="text" onclick="this.select();" name="name" value="{{ $company->getFirstCompanyMember()->name }}" class="form-control" placeholder="Владелец" disabled />
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Телефон руководителя</label>
+                    <label>Телефон владельца</label>
                     <div class="input-group mb-3">
-                        <input type="text" onclick="this.select();" name="phone" id="phone_input" value="{{ $company->getFirstCompanyMember()->phone }}" class="form-control" placeholder="Телефон руководителя" disabled />
+                        <input type="text" onclick="this.select();" name="phone" value="{{ $company->getFirstCompanyMember()->phone }}" class="form-control" placeholder="Телефон владельца" disabled />
                     </div>
                 </div>
 

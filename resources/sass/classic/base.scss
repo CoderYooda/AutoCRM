@@ -4,6 +4,13 @@
 
 @import "~cropperjs/dist/cropper.css";
 
+@import "provider_stores";
+
+@import "product";
+@import "price";
+
+@import "markup_dialog";
+
 /*Base*/
 *, :after, :before {
     box-sizing: border-box;
@@ -75,6 +82,12 @@ h2{
     line-height: 28px;
     font-weight: 300;
 }
+
+.notification-btn {
+    height: 40px !important;
+
+}
+
 .tippy-popper {
     z-index: 100000!important;
 }
@@ -1565,6 +1578,11 @@ input:-moz-placeholder { /* Firefox 18- */
 .mb-0 {
     margin-bottom: 0 !important;
 }
+
+.right-0 {
+    right: 0 !important;
+}
+
 .mt-10{
     margin-top: 10px!important;
 }
@@ -1707,8 +1725,17 @@ input:-moz-placeholder { /* Firefox 18- */
 .pr-16{
     padding-right: 16px!important;
 }
+
+.mw-100 {
+    max-width: 100px !important;
+}
+
+.w-50 {
+    width: 50% !important;
+}
+
 .w-100{
-    width: 100%!important;
+    width: 100% !important;
 }
 .w-75{
     width: 75px!important;
@@ -1818,9 +1845,11 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .out_of_search{
     background: url(/images/icons/search.svg) no-repeat center;
-    display: block;
     width: 100%;
     height: 100px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
 }
 .dialog_category_container{
     border-right: 1px solid #dee2e6;
@@ -3417,14 +3446,26 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 
 #ajax-table-shop {
-    .custom_checkbox {
-        span {
-            margin-top: 7px;
-        }
+
+    .work_time_desc {
+        line-height: 30px;
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+
+    .hour_from {
+        margin-right: 5px;
+    }
+
+    .hour_from, .minute_from {
+        border: 1px solid #e7e8ec;
     }
 }
 
 .custom_checkbox {
+
+    display: flex;
+    align-items: center;
 
     &.is-invalid span {
         border: 1px solid red;
@@ -3507,15 +3548,6 @@ input:-moz-placeholder { /* Firefox 18- */
         object-fit: cover;
     }
 
-    .custom_checkbox {
-        margin-bottom: 0;
-        line-height: 0;
-        height: auto;
-        position: absolute;
-        margin-left: 10px;
-        margin-top: 4px;
-    }
-
     .upload_file {
         border: 1px solid #E7E8EC;
         border-top: unset;
@@ -3543,6 +3575,11 @@ input:-moz-placeholder { /* Firefox 18- */
             height: 10px;
             margin-left: auto;
         }
+    }
+
+    .subdomain_desc {
+        width: 72px;
+        border-left: 0;
     }
 }
 

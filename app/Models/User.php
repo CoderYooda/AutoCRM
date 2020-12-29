@@ -13,7 +13,7 @@ class User extends Authenticatable
     use OwnedTrait, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password', 'company_id', 'banned_at', 'current_store'
+        'email', 'phone', 'password', 'company_id', 'banned_at', 'current_store'
     ];
 
     protected $hidden = [
@@ -40,6 +40,11 @@ class User extends Authenticatable
         $shop = $shopManager->getCurrentShop();
 
         return $this->belongsTo(Partner::class, 'id', 'user_id')->where('company_id', $shop->company_id);
+    }
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'company_id', 'company_id');
     }
 
     public function getStoreFirst(){

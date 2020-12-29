@@ -343,7 +343,7 @@
     </tr>
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
-        <td colspan=5 class=xl68>Руководитель</td>
+        <td colspan=5 class=xl68>Владелец</td>
         <td colspan=2 style='mso-ignore:colspan'></td>
         <td class=xl98></td>
         <td class=xl98></td>

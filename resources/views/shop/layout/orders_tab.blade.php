@@ -51,7 +51,7 @@
 
                         <div class="element">
 
-                            <div class="desc">{{ $loop->index }}</div>
+                            <div class="desc">{{ $loop->index + 1 }}</div>
                             <div class="desc">{{ $position->name }}</div>
                             <div class="desc">{{ $position->article }}</div>
                             <div class="desc">{{ $position->manufacturer }}</div>
@@ -68,10 +68,12 @@
 
                 <div class="buttons">
 
-                    <div class="button">Распечатать</div>
+                    <div class="button">
+                        <a target="_blank" href="{{ route('orders.print', $order->hash) }}">Распечатать</a>
+                    </div>
 
                     @if($order->status == 1)
-                        <a href="{{ $order->tinkoff_url }}" class="button">Оплатить</a>
+                        <a href="{{ $order->payment_url }}" class="button">Оплатить</a>
                     @endif
 
                 </div>

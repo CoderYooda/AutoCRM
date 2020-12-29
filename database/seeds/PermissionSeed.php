@@ -91,7 +91,7 @@ class PermissionSeed extends Seeder
 
 
 //	    $permissions = Permission::all()->pluck('id');
-//	    $role1 = Role::create(['name' => 'Руководитель', 'company_id' => 2]);
+//	    $role1 = Role::create(['name' => 'Владелец', 'company_id' => 2]);
 //        $role1->givePermissionTo($permissions);
 //
 //        $role2 = Role::create(['name' => 'Менеджер', 'company_id' => 2]);

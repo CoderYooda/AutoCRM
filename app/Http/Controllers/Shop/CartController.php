@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Events\ModelWasStored;
+use App\Mail\Shop\FeedbackMail;
+use App\Mail\Shop\NewOrderEmail;
 use App\Models\DeliveryAddress;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use App\Http\Requests\Shop\CartDeleteRequest;
@@ -192,9 +195,15 @@ class CartController extends Controller
                 DB::table('order_positions')->insert($fields);
             }
 
+            $orderEmails = $this->shop->orderEmails->pluck('email');
+
+            Mail::to($orderEmails)->send(new NewOrderEmail($order));
+
             Mail::to($partner->email)->send(new ModerateOrder($order));
 
             $cart->clear();
+
+            event(new ModelWasStored($shop->company_id, 'OrderStored'));
 
             return redirect($order->path());
         });
@@ -207,7 +216,7 @@ class CartController extends Controller
         $orders = [];
 
         foreach ($cartOrders as $hash => $order) {
-            $product = Article::with('stores')->find($order['data']['product_id']);
+            $product = Article::with('stores')->find($order['data']['product_id'] ?? null);
 
             $store = null;
 
@@ -225,9 +234,9 @@ class CartController extends Controller
                 'source'       => $store->name ?? $order['data']['model']['hash_info']['supplier'],
                 'manufacturer' => $order['data']['model']['hash_info']['manufacturer'] ?? $product->supplier->name,
                 'article'      => $order['data']['model']['hash_info']['article'] ?? $product->article,
-                'name'         => $product->name,
+                'name'         => $order['data']['name'] ?? $product->name,
                 'price'        => $price,
-                'image'        => $product->image_path,
+                'image'        => $product->image_path ?? 'https://via.placeholder.com/150',
                 'count'        => $count,
                 'max_count'    => $store ? $product->getCountInStoreId($store->id) : $order['data']['model']['hash_info']['rest']
             ];

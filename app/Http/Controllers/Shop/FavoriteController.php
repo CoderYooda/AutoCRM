@@ -21,7 +21,7 @@ class FavoriteController extends Controller
 
     public function index(FavoriteInterface $favorite)
     {
-        $products = Article::whereIn('id', $favorite->all())->get();
+        $products = Article::whereIn('id', $favorite->all())->paginate(15);
 
         return view('shop.favorites', compact('products'))
             ->with('shop', $this->shop);

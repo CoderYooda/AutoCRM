@@ -45,7 +45,7 @@ class ProviderStoreController extends Controller
             }
         }
 
-        $view = view(get_template() . '.provider_stores.includes.products_element', compact('manufacturers', 'request'));
+        $view = view(get_template() . '.provider_stores.includes.manufacturers', compact('manufacturers', 'request'));
 
         return response()->json([
             'counts' => $counts,
@@ -54,8 +54,35 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function getStores(Providers $providers, Request $request, CartInterface $cart)
+    public function getStores(Request $request, CartInterface $cart)
     {
+        $stores = $this->getWarehouses($request);
+
+        $view = view(get_template() . '.provider_stores.includes.warehouses', compact('stores', 'request'));
+
+        return response()->json([
+            'html' => $view->render(),
+            'stores' => $stores
+        ]);
+    }
+
+    public function getStoresFilter(Request $request, CartInterface $cart)
+    {
+        $stores = $this->getWarehouses($request);
+
+        $view = view(get_template() . '.provider_stores.includes.table_items', compact('stores', 'request'))
+            ->with('type', $request->type);
+
+        return response()->json([
+            'html' => $view->render(),
+            'stores' => $stores
+        ]);
+    }
+
+    private function getWarehouses(Request $request)
+    {
+        $providers = app(Providers::class);
+
         $selected_service = $request->selected_service;
         $article = $request->article;
         $manufacturer = $request->manufacturer;
@@ -65,40 +92,45 @@ class ProviderStoreController extends Controller
 
         $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
 
-        foreach ($stores as $key => $store) {
-            $stores[$key]['count'] = 0;
+        $hashes = [];
+
+        foreach (['originals', 'analogues'] as $type) {
+            foreach ($stores[$type] as $key => $store) {
+                $stores[$type][$key]['count'] = 0;
+            }
+
+            $addHashed = array_column($stores[$type], 'hash');
+            $hashes = array_merge($hashes, $addHashed);
         }
 
         $stores = collect($stores);
 
-        if($request->sort == 'price') {
-            $stores = $stores->sortBy('price');
-        }
-        else if($request->sort == 'days') {
-            $stores = $stores->sortBy('days_min');
+        foreach (['originals', 'analogues'] as $type) {
+
+            if($request->field) {
+                $stores[$type] = collect($stores[$type])->sortBy($request->field, $request->is_desc ? SORT_DESC : SORT_ASC)->toArray();
+            }
+
+            if($request->is_desc == true) $stores[$type] = array_reverse($stores[$type]);
         }
 
-        if($request->is_desc == true) $stores = $stores->reverse();
-
-        $existedStores = DB::table('providers_cart')->whereIn('hash', $stores->pluck('hash'))->get();
+        $existedStores = DB::table('providers_cart')->whereIn('hash', $hashes)->get();
 
         $stores = $stores->toArray();
 
-        foreach ($stores as $key => $store) {
+        foreach (['originals', 'analogues'] as $type) {
 
-            $amount = $existedStores
-                ->where('hash', $store['hash'])
-                ->sum('count');
+            foreach($stores[$type] as $key => $store) {
 
-            $stores[$key]['count'] = $amount;
+                $amount = $existedStores
+                    ->where('hash', $store['hash'])
+                    ->sum('count');
+
+                $stores[$type][$key]['count'] = $amount;
+            }
         }
 
-        $view = view(get_template() . '.provider_stores.includes.table_element', compact('provider','stores', 'cart', 'request'));
-
-        return response()->json([
-            'html' => $view->render(),
-            'stores' => array_column($stores, 'model')
-        ]);
+        return $stores;
     }
 
     public function getArmTekSerialSales(Request $request)
@@ -213,7 +245,8 @@ class ProviderStoreController extends Controller
                 'payment_type_id' => $providerParams['payment_type_id'] ?? null,
                 'pickup_address_id' => $providerParams['pickup_address_id'] ?? null,
                 'delivery_address_id' => $providerParams['delivery_address_id'] ?? null,
-                'date_shipment_id' => $providerParams['date_shipment_id'] ?? null
+                'date_shipment_id' => $providerParams['date_shipment_id'] ?? null,
+                'subdivision_id' => $providerParams['subdivision_id'] ?? null,
             ];
 
             $provider->sendOrder($data);
@@ -263,7 +296,11 @@ class ProviderStoreController extends Controller
                 'Список дат отгрузки' => [
                     'params' => $provider->getDateOfShipment(),
                     'field' => 'date_shipment_id'
-                ]
+                ],
+                'Выставление счёта' => [
+                    'params' => $provider->getSubdivisions(),
+                    'field' => 'subdivision_id'
+                ],
             ];
         }
 
@@ -280,7 +317,7 @@ class ProviderStoreController extends Controller
 
             $orders[$provider_key][] = $order;
 
-            $total = $order->data->hash_info->price * $order->count;
+            $total = $order->data->model->hash_info->price * $order->count;
 
             if(!isset($providersInfo[$provider_key]['count'])) $providersInfo[$provider_key]['count'] = 0;
             if(!isset($providersInfo[$provider_key]['total_price'])) $providersInfo[$provider_key]['total_price'] = 0;

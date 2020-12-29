@@ -1,13 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-Route::get('/test', function () {
-    dd(\App\Models\Shop::latest()->first()->getUrl());
-
-//    \Illuminate\Support\Facades\Auth::logout();
-});
-
 Route::namespace('Shop')->group(function () {
 
     Route::middleware('auth')->group(function () {
@@ -38,6 +30,8 @@ Route::namespace('Shop')->group(function () {
         Route::post('/restore/code', 'RestoreController@acceptCode')->name('restore.acceptCode');
     });
 
+    Route::get('/personal_data', 'PageController@personalData')->name('pages.personalData');
+
     Route::get('/', 'PageController@index')->name('pages.index');
     Route::get('/about', 'PageController@about')->name('pages.about');
     Route::get('/delivery', 'PageController@delivery')->name('pages.delivery');
@@ -58,10 +52,16 @@ Route::namespace('Shop')->group(function () {
     Route::post('/cart/order', 'CartController@order')->name('cart.order');
 
     Route::get('/orders/{hash}', 'OrderController@show')->name('orders.success');
+    Route::get('/orders/{hash}/print', 'OrderController@print')->name('orders.print');
 
     Route::get('/products/{product}/info', 'ProductController@info')->name('products.info');
+    Route::post('/products/{product}/analogues', 'ProductController@analogues')->name('products.analogues');
+    Route::post('/products/{product}/analogues/filter', 'ProductController@analoguesFilter')->name('products.analoguesFilter');
 
-    Route::get('/search', 'PageController@search')->name('pages.search');
+    Route::get('/search', 'SearchController@index')->name('pages.search');
+    Route::post('/search/provider_brands', 'SearchController@providerBrands')->name('pages.providerBrands');
+    Route::post('/search/provider_offers', 'SearchController@providerOffers')->name('pages.providerOffers');
+    Route::post('/search/provider_offers/filter', 'SearchController@providerOffersFilter')->name('pages.providerOffersFilter');
 
     Route::get('/{path}', 'PageController@show')->where('path', '(.*)')->name('pages.path');
 });

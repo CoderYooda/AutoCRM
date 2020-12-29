@@ -43,14 +43,18 @@ trait ABCP
             'number' => $article
         ];
 
-        $result = $this->query('search/brands/', $params, 'GET');
+        $response = $this->query('search/brands/', $params, 'GET');
 
-        return array_column($result, 'brand');
-    }
+        $results = [];
 
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
-    {
-        //
+        foreach ($response as $brand) {
+            $results[$brand['brand']] = [
+                'article' => $brand['numberFix'],
+                'desc' => strlen($brand['description']) ? $brand['description'] : 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string
@@ -74,7 +78,7 @@ trait ABCP
             'number'          => $article,
             'brand'           => $brand,
             'useOnlineStocks' => 1,
-            'withOutAnalogs'  => 1
+            'withOutAnalogs'  => 0
         ];
 
         $items = $this->query('search/articles/', $params, 'GET');
@@ -86,10 +90,10 @@ trait ABCP
             $items[$key]['hash_info'] = [
                 'stock'        => $item['supplierCode'],
                 'manufacturer' => $item['brand'],
-                'article'      => $article,
+                'article'      => $item['number'],
                 'days'         => $item['deliveryPeriod'],
                 'price'        => $item['price'],
-                'packing'      => $item['packing'],
+                'packing'      => $item['packing'] >= 1 ? $item['packing'] : 1,
                 'desc'         => $item['description'],
                 'rest'         => $item['availability'],
                 'supplier'     => $this->name
@@ -97,28 +101,42 @@ trait ABCP
 
         }
 
-        $results = [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items as $key => $item) {
 
             $min_days = $item['deliveryPeriod'] / 24;
             $max_days = $item['deliveryPeriodMax'] ?? 1 / 24;
 
-            $results[] = [
-                'index'        => $item['index'],
+            $is_analogue = strtolower($article) != strtolower($item['number']);
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
+
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
                 'name'         => $item['supplierCode'],
                 'code'         => $item['number'],
                 'rest'         => $item['availability'],
-                'packing'      => $item['packing'],
-                'delivery'     => $min_days . ($max_days > $min_days ? ('/' . $max_days) : ''),
+                'packing'      => $item['packing'] >= 1 ? $item['packing'] : 1,
+                'delivery'     => $min_days . ($max_days > $min_days ? ('/' . $max_days) : '') . ' дн.',
                 'days_min'     => $min_days,
                 'days_max'     => $max_days,
                 'price'        => $item['price'],
                 'manufacturer' => $item['brand'],
+                'article'      => $item['number'],
                 'stock'        => $item['supplierCode'],
                 'model'        => $item,
-                'hash'         => md5($item['supplierCode'] . $item['brand'] . $article . $item['deliveryPeriod'] . $item['price'])
+                'can_return'   => $item['noReturn'] == 0 ? 'Есть' : 'Нет',
+                'hash'         => md5($item['supplierCode'] . $item['brand'] . $item['number'] . $item['deliveryPeriod'] . $item['price'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;
@@ -311,5 +329,10 @@ trait ABCP
         $this->createProviderOrder($data);
 
         return true;
+    }
+
+    public function getSubdivisions(): array
+    {
+        return [];
     }
 }

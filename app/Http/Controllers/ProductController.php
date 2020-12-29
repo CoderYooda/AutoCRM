@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Requests\ProductRequest;
+use App\Models\Adjustment;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Markup;
 use App\Models\ProviderOrder;
 use App\Models\Store;
 use App\Models\Supplier;
@@ -12,6 +15,7 @@ use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -168,11 +172,47 @@ class ProductController extends Controller
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 
+        $user = Auth::user();
+
         $stores = Store::owned()->get();
 
         $company = Auth::user()->company;
 
+        //Цена
+
+        $priceSource = $company->getSettingField('Источник цены');
+
+        $lastEntrancePrice = 0;
+
+        if($product) {
+            $lastEntrance = DB::table('article_entrance')->where('article_id', $product->id)->orderByDesc('id')->first();
+
+            $lastEntrancePrice = $lastEntrance->price ?? 0;
+        }
+
         $category = Category::find($category_select);
+
+        //Поступления
+
+        $entrances = [];
+
+        $adjustmentEntrances = [];
+
+        if($product) {
+
+            $entrances = $product->entrances;
+
+            $adjustmentEntrances = DB::table('article_entrance')
+                ->where('article_id', $product->id)
+                ->whereRaw('count != released_count')
+                ->get();
+        }
+
+        Cache::put('user[' . Auth::id() . '][entrances]', $adjustmentEntrances);
+
+        $prices = Markup::where('company_id', $user->company_id)->get();
+
+        //Интернет-магазин
 
         $shopFields = [
             'sp_main' => [
@@ -186,7 +226,7 @@ class ProductController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'request', 'stores', 'shopFields'))->render(),
+            'html' => view(get_template() . '.product.dialog.form_product', compact('product', 'category', 'company', 'prices', 'request', 'stores', 'shopFields', 'lastEntrancePrice', 'priceSource', 'adjustmentEntrances', 'entrances'))->render(),
             'product' => $product
         ]);
     }
@@ -217,7 +257,6 @@ class ProductController extends Controller
             ->when($request['string'], function($q) use ($request){
                 $q->where('foundstring', 'LIKE', '%' .  str_replace(array('(', ')', ' ', '-'), '', $request['string']) .'%');
             })
-
             ->when(!$request['string'], function($q) use ($request){
                 $q->when($request['category_id'], function ($q) use ($request) {
                     $q->where('category_id', $request['category_id']);
@@ -230,19 +269,21 @@ class ProductController extends Controller
 
         $availableCounts = DB::table('article_entrance')
             ->whereIn('article_id', $products->pluck('id'))
-            ->selectRaw('article_id, SUM(count) as count, SUM(released_count) as released_count')
+            ->groupBy(['article_id'])
+            ->selectRaw('id, article_id, SUM(count) as count, SUM(released_count) as released_count')
             ->get();
 
-        foreach ($products as $product){
+        foreach ($products as $index => $product) {
 
             $availableCount = $availableCounts->where('article_id', $product->id)->first();
 
-            $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
-            $product->price = $product->getPrice();
-            $product->supplier_name = $product->supplier->name;
-            $product->store_count = $product->available;
-            $product->product_id = $product->id;
-            $product->shipped_count = 0;
+            $products[$index]['available'] = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
+            $products[$index]['price'] = $product->getPrice();
+            $products[$index]['supplier_name'] = $product->supplier->name;
+            $products[$index]['product_id'] = $product->id;
+            $products[$index]['shipped_count'] = 0;
+
+//            dd($product);
         }
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
@@ -286,6 +327,8 @@ class ProductController extends Controller
                 $this->message = 'Товар сохранён';
             }
 
+            $currentStore = Store::find(Auth::user()->current_store);
+
             self::$product = $article;
 
             #Кроссы
@@ -296,6 +339,68 @@ class ProductController extends Controller
             $article->slug = Str::slug($request->name . '-' . $article->id);
 
             $article->save();
+
+            if($request->entrances) {
+
+                $oldEntrancesState = Cache::get('user[' . Auth::id() . '][entrances]');
+
+                foreach ($request->entrances as $entrance_id => $params) {
+
+                    if($entrance_id == 'new') {
+
+                        if($params['price'] < 1 || $params['count'] < 1) continue;
+
+                        $fields = [
+                            'article_id' => $article->id,
+                            'entrance_id' => null,
+                            'company_id' => $article->company_id,
+                            'store_id' => $currentStore->id,
+                            'count' => $params['count'],
+                            'price' => $params['price']
+                        ];
+
+                        $articleEntranceId = DB::table('article_entrance')->insertGetId($fields);
+                    }
+                    else {
+
+                        $oldEntranceState = $oldEntrancesState->where('id', $entrance_id)->first();
+
+                        $articleEntranceId = $oldEntranceState->id;
+
+                        if($oldEntranceState->count == $params['count'] && $oldEntranceState->price == $params['price']) continue;
+
+                        DB::table('article_entrance')
+                            ->where('id', $entrance_id)
+                            ->update([
+                                'price' => $params['price'],
+                                'count' => $oldEntranceState->released_count + $params['count']
+                            ]);
+                    }
+
+                    if(!isset($adjustment)) {
+                        $adjustment = Adjustment::create([
+                            'company_id' => Auth::user()->company_id,
+                            'manager_id' => Auth::user()->partner->id,
+                            'store_id'   => Auth::user()->current_store,
+                            'comment'    => ''
+                        ]);
+                    }
+
+                    DB::table('article_adjustment')->insert([
+                        'article_id'          => $article->id,
+                        'adjustment_id'       => $adjustment->id,
+                        'article_entrance_id' => $articleEntranceId,
+                        'store_id'            => Auth::user()->current_store,
+                        'count'               => $params['count'],
+                        'prev_count'          => $entrance_id == 'new' ? 0 : $oldEntranceState->count,
+                        'deviation_count'     => $entrance_id == 'new' ? 0 : $params['count'] - $oldEntranceState->count,
+                        'price'               => $params['price'],
+                        'prev_price'          => $entrance_id == 'new' ? 0 : $oldEntranceState->price,
+                        'deviation_price'     => $entrance_id == 'new' ? 0 : $params['price'] - $oldEntranceState->price,
+                        'total'               => $params['price'] * $params['count']
+                    ]);
+                }
+            }
 
             if(isset($request->shop['specifications'])) {
 
@@ -311,7 +416,6 @@ class ProductController extends Controller
                 $article->specifications()->createMany($attributes);
             }
 
-            $this->status = 200;
             if($request['storage']) {
 
                 $stores = Store::owned()->whereIn('id', array_keys($request['storage']))->get();
@@ -337,10 +441,11 @@ class ProductController extends Controller
                 }
             }
 
+            event(new ModelWasStored($article->company_id, 'ProductStored'));
+
             return response()->json([
-                'message' => $this->message,
-                'event' => 'ProductStored',
-            ], $this->status);
+                'message' => $this->message
+            ]);
 
         });
     }
@@ -377,16 +482,22 @@ class ProductController extends Controller
 
         $company_id = Auth::user()->company_id;
 
-        //$search = str_replace(['-'], '', $request->search));
+        $category = Category::find($request->category_id);
 
-        $articles = Article::selectRaw('articles.*, supplier.name as supplier')
+        $childrenCategories = collect();
+
+        if($category && !$category->isRoot()) {
+            $childrenCategories = $category->getDescendantsAndSelf();
+        }
+
+        return Article::selectRaw('articles.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
             ->where('articles.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
-            ->when(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != self::$root_category && $request['category_id'] != "null", function ($q) use($request) {
-                $q->where('articles.category_id', (int)$request['category_id']);
+            ->when($category && !$category->isRoot(), function ($q) use($request, $childrenCategories) {
+                $q->whereIn('articles.category_id', $childrenCategories->pluck('id'));
             })
             ->when($request->analogues, function (Builder $query) use($request) {
                 $query->whereIn('articles.id', json_decode($request->analogues));
@@ -394,8 +505,6 @@ class ProductController extends Controller
             ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir)
             ->paginate($size);
-
-        return $articles;
     }
 
     public static function searchByArticleAndBrand($articles)
@@ -417,4 +526,29 @@ class ProductController extends Controller
             ->get();
     }
 
+    public function move(Request $request)
+    {
+        $products = json_decode($request->products);
+        $category_id = $request->category_id;
+
+        Article::whereIn('id', $products)->update(['category_id' => $category_id]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Перемещение произошло успешно.',
+            'event' => 'CategorySelected'
+        ]);
+    }
+
+    public function changeMarkupSource(Request $request)
+    {
+        $products = json_decode($request->products);
+
+        Article::whereIn('id', $products)->update(['price_id' => $request->markup_source]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Источник наценки успешно изменен.'
+        ]);
+    }
 }

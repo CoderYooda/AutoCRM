@@ -182,6 +182,7 @@ document.addEventListener('click', function (e){
         }
 
         if(click_element.classList.contains('element')) {
+            console.log(1);
             div.parentElement.classList.remove('show');
         }
     });

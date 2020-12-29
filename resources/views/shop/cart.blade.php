@@ -1,5 +1,7 @@
 @extends('shop.layout.app')
 
+@section('title', 'Корзина')
+
 @section('content')
 <div class="body">
 
@@ -114,7 +116,7 @@
                             <div class="form-group-flex">
                                 <label>Телефон</label>
                                 <div class="float-r w-50">
-                                    <span>{{ display_phone(auth()->user()->companyPartner->firstActivePhoneNumber()) }}</span>
+                                    <span>{{ display_phone(auth()->user()->phone) }}</span>
                                 </div>
                             </div>
 
@@ -133,27 +135,27 @@
                             </div>
 
                             <div class="form-group-flex">
-                                <label for="delivery_type">Способ доставки</label>
+                                <label for="delivery_type">Способ получения товара</label>
                                 <div class="float-r w-50">
                                     <select onchange="cart.changeDeliveryType(this);" name="delivery_type">
-                                        <option value="0">Самовывоз</option>
-                                        <option value="1">Доставка</option>
+                                        <option @if(!$shop->has_pickup) disabled @endif value="0">Самовывоз</option>
+                                        <option @if(!$shop->has_delivery) disabled @endif value="1">Доставка</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group-flex @if(old('delivery_type')) d-none @endif">
+                            <div class="form-group-flex @if(!$shop->has_pickup) d-none @endif">
                                 <label for="store_id">Точка получения заказа</label>
                                 <div class="float-r w-50">
                                     <select name="pickup_id">
                                         @foreach($stores as $store)
-                                            <option value="{{ $store->id }}">{{ $store->name }}</option>
+                                            <option value="{{ $store->id }}">{{ $shop->address_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group-flex @if(!old('delivery_type')) d-none @endif">
+                            <div class="form-group-flex @if($shop->has_pickup || !$shop->has_delivery) d-none @endif">
                                 <label for="store_id">Адрес доставки</label>
                                 <div class="float-r w-50">
                                     <select name="delivery_id">

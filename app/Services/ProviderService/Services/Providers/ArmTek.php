@@ -45,9 +45,20 @@ class ArmTek implements ProviderInterface
             'PIN'   => $article,
         ];
 
-        $result = $this->query('/ws_search/assortment_search', $params, 'POST');
+        $response = $this->query('/ws_search/assortment_search', $params, 'POST');
 
-        return array_column($result['RESP'], 'BRAND');
+        $response = $response['RESP'];
+
+        $results = [];
+
+        foreach ($response as $brand) {
+            $results[$brand['BRAND']] = [
+                'article' => $brand['PIN'],
+                'desc' => strlen($brand['NAME']) ? $brand['NAME'] : 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string
@@ -68,15 +79,21 @@ class ArmTek implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'VKORG'    => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
-            'BRAND'    => $brand,
-            'KUNNR_RG' => $this->getApiKunnr(),
-            'PIN'      => $article
+            'VKORG'      => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
+            'BRAND'      => $brand,
+            'KUNNR_RG'   => $this->getApiKunnr(),
+            'PIN'        => $article,
+            'QUERY_TYPE' => 2
         ];
 
         $items = $this->query('/ws_search/search', $params, 'POST');
 
-        if (isset($items['RESP']['MSG'])) return [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        if (isset($items['RESP']['MSG'])) return $results;
 
         foreach ($items['RESP'] as $key => $item) {
 
@@ -85,7 +102,7 @@ class ArmTek implements ProviderInterface
             $items['RESP'][$key]['hash_info'] = [
                 'stock'        => $item['KEYZAK'],
                 'manufacturer' => $item['BRAND'],
-                'article'      => $article,
+                'article'      => $item['PIN'],
                 'days'         => $item['DLVDT'],
                 'price'        => $item['PRICE'],
                 'packing'      => $item['RDPRF'],
@@ -96,27 +113,37 @@ class ArmTek implements ProviderInterface
 
         }
 
-        $results = [];
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items['RESP'] as $key => $item) {
+
+            $is_analogue = $item['ANALOG'] == 'X';
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
 
             $delivery_timestamp = Carbon::parse($item['DLVDT']);
 
             $delivery_days = Carbon::now()->diffInDays($delivery_timestamp);
 
-            $results[] = [
-                'index'        => $item['index'],
-                'name'         => $item['KEYZAK'],
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
+                'name'         => $item['NAME'],
                 'code'         => $item['ARTID'],
                 'rest'         => $item['RVALUE'],
-                'delivery'     => $delivery_days,
+                'delivery'     => $delivery_days . ' дн.',
                 'days_min'     => $delivery_days,
                 'price'        => $item['PRICE'],
+                'packing'      => $item['RDPRF'],
                 'manufacturer' => $item['BRAND'],
+                'article'      => $item['PIN'],
                 'stock'        => $item['KEYZAK'],
                 'model'        => $item,
-                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $article . $item['DLVDT'] . $item['PRICE'])
+                'can_return'   => $item['RETDAYS'] ? 'Есть' : 'Нет',
+                'hash'         => md5($item['KEYZAK'] . $item['BRAND'] . $item['PIN'] . $item['DLVDT'] . $item['PRICE'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;
@@ -223,9 +250,7 @@ class ArmTek implements ProviderInterface
             'ITEMS'     => $orders
         ];
 
-        $items = $this->query('/ws_order/createTestOrder', $params, 'POST');
-
-        dd($items);
+        $items = $this->query('/ws_order/createOrder', $params, 'POST');
 
         $this->createProviderOrder($data);
 
@@ -298,8 +323,8 @@ class ArmTek implements ProviderInterface
         return [];
     }
 
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    public function getSubdivisions(): array
     {
-        // TODO: Implement searchAnaloguesByBrandAndArticle() method.
+        return [];
     }
 }

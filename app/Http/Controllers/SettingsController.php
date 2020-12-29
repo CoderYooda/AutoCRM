@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\PartnerRequest;
 use App\Http\Requests\SaveCompanySettingsRequest;
@@ -12,6 +13,7 @@ use App\Models\DdsArticle;
 use App\Models\Partner;
 use App\Models\Payment;
 use App\Models\ImportHistory;
+use App\Models\Markup;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Store;
@@ -54,19 +56,30 @@ class SettingsController extends Controller
         }
     }
 
-    public static function indexTab($request)
+    public static function indexTab(Request $request)
     {
         $company = Auth::user()->company;
 
         $settings = Setting::owned()->orderBy('sort')->get();
         $roles = Role::where('company_id', $company->id)->get();
-        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table'){
-            return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
-        }
+
         return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
     }
 
-    public static function cashboxTab($request)
+    public function pricesTab(Request $request)
+    {
+        $company = Auth::user()->company;
+
+        $prices = Markup::where('company_id', $company->id)->paginate(10);
+
+        if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-prices'){
+            return view(get_template() . '.settings.elements.prices_inner', compact('prices', 'request'));
+        }
+
+        return view(get_template() . '.settings.prices', compact('request', 'prices'));
+    }
+
+    public static function cashboxTab(Request $request)
     {
         $cashboxes = Cashbox::owned()->orderBy('deleted_at', 'ASC')->withTrashed()->get();
 
@@ -76,7 +89,7 @@ class SettingsController extends Controller
         return view(get_template() . '.settings.cashbox', compact('cashboxes','request'));
     }
 
-    public static function servicesTab($request)
+    public static function servicesTab(Request $request)
     {
         $services = Service::all();
         $company = Auth::user()->company->load('serviceproviders');
@@ -169,7 +182,7 @@ class SettingsController extends Controller
         Setting::create(['name' => 'Роль для новых пользователей', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'select', 'key' => 'role_id', 'value' => $defaultrole->id]);
         Setting::create(['name' => 'Расчётный день', 'company_id' => $company->id, 'model' => null, 'type' => 'number', 'key' => 'day_id', 'value' => '1']);
         Setting::create(['name' => 'Способ ведения складского учёта', 'company_id' => $company->id, 'model' => 'RRC',  'type' => 'select', 'key' => 'rrc_name', 'value' => 'fifo']);
-        Setting::create(['name' => 'Источник цены', 'company_id' => $company->id, 'model' => 'PriceSource',  'type' => 'select', 'key' => 'price_source', 'value' => 'retail']);
+        Setting::create(['name' => 'Источник цены', 'company_id' => $company->id, 'model' => 'PriceSource',  'type' => 'select', 'key' => 'price_source', 'value' => 'purchase']);
         Setting::create(['name' => 'Интернет магазин', 'company_id' => $company->id, 'model' => 'ShopEnabled',  'type' => 'select', 'key' => 'shop_enabled', 'value' => '0']);
     }
 
@@ -190,16 +203,13 @@ class SettingsController extends Controller
             }
         }
 
-        if($request->expectsJson()){
-            return response()->json([
-                'message' => 'Настройки обновлены',
-                'id' => $company->id,
-                'event' => 'SettingsStored',
-            ], 200);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($company->id, 'SettingsStored'));
 
+        return response()->json([
+            'message' => 'Настройки обновлены',
+            'id' => $company->id,
+            'event' => 'SettingsStored',
+        ]);
     }
 
     public function freshBaseStore(Request $request)

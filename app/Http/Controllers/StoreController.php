@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
@@ -307,21 +308,22 @@ class StoreController extends Controller
                 while (($row = fgetcsv($handle, 1000, ';')) !== FALSE) {
 
                     $products[] = [
-                        'name' => (string)$row[0] ?? '',
-                        'manufacturer' => (string)$row[1],
-                        'article' => (string)$row[2],
+                        'name' => $row[0] ?? '',
+                        'manufacturer' => $row[1],
+                        'article' => $row[2],
                         'categories' => explode(',', $row[3] ?? []),
                         'warehouse' => explode(',', $row[4] ?? []),
-                        'count' => (int)$row[5] ?? 0,
-                        'price' => (float)$row[6] ?? 0.0,
-                        'barcode_manufacturer' => (string)$row[7] ?? '',
-                        'barcode_warehouse' => (string)$row[8] ?? ''
+                        'count' => $row[5] ?? 0,
+                        'price' => $row[6] ?? 0.0,
+                        'barcode_manufacturer' => $row[7] ?? '',
+                        'barcode_warehouse' => $row[8] ?? ''
                     ];
                 }
 
                 fclose($handle);
             }
         }
+
         $params = [
             'store' => Store::find($request->store_id),
             'user_id' => Auth::id(),
@@ -366,18 +368,15 @@ class StoreController extends Controller
             $message = 'Склад создан';
         }
         $store->fill($request->all());
-        $store->company_id = Auth::user()->company()->first()->id;
+        $store->company_id = Auth::user()->company_id;
         $store->save();
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'message' => $message,
-                //'container' => 'ajax-table-store',
-                'event' => 'StoreStored',
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        event(new ModelWasStored($store->company_id, 'StoreStored'));
+
+        return response()->json([
+            'message' => $message,
+            //'container' => 'ajax-table-store'
+        ]);
     }
 
     public function checkstock(Request $request)

@@ -16,14 +16,17 @@
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia()">×</button>
 
+    <input type="hidden" name="price_source" value="{{ $priceSource }}">
+
     @if($product)
     <div class="modal-header dark" style="justify-content: normal;">
         <div class="modal-alt-header">
-            <span class="item-title _500">Розничная цена</span>
+            <span class="item-title _500">Закупочная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->stores->find(Auth::user()->current_store)->pivot->retail_price ?? '0' }}
+                   {{ correct_price($product->stores->find(Auth::user()->current_store)->pivot->retail_price ?? '0') }}
                 </span>
+                руб.
             </div>
             <div class="item-tag tag hide">
             </div>
@@ -77,6 +80,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#{{$class}}_tab_prices" aria-controls="{{$class}}_tab_prices" data-toggle="tab" data-target="#{{$class}}_tab_prices">
+                                Цены
+                                <span class="float-right helper_danger d-none-f">
+                                    <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#{{$class}}_tab_store" aria-controls="{{$class}}_tab_store" data-toggle="tab" data-target="#{{$class}}_tab_store">
                                 Склад
                                 <span class="float-right helper_danger d-none-f">
@@ -100,22 +111,34 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="nav-item @if(!$product) d-none @endif">
-                            <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
-                                Журнал поступлений
+                        <li class="nav-item">
+                            <a class="nav-link" href="#{{$class}}_tab_adjustments" aria-controls="{{$class}}_tab_adjustments" data-toggle="tab" data-target="#{{$class}}_tab_adjustments">
+                                Корректировка остатков
                                 <span class="float-right helper_danger d-none-f">
                                     <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                                 </span>
                             </a>
                         </li>
+                        @if($product)
+                            <li class="nav-item">
+                                <a class="nav-link" href="#{{$class}}_tab_entrances" aria-controls="{{$class}}_tab_entrances" data-toggle="tab" data-target="#{{$class}}_tab_entrances">
+                                    Журнал поступлений
+                                    <span class="float-right helper_danger d-none-f">
+                                        <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
+                                    </span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
                 <div class="col-sm-8 no-pl">
                     <div class="tab-content no-pl">
                         @include(get_template() . '.product.dialog.tabs.base')
+                        @include(get_template() . '.product.dialog.tabs.prices')
                         @include(get_template() . '.product.dialog.tabs.store')
                         @include(get_template() . '.product.dialog.tabs.barcode')
                         @include(get_template() . '.product.dialog.tabs.online_shop')
+                        @include(get_template() . '.product.dialog.tabs.adjustments')
                         @include(get_template() . '.product.dialog.tabs.entrances')
                     </div>
                 </div>

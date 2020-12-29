@@ -9,12 +9,12 @@
             <div class="silder-content">
                 <div class="head-slider-container">
                     @foreach($shop->sliderImages as $image)
-                        <img style="display: block;" src="{{ $image->url }}" alt="">
+                        <img class="block pointer" onclick="helper.redirect(this, '{{ $image->pivot->target_url }}');" src="{{ $image->url }}" alt="">
                     @endforeach
                 </div>
                 <div class="controls">
-                    <div class="control-item left" onclick="window.headSlider.prev()"></div>
-                    <div class="control-item right" onclick="window.headSlider.next()"></div>
+                    <div class="control-item left" onclick="window.headSlider.prev();"></div>
+                    <div class="control-item right" onclick="window.headSlider.next();"></div>
                 </div>
                 <div class="pins-container">
                     {{-- Логика в JS --}}
@@ -31,35 +31,33 @@
                 <div class="products grid-4">
                     <div class="popular-products">
                         @foreach($stockProducts as $product)
-                            <div class="product">
-                                <a href="{{ $product->path() }}">
-                                    <img class="product-img" title="{{ $product->getShopName() }}" src="{{ $product->image_path }}" alt="{{ $product->getShopName() }}">
-                                    <h3 class="product-name" title="{{ $product->getShopName() }}">{{ $product->getShopName() }}</h3>
-                                    <div class="brand">{{ $product->supplier->name }}</div>
-                                    <div class="article">{{ $product->article }}</div>
-                                    <div class="price-container">
-                                        @if(!$product->sp_stock)
-                                            <span class="price">{{ correct_price($product->getPrice()) }}</span>
-                                        @else
-                                            <span class="price action">{{ correct_price($product->sp_discount_total) }}</span>
-                                            <span class="strikethrough-price">{{ correct_price($product->getPrice()) }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="top-left-label">
-                                        @if($product->getEntrancesCount())
-                                            <div class="in-stock">В наличии</div>
-                                        @else
-                                            <div class="out-of-stock">Под заказ</div>
-                                        @endif
-            {{--                            <div class="discount">-30%</div>--}}
-                                    </div>
-                                    <div class="top-right-label">
-                                        <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
-                                        @if($product->sp_desc)
-                                            <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
-                                        @endif
-                                    </div>
-                                </a>
+                            <div class="product" onclick="helper.redirect(this, '{{ $product->path() }}');">
+                                <img class="product-img" title="{{ $product->getShopName() }}" src="{{ $product->image_path }}" alt="{{ $product->getShopName() }}">
+                                <h3 class="product-name" title="{{ $product->getShopName() }}">{{ $product->getShopName() }}</h3>
+                                <div class="brand">{{ $product->supplier->name }}</div>
+                                <div class="article">{{ $product->article }}</div>
+                                <div class="price-container">
+                                    @if(!$product->sp_stock)
+                                        <span class="price">{{ correct_price($product->getPrice()) }}</span>
+                                    @else
+                                        <span class="price action">{{ correct_price($product->getPriceWithDiscount()) }}</span>
+                                        <span class="strikethrough-price">{{ correct_price($product->getPrice()) }}</span>
+                                    @endif
+                                </div>
+                                <div class="top-left-label">
+                                    @if($product->getEntrancesCount())
+                                        <div class="in-stock">В наличии</div>
+                                    @else
+                                        <div class="out-of-stock">Под заказ</div>
+                                    @endif
+        {{--                            <div class="discount">-30%</div>--}}
+                                </div>
+                                <div class="top-right-label">
+                                    <div class="favour @if($favorite->isProductExists($product->id)) active @endif" onclick="favorite.toggleProduct(this, {{ $product->id }});"></div>
+                                    @if($product->sp_desc)
+                                        <div class="info" onclick="product.getInfo({{ $product->id }})"></div>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -79,7 +77,7 @@
         </div>
         <div class="categories-container">
             @foreach($categories as $category)
-                <div class="category">
+                <div class="category pointer" onclick="window.location.href = '{{ $category->path() }}';">
                     <div class="description relative">
                         <div class="title">{{ $category->name }}</div>
                         <div class="link">
@@ -91,7 +89,7 @@
                 </div>
             @endforeach
 
-            <div class="category">
+            <div class="category pointer" onclick="window.location.href = '{{ route('pages.catalogue') }}';">
                 <div class="description relative">
                     <div class="title">+{{ $categories->total() }} категорий</div>
                     <div class="link">

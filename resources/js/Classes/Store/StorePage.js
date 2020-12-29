@@ -155,7 +155,7 @@ class storePage extends Page{
     };
 
     incrementArticleCartAmount(element, count) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
@@ -164,7 +164,7 @@ class storePage extends Page{
     }
 
     decrementArticleCartAmount(element, count) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let value = Number(input_element.value);
@@ -174,7 +174,7 @@ class storePage extends Page{
 
     changeArticleCartAmount(element, count) {
 
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
         let input_element = target_element.querySelector('input');
 
         let current_count = Number(input_element.value);
@@ -193,7 +193,9 @@ class storePage extends Page{
 
     saveArticleCartAmount(element, count) {
 
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
+
+        let type = target_element.dataset.type;
 
         let service_input = document.querySelector('[name="service_key"]');
 
@@ -201,14 +203,14 @@ class storePage extends Page{
 
         let index = -1;
 
-        this.items.forEach((model, array_index) => {
+        this.items[type].forEach((model, array_index) => {
             if(model.index == element_index) index = array_index;
         });
 
         let data = {
             provider_key: service_input.value,
             article: this.search,
-            product: this.items[index],
+            product: this.items[type][index],
             count: count
         };
 
@@ -221,13 +223,59 @@ class storePage extends Page{
             });
     }
 
-    sortBy(element, type) {
+    sortBy(element, type, field) {
 
-        let brand_element = document.querySelector('.fa-angle-up').parentElement;
+        if(window.isXHRloading) return;
+        window.isXHRloading = true;
 
-        let brand_name = brand_element.dataset.manufacturer;
+        let target_element = element.querySelector('i');
 
-        this.showManufactureStores(brand_element, brand_name, type);
+        target_element.classList.toggle('fa-caret-down');
+        target_element.classList.toggle('fa-caret-up');
+
+        let body_element = element.closest('.table').querySelector('.table_body');
+        let header_element = element.closest('.table_header');
+
+        togglePreloader(body_element, true);
+
+        let i_elements = header_element.querySelectorAll('i');
+
+        i_elements.forEach(i_element => {
+            if(target_element == i_element) return;
+            i_element.classList.remove('fa-caret-down');
+            i_element.classList.add('fa-caret-up');
+        });
+
+        let service_input = document.querySelector('[name="service_key"]');
+        let manufacturer_element = document.getElementById('manufacturer');
+        let is_desc = target_element.classList.contains('fa-caret-down');
+
+        let data = {
+            manufacturer: manufacturer_element.innerHTML,
+            article: this.search,
+            selected_service: service_input.value,
+            type: type,
+            field: field,
+            is_desc: is_desc
+        };
+
+        axios.post('/provider_stores/stores/filter', data)
+            .then(response => {
+                let data = response.data;
+
+                body_element.outerHTML = data.html;
+
+                this.items = data.stores;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                togglePreloader(body_element, false);
+                window.isXHRloading = false;
+            });
+
+        // this.showManufactureStores(brand_element, brand_element.innerHTML, type, field, sort_desc);
     }
 
     registerProviderOrder(element) {
@@ -236,32 +284,34 @@ class storePage extends Page{
     }
 
     addToCart(element, count) {
-        let target_element = element.closest('tr');
+        let target_element = element.closest('.table_item');
+
+        let type = target_element.dataset.type;
 
         let service_input = document.querySelector('[name="service_key"]');
 
         target_element.querySelector('.add-to-cart').classList.add('d-none');
         target_element.querySelector('.edit-cart-count').classList.remove('d-none');
 
-        let input = target_element.querySelector('input');
-        this.addInputCountMask(input);
+        let input_element = target_element.querySelector('input');
+        this.addInputCountMask(input_element);
 
-        input.value = count;
+        input_element.value = count;
 
         let element_index = parseInt(target_element.id);
 
         let index = -1;
 
-        this.items.forEach((model, array_index) => {
+        this.items[type].forEach((model, array_index) => {
             if(model.index == element_index) index = array_index;
         });
 
-        console.log(this.items);
+        let model = this.items[type][index];
 
         let data = {
             provider_key: service_input.value,
-            article: this.search,
-            product: this.items[index],
+            article: model.article,
+            product: model,
             count: count
         };
 
@@ -370,11 +420,13 @@ class storePage extends Page{
 
     searchProviderStores() {
 
+        if(window.isXHRloading == true) return;
+
+        window.isXHRloading = true;
+
         let service_input = document.querySelector('[name="service_key"]');
 
         let table_element = document.getElementById('table-container');
-
-        document.querySelector('.out_of_search').classList.add('d-none');
 
         togglePreloader(table_element, true);
 
@@ -386,14 +438,16 @@ class storePage extends Page{
         })
         .then(response => {
 
-            if(!response.data.html.length) {
-                document.getElementById('table_body').innerHTML = '';
-                document.querySelector('.out_of_search').classList.remove('d-none');
-            }
-            else {
+            document.getElementById('table-container').innerHTML = response.data.html;
 
-                document.getElementById('table_body').innerHTML = response.data.html;
-            }
+            let counts = response.data.counts;
+
+            Object.keys(counts).forEach(service_key => {
+
+                let manufacturers = counts[service_key];
+
+                document.getElementById('service_count_' + service_key).innerText = Object.keys(manufacturers).length;
+            });
 
             let errors = response.data.errors;
 
@@ -409,10 +463,15 @@ class storePage extends Page{
         })
         .finally(() => {
             togglePreloader(table_element, false);
+
+            window.isXHRloading = false;
         });
     }
 
     showProvider(button, service_key) {
+
+        if(window.isXHRloading) return;
+
         let button_elements = document.querySelectorAll('.provider_tabs button');
 
         button_elements.forEach(element => {
@@ -428,74 +487,30 @@ class storePage extends Page{
         this.searchProviderStores();
     }
 
-    showManufactureStores(element, manufacturer, sort = null) {
+    showManufactureStores(element, manufacturer) {
 
-        let is_desc = false;
+        if(window.isXHRloading == true) return;
 
-        let target_element = document.getElementById('brand_context_' + manufacturer);
+        window.isXHRloading = true;
 
-        element = element.querySelector('i');
-
-        let table_element = target_element.querySelector('.preloader-block');
+        let table_element = document.getElementById('table-container');
 
         togglePreloader(table_element, true);
 
-        let sort_elements = document.querySelectorAll('.sort_arrow');
+        let service_input = document.querySelector('[name="service_key"]');
 
-        sort_elements.forEach(element => {
-
-            if(element.classList.contains(sort)) {
-
-                if(element.classList.contains('active')) {
-                    if(element.classList.contains('up')) {
-                        element.classList.remove('up');
-                        element.classList.add('down');
-
-                        is_desc = true;
-                    }
-                    else {
-                        element.classList.add('up');
-                        element.classList.remove('down');
-
-                        is_desc = false;
-                    }
-                }
-                else {
-                    element.classList.add('active');
-                }
-            }
-            else {
-                element.classList.remove('active');
-                element.classList.remove('up');
-                element.classList.remove('down');
-
-                element.classList.add('down');
-            }
-        });
-
-        if(element.classList.contains('fa-angle-down') || sort != null) {
-
-            let service_input = document.querySelector('[name="service_key"]');
-
-            target_element.classList.remove('d-none');
-
-            axios.post('/provider_stores/stores', {
-                manufacturer: manufacturer,
-                article: this.search,
-                selected_service: service_input.value,
-                sort: sort,
-                is_desc: is_desc
-            })
+        axios.post('/provider_stores/stores', {
+            manufacturer: manufacturer,
+            article: this.search,
+            selected_service: service_input.value
+        })
             .then(response => {
 
                 let data = response.data;
 
                 this.items = data.stores;
 
-                element.classList.remove('fa-angle-down');
-                element.classList.add('fa-angle-up');
-
-                target_element.querySelector('tbody').innerHTML = data.html;
+                table_element.innerHTML = data.html;
 
                 let inputs = document.querySelectorAll('.provider-cart-input');
 
@@ -508,18 +523,9 @@ class storePage extends Page{
             })
             .finally(()=> {
                 togglePreloader(table_element, false);
+
+                window.isXHRloading = false;
             });
-        }
-        else {
-
-            element.classList.remove('fa-angle-up');
-            element.classList.add('fa-angle-down');
-
-            target_element.classList.add('d-none');
-
-            //Очищаем внутренний список
-            target_element.querySelector('tbody').innerHTML = '';
-        }
     }
 
     addInputCountMask(element) {
@@ -563,6 +569,21 @@ class storePage extends Page{
 
         events.forEach((event) => {
             document.addEventListener(event, (e) => {
+
+                if(event == 'OrderStored') {
+                    let data = e.detail;
+
+                    let new_count = data.count;
+
+                    let count_element = document.getElementById('orders_count');
+
+                    if(new_count > count_element.value) {
+                        helper.notifySound();
+                    }
+
+                    count_element.innerHTML = data.count;
+                }
+
                 object.table.freshData();
             });
         });
@@ -584,6 +605,16 @@ class storePage extends Page{
 
         if(this.active_tab == 'provider_stores') {
             this.searchProviderStores();
+        }
+
+        if(this.active_tab == 'store') {
+
+            let modal_element = document.getElementById('markup_source_dialog');
+
+            this.modal = new bootstrap.Modal(modal_element, {
+                backdrop: true,
+                keyboard: true
+            });
         }
     }
 
@@ -649,9 +680,10 @@ class storePage extends Page{
 
                     let sorts = {};
 
-                    let button_elements = available_list.querySelectorAll('button');
+                    let button_elements = available_list.querySelectorAll('button.relative');
 
                     button_elements.forEach((element, index) => {
+
                         if (element.dataset.sort != index) {
                             sorts[index] = {
                                 id: element.dataset.id,
@@ -728,6 +760,27 @@ class storePage extends Page{
                 }},
                 {name:'Показать аналоги в наличии', action: (data) => {
                     this.showAnalogues(data);
+                }},
+                {name:'Переместить в категорию', action: (data) => {
+
+                    openDialog('selectCategory', '&refer=store&root_category=2');
+
+                    this.selected = data.selected;
+                }},
+                {name:'Изменить источник наценки стоимости', action: (data) => {
+
+                    this.selected = data.selected;
+
+                    axios.get('/prices/modal')
+                        .then(response => {
+                            let data = response.data;
+
+                            this.modal.setContent(data.html);
+
+                            this.modal.show();
+
+                            window.applySelects();
+                        });
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
@@ -881,6 +934,7 @@ class storePage extends Page{
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 90, width: 'auto', name: 'Статус',table_name: 'status'},
                 {min_with: 130, width: 250, name: 'Заказчик', table_name: 'partner_name'},
+                {min_with: 130, width: 250, name: 'Заказ клиента (№)', table_name: 'clientorder_id'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
@@ -901,16 +955,6 @@ class storePage extends Page{
         this.table.draw(this.active_tab + 'Table', this.data);
     }
 
-
-    // sortBy(element, type) {
-    //
-    //     let brand_element = document.querySelector('.fa-angle-up').parentElement;
-    //
-    //     let brand_name = brand_element.dataset.manufacturer;
-    //
-    //     this.showManufactureStores(brand_element, brand_name, type);
-    // }
-
     checkActive(){
         let className = window.location.pathname.substring(1);
         let link = document.getElementById('store_link');
@@ -922,10 +966,6 @@ class storePage extends Page{
             this.active = false;
         }
     }
-
-    // showBrands() {
-    //     if(this.search != null && this.search.length) document.querySelector('.search-field-container > .box').style.display = 'block';
-    // }
 
     searchInit() {
         let object = this;
@@ -1035,5 +1075,41 @@ class storePage extends Page{
         this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
     }
 
+    selectCategory(selected_category) {
+
+        let data = {
+            products: JSON.stringify(this.selected),
+            category_id: selected_category
+        };
+
+        axios.post('/products/move', data)
+            .then(response => {
+
+                let data = response.data;
+
+                window.notification.notify(data.type, data.message);
+
+                if(this.category_id != 2) {
+                    this.table.freshData();
+                }
+            })
+            .then(error => {
+                console.log(error);
+            });
+    }
+
+    changeProductsMarkupSource(element) {
+
+        let dataset = {
+            products: JSON.stringify(this.selected),
+        };
+
+        axform.send(element, response => {
+            if(response.status == 200) {
+                this.modal.hide();
+            }
+        }, null, dataset);
+
+    }
 }
 export default storePage;

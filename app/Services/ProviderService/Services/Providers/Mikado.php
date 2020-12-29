@@ -45,15 +45,25 @@ class Mikado implements ProviderInterface
             'FromStockOnly' => 'FromStockAndByOrder'
         ];
 
-        $result = $this->query('ws1/service.asmx/Code_Search', $params);
+        $response = $this->query('ws1/service.asmx/Code_Search', $params);
 
-        $result = array_column($result['List']['Code_List_Row'] ?? [], 'Brand');
+        $response = $response['List']['Code_List_Row'] ?? [];
 
-        $result = array_unique($result);
+        $results = [];
 
-        $result = array_values($result);
+        foreach ($response as $brand) {
 
-        return $result;
+            $results[$brand['Brand']] = [
+                'article' => $brand['ProducerCode'],
+                'desc' => strlen($brand['Name']) ? $brand['Name'] : 'Отсутствует'
+            ];
+        }
+
+        $key = 'АНАЛОГИ ПРОЧИЕ (БРЭНД НЕИЗВЕСТЕН). ВНИМАНИЕ!!! ТОЛЬКО ДЛЯ ИНФОРМАЦИИ! ВОЗМОЖНЫ ОШИБКИ!!!';
+
+        if(array_search($key, array_keys($results)) !== false) unset($results[$key]);
+
+        return $results;
     }
 
     public function getName(): string
@@ -84,13 +94,20 @@ class Mikado implements ProviderInterface
 
         $brand = strtoupper($brand);
 
-        $items = $items->filter(function ($item) use($brand) {
-             return strpos($item['Brand'], $brand) !== false;
+        $items = $items->filter(function ($item) use ($brand) {
+            if(!isset($item['Brand'])) return false;
+            return strpos($item['Brand'], $brand) !== false;
         });
 
         $items = $items->toArray();
 
-        $results = [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
+
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items as $key => $item) {
 
@@ -108,22 +125,26 @@ class Mikado implements ProviderInterface
             $rest = (int)preg_replace('/[^0-9]/', '', $rest);
             $delivery = (int)preg_replace('/[^0-9]/', '', $delivery);
 
+            $is_analogue = $item['CodeType'] == 'Analog';
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
+
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
                 'stock'        => $item['ZakazCode'],
-                'manufacturer' => $item['Supplier'],
-                'article'      => $article,
+                'manufacturer' => $item['ProducerBrand'],
+                'article'      => $item['ProducerCode'],
                 'days'         => $delivery,
                 'price'        => $item['PriceRUR'],
                 'packing'      => $item['MinZakazQTY'] ?? 1,
                 'desc'         => $item['Name'],
                 'rest'         => $rest,
-                'supplier'     =>  $this->name
+                'supplier'     => $this->name
             ];
 
-            $results[] = [
-                'index'        => $key,
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
                 'name'         => $item['Supplier'],
                 'code'         => $item['ZakazCode'],
                 'rest'         => $rest,
@@ -131,11 +152,15 @@ class Mikado implements ProviderInterface
                 'days_min'     => $delivery,
                 'packing'      => $item['MinZakazQTY'] ?? 1,
                 'price'        => $item['PriceRUR'],
-                'manufacturer' => $item['Supplier'],
+                'manufacturer' => $item['ProducerBrand'],
+                'article'      => $item['ProducerCode'],
                 'stock'        => $item['ZakazCode'],
                 'model'        => $items[$key],
-                'hash'         => md5($item['ZakazCode'] . $item['Supplier'] . $article . $delivery . $item['PriceRUR']),
+                'can_return'   => 'n/a',
+                'hash'         => md5($item['ZakazCode'] . $item['ProducerBrand'] . $item['ProducerCode'] . $delivery . $item['PriceRUR'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;
@@ -235,7 +260,7 @@ class Mikado implements ProviderInterface
             $orderInfo = json_decode($order->data, true);
 
             $params = [
-                'ZakazCode'    => $orderInfo['ZakazCode'],
+                'ZakazCode'    => $orderInfo['model']['ZakazCode'],
                 'QTY'          => $order->count,
                 'DeliveryType' => 1,
                 'Notes'        => $data['comment'] ?? '',
@@ -262,8 +287,8 @@ class Mikado implements ProviderInterface
         return [];
     }
 
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    public function getSubdivisions(): array
     {
-        // TODO: Implement searchAnaloguesByBrandAndArticle() method.
+        return [];
     }
 }

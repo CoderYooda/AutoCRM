@@ -27,7 +27,7 @@
                                 <div class="tab fl active">
 
                                     <div class="form-group mt-15">
-                                        <label>Руководитель</label>
+                                        <label>Владелец</label>
                                         <input name="owner" type="text" class="form-control" placeholder="ФИО" >
                                     </div>
 

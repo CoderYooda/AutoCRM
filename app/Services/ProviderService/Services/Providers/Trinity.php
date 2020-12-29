@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
+use Exception;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -47,12 +48,21 @@ class Trinity implements ProviderInterface
     {
         $params = [
             'searchCode' => $article,
-            'online' => true ? 'allow' : 'disallow'
+            'online'     => true ? 'allow' : 'disallow'
         ];
 
-        $results = $this->query('search/byCode', $this->createParams($params), true);
+        $response = $this->query('search/byCode', $this->createParams($params), true);
 
-        return array_column($results['data'], 'producer');
+        $results = [];
+
+        foreach ($response['data'] as $brand) {
+            $results[$brand['producer']] = [
+                'article' => $brand['article'],
+                'desc' => strlen($brand['ident']) ? $brand['ident'] : 'Отсутствует'
+            ];
+        }
+
+        return $results;
     }
 
     public function getName(): string
@@ -74,52 +84,66 @@ class Trinity implements ProviderInterface
     {
         $items = $this->searchItems($article, $brand, 'full', true);
 
-        if($items == []) return [];
+        $results = [
+            'originals' => [],
+            'analogues' => []
+        ];
 
-        $results = [];
+        if ($items == []) return $results;
+
+        $originalIndex = 0;
+        $analogueIndex = 0;
 
         foreach ($items['data'] as $key => $item) {
 
             $items['data'][$key]['index'] = $key;
 
             $items['data'][$key]['hash_info'] = [
-                'stock' => $item['stock'],
+                'stock'        => $item['stock'],
                 'manufacturer' => $item['producer'],
-                'article' => $article,
-                'days' => $item['deliverydays'],
-                'price' => $item['price'],
-                'packing' => $item['minOrderCount'],
-                'desc' => $item['caption'],
-                'rest' => $item['rest'],
-                'supplier' => $this->name
+                'article'      => $item['code'],
+                'days'         => $item['deliverydays'],
+                'price'        => $item['price'],
+                'packing'      => $item['minOrderCount'],
+                'desc'         => $item['caption'],
+                'rest'         => $item['rest'],
+                'supplier'     => $this->name
             ];
         }
 
         foreach ($items['data'] as $key => $store) {
 
-            if(!strlen($store['bid'])) continue;
+            if (!strlen($store['bid'])) continue;
+
+            $is_analogue = $store['producer'] != $brand;
+
+            $listName = $is_analogue ? 'analogues' : 'originals';
 
             preg_match_all('/\d+/', $store['deliverydays'], $days);
 
             $days_min = $days[0][0];
             $days_max = $days[0][1] ?? 9999;
 
-            $results[] = [
-                'index' => $key,
-                'name' => $store['stock'],
-                'code' => $store['code'],
-                'rest' => $store['rest'],
-                'days_min' => $days_min,
-                'days_max' => $days_max,
-                'packing' => $store['minOrderCount'],
-                'min_count' => $store['minOrderCount'],
-                'delivery' => $store['deliverydays'] . 'дн.',
-                'price' => $store['price'],
+            $results[$listName][] = [
+                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
+                'name'         => $store['caption'],
+                'code'         => $store['code'],
+                'rest'         => $store['rest'],
+                'days_min'     => $days_min,
+                'days_max'     => $days_max,
+                'packing'      => $store['minOrderCount'],
+                'min_count'    => $store['minOrderCount'],
+                'delivery'     => $store['deliverydays'] . ' дн.',
+                'price'        => $store['price'],
                 'manufacturer' => $store['producer'],
-                'model' => $store,
-                'stock' => $store['stock'],
-                'hash' => md5($store['stock'] . $store['producer'] . $article . $store['deliverydays'] . $store['price'])
+                'article'      => $store['code'],
+                'model'        => $store,
+                'stock'        => $store['stock'],
+                'can_return'   => 'n/a',
+                'hash'         => md5($store['stock'] . $store['producer'] . $store['code'] . $store['deliverydays'] . $store['price'])
             ];
+
+            $is_analogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;
@@ -133,7 +157,7 @@ class Trinity implements ProviderInterface
         $searchParams->$article = $brand;
         $params = [
             'searchCode' => $searchParams,
-            'onlyStock' => '0',
+            'onlyStock'  => '0',
         ];
 
         switch ($searchType) {
@@ -158,8 +182,8 @@ class Trinity implements ProviderInterface
 
         return stream_context_create([
             'http' => [
-                'header' => "Content-Type:application/json\r\n\User-Agent:Trinity/1.0",
-                'method' => "POST",
+                'header'  => "Content-Type:application/json\r\n\User-Agent:Trinity/1.0",
+                'method'  => "POST",
                 'content' => json_encode($params)
             ]
         ]);
@@ -173,9 +197,7 @@ class Trinity implements ProviderInterface
             $url .= (strpos($url, 'cart/saveGoods') !== false ? '?v=2' : '');
 
             $data = file_get_contents($this->host . $url, false, $context);
-        }
-        catch (\Exception $exception) {
-            dd($exception);
+        } catch (Exception $exception) {
             $data = json_encode([]);
         }
 
@@ -189,7 +211,7 @@ class Trinity implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-        if(!isset($fields['api_key'])) return false;
+        if (!isset($fields['api_key'])) return false;
 
         $this->api_key = $fields['api_key'];
 
@@ -208,20 +230,20 @@ class Trinity implements ProviderInterface
             $orderInfo = json_decode($product->data, true);
 
             $orders[] = [
-                'internal_id' => $product->id,
-                'bid' => $orderInfo['bid'],
-                'code' => $orderInfo['code'],
-                'producer' => $orderInfo['producer'],
-                'caption' => $orderInfo['caption'],
-                'supplier_id' => $orderInfo['supplier_id'],
-                'stock' => $orderInfo['stock'],
-                'price' => $orderInfo['price'],
-                'saled_price' => $orderInfo['price'] + sum_percent($orderInfo['price'], 20),
-                'quantity' => $product->count,
-                'source' => $orderInfo['source'],
-                'comment' => $data['comment'] ?? '',
-                'deliverydays' => $orderInfo['deliverydays'],
-                'minOrderCount' => $orderInfo['minOrderCount'],
+                'internal_id'   => $product->id,
+                'bid'           => $orderInfo['model']['bid'],
+                'code'          => $orderInfo['model']['code'],
+                'producer'      => $orderInfo['model']['producer'],
+                'caption'       => $orderInfo['model']['caption'],
+                'supplier_id'   => $orderInfo['model']['supplier_id'],
+                'stock'         => $orderInfo['model']['stock'],
+                'price'         => $orderInfo['model']['price'],
+                'saled_price'   => $orderInfo['model']['price'] + sum_percent($orderInfo['model']['price'], 20),
+                'quantity'      => $product->count,
+                'source'        => $orderInfo['model']['source'],
+                'comment'       => $data['comment'] ?? '',
+                'deliverydays'  => $orderInfo['model']['deliverydays'],
+                'minOrderCount' => $orderInfo['model']['minOrderCount'],
             ];
         }
 
@@ -274,10 +296,8 @@ class Trinity implements ProviderInterface
         return [];
     }
 
-    public function searchAnaloguesByBrandAndArticle(string $brand, string $article): array
+    public function getSubdivisions(): array
     {
-        $items = $this->searchItems('k1279', 'FILTRON', 'full', true);
-
-        dd($items);
+        return [];
     }
 }

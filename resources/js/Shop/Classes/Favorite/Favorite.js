@@ -1,4 +1,5 @@
 class Favorite {
+
     toggleProduct(element, product_id) {
 
         event.preventDefault();

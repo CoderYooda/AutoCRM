@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
+use App\Http\Requests\Shop\UpdateAnalyticsRequest;
 use App\Http\Requests\Shop\UpdateDeliveryRequest;
+use App\Http\Requests\Shop\UpdatePaymentMethodsRequest;
 use App\Http\Requests\Shop\UpdateRequest;
 use App\Http\Requests\Shop\UpdateSettingsRequest;
 use App\Http\Requests\Shop\UpdateWarrantyRequest;
@@ -14,6 +17,7 @@ use App\Mail\Shop\ConfirmOrder;
 use App\Models\Article;
 use App\Models\ClientOrder;
 use App\Models\Order;
+use App\Models\Markup;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\User;
@@ -87,7 +91,36 @@ class ShopController extends Controller
 
     public function settingsTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.settings', compact('request'));
+        $user = Auth::user();
+
+        $prices = Markup::where('company_id', $user->company_id)->get();
+
+        return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
+    }
+
+    public function analyticsTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.analytics', compact('request'));
+    }
+
+    public function payment_methodsTab(Request $request)
+    {
+        $shop = Auth::user()->shop;
+
+        $filteredArray = [];
+
+        if($shop) {
+            $paymentMethods = $shop->paymentMethods ? $shop->paymentMethods->toArray() : [];
+
+            foreach ($paymentMethods as $paymentMethod) {
+                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+                $filteredArray[$paymentMethod['name']] = $paymentMethod;
+            }
+        }
+
+        $paymentMethods = $filteredArray;
+
+        return view(get_template() . '.shop.tabs.payment_methods', compact('request', 'paymentMethods'));
     }
 
     public function update(UpdateRequest $request)
@@ -100,7 +133,8 @@ class ShopController extends Controller
                 'address_coords'     => $request->address_coords,
                 'address_desc'       => $request->address_desc,
                 'seo_contacts_title' => $request->seo_contacts_title,
-                'seo_contacts_desc'  => $request->seo_contacts_desc
+                'seo_contacts_desc'  => $request->seo_contacts_desc,
+                'contacts_desc'      => $request->contacts_desc
             ]);
 
             $shop->phones()->delete();
@@ -170,11 +204,7 @@ class ShopController extends Controller
 
     public function updateDelivery(UpdateDeliveryRequest $request)
     {
-        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
-            'delivery_desc'      => $request->delivery_desc,
-            'seo_delivery_title' => $request->seo_delivery_title,
-            'seo_delivery_desc'  => $request->seo_delivery_desc
-        ]);
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
 
         return response()->json([
             'type'    => 'success',
@@ -196,22 +226,42 @@ class ShopController extends Controller
         ]);
     }
 
+    public function updateAnalytics(UpdateAnalyticsRequest $request)
+    {
+        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
+
+        return response()->json([
+            'type'    => 'success',
+            'message' => 'Настройки успешно сохранены.'
+        ]);
+    }
+
     public function updateSettings(UpdateSettingsRequest $request)
     {
         return DB::transaction(function () use ($request) {
+
+            $shop = Shop::where('company_id', Auth::user()->company_id)->first();
+
+            if (!$shop || $shop->domain != $request->domain) {
+
+                $domain = $request->domain;
+
+                if (str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                exec('sh test.sh ' . $domain);
+            }
 
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,
                 'storage_days'        => $request->storage_days,
+                'image_favicon_id'    => $request->image_favicon_id,
                 'image_logotype_id'   => $request->image_logotype_id,
                 'image_header_id'     => $request->image_header_id,
                 'image_background_id' => $request->image_background_id,
                 'domain'              => $request->domain,
                 'subdomain'           => $request->subdomain,
                 'supplier_offers'     => $request->supplier_offers,
-                'supplier_percent'    => $request->supplier_percent,
-                'supplier_id'         => $request->supplier_id
+                'price_id'            => $request->price_id
             ]);
 
             $images = [];
@@ -242,6 +292,34 @@ class ShopController extends Controller
         });
     }
 
+    public function updatePaymentMethods(UpdatePaymentMethodsRequest $request)
+    {
+        $params = $request->validated();
+
+        $user = Auth::user();
+
+        /** @var Shop $shop */
+        $shop = $user->shop;
+
+        $methods = [];
+
+        foreach ($params['methods'] as $method_name => $method_params) {
+            $methods[] = [
+                'name'   => $method_name,
+                'params' => json_encode($method_params),
+                'main'   => $request->methods_main == $method_name
+            ];
+        }
+
+        $shop->paymentMethods()->delete();
+        $shop->paymentMethods()->createMany($methods);
+
+        return response()->json([
+            'type'    => 'success',
+            'message' => 'Настройки успешно сохранены'
+        ]);
+    }
+
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
@@ -251,6 +329,18 @@ class ShopController extends Controller
 
             /** @var Order $order */
             $order = Order::find($request->order_id);
+
+            /** @var Shop $shop */
+            $shop = $order->shop;
+
+            $paymentMethod = $shop->getActivePaymentMethod();
+
+            if ($order->pay_type == Order::PAYMENT_TYPE_ONLINE && $paymentMethod == []) {
+                return response()->json([
+                    'type'    => 'error',
+                    'message' => 'Нет активных способов оплаты'
+                ], 422);
+            }
 
             /** @var ClientOrder $clientOrder */
             $clientOrder = null;
@@ -306,14 +396,14 @@ class ShopController extends Controller
 
                     $product = Article::firstOrCreate($uniqueFields, $updateFields);
 
-                    if($product->wasRecentlyCreated) {
+                    if ($product->wasRecentlyCreated) {
                         $product->update(['category_id' => 10]);
                     }
 
                     $pivotData = [
-                        'price'      => $position['price'],
-                        'count'      => $position['count'],
-                        'total'      => $position['price'] * $position['count'],
+                        'price' => $position['price'],
+                        'count' => $position['count'],
+                        'total' => $position['price'] * $position['count'],
                     ];
 
                     $clientOrder->articles()->attach($product->id, $pivotData);
@@ -323,14 +413,12 @@ class ShopController extends Controller
 
                 if ($status == Order::PAYMENT_TYPE_ONLINE) {
                     $order->initPayment();
-                }
-                else {
+                } else {
                     Mail::to($order->email)->send(new ConfirmOrder($order));
                 }
 
                 $clientOrder->update(['status' => $status]);
-            }
-            else {
+            } else {
                 Mail::to($order->email)->send(new CanceledOrder($order));
             }
 
@@ -340,10 +428,11 @@ class ShopController extends Controller
                 'clientorder_id' => $clientOrder->id ?? null
             ]);
 
+            event(new ModelWasStored($shop->company_id, 'OrderStored'));
+
             return response()->json([
                 'type'    => 'success',
-                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.',
-                'event'   => 'OrderStored'
+                'message' => 'Заказ успешно ' . ($status != Order::CANCELED_STATUS ? 'подтверждён' : 'отменён') . '.'
             ], 200);
         });
     }

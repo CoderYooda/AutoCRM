@@ -67,8 +67,10 @@ class OrderController extends Controller
             ->paginate($size);
 
         foreach ($orders as $key => $order) {
+
             $orders[$key]['partner_name'] = $order->partner->official_name;
             $orders[$key]['status'] = $order->getStatusName();
+            $orders[$key]['clientorder_id'] = $order->clientorder_id == null ? 'Отсутствует' : $order->clientorder_id;
         }
 
         return $orders;

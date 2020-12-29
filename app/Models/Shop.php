@@ -19,11 +19,12 @@ class Shop extends Model
             return 'http://' . $this->domain . '/';
         }
 
-        $domainData = parse_url(request()->getUri());
+        return 'http://' . $this->subdomain . '.' . getenv('APP_DOMAIN') .  '.ru/';
+    }
 
-        $domain = explode('.', $domainData['host'])[1];
-
-        return 'http://' . $this->subdomain . '.' . $domain .  '.ru/';
+    public function markup()
+    {
+        return $this->hasOne(Markup::class, 'id', 'price_id');
     }
 
     public function name()
@@ -44,6 +45,11 @@ class Shop extends Model
     public function sliderImages()
     {
         return $this->belongsToMany(Image::class, 'shop_images_slider')->withPivot('target_url');
+    }
+
+    public function faviconImage()
+    {
+        return $this->hasOne(Image::class, 'id', 'image_favicon_id');
     }
 
     public function logotypeImage()
@@ -74,5 +80,36 @@ class Shop extends Model
     public function orderEmails()
     {
         return $this->belongsToMany(Email::class, 'shop_emails_order');
+    }
+
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class, 'shop_id', 'id');
+    }
+
+    public function getActivePaymentMethod()
+    {
+        $paymentMethod = $this->paymentMethods()->where('main', 1)->first();
+
+        if($paymentMethod) {
+            $paymentMethod = $paymentMethod->toArray();
+            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+            return $paymentMethod;
+        }
+
+        return [];
+    }
+
+    public function getPaymentMethodByName($name)
+    {
+        $paymentMethod = $this->paymentMethods()->where('name', $name)->first();
+
+        if($paymentMethod) {
+            $paymentMethod = $paymentMethod->toArray();
+            $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+            return $paymentMethod;
+        }
+
+        return [];
     }
 }

@@ -1,11 +1,9 @@
-import Tabs from "../../../Tools/Tabs";
-
 class Cart {
 
     constructor() {
         this.debounceSave = window.helper.debounce((product_id, count) => this.save(product_id, count), 200);
 
-        $('select').select2();
+        // $('select').select2();
 
         this.providers = {};
 
@@ -13,13 +11,10 @@ class Cart {
 
         if(data_element) {
 
-            let providers = data_element.dataset.providers;
             let product = data_element.dataset.product;
 
-            if(providers) this.providers = JSON.parse(providers);
             if(product) this.product = JSON.parse(data_element.dataset.product);
 
-            data_element.removeAttribute('data-data');
             data_element.removeAttribute('data-product');
         }
     }
@@ -32,22 +27,26 @@ class Cart {
 
         let count = parseInt(input_element.value);
 
-        let max_count = input_element.dataset.max;
-
-        if(count > max_count) {
-            window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
-            return;
-        }
+        // let max_count = input_element.dataset.max;
+        //
+        // if(count > max_count) {
+        //     window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+        //     return;
+        // }
 
         if(element.classList.contains('incart')) return;
         element.classList.add('incart');
 
-        let order = this.getOrderByHash(hash);
-
-        order.product_id = this.product.id;
-
         let product_element = element.closest('.element');
         let store_id = product_element.dataset.store_id;
+
+        let type = product_element.dataset.type;
+
+        let order = this.getOrderByHash(hash, type);
+
+        console.log(order);
+
+        if(this.product) order.product_id = this.product.id;
 
         if(store_id) order.store_id = store_id;
 
@@ -100,6 +99,8 @@ class Cart {
 
                 let cart_elements = document.querySelectorAll('.cart_element');
 
+                this.recalculate();
+
                 if(cart_elements.length == 0) this.clear(true);
             })
             .catch(response => {
@@ -115,12 +116,12 @@ class Cart {
         let count_element = target_element.querySelector('.counter');
         let count = parseInt(count_element.value) + 1;
 
-        let max_count = count_element.dataset.max;
-
-        if((count - 1) >= max_count) {
-            window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
-            return;
-        }
+        // let max_count = count_element.dataset.max;
+        //
+        // if((count - 1) >= max_count) {
+        //     window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+        //     return;
+        // }
 
         count_element.value = count;
 
@@ -244,6 +245,15 @@ class Cart {
         if(type != 'auth') {
             let buttons_element = document.querySelector('.order_types');
             buttons_element.classList.add('d-none');
+
+            let target_element = document.querySelector('.order_register');
+
+            let top = $(".order_register").offset().top;
+            $("html, body").animate({ scrollTop: top }, 1000);
+
+            let phone_element = target_element.querySelector('[name="basePhone"]');
+            phone_element.focus();
+
         }
     }
 
@@ -265,14 +275,21 @@ class Cart {
         delivery_group.classList.toggle('d-none');
     }
 
-    getOrderByHash(hash) {
+    getOrderByHash(hash, type) {
 
         let order = {};
 
+        console.log(this.providers);
+
         Object.values(this.providers).forEach(orders => {
 
-            Object.values(orders).forEach(element => {
-                if(element.hash == hash) order = element;
+            ['originals', 'analogues'].forEach(type => {
+
+                Object.values(orders[type]).forEach(element => {
+
+                    if(element.hash == hash) order = element;
+                });
+
             });
 
         });
@@ -294,8 +311,6 @@ class Cart {
 
         let total_price = 0;
 
-        let total_stores = {};
-
         elements.forEach(element => {
 
             let store_id = element.dataset.store_id;
@@ -305,32 +320,20 @@ class Cart {
             let count = parseInt(count_element.value);
             let price = parseFloat(element.querySelector('.current_price span').innerHTML.replace(' ', ''));
 
-            let max_count = count_element.dataset.max;
-
-            if(count > max_count) {
-                count = max_count;
-                count_element.value = max_count;
-                window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
-            }
+            // let max_count = count_element.dataset.max;
+            //
+            // if(count > max_count) {
+            //     count = max_count;
+            //     count_element.value = max_count;
+            //     window.notification.notify('error', 'Доступное кол-во: ' + max_count + ' шт.');
+            // }
 
             let total = count * price;
 
             total_price += total;
 
             element.querySelector('.total_price span').innerHTML = total.toFixed(2);
-
-            // if(store_id) {
-            //     if(isNaN(total_stores[store_id])) total_stores[store_id] = 0;
-            //     total_stores[store_id] += total;
-            // }
-
         });
-
-        // Object.keys(total_stores).forEach(store_id => {
-        //      let value = total_stores[store_id];
-        //
-        //      document.getElementById('total_store_' + store_id).innerHTML = value.toFixed(2);
-        // });
 
         let total_element = document.getElementById('count');
 

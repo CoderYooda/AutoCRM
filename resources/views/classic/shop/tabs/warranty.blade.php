@@ -2,18 +2,20 @@
 
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'classic.shop.layout.tabs')
 
-@section('title', $page ?? 'Интернет-магазин')
+@section('title', $page ?? 'Гарантия и возврат')
 
 @section('tab')
 
     <div id="ajax-shop-warranty" class="bottom-container" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
             <form action="{{ route('ShopUpdateWarranty') }}" method="POST">
 
-                <div class="form-group">
-                    <label>Гарантии и способы возврата</label>
+                <h2 class="mt-0 style_header">Гарантия и возврат</h2>
+
+                <div class="form-group mt-10">
+                    <label>Гарантия и способы возврата</label>
                     <div data-error="warranty_desc">
                         <div id="editor">{!! $shop->warranty_desc ?? '' !!}</div>
                     </div>

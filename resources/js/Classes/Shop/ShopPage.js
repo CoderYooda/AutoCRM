@@ -1,5 +1,6 @@
 import ymaps from 'ymaps';
 import TextEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import '@ckeditor/ckeditor5-build-classic/build/translations/ru';
 import Croppr from "croppr";
 
 class shopPage {
@@ -14,6 +15,7 @@ class shopPage {
         this.linked();
 
         this.sizes = {
+            image_favicon: [32, 32],
             image_logotype: [52, 52],
             image_header: [1920, 220],
             image_background: [1920, 500]
@@ -39,19 +41,24 @@ class shopPage {
 
             this.loadYandexMapAddress();
             this.addPhoneMask();
-        } else if (this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
+        }
+
+        if (this.active_tab == 'contacts' || this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
+
+            const config = {
+                toolbar: [ "heading","|","bold","italic","link","bulletedList","numberedList","|","indent","outdent","|","blockQuote","insertTable","mediaEmbed","undo","redo" ],
+                language: 'ru',
+            };
 
             let editor_element = document.querySelector('#editor');
 
-            TextEditor.create(editor_element, {
-                language: 'ru',
-            })
+            TextEditor.create(editor_element, config)
                 .then(newEditor => {
                     this.texteditor = newEditor
                 });
         }
         else if(this.active_tab == 'settings') {
-            this.addSubdomainMask();
+            // this.addSubdomainMask();
             this.addEmailMask();
         }
 
@@ -247,7 +254,7 @@ class shopPage {
                 prepare: function (str) {
                     return str.toLowerCase();
                 },
-                lazy: false,
+                lazy: true,
                 blocks: {
                     NAME: {
                         mask: /^[0-9a-zA-Z]+$/
@@ -394,7 +401,7 @@ class shopPage {
     }
 
     toggleSupplierOffers(element) {
-        let select_element = element.closest('.form-group').querySelector('.select_supplier');
+        let select_element = document.querySelector('.select_supplier');
 
         select_element.classList.toggle('d-none');
     }
@@ -559,6 +566,28 @@ class shopPage {
     }
 
     saveContacts(element) {
+
+        let data = {
+            contacts_desc: this.texteditor.getData()
+        };
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        }, null, data);
+    }
+
+    saveAnalytics(element) {
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        });
+    }
+
+    savePaymentMethods(element) {
 
         axform.send(element, response => {
             if (response.status == 200) {

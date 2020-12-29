@@ -42,19 +42,23 @@
                 </div>
 
                 <div class="form-group w-350">
-                    <label>Показывать товары, которых нет в наличии</label>
-                    <label data-error="show_empty" class="custom_checkbox">
-                        <input type="checkbox" class="not_default" name="show_empty" @if($shop->show_empty ?? true) checked @endif value="1" />
-                        <span></span>
-                    </label>
+                    <div class="input-group">
+                        <label>Показывать товары, которых нет в наличии</label>
+                        <label data-error="show_empty" class="custom_checkbox ml-15">
+                            <input type="checkbox" class="not_default" name="show_empty" @if($shop->show_empty ?? true) checked @endif value="1" />
+                            <span></span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group w-350">
-                    <label>Показывать количество товаров в наличии</label>
-                    <label data-error="show_amount" class="custom_checkbox">
-                        <input type="checkbox" class="not_default" name="show_amount" @if($shop->show_amount ?? true) checked @endif value="1" />
-                        <span></span>
-                    </label>
+                    <div class="input-group">
+                        <label>Показывать количество товаров в наличии</label>
+                        <label data-error="show_amount" class="custom_checkbox ml-15">
+                            <input type="checkbox" class="not_default" name="show_amount" @if($shop->show_amount ?? true) checked @endif value="1" />
+                            <span></span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group w-350">
@@ -62,36 +66,23 @@
                     <input type="number" class="form-control" name="storage_days" value="{{ $shop->storage_days ?? 7 }}">
                 </div>
 
-                <div class="form-group w-350 d-flex flex-column">
+                <div class="input-group w-350">
+                    <label>Показывать предложения поставщиков</label>
+                    <label class="custom_checkbox ml-15">
+                        <input type="checkbox" name="supplier_offers" class="not_default" @if($shop->supplier_offers ?? true) checked @endif onchange="{{ $class }}.toggleSupplierOffers(this);" value="1" />
+                        <span></span>
+                    </label>
+                </div>
 
-                    <div>
-                        <label>Показывать предложения поставщиков</label>
-
-                        <label class="custom_checkbox">
-                            <input type="checkbox" name="supplier_offers" class="not_default" @if($shop->supplier_offers ?? true) checked @endif onchange="{{ $class }}.toggleSupplierOffers(this);" value="1" />
-                            <span></span>
-                        </label>
+                <div class="input-group w-350 mb-10 select_supplier @if(!$shop || !$shop->supplier_offers) d-none @endif">
+                    <label>Источник наценки к стоимости товара</label>
+                    <div class="input-group">
+                        <select custom_select name="price_id">
+                            @foreach($prices as $price)
+                                <option @if($shop && $shop->price_id == $price->id) selected @endif value="{{ $price->id }}">{{ $price->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-
-                    <div class="select_supplier @if(!($shop->supplier_offers ?? true)) d-none @endif">
-
-                        <div class="form-group">
-                            <label>Выберите поставщика для работы с проценкой</label>
-                            <select custom_select name="supplier_id">
-                                @forelse(auth()->user()->company->getActiveServicesByCategory() as $service)
-                                    <option @if($shop && $shop->supplier_id == $service->id) selected @endif value="{{ $service->id }}">{{ $service->name }}</option>
-                                @empty
-                                    <option value="">Нет активных поставщиков</option>
-                                @endforelse
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Процент наценки стоимости товара</label>
-                            <input type="number" class="form-control" name="supplier_percent" value="{{ $shop->supplier_percent ?? 30 }}" />
-                        </div>
-                    </div>
-
                 </div>
 
                 <h2 class="style_header mb-10">Оформление сайта</h2>
@@ -99,9 +90,23 @@
                 <div class="form-group w-350 d-flex">
 
                     <div class="flex-1">
+                        <label>Favicon</label>
+                        <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
+                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->faviconImage->path ?? 'http://via.placeholder.com/32x32' }}" />
+                        </div>
+
+                        <label class="upload_file pointer" for="image_favicon">Файл не выбран<div></div></label>
+                        <input type="file" id="image_favicon" onchange="{{ $class }}.changeFile(this);" accept="image/jpeg,image/png" hidden/>
+                        <input type="hidden" name="image_favicon_id" value="{{ $shop->faviconImage->id ?? '' }}">
+                    </div>
+                </div>
+
+                <div class="form-group w-350 d-flex">
+
+                    <div class="flex-1">
                         <label>Логотип</label>
                         <div class="text-center all-center p-10" style="border: 1px solid #e7e8ec;">
-                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->image_path ?? 'http://via.placeholder.com/52x52' }}" />
+                            <img class="image_main" style="width: 52px; height: 52px;" src="{{ $shop->logotypeImage->path ?? 'http://via.placeholder.com/52x52' }}" />
                         </div>
 
                         <label class="upload_file pointer" for="image_logotype">Файл не выбран<div></div></label>
@@ -179,12 +184,15 @@
                 <h2 class="style_header mb-10">Адрес сайта</h2>
 
                 <div class="form-group w-350">
-                    <label>URL адрес</label>
-                    <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name.bbcrm.ru" value="{{ $shop->subdomain ?? '' }}">
+                    <label>Бесплатный поддомен в BBCRM</label>
+                    <div class="d-flex">
+                        <input type="text" name="subdomain" data-error="subdomain" class="form-control" placeholder="name" value="{{ $shop->subdomain ?? 'name' }}">
+                        <input type="text" class="form-control subdomain_desc" placeholder="name" value=".bbcrm.ru" disabled>
+                    </div>
                 </div>
 
                 <div class="form-group w-350">
-                    <label>Свой домен</label>
+                    <label>Собственное доменное имя</label>
                     <input type="text" name="domain" data-error="domain" class="form-control" placeholder="www.пример.рф" value="{{ $shop->domain ?? '' }}">
                 </div>
 

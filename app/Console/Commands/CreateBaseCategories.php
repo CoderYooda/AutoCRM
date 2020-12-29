@@ -22,39 +22,49 @@ class CreateBaseCategories extends Command
     {
         $company = Company::find($this->argument('company'));
 
-        $category_id = 2;
-
         $categories_txt = file_get_contents(public_path('demo/categories.txt'));
 
         $categories_rows = explode("\n", $categories_txt);
 
         $user = $company->getFirstCompanyMember();
 
+        $rootCategory = Category::find(2);
+
+        $subCategory = null;
+
         foreach($categories_rows as $row){
-            if($row !== ''){
-                if($row[0] === '-'){
-                    $category_id = 2;
-                    $cat = $this->createCategory(substr($row, 1), $category_id, $company->id, $user->id);
-                    $category_id = $cat->id;
-                } else {
-                    $cat = $this->createCategory($row, $category_id, $company->id, $user->id);
-                }
+
+            if($row == "\r" || $row == '') continue;
+
+            if($row[0] == '-'){
+                $params = $this->createCategory(substr($row, 1), $company->id, $user->id);
+
+                $subCategory = Category::create($params);
+
+                $subCategory->makeChildOf($rootCategory);
+
+            } else {
+
+                $params = $this->createCategory($row, $company->id, $user->id);
+
+                $childCategory = Category::create($params);
+
+                $childCategory->makeChildOf($subCategory);
             }
         }
+
+        return true;
     }
 
-    private function createCategory($name, $category_id, $company_id, $creator_id)
+    private function createCategory($name, $company_id, $creator_id)
     {
-        $slug = Str::slug($name . '-' . $company_id);
-
-        return Category::create([
+        return [
             'name' => $name,
-            'category_id' => $category_id,
             'company_id' => $company_id,
             'creator_id' => $creator_id,
             'locked' => false,
             'type' => 'store',
-            'slug' => $slug
-        ]);
+            'slug' => null
+        ];
     }
 }

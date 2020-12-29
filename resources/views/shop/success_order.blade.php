@@ -77,12 +77,12 @@
 
                     @if($order->status == \App\Models\Order::WAIT_PAYMENT_STATUS)
                         <div class="pay_button mr-10">
-                            <a href="{{ $order->tinkoff_url }}">Оплатить</a>
+                            <a href="{{ $order->payment_url }}">Оплатить</a>
                         </div>
                     @endif
 
                     <div class="print_orders">
-                        Распечатать
+                        <a target="_blank" href="{{ route('orders.print', $order->hash) }}">Распечатать</a>
                     </div>
                 </div>
             </div>

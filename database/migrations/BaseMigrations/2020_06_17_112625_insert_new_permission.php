@@ -16,7 +16,7 @@ class InsertNewPermission extends Migration
     {
         $permission = Permission::create(['name' => 'Смотреть статистику', 'model' => 'Statistic', 'type' => 'read']);
 
-        $roles = Role::where('name', 'Руководитель')->get();
+        $roles = Role::where('name', 'Владелец')->get();
 
         foreach ($roles as $role) {
             $role->givePermissionTo($permission->id);

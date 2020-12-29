@@ -8,11 +8,13 @@
 
     <div id="ajax-table-shop" class="bottom-container contacts-shop-page" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
-            <form action="#" method="POST" data-simplebar style="height: 100%;">
+            <form action="#" method="POST" style="height: 100%;">
 
-                <div class="form-group">
+                <h2 class="mt-0 style_header">Контакты</h2>
+
+                <div class="form-group mt-10">
                     <label>Название магазина</label>
                     <input name="name" type="text" class="form-control" placeholder="Название магазина" value="{{ $shop->name ?? '' }}">
                 </div>
@@ -103,6 +105,13 @@
 
                     </div>
 
+                </div>
+
+                <div class="form-group">
+                    <label>Описание</label>
+                    <div data-error="contacts_desc">
+                        <div id="editor">{!! $shop->contacts_desc ?? '' !!}</div>
+                    </div>
                 </div>
 
                 <div class="form-group">

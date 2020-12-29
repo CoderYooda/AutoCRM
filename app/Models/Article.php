@@ -31,7 +31,8 @@ class Article extends Model
         'barcode',
         'name',
         'blockedCount',
-        'image_id'
+        'image_id',
+        'price_id'
     ];
 
     protected $guarded = [];
@@ -80,11 +81,9 @@ class Article extends Model
         return $this->hasMany(Specification::class);
     }
 
-    public function currentStore()
+    public function markup()
     {
-        $store_id = Auth::user()->current_store;
-
-        return $this->stores->find($store_id);
+        return $this->hasOne(Markup::class, 'id', 'price_id');
     }
 
     public function getHash($store_id)
@@ -124,7 +123,7 @@ class Article extends Model
 
     public function getShopName()
     {
-        return $this->sp_name ?? $this->name ?? 'Название отсутствует';
+        return strlen($this->sp_name) ? $this->sp_name : ($this->name ?? 'Название отсутствует');
     }
 
     public function getImagePathAttribute()
@@ -243,20 +242,17 @@ class Article extends Model
 
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
-        $store_id = Auth::user()->current_store ?? null;
-
-        $count_info = DB::table('article_entrance')
-            ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
+        $entrances = DB::table('article_entrance')
             ->where('article_id', $this->id)
-            ->where('company_id', $company->id)
-            ->where(function (Builder $builder) use($store_id) {
-                if($store_id) $builder->where('store_id', $store_id);
+            ->when($method_cost_of_goods == 'lifo', function (Builder $query) {
+                $query->orderByDesc('id');
             })
-            ->whereRaw('count != released_count')
-            ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
-            ->first();
+            ->get();
 
-        return $count_info->count - $count_info->released_count;
+        $count = $entrances->sum('count');
+        $released_count = $entrances->sum('released_count');
+
+        return $count - $released_count;
     }
 
     public function getCount()
@@ -275,24 +271,21 @@ class Article extends Model
     {
         $price = $this->getPrice();
 
-        if($this->sp_discount_type == 0) { //в рублях
-            $price -= $this->sp_discount;
-        }
-        else {
-            $price -= ($price / 100) * $this->sp_discount;
+        if($this->sp_stock) {
+            if ($this->sp_discount_type == 0) { //в рублях
+                $price -= $this->sp_discount;
+            } else {
+                $price -= ($price / 100) * $this->sp_discount;
+            }
         }
 
         return $price;
     }
 
-    public function getPrice(int $count = 1)
+    public function getPrice()
     {
         /** @var ShopManager $shopManager */
         $shopManager = app(ShopManager::class);
-
-//        if(!$shopManager->isWatchShop() && isset($this->pivot->price)) {
-//            return $this->pivot->price;
-//        }
 
         $shop = $shopManager->getCurrentShop();
 
@@ -300,63 +293,37 @@ class Article extends Model
         $company = $shop->company ?? Auth::user()->company;
 
         $price_source = $company->getSettingField('Источник цены');
-        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $store_id = Auth::user()->current_store ?? null;
 
         $price = 0;
 
-        if($price_source == 'retail') {
+        if($price_source == 'purchase') {
 
             if($shopManager->isWatchShop()) {
-                return $this->stores->sum('pivot.retail_price') / $this->stores->count();
+                $price = $this->stores->sum('pivot.retail_price') / $this->stores->count();
             }
-
-            $price = $this->stores->find($store_id)->pivot->retail_price ?? 0;
+            else {
+                $price = $this->stores->find($store_id)->pivot->retail_price ?? 0;
+            }
         }
-        else { /* FIFO-LIFO */
+        else {
 
-            $query = DB::table('article_entrance')
-                ->where('article_id', $this->id)
-                ->whereRaw('count != released_count')
-                ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'));
+            $lastEntrance = DB::table('article_entrance')->where('article_id', $this->id)->orderByDesc('id')->first();
 
-            if(!$shopManager->isWatchShop()) {
-                $query->where(function (Builder $builder) use($store_id) {
-                    if($store_id) $builder->where('store_id', $store_id);
-                });
-            }
-
-            $products = $query->get();
-
-            $retail_price = 0;
-            $found_count = 0;
-
-            foreach ($products as $product) {
-
-                for($i = $product->count; $i != -1; $i--) {
-
-                    $retail_price += $product->price;
-
-                    $found_count++;
-
-                    if ($count == $found_count) break 2;
-                }
-            }
-
-            $markup_value = $company->getSettingField('Стандартная наценка (%)');
-
-            $total = $found_count ? ($retail_price / $found_count) : 0;
-
-            $price = (double)($total + ($total / 100 * $markup_value));
+            $price = $lastEntrance->price ?? 0;
         }
+
+        $percent = $this->markup->getPercentByAmount($price);
+
+        $price += sum_percent($price, $percent);
 
         return $price;
     }
 
     public function entrances()
     {
-        return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id', 'entrance_id')
+        return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id')
             ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 

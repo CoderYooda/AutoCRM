@@ -101,10 +101,55 @@ class ProductDialog extends Modal {
         total_element.value = total;
     }
 
+    recalculateMarkup() {
 
-    linked()
-    {
+        setTimeout(() => {
+
+            let price_source = this.current_dialog.querySelector('[name="price_source"]');
+
+            let price_element = this.current_dialog.querySelector(price_source.value != 'purchase' ? '[name="last_entrance_price"]' : '[name*="retail_price"]');
+
+            let price = parseFloat(price_element.value);
+
+            let data = {
+                price: price
+            };
+
+            let price_id = this.current_dialog.querySelector('[name="price_id"]').value;
+
+            axios.post('/prices/' + price_id + '/percent', data)
+                .then(response => {
+
+                    let data = response.data;
+
+                    let total_element = this.current_dialog.querySelector('#total_price');
+
+                    if(total_element) {
+                        total_element.innerHTML = price.toFixed(2);
+                    }
+
+                    price += (price / 100 * data.percent);
+
+                     let total_input = this.current_dialog.querySelector('.total_markup');
+
+                    total_input.value = price.toFixed(2);
+                });
+
+        }, 200);
+    }
+
+    linked() {
         if(this.current_dialog.querySelector('#shop_tabs')) new Tabs('shop_tabs');
+    }
+
+    addAdjustmentField(element) {
+        let copy_element = this.current_dialog.querySelector('.entrance.copy');
+
+        copy_element.classList.remove('d-none');
+
+        element.classList.add('d-none');
+
+        copy_element.focus();
     }
 
     toggleStock(element) {
@@ -278,7 +323,7 @@ class ProductDialog extends Modal {
             method: 'post',
             url: 'category/' + id + '/select',
             data: {refer: this.root_dialog.id}
-        }).then(function (resp) {
+        }).then( (resp) => {
 
             let select = object.root_dialog.querySelector('button[name=category_id]');
             let input = object.root_dialog.querySelector('input[name=category_id]');
@@ -288,7 +333,16 @@ class ProductDialog extends Modal {
             window.notification.notify('success', 'Категория выбрана');
             document.dispatchEvent(new Event('CategorySelected', {bubbles: true}));
             console.log("Событие CategorySelected вызвано");
+
             //closeDialog(event);
+
+            let markup_category = this.current_dialog.querySelector('.markup_category');
+
+            markup_category.value = resp.data.markup;
+
+            this.current_dialog.querySelector('.category_name').innerHTML = resp.data.name;
+
+            this.recalculateMarkup();
 
         }).catch(function (error) {
             console.log(error);

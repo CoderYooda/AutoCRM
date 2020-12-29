@@ -5,17 +5,20 @@ class Socket{
 
     constructor(){
         console.log('Сокеты подключены');
-        //this.init();
+        this.init();
     }
 
     init(){
         let unprinted = document.getElementById('unprinted');
         if(unprinted){
+
+            console.log(window.socket_host + ':' + window.socket_port);
+
             axios({
                 method: 'get',
                 url: '/whoami'
             }).then((response) => {
-                console.log('Здравствуйте, ' + response.data.name + '!');
+                console.log('Здравствуйте, ' + response.data.partner.fio + '!');
                 this.echo = new Echo({
                     broadcaster: 'socket.io',
                     auth: {
@@ -27,6 +30,17 @@ class Socket{
                 });
 
                 this.echo
+                    .private(`company_message.${response.data.company.id}`)
+                    .listen('ModelWasStored', function (e) {
+
+                        let detail = {
+                            detail: e
+                        };
+
+                        document.dispatchEvent(new CustomEvent(e.model, detail));
+                    });
+
+                this.echo
                     .private('system_message.' + response.data.id)
                     .listen('SystemMessage', function(e){
                         // let block = helper.createElementFromHTML(e.view);
@@ -35,8 +49,7 @@ class Socket{
                         // parentDiv.insertBefore(block, sp2);
                         window.systemMessages.loadMessages();
                         window.systemMessages.bellCall();
-                        var audio = new Audio('sounds/system_message.mp3');
-                        audio.play();
+                        helper.notifySound();
                     })
                     .listen('StoreImportIteration', function(e){
                         try {
@@ -47,17 +60,9 @@ class Socket{
                         }
                     })
                     .listen('StoreImportFinish', function(e){
-                        try {
-                            window.storeImportDialog.finishUpload(e.info, e.html);
-                        }
-                        catch (e) {
-                            console.log(e);
-                        }
-                    })
-                    .listen('OrderUpdated', function(e){
 
                         try {
-                            document.querySelector('#orders_count').innerHTML = e.orders_count;
+                            window.storeImportDialog.finishUpload(e.info, e.html);
                         }
                         catch (e) {
                             console.log(e);

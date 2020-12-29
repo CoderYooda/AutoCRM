@@ -8,11 +8,20 @@ use App\Traits\Imageable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Kalnoy\Nestedset\NodeTrait;
 
-class Category extends Model
+class Category extends \Baum\Node
 {
     use Imageable;
+
+    protected $table = 'categories';
+
+//    protected $scoped = ['company_id'];
+    protected $parentColumn = 'category_id';
+    protected $leftColumn = '_lft';
+    protected $rightColumn = '_rgt';
+    protected $depthColumn = 'depth';
+    protected static $_guarded = ['id', 'category_id', '_lft', '_rgt', 'depth'];
 
     protected $guarded = [];
 
@@ -22,6 +31,11 @@ class Category extends Model
         'balance',
         'image_id'
     ];
+
+    public function isRoot()
+    {
+        return $this->id < 3;
+    }
 
     public function image()
     {
@@ -33,55 +47,34 @@ class Category extends Model
         return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
     }
 
-    public function parents()
+    public function breadcrumbs()
     {
-        $parents = collect([]);
+        $parents = $this->getAncestors();
 
-        $parent = $this->parent;
-
-        while(!is_null($parent) && $parent->id > 2) {
-            $parents->push($parent);
-            $parent = $parent->parent;
+        foreach ($parents as $index => $parent) {
+            if($parent->id < 3) unset($parents[$index]);
         }
 
-        return $parents->reverse();
+        return $parents;
     }
 
     public function path()
     {
-        return route('pages.path', $this->getParentsSlugs());
-    }
-
-    public function getParentsSlugs()
-    {
-        $parents = $this->parents();
+        $parents = $this->getAncestors();
 
         $slugs = '';
+
+        foreach ($parents as $index => $parent) {
+            if($parent->id < 3) unset($parents[$index]);
+        }
 
         if(count($parents)) {
             $slugs = implode('/', $parents->pluck('slug')->toArray()) . '/';
         }
 
-        return '/catalogue/' . $slugs . $this->slug;
-    }
+        $path = '/catalogue/' . $slugs . $this->slug;
 
-    public function parent()
-    {
-        /** @var ShopManager $shopManager */
-        $shopManager = app(ShopManager::class);
-
-        $shop = $shopManager->getCurrentShop();
-
-        $builder = $this->belongsTo(Category::class, 'category_id');
-
-        $builder->where(function (Builder $query) use($shop) {
-            $company_id = $shop->company_id ?? Auth::user()->company_id;
-
-            $query->where('company_id', $company_id)
-                ->orWhere('company_id', null);
-        });
-
-        return $builder;
+        return route('pages.path', $path);
     }
 
     public function childs()
@@ -102,24 +95,6 @@ class Category extends Model
 
         return $builder;
     }
-
-//    public function parent()
-//    {
-//        return $this->belongsTo(Category::class, 'category_id')
-//            ->where(function($q){
-//                $company_id = Auth::user()->company()->first()->id;
-//                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
-//            });
-//    }
-//
-//    public function childs()
-//    {
-//        return $this->hasMany(Category::class, 'category_id')
-//            ->where(function($q){
-//                $company_id = Auth::user()->company()->first()->id;
-//                $q->where('company_id', $company_id)->orWhere('company_id', NUll);
-//            });
-//    }
 
     public function articles()
     {
@@ -153,7 +128,7 @@ class Category extends Model
     }
 
     public static function owned(){
-        $company_id = Auth::user()->company()->first()->id;
+        $company_id = Auth::user()->company_id;
         return self::where(function($q) use ($company_id){
             $q->where('company_id', $company_id)->orWhere('company_id', NUll);
         });

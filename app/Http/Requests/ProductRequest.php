@@ -48,6 +48,10 @@ class ProductRequest extends FormRequest
             'shop.specifications.*.*' => ['string', 'max:255'],
             'shop.settings.*.*' => ['accepted'],
             'shop.image_id' => ['nullable', 'exists:images,id'],
+            'price_id' => ['required', 'integer', 'exists:prices,id'],
+            'entrances' => ['array'],
+            'entrances.*.price' => ['required', 'numeric', 'between:0,999999'],
+            'entrances.*.count' => ['required', 'integer', 'between:0,100'],
         ];
 
         if(isset($this['shop']['discounts']['discount'])) {

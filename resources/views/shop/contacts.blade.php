@@ -1,6 +1,6 @@
 @extends('shop.layout.app')
 
-@section('title', $shop->seo_contacts_title)
+@section('title', $shop->seo_contacts_title ?? 'Контакты')
 @section('description', $shop->seo_contacts_desc)
 
 @section('content')
@@ -18,7 +18,6 @@
                 <h2>Контакты компании</h2>
             </div>
 
-
             @if($shop->phones->count() || $shop->contactEmails->count())
                 <div class="contacts-container">
                     <div class="info-block">
@@ -27,6 +26,8 @@
                         </div>
                         <div class="address">
                             {{ $shop->address_name }}
+                            <br/>
+                            {{ $shop->address_desc }}
                         </div>
                         <div class="mail-phone-container">
                             @foreach($shop->phones as $phone)
@@ -44,6 +45,9 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                        <div class="description">
+                            {!! $shop->contacts_desc !!}
                         </div>
                     </div>
                     <div class="map-holder">

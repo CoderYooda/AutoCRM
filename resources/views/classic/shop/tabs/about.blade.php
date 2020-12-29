@@ -8,11 +8,13 @@
 
     <div id="ajax-shop-about" class="bottom-container" style="height: calc(100% - 79px) !important;">
 
-        <div class="box w-100 m-15 p-15">
+        <div class="box w-100 m-15 p-15" data-simplebar>
 
             <form action="{{ route('ShopUpdateAbout') }}" method="POST">
 
-                <div class="form-group">
+                <h2 class="mt-0 style_header">О компании</h2>
+
+                <div class="form-group mt-10">
                     <label>Описание компании</label>
                     <div data-error="about_desc">
                         <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
