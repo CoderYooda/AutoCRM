@@ -70,7 +70,6 @@ class AutoPiter implements ProviderInterface
         ];
 
         $items = $this->query('GetPriceId', $params);
-        dd($items);
 
         $results = [
             'originals' => [],
@@ -82,46 +81,50 @@ class AutoPiter implements ProviderInterface
         $originalIndex = 0;
         $analogueIndex = 0;
 
+        $items = $items['GetPriceIdResult']['PriceSearchModel'];
+
         foreach ($items as $key => $item) {
+
+            if(isset($item['NumberChange'])) continue;
 
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
-                'stock' => $item['whse'],
-                'manufacturer' => $item['brand'],
-                'article' => $item['art'],
-                'days' => $item['d_deliv'],
-                'price' => $item['price'],
-                'packing' => $item['kr'] > 0 ? $item['kr'] : 1,
-                'desc' => $item['name'],
-                'rest' => $item['num'],
+                'stock' => $item['Region'],
+                'manufacturer' => $item['CatalogName'],
+                'article' => $item['Number'],
+                'days' => $item['NumberOfDaysSupply'],
+                'price' => $item['SalePrice'],
+                'packing' => $item['MinNumberOfSales'] > 0 ? $item['MinNumberOfSales'] : 1,
+                'desc' => $item['Name'],
+                'rest' => $item['NumberOfAvailable'] > 1 ? $item['NumberOfAvailable'] : 'n/a',
                 'supplier' => $this->name
             ];
         }
 
         foreach ($items as $store) {
 
-            $is_analogue = $store['brand'] != $brand;
+            $is_analogue = $store['CatalogName'] != $brand;
 
             $listName = $is_analogue ? 'analogues' : 'originals';
 
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['name'],
-                'code' => $store['art'],
-                'rest' => $store['num'],
-                'days_min' => $store['d_deliv'],
-                'days_max' => $store['d_deliv'],
-                'packing' => $item['kr'] > 0 ? $item['kr'] : 1,
-                'min_count' => $item['kr'] > 0 ? $item['kr'] : 1,
-                'delivery' => $store['d_deliv'] . ' дн.',
-                'price' => $store['price'],
-                'manufacturer' => $store['brand'],
-                'article' => $store['art'],
+                'name' => $store['Name'],
+                'code' => $store['DetailUid'],
+                'rest' => $store['NumberOfAvailable'] > 1 ? $store['NumberOfAvailable'] : 0,
+                'days_min' => $store['NumberOfDaysSupply'],
+                'days_max' => $store['NumberOfDaysSupply'],
+                'packing' => $store['MinNumberOfSales'] > 0 ? $store['MinNumberOfSales'] : 1,
+                'min_count' => $store['MinNumberOfSales'] > 0 ? $store['MinNumberOfSales'] : 1,
+                'delivery' => $store['NumberOfDaysSupply'] . ' дн.',
+                'price' => $store['SalePrice'],
+                'manufacturer' => $store['CatalogName'],
+                'article' => $store['Number'],
                 'model' => $store,
-                'stock' => $store['whse'],
-                'can_return' => $store['is_returnable'] ? 'Да' : 'Нет',
-                'hash' => md5($store['whse'] . $store['brand'] . $store['art'] . $store['d_deliv'] . $store['price'])
+                'stock' => $store['Region'],
+                'can_return' => ($store['TypeRefusal'] != 3 && $store['TypeRefusal'] != 4) ? 'Да' : 'Нет',
+                'hash' => md5($store['Region'] . $store['CatalogName'] . $store['Number'] . $store['NumberOfDaysSupply'] . $store['SalePrice'])
             ];
 
             $is_analogue ? $analogueIndex++ : $originalIndex++;
@@ -161,6 +164,16 @@ class AutoPiter implements ProviderInterface
 
     private function errorHandler($response) : void
     {
+        if (is_array($response)) {
+
+            if (isset($response['FindCatalogResult']) && $response['FindCatalogResult'] == []) {
+
+                throw new \Exception('Not found', 404);
+
+            }
+
+        }
+
 //        if (is_object($response)) {
 //
 //            $errorMessage = $response->getMessage();
@@ -204,36 +217,44 @@ class AutoPiter implements ProviderInterface
         $response = $response['FindCatalogResult']['SearchCatalogModel'];
 
         if (isset($response['CatalogName'])) {
-
-            dd($response);
-            $results[] = $response['CatalogName'];
-
-            return $results;
+            $results[] = $this->getBrandInfoFromItem($response);
         }
-
-        foreach ($response as $index => $item) {
-
-            $results[] = $item['CatalogName'];
-
+        else {
+            foreach ($response as $index => $item) {
+                $results[] = $this->getBrandInfoFromItem($item);
+            }
         }
 
         return $results;
     }
 
+    private function getBrandInfoFromItem ($item): array
+    {
+        return [
+            'brand' => $item['CatalogName'],
+            'article' => $item['Number'],
+            'desc' => strlen($item['Name']) ? $item['Name'] : 'Отсутствует',
+            'searchArticle' => $item['ArticleId']
+        ];
+    }
+
     public function sendOrder(array $data): bool
     {
+        $params =[];
+
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
-
-            $params = [
-                'tid' => $orderInfo['model']['gid'],
-                'num' => $product->count,
+            $params['Items']['ItemAddCartModel'][] = [
+                'DetailUid' => $orderInfo['code'],
+                'SalePrice' => $orderInfo['price'],
+                'Quantity' => $product->count
             ];
-
-            $this->query('addGoodsToOrder', $params);
         }
 
+
+        $result = $this->query('MakeOrderByItems', $params);
+        dd($result);
         $this->createProviderOrder($data);
 
         return true;
