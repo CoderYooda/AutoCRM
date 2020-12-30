@@ -59,7 +59,8 @@ trait ABCP
         $results = [];
 
         foreach ($response as $brand) {
-            $results[$brand['brand']] = [
+            $results[] = [
+                'brand' => $brand['brand'],
                 'article' => $brand['numberFix'],
                 'desc' => strlen($brand['description']) ? $brand['description'] : 'Отсутствует'
             ];

@@ -54,7 +54,8 @@ class MskRechie implements ProviderInterface
         $results = [];
 
         foreach ($response['result'] as $item) {
-            $results[$item['brand']] = [
+            $results[] = [
+                'brand' => $item['brand'],
                 'article' => $item['nr'],
                 'desc' => 'Отсутствует'
             ];

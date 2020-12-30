@@ -67,7 +67,8 @@ class Trinity implements ProviderInterface
         $results = [];
 
         foreach ($response['data'] as $brand) {
-            $results[$brand['producer']] = [
+            $results[] = [
+                'brand' => $brand['producer'],
                 'article' => $brand['article'],
                 'desc' => strlen($brand['ident']) ? $brand['ident'] : 'Отсутствует'
             ];

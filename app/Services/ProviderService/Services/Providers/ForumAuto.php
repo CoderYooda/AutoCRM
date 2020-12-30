@@ -72,7 +72,8 @@ class ForumAuto implements ProviderInterface
         $results = [];
 
         foreach ($response as $product) {
-            $results[$product['brand']] = [
+            $results[] = [
+                'brand' => $product['brand'],
                 'article' => $product['art'],
                 'desc' => $product['name']
             ];

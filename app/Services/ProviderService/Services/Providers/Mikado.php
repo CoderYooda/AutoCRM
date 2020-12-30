@@ -53,7 +53,8 @@ class Mikado implements ProviderInterface
 
         foreach ($response as $brand) {
 
-            $results[$brand['Brand']] = [
+            $results[] = [
+                'brand' => $brand['Brand'],
                 'article' => $brand['ProducerCode'],
                 'desc' => strlen($brand['Name']) ? $brand['Name'] : 'Отсутствует'
             ];

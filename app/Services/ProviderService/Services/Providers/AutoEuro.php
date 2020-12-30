@@ -63,11 +63,17 @@ class AutoEuro implements ProviderInterface
 
         $response = $this->query('stock_items', $params);
 
-        $brands = array_column($response['DATA']['CODES'], 'maker');
+        $results = [];
 
-        $brands = array_unique($brands);
+        foreach ($response['DATA']['CODES'] as $item) {
+            $results[] = [
+                'brand' => $item['maker'],
+                'article' => $item['code'],
+                'desc' => $item['name']
+            ];
+        }
 
-        return $brands;
+        return $results;
     }
 
     public function getName(): string

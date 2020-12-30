@@ -70,7 +70,8 @@ class Berg implements ProviderInterface
         $results = [];
 
         foreach ($response['resources'] as $item) {
-            $results[$item['brand']['name']] = [
+            $results[] = [
+                'brand' => $item['brand']['name'],
                 'article' => $item['article'],
                 'desc' => $item['name']
             ];

@@ -52,7 +52,8 @@ class ArmTek implements ProviderInterface
         $results = [];
 
         foreach ($response as $brand) {
-            $results[$brand['BRAND']] = [
+            $results[] = [
+                'brand' => $brand['BRAND'],
                 'article' => $brand['PIN'],
                 'desc' => strlen($brand['NAME']) ? $brand['NAME'] : 'Отсутствует'
             ];
