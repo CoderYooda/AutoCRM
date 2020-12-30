@@ -14,11 +14,11 @@
 
             <tbody id="table_body">
 
-                @foreach($manufacturers as $manufacturer => $info)
+                @foreach($manufacturers as $info)
 
-                    <tr id="brand_{{ $manufacturer }}" class="pointer" style="height: 40px;" onclick="store.showManufactureStores(this, '{{ $manufacturer }}', '{{ $info['article'] }}')">
+                    <tr id="brand_{{ $info['brand'] }}" class="pointer" style="height: 40px;" onclick="store.showManufactureStores(this, '{{ $info['brand'] }}', '{{ $info['searchArticle'] ?? $info['article'] }}')">
                         <td>{{ $info['desc'] }}</td>
-                        <td>{{ $manufacturer }}</td>
+                        <td>{{ $info['brand'] }}</td>
                         <td>{{ $info['article'] }}</td>
                     </tr>
 
