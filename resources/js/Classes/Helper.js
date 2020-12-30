@@ -36,6 +36,7 @@ import selectClientOrderDialog from "./ClientOrder/SelectClientOrderDialog";
 import selectWarrantDialog from "./Warrant/SelectWarrantDialog";
 import salarySchemaDialog from "./Salary/salarySchemaDialog";
 import orderDialog from "./Order/OrderDialog";
+import referalPartnerDialog from "./Referal/ReferalDialog";
 import priceDialog from './Price/PriceDialog';
 
 import partnerPage from "./Partner/PartnerPage";
@@ -104,7 +105,8 @@ const classes = {
     userDialog,
     selectCompanyDialog,
     orderDialog,
-    priceDialog
+    referalPartnerDialog,
+    priceDialog,
 };
 
 const pages = {

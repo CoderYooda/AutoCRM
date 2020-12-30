@@ -55,6 +55,18 @@ class DashboardController extends Controller
 
         return view('admin.tabs.companies', compact('request', 'companies'));
     }
+    public function partnersTab(Request $request)
+    {
+        $partners = User::whereHas(
+            'roles', function($q){
+            $q->where('name', 'Реферальный партнёр');
+        })->get();
+//        $superAdmin = Role::create(['name' => 'Суперадмин', 'company_id' => 1]);
+//        $superAdmin->givePermissionTo('Смотреть настройки');
+//        $user = User::whereId(1)->first();
+//        $user->assignRole($superAdmin);
+        return view('admin.tabs.partners', compact('request', 'partners'));
+    }
 
     public function usersTab(Request $request)
     {

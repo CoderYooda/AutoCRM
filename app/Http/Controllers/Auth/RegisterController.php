@@ -126,6 +126,7 @@ class RegisterController extends Controller
 
         $company = new Company();
         $company->name = 'Новая компания';
+        $company->refer = $data['refer'];
         $company->payed_days = Carbon::now()->timestamp + (86400 * 14);
         $company->save();
 
