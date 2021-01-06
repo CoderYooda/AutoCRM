@@ -27,7 +27,7 @@ class SearchController extends Controller
         $brands = $this->getUniqueBrands($request);
 
         return view('shop.search', compact('brands'))
-            ->with('shop', $this->shop);
+            ->with('shop', $this->shop); //
     }
 
     public function providerBrands(Request $request)
