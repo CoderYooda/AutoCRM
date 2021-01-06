@@ -69,8 +69,9 @@ class SearchController extends Controller
 
             if($this->isBrandAlreadyInArray($product->supplier->name, $product->article, $brands)) continue;
 
-            $brands[$product->supplier->name] = [
+            $brands[] = [
                 'article' => $product->article,
+                'brand' => $product->supplier->name,
                 'desc' => $product->getShopName()
             ];
         }
@@ -80,8 +81,8 @@ class SearchController extends Controller
 
     private function isBrandAlreadyInArray($searchBrand, $searchArticle, $brands)
     {
-        foreach ($brands as $brand => $info) {
-            if(strtoupper($brand) == strtoupper($searchBrand) && strtoupper($info['article']) == strtoupper($searchArticle)) return true;
+        foreach ($brands as $info) {
+            if(strtoupper($info['brand']) == strtoupper($searchBrand) && strtoupper($info['article']) == strtoupper($searchArticle)) return true;
         }
 
         return false;
