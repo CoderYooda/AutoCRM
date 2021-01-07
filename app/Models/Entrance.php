@@ -39,18 +39,18 @@ class Entrance extends Model
 
     public function getProductTotalCount($product_id)
     {
-        return $this->articles->find($product_id)->pivot->count ?? 0;
+        return $this->products->find($product_id)->pivot->count ?? 0;
     }
 
-    public function articles()
+    public function products()
     {
-        return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')->withTimestamps()
+        return $this->belongsToMany(Product::class, 'article_entrance', 'entrance_id', 'product_id')->withTimestamps()
             ->withPivot('id', 'count', 'price', 'released_count', 'provider_pivot_id');
     }
 
     public function articlesJson()
     {
-        return $this->belongsToMany(Article::class, 'article_entrance', 'entrance_id', 'article_id')
+        return $this->belongsToMany(Product::class, 'article_entrance', 'entrance_id', 'product_id')
             ->withPivot('count as count', 'price as price', 'released_count as released_count');
     }
 
@@ -58,14 +58,14 @@ class Entrance extends Model
     {
         return DB::table('article_entrance')->where([
             'entrance_id' => $entrance_id,
-            'article_id'  => $article_id
+            'product_id'  => $article_id
         ])
             ->decrement('released_count', $count);
     }
 
     public function entrancerefunds()
     {
-        return $this->hasMany(EntranceRefund::class, 'entrance_id')->with('articles');
+        return $this->hasMany(EntranceRefund::class, 'entrance_id')->with('products');
     }
 
     public function providerorder()
@@ -90,20 +90,20 @@ class Entrance extends Model
 
     public function freshPriceByArticleId($article_id, $price)
     {
-        $this->articles()->updateExistingPivot($article_id, ['price' => $price], false);
+        $this->products()->updateExistingPivot($article_id, ['price' => $price], false);
         return true;
     }
 
     public function migrateInStore($newStore)
     {
-        return $this->articles()->update(['store_id' => $newStore->id]);
+        return $this->products()->update(['store_id' => $newStore->id]);
     }
 
     public function getTotalPrice()
     {
         $total_price = 0;
 
-        $products = $this->articles;
+        $products = $this->products;
 
         foreach ($products as $product) {
             $total_price += $product->pivot->price * $product->pivot->count;

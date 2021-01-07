@@ -2,7 +2,7 @@
 
     <input type="hidden" name="providerorder_id" value="{{ $providerorder->id }}">
     <div data-simplebar style="max-height: 400px;">
-        @foreach($providerorder->articles()->get() as $article)
+        @foreach($providerorder->products()->get() as $article)
             @php $count = $article->pivot->count - $providerorder->getArticleEntredCount($article->id) @endphp
             <div class="providerorder_article_elem list-item inblocked mini-list-element pointer" data-id="{{  $article->id }}">
                 <div class="inblock">

@@ -39,7 +39,7 @@ class EntranceSeed extends Seeder
             $fake_request = new \Illuminate\Http\Request();
 
             $products = [];
-            $products_bd = \App\Models\Article::inRandomOrder()->limit(rand(1, 6))->get();
+            $products_bd = \App\Models\Product::inRandomOrder()->limit(rand(1, 6))->get();
 
             foreach($products_bd as $product){
                 $products[$product->id]['id'] = $product->id;

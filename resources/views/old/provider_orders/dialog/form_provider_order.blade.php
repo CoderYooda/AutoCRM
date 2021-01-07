@@ -202,7 +202,7 @@
                             </thead>
                             <tbody class="product_list">
                             @if(isset($provider_order))
-                                @foreach($provider_order->articles()->get() as $product)
+                                @foreach($provider_order->products()->get() as $product)
                                     @include('provider_orders.dialog.product_element')
                                 @endforeach
                             @endif

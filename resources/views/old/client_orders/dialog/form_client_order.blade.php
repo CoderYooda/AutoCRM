@@ -353,7 +353,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($client_order))
-                            @foreach($client_order->articles as $product)
+                            @foreach($client_order->products as $product)
                                 @include('client_orders.dialog.product_element')
                             @endforeach
                         @endif

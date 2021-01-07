@@ -30,7 +30,7 @@ class EntranceController extends Controller
         /** @var ProviderOrder $providerorder */
         $providerorder = $entrance->providerorder ?? null;
 
-        $items = $entrance ? $entrance->articles->toArray() : [];
+        $items = $entrance ? $entrance->products->toArray() : [];
 
         foreach ($items as $key => $item) {
             $items[$key]['product_id'] = $item['id'];
@@ -70,7 +70,7 @@ class EntranceController extends Controller
         $entrance = Entrance::where('id', $id)->first();
 
         return response()->json([
-            'products' => $entrance->articles()->get()]);
+            'products' => $entrance->products()->get()]);
     }
 
     public function store(EntranceRequest $request)
@@ -121,9 +121,9 @@ class EntranceController extends Controller
 
                 $pivot_id = $product['pivot_id'];
 
-                $price = $providerorder->articles->find($product['product_id'])->pivot->price;
+                $price = $providerorder->products->find($product['product_id'])->pivot->price;
 
-                $entrance->articles()->attach($product['product_id'], [
+                $entrance->products()->attach($product['product_id'], [
                     'store_id' => $user->current_store,
                     'company_id' => $entrance->company_id,
                     'count' => $product['count'],
@@ -192,17 +192,17 @@ class EntranceController extends Controller
 
         if(strpos($request->refer, 'entranceRefundDialog') !== false) {
 
-            $products = $entrance->articles;
-            $entrance_refunded = $entrance->entrancerefunds->load('articles');
+            $products = $entrance->products;
+            $entrance_refunded = $entrance->entrancerefunds->load('products');
 
             $available_count = [];
 
-            foreach ($entrance->articles as $product) {
+            foreach ($entrance->products as $product) {
                 $available_count[$product->id] = $product->pivot->count - $product->pivot->released_count;
             }
 
             foreach ($entrance_refunded as $entrance_refund) {
-                foreach ($entrance_refund->articles as $product) {
+                foreach ($entrance_refund->products as $product) {
                     $available_count[$product->id] -= $product->pivot->count;
                 }
             }
@@ -235,12 +235,12 @@ class EntranceController extends Controller
     public static function selectEntranceDialog(Request $request)
     {
         $class = 'selectEntranceDialog';
-        $query = Entrance::with('partner', 'articles', 'entrancerefunds', 'entrancerefunds.articles')
+        $query = Entrance::with('partner', 'products', 'entrancerefunds', 'entrancerefunds.products')
             ->where('company_id', Auth::user()->company->id)
             ->when($request['string'], function (Builder $q) use ($request) {
                 $q->where('id', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
-            ->whereHas('articles', function (Builder $query) {
+            ->whereHas('products', function (Builder $query) {
                 $query->whereRaw('released_count < count');
             })
             ->orderBy('created_at', 'DESC')
@@ -254,12 +254,12 @@ class EntranceController extends Controller
             $entrance_refunded = $entrance->entrancerefunds;
 
             foreach ($entrance_refunded as $entrance_refund) {
-                foreach ($entrance_refund->articles as $product) {
+                foreach ($entrance_refund->products as $product) {
                     $refunded_count += $product->pivot->count;
                 }
             }
 
-            if($refunded_count == $entrance->articles->sum('pivot.count')) unset($entrances[$key]);
+            if($refunded_count == $entrance->products->sum('pivot.count')) unset($entrances[$key]);
         }
 
         $view = $request['inner'] ? 'select_entrance_inner' : 'select_entrance';

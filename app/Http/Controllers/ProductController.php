@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ModelWasStored;
 use App\Http\Requests\ProductRequest;
 use App\Models\Adjustment;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Markup;
 use App\Models\ProviderOrder;
@@ -23,7 +23,7 @@ class ProductController extends Controller
 {
     private static $root_category = 2;
 
-    /** @var Article $product */
+    /** @var Product $product */
     public static $product = null;
 
     public static function chequeDialog(Request $request)
@@ -40,7 +40,7 @@ class ProductController extends Controller
 
         $request->products = explode(',', $request->products);
 
-        $products = Article::whereIn('id', $request->products)->get();
+        $products = Product::whereIn('id', $request->products)->get();
 
         return response()->json([
             'tag' => $tag,
@@ -50,7 +50,7 @@ class ProductController extends Controller
 
     public function getByUpc(Request $request)
     {
-        $product = Article::owned()->where('barcode', $request['upc'])->first();
+        $product = Product::owned()->where('barcode', $request['upc'])->first();
 
         return response()->json([
             'id' => $product->id ?? null,
@@ -64,13 +64,13 @@ class ProductController extends Controller
         $returnIds = null;
 
         if ($id == 'array') {
-            $products = Article::owned()->whereIn('id', $request['ids']);
+            $products = Product::owned()->whereIn('id', $request['ids']);
             $this->message = 'Товары удалены';
             $returnIds = $products->get()->pluck('id');
             $products->delete();
         }
         else {
-            $product = Article::where('id', $id)->first();
+            $product = Product::where('id', $id)->first();
             $this->message = 'Товар удален';
             $returnIds = $product->id;
             $product->delete();
@@ -84,12 +84,12 @@ class ProductController extends Controller
         ], $this->status);
     }
 
-    public function getPrice(Article $product, Request $request)
+    public function getPrice(Product $product, Request $request)
     {
         return response()->json(['price' => $product->getPrice($request->count)]);
     }
 
-    public function restore(Article $product)
+    public function restore(Product $product)
     {
         $product->update(['deleted_at' => null]);
 
@@ -105,7 +105,7 @@ class ProductController extends Controller
         if ($request['data'] != null && count($request['data']) > 0) {
             if ($request['type'] == 'providerorder') {
                 $providerorder = ProviderOrder::find($request['providerorder_id']);
-                $products = $providerorder->articles()->whereIn('article_id', array_column($request['data'], 'id'))->get();
+                $products = $providerorder->products()->whereIn('product_id', array_column($request['data'], 'id'))->get();
                 foreach ($products as $product) {
                     foreach ($request['data'] as $item) {
                         if ($item['id'] === $product->id) {
@@ -127,7 +127,7 @@ class ProductController extends Controller
 
         }
 
-        $product = Article::find($request['article_id']);
+        $product = Product::find($request['article_id']);
 
         if (!$product) {
             return response()->json([
@@ -162,7 +162,7 @@ class ProductController extends Controller
 
     public static function productDialog(Request $request)
     {
-        $product = Article::with('specifications', 'entrances', 'stores')->find($request['product_id']);
+        $product = Product::with('specifications', 'entrances', 'stores')->find($request['product_id']);
 
         $tag = 'productDialog' . ($product->id ?? '');
 
@@ -185,7 +185,7 @@ class ProductController extends Controller
         $lastEntrancePrice = 0;
 
         if($product) {
-            $lastEntrance = DB::table('article_entrance')->where('article_id', $product->id)->orderByDesc('id')->first();
+            $lastEntrance = DB::table('article_entrance')->where('product_id', $product->id)->orderByDesc('id')->first();
 
             $lastEntrancePrice = $lastEntrance->price ?? 0;
         }
@@ -203,7 +203,7 @@ class ProductController extends Controller
             $entrances = $product->entrances;
 
             $adjustmentEntrances = DB::table('article_entrance')
-                ->where('article_id', $product->id)
+                ->where('product_id', $product->id)
                 ->whereRaw('count != released_count')
                 ->get();
         }
@@ -247,7 +247,7 @@ class ProductController extends Controller
         $request['root_category'] = $request['root_category'] ? $request['root_category'] : self::$root_category;
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
 
-        $products = Article::with('stores', 'supplier')->owned()->where(function ($q) use ($request) {
+        $products = Product::with('stores', 'supplier')->owned()->where(function ($q) use ($request) {
             if ($request['store_id'] != null) {
                 $q->whereHas('stores', function ($query) use ($request) {
                     return $query->where('store_id', $request['store_id']);
@@ -268,14 +268,14 @@ class ProductController extends Controller
             ->get();
 
         $availableCounts = DB::table('article_entrance')
-            ->whereIn('article_id', $products->pluck('id'))
-            ->groupBy(['article_id'])
-            ->selectRaw('id, article_id, SUM(count) as count, SUM(released_count) as released_count')
+            ->whereIn('product_id', $products->pluck('id'))
+            ->groupBy(['product_id'])
+            ->selectRaw('id, product_id, SUM(count) as count, SUM(released_count) as released_count')
             ->get();
 
         foreach ($products as $index => $product) {
 
-            $availableCount = $availableCounts->where('article_id', $product->id)->first();
+            $availableCount = $availableCounts->where('product_id', $product->id)->first();
 
             $products[$index]['available'] = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
             $products[$index]['price'] = $product->getPrice();
@@ -318,27 +318,25 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $article = Article::with('specifications')->firstOrNew($compare);
-            if ($article->exists) {
+            $product = Product::with('specifications')->firstOrNew($compare);
+            if ($product->exists) {
                 $this->message = 'Товар обновлен';
             } else {
-                $article->creator_id = Auth::id();
-                $article->company_id = Auth::user()->company_id;
+                $product->creator_id = Auth::id();
+                $product->company_id = Auth::user()->company_id;
                 $this->message = 'Товар сохранён';
             }
 
             $currentStore = Store::find(Auth::user()->current_store);
 
-            self::$product = $article;
+            self::$product = $product;
 
             #Кроссы
-            $article->fill($request->only($article->fields));
+            $product->fill($request->only($product->fields));
 
-            $article->fillShopFields($request);
+            $product->fillShopFields($request);
 
-            $article->slug = Str::slug($request->name . '-' . $article->id);
-
-            $article->save();
+            $product->save();
 
             if($request->entrances) {
 
@@ -351,21 +349,21 @@ class ProductController extends Controller
                         if($params['price'] < 1 || $params['count'] < 1) continue;
 
                         $fields = [
-                            'article_id' => $article->id,
+                            'product_id' => $product->id,
                             'entrance_id' => null,
-                            'company_id' => $article->company_id,
+                            'company_id' => $product->company_id,
                             'store_id' => $currentStore->id,
                             'count' => $params['count'],
                             'price' => $params['price']
                         ];
 
-                        $articleEntranceId = DB::table('article_entrance')->insertGetId($fields);
+                        $productEntranceId = DB::table('article_entrance')->insertGetId($fields);
                     }
                     else {
 
                         $oldEntranceState = $oldEntrancesState->where('id', $entrance_id)->first();
 
-                        $articleEntranceId = $oldEntranceState->id;
+                        $productEntranceId = $oldEntranceState->id;
 
                         if($oldEntranceState->count == $params['count'] && $oldEntranceState->price == $params['price']) continue;
 
@@ -387,9 +385,9 @@ class ProductController extends Controller
                     }
 
                     DB::table('article_adjustment')->insert([
-                        'article_id'          => $article->id,
+                        'product_id'          => $product->id,
                         'adjustment_id'       => $adjustment->id,
-                        'article_entrance_id' => $articleEntranceId,
+                        'product_entrance_id' => $productEntranceId,
                         'store_id'            => Auth::user()->current_store,
                         'count'               => $params['count'],
                         'prev_count'          => $entrance_id == 'new' ? 0 : $oldEntranceState->count,
@@ -412,8 +410,8 @@ class ProductController extends Controller
                     $attributes[$key]['value'] = $specification['value'];
                 }
 
-                $article->specifications()->delete();
-                $article->specifications()->createMany($attributes);
+                $product->specifications()->delete();
+                $product->specifications()->createMany($attributes);
             }
 
             if($request['storage']) {
@@ -424,7 +422,7 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
-                    $store->articles()->syncWithoutDetaching($article->id);
+                    $store->products()->syncWithoutDetaching($product->id);
 
                     $pivot_data = [
                         'storage_zone' => $storage['storage_zone'],
@@ -437,11 +435,11 @@ class ProductController extends Controller
                         $pivot_data['retail_price'] = $storage['retail_price'];
                     }
 
-                    $article->stores()->updateExistingPivot($store->id, $pivot_data);
+                    $product->stores()->updateExistingPivot($store->id, $pivot_data);
                 }
             }
 
-            event(new ModelWasStored($article->company_id, 'ProductStored'));
+            event(new ModelWasStored($product->company_id, 'ProductStored'));
 
             return response()->json([
                 'message' => $this->message
@@ -452,7 +450,7 @@ class ProductController extends Controller
 
     public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
     {
-        $article = Article::where('article', $article)->where('supplier_id', $brand_id)->where('company_id', Auth::user()->company()->first()->id)->first();
+        $article = Product::where('article', $article)->where('supplier_id', $brand_id)->where('company_id', Auth::user()->company()->first()->id)->first();
         if ($article && $article->id != $id) {
             return $article;
         } else {
@@ -462,7 +460,6 @@ class ProductController extends Controller
 
     public static function getArticles(Request $request)
     {
-
         $size = 30;
         if(isset($request['size'])){
             $size = (int)$request['size'];
@@ -490,17 +487,17 @@ class ProductController extends Controller
             $childrenCategories = $category->getDescendantsAndSelf();
         }
 
-        return Article::selectRaw('articles.*, supplier.name as supplier')
-            ->leftJoin('suppliers as supplier',  'articles.supplier_id', '=', 'supplier.id')
-            ->where('articles.company_id', $company_id)
+        return Product::selectRaw('products.*, supplier.name as supplier')
+            ->leftJoin('suppliers as supplier',  'products.supplier_id', '=', 'supplier.id')
+            ->where('products.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
-                $q->where('articles.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
+                $q->where('products.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
             ->when($category && !$category->isRoot(), function ($q) use($request, $childrenCategories) {
-                $q->whereIn('articles.category_id', $childrenCategories->pluck('id'));
+                $q->whereIn('products.category_id', $childrenCategories->pluck('id'));
             })
             ->when($request->analogues, function (Builder $query) use($request) {
-                $query->whereIn('articles.id', json_decode($request->analogues));
+                $query->whereIn('products.id', json_decode($request->analogues));
             })
             ->where('deleted_at', null) #fix soft delete
             ->orderBy($field, $dir)
@@ -517,7 +514,7 @@ class ProductController extends Controller
             $prepare_data[] = mb_strtolower($article . $manufacture);
         }
 
-        return Article::owned()
+        return Product::owned()
             ->where(function (Builder $query) use($prepare_data) {
                 foreach ($prepare_data as $string) {
                     $query->orWhere('foundstring', 'like', "{$string}%");
@@ -531,7 +528,7 @@ class ProductController extends Controller
         $products = json_decode($request->products);
         $category_id = $request->category_id;
 
-        Article::whereIn('id', $products)->update(['category_id' => $category_id]);
+        Product::whereIn('id', $products)->update(['category_id' => $category_id]);
 
         return response()->json([
             'type' => 'success',
@@ -544,7 +541,7 @@ class ProductController extends Controller
     {
         $products = json_decode($request->products);
 
-        Article::whereIn('id', $products)->update(['price_id' => $request->markup_source]);
+        Product::whereIn('id', $products)->update(['price_id' => $request->markup_source]);
 
         return response()->json([
             'type' => 'success',

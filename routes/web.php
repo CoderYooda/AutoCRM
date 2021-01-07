@@ -1,9 +1,5 @@
 <?php
 
-Route::get('/test', function () {
-    event(new \App\Events\ModelWasStored(Auth::user()->company_id, 'ProductStored'));
-});
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');

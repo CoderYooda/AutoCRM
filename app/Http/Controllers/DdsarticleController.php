@@ -36,7 +36,7 @@ class DdsarticleController extends Controller
 
         if($request['ddsarticle_id']){
             $tag .= $request['ddsarticle_id'];
-            $product = Ddsarticle::where('id', (int)$request['ddsarticle_id'])->first();
+            $product = DdsArticle::where('id', (int)$request['ddsarticle_id'])->first();
         } else {
             $ddsarticle = null;
         }
@@ -78,7 +78,7 @@ class DdsarticleController extends Controller
 
     public function delete($id)
     {
-        $Ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
+        $Ddsarticle = DdsArticle::owned()->where('id', $id)->first();
         $message = 'Статья ДДС удалена';
         $status = 200;
 
@@ -115,7 +115,7 @@ class DdsarticleController extends Controller
     private static function selectDdsarticleInner($request){
         $class = 'selectDdsarticleDialog';
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : self::$root_category;
-        $ddsarticles = Ddsarticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
+        $ddsarticles = DdsArticle::owned()->where('name', 'LIKE', '%' . $request['string'] .'%')
             ->when($request['category_id'], function($q) use ($request){
                 $q->where('category_id', $request['category_id']);
             })
@@ -142,7 +142,7 @@ class DdsarticleController extends Controller
 
 
     public function select($id){
-        $ddsarticle = Ddsarticle::owned()->where('id', $id)->first();
+        $ddsarticle = DdsArticle::owned()->where('id', $id)->first();
         if(!$ddsarticle){
             return response()->json([
                 'message' => 'Статья не найдена, возможно она была удалёна',
@@ -165,7 +165,7 @@ class DdsarticleController extends Controller
             $category = (int)$request['category_id'];
         }
 
-        return Ddsarticle::owned()->where(function($q) use ($request, $category){
+        return DdsArticle::owned()->where(function($q) use ($request, $category){
             if($category != 0) {
                 $q->where('category_id', $category);
             }

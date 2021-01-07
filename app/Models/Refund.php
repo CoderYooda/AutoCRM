@@ -58,23 +58,23 @@ class Refund extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
     public function getArticlesCountById($id){
-        $article = $this->articles()->where('article_id', $id)->first();
+        $article = $this->products()->where('product_id', $id)->first();
         return $article ? $article->pivot->count : 0;
     }
 
-    public function articles()
+    public function products()
     {
-        return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
+        return $this->belongsToMany(Product::class, 'article_refund', 'refund_id', 'product_id')
             ->withPivot('count as count', 'price as price', 'total as total');
     }
 
 //    public function articles()
 //    {
-//        return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
+//        return $this->belongsToMany(Product::class, 'article_refund', 'refund_id', 'article_id')
 //            ->withPivot('count as count', 'price as price', 'total as total');
 //
 //
-//        return $this->belongsToMany(Article::class, 'article_refund', 'refund_id', 'article_id')
+//        return $this->belongsToMany(Product::class, 'article_refund', 'refund_id', 'article_id')
 //            ->withPivot('count', 'price as price', 'total as total')
 //            ->leftJoin('refund', 'refund.id', '=', 'article_refund.refund_id')
 //            ->selectRaw('*,  SUM(count) as refunded_count, articles.id as id, price');

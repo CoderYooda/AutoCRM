@@ -26,7 +26,7 @@
     </div>
 </div>
 {{--<input type="text" name="store[{{$store->id}}][location]"--}}
-{{--       @if(isset($product) && $store->articles->where('id', $product->id)->first() != NULL)--}}
-{{--       value="{{ $store->articles->where('id', $product->id)->first()->pivot->location }}"--}}
+{{--       @if(isset($product) && $store->products->where('id', $product->id)->first() != NULL)--}}
+{{--       value="{{ $store->products->where('id', $product->id)->first()->pivot->location }}"--}}
 {{--       @endif--}}
 {{--       class="form-control" placeholder="Наименование (не более 255 символов)">--}}

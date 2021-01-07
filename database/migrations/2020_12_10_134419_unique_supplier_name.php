@@ -29,7 +29,7 @@ class UniqueSupplierName extends Migration
 
                 \App\Models\Supplier::whereIn('id', $ids)->delete();
 
-                \App\Models\Article::whereIn('supplier_id', $ids)->delete();
+                \App\Models\Product::whereIn('supplier_id', $ids)->delete();
             }
         }
 

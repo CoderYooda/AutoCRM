@@ -14,7 +14,7 @@ use App\Http\Requests\Shop\CartStoreRequest;
 use App\Interfaces\Shop\CartInterface;
 use App\Http\Controllers\Controller;
 use App\Mail\Shop\ModerateOrder;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Order;
 use App\Models\Partner;
 use App\Models\Shop;
@@ -216,7 +216,7 @@ class CartController extends Controller
         $orders = [];
 
         foreach ($cartOrders as $hash => $order) {
-            $product = Article::with('stores')->find($order['data']['product_id'] ?? null);
+            $product = Product::with('stores')->find($order['data']['product_id'] ?? null);
 
             $store = null;
 

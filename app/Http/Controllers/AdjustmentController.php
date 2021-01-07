@@ -6,7 +6,7 @@ use App\Events\ModelWasStored;
 use App\Http\Requests\AdjustmentRequest;
 use App\Http\Requests\Adjustments\SearchRequest;
 use App\Models\Adjustment;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Entrance;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -29,26 +29,25 @@ class AdjustmentController extends Controller
         if ($adjustment) {
 
 //            $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
-//            $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('article_entrance_id'))->get();
-
+//            $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('product_entrance_id'))->get();
 
             $articlesAdjustment = DB::table('article_adjustment')->where('adjustment_id', $adjustment->id)->get();
 
-            $articleNames = Article::with('supplier')->whereIn('id', $articlesAdjustment->pluck('article_id'))->get();
+            $articleNames = Product::with('supplier')->whereIn('id', $articlesAdjustment->pluck('product_id'))->get();
 
             foreach ($articlesAdjustment as $articleAdjustment) {
 
-                $article_id = $articleAdjustment->article_id;
+                $product_id = $articleAdjustment->product_id;
 
-                $articleEntrance = DB::table('article_entrance')->find($articleAdjustment->article_entrance_id);
+                $productEntrance = DB::table('article_entrance')->find($articleAdjustment->product_entrance_id);
 
-                $articles[$article_id]['name'] = $articleNames->find($article_id)->name;
-                $articles[$article_id]['article'] = $articleNames->find($article_id)->article;
-                $articles[$article_id]['manufacturer'] = $articleNames->find($article_id)->supplier->name;
+                $articles[$product_id]['name'] = $articleNames->find($product_id)->name;
+                $articles[$product_id]['article'] = $articleNames->find($product_id)->article;
+                $articles[$product_id]['manufacturer'] = $articleNames->find($product_id)->supplier->name;
 
-                $articles[$article_id]['entrances'][$articleEntrance->id] = [
-                    'id'              => $articleEntrance->id,
-                    'created_at'      => Carbon::parse($articleEntrance->created_at)->format('d.m.Y'),
+                $articles[$product_id]['entrances'][$productEntrance->id] = [
+                    'id'              => $productEntrance->id,
+                    'created_at'      => Carbon::parse($productEntrance->created_at)->format('d.m.Y'),
                     'deviation_price' => $articleAdjustment->deviation_price,
                     'deviation_count' => $articleAdjustment->deviation_count,
                     'price'           => $articleAdjustment->price,
@@ -56,8 +55,6 @@ class AdjustmentController extends Controller
                 ];
             }
         }
-
-//        dd($articles);
 
         $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact('adjustment', 'request', 'articles', 'class'));
 
@@ -71,7 +68,7 @@ class AdjustmentController extends Controller
     {
         $class = $request->refer;
 
-        $article = Article::find($request->product_id);
+        $article = Product::find($request->product_id);
 
         $company = Auth::user()->company;
 
@@ -79,7 +76,7 @@ class AdjustmentController extends Controller
             ->whereRaw('released_count < count')
             ->where([
                 'company_id' => $company->id,
-                'article_id' => $article->id
+                'product_id' => $article->id
             ])
             ->get();
 
@@ -148,7 +145,7 @@ class AdjustmentController extends Controller
 
                         $attributes = [
                             'entrance_id' => null,
-                            'article_id'  => $article_id,
+                            'product_id'  => $article_id,
                             'company_id'  => $partner->company_id,
                             'store_id'    => $user->current_store,
                             'price'       => $params['price'],
@@ -171,9 +168,9 @@ class AdjustmentController extends Controller
                     }
 
                     DB::table('article_adjustment')->insert([
-                        'article_id'          => $article_id,
+                        'product_id'          => $article_id,
                         'adjustment_id'       => $adjustment->id,
-                        'article_entrance_id' => $articleEntranceId,
+                        'product_entrance_id' => $articleEntranceId,
                         'store_id'            => Auth::user()->current_store,
                         'count'               => $params['count'],
                         'prev_count'          => $entrance_id == 'new' ? 0 : $articleEntrance->count,

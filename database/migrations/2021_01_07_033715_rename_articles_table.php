@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FixSlugFields2 extends Migration
+class RenameArticlesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,7 @@ class FixSlugFields2 extends Migration
      */
     public function up()
     {
-        foreach (\App\Models\Category::all()->chunk(200) as $chunk) {
-            foreach ($chunk as $category) {
-                $category->update(['slug' => \Illuminate\Support\Str::slug($category->name . '-' . $category->id)]);
-            }
-        }
+        Schema::rename('articles', 'products');
     }
 
     /**
@@ -27,6 +23,6 @@ class FixSlugFields2 extends Migration
      */
     public function down()
     {
-        //
+        Schema::rename('products', 'articles');
     }
 }

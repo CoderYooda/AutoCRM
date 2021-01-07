@@ -40,7 +40,7 @@ class ClientOrderSeed extends Seeder
             $products = [];
             $products_count = rand(1, 4);
             for($e = 0; $e < $products_count; $e++){
-                $product = \App\Models\Article::inRandomOrder()->first();
+                $product = \App\Models\Product::inRandomOrder()->first();
                 $products[$product->id]['id'] = $product->id;
                 $products[$product->id]['count'] = rand(1, 22);
                 $products[$product->id]['price'] = rand(1, 10000);

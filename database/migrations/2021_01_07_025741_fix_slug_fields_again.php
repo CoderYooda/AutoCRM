@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FixSlugFields2 extends Migration
+class FixSlugFieldsAgain extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class FixSlugFields2 extends Migration
      */
     public function up()
     {
-        foreach (\App\Models\Category::all()->chunk(200) as $chunk) {
-            foreach ($chunk as $category) {
-                $category->update(['slug' => \Illuminate\Support\Str::slug($category->name . '-' . $category->id)]);
-            }
+        $products = \App\Models\Product::where('slug', '')->get();
+
+        foreach ($products as $product) {
+            $product->update(['slug' => \Illuminate\Support\Str::slug($product->name . '-' . $product->id)]);
         }
     }
 

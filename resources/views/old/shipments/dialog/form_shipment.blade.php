@@ -159,7 +159,7 @@
                         </thead>
                         <tbody class="product_list">
                         @if(isset($shipment))
-                            @foreach($shipment->articles()->get() as $product)
+                            @foreach($shipment->products()->get() as $product)
                                 @include('shipments.dialog.product_element')
                             @endforeach
                         @endif

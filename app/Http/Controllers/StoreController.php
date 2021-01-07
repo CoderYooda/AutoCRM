@@ -3,35 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Events\ModelWasStored;
-use App\Events\StoreImportIteration;
 use App\Http\Controllers\API\AnalogController;
 use App\Http\Controllers\HelpController as HC;
-use App\Http\Requests\ProductRequest;
 use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
-use App\Models\Article;
-use App\Models\Category;
-use App\Models\ClientOrder;
+use App\Models\Product;
 use App\Models\Company;
 use App\Models\ImportHistory;
-use App\Models\Service;
-use App\Models\Shop;
 use App\Models\Store;
-use App\Models\Supplier;
-use App\Models\User;
-use App\Models\VehicleMark;
-use App\Services\ProviderService\Providers;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
 
 class StoreController extends Controller
 {
@@ -95,8 +81,8 @@ class StoreController extends Controller
 
         $ids = explode(',', $import->list);
 
-        Article::whereIn('id', $ids)->delete();
-        DB::table('article_store')->whereIn('article_id', $ids)->delete();
+        Product::whereIn('id', $ids)->delete();
+        DB::table('article_store')->whereIn('product_id', $ids)->delete();
 
         $import->delete();
 
@@ -383,7 +369,7 @@ class StoreController extends Controller
     {
         $items = [];
         foreach ($request['ids'] as $id) {
-            $article = Article::owned()->where('id', $id)->first();
+            $article = Product::owned()->where('id', $id)->first();
             if ($article) {
                 $items[$article->id]['id'] = $id;
                 $items[$article->id]['count'] = $article->getCountInStoreId($request['store_id']);
@@ -412,7 +398,7 @@ class StoreController extends Controller
             $status = 422;
         }
 
-        if ($store->articles()->count()) {
+        if ($store->products()->count()) {
             $message = 'На складе имеются товары в наличии';
             $status = 422;
         }
@@ -434,7 +420,7 @@ class StoreController extends Controller
     public function getAnalogues(Request $request)
     {
         $brand = $request->brand;
-        $article = $request->article;
+        $article = $request->product;
 
         $controller = new AnalogController();
 
@@ -446,7 +432,7 @@ class StoreController extends Controller
             $articles = array_merge($articles, $brandArticles);
         }
 
-        $analogueProducts = Article::with('supplier')->owned()->whereIn('article', $articles)->get();
+        $analogueProducts = Product::with('supplier')->owned()->whereIn('article', $articles)->get();
 
         $brands = array_keys($analogues);
 

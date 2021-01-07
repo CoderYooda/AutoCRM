@@ -35,7 +35,7 @@ class ArticleSeed extends Seeder
             $fake_request['category_id'] = $categories[(int)array_rand($categories, 1)];
             $fake_request['creator_id'] = 2;
             $fake_request['new_supplier_name'] = $json_article->brand;
-            $fake_request['article'] = $json_article->article;
+            $fake_request['article'] = $json_article->product;
             $fake_request['name'] = $json_article->name;
             //$fake_request['midprice'] = floatval($json_article->price);
             try{

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Shop;
@@ -38,7 +38,7 @@ class PageController extends Controller
 
         $categories = Category::with('image', 'parent')->where($params)->paginate(8);
 
-        $stockProducts = Article::with('stores', 'supplier', 'image')
+        $stockProducts = Product::with('stores', 'supplier', 'image')
             ->where('company_id', $this->shop->company_id)
             ->where('sp_main', 1)
             ->get();
@@ -100,7 +100,7 @@ class PageController extends Controller
 
         abort_if(!count($categories), 404);
 
-        $product = Article::where('slug', end($slugs))->first();
+        $product = Product::where('slug', end($slugs))->first();
 
         $checkPath = $product ? $product->path() : $categories->last()->path();
 
@@ -117,7 +117,7 @@ class PageController extends Controller
     {
         $categories = $selectedCategory->getDescendantsAndSelf();
 
-        $products = Article::with('company', 'supplier', 'entrances', 'image')
+        $products = Product::with('company', 'supplier', 'entrances', 'image')
             ->when(!$this->shop->show_empty, function (Builder $query) {
                 $query->whereHas('entrances', function (Builder $query) {
                     $query->whereRaw('count != released_count');
@@ -130,7 +130,7 @@ class PageController extends Controller
             ->with('shop', $this->shop);
     }
 
-    protected function showProductPage(Article $product)
+    protected function showProductPage(Product $product)
     {
         $selectedCategory = $product->category->load('childs');
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Services\ProviderService\Contract\ProviderInterface;
@@ -47,7 +47,7 @@ class SearchController extends Controller
         /** @var Providers $providers */
         $providers = app(Providers::class);
 
-        $products = Article::with('supplier')->where('company_id', $this->shop->company_id)
+        $products = Product::with('supplier')->where('company_id', $this->shop->company_id)
             ->where('article', $request->search)
             ->get();
 
@@ -90,9 +90,9 @@ class SearchController extends Controller
 
     public function providerOffers(Request $request, Providers $providers)
     {
-        $product = Article::with('stores')
+        $product = Product::with('stores')
             ->where('company_id', $this->shop->company_id)
-            ->where('article', $request->article)
+            ->where('article', $request->product)
             ->whereHas('supplier', function (Builder $query) use($request) {
                 $query->where('name', $request->manufacturer);
             })
@@ -103,7 +103,7 @@ class SearchController extends Controller
         foreach ($providers->activated() as $provider_key => $provider) {
 
             try {
-                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->product, $request->manufacturer);
             }
             catch (\Exception $exception) {
                 $providersOrders[$provider_key] = [
@@ -130,7 +130,7 @@ class SearchController extends Controller
         $provider = $providers->find($request->selected_service);
 
         try {
-            $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
+            $orders = $provider->getStoresByArticleAndBrand($request->product, $request->manufacturer);
         }
         catch (\Exception $exception) {
             $orders = [

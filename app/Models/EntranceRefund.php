@@ -21,15 +21,15 @@ class EntranceRefund extends Model
         'updated_at' => 'date:d.m.Y H:i'
     ];
 
-    public function articles()
+    public function products()
     {
-        return $this->belongsToMany(Article::class, 'article_entrance_refund', 'entrance_refund_id')
+        return $this->belongsToMany(Product::class, 'article_entrance_refund', 'entrance_refund_id')
             ->withPivot('count', 'price', 'total');
     }
 
     public function articlesJson()
     {
-        return $this->belongsToMany(Article::class, 'article_entrance_refund', 'entrance_refund_id')
+        return $this->belongsToMany(Product::class, 'article_entrance_refund', 'entrance_refund_id')
             ->withPivot('count as count', 'price as price', 'total as total');
     }
 
@@ -51,7 +51,7 @@ class EntranceRefund extends Model
     {
         $total_price = 0;
 
-        $products = $this->articles;
+        $products = $this->products;
 
         foreach ($products as $product) {
             $total_price += $product->pivot->price * $product->pivot->count;
