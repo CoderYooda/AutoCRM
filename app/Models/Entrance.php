@@ -48,7 +48,7 @@ class Entrance extends Model
             ->withPivot('id', 'count', 'price', 'released_count', 'provider_pivot_id');
     }
 
-    public function articlesJson()
+    public function productsJson()
     {
         return $this->belongsToMany(Product::class, 'article_entrance', 'entrance_id', 'product_id')
             ->withPivot('count as count', 'price as price', 'released_count as released_count');

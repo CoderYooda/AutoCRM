@@ -60,7 +60,7 @@ class ProviderOrder extends Model
         return DB::table('article_entrance')->where('provider_pivot_id', $id)->sum('count');
     }
 
-    public function articlesJson()
+    public function productsJson()
     {
         return$this->belongsToMany(Product::class, 'article_provider_orders', 'provider_order_id', 'product_id')
             ->withPivot('count as count', 'price as price', 'nds as nds', 'nds_percent as nds_percent', 'nds_included as nds_included', 'total as total');

@@ -27,7 +27,7 @@ class EntranceRefund extends Model
             ->withPivot('count', 'price', 'total');
     }
 
-    public function articlesJson()
+    public function productsJson()
     {
         return $this->belongsToMany(Product::class, 'article_entrance_refund', 'entrance_refund_id')
             ->withPivot('count as count', 'price as price', 'total as total');
