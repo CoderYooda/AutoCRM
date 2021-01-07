@@ -13,10 +13,12 @@ class FixSlugFieldsAgain extends Migration
      */
     public function up()
     {
-        $products = \App\Models\Product::where('slug', '')->get();
+        $products = DB::table('articles')->where('slug', '')->get();
 
         foreach ($products as $product) {
-            $product->update(['slug' => \Illuminate\Support\Str::slug($product->name . '-' . $product->id)]);
+            DB::table('articles')
+                ->where('id', $product->id)
+                ->update(['slug' => \Illuminate\Support\Str::slug($product->name . '-' . $product->id)]);
         }
     }
 
