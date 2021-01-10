@@ -130,7 +130,7 @@ class SearchController extends Controller
         $provider = $providers->find($request->selected_service);
 
         try {
-            $orders = $provider->getStoresByArticleAndBrand($request->product, $request->manufacturer);
+            $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
         }
         catch (\Exception $exception) {
             $orders = [
