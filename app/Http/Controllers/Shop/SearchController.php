@@ -103,7 +103,7 @@ class SearchController extends Controller
         foreach ($providers->activated() as $provider_key => $provider) {
 
             try {
-                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->product, $request->manufacturer);
+                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
             }
             catch (\Exception $exception) {
                 $providersOrders[$provider_key] = [
