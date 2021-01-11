@@ -22,12 +22,12 @@ class Store extends Model
 
     public function article()
     {
-        return $this->hasOne(Article::class);
+        return $this->hasOne(Product::class);
     }
 
-    public function articles()
+    public function products()
     {
-        return $this->belongsToMany(Article::class, 'article_store', 'store_id', 'article_id')
+        return $this->belongsToMany(Product::class, 'article_store', 'store_id', 'product_id')
             ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
 }

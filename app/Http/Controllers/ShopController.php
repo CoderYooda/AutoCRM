@@ -14,7 +14,7 @@ use App\Http\Requests\Shop\UpdateSettingsRequest;
 use App\Http\Requests\Shop\UpdateWarrantyRequest;
 use App\Mail\Shop\CanceledOrder;
 use App\Mail\Shop\ConfirmOrder;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\ClientOrder;
 use App\Models\Order;
 use App\Models\Markup;
@@ -390,11 +390,10 @@ class ShopController extends Controller
                     ];
 
                     $updateFields = [
-                        'name' => $position['name'],
-                        'slug' => Str::slug($position['name'])
+                        'name' => $position['name']
                     ];
 
-                    $product = Article::firstOrCreate($uniqueFields, $updateFields);
+                    $product = Product::firstOrCreate($uniqueFields, $updateFields);
 
                     if ($product->wasRecentlyCreated) {
                         $product->update(['category_id' => 10]);
@@ -406,7 +405,7 @@ class ShopController extends Controller
                         'total' => $position['price'] * $position['count'],
                     ];
 
-                    $clientOrder->articles()->attach($product->id, $pivotData);
+                    $clientOrder->products()->attach($product->id, $pivotData);
                 }
 
                 $status = $order->pay_type == Order::PAYMENT_TYPE_ONLINE ? Order::WAIT_PAYMENT_STATUS : Order::WORKING_STATUS;

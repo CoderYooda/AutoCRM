@@ -35,6 +35,6 @@ class AddAutorusService extends Migration
     public function down()
     {
         \App\Models\Service::where('key', $this->key)->delete();
-        \App\Models\ServiceField::where('key', $this->key)->delete();
+        \App\Models\ServiceField::where('service_key', $this->key)->delete();
     }
 }

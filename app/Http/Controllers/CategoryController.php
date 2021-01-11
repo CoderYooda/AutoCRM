@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ModelWasStored;
 use App\Http\Requests\CategoryRequest;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\System\Image;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -131,7 +131,7 @@ class CategoryController extends Controller
         $type = 'success';
         if(!$category->locked) {
             if ($category->childs()->count() > 0 ||
-                $category->articles()->count() > 0 ||
+                $category->products()->count() > 0 ||
                 $category->ddsarticles()->count() > 0 ||
                 $category->partners()->count() > 0
             ) {

@@ -13,12 +13,12 @@
     </div>
 
     <div class="search_body">
-        @forelse($brands as $brand => $info)
+        @forelse($brands as $info)
 
-            <div class="brand" onclick="search.showProvidersOffers(this, '{{ $brand }}', '{{ $info['article'] }}');">
+            <div class="brand" onclick="search.showProvidersOffers(this, '{{ $info['brand'] }}', '{{ $info['article'] }}');">
 
                 <div class="w-60 name">{{ $info['desc'] }}</div>
-                <div class="w-20 name">{{ $brand }}</div>
+                <div class="w-20 name">{{ $info['brand'] }}</div>
                 <div class="w-20 name">{{ $info['article'] }}</div>
 
             </div>

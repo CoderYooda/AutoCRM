@@ -23,7 +23,7 @@ class ClientOrdersRequest extends FormRequest
             'phone' => ['required'],
             'status' => [('between:0,' . (count(Order::$statuses) - 1))],
             'products.*.pivot_id' => ['integer', 'exists:article_client_orders,id'],
-            'products.*.product_id' => ['exists:articles,id'],
+            'products.*.product_id' => ['exists:products,id'],
             'products.*.count' => ['integer', 'min:1', 'max:9999'],
             'products.*.price' => ['numeric', 'between:1,1000000.00']
         ];

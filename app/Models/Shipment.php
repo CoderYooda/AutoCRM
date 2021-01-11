@@ -60,7 +60,7 @@ class Shipment extends Model
     public function entrances()
     {
         return $this->belongsToMany(Entrance::class, 'shipment_entrance', 'shipment_id', 'entrance_id')
-            ->withPivot('article_id', 'count');
+            ->withPivot('product_id', 'count');
     }
 
     public function company()
@@ -70,20 +70,20 @@ class Shipment extends Model
 
     public function getProductCount($product_id)
     {
-        return (int)$this->articles()->find($product_id)->count;
+        return (int)$this->products()->find($product_id)->count;
     }
 
     public function getRefundedCount($product_id)
     {
-        return (int)$this->articles()->find($product_id)->refunded_count;
+        return (int)$this->products()->find($product_id)->refunded_count;
     }
 
-    public function articles()
+    public function products()
     {
-        return $this->belongsToMany(Article::class, 'article_shipment', 'shipment_id', 'article_id')
+        return $this->belongsToMany(Product::class, 'article_shipment', 'shipment_id', 'product_id')
             ->withPivot('count', 'refunded_count', 'entrance_id', 'price', 'total')
-            ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, articles.id as id, price')
-            ->groupBy(['article_id']);
+            ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, products.id as id, price')
+            ->groupBy(['product_id']);
     }
 
     public function store()
@@ -93,7 +93,7 @@ class Shipment extends Model
 
     public function getProductPriceFromShipment($article_id)
     {
-        $article = $this->articles()->wherePivot('article_id', $article_id)->first();
+        $article = $this->products()->wherePivot('product_id', $article_id)->first();
         return $article->pivot->price;
     }
 
@@ -111,7 +111,6 @@ class Shipment extends Model
 
     public function getArticles($data = null)
     {
-
         $articles = DB::table('article_shipment')
             ->where('shipment_id', $this->id)
             ->where(function ($q) use ($data) {
@@ -119,26 +118,26 @@ class Shipment extends Model
                     $q->where('store_id', $data['store_id']);
                 }
                 if ($data !== null && $data['article'] !== null) {
-                    $q->where('article_id', $data['article_id']);
+                    $q->where('product_id', $data['article_id']);
                 }
             })
             ->get();
         foreach ($articles as $article) {
-            $article->product = Article::owned()->where('id', $article->article_id)->first();
+            $article->product = Product::owned()->where('id', $article->product_id)->first();
         }
         return $articles;
     }
 
     public function notRefundedArticles()
     {
-        return $this->articles()->whereRaw('refunded_count < count');
+        return $this->products()->whereRaw('refunded_count < count');
     }
 
     public function incrementRefundedCount($article_id, $amount)
     {
         $products = DB::table('article_shipment')->where([
             'shipment_id' => $this->id,
-            'article_id' => $article_id,
+            'product_id' => $article_id,
         ])
             ->whereRaw('refunded_count != count')
             ->get();
@@ -182,7 +181,7 @@ class Shipment extends Model
 
     public function elements()
     {
-        return $this->articles->merge($this->stores);
+        return $this->products->merge($this->stores);
     }
 
     public function refunds()
@@ -196,7 +195,7 @@ class Shipment extends Model
             ->selectRaw('SUM(count) as count, SUM(refunded_count) as refunded_count')
             ->where([
                 'shipment_id' => $this->id,
-                'article_id' => $article_id
+                'product_id' => $article_id
             ])
             ->first();
 

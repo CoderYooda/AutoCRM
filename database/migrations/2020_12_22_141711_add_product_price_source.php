@@ -33,7 +33,7 @@ class AddProductPriceSource extends Migration
 
             $price->options()->create($params);
 
-            \App\Models\Article::where('company_id', $company->id)->update(['price_id' => $price->id]);
+            \App\Models\Product::where('company_id', $company->id)->update(['price_id' => $price->id]);
         }
     }
 

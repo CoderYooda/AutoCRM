@@ -29,6 +29,22 @@ class AutoEuro implements ProviderInterface
     /** @var User $user */
     protected $user = null;
 
+    protected $errors = [
+        401 => [
+            'search' => 'Unauthorized',
+            'return' => 'Not auth'
+        ],
+        404 => [
+            'search' => 'Bad Request',
+            'return' => 'Not found'
+        ],
+        419 => [
+            'search' => 'Too Many Requests',
+            'return' => 'Too Many Requests'
+        ],
+    ];
+
+
     public function __construct()
     {
         /** @var ShopManager $shopManager */
@@ -51,11 +67,17 @@ class AutoEuro implements ProviderInterface
 
         $response = $this->query('stock_items', $params);
 
-        $brands = array_column($response['DATA']['CODES'], 'maker');
+        $results = [];
 
-        $brands = array_unique($brands);
+        foreach ($response['DATA']['CODES'] as $item) {
+            $results[] = [
+                'brand' => $item['maker'],
+                'article' => $item['code'],
+                'desc' => $item['name']
+            ];
+        }
 
-        return $brands;
+        return $results;
     }
 
     public function getName(): string
@@ -184,15 +206,29 @@ class AutoEuro implements ProviderInterface
             }
 
             $response = file_get_contents($url, false, $context);
+            $response = json_decode($response, true);
         }
         catch (\Exception $exception) {
-//            dd($url . $params, $exception->getMessage());
-            return [];
+            $response = $exception;
         }
 
-        return json_decode($response, true);
+        $this->errorHandler($response);
+
+        return $response;
     }
 
+    private function errorHandler($response) : void
+    {
+        if (is_object($response)) {
+
+            $errorMessage = $response->getMessage();
+
+            foreach ($this->errors as $code => $info) {
+                if (strpos($errorMessage, $info['search']) === false) continue;
+                throw new \Exception($info['return'], $code);
+            }
+        }
+    }
     public function getSelectFieldValues(string $field_name): array
     {
         return [];
@@ -205,7 +241,7 @@ class AutoEuro implements ProviderInterface
         $this->api_key = $fields['api_key'];
 
         //Если эксепшен не был выкинут, то пропускаем
-        $response = $this->searchBrandsCount('k1279');
+        $this->searchBrandsCount('k1279');
 
         return true;
     }
@@ -309,5 +345,10 @@ class AutoEuro implements ProviderInterface
         }
 
         return $formattedArray;
+    }
+
+    public function getTimeOfShipment(): array
+    {
+        return [];
     }
 }

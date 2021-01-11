@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ModelWasStored;
 use App\Http\Requests\RefundRequest;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Entrance;
 use App\Models\Refund;
 use App\Models\Shipment;
@@ -30,7 +30,7 @@ class RefundController extends Controller
 //        $refunded_count = [];
 //
 //        if($refund) {
-//            foreach ($refund->shipment->articles as $product) {
+//            foreach ($refund->shipment->products as $product) {
 //                if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
 //                $refunded_count[$product->id] += $product->pivot->refunded_count;
 //            }
@@ -39,7 +39,7 @@ class RefundController extends Controller
 
 
 
-        $products = $refund->articles ?? [];
+        $products = $refund->products ?? [];
         foreach($products as $product) {
             $product->shipment_count = $shipment->getProductCount($product->id);
             $product->refunded_count = $shipment->getRefundedCount($product->id);
@@ -80,7 +80,7 @@ class RefundController extends Controller
         $request['fresh'] = true;
         $class = 'refundDialog' . $refund->id;
         $inner = true;
-        $products = $refund->articles ?? [];
+        $products = $refund->products ?? [];
 
         foreach($products as $product) {
             $product->shipment_count = $shipment->getProductCount($product->id);
@@ -164,7 +164,7 @@ class RefundController extends Controller
             $refund->update(['summ' => $total_summ]);
 
             #Запись новых отношений
-            $refund->articles()->sync($refund_data);
+            $refund->products()->sync($refund_data);
 
             #Добавляем к балансу контакта
             $refund->partner->addition($refund->summ);

@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Events\StoreImportFinish;
 use App\Events\StoreImportIteration;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Supplier;
@@ -76,7 +76,7 @@ class StoreImportProduct implements ShouldQueue
 
         $company = Company::find($this->params['company_id']);
 
-        Article::where('company_id', $company->id)
+        Product::where('company_id', $company->id)
             ->where('price_id', 0)
             ->update(['price_id' => $company->prices->first()->id]);
 
@@ -141,7 +141,7 @@ class StoreImportProduct implements ShouldQueue
             $category_id = $category->id;
         }
 
-        $article = Article::updateOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
+        $article = Product::updateOrCreate(['company_id' => $company_id, 'article' => Product::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
             'name'          => $attributes['name'],
             'creator_id'    => $user_id,
             'supplier_id'   => $supplier->id,
@@ -151,7 +151,7 @@ class StoreImportProduct implements ShouldQueue
 
         if ((int)$attributes['count'] > 0) {
             DB::table('article_entrance')->insert([
-                'article_id'     => $article->id,
+                'product_id'     => $article->id,
                 'entrance_id'    => null,
                 'company_id'     => $company_id,
                 'store_id'       => $store->id,
@@ -168,7 +168,7 @@ class StoreImportProduct implements ShouldQueue
         }
 
         #Запись склада по товару
-        $store->articles()->syncWithoutDetaching($article->id);
+        $store->products()->syncWithoutDetaching($article->id);
 
         $article->update(['category_id' => $category_id]);
 

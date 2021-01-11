@@ -4,6 +4,7 @@
 namespace App\Services\ShopManager;
 
 use App\Models\Shop;
+use Auth;
 
 class ShopManager
 {

@@ -13,10 +13,10 @@ class ValidProductCountForEntranceRefund implements Rule
 
         $entrance = Entrance::find($product_id);
 
-        $entrance_products = $entrance->articles;
+        $entrance_products = $entrance->products;
 
         foreach ($this->products as $product_id => $product) {
-            return $product['count'] > $entrance_products->where('article_id', $product_id)->count();
+            return $product['count'] > $entrance_products->where('product_id', $product_id)->count();
         }
     }
 

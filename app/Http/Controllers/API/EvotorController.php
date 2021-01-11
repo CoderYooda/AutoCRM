@@ -39,14 +39,14 @@ class EvotorController extends Controller
     public function getWarrantItems($id){
         $warrant = Warrant::find($id);
         if($warrant->payable){
-            $articles = $warrant->payable->articles;
+            $products = $warrant->payable->products;
 
-            foreach($articles as $article){
-                $article->count = $article->pivot->count;
-                $article->price = $article->pivot->price;
+            foreach($products as $product){
+                $product->count = $product->pivot->count;
+                $product->price = $product->pivot->price;
             }
         }
-        return response()->json(['articles' => $articles], 200);
+        return response()->json(['articles' => $products], 200);
     }
 
     public function setWarrantPayed(Request $request){
@@ -116,7 +116,7 @@ class EvotorController extends Controller
                         }
                     }
                     $warrant->disc = $percent;
-                    $articles = $warrant->payable->articles;
+                    $articles = $warrant->payable->products;
                     $articles_collection = collect();
                     foreach($articles as $article){
                         $temp_article = new stdClass();
@@ -166,7 +166,7 @@ class EvotorController extends Controller
 //        }
 //
 //        $warrant->disc = $percent;
-//        $articles = $warrant->payable->articles;
+//        $articles = $warrant->payable->products;
 //        foreach($articles as $article){
 //            $article->price = $article->pivot->price;
 //            $article->count = $article->pivot->count;

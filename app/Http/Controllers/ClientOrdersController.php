@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
-use App\Models\Article;
+use App\Models\Product;
 use App\Http\Controllers\UserActionsController as UA;
 use Auth;
 use Illuminate\Support\Facades\Mail;
@@ -31,7 +31,7 @@ class ClientOrdersController extends Controller
 
         $tag = 'clientorderDialog' . ($client_order->id ?? '');
 
-        $items = $client_order ? $client_order->articles->load('supplier') : collect();
+        $items = $client_order ? $client_order->products->load('supplier') : collect();
 
         foreach ($items as $key => $item) {
             $items[$key]['pivot_id'] = $item['pivot']['id'];
@@ -173,7 +173,7 @@ class ClientOrdersController extends Controller
                 $wasExisted = true;
                 #Возвращаем на склад все товары из заказа
 //            if ($client_order->status === 'complete') {
-//                foreach ($client_order->articles()->get() as $article) {
+//                foreach ($client_order->products()->get() as $article) {
 //                    $store = $client_order->store()->first();
 //                    $store->increaseArticleCount($article->id, $article->pivot->count);
 //                }
@@ -218,11 +218,11 @@ class ClientOrdersController extends Controller
             }
 
             # Синхронизируем товары к складу
-            $store->articles()->syncWithoutDetaching($plucked_articles, false);
+            $store->products()->syncWithoutDetaching($plucked_articles, false);
 
             $rp = array_reverse($request['products'], true);
 
-            $client_order->articles()->sync([]);
+            $client_order->products()->sync([]);
 
             foreach ($rp as $index => $product) {
 
@@ -257,7 +257,7 @@ class ClientOrdersController extends Controller
                     'shipped_count' => isset($product['pivot_id']) ? $client_order->getShippedCountByPivotId($pivot_id) : 0
                 ];
 
-                $client_order->articles()->attach($product_id, $pivot_data);
+                $client_order->products()->attach($product_id, $pivot_data);
             }
 
             if ($request['inpercents']) {
@@ -332,7 +332,7 @@ class ClientOrdersController extends Controller
 
     public function getClientOrdersProducts(ClientOrder $clientOrder)
     {
-        return response()->json(['products' => $clientOrder->articles]);
+        return response()->json(['products' => $clientOrder->products]);
     }
 
     public static function getClientOrders($request)

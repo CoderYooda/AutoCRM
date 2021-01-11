@@ -1,8 +1,12 @@
-<button type="button" class="button_back" onclick="store.searchProviderStores();"><i class="fa fa-caret-left" aria-hidden="true"></i> Назад</button>
+<div class="d-flex">
 
-<h1 class="result_info">
-    Поиск по связке: <span id="manufacturer">{{ $request->manufacturer }}</span> & {{ $request->article }}
-</h1>
+    <button type="button" class="button_back" onclick="store.searchProviderStores();"><i class="fa fa-caret-left" aria-hidden="true"></i> Назад</button>
+
+    <h3 class="result_info">
+        Поиск по связке: <span id="manufacturer">{{ $request->manufacturer }}</span> & {{ $request->product }}
+    </h3>
+
+</div>
 
 <h3 class="ml-15">Оригинальные запчасти:</h3>
 

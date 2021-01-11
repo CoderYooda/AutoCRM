@@ -8,7 +8,7 @@
 
     @foreach($products as $product)
         @for($i = $product->count - 1; $i != -1; $i--)
-{{--    @foreach(\App\Models\Article::where('barcode', '!=', null)->get() as $product)--}}
+{{--    @foreach(\App\Models\Product::where('barcode', '!=', null)->get() as $product)--}}
 {{--        @for($i = 0; $i != -1; $i--)--}}
 
             <div class="border d-flex flex-column" style="width: 100%; height: 100%;">

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DocumentType;
 use App\Http\Requests\Documents\StoreRequest;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\ClientOrder;
 use App\Models\Document;
 use App\Models\Refund;
@@ -110,7 +110,7 @@ class DocumentController extends Controller
 
         if($request->doc == 'cheque') {
 
-            $products = Article::with('supplier')->whereIn('id', $request->data['ids'])->get();
+            $products = Product::with('supplier')->whereIn('id', $request->data['ids'])->get();
 
             $count_type = $request->data['count_type'];
             $count = $request->data['count'];
@@ -143,7 +143,7 @@ class DocumentController extends Controller
 
             $data['products'] = [];
 
-            foreach ($clientOrder->articles->load('supplier') as $product) {
+            foreach ($clientOrder->products->load('supplier') as $product) {
 
                 $data['products'][$product->id]['name'] = $product->name;
                 $data['products'][$product->id]['article'] = $product->article;
@@ -167,7 +167,7 @@ class DocumentController extends Controller
             $data['nds'] = $warrant->payable->nds;
         }
         else if($request->doc == 'defective-act') {
-            $products = Article::whereIn('id', $request->data)->get();
+            $products = Product::whereIn('id', $request->data)->get();
 
             foreach ($products as $product) {
                 $data['products'][$product->id]['name'] = $product->name;
@@ -210,7 +210,7 @@ class DocumentController extends Controller
             $data['products']['price_with_nds'] = 0;
             $data['products']['nds'] = 0;
 
-            foreach($shipment->articles as $key => $product) {
+            foreach($shipment->products as $key => $product) {
 
                 $data['products'][$key]['name'] = $product->name;
                 $data['products'][$key]['article'] = $product->article;

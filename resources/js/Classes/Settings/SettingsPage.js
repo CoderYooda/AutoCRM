@@ -140,6 +140,9 @@ class settingsPage{
                 let enabled_element = document.querySelector('[name="enabled"]');
                 enabled_element.value = enabled;
             }
+            else {
+                window.notification.notify('error', 'Ошибка авторизации.');
+            }
         });
     }
 

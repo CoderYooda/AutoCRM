@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Services\ProviderService\Providers;
@@ -18,7 +18,7 @@ class ProductController extends Controller
         $this->shop = $shopManager->getCurrentShop();
     }
 
-    public function info(Article $product)
+    public function info(Product $product)
     {
         $view = view('shop.modal.product_info', compact('product'));
 
@@ -27,7 +27,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function analogues(Article $product, Providers $providers)
+    public function analogues(Product $product, Providers $providers)
     {
         $providersOrders = [];
 

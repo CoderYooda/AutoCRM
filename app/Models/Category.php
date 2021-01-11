@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Models\System\Image;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\Imageable;
+use Baum\Node;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Kalnoy\Nestedset\NodeTrait;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
-class Category extends \Baum\Node
+class Category extends Node
 {
     use Imageable;
 
@@ -45,6 +46,14 @@ class Category extends \Baum\Node
     public function getImagePathAttribute()
     {
         return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
+    }
+
+    public function freshSlug()
+    {
+        $slug = Str::slug($this->name . '-' . $this->id);
+
+        //Обновляем slug через фасад, чтобы избежать рекурсии в observer'e
+        DB::table('products')->where('id', $this->id)->update(['slug' => $slug]);
     }
 
     public function breadcrumbs()
@@ -96,9 +105,9 @@ class Category extends \Baum\Node
         return $builder;
     }
 
-    public function articles()
+    public function products()
     {
-        return $this->hasMany(Article::class, 'category_id');
+        return $this->hasMany(Product::class, 'category_id');
     }
 
     public function partners()

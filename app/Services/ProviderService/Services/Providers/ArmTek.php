@@ -52,7 +52,8 @@ class ArmTek implements ProviderInterface
         $results = [];
 
         foreach ($response as $brand) {
-            $results[$brand['BRAND']] = [
+            $results[] = [
+                'brand' => $brand['BRAND'],
                 'article' => $brand['PIN'],
                 'desc' => strlen($brand['NAME']) ? $brand['NAME'] : 'Отсутствует'
             ];
@@ -324,6 +325,11 @@ class ArmTek implements ProviderInterface
     }
 
     public function getSubdivisions(): array
+    {
+        return [];
+    }
+
+    public function getTimeOfShipment(): array
     {
         return [];
     }

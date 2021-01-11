@@ -25,7 +25,7 @@ class ArticleStock extends Model
 //        $stocked = new ArticleStock();
 //        $stocked->company_id = Auth::user()->company()->first()->id;
 //        $stocked->store_id = $store_id;
-//        $stocked->article_id = $article_id;
+//        $stocked->product_id = $article_id;
 //        $stocked->cost = $cost;
 //        $stocked->save();
     }

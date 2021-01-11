@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -32,11 +32,11 @@ class AddSlugFields extends Migration
             $category->update(['slug' => Str::slug($categoryName)]);
         }
 
-        foreach (Article::all() as $product) {
+        foreach (Product::all() as $product) {
 
             $productName = $product->name;
 
-            $nameUsing = Article::where(['name' => $productName, 'company_id' => $product->company_id])
+            $nameUsing = Product::where(['name' => $productName, 'company_id' => $product->company_id])
                 ->where('id', '!=', $product->id)
                 ->exists();
 

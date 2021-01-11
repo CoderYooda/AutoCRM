@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\HelpController as HC;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request){
 
-        $products = Article::all();
+        $products = Product::all();
         $target = HC::selectTarget();
 
         if($request['view_as'] != null && $request['view_as'] == 'json'){
