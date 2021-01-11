@@ -14,6 +14,10 @@ class adminPage{
             this.search();
         }, 400);
 
+        document.addEventListener('ReferStored', function(e){
+            freshRefer();
+        });
+
         this.contextDop = null;
         this.parametr = null;
 

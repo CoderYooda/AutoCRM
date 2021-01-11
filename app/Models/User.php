@@ -32,6 +32,10 @@ class User extends Authenticatable
         return $this->hasOne(Partner::class, 'user_id');
     }
 
+    public function referal(){
+        return $this->hasOne(Referal::class, 'user_id');
+    }
+
     public function companyPartner()
     {
         /** @var ShopManager $shopManager */

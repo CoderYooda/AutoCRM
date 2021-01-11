@@ -10,6 +10,7 @@ class Referal extends Model
     protected $table = 'referal';
 
     public $fields = [
+        'name',
         'user_id',
         'code',
         'percent_first_b',
