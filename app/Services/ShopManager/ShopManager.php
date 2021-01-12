@@ -19,7 +19,7 @@ class ShopManager
 
         $isOurDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
 
-        $query = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
+        $query = Shop::with('faviconImage', 'headerImage', 'backgroundImage')->where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
 
         $this->shop = $query->first();
     }

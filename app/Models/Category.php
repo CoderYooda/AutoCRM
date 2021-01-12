@@ -69,19 +69,7 @@ class Category extends Node
 
     public function path()
     {
-        $parents = $this->getAncestors();
-
-        $slugs = '';
-
-        foreach ($parents as $index => $parent) {
-            if($parent->id < 3) unset($parents[$index]);
-        }
-
-        if(count($parents)) {
-            $slugs = implode('/', $parents->pluck('slug')->toArray()) . '/';
-        }
-
-        $path = '/catalogue/' . $slugs . $this->slug;
+        $path = '/categories/' . $this->slug;
 
         return route('pages.path', $path);
     }

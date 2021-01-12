@@ -26,15 +26,15 @@
                         @foreach($selectedCategory->childs as $category)
                             <li @if($category->id == $selectedCategory->id) class="active" @endif>
                                 <a title="{{ $category->name }}" href="{{ $category->path() }}">{{ $category->name }}</a>
-    {{--                            @if($category->id == $selectedCategory->id && count($category->childs))--}}
-    {{--                                <ul>--}}
-    {{--                                    @foreach($category->childs as $childrenCategory)--}}
-    {{--                                        <li>--}}
-    {{--                                            <a href="{{ $childrenCategory->path() }}">{{ $childrenCategory->name }}</a>--}}
-    {{--                                        </li>--}}
-    {{--                                    @endforeach--}}
-    {{--                                </ul>--}}
-    {{--                            @endif--}}
+                                @if($category->id == $selectedCategory->id && count($category->childs))
+                                    <ul>
+                                        @foreach($category->childs as $childrenCategory)
+                                            <li>
+                                                <a href="{{ $childrenCategory->path() }}">{{ $childrenCategory->name }}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
                             </li>
                         @endforeach
                     </ul>
