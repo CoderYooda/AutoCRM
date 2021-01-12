@@ -53,7 +53,7 @@ class Category extends Node
         $slug = Str::slug($this->name . '-' . $this->id);
 
         //Обновляем slug через фасад, чтобы избежать рекурсии в observer'e
-        DB::table('products')->where('id', $this->id)->update(['slug' => $slug]);
+        DB::table('categories')->where('id', $this->id)->update(['slug' => $slug]);
     }
 
     public function breadcrumbs()

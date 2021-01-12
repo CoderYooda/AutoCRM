@@ -11,7 +11,7 @@ class CategoryObserver
         $category->freshSlug();
     }
 
-    public function update(Category $category)
+    public function updated(Category $category)
     {
         $category->freshSlug();
     }
