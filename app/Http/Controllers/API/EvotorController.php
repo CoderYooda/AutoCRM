@@ -116,16 +116,16 @@ class EvotorController extends Controller
                         }
                     }
                     $warrant->disc = $percent;
-                    $articles = $warrant->payable->products;
-                    $articles_collection = collect();
-                    foreach($articles as $article){
-                        $temp_article = new stdClass();
-                        $temp_article->price = $article->pivot->price;
-                        $temp_article->count = $article->pivot->count;
-                        $articles_collection->push($temp_article);
+                    $products = $warrant->payable->products;
+                    $products_collection = collect();
+                    foreach($products as $article){
+                        $temp_product = new stdClass();
+                        $temp_product->price = $article->pivot->price;
+                        $temp_product->count = $article->pivot->count;
+                        $products_collection->push($temp_product);
                     }
 
-                    $warrant->items = $articles_collection;//$articles_collection;
+                    $warrant->items = $products_collection;//$articles_collection;
                 } else {
                     $warrant->disc = 0;
                     $warrant->items = [];

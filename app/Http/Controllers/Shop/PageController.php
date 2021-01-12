@@ -102,7 +102,7 @@ class PageController extends Controller
 
         $product = Product::where('slug', end($slugs))->first();
 
-        $checkPath = $product ? $product->path() : $categories->last()->path();
+        $checkPath = $product ? $product->path() : $categories->where('slug', last($slugs))->first()->path();
 
         $slugCorrect = strpos($checkPath, $path) !== false;
 
@@ -110,7 +110,7 @@ class PageController extends Controller
 
         abort_if(!$categories->count() && $product == null, 404, "Страница не найдена.");
 
-        return $product ? $this->showProductPage($product) : $this->showCategoryPage($categories->last());
+        return $product ? $this->showProductPage($product) : $this->showCategoryPage($categories->where('slug', last($slugs))->first());
     }
 
     protected function showCategoryPage(Category $selectedCategory)

@@ -4,7 +4,7 @@ class CategoryDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно категории инициализировано');
         this.init();
         //console.log(dialog.querySelector("#refer").value);
         //this.refer = dialog.querySelector("#refer").value;
