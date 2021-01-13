@@ -40,7 +40,6 @@ class ReferalSystemController extends Controller
     {
         DB::transaction(function () use($request) {
             $user = User::create([
-                'name' => $request['name'],
                 'phone' => $request['phone'],
                 'company_id' => 1,
                 'password' => Hash::make($request['password']),

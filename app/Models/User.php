@@ -28,6 +28,10 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class, 'company_id');
     }
 
+    public function referal(){
+        return $this->hasOne(Referal::class, 'user_id');
+    }
+
     public function partner(){
         return $this->hasOne(Partner::class, 'user_id');
     }

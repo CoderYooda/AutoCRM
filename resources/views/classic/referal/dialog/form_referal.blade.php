@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label for="code">Реферальный код</label>
-                <input id="code" type="text" name="refer" class="form-control form-control-sm">
+                <input id="code" type="text" name="code" class="form-control form-control-sm">
             </div>
             <div class="form-group">
                 <label for="">Вознаграждения партнера</label>
@@ -41,7 +41,7 @@
                         <label for="f_p"></label>
                     </div>
                     <label class="flex-1" for="f_p" style="margin-bottom: 2px;">Процент с первой оплаты</label>
-                    <input id="code" type="text" name="percent_first_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
+                    <input type="text" name="percent_first_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
                     <div class="ml-10" style="width: 16px">%</div>
                 </div>
                 <div class="d-flex mb-5">
@@ -50,7 +50,7 @@
                         <label for="a_p"></label>
                     </div>
                     <label class="flex-1" for="a_p" style="margin-bottom: 2px;">Процент с каждой оплаты</label>
-                    <input id="code" type="text" name="percent_each_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
+                    <input type="text" name="percent_each_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
                     <div class="ml-10" style="width: 16px">%</div>
                 </div>
                 <div class="d-flex mb-5">
@@ -59,7 +59,7 @@
                         <label for="f_r"></label>
                     </div>
                     <label class="flex-1" for="f_r" style="margin-bottom: 2px;">Рублей с первой оплаты</label>
-                    <input id="code" type="text" name="rubbles_first_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
+                    <input type="text" name="rubbles_first_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
                     <div class="ml-10" style="width: 16px">₽</div>
                 </div>
                 <div class="d-flex mb-5">
@@ -68,12 +68,12 @@
                         <label for="a_r"></label>
                     </div>
                     <label class="flex-1" for="a_r" style="margin-bottom: 2px;">Рублей с каждой оплаты</label>
-                    <input id="code" type="text" name="rubbles_each_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
+                    <input type="text" name="rubbles_each_value" class="w-128 form-control form-control-sm ml-10" style="height: 22px;line-height: 22px;">
                     <div class="ml-10" style="width: 16px">₽</div>
                 </div>
                 <div class="form-group">
-                    <label for="code">Комментарий</label>
-                    <textarea name="code" type="text" class="form-control form-control-sm" style="max-width: 100%; min-width: 100%; height: 120px;"></textarea>
+                    <label for="comment">Комментарий</label>
+                    <textarea name="comment" type="text" class="form-control form-control-sm" style="max-width: 100%; min-width: 100%; height: 120px;"></textarea>
                 </div>
             </div>
         </div>

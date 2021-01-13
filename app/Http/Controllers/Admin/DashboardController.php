@@ -60,7 +60,7 @@ class DashboardController extends Controller
         $partners = User::whereHas(
             'roles', function($q){
             $q->where('name', 'Реферальный партнёр');
-        })->get();
+        })->with('referal')->orderBy('id', 'DESC')->paginate(11);
 //        $superAdmin = Role::create(['name' => 'Суперадмин', 'company_id' => 1]);
 //        $superAdmin->givePermissionTo('Смотреть настройки');
 //        $user = User::whereId(1)->first();
