@@ -17,7 +17,7 @@ use App\Http\Requests\EntranceRequest;
 use App\Http\Requests\ProviderOrdersRequest;
 use App\Http\Requests\RefundRequest;
 use App\Http\Requests\ShipmentsRequest;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Company;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
@@ -130,7 +130,7 @@ class StressTest extends Command
         $bar = $this->output->createProgressBar($count_products);
         $bar->start();
         for($i = 0; $i < $count_products; $i++){
-            $product = factory(Article::class)->make(['supplier_id' => $suppliers[array_rand($suppliers)]]);
+            $product = factory(Product::class)->make(['supplier_id' => $suppliers[array_rand($suppliers)]]);
             $product->category_id = \App\Models\Category::where('company_id', $company->id)->where('type', 'store')->inRandomOrder()->first()->id;
             $product->company_id = $company->id;
 
@@ -279,7 +279,7 @@ class StressTest extends Command
         $products_count = rand(1, 12);
 
         for($e = 0; $e < $products_count; $e++){
-            $product = Article::with('entrances')->owned()->whereHas('entrances', function($q){
+            $product = Product::with('entrances')->owned()->whereHas('entrances', function($q){
                 $q->where('count', '>', 0);
             })->inRandomOrder()->first();
 
@@ -312,7 +312,7 @@ class StressTest extends Command
         $products_count = rand(1, 50);
 
         for($e = 0; $e < $products_count; $e++){
-            $product = Article::owned()->inRandomOrder()->first();
+            $product = Product::owned()->inRandomOrder()->first();
             $products[$e]['product_id'] = $product->id;
             $products[$e]['count'] = rand(1, 12);
             $products[$e]['price'] = rand(1, 2000);
@@ -339,7 +339,7 @@ class StressTest extends Command
             $entrance = new EntranceController();
 
             $fake_request = new EntranceRequest();
-            $articles = $providerOrder->articles()->get();
+            $articles = $providerOrder->products()->get();
             $date = Carbon::now()->addDays(rand(-365, 0));
             $date = $date->addHours(rand(0, 24));
             $date = $date->addMinutes(rand(0, 60));
@@ -370,7 +370,7 @@ class StressTest extends Command
             $refund = new RefundController();
             $fake_request = null;
             $fake_request = new RefundRequest();
-            $articles = $shipment->articles()->get();
+            $articles = $shipment->products()->get();
 
             $date = Carbon::now()->addDays(rand(-365, 0));
             $date = $date->addHours(rand(0, 24));
@@ -405,7 +405,7 @@ class StressTest extends Command
         $products_count = rand(1, 50);
 
         for($e = 0; $e < $products_count; $e++){
-            $product = Article::owned()->inRandomOrder()->first();
+            $product = Product::owned()->inRandomOrder()->first();
             $products[$e]['product_id'] = $product->id;
             $products[$e]['count'] = rand(1, 12);
             $products[$e]['price'] = rand(1, 2000);
@@ -447,7 +447,7 @@ class StressTest extends Command
             $fake_request['comment'] = $comment;
             $fake_request['created_at'] = $date;
             $products = [];
-            $articles =  Article::owned()->limit(rand(4, 14))->inRandomOrder()->get();
+            $articles =  Product::owned()->limit(rand(4, 14))->inRandomOrder()->get();
             foreach($articles as $article){
                 $products[$article->id]['id'] = $article->id;
                 $products[$article->id]['fact'] = rand(0,12);

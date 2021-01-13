@@ -14,7 +14,7 @@ class SearchRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => 'exists:articles,id'
+            'product_id' => 'exists:products,id'
         ];
     }
 }

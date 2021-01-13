@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class Article extends Model
+class Product extends Model
 {
     use OwnedTrait, SoftDeletes, Imageable;
 
@@ -46,9 +47,7 @@ class Article extends Model
 
     public function path()
     {
-        $categoryPath = $this->category->path();
-
-        return $categoryPath . '/' . $this->slug;
+        return '/products/' . $this->slug;
     }
 
     public function image()
@@ -97,6 +96,13 @@ class Article extends Model
         return md5($stock . $manufacturer . $article . $days . $price);
     }
 
+    public function getRetailPriceInCurrentStore()
+    {
+        $store_id = Auth::user()->current_store;
+
+        return $this->stores->find($store_id)->pivot->retail_price;
+    }
+
     public function fillShopFields($request)
     {
         $this->sp_name = $request->shop['name'] ?? '';
@@ -133,7 +139,7 @@ class Article extends Model
 
     public function stores()
     {
-        return $this->belongsToMany(Store::class, 'article_store', 'article_id', 'store_id')
+        return $this->belongsToMany(Store::class, 'article_store', 'product_id', 'store_id')
             ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
     }
 
@@ -183,7 +189,7 @@ class Article extends Model
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $products = DB::table('article_entrance')
-            ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            ->where(['product_id' => $this->id, 'store_id' => $store_id])
             ->where('released_count', '>', '0')
             ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
             ->get();
@@ -210,7 +216,7 @@ class Article extends Model
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $products = DB::table('article_entrance')
-            ->where(['article_id' => $this->id, 'store_id' => $store_id])
+            ->where(['product_id' => $this->id, 'store_id' => $store_id])
             ->whereRaw('count != released_count')
             ->orderByRaw('id ' . ($method_cost_of_goods == 'fifo' ? 'ASC' : 'DESC'))
             ->get();
@@ -243,7 +249,7 @@ class Article extends Model
         $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
 
         $entrances = DB::table('article_entrance')
-            ->where('article_id', $this->id)
+            ->where('product_id', $this->id)
             ->when($method_cost_of_goods == 'lifo', function (Builder $query) {
                 $query->orderByDesc('id');
             })
@@ -253,6 +259,12 @@ class Article extends Model
         $released_count = $entrances->sum('released_count');
 
         return $count - $released_count;
+    }
+
+    public function entrances()
+    {
+        return $this->belongsToMany(Entrance::class, 'article_entrance', 'product_id')
+            ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 
     public function getCount()
@@ -309,7 +321,7 @@ class Article extends Model
         }
         else {
 
-            $lastEntrance = DB::table('article_entrance')->where('article_id', $this->id)->orderByDesc('id')->first();
+            $lastEntrance = DB::table('article_entrance')->where('product_id', $this->id)->orderByDesc('id')->first();
 
             $price = $lastEntrance->price ?? 0;
         }
@@ -319,12 +331,6 @@ class Article extends Model
         $price += sum_percent($price, $percent);
 
         return $price;
-    }
-
-    public function entrances()
-    {
-        return $this->belongsToMany(Entrance::class, 'article_entrance', 'article_id')
-            ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 
     public static function makeCorrectArticle(string $article)
@@ -343,9 +349,17 @@ class Article extends Model
         $this->foundstring = mb_strtolower(str_replace($chars, '', $string));
     }
 
+    public function freshSlug()
+    {
+        $slug = Str::slug($this->name . '-' . $this->id);
+
+        //Обновляем slug через фасад, чтобы избежать рекурсии в observer'e
+        DB::table('products')->where('id', $this->id)->update(['slug' => $slug]);
+    }
+
     public function shipment()
     {
-        return $this->belongsToMany(Shipment::class, 'article_shipment', 'article_id', 'shipment_id')
+        return $this->belongsToMany(Shipment::class, 'article_shipment', 'product_id', 'shipment_id')
             ->withPivot('count', 'price', 'total', 'shipment_id');
     }
 
@@ -368,7 +382,7 @@ class Article extends Model
 
 //    public function providerorder()
 //    {
-//        return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'article_id', 'shipment_id')
+//        return $this->belongsToMany('App\Models\Shipment', 'article_shipment', 'product_id', 'shipment_id')
 //            ->withPivot('count', 'price', 'total', 'shipment_id');
 //    }
 
@@ -385,7 +399,7 @@ class Article extends Model
             ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
             ->where([
                 'store_id' => $store_id,
-                'article_id' => $this->id
+                'product_id' => $this->id
             ])
             ->first();
 
@@ -400,7 +414,7 @@ class Article extends Model
             ->selectRaw('SUM(count) as count, SUM(released_count) as released_count')
             ->where([
                 'company_id' => $company->id,
-                'article_id' => $this->id
+                'product_id' => $this->id
             ])
             ->where('store_id', '!=', $store_id)
             ->first();

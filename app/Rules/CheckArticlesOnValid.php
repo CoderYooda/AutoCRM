@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Entrance;
 use Illuminate\Contracts\Validation\Rule;
 
@@ -19,9 +19,9 @@ class CheckArticlesOnValid implements Rule
 
         $entrance = Entrance::find(request('entrance_id'));
 
-        if(!Article::where('id', $product_id)->exists()) return false;
+        if(!Product::where('id', $product_id)->exists()) return false;
 
-        return (int)$value <= $entrance->articles->find($product_id)->pivot->count;
+        return (int)$value <= $entrance->products->find($product_id)->pivot->count;
     }
 
     public function message()

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Article;
+use App\Models\Product;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Models\Store;
 
@@ -26,7 +26,7 @@ class ProviderOrdersController extends Controller
 
         if ($request->products) {
             $ids = json_decode($request->products, true);
-            $products = Article::owned()->whereIn('id', $ids)->get();
+            $products = Product::owned()->whereIn('id', $ids)->get();
         }
 
         $stores = Store::owned()->get();
@@ -39,7 +39,7 @@ class ProviderOrdersController extends Controller
             'nds_included' => $provider_order->nds_included ?? true
         ];
 
-        $items = $provider_order ? $provider_order->articles->toArray() : [];
+        $items = $provider_order ? $provider_order->products->toArray() : [];
 
         foreach ($items as $key => $item) {
             $items[$key]['product_id'] = $item['id'];
@@ -74,7 +74,7 @@ class ProviderOrdersController extends Controller
 
     public static function selectProviderOrderDialog($request)
     {
-        $providerorders = ProviderOrder::owned()->with('articles')->whereIn('incomes', [0,1])->limit(20)->orderBy('created_at', 'DESC')->get();
+        $providerorders = ProviderOrder::owned()->with('products')->whereIn('incomes', [0,1])->limit(20)->orderBy('created_at', 'DESC')->get();
         return response()->json([
             'tag' => 'selectProviderOrderDialog',
             'html' => view(get_template() . '.provider_orders.dialog.select_providerorder', compact('providerorders',  'request'))->render(),
@@ -274,7 +274,7 @@ class ProviderOrdersController extends Controller
                 }
 
                 $params = [
-                    'article_id'        => $product['product_id'],
+                    'product_id'        => $product['product_id'],
                     'provider_order_id' => $provider_order->id,
                     'count'             => $product['count'],
                     'price'             => $product['price'],
@@ -287,7 +287,7 @@ class ProviderOrdersController extends Controller
                 DB::table('article_provider_orders')->updateOrInsert(['id' => ($product['pivot_id'] ?? null)], $params);
 
                 foreach ($provider_order->entrances as $entrance) {
-                    $entrance->freshPriceByArticleId($product['id'], $total);
+                    $entrance->freshPriceByArticleId($product['product_id'], $total);
                 }
             }
 
@@ -309,7 +309,7 @@ class ProviderOrdersController extends Controller
             #Добавляем к балансу контакта
             $provider_order->partner->addition($provider_order->itogo);
 
-            $provider_order->summ = $provider_order->articles()->sum('total');
+            $provider_order->summ = $provider_order->products()->sum('total');
 
             $provider_order->save();
 
@@ -343,7 +343,7 @@ class ProviderOrdersController extends Controller
         $provider_order = ProviderOrder::where('id', $id)->first();
 
         return response()->json([
-            'products' => $provider_order->articles()->get()]);
+            'products' => $provider_order->products()->get()]);
     }
 
     public static function getPoviderOrders($request)

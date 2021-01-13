@@ -2,7 +2,7 @@
 
 namespace App\Rules\Adjustments;
 
-use App\Models\Article;
+use App\Models\Product;
 use Illuminate\Contracts\Validation\Rule;
 
 class CheckExistArticles implements Rule
@@ -16,7 +16,7 @@ class CheckExistArticles implements Rule
     {
         $articleIds = array_keys($value);
 
-        return Article::owned()->whereIn('id', $articleIds)->exists();
+        return Product::owned()->whereIn('id', $articleIds)->exists();
     }
 
     public function message()

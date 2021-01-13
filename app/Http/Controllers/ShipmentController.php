@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\Article;
+use App\Models\Product;
 use App\Http\Controllers\UserActionsController as UA;
 
 class ShipmentController extends Controller
@@ -34,7 +34,7 @@ class ShipmentController extends Controller
             }
         }
 
-        $shipment = Shipment::with('articles')->find($request->shipment_id);
+        $shipment = Shipment::with('products')->find($request->shipment_id);
 
         $tag = 'shipmentDialog' . ($shipment->id ?? '');
 
@@ -44,11 +44,11 @@ class ShipmentController extends Controller
             $shipment->id = null;
             $shipment->partner = $clientorder->partner;
             $shipment->clientorder_id = $clientorder->id;
-            $shipment->articles = $clientorder->articles;
+            $shipment->products = $clientorder->products;
 
             $itogo = 0;
 
-            foreach($shipment->articles as $article){
+            foreach($shipment->products as $article){
                 $article->price = $article->pivot->price;
                 $article->count = $article->pivot->count;
                 $article->total = $article->pivot->total;
@@ -61,7 +61,7 @@ class ShipmentController extends Controller
 
         $articles = [];
         if($shipment){
-            $articles = $shipment->articles;
+            $articles = $shipment->products;
             foreach($articles as $article){
                 $article->available = $article->getEntrancesCount();
                 $article->supplier_name = $article->supplier->name;
@@ -90,14 +90,14 @@ class ShipmentController extends Controller
     {
         $class = 'selectShipmentDialog';
 
-        $shipments = Shipment::with('articles')->where('company_id', Auth::user()->company->id)
+        $shipments = Shipment::with('products')->where('company_id', Auth::user()->company->id)
             ->when(isset($request['string']), function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
             ->when(isset($request['hide_paid']), function ($q) {
                 $q->whereRaw('wsumm = itogo');
 
-                $q->whereHas('articles', function (Builder $query) {
+                $q->whereHas('products', function (Builder $query) {
                     $query->whereRaw('refunded_count < count');
                 });
             })
@@ -116,13 +116,13 @@ class ShipmentController extends Controller
 
     public function select(Shipment $shipment, Request $request)
     {
-        $products = $shipment->load('refunds', 'refunds.articles')->notRefundedArticles()->get();
+        $products = $shipment->load('refunds', 'refunds.products')->notRefundedArticles()->get();
 
         $refunded_count = [];
 
 //        foreach ($shipment->refunds as $refund) {
 //
-//            foreach ($refund->articles as $product) {
+//            foreach ($refund->products as $product) {
 //                $refunded_count[$product->id] = $product->count;
 //            }
 //        }
@@ -178,7 +178,7 @@ class ShipmentController extends Controller
         $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
 
-        $articles = $shipment->articles;
+        $articles = $shipment->products;
         foreach($articles as $article){
             $article->available = $article->getEntrancesCount();
             $article->supplier_name = $article->supplier->name;
@@ -214,14 +214,14 @@ class ShipmentController extends Controller
             $shipment = Shipment::firstOrNew(['id' => $request['id']]);
 
             #Проверка наличия данного количества на складе
-            $products = Article::whereIn('id', array_keys($request['products']))->get();
+            $products = Product::whereIn('id', array_keys($request['products']))->get();
 
             $errors = [];
 
             foreach ($products as $product) {
 
                 $count = $request['products'][$product->id]['count'];
-                $shipment_count = $shipment->articles->find($product->id)->count ?? 0;
+                $shipment_count = $shipment->products->find($product->id)->count ?? 0;
 
                 if ($product->getEntrancesCount($count) < ($count - $shipment_count)) {
                     $name = 'products.' . $product->id . '.count';
@@ -258,7 +258,7 @@ class ShipmentController extends Controller
             $store = $shipment->store;
 
             if (!$shipment->wasRecentlyCreated) {
-                foreach ($shipment->articles as $article) {
+                foreach ($shipment->products as $article) {
                     if ($shipment->clientOrder) {
                         $shipment->clientOrder->status = 'complete';
                         $shipment->clientOrder->decreaseShippedCount($article->id, $article->count);
@@ -268,10 +268,10 @@ class ShipmentController extends Controller
 
             # Синхронизируем товары к складу
             if (count($request['products'])) {
-                $store->articles()->syncWithoutDetaching(array_keys($request['products']), false);
+                $store->products()->syncWithoutDetaching(array_keys($request['products']), false);
             }
 
-            if (count($shipment->articles)) {
+            if (count($shipment->products)) {
 
                 #Возвращаем товары в те поступления, с которых он был взят
                 $return_products = DB::table('article_shipment')->where('shipment_id', $shipment->id)->get();
@@ -281,7 +281,7 @@ class ShipmentController extends Controller
                 }
 
                 #Очищаем article_shipment
-                $shipment->articles()->sync([]);
+                $shipment->products()->sync([]);
             }
 
             foreach ($products as $product) {
@@ -299,7 +299,7 @@ class ShipmentController extends Controller
                     $v_total = $price * $entrance_count;
                     $shipment->summ += $v_total;
 
-                    DB::table('article_shipment')->updateOrInsert(['shipment_id' => $shipment->id, 'article_id' => $product->id, 'entrance_id' => $entrance_id], [
+                    DB::table('article_shipment')->updateOrInsert(['shipment_id' => $shipment->id, 'product_id' => $product->id, 'entrance_id' => $entrance_id], [
                         'count' => (int)$entrance_count,
                         'price' => (double)$price,
                         'total' => (double)$v_total,
@@ -329,7 +329,7 @@ class ShipmentController extends Controller
             $shipment->save();
 
             if ($shipment->clientOrder) {
-                foreach ($shipment->articles as $article) {
+                foreach ($shipment->products as $article) {
                     $shipment->clientOrder->increaseShippedCount($article->id, $article->count);
                 }
             }

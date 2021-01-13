@@ -18,7 +18,7 @@
                     <img class="product-img" title="{{ $product->getShopName() }}" src="{{ $product->image_path }}" alt="{{ $product->getShopName() }}">
 
                     <div class="top-left-label">
-                        @if($product->getEntrancesCount())
+                        @if($product->count)
                             <div class="in-stock">В наличии</div>
                         @else
                             <div class="out-of-stock">Под заказ</div>

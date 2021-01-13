@@ -116,7 +116,7 @@ class SettingsController extends Controller
 
     public static function storeTab(Request $request)
     {
-        $stores = Store::owned()->with('articles')->orderBy('created_at', 'DESC')->get();
+        $stores = Store::owned()->with('products')->orderBy('created_at', 'DESC')->get();
         if($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store'){
             return view(get_template() . '.settings.elements.store_container', compact('stores', 'request'));
         }

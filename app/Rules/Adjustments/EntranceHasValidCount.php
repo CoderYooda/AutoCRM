@@ -34,7 +34,7 @@ class EntranceHasValidCount implements Rule
 
             $attributes = [
                 'entrance_id' => $entrance_id,
-                'article_id'  => $article_id,
+                'product_id'  => $article_id,
             ];
 
             $articleEntrance = DB::table('article_entrance')->where($attributes)->first();

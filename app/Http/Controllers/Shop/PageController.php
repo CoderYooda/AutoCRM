@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Shop;
@@ -17,6 +17,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller
 {
@@ -38,7 +39,7 @@ class PageController extends Controller
 
         $categories = Category::with('image', 'parent')->where($params)->paginate(8);
 
-        $stockProducts = Article::with('stores', 'supplier', 'image')
+        $stockProducts = Product::with('company', 'stores', 'supplier', 'image', 'markup')
             ->where('company_id', $this->shop->company_id)
             ->where('sp_main', 1)
             ->get();
@@ -91,46 +92,45 @@ class PageController extends Controller
     {
         $slugs = explode('/', $path);
 
-        //Исключаем каталог из поиска
-        if(current($slugs) == 'catalogue') {
-            $slugs = array_slice($slugs, 1);
-        }
+        $slug = end($slugs);
 
-        $categories = Category::where('company_id', $this->shop->company_id)->orderBy('id')->whereIn('slug', $slugs)->get();
+        $category = Category::where('company_id', $this->shop->company_id)->where('slug', $slug)->first();
 
-        abort_if(!count($categories), 404);
+        $product = Product::where('slug', $slug)->first();
 
-        $product = Article::where('slug', end($slugs))->first();
+        abort_if($category == null && $product == null, 404, "Страница не найдена.");
 
-        $checkPath = $product ? $product->path() : $categories->last()->path();
-
-        $slugCorrect = strpos($checkPath, $path) !== false;
-
-        abort_if(!$slugCorrect, 404, 'Страница не найдена.');
-
-        abort_if(!$categories->count() && $product == null, 404, "Страница не найдена.");
-
-        return $product ? $this->showProductPage($product) : $this->showCategoryPage($categories->last());
+        return $product ? $this->showProductPage($product) : $this->showCategoryPage($category);
     }
 
     protected function showCategoryPage(Category $selectedCategory)
     {
-        $categories = $selectedCategory->getDescendantsAndSelf();
+        $categories = $selectedCategory->getDescendantsAndSelf(['id']);
 
-        $products = Article::with('company', 'supplier', 'entrances', 'image')
-            ->when(!$this->shop->show_empty, function (Builder $query) {
-                $query->whereHas('entrances', function (Builder $query) {
-                    $query->whereRaw('count != released_count');
-                });
-            })
+        $products = Product::with('company', 'supplier', 'entrances', 'image')
             ->whereIn('category_id', $categories->pluck('id'))
             ->paginate(15);
 
-        return view('shop.category', compact('products', 'selectedCategory', 'categories'))
+        $articleEntrances = DB::table('article_entrance')
+            ->whereIn('product_id', $products->pluck('id'))
+            ->when(!$this->shop->show_empty, function (Builder $query) {
+                $query->whereRaw('count != released_count');
+            })
+            ->get();
+
+        foreach ($products as $index => $product) {
+
+            $totalCount = $articleEntrances->where('product_id', $product->id)->sum('count');
+            $releasedCount = $articleEntrances->where('product_id', $product->id)->sum('released_count');
+
+            $products[$index]['count'] = $totalCount - $releasedCount;
+        }
+
+        return view('shop.category', compact('products', 'selectedCategory'))
             ->with('shop', $this->shop);
     }
 
-    protected function showProductPage(Article $product)
+    protected function showProductPage(Product $product)
     {
         $selectedCategory = $product->category->load('childs');
 

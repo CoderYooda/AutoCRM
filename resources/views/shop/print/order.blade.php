@@ -18,7 +18,7 @@
                 <td>{{ $loop->index + 1 }}.</td>
                 <td>{{ $position->name }}</td>
                 <td>{{ $position->manufacturer }}</td>
-                <td>{{ $position->article }}</td>
+                <td>{{ $position->product }}</td>
                 <td>{{ correct_price($position->price) }} руб.</td>
                 <td>{{ $position->count }} шт.</td>
                 <td>{{ $position->source }}</td>

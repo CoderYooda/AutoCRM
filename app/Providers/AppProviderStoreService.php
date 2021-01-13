@@ -6,11 +6,15 @@ use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services\Cart\CartDatabase;
 use App\Services\ProviderService\Services\Providers\AutoEuro;
+use App\Services\ProviderService\Services\Providers\AutoPiter;
 use App\Services\ProviderService\Services\Providers\AutoRus;
+use App\Services\ProviderService\Services\Providers\Berg;
 use App\Services\ProviderService\Services\Providers\ForumAuto;
 use App\Services\ProviderService\Services\Providers\Mikado;
 use App\Services\ProviderService\Services\Providers\AvtoImport;
 use App\Services\ProviderService\Services\Providers\ArmTek;
+use App\Services\ProviderService\Services\Providers\MskRechie;
+use App\Services\ProviderService\Services\Providers\StParts;
 use App\Services\ProviderService\Services\Providers\Trinity;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -28,7 +32,11 @@ class AppProviderStoreService extends ServiceProvider
             Mikado::class,
             AutoRus::class,
             AutoEuro::class,
-            ForumAuto::class
+            ForumAuto::class,
+            AutoPiter::class,
+            MskRechie::class,
+            StParts::class,
+            Berg::class
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {

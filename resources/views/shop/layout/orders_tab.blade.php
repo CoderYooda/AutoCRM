@@ -53,7 +53,7 @@
 
                             <div class="desc">{{ $loop->index + 1 }}</div>
                             <div class="desc">{{ $position->name }}</div>
-                            <div class="desc">{{ $position->article }}</div>
+                            <div class="desc">{{ $position->product }}</div>
                             <div class="desc">{{ $position->manufacturer }}</div>
                             <div class="desc">{{ $position->source }}</div>
                             <div class="desc count">{{ $position->count }}</div>

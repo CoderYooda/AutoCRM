@@ -5,7 +5,7 @@ namespace App\Traits;
 
 use App\Http\Controllers\SupplierController;
 use App\Http\Requests\SupplierRequest;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +47,7 @@ trait CartProviderOrderCreator
                 'name' => $orderInfo['model']['hash_info']['desc']
             ];
 
-            $product = Article::firstOrCreate($uniqueFields, $dataFields);
+            $product = Product::firstOrCreate($uniqueFields, $dataFields);
 
             $products[] = [
                 'id' => $product->id,
@@ -84,7 +84,7 @@ trait CartProviderOrderCreator
             $totalPrice = ($product['price'] * $product['count']);
 
             DB::table('article_provider_orders')->insert([
-                'article_id' => $product['id'],
+                'product_id' => $product['id'],
                 'provider_order_id' => $providerOrder->id,
                 'count' => $product['count'],
                 'price' => $product['price'],

@@ -76,10 +76,10 @@ class Company extends Model
     public function getServiceFieldValue($service_key, $field_name)
     {
         $field_id = ServiceField::where([
-            'name' => $field_name,
+            'name'        => $field_name,
             'service_key' => $service_key
         ])
-        ->first()->id;
+            ->first()->id;
 
         return DB::table('service_field_values')
             ->where('company_id', $this->id)

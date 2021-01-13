@@ -144,7 +144,7 @@
                     </thead>
                     <tbody class="product_list">
                     @if(isset($entrance))
-                        @foreach($entrance->articles as $product)
+                        @foreach($entrance->products as $product)
                             @include(get_template() . '.entrance.dialog.product_element')
                         @endforeach
                     @else

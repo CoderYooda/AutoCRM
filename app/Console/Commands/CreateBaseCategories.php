@@ -63,8 +63,7 @@ class CreateBaseCategories extends Command
             'company_id' => $company_id,
             'creator_id' => $creator_id,
             'locked' => false,
-            'type' => 'store',
-            'slug' => null
+            'type' => 'store'
         ];
     }
 }

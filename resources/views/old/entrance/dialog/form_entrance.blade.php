@@ -158,7 +158,7 @@
                         <tbody class="product_list">
                         @if(isset($entrance))
                             @php $providerorder = $entrance->providerorder()->first(); @endphp
-                            @foreach($entrance->articles()->get() as $product)
+                            @foreach($entrance->products()->get() as $product)
                                 @include('entrance.dialog.product_element')
                             @endforeach
                         @endif

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Cashbox;
 use App\Models\Category;
 use App\Models\Company;
@@ -14,7 +14,7 @@ use App\Models\ProviderOrder;
 use App\Models\Shipment;
 use App\Models\User;
 use App\Models\Warrant;
-use App\Observers\ArticleObserver;
+use App\Observers\ProductObserver;
 use App\Observers\CashboxObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\CompanyObserver;
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
         Shipment::observe(ShipmentObserver::class);
         Company::observe(CompanyObserver::class);
         Partner::observe(PartnerObserver::class);
-        Article::observe(ArticleObserver::class);
+        Product::observe(ProductObserver::class);
         User::observe(UserObserver::class);
         Warrant::observe(WarrantObserver::class);
         Entrance::observe(EntranceObserver::class);

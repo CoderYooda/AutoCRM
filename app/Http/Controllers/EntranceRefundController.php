@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ModelWasStored;
 use App\Http\Controllers\UserActionsController as UA;
 use App\Http\Requests\EntranceRefundStoreRequest;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Entrance;
 use App\Models\EntranceRefund;
 use App\Models\Store;
@@ -20,7 +20,7 @@ class EntranceRefundController extends Controller
     {
         PermissionController::canByPregMatch('Создавать возвраты поступлений');
 
-        $entrance = Entrance::with('articles')->find($request->entrance_id);
+        $entrance = Entrance::with('products')->find($request->entrance_id);
 
         $errors = [];
 
@@ -29,10 +29,10 @@ class EntranceRefundController extends Controller
             $product_id = $product['product_id'];
             $pivot_id = $product['pivot_id'];
 
-            $entrance_count = $entrance->articles->find($product_id)->pivot->count;
-            $entrance_released_count = $entrance->articles->find($product_id)->pivot->released_count;
+            $entrance_count = $entrance->products->find($product_id)->pivot->count;
+            $entrance_released_count = $entrance->products->find($product_id)->pivot->released_count;
             $entrance_refund_count = $entrance->entrancerefunds->sum(function ($query) use($product, $pivot_id) {
-                return $query->articles->where('id', $pivot_id)->sum('pivot.count');
+                return $query->products->where('id', $pivot_id)->sum('pivot.count');
             });
 
             $available_count = $entrance_count - ($entrance_released_count - $entrance_refund_count);
@@ -60,19 +60,19 @@ class EntranceRefundController extends Controller
         ]);
 
         #Отнимаем имеющиеся количество для сохранения
-        foreach ($entrance_refund->articles as $product) {
+        foreach ($entrance_refund->products as $product) {
 
-            $entrance_refund->entrance->articles()->where('article_id', $product['product_id'])->decrement('released_count', $product->pivot->count);
+            $entrance_refund->entrance->products()->where('product_id', $product['product_id'])->decrement('released_count', $product->pivot->count);
         }
 
-        $entrance_refund->articles()->sync([]);
+        $entrance_refund->products()->sync([]);
 
         #Создаем новые пивоты
         foreach ($request->products as $index => $product) {
 
-            $price = $entrance->articles()->find($product['product_id'])->pivot->price;
+            $price = $entrance->products()->find($product['product_id'])->pivot->price;
 
-            $entrance_refund->articles()->attach($product['product_id'], [
+            $entrance_refund->products()->attach($product['product_id'], [
                 'entrance_refund_id' => $entrance_refund->id,
                 'store_id' => $request->store_id,
                 'count' => $product['count'],
@@ -81,7 +81,7 @@ class EntranceRefundController extends Controller
             ]);
 
             #Резервируем количество в поступлениях
-            $entrance_refund->entrance->articles()->where('article_id', $product['product_id'])->increment('released_count', $product['count']);
+            $entrance_refund->entrance->products()->where('product_id', $product['product_id'])->increment('released_count', $product['count']);
         }
 
         #Добавляем к балансу контакта
@@ -123,11 +123,11 @@ class EntranceRefundController extends Controller
         $refunded_count = [];
 
         if($entrance) {
-            $entrance_refunded = $entrance->entrancerefunds->load('articles');
+            $entrance_refunded = $entrance->entrancerefunds->load('products');
 
             foreach ($entrance_refunded as $refund) {
 
-                foreach ($refund->articles as $product) {
+                foreach ($refund->products as $product) {
 
                     if (!isset($refunded_count[$product->id])) $refunded_count[$product->id] = 0;
                     $refunded_count[$product->id] += $product->pivot->count;
@@ -143,7 +143,7 @@ class EntranceRefundController extends Controller
             'nds_included' => false
         ];
 
-        $items = $entrance ? $entrance_refund->articlesJson->toArray() : [];
+        $items = $entrance ? $entrance_refund->productsJson->toArray() : [];
 
         $view = view(get_template() . '.entrance_refunds.dialog.form_entrance_refund', compact('entrance_refund', 'refunded_count', 'request', 'class'))
             ->with('prefs', json_encode($prefs))

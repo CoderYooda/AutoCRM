@@ -1,7 +1,34 @@
 <?php
 
 Route::get('/test', function () {
-    event(new \App\Events\ModelWasStored(Auth::user()->company_id, 'ProductStored'));
+
+    $attributes = [];
+
+    $validator = Validator::make($attributes, [
+        'name'                 => ['string', 'max:255'],
+        'manufacturer'         => ['required', 'string', 'max:255'],
+        'article'              => ['required', 'string', 'max:64'],
+        'categories'           => ['array'],
+        'categories.*'         => ['string', 'max:200'],
+        'warehouse'            => ['array'],
+        'warehouse.*'          => ['string', 'max:2'],
+        'count'                => ['integer', 'between:0,1000000'],
+        'price'                => ['numeric', 'between:0,1000000'],
+        'barcode_manufacturer' => ['string'],
+        'barcode_warehouse'    => ['string']
+    ]);
+
+    $validatorErrors = $validator->getMessageBag()->toArray();
+
+    $errors = [];
+
+    foreach ($validatorErrors as $key => $validatorError) {
+        $errors[] = $key . ' - ' . $validatorError[0];
+    }
+
+    $errors = implode(', ', $errors);
+
+    dd($errors);
 });
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\OwnedTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
 use Auth;
@@ -25,7 +26,7 @@ class Payment extends Model
         'error'
     ];
 
-    public function freshStatus(){
+    public function freshStatus() {
         $previous_status = $this->status;
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
@@ -37,27 +38,31 @@ class Payment extends Model
 
         $api->getState($params);
 
-        if($api->error == ''){
+        if($api->error == '') {
             $this->status = $api->status;
             $this->save();
         }
 
         $new_status = $this->status; //DEADLINE_EXPIRED
 
+        if($previous_status !== $new_status) {
 
-
-
-        if($previous_status !== $new_status){
             $company = $this->company;
+
             if(($previous_status == 'FORM_SHOWED' || $previous_status == 'NEW') && $new_status == 'CONFIRMED'){
                 if($this->type === 'pay_to_sms'){
                     $company->sms_balance += $this->add_balance;
                 } else {
                     $company->increment('balance', $this->add_balance);
+
+                    if($company->getPayedDays() < 1) {
+                        $company->update(['payed_days' => Carbon::now()]);
+                    }
+
                     $company->increment('payed_days', $this->add_days * 86400);
                 }
-
             }
+
             if($previous_status == 'CONFIRMED' && $new_status == 'REFUNDED'){
                 if($this->type == 'pay_to_sms'){
                     $company->decrement('sms_balance', $this->add_balance);
@@ -66,10 +71,9 @@ class Payment extends Model
                     $company->decrement('payed_days', $this->add_days * 86400);
                 }
             }
+
             $company->save();
         }
-
-
 
         return $this;
     }

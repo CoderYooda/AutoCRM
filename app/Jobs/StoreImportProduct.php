@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Events\StoreImportFinish;
 use App\Events\StoreImportIteration;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Supplier;
@@ -26,20 +26,18 @@ class StoreImportProduct implements ShouldQueue
     protected $products = [];
     protected $params = [];
 
-    protected $vehicle_marks = [];
-
     protected $success_article_ids = [];
 
     public function __construct(array $params, array $products)
     {
         $this->params = $params;
         $this->products = $products;
-
-        $this->vehicle_marks = VehicleMark::all();
     }
 
     public function handle()
     {
+        $company = Company::find($this->params['company_id']);
+
         $info = [
             'success'    => [],
             'duplicates' => [],
@@ -54,9 +52,9 @@ class StoreImportProduct implements ShouldQueue
 
             $response = $this->importProduct($attributes);
 
-            $info[$response][] = [
+            $info[$response['type']][] = [
                 'line'    => $index,
-                'article' => $attributes['article'] ?? 'Пусто'
+                'article' => $response['data']
             ];
 
             $current_percent = (int)($index * 100 / $count_products);
@@ -72,13 +70,11 @@ class StoreImportProduct implements ShouldQueue
 
         event(new StoreImportFinish($this->params, $info));
 
-        $user = User::with('partner', 'company', 'partner.store')->find($this->params['user_id']);
-
-        $company = Company::find($this->params['company_id']);
-
-        Article::where('company_id', $company->id)
+        Product::where('company_id', $company->id)
             ->where('price_id', 0)
-            ->update(['price_id' => $company->prices->first()->id]);
+            ->update(['price_id' => $company->markups->first()->id]);
+
+        $user = User::find($this->params['user_id']);
 
         DB::table('import_history')->insert([
             'partner_id' => $user->partner->id,
@@ -112,7 +108,21 @@ class StoreImportProduct implements ShouldQueue
         ]);
 
         if ($validator->fails()) {
-            return 'errors';
+
+            $validatorErrors = $validator->getMessageBag()->toArray();
+
+            $errors = [];
+
+            foreach ($validatorErrors as $key => $validatorError) {
+                $errors[] = $key . ' - ' . $validatorError[0];
+            }
+
+            $errors = implode(', ', $errors);
+
+            return [
+                'type' => 'errors',
+                'data' => $errors
+            ];
         }
 
         $attributes = $validator->validated();
@@ -141,7 +151,7 @@ class StoreImportProduct implements ShouldQueue
             $category_id = $category->id;
         }
 
-        $article = Article::updateOrCreate(['company_id' => $company_id, 'article' => Article::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
+        $article = Product::updateOrCreate(['company_id' => $company_id, 'article' => Product::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
             'name'          => $attributes['name'],
             'creator_id'    => $user_id,
             'supplier_id'   => $supplier->id,
@@ -151,7 +161,7 @@ class StoreImportProduct implements ShouldQueue
 
         if ((int)$attributes['count'] > 0) {
             DB::table('article_entrance')->insert([
-                'article_id'     => $article->id,
+                'product_id'     => $article->id,
                 'entrance_id'    => null,
                 'company_id'     => $company_id,
                 'store_id'       => $store->id,
@@ -164,11 +174,14 @@ class StoreImportProduct implements ShouldQueue
         }
 
         if (!$article->wasRecentlyCreated) {
-            return 'duplicates';
+            return [
+                'type' => 'duplicates',
+                'data' => $article->id
+            ];
         }
 
         #Запись склада по товару
-        $store->articles()->syncWithoutDetaching($article->id);
+        $store->products()->syncWithoutDetaching($article->id);
 
         $article->update(['category_id' => $category_id]);
 
@@ -182,6 +195,9 @@ class StoreImportProduct implements ShouldQueue
 
         $this->success_article_ids[] = $article->id;
 
-        return 'success';
+        return [
+            'type' => 'success',
+            'data' => $article->id
+        ];
     }
 }

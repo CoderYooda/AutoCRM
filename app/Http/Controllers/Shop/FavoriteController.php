@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Requests\Shop\StoreFavoriteRequest;
 use App\Http\Controllers\Controller;
 use App\Interfaces\Shop\FavoriteInterface;
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\Shop;
 use App\Services\ShopManager\ShopManager;
 
@@ -21,7 +21,7 @@ class FavoriteController extends Controller
 
     public function index(FavoriteInterface $favorite)
     {
-        $products = Article::whereIn('id', $favorite->all())->paginate(15);
+        $products = Product::whereIn('id', $favorite->all())->paginate(15);
 
         return view('shop.favorites', compact('products'))
             ->with('shop', $this->shop);

@@ -4,21 +4,21 @@ class warrantDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно ордера инициализировано');
         this.active = true;
         this.init();
     }
 
-    init(){
-        let object = this;
-        document.addEventListener('WarrantStored', function(e){
-            object.finitaLaComedia(true);
+    init() {
+
+        this.current_dialog.addEventListener('WarrantStored', (e) => {
+            this.finitaLaComedia(true);
         });
 
-        object.root_dialog.querySelector('form').addEventListener('keyup',  function(e){
+        this.root_dialog.querySelector('form').addEventListener('keyup', (e) => {
             if (e.which == 13) {
                 e.preventDefault();
-                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+                this.save(this.root_dialog.getElementsByTagName('form')[0]);
             }
         });
 
