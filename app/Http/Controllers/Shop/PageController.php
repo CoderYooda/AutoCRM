@@ -39,7 +39,7 @@ class PageController extends Controller
 
         $categories = Category::with('image', 'parent')->where($params)->paginate(8);
 
-        $stockProducts = Product::with('stores', 'supplier', 'image')
+        $stockProducts = Product::with('company', 'stores', 'supplier', 'image', 'markup')
             ->where('company_id', $this->shop->company_id)
             ->where('sp_main', 1)
             ->get();
@@ -92,19 +92,15 @@ class PageController extends Controller
     {
         $slugs = explode('/', $path);
 
-        $category = Category::where('company_id', $this->shop->company_id)->where('slug', last($slugs))->first();
+        $slug = end($slugs);
 
-        $product = Product::where('slug', end($slugs))->first();
+        $category = Category::where('company_id', $this->shop->company_id)->where('slug', $slug)->first();
 
-        $checkPath = $product ? $product->path() : $category->path();
-
-        $slugCorrect = strpos($checkPath, $path) !== false;
-
-        abort_if(!$slugCorrect, 404, 'Страница не найдена.');
+        $product = Product::where('slug', $slug)->first();
 
         abort_if($category == null && $product == null, 404, "Страница не найдена.");
 
-        return $product ? $this->showProductPage($product) : $this->showCategoryPage($category));
+        return $product ? $this->showProductPage($product) : $this->showCategoryPage($category);
     }
 
     protected function showCategoryPage(Category $selectedCategory)

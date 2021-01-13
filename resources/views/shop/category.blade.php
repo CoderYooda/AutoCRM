@@ -18,6 +18,9 @@
                     @if($selectedCategory->category_id != 2)
                         <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
                         <a href="{{ $selectedCategory->parent->path() }}">Назад</a>
+                    @else
+                        <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+                        <a href="{{ route('pages.catalogue') }}">Каталог</a>
                     @endif
                 </div>
 
