@@ -1,974 +1,1023 @@
-<html xmlns:v="urn:schemas-microsoft-com:vml"
-      xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:x="urn:schemas-microsoft-com:office:excel"
-      xmlns="http://www.w3.org/TR/REC-html40">
+<html>
+
 <head>
-    <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
-    <meta name=ProgId content=Excel.Sheet>
-    <meta name=Generator content="Microsoft Excel 15">
-    <title>Универсальный передаточный документ</title>
-    <link rel=Stylesheet href="{{ asset('/css/documents/upd.css') }}">
-    <style>
-        <!--table
-        {mso-displayed-decimal-separator:"\,";
-            mso-displayed-thousand-separator:" ";}
-        @page
-        {margin:.2in .2in .2in .2in;
-            mso-header-margin:.51in;
-            mso-footer-margin:.51in;
-            mso-page-orientation:landscape;
-            mso-horizontal-page-align:center;
-            width: 100%;
-        }
-        -->
-    </style>
-    <![if !supportTabStrip]><script language="JavaScript">
-        <!--
-        function fnUpdateTabs()
-        {
-            if (parent.window.g_iIEVer>=4) {
-                if (parent.document.readyState=="complete"
-                    && parent.frames['frTabs'].document.readyState=="complete")
-                    parent.fnSetActiveSheet(0);
-                else
-                    window.setTimeout("fnUpdateTabs();",150);
-            }
-        }
-        //if (window.name!="frSheet")
-        //window.location.replace("../upd-01_10_2017.htm");
-        //else
-        fnUpdateTabs();
-        //-->
-    </script>
-    <![endif]>
+    <link rel = "stylesheet" type = "text/css" href = "{{ asset('/css/documents/upd.css') }}">
 </head>
-<body style="position:relative;" link=blue vlink="#954F72">
-
-<img style="width: 60mm; height: 6mm; right: -60mm; float:right; top: 15mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
-
-<table border=0 cellpadding=0 cellspacing=0 width=3595 style='border-collapse:
- collapse;table-layout:fixed;width:2696pt'>
-    <col class=xl65 width=12 span=88 style='mso-width-source:userset;mso-width-alt:
- 438;width:9pt'>
-    <col class=xl65 width=523 style='mso-width-source:userset;mso-width-alt:19126;
- width:392pt'>
-    <col class=xl65 width=12 span=168 style='mso-width-source:userset;mso-width-alt:
- 438;width:9pt'>
-    <col width=12 span=768 style='mso-width-source:userset;mso-width-alt:438;
- width:9pt'>
-    <tr height=17 style='height:12.75pt'>
-        <td colspan=85 height=17 class=xl109 width=1020 style='height:12.75pt;
-width:765pt'><a name="Print_Area">Приложение N 1 к письму ФНС России от
-                21.10.2013 N ММВ-20-3/96@</a></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=523 style='width:392pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-    </tr>
-    <tr height=16 style='mso-height-source:userset;height:12.0pt'>
-        <td colspan=8 rowspan=4 height=55 class=xl110 width=96 style='height:41.25pt;
-width:72pt'><a href="https://service-online.su/forms/buh/upd/"
-               target="_parent"><span style='font-size:9.0pt;text-decoration:none;
-font-family:"Times New Roman", serif;mso-font-charset:204'>Универсальный
-передаточный документ</span></a></td>
-        <td colspan=9 class=xl111 style='border-left:none'>Счет-фактура N<span
-                style='mso-spacerun:yes'> </span></td>
-        <td colspan=7 class=xl112>{{ $data['id'] ?? 'Не указан' }}</td>
-        <td colspan=2 class=xl113>от</td>
-        <td colspan=10 class=xl112>{{ $data['created_at'] ?? 'Не указан' }}</td>
-        <td colspan=4 class=xl65>(1)</td>
-        <td colspan=45 rowspan=3 class=xl114 width=540 style='width:405pt'>Приложение
-            N 1 к постановлению Правительства Российской Федерации от 26 декабря 2011
-            года № 1137<br>
-            <span style='mso-spacerun:yes'> </span>(в редакции постановления
-            Правительства Российской Федерации от 19&nbsp;августа 2017 года № 981)</td>
-    </tr>
-
-    <tr height=17 style='height:12.75pt'>
-        <td colspan=9 height=17 class=xl111 style='height:12.75pt;border-left:none'>Исправление
-            N</td>
-        <td colspan=7 class=xl115>---</td>
-        <td colspan=2 class=xl113>от</td>
-        <td colspan=10 class=xl115>---</td>
-        <td colspan=4 class=xl65>(1а)</td>
-    </tr>
-    <tr height=7 style='mso-height-source:userset;height:5.25pt'>
-        <td colspan=32 height=7 class=xl66 style='height:5.25pt;border-left:none'>&nbsp;</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Продавец</td>
-        <td colspan=58 class=xl75>
-            {{ $data['company_name'] ?? '---' }}
-        </td>
-        <td colspan=3 class=xl67>(2)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=4 height=15 class=xl65 style='height:11.25pt'>Статус:<span
-                style='mso-spacerun:yes'> </span></td>
-        <td colspan=2 class=xl104>1</td>
-        <td colspan=2 class=xl105 style='border-left:none'> </td>
-        <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $data['legal_address'] ?? '---' }}</td>
-        <td colspan=3 class=xl67>(2а)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=8 rowspan=9 height=135 class=xl106 width=96 style='height:101.25pt;
-width:72pt'><br>
-            1 - счет-фактура и передаточный документ (акт) <br>
-            2 - передаточный документ (акт)</td>
-        <td colspan=16 class=xl102 style='border-left:none'>ИНН/КПП продавца</td>
-        <td colspan=58 class=xl103>{{ $data['inn'] ?? '________' }} / {{ $data['kpp'] ?? '________' }}</td>
-        <td colspan=3 class=xl67>(2б)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Грузоотправитель
-            и его адрес</td>
-        <td colspan=58 class=xl103>---</td>
-        <td colspan=3 class=xl67>(3)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Грузополучатель
-            и его адрес</td>
-        <td colspan=58 class=xl103>---</td>
-        <td colspan=3 class=xl67>(4)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>К
-            платежно-расчетному документу</td>
-        <td colspan=2 class=xl107>N<span style='mso-spacerun:yes'> </span></td>
-        <td colspan=8 class=xl79> </td>
-        <td colspan=2 class=xl67>от</td>
-        <td colspan=46 class=xl103> </td>
-        <td colspan=3 class=xl67>(5)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl108 style='height:11.25pt;border-left:none'>Покупатель</td>
-        <td colspan=58 class=xl75>{{ $data['partner_name'] }}</td>
-        <td colspan=3 class=xl67>(6)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $data['partner_address'] ?? '' }}</td>
-{{--        <td colspan=58 class=xl103>{{ $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address }}</td>--}}
-        <td colspan=3 class=xl67>(6а)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>ИНН/КПП
-            покупателя</td>
-        <td colspan=58 class=xl103>{{ $data['partner_inn'] ?? '________' }} / {{ $data['partner_kpp'] ?? '________' }}</td>
-        <td colspan=3 class=xl67>(6б)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Валюта:
-            наименование, код</td>
-        <td colspan=58 class=xl103>Российский рубль, 643</td>
-        <td colspan=3 class=xl67>(7)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=37 height=15 class=xl99 width=444 style='height:11.25pt;
-border-left:none;width:333pt'>Идентификатор государственного контракта,
-            договора (соглашения) (при наличии)</td>
-        <td colspan=37 class=xl100 width=444 style='width:333pt'>---</td>
-        <td colspan=3 class=xl67>(8)</td>
-    </tr>
-    <tr height=6 style='mso-height-source:userset;height:4.5pt'>
-        <td colspan=8 height=6 class=xl80 style='height:4.5pt'>&nbsp;</td>
-        <td colspan=77 class=xl66 style='border-left:none'>&nbsp;</td>
-    </tr>
-    <tr height=29 style='mso-height-source:userset;height:21.75pt'>
-        <td colspan=2 rowspan=2 height=91 class=xl93 width=24 style='height:68.25pt;
-width:18pt'>N п/п</td>
-        <td colspan=6 rowspan=2 class=xl94 width=72 style='width:54pt'>Код товара/
-            работ, услуг</td>
-        <td colspan=12 rowspan=2 class=xl98 width=144 style='width:108pt'>Наименование
-            товара (описание выполненных работ, оказанных услуг), имущественного права</td>
-        <td colspan=3 rowspan=2 class=xl101 width=36 style='width:27pt'>Код вида
-            товара</td>
-        <td colspan=8 class=xl93 width=96 style='border-left:none;width:72pt'>Единица
-            измерения</td>
-        <td colspan=4 rowspan=2 class=xl93 width=48 style='width:36pt'>Коли-<br>
-            чество (объем)</td>
-        <td colspan=5 rowspan=2 class=xl93 width=60 style='width:45pt'>Цена (тариф)
-            за единицу измерения</td>
-        <td colspan=7 rowspan=2 class=xl93 width=84 style='width:63pt'>Стоимость
-            товаров <br>
-            (работ, услуг), имущественных прав без налога - всего</td>
-        <td colspan=4 rowspan=2 class=xl93 width=48 style='width:36pt'>В том числе
-            сумма акциза</td>
-        <td colspan=4 rowspan=2 class=xl93 width=48 style='width:36pt'>Нало-<br>
-            говая ставка</td>
-        <td colspan=6 rowspan=2 class=xl93 width=72 style='width:54pt'>Сумма налога,
-            предъявляемая покупателю</td>
-        <td colspan=7 rowspan=2 class=xl93 width=84 style='width:63pt'>Стоимость
-            товаров <br>
-            (работ, услуг), имущественных прав с налогом - всего</td>
-        <td colspan=11 class=xl93 width=132 style='border-left:none;width:99pt'>Страна
-            происхождения товара</td>
-        <td colspan=6 rowspan=2 class=xl93 width=72 style='width:54pt'>Номер
-            таможенной декларации</td>
-    </tr>
-    <tr height=62 style='mso-height-source:userset;height:46.5pt'>
-        <td colspan=2 height=62 class=xl93 width=24 style='height:46.5pt;border-left:
-none;width:18pt'>код</td>
-        <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>условное
-            обозначение (национальное)</td>
-        <td colspan=4 class=xl93 width=48 style='border-left:none;width:36pt'>Цифро-<br>
-            вой код</td>
-        <td colspan=7 class=xl93 width=84 style='border-left:none;width:63pt'>Краткое
-            наименование</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=2 height=15 class=xl93 width=24 style='height:11.25pt;width:18pt'>А</td>
-        <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>Б</td>
-        <td colspan=12 class=xl98 width=144 style='width:108pt'>1</td>
-        <td colspan=3 class=xl93 width=36 style='border-left:none;width:27pt'>1а</td>
-        <td colspan=2 class=xl93 width=24 style='border-left:none;width:18pt'>2</td>
-        <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>2а</td>
-        <td colspan=4 class=xl93 width=48 style='border-left:none;width:36pt'>3</td>
-        <td colspan=5 class=xl93 width=60 style='border-left:none;width:45pt'>4</td>
-        <td colspan=7 class=xl93 width=84 style='border-left:none;width:63pt'>5</td>
-        <td colspan=4 class=xl93 width=48 style='border-left:none;width:36pt'>6</td>
-        <td colspan=4 class=xl93 width=48 style='border-left:none;width:36pt'>7</td>
-        <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>8</td>
-        <td colspan=7 class=xl93 width=84 style='border-left:none;width:63pt'>9</td>
-        <td colspan=4 class=xl93 width=48 style='border-left:none;width:36pt'>10</td>
-        <td colspan=7 class=xl93 width=84 style='border-left:none;width:63pt'>10а</td>
-        <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>11</td>
-    </tr>
-    @foreach($data['products'] as $product_id => $product)
-
-        @continue(!isset($product['id']))
-
-        <tr height=16 style='mso-height-source:userset;height:12.0pt'>
-            <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
-            <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>
-            <td colspan=12 class=xl96 width=144 style='width:108pt'>{{ $product['name'] }}</td>
-            <td colspan=3 class=xl93 width=36 style='width:27pt'>---</td>
-            <td colspan=2 class=xl92 style='border-left:none'>796</td>
-            <td colspan=6 class=xl92 style='border-left:none'>шт</td>
-            <td colspan=4 class=xl97 style='border-left:none'>{{ $product['count'] }}</td>
-            <td colspan=5 class=xl91 style='border-left:none'>{{ correct_price($product['price_without_nds']) }}</td>
-            <td colspan=7 class=xl91 style='border-left:none'>{{ correct_price($product['price_without_nds'] * $product['count']) }}</td>
-            <td colspan=4 class=xl91 style='border-left:none'>без акциза</td>
-            <td colspan=4 class=xl91 style='border-left:none'>20%</td>
-            <td colspan=6 class=xl91 style='border-left:none'>{{ correct_price($product['nds'] * $product['count']) }}</td>
-            <td colspan=7 class=xl91 style='border-left:none'>{{ correct_price($product['price_with_nds'] * $product['count']) }}</td>
-            <td colspan=4 class=xl92 style='border-left:none'>---</td>
-            <td colspan=7 class=xl92 style='border-left:none'>---</td>
-            <td colspan=6 class=xl92 style='border-left:none'>---</td>
+<body>
+    <table style="width:100%; height:0px; " cellspacing="0">
+        <colgroup>
+            <col width="7">
+            <col width="66">
+            <col width="18">
+            <col width="14">
+            <col width="14">
+            <col width="116">
+            <col width="109">
+            <col width="28">
+            <col width="133">
+            <col width="26">
+            <col width="533">
+            <col width="7">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr class="R0">
+            <td><span></span></td>
+            <td class="R0C1" colspan="3" rowspan="3">Универсальный передаточный<br>документ</td>
+            <td class="R0C4"><span></span></td>
+            <td class="R0C5">Счет-фактура №</td>
+            <td class="R0C6">{{ $data['id'] }}</td>
+            <td class="R0C7">от</td>
+            <td class="R0C6">{{ $data['created_at'] }}</td>
+            <td class="R0C9"><span style="white-space:nowrap;max-width:0px;">(1)</span></td>
+            <td class="R0C10" rowspan="3"><span style="white-space:nowrap;max-width:0px;">Приложение&nbsp;№&nbsp;1&nbsp;к&nbsp;постановлению&nbsp;Правительства&nbsp;Российской&nbsp;Федерации&nbsp;от&nbsp;26&nbsp;декабря&nbsp;2011&nbsp;г.&nbsp;№&nbsp;1137<br>(в&nbsp;редакции&nbsp;постановления&nbsp;Правительства&nbsp;Российской&nbsp;Федерации&nbsp;от&nbsp;19&nbsp;августа&nbsp;2017&nbsp;г.&nbsp;№&nbsp;981)</span>
+            </td>
+            <td class="R0C11"><span></span></td>
+            <td><span></span></td>
+            <td></td>
         </tr>
-    @endforeach
-
-    <tr height="16" style="mso-height-source:userset;height:12.0pt">
-        <td colspan="2" height="16" class="xl93" width="24" style="height:12.0pt;width:18pt">&nbsp;</td>
-        <td colspan="6" class="xl94" width="72" style="border-left:none;width:54pt">&nbsp;</td>
-        <td colspan="32" class="xl95" width="384" style="width:288pt">Всего к оплате</td>
-        <td colspan="7" class="xl91" style="border-left:none">{{ correct_price($data['products']['price_without_nds']) }}</td>
-        <td colspan="8" class="xl91" style="border-left:none">Х</td>
-        <td colspan="6" class="xl91" style="border-left:none">{{ correct_price($data['products']['nds']) }}</td>
-        <td colspan="7" class="xl91" style="border-left:none">{{ correct_price($data['products']['price_with_nds']) }}</td>
-        <td colspan="4" class="xl92" style="border-left:none">&nbsp;</td>
-        <td colspan="7" class="xl92" style="border-left:none">&nbsp;</td>
-        <td colspan="6" class="xl92" style="border-left:none">&nbsp;</td>
-    </tr>
-
-    <tr height=6 style='mso-height-source:userset;height:4.5pt'>
-        <td colspan=8 height=6 class=xl89 style='height:4.5pt'>&nbsp;</td>
-        <td colspan=77 class=xl90>&nbsp;</td>
-    </tr>
-    <tr height=30 style='mso-height-source:userset;height:22.5pt'>
-        <td colspan=8 height=30 class=xl81 width=96 style='height:22.5pt;width:72pt'>Документ
-            составлен на<span style='mso-spacerun:yes'> </span></td>
-        <td class=xl66>&nbsp;</td>
-        <td colspan="16" class="xl81" width="192" style="width:144pt">Руководитель
-            организации <br>
-            или иное уполномоченное лицо
-        </td>
-        <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
-        <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company['owner'] ?? '' }}</td>
-{{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>--}}
-        <td colspan="16" class="xl81" width="192" style="width:144pt">Главный бухгалтер
-            <br>
-            или иное уполномоченное лицо</td>
-        <td colspan="6" class="xl88" width="72" style="width:54pt">&nbsp;</td>
-        <td class="xl68" width="12" style="width:9pt"></td>
-        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $data['auditor'] ?? '' }}</td>
-{{--        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>--}}
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=3 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
-        <td colspan=5 class=xl65><span style='mso-spacerun:yes'> </span>листах</td>
-        <td class=xl66>&nbsp;</td>
-        <td colspan=16 class=xl81 width=192 style='width:144pt'></td>
-        <td colspan=6 class=xl69 width=72 style='width:54pt'>(подпись)</td>
-        <td class=xl69 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl69 width=180 style='width:135pt'>(ф.и.о.)</td>
-        <td colspan="16" class="xl87" width="192" style="width:144pt"></td>
-        <td colspan="6" class="xl69" width="72" style="width:54pt">(подпись)</td>
-        <td class="xl69" width="12" style="width:9pt"></td>
-        <td colspan="15" class="xl69" width="180" style="width:135pt">(ф.и.о.)</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=8 height=15 class=xl80 style='height:11.25pt'>&nbsp;</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=16 class=xl81 width=192 style='width:144pt'>Индивидуальный
-            предприниматель</td>
-        <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
-        <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$data['is_company'] ? $data['company_name'] : '---' }}</td>
-{{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>--}}
-        <td colspan=3 class=xl81 width=36 style='width:27pt'></td>
-        <td colspan=35 class=xl83 width=420 style='width:315pt'>&nbsp;</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=8 height=15 class=xl80 style='height:11.25pt'>&nbsp;</td>
-        <td class=xl70 style='border-left:none'>&nbsp;</td>
-        <td colspan=16 class=xl84 width=192 style='width:144pt'>или иное
-            уполномоченное лицо</td>
-        <td colspan=6 class=xl71 width=72 style='width:54pt'>(подпись)</td>
-        <td class=xl71 width=12 style='width:9pt'>&nbsp;</td>
-        <td colspan=15 class=xl71 width=180 style='width:135pt'>(ф.и.о.)</td>
-        <td colspan=3 class=xl85 width=36 style='width:27pt'>&nbsp;</td>
-        <td colspan=35 class=xl86 width=420 style='width:315pt'>(реквизиты
-            свидетельства о государственной регистрации индивидуального предпринимателя)</td>
-    </tr>
-    <tr height=6 style='mso-height-source:userset;height:4.5pt'>
-        <td colspan=85 height=6 class=xl65 style='height:4.5pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=22 height=15 class=xl65 style='height:11.25pt'>Основание передачи
-            (сдачи) / получения (приемки)</td>
-        <td colspan=60 class=xl83 width=720 style='width:540pt'>Счёт №{{ $data['id'] ?? 'Не указано' }}</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'>[8]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=22 height=15 class=xl65 style='height:11.25pt'></td>
-        <td colspan=60 class=xl82 width=720 style='width:540pt'>(договор;
-            доверенность и др.)</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl65 style='height:11.25pt'>Данные о
-            транспортировке и грузе</td>
-        <td colspan=66 class=xl83 width=792 style='width:594pt'>&nbsp;</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'>[9]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=16 height=15 class=xl65 style='height:11.25pt'></td>
-        <td colspan=66 class=xl82 width=792 style='width:594pt'>(транспортная
-            накладная, поручение экспедитору, экспедиторская / складская расписка и др. /
-            масса нетто/ брутто груза, если не приведены ссылки на транспортные
-            документы, содержащие эти сведения)</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=42 height=15 class=xl80 style='height:11.25pt'>Товар (груз)
-            передал / услуги, результаты работ, права сдал</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=42 class=xl81 width=504 style='width:378pt'>Товар (груз) получил
-            / услуги, результаты работ, права принял<span
-                style='mso-spacerun:yes'> </span></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=13 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=10 class=xl79>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ $data['manager_name'] ?? '' }}</td>
-        <td colspan=3 class=xl76>[10]</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=13 class=xl79>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=10 class=xl79>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=14 class=xl75>{{ $data['partner_cut_surname'] }}</td>
-{{--        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->cur_surname : $shipment->partner->cur_surname }}</td>--}}
-        <td colspan=3 class=xl68 width=36 style='width:27pt'>[15]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=13 height=15 class=xl72 style='height:11.25pt'>(должность)</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl72>(подпись)</td>
-        <td class=xl72></td>
-        <td colspan=14 class=xl72>(ф.и.о.)</td>
-        <td colspan=3 class=xl78>&nbsp;</td>
-        <td class=xl73 style='border-left:none'>&nbsp;</td>
-        <td colspan=13 class=xl72>(должность)</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl72>(подпись)</td>
-        <td class=xl72></td>
-        <td colspan=14 class=xl72>(ф.и.о.)</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=15 height=15 class=xl65 style='height:11.25pt'>Дата отгрузки,
-            передачи (сдачи)</td>
-        <td class=xl74>&quot;</td>
-        <td colspan=2 class=xl79>&nbsp;</td>
-        <td class=xl65>&quot;</td>
-        <td colspan=6 class=xl79>&nbsp;</td>
-        <td colspan=2 class=xl74>20</td>
-        <td colspan=2 class=xl75>&nbsp;</td>
-        <td colspan=10 class=xl65>г.</td>
-        <td colspan=3 class=xl76>[11]</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=13 class=xl65>Дата получения (приемки)</td>
-        <td class=xl74>&quot;</td>
-        <td colspan=2 class=xl79>&nbsp;</td>
-        <td class=xl65>&quot;</td>
-        <td colspan=6 class=xl79>&nbsp;</td>
-        <td colspan=2 class=xl74>20</td>
-        <td colspan=2 class=xl75>&nbsp;</td>
-        <td colspan=12 class=xl65>г.</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'>[16]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl65 style='height:11.25pt'>Иные сведения об
-            отгрузке, передаче</td>
-        <td colspan=3 class=xl76>&nbsp;</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl65>Иные сведения о получении, приемке</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl75 style='height:11.25pt'>&nbsp;</td>
-        <td colspan=3 class=xl76>[12]</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl75>&nbsp;</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'>[17]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl77 style='height:11.25pt'>(ссылки на
-            неотъемлемые приложения, сопутствующие документы, иные документы и т.п.)</td>
-        <td colspan=3 class=xl78>&nbsp;</td>
-        <td class=xl73 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl77>(информация о наличии/отсутствии претензии; ссылки
-            на неотъемлемые приложения, и другие<span style='mso-spacerun:yes'> 
-</span>документы и т.п.)</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl65 style='height:11.25pt'>Ответственный за
-            правильность оформления факта хозяйственной жизни</td>
-        <td colspan=3 class=xl76>&nbsp;</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl65>Ответственный за правильность оформления факта
-            хозяйственной жизни</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=13 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=10 class=xl79>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=14 class=xl75></td>
-        <td colspan=3 class=xl76>[13]</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=13 class=xl79>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=10 class=xl79>&nbsp;</td>
-        <td class=xl67></td>
-        <td colspan=14 class=xl75>---</td>
-        <td colspan=3 class=xl68 width=36 style='width:27pt'>[18]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=13 height=15 class=xl72 style='height:11.25pt'>(должность)</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl72>(подпись)</td>
-        <td class=xl72></td>
-        <td colspan=14 class=xl72>(ф.и.о.)</td>
-        <td colspan=3 class=xl78>&nbsp;</td>
-        <td class=xl73 style='border-left:none'>&nbsp;</td>
-        <td colspan=13 class=xl72>(должность)</td>
-        <td class=xl72></td>
-        <td colspan=10 class=xl72>(подпись)</td>
-        <td class=xl72></td>
-        <td colspan=14 class=xl72>(ф.и.о.)</td>
-        <td colspan=3 class=xl67></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl65 style='height:11.25pt'>Наименование
-            экономического субъекта – составителя документа (в т.ч. комиссионера /
-            агента)</td>
-        <td colspan=3 class=xl76>&nbsp;</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl65>Наименование экономического субъекта - составителя
-            документа</td>
-        <td colspan=3 class=xl67></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
-
-            @if($data['is_company'])
-                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
-            @else
-                {{ $data['company_name'] ?? '' }}
-            @endif
-
-        </td>
-        <td colspan=3 class=xl76>[14]</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl75>
-
-            @if($data['partner_type'] == 2)
-                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
-            @elseif($data['partner_type'] == 1)
-                {{ $data['partner_fio'] ?? '' }}
-            @else
-                Частное лицо
-            @endif
-
-        </td>
-        <td colspan=3 class=xl67>[19]</td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=39 height=15 class=xl77 style='height:11.25pt'>(может не
-            заполняться при проставлении печати в М.П., может быть указан ИНН / КПП)</td>
-        <td colspan=3 class=xl78>&nbsp;</td>
-        <td class=xl73 style='border-left:none'>&nbsp;</td>
-        <td colspan=39 class=xl77>(может не заполняться при проставлении печати в
-            М.П., может быть указан ИНН / КПП)</td>
-        <td colspan=3 class=xl67></td>
-    </tr>
-    <tr height=15 style='mso-height-source:userset;height:11.25pt'>
-        <td colspan=13 height=15 class=xl67 style='height:11.25pt'>М.П.</td>
-        <td colspan=26 class=xl65></td>
-        <td colspan=3 class=xl76>&nbsp;</td>
-        <td class=xl66 style='border-left:none'>&nbsp;</td>
-        <td colspan=13 class=xl67>М.П.</td>
-        <td colspan=26 class=xl65></td>
-        <td colspan=3 class=xl67></td>
-    </tr>
-    <![if supportMisalignedColumns]>
-    <tr height=0 style='display:none'>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=523 style='width:392pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-        <td width=12 style='width:9pt'></td>
-    </tr>
-    <![endif]>
-</table>
+        <tr class="R0">
+            <td><span></span></td>
+            <td class="R0C4"><span></span></td>
+            <td class="R1C5">Исправление №</td>
+            <td class="R1C6">--</td>
+            <td class="R1C7"><span style="white-space:nowrap;max-width:0px;">от</span></td>
+            <td class="R1C8"><span style="white-space:nowrap;max-width:0px;">--</span></td>
+            <td class="R0C9"><span style="white-space:nowrap;max-width:0px;">(1а)</span></td>
+            <td class="R0C11"><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R2">
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R2C4">
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R2C10">
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:7px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:7px;overflow:hidden;">&nbsp;</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table style="width:100%; height:0px; " cellspacing="0">
+        <colgroup>
+            <col width="7">
+            <col width="66">
+            <col width="18">
+            <col width="14">
+            <col width="13">
+            <col width="210">
+            <col width="89">
+            <col width="45">
+            <col width="22">
+            <col width="23">
+            <col width="45">
+            <col width="22">
+            <col width="23">
+            <col width="89">
+            <col width="357">
+            <col width="26">
+            <col width="2">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr class="R3">
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R3C4"><span></span></td>
+            <td class="R3C5"><span style="white-space:nowrap;max-width:0px;">Продавец:</span></td>
+            <td class="R3C6" colspan="9">{{ $data['company_name'] }}</td>
+            <td class="R3C15"><span style="white-space:nowrap;max-width:0px;">(2)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R4">
+            <td><span></span></td>
+            <td class="R4C1"><span style="white-space:nowrap;max-width:0px;">&nbsp;&nbsp;&nbsp;&nbsp;Статус:</span></td>
+            <td class="R4C2"><span style="white-space:nowrap;max-width:0px;">1</span></td>
+            <td class="R4C3"><span></span></td>
+            <td class="R4C4"><span></span></td>
+            <td class="R4C5">Адрес:</td>
+            <td class="R4C6" colspan="9">{{ $data['legal_address'] }}</td>
+            <td class="R4C15"><span style="white-space:nowrap;max-width:0px;">(2а)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R3">
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R3C4"><span></span></td>
+            <td class="R5C5">ИНН/КПП продавца:</td>
+            <td class="R5C6" colspan="9">{{ $data['inn'] }}/{{ $data['kpp'] }}</td>
+            <td class="R3C15"><span style="white-space:nowrap;max-width:0px;">(2б)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R4">
+            <td><span></span></td>
+            <td class="R6C1" colspan="3" rowspan="3">1 – счет-фактура и передаточный документ (акт)<br>2 – передаточный
+                документ (акт)
+            </td>
+            <td class="R4C4"><span></span></td>
+            <td class="R6C5">Грузоотправитель и его адрес:</td>
+            <td class="R6C6" colspan="9">--</td>
+            <td class="R6C15"><span style="white-space:nowrap;max-width:0px;">(3)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R4">
+            <td><span></span></td>
+            <td class="R4C4"><span></span></td>
+            <td class="R6C5">Грузополучатель и его адрес:</td>
+            <td class="R6C6" colspan="9">--</td>
+            <td class="R6C15"><span style="white-space:nowrap;max-width:0px;">(4)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R4">
+            <td><span></span></td>
+            <td class="R4C4"><span></span></td>
+            <td class="R6C5">К платежно-расчетному документу №</td>
+            <td class="R6C6" colspan="9"> от</td>
+            <td class="R6C15"><span style="white-space:nowrap;max-width:0px;">(5)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R3">
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R3C4"><span></span></td>
+            <td class="R9C5"><span style="white-space:nowrap;max-width:0px;">Покупатель:</span></td>
+            <td class="R9C6" colspan="9">{КлиентНаименование}</td>
+            <td class="R9C15"><span style="white-space:nowrap;max-width:0px;">(6)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R3">
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R3C4"><span></span></td>
+            <td class="R5C5">Адрес:</td>
+            <td class="R10C6" colspan="9">{КлиентАдрес}</td>
+            <td class="R9C15"><span style="white-space:nowrap;max-width:0px;">(6а)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R3">
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R3C4"><span></span></td>
+            <td class="R5C5">ИНН/КПП покупателя:</td>
+            <td class="R11C6" colspan="9">{КлиентИНН}/{КлиентКПП}</td>
+            <td class="R9C15"><span style="white-space:nowrap;max-width:0px;">(6б)</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R12">
+            <td>
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R12C4">
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R12C5">Валюта: наименование, код</td>
+            <td class="R12C6" colspan="9">Российский рубль, 643</td>
+            <td class="R12C15"><span style="white-space:nowrap;max-width:0px;">(7)</span></td>
+            <td>
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:14px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:14px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R3">
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R13C3"><span></span></td>
+            <td class="R13C4"><span></span></td>
+            <td class="R5C5" colspan="7">Идентификатор государственного контракта, договора (соглашения) (при наличии):</td>
+            <td class="R13C12" colspan="3"><span></span></td>
+            <td class="R13C15" colspan="1"><span style="white-space:nowrap;max-width:0px;">(8)</span></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>{СписокЗапчастейУПД}
+    <table style="width:100%; height:0px; " cellspacing="0">
+        <colgroup>
+            <col width="7">
+            <col width="98">
+            <col width="16">
+            <col width="189">
+            <col width="123">
+            <col width="11">
+            <col width="161">
+            <col width="10">
+            <col width="35">
+            <col width="130">
+            <col width="123">
+            <col width="11">
+            <col width="153">
+            <col width="6">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr class="R14">
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R14C3">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R27C3">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:5px;overflow:hidden;">&nbsp;</div>
+            </td>
+        </tr>
+        <tr class="R28">
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C1" rowspan="4">Документ составлен на<br>2 листах</td>
+            <td class="R28C2">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C3"><span style="white-space:nowrap;max-width:0px;">Руководитель&nbsp;организации<br>или&nbsp;иное&nbsp;уполномоченное&nbsp;лицо</span>
+            </td>
+            <td class="R28C4">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C4"><br></td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C8" colspan="2"><span style="white-space:nowrap;max-width:0px;">Главный&nbsp;бухгалтер<br>или&nbsp;иное&nbsp;уполномоченное&nbsp;лицо</span>
+            </td>
+            <td class="R28C4">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C4"><br></td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:27px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R29">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R29C2">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R29C3">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R29C4"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R29C4"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R29C4"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R29C4"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R28">
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C2">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C3"><span style="white-space:nowrap;max-width:0px;">Индивидуальный&nbsp;предприниматель<br>или&nbsp;иное&nbsp;уполномоченное&nbsp;лицо</span>
+            </td>
+            <td class="R28C4">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R28C4">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R30C9" colspan="4">
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:27px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:27px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R29">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R31C2">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R31C3">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R31C4"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td class="R31C5">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R31C4"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td class="R31C5">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R31C5">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R31C4" colspan="4"><span style="white-space:nowrap;max-width:0px;">(реквизиты&nbsp;свидетельства&nbsp;о&nbsp;государственной&nbsp;&nbsp;регистрации&nbsp;индивидуального&nbsp;предпринимателя)</span>
+            </td>
+            <td class="R31C13">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table style="width:100%; height:0px; " cellspacing="0">
+        <colgroup>
+            <col width="11">
+            <col width="154">
+            <col width="11">
+            <col width="21">
+            <col width="91">
+            <col width="56">
+            <col width="11">
+            <col width="168">
+            <col width="25">
+            <col width="7">
+            <col width="7">
+            <col width="154">
+            <col width="11">
+            <col width="91">
+            <col width="56">
+            <col width="11">
+            <col width="161">
+            <col width="25">
+            <col width="3">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr class="R14">
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R32C5" colspan="12" rowspan="2">Основной договор</td>
+            <td class="R32C17" rowspan="3"><span style="white-space:nowrap;max-width:0px;">[8]</span></td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:5px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R33C1" colspan="4"><span style="white-space:nowrap;max-width:0px;">Основание&nbsp;передачи&nbsp;(сдачи)&nbsp;/&nbsp;получения&nbsp;(приемки)</span>
+            </td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R34">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="12"><span style="white-space:nowrap;max-width:0px;">(договор;&nbsp;доверенность&nbsp;и&nbsp;др.)</span>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R35C1" colspan="3"><span style="white-space:nowrap;max-width:0px;">Данные&nbsp;о&nbsp;транспортировке&nbsp;и&nbsp;грузе</span>
+            </td>
+            <td class="R35C4" colspan="13"><span></span></td>
+            <td class="R35C17" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[9]</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R34">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="13"><span style="white-space:nowrap;max-width:0px;">(транспортная&nbsp;накладная,&nbsp;поручение&nbsp;экспедитору,&nbsp;экспедиторская&nbsp;/&nbsp;складская&nbsp;расписка&nbsp;и&nbsp;др.&nbsp;/&nbsp;масса&nbsp;нетто/&nbsp;брутто&nbsp;груза,&nbsp;если&nbsp;не&nbsp;приведены&nbsp;ссылки&nbsp;на&nbsp;транспортные&nbsp;документы,&nbsp;содержащие&nbsp;эти&nbsp;сведения)</span>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R14">
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R37C8">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R27C3">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R37C8">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:5px;overflow:hidden;">&nbsp;</div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R38C1" colspan="7"><span style="white-space:nowrap;max-width:0px;">Товар&nbsp;(груз)&nbsp;передал&nbsp;/&nbsp;услуги,&nbsp;результаты&nbsp;работ,&nbsp;права&nbsp;сдал</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R38C1" colspan="6"><span style="white-space:nowrap;max-width:0px;">Товар&nbsp;(груз)&nbsp;получил&nbsp;/&nbsp;услуги,&nbsp;результаты&nbsp;работ,&nbsp;права&nbsp;принял</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R35C4">Директор</td>
+            <td><span></span></td>
+            <td class="R35C4" colspan="3"><span></span></td>
+            <td><span></span></td>
+            <td class="R35C4"><br></td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[10]</span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R35C4"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R35C4" colspan="2"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R35C4"><span></span></td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[15]</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R34">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(должность)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="3"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R40C10">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(должность)</span></td>
+            <td class="R40C12">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="2"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td class="R40C12">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R38C1" colspan="3"><span style="white-space:nowrap;max-width:0px;">Дата&nbsp;отгрузки,&nbsp;передачи&nbsp;(сдачи)</span>
+            </td>
+            <td class="R41C4" colspan="2"><span style="white-space:nowrap;max-width:0px;">{ТекущаяДата}</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R38C8"><span style="white-space:nowrap;max-width:0px;">[11]</span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R38C1"><span style="white-space:nowrap;max-width:0px;">Дата&nbsp;получения&nbsp;(приемки)</span></td>
+            <td><span></span></td>
+            <td class="R41C13" colspan="2"><span style="white-space:nowrap;max-width:0px;">«&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;года</span>
+            </td>
+            <td class="R41C15"><span></span></td>
+            <td class="R41C15"><span></span></td>
+            <td class="R41C17"><span style="white-space:nowrap;max-width:0px;">[16]</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R14">
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R37C8">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R14C3">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R37C8">
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:5px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:5px;overflow:hidden;">&nbsp;</div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R38C1" colspan="7"><span style="white-space:nowrap;max-width:0px;">Иные&nbsp;сведения&nbsp;об&nbsp;отгрузке,&nbsp;передаче</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R38C1" colspan="6"><span style="white-space:nowrap;max-width:0px;">Иные&nbsp;сведения&nbsp;о&nbsp;получении,&nbsp;приемке</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R35C4" colspan="7"><span></span></td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[12]</span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R35C4" colspan="6"><span></span></td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[17]</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R34">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="7"><span style="white-space:nowrap;max-width:0px;">(ссылки&nbsp;на&nbsp;неотъемлемые&nbsp;приложения,&nbsp;сопутствующие&nbsp;документы,&nbsp;иные&nbsp;документы&nbsp;и&nbsp;т.п.)</span>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R40C10">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="6"><span style="white-space:nowrap;max-width:0px;">(информация&nbsp;о&nbsp;наличии/отсутствии&nbsp;претензии;&nbsp;ссылки&nbsp;на&nbsp;неотъемлемые&nbsp;приложения,&nbsp;и&nbsp;другие&nbsp;&nbsp;документы&nbsp;и&nbsp;т.п.)</span>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R38C1" colspan="7"><span style="white-space:nowrap;max-width:0px;">Ответственный&nbsp;за&nbsp;правильность&nbsp;оформления&nbsp;факта&nbsp;хозяйственной&nbsp;жизни</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R33C1" colspan="6"><span style="white-space:nowrap;max-width:0px;">Ответственный&nbsp;за&nbsp;правильность&nbsp;оформления&nbsp;факта&nbsp;хозяйственной&nbsp;жизни</span>
+            </td>
+            <td class="R46C17"><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R35C4"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R35C4" colspan="3"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R35C4"><br></td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[13]</span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R35C4"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R35C4" colspan="2"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R35C4"><span></span></td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[18]</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R34">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(должность)</span></td>
+            <td class="R40C12">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="3"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td class="R40C12">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R40C10">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(должность)</span></td>
+            <td class="R40C12">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="2"><span style="white-space:nowrap;max-width:0px;">(подпись)</span></td>
+            <td class="R40C12">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5"><span style="white-space:nowrap;max-width:0px;">(ф.и.о.)</span></td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R38C1" colspan="7"><span style="white-space:nowrap;max-width:0px;">Наименование&nbsp;экономического&nbsp;субъекта&nbsp;–&nbsp;составителя&nbsp;документа&nbsp;(в&nbsp;т.ч.&nbsp;комиссионера&nbsp;/&nbsp;агента)</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R38C1" colspan="6"><span style="white-space:nowrap;max-width:0px;">Наименование&nbsp;экономического&nbsp;субъекта&nbsp;–&nbsp;составителя&nbsp;документа</span>
+            </td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R50C1" colspan="7">{{ $data['company_name'] }}, ИНН/КПП {ОргИНН}/{ОргКПП}</td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[14]</span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R50C1" colspan="6">{КлиентНаименование}, ИНН/КПП {КлиентИНН}/{КлиентКПП}</td>
+            <td class="R39C8" rowspan="2"><span style="white-space:nowrap;max-width:0px;">[19]</span></td>
+            <td colspan="2"><span></span></td>
+            <td></td>
+        </tr>
+        <tr class="R34">
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="7"><span style="white-space:nowrap;max-width:0px;">(может&nbsp;не&nbsp;заполняться&nbsp;при&nbsp;проставлении&nbsp;печати&nbsp;в&nbsp;М.П.,&nbsp;может&nbsp;быть&nbsp;указан&nbsp;ИНН&nbsp;/&nbsp;КПП)</span>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R40C10">
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td class="R34C5" colspan="6"><span style="white-space:nowrap;max-width:0px;">(может&nbsp;не&nbsp;заполняться&nbsp;при&nbsp;проставлении&nbsp;печати&nbsp;в&nbsp;М.П.,&nbsp;может&nbsp;быть&nbsp;указан&nbsp;ИНН&nbsp;/&nbsp;КПП)</span>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="position:relative; height:10px;width: 100%; overflow:hidden;"><span></span></div>
+            </td>
+            <td>
+                <div style="width:100%;height:10px;overflow:hidden;"></div>
+            </td>
+        </tr>
+        <tr class="R33">
+            <td><span></span></td>
+            <td class="R52C1"><span style="white-space:nowrap;max-width:0px;">М.П.</span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td class="R38C8"><span></span></td>
+            <td><span></span></td>
+            <td class="R38C10"><span></span></td>
+            <td class="R52C11"><span style="white-space:nowrap;max-width:0px;">М.П.</span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R39C12"><span></span></td>
+            <td class="R46C17"><span></span></td>
+            <td><span></span></td>
+            <td><span></span></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
 </body>
+
 </html>

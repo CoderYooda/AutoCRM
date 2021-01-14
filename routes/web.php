@@ -1,5 +1,20 @@
 <?php
 
+Route::get('/test', function () {
+    $document = \App\Models\Document::find(28);
+
+    $data = json_decode($document['data'], true);
+
+    $view_name = $data['data']['view'];
+
+    $view = view($view_name)->with([
+        'data' => $data['data'],
+        'barcode' => $document->barcode
+    ]);
+
+    return $view;
+});
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');

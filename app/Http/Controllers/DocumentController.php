@@ -11,6 +11,8 @@ use App\Models\Refund;
 use App\Models\Shipment;
 use App\Models\Warrant;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Comment\Doc;
@@ -237,9 +239,21 @@ class DocumentController extends Controller
 
         $html = $view->render();
 
-        $pdf = \PDF::loadHTML($html);
+        $fields = [
+//            'debugCss' => true,
+//            'debugLayout' => true,
+//            'dpi' => 300,
+//            'fontHeightRatio' => 1.1,
+//            'defaultMediaType' => 'print'
+        ];
 
-        return $pdf->stream();
+        $pdf = new Dompdf($fields);
+
+        $pdf = $pdf->setPaper('A4', 'landscape');
+
+        $pdf->loadHtml($html);
+
+        return $pdf->render();
     }
 
     public function cheque(Request $request)
@@ -260,6 +274,8 @@ class DocumentController extends Controller
         ];
 
         $view_name .= $types[$id];
+
+        dd($data['ids']);
 
         $products = Product::with('supplier')->whereIn('id', $data['ids'])->get();
 
