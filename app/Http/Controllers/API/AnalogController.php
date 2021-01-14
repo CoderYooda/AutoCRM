@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 
 class AnalogController extends Controller
 {
-    protected $host = 'http://id8341.public.api.abcp.ru/';
-    protected $login = 'audi-31@yandex.ru';
-    protected $password = 'i7r7o7n7';
+    protected $host = 'http://autorus.public.api.abcp.ru/';
+    protected $login = 'vk019578';
+    protected $password = 'vk019578';
 
     public function getManufacturersByArticle(string $article)
     {
@@ -40,12 +40,12 @@ class AnalogController extends Controller
         $params = [
             'number' => $article,
             'brand'  => $brand,
-            'useOnlineStocks' => 0,
-            'disableOnlineFiltering' => 1,
-            'withOutAnalogs' => 0
+            'format' => 'bnphic',
         ];
 
-        $response = $this->query('search/articles/', $params, 'GET');
+        $response = $this->query('articles/info/', $params, 'GET');
+
+        dd($response);
 
         $results = [];
 
@@ -84,7 +84,7 @@ class AnalogController extends Controller
             $result = file_get_contents($full_path, null, stream_context_create($context));
             $result = json_decode($result, true);
         } catch (\Exception $exception) {
-//            dd($exception);
+            dd($exception);
         }
 
         if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {

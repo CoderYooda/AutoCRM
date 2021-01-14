@@ -420,7 +420,7 @@ class StoreController extends Controller
     public function getAnalogues(Request $request)
     {
         $brand = $request->brand;
-        $article = $request->product;
+        $article = $request->article;
 
         $controller = new AnalogController();
 

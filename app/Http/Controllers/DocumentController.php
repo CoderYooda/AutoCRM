@@ -81,6 +81,11 @@ class DocumentController extends Controller
                 'name' => 'Универсальный передаточный документ',
                 'class' => Shipment::class
             ],
+            'defective-act' => [
+                'view' => 'documents.defective-act',
+                'name' => 'Торг 16',
+                'class' => Product::class
+            ],
             'cheque' => ['view' => 'cheques.'],
             'statistic-result' => ['view' => 'documents.statistic-result']
         ];
