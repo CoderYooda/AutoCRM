@@ -1,7 +1,7 @@
 <tr class="product_list_elem " id="product_selected_{{ $product->id }}">
     <input name="products[{{ $product->id }}][id]" value="{{ $product->id }}" type="hidden" >
 
-    <input name="products[{{ $product->id }}][price]" value="{{ $providerorder->getArticlePrice($product->id) }}" type="hidden" >
+    <input name="products[{{ $product->id }}][price]" value="{{ $providerorder->getProductPrice($product->id) }}" type="hidden" >
 
     <td title="{{ $product->name }}"><span class="product_list_element_name">{{ $product->name }}</span></td>
     <td><div class="compressed" style="width: 100px;">{{ $product->article }}</div></td>
@@ -10,12 +10,12 @@
                @if($product->count != null) value="{{ $product->count }}" @elseif(isset($product->pivot->count)) value="{{$product->pivot->count}}"@else value="0" @endif
                type="number" ></td>
     <td>
-        {{ $providerorder->getArticleEntredCount($product->id) }} / {{ $providerorder->getArticleCount($product->id) }}
+        {{ $providerorder->getProductEntredCount($product->id) }} / {{ $providerorder->getProductCount($product->id) }}
 
     </td>
 
     <td>
-        {{ $providerorder->getArticlePrice($product->id) }}
+        {{ $providerorder->getProductPrice($product->id) }}
     </td>
     {{--<td><input name="products[{{ $product->id }}][nds_percent]" class="form-control form-control-sm"--}}
                {{--@if(isset($product->pivot->count)) value="{{$product->pivot->nds_percent}}"@else value="20" @endif--}}

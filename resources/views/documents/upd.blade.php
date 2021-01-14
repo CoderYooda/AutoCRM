@@ -682,7 +682,7 @@ none;width:18pt'>код</td>
             @if($data['partner_type'] == 2)
                 {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
             @elseif($data['partner_type'] == 1)
-                {{ $data['partner_fio'] }}
+                {{ $data['partner_fio'] ?? '' }}
             @else
                 Частное лицо
             @endif

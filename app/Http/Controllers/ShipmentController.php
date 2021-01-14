@@ -29,8 +29,8 @@ class ShipmentController extends Controller
 
         $preselect_articles = $clientorder ? $clientorder->notShippedArticles : null;
         if($preselect_articles != null){
-            foreach ($preselect_articles as $article){
-                $article->count = $clientorder->getAvailableToShippingArticlesCount($article->id);
+            foreach ($preselect_articles as $product){
+                $product->count = $clientorder->getAvailableToShippingProductsCount($product->id);
             }
         }
 
@@ -48,24 +48,24 @@ class ShipmentController extends Controller
 
             $itogo = 0;
 
-            foreach($shipment->products as $article){
-                $article->price = $article->pivot->price;
-                $article->count = $article->pivot->count;
-                $article->total = $article->pivot->total;
+            foreach($shipment->products as $product){
+                $product->price = $product->pivot->price;
+                $product->count = $product->pivot->count;
+                $product->total = $product->pivot->total;
 
-                $itogo += $article->total;
+                $itogo += $product->total;
             }
 
             $shipment->summ = $shipment->itogo = $itogo;
         }
 
-        $articles = [];
+        $products = [];
         if($shipment){
-            $articles = $shipment->products;
-            foreach($articles as $article){
-                $article->available = $article->getEntrancesCount();
-                $article->supplier_name = $article->supplier->name;
-//                $article->count = $article->shipment_count;
+            $products = $shipment->products;
+            foreach($products as $product){
+                $product->available = $product->getEntrancesCount();
+                $product->supplier_name = $product->supplier->name;
+//                $product->count = $product->shipment_count;
             }
         }
 
@@ -116,7 +116,7 @@ class ShipmentController extends Controller
 
     public function select(Shipment $shipment, Request $request)
     {
-        $products = $shipment->load('refunds', 'refunds.products')->notRefundedArticles()->get();
+        $products = $shipment->load('refunds', 'refunds.products')->notRefundedProducts()->get();
 
         $refunded_count = [];
 
@@ -178,10 +178,10 @@ class ShipmentController extends Controller
         $class = 'shipmentDialog' . $shipment->id;
         $inner = true;
 
-        $articles = $shipment->products;
-        foreach($articles as $article){
-            $article->available = $article->getEntrancesCount();
-            $article->supplier_name = $article->supplier->name;
+        $products = $shipment->products;
+        foreach($products as $product){
+            $product->available = $product->getEntrancesCount();
+            $product->supplier_name = $product->supplier->name;
         }
 
         $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request', 'articles'))
@@ -258,10 +258,10 @@ class ShipmentController extends Controller
             $store = $shipment->store;
 
             if (!$shipment->wasRecentlyCreated) {
-                foreach ($shipment->products as $article) {
+                foreach ($shipment->products as $product) {
                     if ($shipment->clientOrder) {
                         $shipment->clientOrder->status = 'complete';
-                        $shipment->clientOrder->decreaseShippedCount($article->id, $article->count);
+                        $shipment->clientOrder->decreaseShippedCount($product->id, $product->count);
                     }
                 }
             }
@@ -329,8 +329,8 @@ class ShipmentController extends Controller
             $shipment->save();
 
             if ($shipment->clientOrder) {
-                foreach ($shipment->products as $article) {
-                    $shipment->clientOrder->increaseShippedCount($article->id, $article->count);
+                foreach ($shipment->products as $product) {
+                    $shipment->clientOrder->increaseShippedCount($product->id, $product->count);
                 }
             }
         }
@@ -367,7 +367,7 @@ class ShipmentController extends Controller
     //TODO check
     public function getShipmentProducts(Shipment $shipment)
     {
-        return response()->json(['products' => $shipment->getArticles()]);
+        return response()->json(['products' => $shipment->getProducts()]);
     }
 
     public static function getShipments($request)

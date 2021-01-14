@@ -875,12 +875,12 @@ class storePage{
 
                     items.push(new ContextualItem({label:'Оформить возврат', onClick: () => {openDialog('refundDialog', '&shipment_id=' + id);} }));
                     items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {window.helper.printDocument('shipment-upd', id);} }));
-                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {window.helper.printDocument('shipment-score', id);} }));
+                    items.push(new ContextualItem({label:'Печать УПД', onClick: () => {helper.printDocument('shipment-upd', id);} }));
+                    items.push(new ContextualItem({label:'Печать счёта', onClick: () => {helper.printDocument('shipment-score', id);} }));
                 }
                 else if(object.contextDop == 'clientorder') {
                     items.push(new ContextualItem({type:'seperator'}));
-                    items.push(new ContextualItem({label:'Печать', onClick: () => {window.helper.printDocument('client-order', id);} }));
+                    items.push(new ContextualItem({label:'Печать', onClick: () => {helper.printDocument('client-order', id);} }));
                 }
                 else if(object.contextDop == 'product') {
                     items.push(new ContextualItem({type:'seperator'}));

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\System\EvotorQueueController;
 use App\Models\Cashbox;
+use App\Models\ClientOrder;
+use App\Models\Shipment;
 use App\Models\System\EvotorQueue;
 use App\Models\Warrant;
 use Carbon\Carbon;
@@ -20,7 +22,7 @@ class EvotorController extends Controller
         while ($pull_seconds < 10){
             $queue = self::checkQueueElem();
             if($queue != null){
-                $warrant = Warrant::where('id', $queue->warrant_id)->first();
+                $warrant = Warrant::find($queue->warrant_id);
                 $queue->sended = true;
                 $queue->save();
                 return response()->json(['warrants' => $warrant], 200);
@@ -72,14 +74,14 @@ class EvotorController extends Controller
         if($uuid == 'demo1234'){
             $warrants = Warrant::where('isIncoming', 1)
                 ->orderByDesc('id')->limit(20)
-                ->whereIn('payable_type', ['App\Models\Shipment', 'App\Models\ClientOrder'])
+                ->whereIn('payable_type', [Shipment::class, ClientOrder::class])
                 ->get();
         } else {
             $warrants = Warrant::whereHas('cashbox', function($q) use ($uuid){
                 $q->where('cashbox_uuid', $uuid);
             })->where('payed_at', null)
                 ->where('isIncoming', 1)
-                ->whereIn('payable_type', ['App\Models\Shipment', 'App\Models\ClientOrder'])
+                ->whereIn('payable_type', [Shipment::class, ClientOrder::class])
                 ->orderByDesc('id')->limit(20)
                 ->get();
         }
@@ -118,26 +120,24 @@ class EvotorController extends Controller
                     $warrant->disc = $percent;
                     $products = $warrant->payable->products;
                     $products_collection = collect();
-                    foreach($products as $article){
-                        $temp_product = new stdClass();
-                        $temp_product->price = $article->pivot->price;
-                        $temp_product->count = $article->pivot->count;
-                        $products_collection->push($temp_product);
+                    foreach($products as $product){
+                        $temp_article = new stdClass();
+                        $temp_article->price = $product->pivot->price;
+                        $temp_article->count = $product->pivot->count;
+                        $products_collection->push($temp_article);
                     }
 
-                    $warrant->items = $products_collection;//$articles_collection;
+                    $warrant->items = $products_collection;
                 } else {
                     $warrant->disc = 0;
                     $warrant->items = [];
                 }
 
                 $warrants_arr[] = $warrant;
-            }catch(Exception $e){
+            }
+            catch(Exception $e){
 
             }
-
-
-
         }
         return response()->json(['warrants' => $warrants_arr], 200);
     }
@@ -166,13 +166,13 @@ class EvotorController extends Controller
 //        }
 //
 //        $warrant->disc = $percent;
-//        $articles = $warrant->payable->products;
-//        foreach($articles as $article){
-//            $article->price = $article->pivot->price;
-//            $article->count = $article->pivot->count;
+//        $products = $warrant->payable->products;
+//        foreach($products as $product){
+//            $product->price = $product->pivot->price;
+//            $product->count = $product->pivot->count;
 //        }
 //
-//        $warrant->items = $articles;
+//        $warrant->items = $products;
 //
 //        return response()->json(['warrant' => $warrant], 200);
 //    }

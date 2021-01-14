@@ -105,7 +105,7 @@ class RefundController extends Controller
             $products = $request->products;
 
             foreach ($products as $id => $product) {
-                if ($product['count'] > $shipment->getAvailableToRefundArticlesCount($id)) {
+                if ($product['count'] > $shipment->getAvailableToRefundProductsCount($id)) {
                     $name = 'products.' . $id . '.count';
                     return response()->json([
                         'messages' => [$name => ['Кол - во не может быть больше чем в продаже']]

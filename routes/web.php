@@ -284,8 +284,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::any('/document', 'DocumentController@document')->name('Document');
         Route::post('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
         Route::post('/documents', 'DocumentController@store')->name('DocumentStore');
+        Route::get ('/documents/cheque' , 'DocumentController@cheque')->name('PrintCheque');
         Route::get('/documents/{document}', 'DocumentController@show')->name('DocumentShow');
         Route::post('/documents/side_info', 'DocumentController@getPartnerSideInfo')->name('GetDocumentPartnerSideInfo');
+        Route::get('/document/{document}', 'DocumentController@show')->name('PrintDocument');
+
 
         #Отчеты
         Route::get('/report', 'SmsController@index')->name('ReportIndex');// Строгое название

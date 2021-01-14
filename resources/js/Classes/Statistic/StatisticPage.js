@@ -240,7 +240,7 @@ class statisticPage {
 
         this.graph_data.image = element.toDataURL('image/png');
 
-        window.helper.printDocument('statistic-result', null, JSON.stringify(this.graph_data));
+        helper.printDocument('statistic-result', null, JSON.stringify(this.graph_data));
     }
 
     showResults(form_element) {

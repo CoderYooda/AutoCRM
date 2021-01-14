@@ -134,7 +134,7 @@ class ClientOrdersController extends Controller
             #Проверка на удаленные товары (Если отгрузки были, а человек пытается удалить отгруженные товары из заказа)
             if( $client_order->IsAnyProductShipped()) {
                 $has_missed_article = false;
-                foreach ($client_order->getShippedArticlesIds() as $id) {
+                foreach ($client_order->getShippedProductsIds() as $id) {
                     $has_missed_article = collect(array_column($request->products, 'id'))->contains($id) ? false : true;
                     if ($has_missed_article) {
                         break;

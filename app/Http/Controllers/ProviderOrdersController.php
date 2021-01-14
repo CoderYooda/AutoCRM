@@ -91,7 +91,7 @@ class ProviderOrdersController extends Controller
             ], 422);
         }
 
-        $products = $providerorder->getNotEnteredArticles();
+        $products = $providerorder->getNotEnteredProducts();
 
         foreach ($products as $key => $product) {
             $products[$key]['pivot_id'] = $product['pivot']['id'];

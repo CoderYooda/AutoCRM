@@ -336,6 +336,35 @@ class Helper{
         return tabs;
     }
 
+    printCheque(id, data = null) {
+
+        let params = new URLSearchParams({
+            id: id,
+            data: JSON.stringify(data)
+        });
+
+        let url = '/documents/cheque?' + params.toString();
+
+        window.open(url);
+    }
+
+    printDocument(doc, id, data = null, landscape = false){
+        axios({
+            method: 'POST',
+            url: '/document',
+            data: {
+                doc: doc,
+                id: id,
+                data: data
+            }
+        }).then(response => {
+
+            let document = response.data.document;
+
+            this.openDocument(document.id);
+        });
+    }
+
     openDocument(id) {
         window.open('/documents/' + id, '_blank');
     }

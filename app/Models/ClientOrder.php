@@ -81,28 +81,28 @@ class ClientOrder extends Model
     }
 
     #Получить доступные для отгрузки товары (кол-во)
-    public function getAvailableToShippingArticlesCount($article_id)
+    public function getAvailableToShippingProductsCount($product_id)
     {
-        $article = $this->products()->wherePivot('product_id', $article_id)->first();
-        return $article ? $article->count - $article->shipped_count : 0;
+        $product = $this->products()->wherePivot('product_id', $product_id)->first();
+        return $product ? $product->count - $product->shipped_count : 0;
     }
 
-    public function getProductPriceFromClientOrder($article_id)
+    public function getProductPriceFromClientOrder($product_id)
     {
-        $article = $this->products()->wherePivot('product_id', $article_id)->first();
-        return $article->price;
+        $product = $this->products()->wherePivot('product_id', $product_id)->first();
+        return $product->price;
     }
 
     public function getProductPriceFromClientOrderByPivotId($pivot_id)
     {
-        $article = $this->products()->wherePivot('id', $pivot_id)->first();
-        return $article->price;
+        $product = $this->products()->wherePivot('id', $pivot_id)->first();
+        return $product->price;
     }
 
-    public function getShippedArticlesIds()
+    public function getShippedProductsIds()
     {
-        $articles = $this->products()->wherePivot('shipped_count', '>', '0')->get();
-        return $articles ? $articles->pluck('id') : [];
+        $products = $this->products()->wherePivot('shipped_count', '>', '0')->get();
+        return $products ? $products->pluck('id') : [];
     }
 
     public function makeShipped()
@@ -112,17 +112,17 @@ class ClientOrder extends Model
 
         $products = [];
 
-        foreach($this->products as $article) {
-            $products[$article->id]['id'] = $article->id;
+        foreach($this->products as $product) {
+            $products[$product->id]['id'] = $product->id;
 
-            if(isset($products[$article->id]['price'])) $products[$article->id]['price'] += $article->price;
-            else $products[$article->id]['price'] = $article->price;
+            if(isset($products[$product->id]['price'])) $products[$product->id]['price'] += $product->price;
+            else $products[$product->id]['price'] = $product->price;
 
-            if(isset($products[$article->id]['count'])) $products[$article->id]['count'] += $article->count;
-            else $products[$article->id]['count'] = $article->count;
+            if(isset($products[$product->id]['count'])) $products[$product->id]['count'] += $product->count;
+            else $products[$product->id]['count'] = $product->count;
 
-            if(isset($products[$article->id]['duplicates'])) $products[$article->id]['duplicates'] ++;
-            else $products[$article->id]['duplicates'] = 1;
+            if(isset($products[$product->id]['duplicates'])) $products[$product->id]['duplicates'] ++;
+            else $products[$product->id]['duplicates'] = 1;
         }
 
         foreach ($products as $key => $product) {
@@ -161,8 +161,8 @@ class ClientOrder extends Model
 
     public function IsAllProductsShipped()
     {
-        foreach($this->products as $article){
-           if($this->getShippedCount($article->id) < $article->count){
+        foreach($this->products as $product){
+           if($this->getShippedCount($product->id) < $product->count){
                return false;
            }
         }
@@ -170,18 +170,18 @@ class ClientOrder extends Model
 
     public function IsAnyProductShipped()
     {
-        foreach($this->products as $article){
-            if($this->getShippedCount($article->id) > 0){
+        foreach($this->products as $product){
+            if($this->getShippedCount($product->id) > 0){
                 return true;
             }
         }
         return false;
     }
 
-    public function increaseShippedCount($article_id, $amount)
+    public function increaseShippedCount($product_id, $amount)
     {
-        $count = $this->getShippedCount($article_id) + (int)$amount;
-        $this->setShippedCount($article_id, $count);
+        $count = $this->getShippedCount($product_id) + (int)$amount;
+        $this->setShippedCount($product_id, $count);
     }
 
     public function setShiped(){
@@ -189,28 +189,28 @@ class ClientOrder extends Model
         $this->save();
     }
 
-    public function decreaseShippedCount($article_id, $amount)
+    public function decreaseShippedCount($product_id, $amount)
     {
-        $count = $this->getShippedCount($article_id) - (int)$amount;
-        $this->setShippedCount($article_id, $count);
+        $count = $this->getShippedCount($product_id) - (int)$amount;
+        $this->setShippedCount($product_id, $count);
     }
 
-    public function setShippedCount($article_id, $count)
+    public function setShippedCount($product_id, $count)
     {
-        $this->products()->updateExistingPivot($article_id, array('shipped_count' => $count), false);
+        $this->products()->updateExistingPivot($product_id, array('shipped_count' => $count), false);
         return true;
     }
 
-    public function getShippedCount($article_id)
+    public function getShippedCount($product_id)
     {
-        $article = $this->products()->where('product_id', $article_id)->first();
-        return $article ? $article->shipped_count : 0;
+        $product = $this->products()->where('product_id', $product_id)->first();
+        return $product ? $product->shipped_count : 0;
     }
 
     public function getShippedCountByPivotId($pivot_id)
     {
-        $article = $this->products()->wherePivot('id', $pivot_id)->first();
-        return $article ? $article->shipped_count : 0;
+        $product = $this->products()->wherePivot('id', $pivot_id)->first();
+        return $product ? $product->shipped_count : 0;
     }
 
     public function smsMessages()

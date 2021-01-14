@@ -104,7 +104,7 @@ class StoreController extends Controller
     public function tableData(StoreGetRequest $request)
     {
         #Получаем список продуктов из поиска
-        $products = ProductController::getArticles($request);
+        $products = ProductController::getProducts($request);
 
         $info = '"' . $request->search . '" ' . (count($products) ? 'найден' : 'не найден') . '.';
 
@@ -147,7 +147,7 @@ class StoreController extends Controller
         $request['category_id'] = $request['category_id'] ? $request['category_id'] : $cat_info['root_id'];
         $breadcrumbs = CategoryController::loadBreadcrumbs($request);
 
-        $data = ProductController::getArticles($request);
+        $data = ProductController::getProducts($request);
         $data = json_encode($data->toArray());
 
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
@@ -369,10 +369,10 @@ class StoreController extends Controller
     {
         $items = [];
         foreach ($request['ids'] as $id) {
-            $article = Product::owned()->where('id', $id)->first();
-            if ($article) {
-                $items[$article->id]['id'] = $id;
-                $items[$article->id]['count'] = $article->getCountInStoreId($request['store_id']);
+            $product = Product::owned()->where('id', $id)->first();
+            if ($product) {
+                $items[$product->id]['id'] = $id;
+                $items[$product->id]['count'] = $product->getCountInStoreId($request['store_id']);
             }
         }
 
@@ -426,13 +426,13 @@ class StoreController extends Controller
 
         $analogues = $controller->getAnalogues($brand, $article);
 
-        $articles = [];
+        $products = [];
 
         foreach ($analogues as $brand => $brandArticles) {
-            $articles = array_merge($articles, $brandArticles);
+            $products = array_merge($products, $brandArticles);
         }
 
-        $analogueProducts = Product::with('supplier')->owned()->whereIn('article', $articles)->get();
+        $analogueProducts = Product::with('supplier')->owned()->whereIn('article', $products)->get();
 
         $brands = array_keys($analogues);
 

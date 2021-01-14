@@ -568,7 +568,8 @@ class storePage extends Page{
             'WarrantStored',
             'EntranceRefundStored',
             'OrderStored',
-            'ClientOrderStored'
+            'ClientOrderStored',
+            'DocumentStored'
         ];
 
         events.forEach((event) => {
@@ -857,8 +858,8 @@ class storePage extends Page{
                 {name:'Редактировать', action: function(data){openDialog('shipmentDialog', '&shipment_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('shipmentDialog', '&shipment_id=' + data.contexted.id)}},
                 {name:'Оформить возврат', action: function(data){openDialog('refundDialog', '&shipment_id=' + data.contexted.id)}},
-                {name:'Печать УПД', action: function(data){window.helper.printDocument('shipment-upd', data.contexted.id)}},
-                {name:'Печать счёта', action: function(data){window.helper.printDocument('shipment-score', data.contexted.id)}}
+                {name:'Печать УПД', action: function(data){helper.printDocument('shipment-upd', data.contexted.id)}},
+                {name:'Печать счёта', action: function(data){helper.printDocument('shipment-score', data.contexted.id)}}
             ];
             dbl_click = function(id){openDialog('shipmentDialog', '&shipment_id=' + id)};
             slug = 'store';
@@ -893,7 +894,7 @@ class storePage extends Page{
             context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.id)}},
-                {name:'Печать', action: function(data){window.helper.printDocument('client-order', data.contexted.id)}},
+                {name:'Печать', action: function(data){helper.printDocument('client-order', data.contexted.id)}},
 
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},

@@ -339,7 +339,7 @@ class StressTest extends Command
             $entrance = new EntranceController();
 
             $fake_request = new EntranceRequest();
-            $articles = $providerOrder->products()->get();
+            $products = $providerOrder->products()->get();
             $date = Carbon::now()->addDays(rand(-365, 0));
             $date = $date->addHours(rand(0, 24));
             $date = $date->addMinutes(rand(0, 60));
@@ -350,11 +350,11 @@ class StressTest extends Command
             $fake_request['invoice'] = rand(10000, 99999);
             $products = [];
             $index = 0;
-            foreach($articles as $article){
-                $products[$index]['product_id'] = $article->id;
-                $products[$index]['pivot_id'] = $article->pivot->id;
-                $products[$index]['price'] = $article->pivot->price;
-                $products[$index]['count'] = rand(1, $article->pivot->count);
+            foreach($products as $product){
+                $products[$index]['product_id'] = $product->id;
+                $products[$index]['pivot_id'] = $product->pivot->id;
+                $products[$index]['price'] = $product->pivot->price;
+                $products[$index]['count'] = rand(1, $product->pivot->count);
                 $index++;
             }
             $fake_request['products'] = $products;
@@ -370,7 +370,7 @@ class StressTest extends Command
             $refund = new RefundController();
             $fake_request = null;
             $fake_request = new RefundRequest();
-            $articles = $shipment->products()->get();
+            $products = $shipment->products()->get();
 
             $date = Carbon::now()->addDays(rand(-365, 0));
             $date = $date->addHours(rand(0, 24));
@@ -380,10 +380,10 @@ class StressTest extends Command
             $fake_request['shipment_id'] = $shipment->id;
             $fake_request['comment'] = $comment;
             $products = [];
-            foreach($articles as $article){
-                $products[$article->id]['id'] = $article->id;
-                $products[$article->id]['price'] = $article->pivot->price;
-                $products[$article->id]['count'] = rand(1, $article->pivot->count);
+            foreach($products as $product){
+                $products[$product->id]['id'] = $product->id;
+                $products[$product->id]['price'] = $product->pivot->price;
+                $products[$product->id]['count'] = rand(1, $product->pivot->count);
             }
             $fake_request['products'] = $products;
             $fake_request['created_at'] = $date;
@@ -447,10 +447,10 @@ class StressTest extends Command
             $fake_request['comment'] = $comment;
             $fake_request['created_at'] = $date;
             $products = [];
-            $articles =  Product::owned()->limit(rand(4, 14))->inRandomOrder()->get();
-            foreach($articles as $article){
-                $products[$article->id]['id'] = $article->id;
-                $products[$article->id]['fact'] = rand(0,12);
+            $products =  Product::owned()->limit(rand(4, 14))->inRandomOrder()->get();
+            foreach($products as $product){
+                $products[$product->id]['id'] = $product->id;
+                $products[$product->id]['fact'] = rand(0,12);
             }
             $fake_request['products'] = $products;
             $adjustment->store($fake_request);

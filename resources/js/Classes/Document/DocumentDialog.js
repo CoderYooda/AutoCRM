@@ -88,9 +88,6 @@ class documentDialog extends Modal {
     }
 
     selectShipment(shipment_id) {
-
-        console.log(shipment_id);
-
         this.create(shipment_id, 'ShipmentSelected');
     }
 
@@ -144,7 +141,7 @@ class documentDialog extends Modal {
 
         axios.post('/document', data)
             .then(response => {
-                let document = response.data;
+                let document = response.data.document;
 
                 helper.openDocument(document.id);
             })
@@ -154,8 +151,6 @@ class documentDialog extends Modal {
 
         document.dispatchEvent(new Event(event_name, {bubbles: true}));
     }
-
-
 }
 
 export default documentDialog;

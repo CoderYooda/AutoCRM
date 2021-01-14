@@ -22,16 +22,16 @@ class AnalogController extends Controller
 
         $results = [];
 
-        foreach ($response as $article) {
+        foreach ($response as $product) {
             $results[] = [
-                'brand' => $article['brand'],
-                'article' => $article['number'],
-                'description' => $article['description']
+                'brand' => $product['brand'],
+                'article' => $product['number'],
+                'description' => $product['description']
             ];
         }
 
         return response()->json([
-            'articles' => $results
+            'products' => $results
         ]);
     }
 
@@ -49,9 +49,9 @@ class AnalogController extends Controller
 
         $results = [];
 
-        foreach ($response as $article) {
-            if($article['brand'] == $brand) continue;
-           $results[$article['brand']][] = $article['numberFix'];
+        foreach ($response as $product) {
+            if($product['brand'] == $brand) continue;
+           $results[$product['brand']][] = $product['numberFix'];
         }
 
         return $results;

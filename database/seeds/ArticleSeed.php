@@ -27,7 +27,7 @@ class ArticleSeed extends Seeder
 
         foreach($json as $index => $json_article){
 
-            $article = new \App\Http\Controllers\ProductController();
+            $product = new \App\Http\Controllers\ProductController();
             $fake_request = new \Illuminate\Http\Request();
 
 
@@ -39,7 +39,7 @@ class ArticleSeed extends Seeder
             $fake_request['name'] = $json_article->name;
             //$fake_request['midprice'] = floatval($json_article->price);
             try{
-                $article->store($fake_request);
+                $product->store($fake_request);
             } catch (Exception $e){
                 echo "ошибка записи";
             }
