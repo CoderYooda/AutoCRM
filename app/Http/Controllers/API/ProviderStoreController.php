@@ -85,7 +85,7 @@ class ProviderStoreController extends Controller
         $providers = app(Providers::class);
 
         $selected_service = $request->selected_service;
-        $article = $request->product;
+        $article = $request->article;
         $manufacturer = $request->manufacturer;
 
         /** @var ProviderInterface $provider */
@@ -175,7 +175,7 @@ class ProviderStoreController extends Controller
 
     public function addCart(CartInterface $cart, AddCartRequest $request)
     {
-        $cart->addProduct($request->provider_key, $request->product, $request->product, $request->count);
+        $cart->addProduct($request->provider_key, $request->article, $request->product, $request->count);
 
         return response()->json([
             'type' => 'success',
@@ -185,7 +185,7 @@ class ProviderStoreController extends Controller
 
     public function setCart(CartInterface $cart, SetCartRequest $request)
     {
-        $cart->setProductCount($request->provider_key, $request->product, $request->product, $request->count);
+        $cart->setProductCount($request->provider_key, $request->article, $request->product, $request->count);
 
         return response()->json([
             'type' => 'success',

@@ -1,4 +1,4 @@
-@php $articles = \App\Http\Controllers\ProductController::getArticles($request) @endphp
+@php $articles = \App\Http\Controllers\ProductController::getProducts($request) @endphp
 @php $category = \App\Http\Controllers\CategoryController::getCategory($request, 2) @endphp
 {{--{{ dd($category) }}--}}
 {{--style="height: 100%;"--}}

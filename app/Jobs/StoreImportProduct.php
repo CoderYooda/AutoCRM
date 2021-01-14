@@ -141,7 +141,7 @@ class StoreImportProduct implements ShouldQueue
             $category_id = $category->id;
         }
 
-        $article = Product::updateOrCreate(['company_id' => $company_id, 'article' => Product::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
+        $product = Product::updateOrCreate(['company_id' => $company_id, 'article' => Product::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
             'name'          => $attributes['name'],
             'creator_id'    => $user_id,
             'supplier_id'   => $supplier->id,
@@ -151,7 +151,7 @@ class StoreImportProduct implements ShouldQueue
 
         if ((int)$attributes['count'] > 0) {
             DB::table('article_entrance')->insert([
-                'product_id'     => $article->id,
+                'product_id'     => $product->id,
                 'entrance_id'    => null,
                 'company_id'     => $company_id,
                 'store_id'       => $store->id,
@@ -163,16 +163,16 @@ class StoreImportProduct implements ShouldQueue
             ]);
         }
 
-        if (!$article->wasRecentlyCreated) {
+        if (!$product->wasRecentlyCreated) {
             return 'duplicates';
         }
 
         #Запись склада по товару
-        $store->products()->syncWithoutDetaching($article->id);
+        $store->products()->syncWithoutDetaching($product->id);
 
-        $article->update(['category_id' => $category_id]);
+        $product->update(['category_id' => $category_id]);
 
-        $article->stores()->updateExistingPivot($store->id, [
+        $product->stores()->updateExistingPivot($store->id, [
             'retail_price'       => $attributes['price'],
             'storage_zone'       => $attributes['warehouse'][0] ?? '',
             'storage_rack'       => $attributes['warehouse'][1] ?? '',
@@ -180,7 +180,7 @@ class StoreImportProduct implements ShouldQueue
             'storage_horizontal' => $attributes['warehouse'][3] ?? '',
         ]);
 
-        $this->success_article_ids[] = $article->id;
+        $this->success_article_ids[] = $product->id;
 
         return 'success';
     }

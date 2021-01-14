@@ -57,7 +57,7 @@ class Refund extends Model
     {
         return $this->belongsTo(Store::class, 'store_id');
     }
-    public function getArticlesCountById($id){
+    public function getProductsCountById($id){
         $article = $this->products()->where('product_id', $id)->first();
         return $article ? $article->pivot->count : 0;
     }

@@ -66,47 +66,47 @@ class ProviderOrder extends Model
             ->withPivot('count as count', 'price as price', 'nds as nds', 'nds_percent as nds_percent', 'nds_included as nds_included', 'total as total');
     }
     #Получить еще не оприходованные товары
-    public function getNotEnteredArticles()
+    public function getNotEnteredProducts()
     {
-        $articles = $this->products;
+        $products = $this->products;
 
-        foreach($articles as $key => $article){
+        foreach($products as $key => $product){
 
-            $count = $article->pivot->count - $this->getArticleEntredCount($article->id);
+            $count = $product->pivot->count - $this->getProductEntredCount($product->id);
 
             if($count){
-                $article->pivot->count = $count;
+                $product->pivot->count = $count;
             } else {
-                unset($articles[$key]);
+                unset($products[$key]);
             }
         }
-        return $articles;
+        return $products;
     }
 
-    public function getArticleCount($article_id)
+    public function getProductCount($product_id)
     {
-        $article = $this->products()->where('product_id', $article_id)->first();
-        return $article->pivot->count ?? 0;
+        $product = $this->products()->where('product_id', $product_id)->first();
+        return $product->pivot->count ?? 0;
     }
 
-    public function articlesCount()
+    public function productsCount()
     {
         $count = $this->products()->sum('count');
         return $count;
     }
 
-    public function getPlanArticleCount()
+    public function getPlanProductCount()
     {
         $count = $this->products()->sum('count');
         return (int)$count;
     }
 
-    public function getEnteredArticleCount()
+    public function getEnteredProductCount()
     {
         $entered_count = 0;
         foreach($this->entrances->load('products') as $entrance) {
-            foreach ($entrance->products as $article) {
-                $entered_count += $article->pivot->count;
+            foreach ($entrance->products as $product) {
+                $entered_count += $product->pivot->count;
             }
         }
 
@@ -116,8 +116,8 @@ class ProviderOrder extends Model
 
     public function updateIncomeStatus()
     {
-        $plan = $this->getPlanArticleCount();
-        $fact = $this->getEnteredArticleCount();
+        $plan = $this->getPlanProductCount();
+        $fact = $this->getEnteredProductCount();
 
         $status = 0;
 
@@ -137,11 +137,11 @@ class ProviderOrder extends Model
         return $this->hasMany(Entrance::class, 'providerorder_id');
     }
 
-    public function getArticleEntredCount($article_id)
+    public function getProductEntredCount($product_id)
     {
         $summ = 0;
         foreach($this->entrances as $entrance){
-            $summ += $entrance->products()->where('product_id', $article_id)->sum('count');
+            $summ += $entrance->products()->where('product_id', $product_id)->sum('count');
         }
 
         return $summ;
@@ -154,10 +154,10 @@ class ProviderOrder extends Model
         return $plus - $minus;
     }
 
-    public function getArticlePrice($article_id)
+    public function getProductPrice($product_id)
     {
-        $article = $this->products()->where('product_id', $article_id)->first();
-        return $article != null ? $article->pivot->price : 0;
+        $product = $this->products()->where('product_id', $product_id)->first();
+        return $product != null ? $product->pivot->price : 0;
     }
 
     public function store()
@@ -175,8 +175,8 @@ class ProviderOrder extends Model
         return 'Заявка поставщику №' . $this->id;
     }
 
-    public function getArticlesCountById($id){
-        $article = $this->products()->where('product_id', $id)->first();
-        return $article ? $article->pivot->count : 0;
+    public function getProductsCountById($id){
+        $product = $this->products()->where('product_id', $id)->first();
+        return $product ? $product->pivot->count : 0;
     }
 }

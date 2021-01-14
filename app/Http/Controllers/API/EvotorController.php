@@ -116,16 +116,16 @@ class EvotorController extends Controller
                         }
                     }
                     $warrant->disc = $percent;
-                    $articles = $warrant->payable->products;
-                    $articles_collection = collect();
-                    foreach($articles as $article){
+                    $products = $warrant->payable->products;
+                    $products_collection = collect();
+                    foreach($products as $product){
                         $temp_article = new stdClass();
-                        $temp_article->price = $article->pivot->price;
-                        $temp_article->count = $article->pivot->count;
-                        $articles_collection->push($temp_article);
+                        $temp_article->price = $product->pivot->price;
+                        $temp_article->count = $product->pivot->count;
+                        $products_collection->push($temp_article);
                     }
 
-                    $warrant->items = $articles_collection;//$articles_collection;
+                    $warrant->items = $products_collection;//$products_collection;
                 } else {
                     $warrant->disc = 0;
                     $warrant->items = [];
@@ -166,13 +166,13 @@ class EvotorController extends Controller
 //        }
 //
 //        $warrant->disc = $percent;
-//        $articles = $warrant->payable->products;
-//        foreach($articles as $article){
-//            $article->price = $article->pivot->price;
-//            $article->count = $article->pivot->count;
+//        $products = $warrant->payable->products;
+//        foreach($products as $product){
+//            $product->price = $product->pivot->price;
+//            $product->count = $product->pivot->count;
 //        }
 //
-//        $warrant->items = $articles;
+//        $warrant->items = $products;
 //
 //        return response()->json(['warrant' => $warrant], 200);
 //    }

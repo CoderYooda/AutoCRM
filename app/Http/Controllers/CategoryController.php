@@ -41,7 +41,7 @@ class CategoryController extends Controller
         switch ($request['class']) {
             case 'store':
                 $cat_info['root_id'] = 2;
-                $data = ProductController::getArticles($request);
+                $data = ProductController::getProducts($request);
                 break;
             case 'partner':
                 $cat_info['root_id'] = 3;

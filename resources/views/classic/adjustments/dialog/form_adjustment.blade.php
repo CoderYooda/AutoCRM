@@ -59,8 +59,8 @@
                                     </div>
                                     <div data-simplebar class="body w-100" style="height: 216px;">
                                         <div id="product-list">
-                                            @if(count($articles))
-                                                @foreach($articles as $article_id => $articleAttributes)
+                                            @if(count($products))
+                                                @foreach($products as $product_id => $productAttributes)
 
                                                     @include(get_template() . '.adjustments.dialog.includes.product_element')
 

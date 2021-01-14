@@ -448,17 +448,17 @@ class ProductController extends Controller
         });
     }
 
-    public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
+    public static function checkArticleUnique($id, $product, $brand_id) // Проверка на существование такого артикла + производителя в базе
     {
-        $article = Product::where('article', $article)->where('supplier_id', $brand_id)->where('company_id', Auth::user()->company()->first()->id)->first();
-        if ($article && $article->id != $id) {
-            return $article;
+        $product = Product::where('article', $product)->where('supplier_id', $brand_id)->where('company_id', Auth::user()->company()->first()->id)->first();
+        if ($product && $product->id != $id) {
+            return $product;
         } else {
             return false;
         }
     }
 
-    public static function getArticles(Request $request)
+    public static function getProducts(Request $request)
     {
         $size = 30;
         if(isset($request['size'])){
