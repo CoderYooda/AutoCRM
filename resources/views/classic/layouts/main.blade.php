@@ -129,7 +129,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="w-52 p-10">
                                     <div class="avatar w-32 mr-3">
-                                        <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() }}" alt="...">
+                                        <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() ?? '' }}" alt="...">
                                     </div>
                                 </div>
                                 <div class="pr-10">

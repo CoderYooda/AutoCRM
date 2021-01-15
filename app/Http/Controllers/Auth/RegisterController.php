@@ -84,7 +84,6 @@ class RegisterController extends Controller
             } else {
 
                 $user = $this->create($request->all());
-                dd(1);
                 event(new Registered($user));
                 $this->guard()->login($user);
 
@@ -179,9 +178,7 @@ class RegisterController extends Controller
 
             Company::flushEventListeners();
 
-            Artisan::call('categories:init', ['company' => $company->id]);
-
-            dd(7);
+//            Artisan::call('categories:init', ['company' => $company->id]);
 
             //
 

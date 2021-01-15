@@ -60,11 +60,12 @@ class DashboardController extends Controller
         $partners = User::whereHas(
             'roles', function($q){
             $q->where('name', 'Реферальный партнёр');
-        })->with('referal')->orderBy('id', 'DESC')->paginate(11);
+        })->with('referal', 'referal.companies')->orderBy('id', 'DESC')->paginate(10);
 //        $superAdmin = Role::create(['name' => 'Суперадмин', 'company_id' => 1]);
 //        $superAdmin->givePermissionTo('Смотреть настройки');
 //        $user = User::whereId(1)->first();
 //        $user->assignRole($superAdmin);
+
         return view('admin.tabs.partners', compact('request', 'partners'));
     }
 

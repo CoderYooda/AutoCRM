@@ -20,6 +20,11 @@ class Company extends Model
         return $this->hasOne(Shop::class);
     }
 
+    public function confirmedPayments()
+    {
+        return $this->hasMany(Payment::class, 'company_id', 'id')->where('status', 'CONFIRMED');
+    }
+
     public function getPayedDays()
     {
         return (int)(($this->payed_days - Carbon::now()->timestamp) / 86400);

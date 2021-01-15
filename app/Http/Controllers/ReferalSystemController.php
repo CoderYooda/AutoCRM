@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Partner\ReferalPartnerRequest;
+use App\Models\Partner;
 use App\Models\Referal;
 use App\Models\Role;
 use App\Models\User;
@@ -45,7 +46,19 @@ class ReferalSystemController extends Controller
                 'password' => Hash::make($request['password']),
             ]);
 
+            $partner = new Partner();
+            $partner->type = 1;
+            $partner->user_id = $user->id;
+            $partner->category_id = 3; //Сотрудник
+            $partner->fio = $request['name'];
+            $partner->company_id = 1;
+            $partner->store_id = null;
+
+            $partner->save();
+
             $role = Role::where('name', 'Реферальный партнёр')->first();
+
+            $request[$request['pay_type']] = true;
 
             $refer = new Referal();
             $refer->user_id = $user->id;

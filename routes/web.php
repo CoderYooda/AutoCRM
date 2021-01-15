@@ -378,19 +378,20 @@ Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUs
 Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUser');
 
 #Коморка партнера
-Route::get('/member', function(){
-    dd(222);
-})->name('backToUser');
+//Route::get('/member', function(){
+//    dd(222);
+//})->name('backToUser');
 
 
 
-Route::middleware(['web', 'auth', 'Partner'])->prefix('member')->namespace('Partner')->name('Partner')->group(function ()
+Route::middleware(['web', 'auth'])->prefix('ref_partner')->namespace('Partner')->name('Partner')->group(function ()
 {
+
+    Route::get('/', 'PartnerController@index');
+
     //Route::get('/', 'DashboardController@index')->name('Dashboard');
-    Route::post('/store', 'ReferalSystemController@store')->name('StoreReferalPartner');
-    Route::get('/', function(){
-        dd('Партнерка');
-    })->name('Partner');
+//    Route::post('/store', 'ReferalSystemController@store')->name('StoreReferalPartner');
+
 });
 
 #Коморка разработчиков
@@ -405,5 +406,7 @@ Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Ad
     Route::post('/users/{user}/update', 'UserController@update')->name('UpdateUser');
     Route::post('/system_message/send', 'UserController@sendSystemMessageTo')->name('SendMessage');
 });
+
+
 
 Route::post('/member/store', 'ReferalSystemController@store')->name('StoreReferalPartner');

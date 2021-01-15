@@ -31,13 +31,11 @@ class RedirectIfAuthenticated
 
             if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
                 return redirect('/admin');
+            } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
+                return redirect('/ref_partner');
+            } else {
+                return redirect('/store');
             }
-
-            if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Партнёр') {
-                return redirect('/member');
-            }
-
-            return redirect('/store');
         }
 
         return $next($request);

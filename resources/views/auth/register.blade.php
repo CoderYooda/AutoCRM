@@ -13,8 +13,6 @@
                 </div>
             </div>
         </div>--}}
-
-
         <div class="auth-form-block">
                 <div class="mb-5">
                     <h5 class="login-text">Регистрация</h5>

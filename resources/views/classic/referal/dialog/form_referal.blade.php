@@ -36,8 +36,8 @@
                 <label for="">Вознаграждения партнера</label>
 
                 <div class="d-flex mb-5">
-                    <div class="checkbox">
-                        <input name="percent_first_b" id="f_p" type="checkbox">
+                    <div class="radio">
+                        <input name="pay_type" checked value="percent_first_b" id="f_p" type="radio">
                         <label for="f_p"></label>
                     </div>
                     <label class="flex-1" for="f_p" style="margin-bottom: 2px;">Процент с первой оплаты</label>
@@ -45,8 +45,8 @@
                     <div class="ml-10" style="width: 16px">%</div>
                 </div>
                 <div class="d-flex mb-5">
-                    <div class="checkbox">
-                        <input name="percent_each_b" id="a_p" type="checkbox">
+                    <div class="radio">
+                        <input name="pay_type" value="percent_each_b" id="a_p" type="radio">
                         <label for="a_p"></label>
                     </div>
                     <label class="flex-1" for="a_p" style="margin-bottom: 2px;">Процент с каждой оплаты</label>
@@ -54,8 +54,8 @@
                     <div class="ml-10" style="width: 16px">%</div>
                 </div>
                 <div class="d-flex mb-5">
-                    <div class="checkbox">
-                        <input name="rubbles_first_b" id="f_r" type="checkbox">
+                    <div class="radio">
+                        <input name="pay_type" value="rubbles_first_b" id="f_r" type="radio">
                         <label for="f_r"></label>
                     </div>
                     <label class="flex-1" for="f_r" style="margin-bottom: 2px;">Рублей с первой оплаты</label>
@@ -63,8 +63,8 @@
                     <div class="ml-10" style="width: 16px">₽</div>
                 </div>
                 <div class="d-flex mb-5">
-                    <div class="checkbox">
-                        <input name="rubbles_each_b" id="a_r" type="checkbox">
+                    <div class="radio">
+                        <input name="pay_type" value="rubbles_each_b" id="a_r" type="radio">
                         <label for="a_r"></label>
                     </div>
                     <label class="flex-1" for="a_r" style="margin-bottom: 2px;">Рублей с каждой оплаты</label>
