@@ -42,4 +42,12 @@
         @endfor
     @endforeach
 
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>
+
 </html>

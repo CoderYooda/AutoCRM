@@ -31,7 +31,7 @@
 
                     </div>
 
-                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 145px); @else calc(100% - 100px);  @endif">
+                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 167px); @else calc(100% - 100px);  @endif">
                         <b>{{ $product->name }}</b>
                     </div>
 
@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="text-center border-bottom" style="font-size: 20px;">
-                        <b>{{ $product->price ?? '1000.0 Р' }}</b>
+                        <b>{{ $product->price ?? '0 Р' }}</b>
                     </div>
 
                 </div>
@@ -53,5 +53,12 @@
     @endforeach
 </div>
 
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>
 
 </html>

@@ -56,7 +56,7 @@ class Payment extends Model
                     $company->increment('balance', $this->add_balance);
 
                     if($company->getPayedDays() < 1) {
-                        $company->update(['payed_days' => Carbon::now()]);
+                        $company->update(['payed_days' => Carbon::now()->timestamp]);
                     }
 
                     $company->increment('payed_days', $this->add_days * 86400);

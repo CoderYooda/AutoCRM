@@ -489,7 +489,8 @@
     }
 </style>
 
-<img style="width: 40%; position: absolute; right: 0;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+<img style="width: 70mm; position: absolute; left: 90mm; top: 5mm;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+<p style="left: 117mm; top: 6mm; position: absolute;">bbcrm.ru</p>
 
 <table style="height:0px; width: 100% " cellspacing="0">
     <colgroup>
@@ -1013,3 +1014,11 @@
     </tr>
     </tbody>
 </table>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>

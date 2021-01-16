@@ -92,7 +92,7 @@ class SearchController extends Controller
     {
         $product = Product::with('stores')
             ->where('company_id', $this->shop->company_id)
-            ->where('article', $request->product)
+            ->where('article', $request->article)
             ->whereHas('supplier', function (Builder $query) use($request) {
                 $query->where('name', $request->manufacturer);
             })

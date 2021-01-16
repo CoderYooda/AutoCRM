@@ -3,21 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\DocumentType;
-use App\Http\Requests\Documents\StoreRequest;
 use App\Models\Product;
 use App\Models\ClientOrder;
 use App\Models\Document;
-use App\Models\Refund;
 use App\Models\Shipment;
 use App\Models\Warrant;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PhpParser\Comment\Doc;
-use stdClass;
 use Illuminate\Support\Facades\DB;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class DocumentController extends Controller
 {
@@ -232,28 +227,10 @@ class DocumentController extends Controller
 
         $view_name = $data['data']['view'];
 
-        $view = view($view_name)->with([
+        return view($view_name)->with([
             'data' => $data['data'],
             'barcode' => $document->barcode
         ]);
-
-        $html = $view->render();
-
-        $fields = [
-//            'debugCss' => true,
-//            'debugLayout' => true,
-//            'dpi' => 300,
-//            'fontHeightRatio' => 1.1,
-//            'defaultMediaType' => 'print'
-        ];
-
-        $pdf = new Dompdf($fields);
-
-        $pdf = $pdf->setPaper('A4', 'landscape');
-
-        $pdf->loadHtml($html);
-
-        return $pdf->render();
     }
 
     public function cheque(Request $request)
@@ -275,8 +252,6 @@ class DocumentController extends Controller
 
         $view_name .= $types[$id];
 
-        dd($data['ids']);
-
         $products = Product::with('supplier')->whereIn('id', $data['ids'])->get();
 
         $count_type = $data['count_type'];
@@ -291,13 +266,7 @@ class DocumentController extends Controller
             $full_count += $product->count;
         }
 
-        $view = view($view_name, compact('products'));
-
-        $html = $view->render();
-
-        $pdf = \PDF::loadHTML($html);
-
-        return $pdf->stream();
+        return view($view_name, compact('products'));
     }
 
     public static function getDocuments($request){

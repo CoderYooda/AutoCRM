@@ -90,8 +90,10 @@ return [
         FavoriteServiceProvider::class,
         ShopServiceProvider::class,
 
+        Barryvdh\DomPDF\ServiceProvider::class,
+
         //Печать документов
-        Barryvdh\DomPDF\ServiceProvider::class
+        Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class
 
     ],
 
