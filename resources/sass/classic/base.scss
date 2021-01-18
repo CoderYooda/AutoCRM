@@ -40,6 +40,69 @@ a {
     outline: 0;
 }
 
+/*
+pagination
+*/
+.pagination{
+    a{
+        //border: 1px solid #eeeeee;
+    }
+    .page-link,
+    li a{
+        color: inherit !important;
+        background-color: transparent !important;
+        border-color: #eeeeee!important;
+        display: block;
+        height: 18px;
+        line-height: 18px;
+        &:hover,
+        &:focus{
+            border-color: #eeeeee;
+            background-color: #eeeeee;
+            color: inherit;
+        }
+    }
+    ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+    .page-item{
+        display: inline-block;
+        float: left;
+        padding: 4px 7px;
+        background: transparent!important;
+    }
+    .page-item.active{
+        background-color: #2d76a8 !important;
+    }
+    .active .page-link,
+    .active a {
+        color: #fff !important;
+
+        //border-color: #fff !important;
+    }
+    li:first-child a{
+        border-top-left-radius: .2rem;
+        border-bottom-left-radius: .2rem;
+    }
+    li:last-child a{
+        border-top-right-radius: .2rem;
+        border-bottom-right-radius: .2rem;
+    }
+}
+
+.pagination-sm a{
+    padding: .2195rem .5rem;
+}
+
+.pagination-xs a{
+    padding: 0 .35rem;
+    line-height: 1.5;
+}
+
+
 input[type=checkbox]:not(.not_default) {
     -webkit-appearance: none;
     background-color: #fafafa;

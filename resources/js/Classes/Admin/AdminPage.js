@@ -16,8 +16,11 @@ class adminPage{
 
         this.contextDop = null;
         this.parametr = null;
-
         this.filter_company_id = null;
+
+        document.addEventListener('ReferStored', event => {
+            location.reload();
+        });
 
         this.linked();
     }
@@ -83,6 +86,7 @@ class adminPage{
         }
         let elements = cleanHeight / 44;
 
+        if(table_container)
         object.table = new Tabulator("#" + this.active_tab + "-table", {
             locale: true,
             langs:{
@@ -186,7 +190,11 @@ class adminPage{
         if(this.filter_company_id != null) data.company_id = this.filter_company_id;
 
         let search_element = document.querySelector('#search');
-        data.search = search_element.value;
+        if(search_element){
+            data.search = search_element.value;
+        } else {
+            data.search = null;
+        }
 
         return data;
     }

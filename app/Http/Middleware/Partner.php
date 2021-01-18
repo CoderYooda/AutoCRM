@@ -9,7 +9,7 @@ class Partner
 {
     public function handle($request, Closure $next)
     {
-        if(!Auth::user()->hasRole('Партнёр')){
+        if(!Auth::user()->hasRole('Реферальный партнёр')){
             return redirect()->route('StoreIndex');
         }
 
