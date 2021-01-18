@@ -171,7 +171,15 @@
             <div id="app" class="app-content">
                 <div class="aside">
                     <ul class="nav">
-                        @can('СуперАдмин')
+                        @if(Auth::user()->hasRole('Реферальный партнёр'))
+                            <li><span class="admin_letter">П</span></li>
+                            <li><span class="admin_letter">А</span></li>
+                            <li><span class="admin_letter">Р</span></li>
+                            <li><span class="admin_letter">Т</span></li>
+                            <li><span class="admin_letter">Н</span></li>
+                            <li><span class="admin_letter">Ё</span></li>
+                            <li><span class="admin_letter">Р</span></li>
+                        @elseif(Auth::user()->hasRole('Суперадмин'))
                             <li><span class="admin_letter">А</span></li>
                             <li><span class="admin_letter">Д</span></li>
                             <li><span class="admin_letter">М</span></li>
@@ -234,7 +242,7 @@
                                 </a>
                             </li>
                             @endcan
-                        @endcan
+                        @endif
                         {{--<li>--}}
                             {{--<a href="#" class="ajax-nav update_url">--}}
                                     {{--<span class="nav-icon">--}}

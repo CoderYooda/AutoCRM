@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Partner;
 
 use App\Http\Controllers\HelpController;
+use App\Models\Referal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -47,6 +48,7 @@ class PartnerController extends Controller
 
     public function indexTab(Request $request)
     {
-        return view('partner.tabs.index', compact('request'));
+        $partner = Referal::where('user_id', \Auth::user()->id)->first();
+        return view('partner.tabs.index', compact('request', 'partner'));
     }
 }

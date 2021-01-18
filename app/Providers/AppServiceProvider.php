@@ -91,6 +91,10 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('disabled', function ($expression) {
             return "<?php if($expression) echo (\"disabled\"); ?>";
         });
+
+        Blade::directive('elsecan', function($expression) {
+            return "<?php elseif (Gate::check{$expression}): ?>";
+        });
     }
 
 }

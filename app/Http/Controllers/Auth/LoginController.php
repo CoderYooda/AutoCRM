@@ -30,7 +30,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-//    protected $redirectTo = '/ref_partner';
+    protected $redirectTo = '/dada';
 
     /**
      * Create a new controller instance.
@@ -74,20 +74,20 @@ class LoginController extends Controller
         return 'password';
     }
 
-    public function redirectTo()
-    {
-        //d(Auth::user()->roles->first()->name);
-        $return = null;
-
-        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
-            $return = '/admin';
-        } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
-            $return = '/ref_partner';
-        } else {
-            $return = '/store';
-        }
-        return $return;
-    }
+//    public function redirectTo()
+//    {
+//        //d(Auth::user()->roles->first()->name);
+//        $return = null;
+//
+//        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
+//            $return = '/admin';
+//        } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
+//            $return = '/ref_partner';
+//        } else {
+//            $return = '/store';
+//        }
+//        return $return;
+//    }
 
     public function login(Request $request)
     {
@@ -106,7 +106,6 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
-
             if($request->expectsJson()){
                 $request->session()->regenerate();
                 $this->clearLoginAttempts($request);
@@ -114,6 +113,7 @@ class LoginController extends Controller
                     'status' => 'success'
                 ]);
             }
+
             return $this->sendLoginResponse($request);
         } else {
             $this->incrementLoginAttempts($request);
