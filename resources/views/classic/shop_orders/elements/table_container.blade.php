@@ -1,8 +1,5 @@
-<div class="box-lister box w-px">
-    <div id="table-container" class="box-content">
-        <div data-data="{{ $data }}" id="shop_ordersTable"></div>
-    </div>
-</div>
+@include(get_template() . '.store.elements.search')
+
 <div class="content-rightside">
     <div class="box w-290 p-15 filter-panel">
         <div class="box-title">Фильтр</div>

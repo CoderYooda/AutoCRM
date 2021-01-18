@@ -168,6 +168,7 @@ class EntranceRefundController extends Controller
     public static function getEntranceRefunds(Request $request)
     {
         if($request['dates_range']) {
+
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
@@ -178,30 +179,47 @@ class EntranceRefundController extends Controller
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
         $size = $request['size'] ? (int)$request['size'] : 30;
 
-        $company_id = Auth::user()->company_id;
-        $store_id = Auth::user()->partner->store_id;
-
-        $entrance_refunds = EntranceRefund::select(DB::raw('entrance_refunds.*, IF(partner.type != 2, partner.fio, partner.companyName) as partner_name, manager.fio as manager_name'))
-            ->leftJoin('partners as partner', 'partner.id', '=', 'entrance_refunds.partner_id')
-            ->leftJoin('partners as manager', 'manager.id', '=', 'entrance_refunds.manager_id')
-            ->where('entrance_refunds.company_id', $company_id)
-            ->where('entrance_refunds.store_id', $store_id)
-            ->when(is_array($request['provider']) && !empty($request['provider']), function($query) use ($request) {
+        $entrance_refunds = EntranceRefund::with('partner', 'manager')
+            ->where('company_id', Auth::user()->company_id)
+            ->where('store_id', Auth::user()->partner->store_id)
+            ->when(is_array($request['provider']), function($query) use ($request) {
                 $query->whereHas('partner', function($query) use ($request){
-                    $query->whereIn('entrance_refunds.id', $request['provider']);
+                    $query->whereIn('id', $request['provider']);
                 });
             })
-            ->when(is_array($request['accountable']) && !empty($request['accountable']), function($query) use ($request) {
+            ->when(is_array($request['accountable']), function($query) use ($request) {
                 $query->whereHas('manager', function($query) use ($request){
-                    $query->whereIn('entrance_refunds.id', $request['accountable']);
+                    $query->whereIn('id', $request['accountable']);
+                });
+            })
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('entrance_refunds.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('partner', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        })
+                        ->orWhereHas('manager', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        })
+                        ->orWhereHas('entrance', function($query) use ($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('id', 'like', "%{$request->search}%");
+                        });
                 });
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
                 $query->whereBetween('entrance_refunds.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->groupBy('entrance_refunds.id')
+            ->groupBy('id')
             ->orderBy($field, $dir)
             ->paginate($size);
+
+        foreach ($entrance_refunds as $index => $entrance_refund) {
+            $entrance_refunds[$index]['partner_name'] = $entrance_refund->partner->official_name;
+            $entrance_refunds[$index]['manager_name'] = $entrance_refund->manager->official_name;
+        }
 
         return $entrance_refunds;
 

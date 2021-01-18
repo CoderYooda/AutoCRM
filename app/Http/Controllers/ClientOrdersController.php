@@ -369,16 +369,7 @@ class ClientOrdersController extends Controller
             $request['accountable'] = [];
         }
 
-        $client_orders = ClientOrder::select(DB::raw('
-            client_orders.*, client_orders.created_at as date, client_orders.id as coid
-        '))
-            ->from(DB::raw('(
-            SELECT client_orders.*, IF(partners.type = 0, partners.fio, partners.companyName) as partner, CONCAT(client_orders.discount, IF(client_orders.inpercents = 1, \' %\',\' ₽\')) as discount_formatted
-            FROM client_orders
-            left join partners on partners.id = client_orders.partner_id
-            GROUP BY client_orders.id)
-             client_orders
-        '))
+        $client_orders = ClientOrder::with('partner')
             ->when($request['provider'] != [], function ($query) use ($request) {
                 $query->whereIn('partner_id', $request['provider']);
             })
@@ -394,16 +385,23 @@ class ClientOrdersController extends Controller
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('client_orders.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->where('client_orders.company_id', Auth::user()->company()->first()->id)
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('client_orders.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('partner', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        });
+                });
+            })
+            ->where('client_orders.company_id', Auth::user()->company_id)
             ->groupBy('client_orders.id')
             ->orderBy($field, $dir)
-            //->toSql();
-
-            //dd($entrances);
             ->paginate($size);
 
         foreach ($client_orders as $key => $client_order) {
             $client_orders[$key]['status'] = Order::$statuses[$client_order->status];
+            $client_orders[$key]['partner_name'] = $client_order->partner->official_name;
         }
 
         return $client_orders;

@@ -311,6 +311,8 @@ class Items {
 
     insertProduct(cell_item, check_isset = true){
 
+        console.log(cell_item);
+
         this.key = null;
 
         if(this.index === 'ordinal'){
@@ -319,8 +321,6 @@ class Items {
         } else {
             this.key = cell_item.id;
         }
-
-        console.log(cell_item);
 
         cell_item.key = this.key;
 
@@ -336,7 +336,6 @@ class Items {
                 this.items.push(cell_item);
                 window.notification.notify('success', 'Товар успешно добавлен в список.');
             }
-
 
             let body_elem = document.createElement('div');
             body_elem.classList.add('body-elem');
@@ -511,7 +510,6 @@ class Items {
         let count = item.querySelector("input[name='" + this.form_name + "[" + id + "][count]']");
         let price = item.querySelector("input[name='" + this.form_name + "[" + id + "][price]']");
 
-
         let nds_percent = item.querySelector("input[name='" + this.form_name + "[" + id + "][nds_percent]']");
         let nds = item.querySelector("input[name='" + this.form_name + "[" + id + "][nds]']");
 
@@ -549,8 +547,6 @@ class Items {
                 e.price = vprice;
             }
         });
-
-
 
         this.recalculateTotal();
     }

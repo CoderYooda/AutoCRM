@@ -212,7 +212,7 @@
                                     'nds_included' => false,
                                     ]
                                  )}}@endif" data-items="@if($shipment){{
-                                 json_encode($articles->toArray())
+                                 json_encode($products->toArray())
                                  }}@else{{ json_encode([]) }}@endif" id="shipment_list{{ $shipment ? $shipment->id : '' }}">
                             </div>
                         </div>
@@ -233,6 +233,7 @@
                         <div class="arrow"></div>
                         <span onclick="{{ $class }}.printScore()" class="element">Счёт</span>
                         <span onclick="{{ $class }}.printUpd()" class="element">УПД</span>
+                        <span onclick="{{ $class }}.printProductReceipt()" class="element">Товарный чек</span>
                     </div>
                 </button>
             @endif

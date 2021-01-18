@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 
 class AnalogController extends Controller
 {
-    protected $host = 'http://autorus.public.api.abcp.ru/';
-    protected $login = 'vk019578';
-    protected $password = 'vk019578';
+    protected $host = 'http://id8341.public.api.abcp.ru/';
+    protected $login = 'avtodrive31@yandex.ru';
+    protected $password = '15081984';
 
     public function getManufacturersByArticle(string $article)
     {
@@ -38,14 +38,13 @@ class AnalogController extends Controller
     public function getAnalogues($brand, $article)
     {
         $params = [
-            'number' => $article,
-            'brand'  => $brand,
-            'format' => 'bnphic',
+            'number'          => $article,
+            'brand'           => $brand,
+            'useOnlineStocks' => 1,
+            'withOutAnalogs'  => 0
         ];
 
-        $response = $this->query('articles/info/', $params, 'GET');
-
-        dd($response);
+        $response = $this->query('search/articles/', $params, 'GET');
 
         $results = [];
 
@@ -84,7 +83,7 @@ class AnalogController extends Controller
             $result = file_get_contents($full_path, null, stream_context_create($context));
             $result = json_decode($result, true);
         } catch (\Exception $exception) {
-            dd($exception);
+//            dd($exception);
         }
 
         if (array_key_exists('errorCode', $result) && $result['errorMessage'] != 'No results') {

@@ -83,6 +83,11 @@ class DocumentController extends Controller
                 'view' => 'documents.defective-act',
                 'name' => 'Торг 16',
                 'class' => Product::class
+            ],
+            'product-receipt' => [
+                'view' => 'documents.product-receipt',
+                'name' => 'Товарный чек',
+                'class' => Product::class
             ]
         ];
 
@@ -144,7 +149,7 @@ class DocumentController extends Controller
             $data['created_at'] = Carbon::now()->format('d.m.Y');
 
         }
-        else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
+        else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score' || $request->doc == 'product-receipt') {
 
             $shipment = Shipment::with('company', 'partner')->find($request->id);
 
@@ -165,6 +170,7 @@ class DocumentController extends Controller
             $data['bank'] = $company->bank;
             $data['cs'] = $company->cs;
             $data['rs'] = $company->rs;
+            $data['ogrn'] = $company->ogrn;
 
             //Партнёр
             $data['partner_name'] = $shipment->partner->official_name;
@@ -196,7 +202,6 @@ class DocumentController extends Controller
                 $data['products']['nds'] += $nds;
             }
         }
-
 
         $document_data = $names[$request->doc];
 

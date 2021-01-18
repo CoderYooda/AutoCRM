@@ -101,11 +101,11 @@ class AdjustmentController extends Controller
         }
 
         $view = view(get_template() . '.adjustments.dialog.includes.product_element', compact('class', 'productAttributes'))
-            ->with('article_id', $product->id);
+            ->with('product_id', $product->id);
 
         return response()->json([
             'html'    => $view->render(),
-            'article' => $product
+            'product' => $product
         ]);
     }
 
@@ -239,21 +239,31 @@ class AdjustmentController extends Controller
             $request['dates'] = $dates;
         }
 
-        $adjustments = Adjustment::select(DB::raw('
-                adjustments.*, adjustments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, stores.name as store
-            '))
-            ->leftJoin('partners', 'partners.id', '=', 'adjustments.manager_id')
-            ->leftJoin('stores', 'stores.id', '=', 'adjustments.store_id')
-            ->where('adjustments.company_id', Auth::user()->company()->first()->id)
-            ->when(is_array($request['accountable']) && !empty($request['accountable']), function ($query) use ($request) {
-                $query->whereIn('adjustments.manager_id', $request['accountable']);
+        $adjustments = Adjustment::with('manager', 'store')
+            ->where('company_id', Auth::user()->company_id)
+            ->when(is_array($request['accountable']), function ($query) use ($request) {
+                $query->whereIn('manager_id', $request['accountable']);
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
-                $query->whereBetween('adjustments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->groupBy('adjustments.id')
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('adjustments.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('manager', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        });
+                });
+            })
+            ->groupBy('id')
             ->orderBy($field, $dir)
             ->paginate($size);
+
+        foreach ($adjustments as $index => $adjustment) {
+            $adjustments[$index]['manager_name'] = $adjustment->manager->official_name;
+            $adjustments[$index]['store_name'] = $adjustment->store->name;
+        }
 
         return $adjustments;
     }

@@ -789,7 +789,6 @@ class storePage extends Page{
                 }},
             ];
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'provider_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
@@ -807,13 +806,12 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = id => openDialog('providerOrderDialog', '&provider_order_id=' + id);
-            slug = 'store';
         } else if(this.active_tab === 'entrance'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 150, width: 150, name: 'Заявка', table_name: 'ordid'},
-                {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner'},
-                {min_with: 150, width: 'auto', name: 'Принимающий', table_name: 'manager'},
+                {min_with: 150, width: 150, name: 'Заявка', table_name: 'providerorder_id'},
+                {min_with: 130, width: 'auto', name: 'Поставщик', table_name: 'partner_name'},
+                {min_with: 150, width: 'auto', name: 'Принимающий', table_name: 'manager_name'},
                 {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment', transform: 'transform_comment'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
@@ -825,7 +823,6 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){openDialog('entranceDialog', '&entrance_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'entrance_refunds'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
@@ -844,14 +841,13 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){openDialog('entranceRefundDialog', '&entrance_refund_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'shipments'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner_name'},
                 {min_with: 150, width: 200, name: 'Скидка', table_name: 'discount'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price', transform: 'transform_price'},
-                {min_with: 150, width: 200, name: 'Итого', table_name: 'total', transform: 'transform_price'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
+                {min_with: 150, width: 200, name: 'Итого', table_name: 'itogo', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
             context_menu = [
@@ -862,13 +858,12 @@ class storePage extends Page{
                 {name:'Печать счёта', action: function(data){helper.printDocument('shipment-score', data.contexted.id)}}
             ];
             dbl_click = function(id){openDialog('shipmentDialog', '&shipment_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'refund'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'manager'},
-                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
-                {min_with: 150, width: 200, name: 'Сумма', table_name: 'price', transform: 'transform_price'},
+                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner_name'},
+                {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
@@ -879,15 +874,14 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){openDialog('refundDialog', '&refund_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'client_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 130, width: 200, name: 'Статус', table_name: 'status'},
-                {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount_formatted'},
-
-                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner'},
+                {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner_name'},
                 {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
+                {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount', transform: 'transform_price'},
+                {min_with: 150, width: 200, name: 'Итого', table_name: 'itogo', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
@@ -900,12 +894,11 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){openDialog('clientorderDialog', '&client_order_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'adjustment'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'partner'},
-                {min_with: 150, width: 200, name: 'Магазин', table_name: 'store'},
+                {min_with: 130, width: 'auto', name: 'Ответственный', table_name: 'manager_name'},
+                {min_with: 150, width: 200, name: 'Магазин', table_name: 'store_name'},
                 {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment', transform: 'transform_comment'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
@@ -917,7 +910,6 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){openDialog('adjustmentDialog', '&adjustment_id=' + id)};
-            slug = 'store';
         } else if(this.active_tab === 'documents'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
@@ -932,7 +924,6 @@ class storePage extends Page{
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
             ];
             dbl_click = function(id){window.helper.openDocument(id)};
-            slug = 'store';
         }
         else if(this.active_tab === 'shop_orders'){
             header = [
@@ -948,14 +939,12 @@ class storePage extends Page{
             ];
 
             dbl_click = function(id) { openDialog('orderDialog', '&order_id=' + id) };
-
-            slug = 'store';
         }
 
         this.table.setHeader(header);
         this.table.setContextMenu(context_menu);
         this.table.setBblClick(dbl_click);
-        this.table.setSlug(slug);
+        this.table.setSlug(this.active_tab);
 
         this.table.draw(this.active_tab + 'Table', this.data);
     }

@@ -2,11 +2,9 @@
 
 @section('tab')
     <div id="ajax-table-adjustment" class="bottom-container full-box-cont">
-        <div class="box-lister box w-px">
-            <div id="table-container" class="box-content">
-                <div data-data="{{ $data }}" id="adjustmentTable" ></div>
-            </div>
-        </div>
+
+        @include(get_template() . '.store.elements.search')
+
         <div class="content-rightside">
             @can('Создавать корректировки')
                 <button onclick="openDialog('adjustmentDialog')" class="button primary mb-15 w-100">Новая корректировка</button>

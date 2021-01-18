@@ -32,6 +32,12 @@ class shipmentDialog extends Modal{
         helper.printDocument('shipment-upd', id);
     }
 
+    printProductReceipt() {
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+
+        helper.printDocument('product-receipt', id);
+    }
+
     getPayment(){
         let warrant_type = 'sale_of_goods';
         let partner = this.root_dialog.querySelector('input[name=partner_id]').value;

@@ -271,70 +271,61 @@ class EntranceController extends Controller
         ]);
     }
 
-    public static function getEntrances($request){
+    public static function getEntrances($request)
+    {
+        if($request['dates_range']) {
 
-        $size = 30;
-        if(isset($request['size'])){
-            $size = (int)$request['size'];
-        }
-
-        $field = null;
-        $dir = null;
-
-        if(isset($request['sorters'])){
-            $field = $request['sorters'][0]['field'];
-            $dir = $request['sorters'][0]['dir'];
-        }
-
-        if($request['dates_range'] !== null){
             $dates = explode('|', $request['dates_range']);
             $dates[0] .= ' 00:00:00';
             $dates[1] .= ' 23:59:59';
             $request['dates'] = $dates;
         }
-        if($field === null &&  $dir === null){
-            $field = 'created_at';
-            $dir = 'DESC';
-        }
-        if($request['provider'] == null){
-            $request['provider'] = [];
-        }
-        if($request['accountable'] == null){
-            $request['accountable'] = [];
-        }
 
-        $entrances = Entrance::select(DB::raw('
-            entrances.*, entrances.created_at as date, IF(partners.type != 2, partners.fio, partners.companyName) as partner, provider_orders.id as ordid
-        '))
-            ->from(DB::raw('(
-            SELECT entrances.*, IF(partners.type != 2, partners.fio, partners.companyName) as manager
-            FROM entrances
-            left join partners on partners.id = entrances.partner_id
-            GROUP BY entrances.id)
-             entrances
-        '))
+        $field = $request['sorters'][0]['field'] ?? 'created_at';
+        $dir = $request['sorters'][0]['dir'] ?? 'DESC';
+        $size = $request['size'] ? (int)$request['size'] : 30;
 
-            ->leftJoin('provider_orders',  'provider_orders.id', '=', 'entrances.providerorder_id')
-            ->leftJoin('partners',  'partners.id', '=', 'provider_orders.partner_id')
+        $entrances = Entrance::with('partner', 'manager')
+            ->where('company_id', Auth::user()->company_id)
             ->when($request['provider'] != [], function($query) use ($request) {
-                $query->whereHas('providerorder', function($query) use ($request){
-                    $query->whereIn('partner_id', $request['provider']);
+                $query->whereHas('providerorder', function($query) use ($request) {
+                    $query->where('company_id', Auth::user()->company_id)
+                        ->whereIn('partner_id', $request['provider']);
                 });
             })
             ->when($request['accountable'] != [], function($query) use ($request) {
-                $query->whereIn('entrances.partner_id', $request['accountable']);
+                $query->whereIn('partner_id', $request['accountable']);
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('entrances.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->where('entrances.company_id', Auth::user()->company()->first()->id)
-            ->groupBy('entrances.id')
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('entrances.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('partner', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        })
+                        ->orWhereHas('manager', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        })
+                        ->orWhereHas('providerorder', function($query) use ($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('id', 'like', "%{$request->search}%");
+                        });
+                });
+            })
+            ->groupBy('id')
             ->orderBy($field, $dir)
-            //->toSql();
-
-            //dd($entrances);
             ->paginate($size);
-            return $entrances;
+
+        foreach ($entrances as $index => $entrance) {
+            $entrances[$index]['partner_name'] = $entrance->partner->official_name;
+            $entrances[$index]['manager_name'] = $entrance->manager->official_name;
+        }
+
+        return $entrances;
 
     }
 
