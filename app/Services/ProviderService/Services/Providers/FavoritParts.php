@@ -8,6 +8,8 @@ use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
 use Carbon\Carbon;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
@@ -16,7 +18,7 @@ class FavoritParts implements ProviderInterface
 {
     use CartProviderOrderCreator;
 
-    protected $host = 'http://api.favorit-parts.ru/hs/hsprice/';
+    protected $host = 'http://api.favorit-parts.ru/';
 
     protected $name = 'Фаворит Автозапчасти';
     protected $service_key = 'favoritparts';
@@ -33,8 +35,11 @@ class FavoritParts implements ProviderInterface
     protected $client;
 
     protected $errors = [
-        401 => [
+        403 => [
             'return' => 'Not auth'
+        ],
+        405 => [
+            'return' => 'Not allowed'
         ]
     ];
 
@@ -58,24 +63,21 @@ class FavoritParts implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'items' => [
-                [
-                    'resource_article' => $article
-                ]
-            ]
+            'number'=> $article
         ];
 
-        $response = $this->query('/ordering/get_stock', $params);
+        $response = $this->query('hs/hsprice/', $params);
 
         $results = [];
 
-        foreach ($response['resources'] as $item) {
+        foreach ($response['goods'] as $item) {
             $results[] = [
-                'brand' => $item['brand']['name'],
-                'article' => $item['article'],
+                'brand' => $item['brand'],
+                'article' => $item['number'],
                 'desc' => $item['name']
             ];
         }
+
 
         return $results;
     }
@@ -98,41 +100,59 @@ class FavoritParts implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'items' => [
-                [
-                    'resource_article' => $article,
-                    'brand_name' => $brand
-                ]
-            ],
-            'analogs' => 1
+            'number' => $article,
+            'brand' => $brand,
+            'analogues' => 'on'
         ];
 
-        $response = $this->query('/ordering/get_stock', $params);
+        $response = $this->query('hs/hsprice/', $params);
 
-        $unfilteredItems = $response['resources'];
+        $unfilteredItems = $response['goods'];
+        $unfilteredItems = array_first($unfilteredItems);
 
         $items = [];
 
-        foreach ($unfilteredItems as $item) {
-            foreach ($item['offers'] as $offer) {
+        foreach ($unfilteredItems['analogues'] as $item) {
+            foreach ($item['warehouses'] as $offer) {
+
                 $items[] = [
-                    'resource_id' => $item['id'],
-                    'stock' => $offer['warehouse']['name'],
-                    'brand' => $item['brand']['name'],
-                    'article' => $item['article'],
-                    'days' => $offer['assured_period'],
+                    'goodsID' => $item['goodsID'],
+                    'brand' => $item['brand'],
+                    'count' => $offer['stock'],
+                    'name' => $item['name'],
+                    'number' => $item['number'],
                     'price' => $offer['price'],
-                    'packing' => $offer['multiplication_factor'],
-                    'desc' => $item['name'],
-                    'rest' => $offer['quantity'],
-                    'supplier' => $this->name,
-                    'code' => $offer['warehouse']['id'],
-                    'days_min' => $offer['average_period'],
-                    'days_max' => $offer['assured_period'],
-                    'delivery_type' => $offer['delivery_type']
+                    'shipmentDate' => $offer['shipmentDate'],
+                    'rate' => $item['rate'],
+                    'warehouse_name' => $offer['code'],
+                    'warehouse_id' => $offer['id'],
+                    'own' => $offer['own'],
+                    'warehouseShipping' => $offer['warehouseShipping'],
+                    'supplier' => $this->name
                 ];
             }
         }
+
+        unset($unfilteredItems['analogues']);
+
+        foreach ($unfilteredItems['warehouses'] as $offer) {
+            $items[] = [
+                'goodsID' => $unfilteredItems['goodsID'],
+                'brand' => $unfilteredItems['brand'],
+                'count' => $offer['stock'],
+                'name' => $unfilteredItems['name'],
+                'number' => $unfilteredItems['number'],
+                'price' => $offer['price'],
+                'shipmentDate' => $offer['shipmentDate'],
+                'rate' => $unfilteredItems['rate'],
+                'warehouse_name' => $offer['code'],
+                'warehouse_id' => $offer['id'],
+                'own' => $offer['own'],
+                'warehouseShipping' => $offer['warehouseShipping'],
+                'supplier' => $this->name
+            ];
+        }
+
 
         $results = [
             'originals' => [],
@@ -146,17 +166,21 @@ class FavoritParts implements ProviderInterface
 
         foreach ($items as $key => $item) {
 
+            $now = Carbon::now();
+            $deliveryDate = Carbon::parse($item['shipmentDate']);
+            $days = $now->diffInDays($deliveryDate);
+
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
-                'stock' => $item['stock'],
+                'stock' => $item['warehouse_name'],
                 'manufacturer' => $item['brand'],
-                'article' => $item['article'],
-                'days' => $item['days'],
+                'article' => $item['number'],
+                'days' => $days,
                 'price' => $item['price'],
-                'packing' => $item['packing'] > 0 ? $item['packing'] : 1,
-                'desc' => $item['desc'],
-                'rest' => $item['rest'],
+                'packing' => $item['rate'] > 0 ? $item['rate'] : 1,
+                'desc' => $item['name'],
+                'rest' => $item['count'],
                 'supplier' => $this->name
             ];
         }
@@ -169,21 +193,21 @@ class FavoritParts implements ProviderInterface
 
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['desc'],
-                'code' => $store['code'],
-                'rest' => $store['rest'],
-                'days_min' => $store['days_min'],
-                'days_max' => $store['days_max'],
-                'packing' => $store['packing'] > 0 ? $store['packing'] : 1,
-                'min_count' => $store['packing'] > 0 ? $store['packing'] : 1,
-                'delivery' => $store['days'] . ' дн.',
+                'name' => $store['name'],
+                'code' => $store['goodsID'],
+                'rest' => $store['count'],
+                'days_min' => $store['hash_info']['days'],
+                'days_max' => $store['hash_info']['days'],
+                'packing' => $store['rate'] > 0 ? $store['rate'] : 1,
+                'min_count' => $store['rate'] > 0 ? $store['rate'] : 1,
+                'delivery' => $store['hash_info']['days'] . ' дн.',
                 'price' => $store['price'],
                 'manufacturer' => $store['brand'],
-                'article' => $store['article'],
+                'article' => $store['number'],
                 'model' => $store,
-                'stock' => $store['stock'],
+                'stock' => $store['warehouse_name'],
                 'can_return' => 'n/a',
-                'hash' => md5($store['stock'] . $store['brand'] . $store['article'] . $store['days'] . $store['price'])
+                'hash' => md5($store['warehouse_name'] . $store['brand'] . $store['number'] . $store['hash_info']['days'] . $store['price'])
             ];
 
             $is_analogue ? $analogueIndex++ : $originalIndex++;
@@ -198,26 +222,36 @@ class FavoritParts implements ProviderInterface
 
         $bodyType = $method == 'GET' ? 'query': 'body';
 
+        if ($bodyType == 'query') {
+            $params['key'] = $this->api_key;
+        }
+
+        $params = $bodyType == 'query' ? http_build_query($params) : json_encode($params);
+
         try {
+
             $result = $this->client->request($method, $url, [
 
-                $bodyType => http_build_query($params),
+                $bodyType => $params,
                 'headers' => [
-                    'Content-Type'=>'application/x-www-form-urlencoded',
-                    'X-Berg-API-Key' => '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e730'
-                ]]);
+                    'Content-Type'=>'application/json',
+                    'X-Favorit-ClientKey' => $this->api_key
+                ]
+            ]);
+
         }
         catch (\Exception $exception) {
-            $result =$exception;
+            $result = $exception;
         }
 
         $this->errorHandler($result);
 
         $json = $result->getBody();
 
-        $result = json_decode($json, true);
+        $result = json_decode($json ,true);
 
         return $result;
+
     }
 
     private function errorHandler($response) : void
@@ -240,10 +274,12 @@ class FavoritParts implements ProviderInterface
 
         $json = $response->getBody();
 
-        $result = json_decode($json, true);
+        $result = json_decode($json ,true);
 
-        if (isset($result['resources']) && empty($result['resources']))
-            throw new \Exception('Not found', 404);
+        if(empty($result['goods'][0]['brand'])) {
+
+            throw new \Exception('Not fond', 404);
+        }
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -267,38 +303,67 @@ class FavoritParts implements ProviderInterface
 
     public function sendOrder(array $data): bool
     {
+        $this->query('ws/v1/cart/clean/'); //Очистка корзины
+
         $products = [];
 
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
 
-            $products[] = [
-                'resource_id' => $orderInfo['model']['resource_id'],
-                'warehouse_id' => $orderInfo['model']['code'],
-                'quantity' => $product->count
+            $products = [
+                'goods' => $orderInfo['code'],
+                'warehouseGroup' => $orderInfo['model']['warehouse_id'],
+                'count' => $product->count
             ];
+
+            $this->query('ws/v1/cart/add/',$products); //Добавление в корзину
         }
 
-        $params = [
-            'order' => [
-                'is_test' => 1,
-                'payment_type' => $data['payment_type_id'],
-                'dispatch_type' => $data['delivery_type_id'],
-                'dispatch_at' => $data['date_shipment_id'],
-                'dispatch_time' => 1, //Тестовое (метод времени отправки не реализован на фронте
-                'comment' => $data['comment'],
-                'shipment_address_id' => $data['delivery_address_id'],
-                'items' => $products
-            ]
-        ];
+        $cart = $this->query('ws/v1/cart/',$products); //Получение корзины
 
-        if($params['order']['dispatch_type'] == 2) {
+        $stocks = array_column($cart['cart'],'warehouseShipping');
 
-            unset($params['order']['shipment_address_id']);
+        $stocks = array_unique($stocks); // Достаем уникальные имена складов для группировки заказа пол скаду
+
+        $arrayDate = [];
+
+        foreach ($cart['cart'] as $product) {
+
+            $arrayDate[] = $product['dateShipment'];
         }
 
-        $this->query('/ordering/place_order', $params, 'POST'); //Подтверждение заказа
+        $deliveryDate = date_create(max($arrayDate))->format('Ymd'); // Берем максимальную дату доставки
+
+        $listGoods = [];
+
+        foreach ($stocks as $stock) {
+
+            foreach ($cart['cart'] as $product) {
+
+                if ($product['warehouseShipping'] != $stock) continue;
+
+                $listGoods[] =[
+                    'Goods' => $product['goods'],
+                    'WarehouseGroup' => $product['warehouseGroup'],
+                    'Count' => $product['count'],
+                    'Comment' => ''
+                ];
+            }
+
+            $params = [
+                'WarehouseShipping' => $stock,
+                'ShippingDate' => $deliveryDate,
+                'TradePoint' => $data['delivery_type_id'] == 2 ? array_key_first($this->getDeliveryToAddresses()) : $data['delivery_address_id'],
+                'PaymentType' => $data['payment_type_id'],
+                'DeliveryType' => $data['delivery_type_id'],
+                'TransportType' => '1',
+                'GoodsList' => $listGoods,
+                'Comment' => $data['comment']
+            ];
+
+            $this->query('ws/v1/order/', $params, 'POST'); // Заказ для текузего склада в цикле
+        }
 
         $this->createProviderOrder($data);
 
@@ -312,24 +377,14 @@ class FavoritParts implements ProviderInterface
 
     public function getDeliveryToAddresses(): array
     {
-        $request = $this->query('/references/shipment_address/active');
+        $request = $this->query('ws/v1/references/profile/');
+        $addresses = [];
+        foreach ($request['tradePoints'] as $code => $address) {
 
-        if ($request == []) return $request;
-
-        $request =$request['shipment_address_list'];
-
-        $deliveryAddress =[];
-
-        foreach ($request as $address) {
-
-            if ($address['state'] == 1) {
-
-                $deliveryAddress[$address['id']] = $address['address'];
-
-            }
+            $addresses[$code] = $address['address'];
         }
 
-        return $deliveryAddress;
+        return $addresses;
     }
 
     public function getPaymentTypes(): array
@@ -344,32 +399,18 @@ class FavoritParts implements ProviderInterface
     {
         return [
             '2' => 'Самовывоз',
-            '3' => 'Доставка'
+            '1' => 'Доставка'
         ];
     }
 
     public function getDateOfShipment(): array
     {
-        $currentDate = Carbon::now();
-
-        $dates = [];
-
-        for($i = 0; $i < 30; $i++) {
-
-            $currentDate = $currentDate->addDay();
-
-            $dates[$currentDate->format('Y-m-d')] = $currentDate->format('d.m.Y');
-        }
-
-        return $dates;
+       return [];
     }
 
     public function getTimeOfShipment(): array
     {
-        return [
-            '1' => 'До 15:00',
-            '2' => 'После 15:00'
-        ];
+        return [];
     }
 
     public function getOrdersStatuses(): array
