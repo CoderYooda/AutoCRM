@@ -33,17 +33,17 @@ class shopPage {
         if (this.active_tab == 'contacts') {
             this.map = null;
 
-            let start_coords = document.querySelector('[name=address_coords]').value;
+            let start_coords = document.querySelector('[name="address_coords"]').value;
 
             this.address_coords = start_coords ? start_coords.split(",") : [55.753215, 37.622504];
-            this.address_text = document.querySelector('[name=address_name]').value;
+            this.address_text = document.querySelector('[name="address_name"]').value;
             this.address_placemark = null;
 
             this.loadYandexMapAddress();
             this.addPhoneMask();
         }
 
-        if (this.active_tab == 'contacts' || this.active_tab == 'about' || this.active_tab == 'delivery' || this.active_tab == 'warranty') {
+        if (this.active_tab == 'pages') {
 
             const config = {
                 toolbar: [ "heading","|","bold","italic","link","bulletedList","numberedList","|","indent","outdent","|","blockQuote","insertTable","mediaEmbed","undo","redo" ],

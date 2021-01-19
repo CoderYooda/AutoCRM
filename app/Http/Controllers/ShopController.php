@@ -77,7 +77,19 @@ class ShopController extends Controller
 
     public function mainTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.main', compact('request'));
+        $prices = Markup::where('company_id', Auth::user()->company_id)->get();
+
+        return view(get_template() . '.shop.tabs.main', compact('request', 'prices'));
+    }
+
+    public function contactsTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.contacts', compact('request'));
+    }
+
+    public function pagesTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.pages', compact('request'));
     }
 
 //    public function contactsTab(Request $request)

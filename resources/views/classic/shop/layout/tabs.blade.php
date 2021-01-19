@@ -9,12 +9,12 @@
             <li id="main-tab" data-tab="main" data-default="true" class="@if($request['active_tab'] == 'main' || $request['active_tab'] == null) active @endif">
                 <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'main', 'target' => 'ajax-tab-content']) }}">Основное</a>
             </li>
-{{--            <li id="about-tab" data-tab="about" class="@if($request['active_tab'] == 'about') active @endif">--}}
-{{--                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'about', 'target' => 'ajax-tab-content']) }}">О Компании</a>--}}
-{{--            </li>--}}
-{{--            <li id="delivery-tab" data-tab="delivery" class="@if($request['active_tab'] == 'delivery') active @endif">--}}
-{{--                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'delivery', 'target' => 'ajax-tab-content']) }}">Оплата и доставка</a>--}}
-{{--            </li>--}}
+            <li id="contacts-tab" data-tab="contacts" class="@if($request['active_tab'] == 'contacts') active @endif">
+                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'contacts', 'target' => 'ajax-tab-content']) }}">Контакты</a>
+            </li>
+            <li id="pages-tab" data-tab="pages" class="@if($request['active_tab'] == 'pages') active @endif">
+                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'pages', 'target' => 'ajax-tab-content']) }}">Страницы</a>
+            </li>
 {{--            <li id="warranty-tab" data-tab="warranty" class="@if($request['active_tab'] == 'warranty') active @endif">--}}
 {{--                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'warranty', 'target' => 'ajax-tab-content']) }}">Гарантия и возврат</a>--}}
 {{--            </li>--}}

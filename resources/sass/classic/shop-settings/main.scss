@@ -1,0 +1,43 @@
+#ajax-shop-main {
+
+    .box-gray {
+        background-color: #F4F4F4 !important;
+        border-radius: 4px !important;
+    }
+
+    .custom_checkbox.radio {
+
+        span {
+            width: 16px;
+            height: 16px;
+            background: url(/images/icons/shop-settings/not_selected.svg) center no-repeat;
+        }
+
+        input {
+            &:checked + span {
+                background: url(/images/icons/shop-settings/selected.svg) center no-repeat;
+            }
+        }
+    }
+
+    .separator {
+
+        margin: 20px 0;
+
+        div {
+            border-top: 1.7px dashed #CECECE;
+        }
+    }
+
+    .our_domain {
+        background: #009AE8;
+        padding: 5px;
+        text-align: center;
+
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 17px;
+        letter-spacing: 0.0015em;
+        color: #E5EFFF;
+    }
+}
