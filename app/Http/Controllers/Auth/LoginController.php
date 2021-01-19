@@ -30,7 +30,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dada';
+//    protected $redirectTo = '/dada';
 
     /**
      * Create a new controller instance.
@@ -74,20 +74,20 @@ class LoginController extends Controller
         return 'password';
     }
 
-//    public function redirectTo()
-//    {
-//        //d(Auth::user()->roles->first()->name);
-//        $return = null;
-//
-//        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
-//            $return = '/admin';
-//        } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
-//            $return = '/ref_partner';
-//        } else {
-//            $return = '/store';
-//        }
-//        return $return;
-//    }
+    public function redirectTo()
+    {
+        //d(Auth::user()->roles->first()->name);
+        $return = null;
+
+        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
+            $return = '/admin';
+        } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
+            $return = '/ref_partner';
+        } else {
+            $return = '/store';
+        }
+        return $return;
+    }
 
     public function login(Request $request)
     {
