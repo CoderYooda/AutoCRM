@@ -41,7 +41,7 @@ class ShopController extends Controller
 
         // Определяем табуляцию
         if ($request['active_tab'] === null || $request['active_tab'] == 'undefined') {
-            $request['active_tab'] = 'contacts';
+            $request['active_tab'] = 'main';
         }
 
         $classname = $request['active_tab'] . 'Tab';
@@ -50,8 +50,14 @@ class ShopController extends Controller
 
         $view->with('class', $class);
 
+        $company = Auth::user()->company;
+
         $shop = Shop::with('phones', 'aboutImages', 'sliderImages')->where('company_id', Auth::user()->company_id)->first();
-        $view->with('shop', $shop);
+
+        $view->with([
+            'shop' => $shop,
+            'company' => $company
+        ]);
 
         if (class_basename($view) == "JsonResponse") {
             return $view;
@@ -69,59 +75,64 @@ class ShopController extends Controller
         return $view;
     }
 
-    public function contactsTab(Request $request)
+    public function mainTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.contacts', compact('request'));
+        return view(get_template() . '.shop.tabs.main', compact('request'));
     }
 
-    public function aboutTab(Request $request)
-    {
-        return view(get_template() . '.shop.tabs.about', compact('request'));
-    }
-
-    public function deliveryTab(Request $request)
-    {
-        return view(get_template() . '.shop.tabs.delivery', compact('request'));
-    }
-
-    public function warrantyTab(Request $request)
-    {
-        return view(get_template() . '.shop.tabs.warranty', compact('request'));
-    }
-
-    public function settingsTab(Request $request)
-    {
-        $user = Auth::user();
-
-        $prices = Markup::where('company_id', $user->company_id)->get();
-
-        return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
-    }
-
-    public function analyticsTab(Request $request)
-    {
-        return view(get_template() . '.shop.tabs.analytics', compact('request'));
-    }
-
-    public function payment_methodsTab(Request $request)
-    {
-        $shop = Auth::user()->shop;
-
-        $filteredArray = [];
-
-        if($shop) {
-            $paymentMethods = $shop->paymentMethods ? $shop->paymentMethods->toArray() : [];
-
-            foreach ($paymentMethods as $paymentMethod) {
-                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
-                $filteredArray[$paymentMethod['name']] = $paymentMethod;
-            }
-        }
-
-        $paymentMethods = $filteredArray;
-
-        return view(get_template() . '.shop.tabs.payment_methods', compact('request', 'paymentMethods'));
-    }
+//    public function contactsTab(Request $request)
+//    {
+//        return view(get_template() . '.shop.tabs.contacts', compact('request'));
+//    }
+//
+//    public function aboutTab(Request $request)
+//    {
+//        return view(get_template() . '.shop.tabs.about', compact('request'));
+//    }
+//
+//    public function deliveryTab(Request $request)
+//    {
+//        return view(get_template() . '.shop.tabs.delivery', compact('request'));
+//    }
+//
+//    public function warrantyTab(Request $request)
+//    {
+//        return view(get_template() . '.shop.tabs.warranty', compact('request'));
+//    }
+//
+//    public function settingsTab(Request $request)
+//    {
+//        $user = Auth::user();
+//
+//        $prices = Markup::where('company_id', $user->company_id)->get();
+//
+//        return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
+//    }
+//
+//    public function analyticsTab(Request $request)
+//    {
+//        return view(get_template() . '.shop.tabs.analytics', compact('request'));
+//    }
+//
+//    public function payment_methodsTab(Request $request)
+//    {
+//        $shop = Auth::user()->shop;
+//
+//        $filteredArray = [];
+//
+//        if($shop) {
+//            $paymentMethods = $shop->paymentMethods ? $shop->paymentMethods->toArray() : [];
+//
+//            foreach ($paymentMethods as $paymentMethod) {
+//                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+//                $filteredArray[$paymentMethod['name']] = $paymentMethod;
+//            }
+//        }
+//
+//        $paymentMethods = $filteredArray;
+//
+//        return view(get_template() . '.shop.tabs.payment_methods', compact('request', 'paymentMethods'));
+//    }
 
     public function update(UpdateRequest $request)
     {

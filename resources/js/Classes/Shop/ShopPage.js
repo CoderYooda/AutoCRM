@@ -670,7 +670,7 @@ class shopPage {
         let active_tab = window.helper.findGetParameter('active_tab');
 
         if (active_tab == null || active_tab == 'null') {
-            active_tab = 'contacts';
+            active_tab = 'main';
         }
         return active_tab;
     }
