@@ -1,28 +1,31 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Jobs;
 
-use App\Jobs\RebuildCompanyCategories;
+use App\Models\Category;
 use App\Models\Company;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
-use App\Models\Category;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Str;
 
-class CreateBaseCategories extends Command
+class CreateBaseCategoriesForCompany implements ShouldQueue
 {
-    protected $signature = 'categories:init {company}';
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $description = 'Создание базовых категорий для компании';
+    protected $company_id;
 
-    public function __construct()
+    public function __construct($company_id)
     {
-        parent::__construct();
+        $this->company_id = $company_id;
     }
 
     public function handle()
     {
-        $company = Company::find($this->argument('company'));
+        $company = Company::find($this->company_id);
 
         $categories_txt = file_get_contents(public_path('demo/categories.txt'));
 
@@ -35,8 +38,6 @@ class CreateBaseCategories extends Command
         $subCategoryId = null;
 
         $subCategory = null;
-
-        $start = Carbon::now();
 
         foreach($categories_rows as $row){
 
@@ -66,12 +67,6 @@ class CreateBaseCategories extends Command
                 \DB::table('categories')->where('id', $childCategoryId)->update(['slug' => $slug]);
             }
         }
-
-        $diff = Carbon::now()->diffInMilliseconds($start);
-
-        $this->info('Time for creating: ' . $diff);
-
-        dispatch(new RebuildCompanyCategories($company->id));
 
         return true;
     }

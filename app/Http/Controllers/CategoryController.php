@@ -101,18 +101,12 @@ class CategoryController extends Controller
                 ], 200);
             }
 
-            $oldCategoryId = $category->id;
-
             $category->fill($request->except('image'));
             $category->creator_id = Auth::id();
             $category->company_id = Auth::user()->company_id;
             $category->type = $parent->type ?? null;
 
             $category->save();
-
-            if($parent && $oldCategoryId != $request->category_id) {
-                $category->makeChildOf($parent);
-            }
 
             UA::makeUserAction($category, 'create');
 

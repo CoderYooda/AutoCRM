@@ -52,10 +52,12 @@ class shopPage {
 
             let editor_element = document.querySelector('#editor');
 
-            TextEditor.create(editor_element, config)
-                .then(newEditor => {
-                    this.texteditor = newEditor
-                });
+            if(editor_element) {
+                TextEditor.create(editor_element, config)
+                    .then(newEditor => {
+                        this.texteditor = newEditor
+                    });
+            }
         }
         else if(this.active_tab == 'settings') {
             // this.addSubdomainMask();

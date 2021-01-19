@@ -17,7 +17,6 @@
         "carlos-meneses/laravel-mpdf": "^2.1",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.0",
-        "gazsp/baum": "^2.0",
         "guzzlehttp/guzzle": "^6.5",
         "intervention/image": "^2.5",
         "laravel/framework": "5.8.*",
