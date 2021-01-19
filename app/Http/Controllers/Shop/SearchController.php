@@ -81,8 +81,15 @@ class SearchController extends Controller
 
     private function isBrandAlreadyInArray($searchBrand, $searchArticle, $brands)
     {
+        $searchBrand = strtoupper($searchBrand);
+        $searchArticle = strtoupper($searchArticle);
+
         foreach ($brands as $info) {
-            if(strtoupper($info['brand']) == strtoupper($searchBrand) && strtoupper($info['article']) == strtoupper($searchArticle)) return true;
+
+            $brand = strtoupper($info['brand']);
+            $article = strtoupper($info['article']);
+
+            if($brand == $searchBrand && $article == $searchArticle) return true;
         }
 
         return false;
