@@ -27,6 +27,7 @@ class Payment extends Model
     ];
 
     public function freshStatus() {
+
         $previous_status = $this->status;
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));

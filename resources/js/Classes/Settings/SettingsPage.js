@@ -277,6 +277,39 @@ class settingsPage{
         }
     }
 
+    getPayment(tariff_id){
+        let data = {tariff_id: tariff_id};
+        axios({
+            method: 'POST',
+            url: '/tariff/get_payment',
+            data: data
+        }).then(function (response){
+            if(response.data.redirect){
+                window.location.href = response.data.redirect;
+            }
+        }).catch(function(response){
+
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    }
+
+    checkPayment(order_id){
+        axios({
+            method: 'POST',
+            url: '/tariff/check_payment',
+            data: {order_id: order_id}
+        }).then(function (response){
+            let div = document.getElementById(response.data.target);
+            div.innerHTML = response.data.html;
+
+        }).catch(function(response){
+            dd(response);
+        }).finally(function () {
+            window.isXHRloading = false;
+        });
+    }
+
     getCurrentActiveTab(){
         var active_tab = window.helper.findGetParameter('active_tab');
 

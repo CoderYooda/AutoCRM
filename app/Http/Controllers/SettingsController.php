@@ -104,6 +104,20 @@ class SettingsController extends Controller
         return view(get_template() . '.settings.requisites', compact('request', 'company'));
     }
 
+    public static function paymentTab(Request $request)
+    {
+        /** @var Payment $payments */
+        $payments = Payment::owned()->where('type', 'pay_to_store')->orderBy('id', 'DESC')->get();
+
+        foreach ($payments as $payment){
+            $payment->freshStatus();
+        }
+
+        $company = Auth::user()->company;
+
+        return view(get_template() . '.settings.payment', compact('request', 'company', 'payments'));
+    }
+
     public function saveCompanySettings(SaveCompanySettingsRequest $request)
     {
         Company::where('id', $request->company_id)->update($request->validated());

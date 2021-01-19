@@ -63,8 +63,6 @@ class shopPage {
             // this.addSubdomainMask();
             this.addEmailMask();
         }
-
-        this.checkActive();
     }
 
     loadCroppModal()
@@ -552,19 +550,6 @@ class shopPage {
         }
 
         return true;
-    }
-
-    checkActive() {
-
-        let className = window.location.pathname.substring(1);
-        let link = document.getElementById('shop_link');
-        if (className === 'shop') {
-            link.classList.add('active');
-            this.active = true;
-        } else {
-            link.classList.remove('active');
-            this.active = false;
-        }
     }
 
     saveContacts(element) {

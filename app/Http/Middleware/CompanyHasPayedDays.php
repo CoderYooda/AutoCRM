@@ -23,11 +23,11 @@ class CompanyHasPayedDays
 
             if($request->expectsJson()) {
                 return response()->json([
-                    'redirect' => route('UserIndex', ['active_tab' => 'service']),
+                    'redirect' => route('SettingsIndex', ['active_tab' => 'settings']),
                 ]);
             }
 
-            return redirect()->route('UserIndex', ['id' => Auth::user()->id, 'active_tab' => 'service']);
+            return redirect()->route('SettingsIndex', ['active_tab' => 'settings']);
         }
 
         return $next($request);
