@@ -56,7 +56,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
     Route::get('/salary/{id}/get', 'SalarySchemaController@getSchemaById')->name('GetSchemaById');
 
-    Route::middleware('hasPayedDays', 'fork')->group(function () {
+    #Настройки
+    Route::get('/settings', 'SettingsController@index')->name('SettingsIndex'); // Строгое название
+
+    Route::middleware(['hasPayedDays', 'fork'])->group(function () {
         Route::get('/', function () {
             return 'Hello world';
         })->name('indexPage');
@@ -65,9 +68,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/suppliers/store', 'SupplierController@store')->name('StoreSupplier');
         Route::post('/suppliers/dialog/search', 'SupplierController@dialogSearch')->name('SupplierDialogSearch');
         Route::post('/suppliers/{id}/select', 'SupplierController@select')->name('SelectSupplier');
-
-        #Настройки
-        Route::get('/settings', 'SettingsController@index')->name('SettingsIndex'); // Строгое название
 
         Route::post('/settings/base/store', 'SettingsController@baseStore')->name('BaseSettingsStore');
         Route::post('/settings/base/fresh', 'SettingsController@freshBaseStore')->name('FreshBaseStore');
