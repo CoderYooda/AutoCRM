@@ -12,7 +12,7 @@
 
             <div class="d-flex p-15">
 
-                <div class="flex-1">
+                <div class="flex-1 pr-10">
 
                     <div class="form-group">
 
@@ -56,7 +56,22 @@
 
                 </div>
 
-                <div class="flex-1">
+                <div class="flex-1 pl-10">
+
+                    <div class="box pl-15">
+
+                        <div class="form-group d-flex">
+
+                            <label class="custom_checkbox">
+                                <input type="checkbox" class="not_default" name="our_domain" checked value="1" />
+                                <span></span>
+                            </label>
+
+                            <label class="pl-15">Показывать товары, которых нет в наличии </label>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
