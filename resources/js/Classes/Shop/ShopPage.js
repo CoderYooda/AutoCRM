@@ -45,6 +45,8 @@ class shopPage {
 
         if (this.active_tab == 'pages') {
 
+            helper.initTabs('pages_tabs');
+
             const config = {
                 toolbar: [ "heading","|","bold","italic","link","bulletedList","numberedList","|","indent","outdent","|","blockQuote","insertTable","mediaEmbed","undo","redo" ],
                 language: 'ru',
@@ -65,8 +67,8 @@ class shopPage {
         }
     }
 
-    loadCroppModal()
-    {
+    loadCroppModal() {
+
         let myModal = document.getElementById('croppr_dialog');
 
         let options = {

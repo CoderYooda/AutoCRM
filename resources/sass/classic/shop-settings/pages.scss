@@ -1,0 +1,112 @@
+#ajax-shop-pages {
+
+    .sliders {
+
+        display: flex;
+        flex-wrap: wrap;
+
+        padding-top: 3px;
+
+        .slide {
+            .image {
+                width: 198px;
+                height: 67px;
+                object-fit: cover;
+            }
+        }
+
+        //.image {
+        //    position: relative;
+        //    margin-right: 15px;
+        //    background-color: black;
+        //    width: 198px;
+        //    height: 67px;
+        //    margin-bottom: 10px;
+        //    border-radius: 4px;
+        //
+        //    .delete {
+        //        position: absolute;
+        //        background: white;
+        //        border-radius: 8px;
+        //        width: 16px;
+        //        height: 16px;
+        //        right: 5px;
+        //        top: 5px;
+        //        cursor: pointer;
+        //
+        //        &::after {
+        //            content: "";
+        //            position: absolute;
+        //            background: url(/images/icons/shop-settings/delete.svg) center no-repeat;
+        //            width: 6px;
+        //            height: 6px;
+        //            top: 5px;
+        //            left: 5px;
+        //        }
+        //
+        //        &:hover::after {
+        //            background: url(/images/icons/shop-settings/delete_hover.svg) center no-repeat;
+        //        }
+        //    }
+        //}`
+
+    }
+
+    .upload {
+        cursor: pointer;
+        background: url(/images/icons/shop-settings/upload.svg);
+        width: 130px;
+        height: 130px;
+
+        &:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .nav {
+
+        margin-top: 0;
+        display: flex;
+
+        .nav-item {
+
+            position: relative;
+
+            margin-right: 15px;
+            cursor: pointer;
+
+            a {
+                color: white;
+                padding: 5px 10px;
+                background: #1B83C9;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    border-bottom: 4px solid #BFCFD9;
+                    width: 100%;
+                    bottom: -7px;
+                    left: 0;
+                }
+
+                &:hover {
+                    background: #1B83C9;
+                }
+            }
+
+            &:hover a::after, &.active a::after {
+                border-bottom: 4px solid #1267A0 !important;
+            }
+        }
+    }
+
+    .tab-pane {
+
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+
+}

@@ -92,6 +92,21 @@ class ShopController extends Controller
         return view(get_template() . '.shop.tabs.pages', compact('request'));
     }
 
+    public function paymentsTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.payments', compact('request'));
+    }
+
+    public function trafficTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.traffic', compact('request'));
+    }
+
+    public function appearanceTab(Request $request)
+    {
+        return view(get_template() . '.shop.tabs.appearance', compact('request'));
+    }
+
 //    public function contactsTab(Request $request)
 //    {
 //        return view(get_template() . '.shop.tabs.contacts', compact('request'));

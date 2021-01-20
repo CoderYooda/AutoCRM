@@ -15,6 +15,12 @@
             <li id="pages-tab" data-tab="pages" class="@if($request['active_tab'] == 'pages') active @endif">
                 <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'pages', 'target' => 'ajax-tab-content']) }}">Страницы</a>
             </li>
+            <li id="traffic-tab" data-tab="traffic" class="@if($request['active_tab'] == 'traffic') active @endif">
+                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'traffic', 'target' => 'ajax-tab-content']) }}">Посещаемость</a>
+            </li>
+            <li id="appearance-tab" data-tab="appearance" class="@if($request['active_tab'] == 'appearance') active @endif">
+                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'appearance', 'target' => 'ajax-tab-content']) }}">Внешний вид</a>
+            </li>
 {{--            <li id="warranty-tab" data-tab="warranty" class="@if($request['active_tab'] == 'warranty') active @endif">--}}
 {{--                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'warranty', 'target' => 'ajax-tab-content']) }}">Гарантия и возврат</a>--}}
 {{--            </li>--}}
