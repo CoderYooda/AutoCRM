@@ -12,12 +12,6 @@
                 </a>
             </li>
 
-            <li id="service-tab" data-tab="service" class="@if($request['active_tab'] == 'service') active @endif nav-item tab">
-                <a href="{{ route('UserIndex', ['active_tab' => 'service', 'target' => 'ajax-tab-content']) }}"
-                   class="nav-link ajax-nav update_url">
-                    Мои услуги
-                </a>
-            </li>
             @if(auth()->user()->partner->category_id == 7)
                 <li id="vehicles-tab" data-tab="vehicles" class="@if($request['active_tab'] == 'vehicles') active @endif nav-item tab">
                     <a href="{{ route('UserIndex', ['active_tab' => 'vehicles', 'target' => 'ajax-tab-content']) }}"

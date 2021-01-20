@@ -43,5 +43,12 @@
     @endforeach
 </div>
 
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>
 
 </html>

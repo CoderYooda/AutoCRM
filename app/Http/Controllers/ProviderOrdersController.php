@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ModelWasStored;
 use App\Http\Requests\ProviderOrdersRequest;
 use App\Models\ProviderOrder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -91,7 +92,7 @@ class ProviderOrdersController extends Controller
             ], 422);
         }
 
-        $products = $providerorder->getNotEnteredArticles();
+        $products = $providerorder->getNotEnteredProducts();
 
         foreach ($products as $key => $product) {
             $products[$key]['pivot_id'] = $product['pivot']['id'];
@@ -346,7 +347,7 @@ class ProviderOrdersController extends Controller
             'products' => $provider_order->products()->get()]);
     }
 
-    public static function getPoviderOrders($request)
+    public static function getPoviderOrders(Request $request)
     {
         $field = $request['sorters'][0]['field'] ?? 'created_at';
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
@@ -368,10 +369,18 @@ class ProviderOrdersController extends Controller
             ->when(is_array($request['accountable']) && count($request['accountable']), function ($query) use ($request) {
                 $query->whereIn('manager_id', $request['accountable']);
             })
-            ->when($request['search'] != null, function ($query) use ($request) {
-                $query->where('provider_orders.id', 'like', '%' . $request['search'] . '%')
-                    ->orWhere('partner.foundstring', 'like', '%' . $request['search'] . '%')
-                    ->orWhere('manager.foundstring', 'like', '%' . $request['search'] . '%');
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('provider_orders.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('partner', function ($query) use ($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        })
+                        ->orWhereHas('manager', function ($query) use ($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        });
+                });
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('provider_orders.created_at', [Carbon::parse($request['dates'][0]),
@@ -388,8 +397,8 @@ class ProviderOrdersController extends Controller
             ->paginate($size);
     }
 
-    private static function calculatePivotArticleProviderOrder($request, $product){
-### Рассчет товара для поступления ##########################
+    private static function calculatePivotArticleProviderOrder($request, $product)
+    {
         $data = [];
 
         $vcount = $product['count'];

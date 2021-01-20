@@ -2,11 +2,9 @@
 
 @section('tab')
     <div id="ajax-table-refund" class="bottom-container full-box-cont">
-        <div class="box-lister box w-px">
-            <div id="table-container" class="box-content">
-                <div data-data="{{ $data }}" id="refundTable"></div>
-            </div>
-        </div>
+
+        @include(get_template() . '.store.elements.search')
+
         <div class="content-rightside">
             {{--@can('Создавать заказ клиента')--}}
                 <button onclick="openDialog('refundDialog')" class="button primary mb-15 w-100">Новый возврат</button>

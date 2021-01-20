@@ -78,7 +78,7 @@ class Helper {
 
     redirect(element, path) {
 
-        let excepts = ['product', 'favour'];
+        let excepts = ['favour', 'info'];
 
         for(let i = 0; i < excepts.length; i++) {
             if (event.target.classList.contains(excepts[i])) return;

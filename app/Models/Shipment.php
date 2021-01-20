@@ -91,27 +91,15 @@ class Shipment extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function getProductPriceFromShipment($article_id)
+    public function getProductPriceFromShipment($product_id)
     {
-        $article = $this->products()->wherePivot('product_id', $article_id)->first();
-        return $article->pivot->price;
+        $product = $this->products()->wherePivot('product_id', $product_id)->first();
+        return $product->pivot->price;
     }
 
-    public function syncArticles($shipment_id, $pivot_array)
+    public function getProducts($data = null)
     {
-        DB::table('article_shipment')
-            ->where('shipment_id', $shipment_id)
-            ->delete();
-        $relation = null;
-        foreach ($pivot_array as $pivot_data) {
-            $relation = DB::table('article_shipment')->insert($pivot_data);
-        }
-        return $relation;
-    }
-
-    public function getArticles($data = null)
-    {
-        $articles = DB::table('article_shipment')
+        $products = DB::table('article_shipment')
             ->where('shipment_id', $this->id)
             ->where(function ($q) use ($data) {
                 if ($data !== null && $data['store_id'] !== null) {
@@ -122,22 +110,22 @@ class Shipment extends Model
                 }
             })
             ->get();
-        foreach ($articles as $article) {
-            $article->product = Product::owned()->where('id', $article->product_id)->first();
+        foreach ($products as $product) {
+            $product->product = Product::owned()->where('id', $product->product_id)->first();
         }
-        return $articles;
+        return $products;
     }
 
-    public function notRefundedArticles()
+    public function notRefundedProducts()
     {
         return $this->products()->whereRaw('refunded_count < count');
     }
 
-    public function incrementRefundedCount($article_id, $amount)
+    public function incrementRefundedCount($product_id, $amount)
     {
         $products = DB::table('article_shipment')->where([
             'shipment_id' => $this->id,
-            'product_id' => $article_id,
+            'product_id' => $product_id,
         ])
             ->whereRaw('refunded_count != count')
             ->get();
@@ -189,13 +177,13 @@ class Shipment extends Model
         return $this->hasMany(Refund::class, 'shipment_id', 'id');
     }
 
-    public function getAvailableToRefundArticlesCount($article_id)
+    public function getAvailableToRefundProductsCount($product_id)
     {
         $response = DB::table('article_shipment')
             ->selectRaw('SUM(count) as count, SUM(refunded_count) as refunded_count')
             ->where([
                 'shipment_id' => $this->id,
-                'product_id' => $article_id
+                'product_id' => $product_id
             ])
             ->first();
 

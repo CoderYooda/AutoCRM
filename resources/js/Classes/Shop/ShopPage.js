@@ -52,17 +52,17 @@ class shopPage {
 
             let editor_element = document.querySelector('#editor');
 
-            TextEditor.create(editor_element, config)
-                .then(newEditor => {
-                    this.texteditor = newEditor
-                });
+            if(editor_element) {
+                TextEditor.create(editor_element, config)
+                    .then(newEditor => {
+                        this.texteditor = newEditor
+                    });
+            }
         }
         else if(this.active_tab == 'settings') {
             // this.addSubdomainMask();
             this.addEmailMask();
         }
-
-        this.checkActive();
     }
 
     loadCroppModal()
@@ -550,19 +550,6 @@ class shopPage {
         }
 
         return true;
-    }
-
-    checkActive() {
-
-        let className = window.location.pathname.substring(1);
-        let link = document.getElementById('shop_link');
-        if (className === 'shop') {
-            link.classList.add('active');
-            this.active = true;
-        } else {
-            link.classList.remove('active');
-            this.active = false;
-        }
     }
 
     saveContacts(element) {

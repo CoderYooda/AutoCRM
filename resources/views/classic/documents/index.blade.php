@@ -7,22 +7,8 @@
 @section('tab')
 
     <div id="ajax-table-documents" class="bottom-container" style="height: calc(100% - 79px) !important;">
-        <div class="box-lister" style="width: 1px!important;">
 
-            <div class="search-panel box mb-15">
-                <div class="search-field-container w-100">
-                    <input id="search" name="search" placeholder="Штрихкод документа" class="input w-100" type="text">
-                </div>
-            </div>
-
-            <div class="box h-100">
-                <div class="box-header" id="breadcrumbs-nav"></div>
-                <div id="table-container" class="box-content h-100">
-                    <div data-data="{{ $data }}" id="documentsTable"></div>
-                </div>
-            </div>
-
-        </div>
+        @include(get_template() . '.store.elements.search')
 
         <div class="content-rightside">
             @can('Создавать документы')

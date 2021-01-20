@@ -23,13 +23,19 @@ class shipmentDialog extends Modal{
     printScore() {
         let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        window.helper.printDocument('shipment-score', id);
+        helper.printDocument('shipment-score', id);
     }
 
     printUpd() {
         let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        window.helper.printDocument('shipment-upd', id);
+        helper.printDocument('shipment-upd', id);
+    }
+
+    printProductReceipt() {
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+
+        helper.printDocument('product-receipt', id);
     }
 
     getPayment(){

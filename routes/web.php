@@ -1,34 +1,18 @@
 <?php
 
 Route::get('/test', function () {
+    $document = \App\Models\Document::find(28);
 
-    $attributes = [];
+    $data = json_decode($document['data'], true);
 
-    $validator = Validator::make($attributes, [
-        'name'                 => ['string', 'max:255'],
-        'manufacturer'         => ['required', 'string', 'max:255'],
-        'article'              => ['required', 'string', 'max:64'],
-        'categories'           => ['array'],
-        'categories.*'         => ['string', 'max:200'],
-        'warehouse'            => ['array'],
-        'warehouse.*'          => ['string', 'max:2'],
-        'count'                => ['integer', 'between:0,1000000'],
-        'price'                => ['numeric', 'between:0,1000000'],
-        'barcode_manufacturer' => ['string'],
-        'barcode_warehouse'    => ['string']
+    $view_name = $data['data']['view'];
+
+    $view = view($view_name)->with([
+        'data' => $data['data'],
+        'barcode' => $document->barcode
     ]);
 
-    $validatorErrors = $validator->getMessageBag()->toArray();
-
-    $errors = [];
-
-    foreach ($validatorErrors as $key => $validatorError) {
-        $errors[] = $key . ' - ' . $validatorError[0];
-    }
-
-    $errors = implode(', ', $errors);
-
-    dd($errors);
+    return $view;
 });
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -72,7 +56,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
     Route::get('/salary/{id}/get', 'SalarySchemaController@getSchemaById')->name('GetSchemaById');
 
-    Route::middleware('hasPayedDays', 'fork')->group(function () {
+    #Настройки
+    Route::get('/settings', 'SettingsController@index')->name('SettingsIndex'); // Строгое название
+
+    Route::middleware(['hasPayedDays', 'fork'])->group(function () {
         Route::get('/', function () {
             return 'Hello world';
         })->name('indexPage');
@@ -81,9 +68,6 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/suppliers/store', 'SupplierController@store')->name('StoreSupplier');
         Route::post('/suppliers/dialog/search', 'SupplierController@dialogSearch')->name('SupplierDialogSearch');
         Route::post('/suppliers/{id}/select', 'SupplierController@select')->name('SelectSupplier');
-
-        #Настройки
-        Route::get('/settings', 'SettingsController@index')->name('SettingsIndex'); // Строгое название
 
         Route::post('/settings/base/store', 'SettingsController@baseStore')->name('BaseSettingsStore');
         Route::post('/settings/base/fresh', 'SettingsController@freshBaseStore')->name('FreshBaseStore');
@@ -314,8 +298,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::any('/document', 'DocumentController@document')->name('Document');
         Route::post('/documents/tabledata', 'DocumentController@tableData')->name('DocumentEntranceData');
         Route::post('/documents', 'DocumentController@store')->name('DocumentStore');
+        Route::get ('/documents/cheque' , 'DocumentController@cheque')->name('PrintCheque');
         Route::get('/documents/{document}', 'DocumentController@show')->name('DocumentShow');
         Route::post('/documents/side_info', 'DocumentController@getPartnerSideInfo')->name('GetDocumentPartnerSideInfo');
+        Route::get('/document/{document}', 'DocumentController@show')->name('PrintDocument');
+
 
         #Отчеты
         Route::get('/report', 'SmsController@index')->name('ReportIndex');// Строгое название

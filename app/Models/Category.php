@@ -5,24 +5,17 @@ namespace App\Models;
 use App\Models\System\Image;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\Imageable;
-use Baum\Node;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class Category extends Node
+class Category extends Model
 {
     use Imageable;
 
     protected $table = 'categories';
-
-//    protected $scoped = ['company_id'];
-    protected $parentColumn = 'category_id';
-    protected $leftColumn = '_lft';
-    protected $rightColumn = '_rgt';
-    protected $depthColumn = 'depth';
-    protected static $_guarded = ['id', 'category_id', '_lft', '_rgt', 'depth'];
 
     protected $guarded = [];
 
@@ -36,6 +29,11 @@ class Category extends Node
     public function isRoot()
     {
         return $this->id < 3;
+    }
+
+    public function parent()
+    {
+        return $this->HasOne(Category::class, 'id', 'category_id');
     }
 
     public function image()
@@ -54,6 +52,54 @@ class Category extends Node
 
         //Обновляем slug через фасад, чтобы избежать рекурсии в observer'e
         DB::table('categories')->where('id', $this->id)->update(['slug' => $slug]);
+    }
+
+    public function getAncestors()
+    {
+        $allCategories = Category::owned()->get();
+
+        $searchId = $this->category_id;
+
+        $ancestorsCategories = collect();
+
+        repeat:
+
+        $category = $allCategories->where('id', $searchId)->first();
+
+        if($category) {
+            $ancestorsCategories->push($category);
+            $searchId = $category->category_id;
+            goto repeat;
+        }
+
+        return $ancestorsCategories->reverse();
+    }
+
+    public function getDescendantsAndSelf()
+    {
+        $allCategories = Category::owned()->get();
+
+        $searchIds = [];
+
+        array_push($searchIds, $this->id);
+
+        $descendantsCategories = collect()->push($this);
+
+        repeat:
+
+        foreach ($allCategories as $globalCategory) {
+
+            if(!in_array($globalCategory->category_id, $searchIds)) continue;
+            if($descendantsCategories->search($globalCategory)) continue;
+
+            $descendantsCategories->push($globalCategory);
+
+            $searchIds[] = $globalCategory->id;
+
+            goto repeat;
+        }
+
+        return $descendantsCategories;
     }
 
     public function breadcrumbs()
@@ -124,10 +170,16 @@ class Category extends Node
         }
     }
 
-    public static function owned(){
-        $company_id = Auth::user()->company_id;
-        return self::where(function($q) use ($company_id){
-            $q->where('company_id', $company_id)->orWhere('company_id', NUll);
+    public static function owned()
+    {
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        $companyId = $shop ? $shop->company_id : Auth::user()->company_id;
+
+        return self::where(function($q) use ($companyId){
+            $q->where('company_id', $companyId)->orWhere('company_id', null);
         });
     }
 }

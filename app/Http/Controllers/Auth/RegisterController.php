@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\SettingsController;
+use App\Jobs\CreateBaseCategoriesForCompany;
 use App\Models\Cashbox;
 use App\Models\Partner;
 use App\Models\Markup;
@@ -45,7 +46,7 @@ class RegisterController extends Controller
             'fio' => ['required', 'string', 'min:5', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
-            'refer' => ['exists:referal,code'],
+            'refer' => ['nullable', 'exists:referal,code'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -90,7 +91,7 @@ class RegisterController extends Controller
                 $redirect = '/';
                 $this->registered($request, $user) ?: $redirect = $this->redirectPath();
 
-                return response()->json(['redirect' => $redirect],200);
+                return response()->json(['redirect' => $redirect],302);
             }
         } else {
             $validation->validate();
@@ -178,9 +179,7 @@ class RegisterController extends Controller
 
             Company::flushEventListeners();
 
-//            Artisan::call('categories:init', ['company' => $company->id]);
-
-            //
+            $this->dispatch(new CreateBaseCategoriesForCompany($company->id));
 
             $price = Markup::create([
                 'company_id' => $company->id,

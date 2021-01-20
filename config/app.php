@@ -88,7 +88,13 @@ return [
         //Интернет-магазин
         CartServiceProvider::class,
         FavoriteServiceProvider::class,
-        ShopServiceProvider::class
+        ShopServiceProvider::class,
+
+        Barryvdh\DomPDF\ServiceProvider::class,
+
+        //Печать документов
+        Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class
+
     ],
 
     /*
@@ -145,6 +151,7 @@ return [
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class
     ],
 
 ];

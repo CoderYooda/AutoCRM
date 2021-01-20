@@ -253,7 +253,7 @@ class ProductDialog extends Modal {
 
             let html = '';
 
-            Object.values(data.articles).forEach(item => {
+            Object.values(data.products).forEach(item => {
                 let m_name = item.brand;
                 let p_article = item.article;
                 let p_name = item.description;

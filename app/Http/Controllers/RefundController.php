@@ -105,7 +105,7 @@ class RefundController extends Controller
             $products = $request->products;
 
             foreach ($products as $id => $product) {
-                if ($product['count'] > $shipment->getAvailableToRefundArticlesCount($id)) {
+                if ($product['count'] > $shipment->getAvailableToRefundProductsCount($id)) {
                     $name = 'products.' . $id . '.count';
                     return response()->json([
                         'messages' => [$name => ['Кол - во не может быть больше чем в продаже']]
@@ -210,25 +210,21 @@ class RefundController extends Controller
             $request['accountable'] = [];
         }
 
-        $refunds = Refund::select(DB::raw('
-            refund.*, refund.created_at as date, refund.id as rid, IF(managers.type != 2, managers.fio,managers.companyName) as manager, IF(partners.type != 2, partners.fio,partners.companyName) as partner, refund.summ as price
-        '))
-            ->leftJoin('partners as managers',  'managers.id', '=', 'refund.manager_id')
-            ->leftJoin('partners',  'partners.id', '=', 'refund.partner_id')
-//            ->when($request['provider'] != [], function ($query) use ($request) {
-//                $query->whereIn('partner_id', $request['provider']);
-//            })
-//            ->when($request['clientorder_status'] != null, function ($query) use ($request) {
-//                $query->where('status', $request['clientorder_status']);
-//            })
-//            ->when($request['accountable'] != [], function ($query) use ($request) {
-//                $query->whereIn('client_orders.partner_id', $request['accountable']);
-//            })
+        $refunds = Refund::with('manager', 'partner')
             ->when($request['client'] != [], function ($query) use ($request) {
                 $query->whereIn('refund.partner_id', $request['client']);
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
                 $query->whereBetween('refund.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('refunds.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('manager', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        });
+                });
             })
             ->where('refund.company_id', Auth::user()->company_id)
             ->groupBy('refund.id')
@@ -237,6 +233,11 @@ class RefundController extends Controller
 
             //dd($entrances);
             ->paginate($size);
+
+        foreach ($refunds as $index => $refund) {
+            $refunds[$index]['manager_name'] = $refund->manager->official_name;
+            $refunds[$index]['partner_name'] = $refund->partner->official_name;
+        }
 
         return $refunds;
     }

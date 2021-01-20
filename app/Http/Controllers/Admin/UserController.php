@@ -35,6 +35,7 @@ class UserController extends Controller
         $dir = $request['sorters'][0]['dir'] ?? 'DESC';
 
         $users = User::with('roles')
+            ->where('company_id', '!=', null)
             ->when(strlen($request->search), function (Builder $q) use ($request) {
                 $q->where('id', 'like', "%{$request->search}%")
                     ->orWhere('phone', 'like', "%{$request->search}%")

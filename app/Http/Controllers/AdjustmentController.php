@@ -24,39 +24,39 @@ class AdjustmentController extends Controller
 
         $class = 'adjustmentDialog' . ($adjustment->id ?? '');
 
-        $articles = [];
+        $products = [];
 
         if ($adjustment) {
 
 //            $adjustmentArticleEntrances = DB::table('adjustment_article_entrance')->where('adjustment_id', $adjustment->id)->get();
-//            $articleEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('product_entrance_id'))->get();
+//            $productEntrances = DB::table('article_entrance')->whereIn('id', $adjustmentArticleEntrances->pluck('product_entrance_id'))->get();
 
-            $articlesAdjustment = DB::table('article_adjustment')->where('adjustment_id', $adjustment->id)->get();
+            $productsAdjustment = DB::table('article_adjustment')->where('adjustment_id', $adjustment->id)->get();
 
-            $articleNames = Product::with('supplier')->whereIn('id', $articlesAdjustment->pluck('product_id'))->get();
+            $productNames = Product::with('supplier')->whereIn('id', $productsAdjustment->pluck('product_id'))->get();
 
-            foreach ($articlesAdjustment as $articleAdjustment) {
+            foreach ($productsAdjustment as $productAdjustment) {
 
-                $product_id = $articleAdjustment->product_id;
+                $product_id = $productAdjustment->product_id;
 
-                $productEntrance = DB::table('article_entrance')->find($articleAdjustment->product_entrance_id);
+                $productEntrance = DB::table('article_entrance')->find($productAdjustment->product_entrance_id);
 
-                $articles[$product_id]['name'] = $articleNames->find($product_id)->name;
-                $articles[$product_id]['article'] = $articleNames->find($product_id)->article;
-                $articles[$product_id]['manufacturer'] = $articleNames->find($product_id)->supplier->name;
+                $products[$product_id]['name'] = $productNames->find($product_id)->name;
+                $products[$product_id]['article'] = $productNames->find($product_id)->article;
+                $products[$product_id]['manufacturer'] = $productNames->find($product_id)->supplier->name;
 
-                $articles[$product_id]['entrances'][$productEntrance->id] = [
+                $products[$product_id]['entrances'][$productEntrance->id] = [
                     'id'              => $productEntrance->id,
                     'created_at'      => Carbon::parse($productEntrance->created_at)->format('d.m.Y'),
-                    'deviation_price' => $articleAdjustment->deviation_price,
-                    'deviation_count' => $articleAdjustment->deviation_count,
-                    'price'           => $articleAdjustment->price,
-                    'count'           => $articleAdjustment->count,
+                    'deviation_price' => $productAdjustment->deviation_price,
+                    'deviation_count' => $productAdjustment->deviation_count,
+                    'price'           => $productAdjustment->price,
+                    'count'           => $productAdjustment->count,
                 ];
             }
         }
 
-        $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact('adjustment', 'request', 'articles', 'class'));
+        $view = view(get_template() . '.adjustments.dialog.form_adjustment', compact('adjustment', 'request', 'products', 'class'));
 
         return response()->json([
             'tag'  => $class,
@@ -68,44 +68,44 @@ class AdjustmentController extends Controller
     {
         $class = $request->refer;
 
-        $article = Product::find($request->product_id);
+        $product = Product::find($request->product_id);
 
         $company = Auth::user()->company;
 
-        $articleEntrances = DB::table('article_entrance')
+        $productEntrances = DB::table('article_entrance')
             ->whereRaw('released_count < count')
             ->where([
                 'company_id' => $company->id,
-                'product_id' => $article->id
+                'product_id' => $product->id
             ])
             ->get();
 
-        $articleAttributes = [
-            'name'         => $article->name,
-            'manufacturer' => $article->supplier->name,
-            'article'      => $article->article,
+        $productAttributes = [
+            'name'         => $product->name,
+            'manufacturer' => $product->supplier->name,
+            'article'      => $product->article,
             'entrances'    => []
         ];
 
-        foreach ($articleEntrances as $articleEntrance) {
+        foreach ($productEntrances as $productEntrance) {
 
-            if ($articleEntrance->count == $articleEntrance->released_count) continue;
+            if ($productEntrance->count == $productEntrance->released_count) continue;
 
-            $articleAttributes['entrances'][$articleEntrance->id] = [
-                'id'             => $articleEntrance->id,
-                'created_at'     => date('d.m.Y', strtotime($articleEntrance->created_at)),
-                'count'          => $articleEntrance->count,
-                'price'          => $articleEntrance->price,
-                'released_count' => $articleEntrance->released_count
+            $productAttributes['entrances'][$productEntrance->id] = [
+                'id'             => $productEntrance->id,
+                'created_at'     => date('d.m.Y', strtotime($productEntrance->created_at)),
+                'count'          => $productEntrance->count,
+                'price'          => $productEntrance->price,
+                'released_count' => $productEntrance->released_count
             ];
         }
 
-        $view = view(get_template() . '.adjustments.dialog.includes.product_element', compact('class', 'articleAttributes'))
-            ->with('article_id', $article->id);
+        $view = view(get_template() . '.adjustments.dialog.includes.product_element', compact('class', 'productAttributes'))
+            ->with('product_id', $product->id);
 
         return response()->json([
             'html'    => $view->render(),
-            'article' => $article
+            'product' => $product
         ]);
     }
 
@@ -131,21 +131,21 @@ class AdjustmentController extends Controller
                 'comment'    => $request->comment
             ]);
 
-            foreach ($request->products as $entrance_id => $articles) {
+            foreach ($request->products as $entrance_id => $products) {
 
-                foreach ($articles as $article_id => $params) {
+                foreach ($products as $product_id => $params) {
 
                     $query = DB::table('article_entrance');
 
-                    $articleEntranceId = $entrance_id;
+                    $productEntranceId = $entrance_id;
 
-                    if ($articleEntranceId == 'new') {
+                    if ($productEntranceId == 'new') {
 
                         if ($params['count'] == 0) continue;
 
                         $attributes = [
                             'entrance_id' => null,
-                            'product_id'  => $article_id,
+                            'product_id'  => $product_id,
                             'company_id'  => $partner->company_id,
                             'store_id'    => $user->current_store,
                             'price'       => $params['price'],
@@ -154,30 +154,30 @@ class AdjustmentController extends Controller
                             'updated_at'  => Carbon::now()
                         ];
 
-                        $articleEntranceId = $query->insertGetId($attributes);
+                        $productEntranceId = $query->insertGetId($attributes);
                     }
 
-                    $articleEntrance = DB::table('article_entrance')->find($articleEntranceId);
+                    $productEntrance = DB::table('article_entrance')->find($productEntranceId);
 
                     if ($entrance_id != 'new') {
                         $query->where('id', $entrance_id)->update([
-                            'count'      => ($articleEntrance->released_count + $params['count']),
+                            'count'      => ($productEntrance->released_count + $params['count']),
                             'price'      => $params['price'],
                             'updated_at' => Carbon::now()
                         ]);
                     }
 
                     DB::table('article_adjustment')->insert([
-                        'product_id'          => $article_id,
+                        'product_id'          => $product_id,
                         'adjustment_id'       => $adjustment->id,
-                        'product_entrance_id' => $articleEntranceId,
+                        'product_entrance_id' => $productEntranceId,
                         'store_id'            => Auth::user()->current_store,
                         'count'               => $params['count'],
-                        'prev_count'          => $entrance_id == 'new' ? 0 : $articleEntrance->count,
-                        'deviation_count'     => $params['count'] - $articleEntrance->count,
+                        'prev_count'          => $entrance_id == 'new' ? 0 : $productEntrance->count,
+                        'deviation_count'     => $params['count'] - $productEntrance->count,
                         'price'               => $params['price'],
-                        'prev_price'          => $entrance_id == 'new' ? 0 : $articleEntrance->price,
-                        'deviation_price'     => $params['price'] - $articleEntrance->price,
+                        'prev_price'          => $entrance_id == 'new' ? 0 : $productEntrance->price,
+                        'deviation_price'     => $params['price'] - $productEntrance->price,
                         'total'               => $params['price'] * $params['count']
                     ]);
                 }
@@ -239,21 +239,31 @@ class AdjustmentController extends Controller
             $request['dates'] = $dates;
         }
 
-        $adjustments = Adjustment::select(DB::raw('
-                adjustments.*, adjustments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, stores.name as store
-            '))
-            ->leftJoin('partners', 'partners.id', '=', 'adjustments.manager_id')
-            ->leftJoin('stores', 'stores.id', '=', 'adjustments.store_id')
-            ->where('adjustments.company_id', Auth::user()->company()->first()->id)
-            ->when(is_array($request['accountable']) && !empty($request['accountable']), function ($query) use ($request) {
-                $query->whereIn('adjustments.manager_id', $request['accountable']);
+        $adjustments = Adjustment::with('manager', 'store')
+            ->where('company_id', Auth::user()->company_id)
+            ->when(is_array($request['accountable']), function ($query) use ($request) {
+                $query->whereIn('manager_id', $request['accountable']);
             })
             ->when($request['dates_range'] != null, function ($query) use ($request) {
-                $query->whereBetween('adjustments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
             })
-            ->groupBy('adjustments.id')
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('adjustments.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('manager', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        });
+                });
+            })
+            ->groupBy('id')
             ->orderBy($field, $dir)
             ->paginate($size);
+
+        foreach ($adjustments as $index => $adjustment) {
+            $adjustments[$index]['manager_name'] = $adjustment->manager->official_name;
+            $adjustments[$index]['store_name'] = $adjustment->store->name;
+        }
 
         return $adjustments;
     }

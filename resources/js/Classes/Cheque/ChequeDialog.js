@@ -33,7 +33,7 @@ class chequeDialog extends Modal{
         data.count = count.value;
         // data.price_source = price_source.value;
 
-        helper.printDocument('cheque', cheque_type.value, data);
+        helper.printCheque(cheque_type.value, data);
     }
 }
 export default chequeDialog;

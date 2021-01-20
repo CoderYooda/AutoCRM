@@ -4,22 +4,12 @@
       xmlns="http://www.w3.org/TR/REC-html40" lang="ru">
 
 <head>
-    <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name=ProgId content=Excel.Sheet>
     <meta name=Generator content="Microsoft Excel 15">
     <link rel=Stylesheet href="{{ asset('/css/documents/invoice-for-payment.css') }}">
-    <style>
-        <!--table
-        {mso-displayed-decimal-separator:"\,";
-            mso-displayed-thousand-separator:" ";}
-        @page
-        {margin:.98in .75in .98in .75in;
-            mso-header-margin:.51in;
-            mso-footer-margin:.51in;}
-        -->
-    </style>
-    <![if !supportTabStrip]><script language="JavaScript">
-        <!--
+    <![if !supportTabStrip]>
+    <script language="JavaScript">
         function fnUpdateTabs()
         {
             if (parent.window.g_iIEVer>=4) {
@@ -33,17 +23,17 @@
 
 
         fnUpdateTabs();
-        //-->
     </script>
     <![endif]>
 </head>
 
-<img style="width: 70mm; height: 6mm; right: 0; top: 38.5mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+<body link=blue vlink=purple style="position: relative;">
 
-<body link=blue vlink=purple>
+<img style="width: 70mm; height: 6mm; left: 120mm; top: 33.5mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+<p style="left: 146mm; top: 36mm; position: absolute;">bbcrm.ru</p>
 
-<table border=0 cellpadding=0 cellspacing=0 width=712 style='border-collapse:
- collapse;table-layout:fixed;width:539pt'>
+<table border=0 cellpadding=0 cellspacing=0 style='border-collapse:
+ collapse;table-layout:fixed;'>
     <col width=7 style='mso-width-source:userset;mso-width-alt:298;width:5pt'>
     <col width=21 span=2 style='mso-width-source:userset;mso-width-alt:896;
  width:16pt'>
@@ -558,6 +548,14 @@
     </tr>
     <![endif]>
 </table>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>
 
 </body>
 

@@ -182,17 +182,6 @@ class UserController extends Controller
             ->with('vehicles', Auth::user()->partner->vehicles);
     }
 
-    public static function serviceTab($request)
-    {
-        $payments = Payment::owned()->where('type', 'pay_to_store')->orderBy('id', 'DESC')->get();
-
-        foreach ($payments as $payment){
-            $payment->freshStatus();
-        }
-
-        return view(get_template() . '.user.tabs.service', compact('request', 'payments'));
-    }
-
     public function saveSalarySchemaToUser(Request $request)
     {
         $user = Partner::where('id', $request['partner_id'])->first();

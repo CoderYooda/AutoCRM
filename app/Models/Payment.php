@@ -27,6 +27,7 @@ class Payment extends Model
     ];
 
     public function freshStatus() {
+
         $previous_status = $this->status;
 
         $api = new TinkoffMerchantAPI(env('TINKOFF_TERMINAL_KEY'), env('TINKOFF_SECRET_KEY'));
@@ -56,7 +57,7 @@ class Payment extends Model
                     $company->increment('balance', $this->add_balance);
 
                     if($company->getPayedDays() < 1) {
-                        $company->update(['payed_days' => Carbon::now()]);
+                        $company->update(['payed_days' => Carbon::now()->timestamp]);
                     }
 
                     $company->increment('payed_days', $this->add_days * 86400);

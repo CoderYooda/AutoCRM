@@ -3,26 +3,14 @@
       xmlns:x="urn:schemas-microsoft-com:office:excel"
       xmlns="http://www.w3.org/TR/REC-html40">
 <head>
-    <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
     <meta name=ProgId content=Excel.Sheet>
     <meta name=Generator content="Microsoft Excel 15">
     <title>Универсальный передаточный документ</title>
     <link rel=Stylesheet href="{{ asset('/css/documents/upd.css') }}">
-    <style>
-        <!--table
-        {mso-displayed-decimal-separator:"\,";
-            mso-displayed-thousand-separator:" ";}
-        @page
-        {margin:.2in .2in .2in .2in;
-            mso-header-margin:.51in;
-            mso-footer-margin:.51in;
-            mso-page-orientation:landscape;
-            mso-horizontal-page-align:center;
-            width: 100%;
-        }
-        -->
-    </style>
-    <![if !supportTabStrip]><script language="JavaScript">
+
+    <![if !supportTabStrip]>
+    <script language="JavaScript">
         <!--
         function fnUpdateTabs()
         {
@@ -43,11 +31,9 @@
     <![endif]>
 </head>
 <body style="position:relative;" link=blue vlink="#954F72">
-
-<img style="width: 60mm; height: 6mm; right: -60mm; float:right; top: 15mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
-
-<table border=0 cellpadding=0 cellspacing=0 width=3595 style='border-collapse:
- collapse;table-layout:fixed;width:2696pt'>
+<img style="width: 60mm; height: 6mm; right: 20mm; float:right; top: 12mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+<table border=0 cellpadding=0 cellspacing=0 style='border-collapse:
+ collapse;table-layout:fixed;'>
     <col class=xl65 width=12 span=88 style='mso-width-source:userset;mso-width-alt:
  438;width:9pt'>
     <col class=xl65 width=523 style='mso-width-source:userset;mso-width-alt:19126;
@@ -60,187 +46,14 @@
         <td colspan=85 height=17 class=xl109 width=1020 style='height:12.75pt;
 width:765pt'><a name="Print_Area">Приложение N 1 к письму ФНС России от
                 21.10.2013 N ММВ-20-3/96@</a></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=523 style='width:392pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
-        <td class=xl65 width=12 style='width:9pt'></td>
     </tr>
     <tr height=16 style='mso-height-source:userset;height:12.0pt'>
         <td colspan=8 rowspan=4 height=55 class=xl110 width=96 style='height:41.25pt;
-width:72pt'><a href="https://service-online.su/forms/buh/upd/"
-               target="_parent"><span style='font-size:9.0pt;text-decoration:none;
+width:72pt'><span style='font-size:9.0pt;text-decoration:none;
 font-family:"Times New Roman", serif;mso-font-charset:204'>Универсальный
-передаточный документ</span></a></td>
+передаточный документ</span></td>
         <td colspan=9 class=xl111 style='border-left:none'>Счет-фактура N<span
-                style='mso-spacerun:yes'> </span></td>
+                style='mso-spacerun:yes'> </span></td>
         <td colspan=7 class=xl112>{{ $data['id'] ?? 'Не указан' }}</td>
         <td colspan=2 class=xl113>от</td>
         <td colspan=10 class=xl112>{{ $data['created_at'] ?? 'Не указан' }}</td>
@@ -248,10 +61,9 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
         <td colspan=45 rowspan=3 class=xl114 width=540 style='width:405pt'>Приложение
             N 1 к постановлению Правительства Российской Федерации от 26 декабря 2011
             года № 1137<br>
-            <span style='mso-spacerun:yes'> </span>(в редакции постановления
+            <span style='mso-spacerun:yes'> </span>(в редакции постановления
             Правительства Российской Федерации от 19&nbsp;августа 2017 года № 981)</td>
     </tr>
-
     <tr height=17 style='height:12.75pt'>
         <td colspan=9 height=17 class=xl111 style='height:12.75pt;border-left:none'>Исправление
             N</td>
@@ -272,7 +84,7 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=4 height=15 class=xl65 style='height:11.25pt'>Статус:<span
-                style='mso-spacerun:yes'> </span></td>
+                style='mso-spacerun:yes'> </span></td>
         <td colspan=2 class=xl104>1</td>
         <td colspan=2 class=xl105 style='border-left:none'> </td>
         <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
@@ -303,7 +115,7 @@ width:72pt'><br>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>К
             платежно-расчетному документу</td>
-        <td colspan=2 class=xl107>N<span style='mso-spacerun:yes'> </span></td>
+        <td colspan=2 class=xl107>N<span style='mso-spacerun:yes'> </span></td>
         <td colspan=8 class=xl79> </td>
         <td colspan=2 class=xl67>от</td>
         <td colspan=46 class=xl103> </td>
@@ -317,7 +129,7 @@ width:72pt'><br>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=16 height=15 class=xl102 style='height:11.25pt;border-left:none'>Адрес</td>
         <td colspan=58 class=xl103>{{ $data['partner_address'] ?? '' }}</td>
-{{--        <td colspan=58 class=xl103>{{ $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address }}</td>--}}
+        {{--        <td colspan=58 class=xl103>{{ $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address }}</td>--}}
         <td colspan=3 class=xl67>(6а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -404,9 +216,7 @@ none;width:18pt'>код</td>
         <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>11</td>
     </tr>
     @foreach($data['products'] as $product_id => $product)
-
         @continue(!isset($product['id']))
-
         <tr height=16 style='mso-height-source:userset;height:12.0pt'>
             <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
             <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>
@@ -426,7 +236,6 @@ none;width:18pt'>код</td>
             <td colspan=6 class=xl92 style='border-left:none'>---</td>
         </tr>
     @endforeach
-
     <tr height="16" style="mso-height-source:userset;height:12.0pt">
         <td colspan="2" height="16" class="xl93" width="24" style="height:12.0pt;width:18pt">&nbsp;</td>
         <td colspan="6" class="xl94" width="72" style="border-left:none;width:54pt">&nbsp;</td>
@@ -439,14 +248,13 @@ none;width:18pt'>код</td>
         <td colspan="7" class="xl92" style="border-left:none">&nbsp;</td>
         <td colspan="6" class="xl92" style="border-left:none">&nbsp;</td>
     </tr>
-
     <tr height=6 style='mso-height-source:userset;height:4.5pt'>
         <td colspan=8 height=6 class=xl89 style='height:4.5pt'>&nbsp;</td>
         <td colspan=77 class=xl90>&nbsp;</td>
     </tr>
     <tr height=30 style='mso-height-source:userset;height:22.5pt'>
         <td colspan=8 height=30 class=xl81 width=96 style='height:22.5pt;width:72pt'>Документ
-            составлен на<span style='mso-spacerun:yes'> </span></td>
+            составлен на<span style='mso-spacerun:yes'> </span></td>
         <td class=xl66>&nbsp;</td>
         <td colspan="16" class="xl81" width="192" style="width:144pt">Руководитель
             организации <br>
@@ -454,19 +262,19 @@ none;width:18pt'>код</td>
         </td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company['owner'] ?? '' }}</td>
-{{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>--}}
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $data['is_company'] ? $data['company_name'] : '' }}</td>
+        {{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>--}}
         <td colspan="16" class="xl81" width="192" style="width:144pt">Главный бухгалтер
             <br>
             или иное уполномоченное лицо</td>
         <td colspan="6" class="xl88" width="72" style="width:54pt">&nbsp;</td>
         <td class="xl68" width="12" style="width:9pt"></td>
-        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $data['auditor'] ?? '' }}</td>
-{{--        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>--}}
+        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $data['is_company'] ? $data['auditor'] : '' }}</td>
+        {{--        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>--}}
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=3 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
-        <td colspan=5 class=xl65><span style='mso-spacerun:yes'> </span>листах</td>
+        <td colspan=5 class=xl65><span style='mso-spacerun:yes'> </span>листах</td>
         <td class=xl66>&nbsp;</td>
         <td colspan=16 class=xl81 width=192 style='width:144pt'></td>
         <td colspan=6 class=xl69 width=72 style='width:54pt'>(подпись)</td>
@@ -485,7 +293,7 @@ none;width:18pt'>код</td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
         <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$data['is_company'] ? $data['company_name'] : '---' }}</td>
-{{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>--}}
+        {{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>--}}
         <td colspan=3 class=xl81 width=36 style='width:27pt'></td>
         <td colspan=35 class=xl83 width=420 style='width:315pt'>&nbsp;</td>
     </tr>
@@ -536,7 +344,7 @@ none;width:18pt'>код</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=42 class=xl81 width=504 style='width:378pt'>Товар (груз) получил
             / услуги, результаты работ, права принял<span
-                style='mso-spacerun:yes'> </span></td>
+                style='mso-spacerun:yes'> </span></td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=13 height=15 class=xl79 style='height:11.25pt'>&nbsp;</td>
@@ -551,7 +359,7 @@ none;width:18pt'>код</td>
         <td colspan=10 class=xl79>&nbsp;</td>
         <td class=xl67></td>
         <td colspan=14 class=xl75>{{ $data['partner_cut_surname'] }}</td>
-{{--        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->cur_surname : $shipment->partner->cur_surname }}</td>--}}
+        {{--        <td colspan=14 class=xl75>{{ $shipment->partner->type != 2 ? $shipment->partner->cur_surname : $shipment->partner->cur_surname }}</td>--}}
         <td colspan=3 class=xl68 width=36 style='width:27pt'>[15]</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -612,7 +420,7 @@ none;width:18pt'>код</td>
         <td colspan=3 class=xl78>&nbsp;</td>
         <td class=xl73 style='border-left:none'>&nbsp;</td>
         <td colspan=39 class=xl77>(информация о наличии/отсутствии претензии; ссылки
-            на неотъемлемые приложения, и другие<span style='mso-spacerun:yes'> 
+            на неотъемлемые приложения, и другие<span style='mso-spacerun:yes'>
 </span>документы и т.п.)</td>
         <td colspan=3 class=xl68 width=36 style='width:27pt'></td>
     </tr>
@@ -667,26 +475,22 @@ none;width:18pt'>код</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=39 height=15 class=xl75 style='height:11.25pt'>
-
             @if($data['is_company'])
                 {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
             @else
                 {{ $data['company_name'] ?? '' }}
             @endif
-
         </td>
         <td colspan=3 class=xl76>[14]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=39 class=xl75>
-
             @if($data['partner_type'] == 2)
                 {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
             @elseif($data['partner_type'] == 1)
-                {{ $data['partner_fio'] }}
+                {{ $data['partner_fio'] ?? '' }}
             @else
                 Частное лицо
             @endif
-
         </td>
         <td colspan=3 class=xl67>[19]</td>
     </tr>
@@ -970,5 +774,14 @@ none;width:18pt'>код</td>
     </tr>
     <![endif]>
 </table>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>
+
 </body>
 </html>

@@ -24,7 +24,7 @@ class ShopManager
 
         $query = Shop::with('faviconImage', 'headerImage', 'backgroundImage')->where($field, $domain);
 
-        $this->shop = $isOurDomain ? $query->first() : $query->firstOrFail();
+        $this->shop = ($isOurDomain && $domain == 'online') ? $query->first() : $query->firstOrFail();
     }
 
     public function getCurrentShop()

@@ -77,7 +77,6 @@ class registerPage{
             url: '/register',
             data: data,
         }).then(function (resp) {
-            console.log(resp.data.sms);
 
             object.sms_id = resp.data.sms.sms_id;
 

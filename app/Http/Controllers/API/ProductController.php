@@ -36,23 +36,23 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $article = Product::with('specifications')->firstOrNew($compare);
-            if ($article->exists) {
+            $product = Product::with('specifications')->firstOrNew($compare);
+            if ($product->exists) {
                 $this->message = 'Товар обновлен';
             } else {
-                $article->creator_id = Auth::id();
-                $article->company_id = Auth::user()->company_id;
+                $product->creator_id = Auth::id();
+                $product->company_id = Auth::user()->company_id;
                 $this->message = 'Товар сохранён';
             }
 
-            self::$product = $article;
+            self::$product = $product;
 
             #Кроссы
-            $article->fill($request->only($article->fields));
+            $product->fill($request->only($product->fields));
 
-            $article->fillShopFields($request);
+            $product->fillShopFields($request);
 
-            $article->save();
+            $product->save();
 
             if(isset($request->shop['specifications'])) {
 
@@ -64,8 +64,8 @@ class ProductController extends Controller
                     $attributes[$key]['value'] = $specification['value'];
                 }
 
-                $article->specifications()->delete();
-                $article->specifications()->createMany($attributes);
+                $product->specifications()->delete();
+                $product->specifications()->createMany($attributes);
             }
 
             if($request['storage']) {
@@ -76,7 +76,7 @@ class ProductController extends Controller
 
                     $storage = $request['storage'][$store->id];
 
-                    $store->products()->syncWithoutDetaching($article->id);
+                    $store->products()->syncWithoutDetaching($product->id);
 
                     $pivot_data = [
                         'storage_zone' => $storage['storage_zone'],
@@ -89,11 +89,11 @@ class ProductController extends Controller
                         $pivot_data['retail_price'] = $storage['retail_price'];
                     }
 
-                    $article->stores()->updateExistingPivot($store->id, $pivot_data);
+                    $product->stores()->updateExistingPivot($store->id, $pivot_data);
                 }
             }
 
-            event(new ModelWasStored($article->company_id, 'ProductStored'));
+            event(new ModelWasStored($product->company_id, 'ProductStored'));
 
             return response()->json([
                 'message' => $this->message
@@ -102,14 +102,14 @@ class ProductController extends Controller
         });
     }
 
-    public static function checkArticleUnique($id, $article, $brand_id) // Проверка на существование такого артикла + производителя в базе
+    public static function checkArticleUnique($id, $product, $brand_id) // Проверка на существование такого артикла + производителя в базе
     {
-        $article = Product::where('article', $article)->where('supplier_id', $brand_id)
+        $product = Product::where('article', $product)->where('supplier_id', $brand_id)
             ->where('company_id', Auth::user()->company()->first()->id)
             ->first();
 
-        if ($article && $article->id != $id) {
-            return $article;
+        if ($product && $product->id != $id) {
+            return $product;
         } else {
             return false;
         }
