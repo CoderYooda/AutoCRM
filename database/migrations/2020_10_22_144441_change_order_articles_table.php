@@ -8,10 +8,12 @@ class ChangeOrderArticlesTable extends Migration
 {
     public function up()
     {
+
         if(Schema::hasColumn('order_articles', 'article_id')) {
 
             Schema::table('order_articles', function (Blueprint $table) {
 //                $table->dropForeign('article_id');
+                $table->dropForeign('order_articles_article_id_foreign');
                 $table->dropColumn('article_id');
             });
         }

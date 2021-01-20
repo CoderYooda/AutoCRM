@@ -12,12 +12,13 @@ class RemoveStoreWatchRole extends Migration
     {
         $permission = Permission::where('name', 'Смотреть товары')->first();
 
-        $roles = Role::all();
-        foreach ($roles as $role) {
-            $role->revokePermissionTo($permission->id);
+        if($permission){
+            $roles = Role::all();
+            foreach ($roles as $role) {
+                $role->revokePermissionTo($permission->id);
+            }
+            $permission->delete();
         }
-
-        $permission->delete();
     }
 
     public function down()

@@ -10,13 +10,17 @@ class PartnerObserver
     public function creating(Partner $partner)
     {
         $partner->freshFoundString();
-        $partner->freshSlug();
+        if (method_exists($partner, 'freshSlug')) {
+            return $partner->freshSlug();
+        }
     }
 
     public function updating(Partner $partner)
     {
         $partner->freshFoundString();
-        $partner->freshSlug();
+        if (method_exists($partner, 'freshSlug')) {
+            return $partner->freshSlug();
+        }
     }
 
     public function saving(Partner $partner)
@@ -28,8 +32,9 @@ class PartnerObserver
             $user->update(['name' => $partner->fio]);
         }
 
-
         $partner->freshFoundString();
-        $partner->freshSlug();
+        if (method_exists($partner, 'freshSlug')) {
+            return $partner->freshSlug();
+        }
     }
 }

@@ -54,16 +54,16 @@ let app = new Vue({
 }).$mount('#app');
 
 
-// window.axios.interceptors.request.use(function (request){
-//     console.log(request);
-//     let token = localStorage['api_token'];
-//     if (token) {
-//         request.headers.common['Authorization'] = 'Bearer ' + token;
-//     } else {
-//         console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
-//     }
-//     return request;
-// });
+window.axios.interceptors.request.use(function (request){
+    console.log(request);
+    let token = localStorage['api_token'];
+    if (token) {
+        request.headers.common['Authorization'] = 'Bearer ' + token;
+    } else {
+        console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
+    }
+    return request;
+});
 
 
 
