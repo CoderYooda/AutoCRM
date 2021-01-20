@@ -23,4 +23,9 @@ class Referal extends Model
         'rubbles_each_value',
         'comment',
     ];
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'referal_company', 'referal_id', 'company_id');
+    }
 }

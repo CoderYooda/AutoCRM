@@ -16,6 +16,7 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
+
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
@@ -31,13 +32,11 @@ class RedirectIfAuthenticated
 
             if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
                 return redirect('/admin');
+            } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
+                return redirect('/ref_partner');
+            } else {
+                return redirect('/store');
             }
-
-            if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Партнёр') {
-                return redirect('/member');
-            }
-
-            return redirect('/store');
         }
 
         return $next($request);

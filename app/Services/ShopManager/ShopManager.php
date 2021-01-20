@@ -13,15 +13,18 @@ class ShopManager
 
     public function __construct()
     {
-        $domain = request()->getHost();
+        $url = request()->getHost();
 
-        $domainParams = explode('.', $domain);
+        $domainParams = explode('.', $url);
 
         $isOurDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
 
-        $query = Shop::where(($isOurDomain ? 'subdomain' : 'domain'), $isOurDomain ? $domainParams[0] : $domain);
+        $field = $isOurDomain ? 'subdomain' : 'domain';
+        $domain = $isOurDomain ? $domainParams[0] : $url;
 
-        $this->shop = $query->first();
+        $query = Shop::with('faviconImage', 'headerImage', 'backgroundImage')->where($field, $domain);
+
+        $this->shop = $isOurDomain ? $query->first() : $query->firstOrFail();
     }
 
     public function getCurrentShop()

@@ -4,7 +4,7 @@ class selectCashboxDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно кассы инициализировано');
         this.refer = null;
         this.type = null;
         this.active = true;

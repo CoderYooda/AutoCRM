@@ -53,7 +53,7 @@ class Category extends Node
         $slug = Str::slug($this->name . '-' . $this->id);
 
         //Обновляем slug через фасад, чтобы избежать рекурсии в observer'e
-        DB::table('products')->where('id', $this->id)->update(['slug' => $slug]);
+        DB::table('categories')->where('id', $this->id)->update(['slug' => $slug]);
     }
 
     public function breadcrumbs()
@@ -69,19 +69,7 @@ class Category extends Node
 
     public function path()
     {
-        $parents = $this->getAncestors();
-
-        $slugs = '';
-
-        foreach ($parents as $index => $parent) {
-            if($parent->id < 3) unset($parents[$index]);
-        }
-
-        if(count($parents)) {
-            $slugs = implode('/', $parents->pluck('slug')->toArray()) . '/';
-        }
-
-        $path = '/catalogue/' . $slugs . $this->slug;
+        $path = '/categories/' . $this->slug;
 
         return route('pages.path', $path);
     }

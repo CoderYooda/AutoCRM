@@ -13,8 +13,6 @@
                 </div>
             </div>
         </div>--}}
-
-
         <div class="auth-form-block">
                 <div class="mb-5">
                     <h5 class="login-text">Регистрация</h5>
@@ -24,8 +22,17 @@
                 </div>
                 <form onsubmit="register.submitForm(this, event)" id="registerForm" method="POST" action="{{ route('register') }}">
                     @csrf
-                    <input name="refer" value="{{ request('refer') }}" type="hidden">
+                    {{--<input name="refer" value="{{ request('refer') }}" type="hidden">--}}
                     <div class="mx-auto  animate fadeIn text-left" >
+                        <div class="form-group @error('refer') is-invalid @enderror">
+                            <label>Реферальный код</label>
+                            <input class="md-input form-control" name="refer" value="{{ old('refer') }}" onkeyup="this.setAttribute('value', this.value);">
+                            @error('refer')
+                            <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         <div class="form-group @error('fio') is-invalid @enderror">
                             <label>Фамилия Имя Отчество</label>
                             <input class="md-input form-control" name="fio" value="{{ old('fio') }}" onkeyup="this.setAttribute('value', this.value);" autofocus required>

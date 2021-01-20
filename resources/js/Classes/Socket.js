@@ -34,8 +34,14 @@ class Socket{
                     .listen('ModelWasStored', function (e) {
 
                         let detail = {
-                            detail: e
+                            detail: e,
                         };
+
+                        Object.values(window.dialogs).forEach(dialog => {
+                            let dialog_element = document.getElementById(dialog.tag);
+
+                            dialog_element.dispatchEvent(new CustomEvent(e.model, detail));
+                        });
 
                         document.dispatchEvent(new CustomEvent(e.model, detail));
                     });

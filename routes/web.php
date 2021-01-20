@@ -1,5 +1,36 @@
 <?php
 
+Route::get('/test', function () {
+
+    $attributes = [];
+
+    $validator = Validator::make($attributes, [
+        'name'                 => ['string', 'max:255'],
+        'manufacturer'         => ['required', 'string', 'max:255'],
+        'article'              => ['required', 'string', 'max:64'],
+        'categories'           => ['array'],
+        'categories.*'         => ['string', 'max:200'],
+        'warehouse'            => ['array'],
+        'warehouse.*'          => ['string', 'max:2'],
+        'count'                => ['integer', 'between:0,1000000'],
+        'price'                => ['numeric', 'between:0,1000000'],
+        'barcode_manufacturer' => ['string'],
+        'barcode_warehouse'    => ['string']
+    ]);
+
+    $validatorErrors = $validator->getMessageBag()->toArray();
+
+    $errors = [];
+
+    foreach ($validatorErrors as $key => $validatorError) {
+        $errors[] = $key . ' - ' . $validatorError[0];
+    }
+
+    $errors = implode(', ', $errors);
+
+    dd($errors);
+});
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
@@ -41,11 +72,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
     Route::post('/user/salary_schema', 'UserController@saveSalarySchemaToUser')->name('SyncSalarySchemaToUser');
     Route::get('/salary/{id}/get', 'SalarySchemaController@getSchemaById')->name('GetSchemaById');
 
-    Route::middleware('hasPayedDays')->group(function () {
+    Route::middleware('hasPayedDays', 'fork')->group(function () {
         Route::get('/', function () {
-            $redir = Auth::user()->hasRole('Суперадмин') ? route('AdminDashboard') : route('StoreIndex');
-            return redirect($redir);
-        });
+            return 'Hello world';
+        })->name('indexPage');
 
         #Производители
         Route::post('/suppliers/store', 'SupplierController@store')->name('StoreSupplier');
@@ -347,19 +377,11 @@ Route::post('/system/auth_by_user', 'UserController@authByUser')->name('authByUs
 Route::get('/system/back_to_user', 'UserController@backToUser')->name('backToUser');
 
 #Коморка партнера
-Route::get('/member', function(){
-    dd(222);
-})->name('backToUser');
-
-
-
-Route::middleware(['web', 'auth', 'Partner'])->prefix('member')->namespace('Partner')->name('Partner')->group(function ()
+Route::middleware(['web', 'auth', 'Partner'])->prefix('ref_partner')->namespace('Partner')->name('Partner')->group(function ()
 {
+    Route::get('/', 'PartnerController@index');
     //Route::get('/', 'DashboardController@index')->name('Dashboard');
-    Route::post('/store', 'ReferalSystemController@store')->name('StoreReferalPartner');
-    Route::get('/', function(){
-        dd('Партнерка');
-    })->name('Partner');
+    //Route::post('/store', 'ReferalSystemController@store')->name('StoreReferalPartner');
 });
 
 #Коморка разработчиков
@@ -374,5 +396,7 @@ Route::middleware(['web', 'auth', 'superAdmin'])->prefix('admin')->namespace('Ad
     Route::post('/users/{user}/update', 'UserController@update')->name('UpdateUser');
     Route::post('/system_message/send', 'UserController@sendSystemMessageTo')->name('SendMessage');
 });
+
+
 
 Route::post('/member/store', 'ReferalSystemController@store')->name('StoreReferalPartner');

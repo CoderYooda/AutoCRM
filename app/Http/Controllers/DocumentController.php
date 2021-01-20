@@ -164,7 +164,7 @@ class DocumentController extends Controller
             $data['partner_name'] = $warrant->partner->official_name;
             $data['reason'] = $warrant->reason;
             $data['wsumm'] = $warrant->wsumm;
-            $data['nds'] = $warrant->payable->nds;
+            $data['nds'] = $warrant->payable->nds ?? 0;
         }
         else if($request->doc == 'defective-act') {
             $products = Product::whereIn('id', $request->data)->get();

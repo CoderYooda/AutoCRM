@@ -454,14 +454,14 @@ none;width:18pt'>код</td>
         </td>
         <td colspan=6 class=xl88 width=72 style='width:54pt'>&nbsp;</td>
         <td class=xl68 width=12 style='width:9pt'></td>
-        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $data['is_company'] ? $company['owner'] : '' }}</td>
+        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company['owner'] ?? '' }}</td>
 {{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ $company->is_company ? $company->owner : '' }}</td>--}}
         <td colspan="16" class="xl81" width="192" style="width:144pt">Главный бухгалтер
             <br>
             или иное уполномоченное лицо</td>
         <td colspan="6" class="xl88" width="72" style="width:54pt">&nbsp;</td>
         <td class="xl68" width="12" style="width:9pt"></td>
-        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $data['is_company'] ? $data['auditor'] : '' }}</td>
+        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $data['auditor'] ?? '' }}</td>
 {{--        <td colspan="15" class="xl83" width="180" style="width:135pt">{{ $company->is_company ? $company->auditor : '' }}</td>--}}
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
