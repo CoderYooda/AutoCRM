@@ -84,7 +84,7 @@ class DialogController extends Controller
             'salarySchemaDialog'        => [SalarySchemaController::class, 'salarySchemaDialog'],
 
             //Referal System
-            'referalPartnerDialog'      => [ReferalSystemcontroller::class, 'referalPartnerDialog'],
+            'referalPartnerDialog'      => [ReferalSystemController::class, 'referalPartnerDialog'],
         ];
 
         if (!in_array($tag, array_keys($dialogs))) {
