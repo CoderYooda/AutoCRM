@@ -183,6 +183,7 @@
             <div id="app" class="app-content">
                 <div class="aside">
                     <ul class="nav">
+
                         @if(Auth::user()->hasRole('Реферальный партнёр'))
                             <li><span class="admin_letter">П</span></li>
                             <li><span class="admin_letter">А</span></li>

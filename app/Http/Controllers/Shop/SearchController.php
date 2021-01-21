@@ -65,6 +65,8 @@ class SearchController extends Controller
             }
         }
 
+        $brands = collect($brands)->unique(['brand', 'article'])->toArray();
+
         foreach ($products as $product) {
 
             if($this->isBrandAlreadyInArray($product->supplier->name, $product->article, $brands)) continue;
