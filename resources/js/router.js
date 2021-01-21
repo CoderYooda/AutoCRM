@@ -17,7 +17,7 @@ export default new Router({
             path: '/store',
             name: 'store',
             redirect: 'store/base/all',
-            meta: {layout: 'main'},
+            meta: {layout: 'main', requiresAuth: false},
             component: () => import(/* webpackChunkName: "Store" */ './components/views/Store.vue'),
             children:[
                 {path: '/store/base',               redirect: '/store/base/all'},
@@ -38,7 +38,7 @@ export default new Router({
             path: '/cash',
             name: 'cash',
             redirect: 'cash/warrant',
-            meta: {layout: 'main'},
+            meta: {layout: 'main', requiresAuth: true},
             component: () => import(/* webpackChunkName: "Cash" */ './components/views/Cash.vue'),
             children:[
                 {path: '/cash/warrant',             name: 'warrant', meta: {layout: 'main'},            component: () => import(/* webpackChunkName: "Warrant" */ './components/views/Cash/Warrant'), props: true},
@@ -89,6 +89,12 @@ export default new Router({
             name: 'shop',
             meta: {layout: 'main'},
             component: () => import(/* webpackChunkName: "Shop" */ './components/views/Shop.vue')
+        },
+        {
+            path: '/auth',
+            name: 'auth',
+            meta: {layout: 'auth'},
+            component: () => import(/* webpackChunkName: "Register" */ './components/auth/Auth.vue')
         },
         {
             path: '/404',

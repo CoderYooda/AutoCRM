@@ -47,6 +47,20 @@ Vue.component('v-popover', VPopover);
 Vue.component('vue-confirm-dialog', VueConfirmDialog.default);
 Vue.component('Selector', Selector);
 
+
+// Auth MIddleware
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!store.getters.isLogged) {
+            next({ name: 'auth' })
+        } else {
+            next() // автоизован, пропустить
+        }
+    } else {
+        next() // не требует авторизации
+    }
+});
+
 let app = new Vue({
     router,
     store,
@@ -84,12 +98,12 @@ window.axios.interceptors.response.use(function (response) {
     // }
     return response;
 }, function (error) {
-    if (error.response && error.response.status === 401 || error.response && error.response.status === 419) {
-        app.$eventBus.$emit('NoAuthEvent', true);
-    }
-    if (error.response && error.response.status === 429 ) {
-        app.$eventBus.$emit('TooManyAttempts', true);
-    }
+    // if (error.response && error.response.status === 401 || error.response && error.response.status === 419) {
+    //     app.$eventBus.$emit('NoAuthEvent', true);
+    // }
+    // if (error.response && error.response.status === 429 ) {
+    //     app.$eventBus.$emit('TooManyAttempts', true);
+    // }
     // if (error.response.status === 422 || error.response.status === 200) {
     //     if(error.response.data.message && error.response.data.type){
     //         window.notification.notify( error.response.data.type, error.response.data.message);

@@ -36,7 +36,7 @@
             }
         },
         beforeMount(){
-            this.getShowLoginState();
+            //this.getShowLoginState();
         },
         mounted() {
             this.$eventBus.$on('NoAuthEvent', ()=>{

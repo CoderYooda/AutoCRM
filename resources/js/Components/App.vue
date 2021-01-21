@@ -10,6 +10,7 @@
 
 <script>
     import MainLayout from './layouts/MainLayout'
+    import AuthLayout from './layouts/AuthLayout'
     import Login from './auth/Login'
     import Dialogs from './template/Dialogs'
     import Echo from "laravel-echo"
@@ -28,8 +29,8 @@
                     text: 'Слишком много запросов, повторите попытку позже.'
                 });
             });
-            this.loadSettings();
-            this.loadStores();
+            // this.loadSettings();
+            // this.loadStores();
         },
         created(){
             let token = this.getFromLocalStorage('api_token');
@@ -45,21 +46,22 @@
                     },
                     host: window.location.hostname + ':6001',
                 });
+                this.echo
+                    .private('system_message.' + user_id)
+                    .listen('SystemMessage', (data)=>{
+                        this.$eventBus.$emit('systemMessage', data);
+                        // let audio = new Audio('/sounds/system_message.mp3');
+                        // audio.play();
+                    });
+                this.echo
+                    .private('company.' + company_id)
+                    .listen('SettingsUpdated', (data)=>{
+                        this.updateSetting(data.setting);
+                    });
             } else {
                 console.warn('API токен не выдан, возможно Вы не авторизованы в системе');
             }
-            this.echo
-                .private('system_message.' + user_id)
-                .listen('SystemMessage', (data)=>{
-                    this.$eventBus.$emit('systemMessage', data);
-                    // let audio = new Audio('/sounds/system_message.mp3');
-                    // audio.play();
-                });
-            this.echo
-                .private('company.' + company_id)
-                .listen('SettingsUpdated', (data)=>{
-                    this.updateSetting(data.setting);
-                });
+
         },
         methods: {
             loadSettings(){
@@ -98,6 +100,7 @@
         components: {
             Login,
             MainLayout,
+            AuthLayout,
             Dialogs
         }
     }

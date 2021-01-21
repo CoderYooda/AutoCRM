@@ -677,12 +677,34 @@ button:disabled, textarea:disabled {
     //line-height: 1.6;
     //color: #495057;
     background-color: #fff;
-    background-clip: padding-box;
     //border: 1px solid #BABABA;
     //border-radius: .25rem;
+    height: 30px;
+    line-height: 30px;
     position: relative;
     -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.l-r-sided{
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: 4px 4px 4px 0px #00000029;
+    padding: 20px 20px;
+    .form-group{
+        display: flex;
+    }
+    label{
+        flex: 1;
+        text-align: right;
+        padding-right: 20px;
+        line-height: 30px;
+        margin-bottom: 0px;
+        height: 30px;
+    }
+    .form-control{
+        flex: 1;
+    }
 }
 
 button:disabled {
