@@ -309,6 +309,9 @@
             @csrf
         </form>
         <div id="login-form" class="hide"></div>
+
+        <script src="//code.jivosite.com/widget/aSI6oZDcjJ" async></script>
+
     </body>
 
 </html>
