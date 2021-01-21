@@ -16,12 +16,13 @@
 
                 <div class="d-flex">
 
-                    <div>
-                        <div class=""
+                    <div class="info">
+                        <div class="upload"></div>
+                        <div class="desc">Файл должен содержать размеры 1920х500</div>
                     </div>
 
-                    <div>
-                        <img class="image_main" src="{{ $shop->backgroundImage->path ?? 'http://via.placeholder.com/1920x500' }}" />
+                    <div class="image_container">
+                        <img class="image" src="{{ $shop->backgroundImage->path ?? 'http://via.placeholder.com/1920x500' }}" />
                     </div>
 
                 </div>

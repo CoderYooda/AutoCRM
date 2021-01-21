@@ -1,0 +1,39 @@
+#ajax-shop-appearance {
+
+    .info {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .upload {
+            width: 62px;
+            height: 62px;
+            background: url(/images/icons/shop-settings/upload.svg) center no-repeat;
+            background-size: contain;
+
+            &:hover {
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .desc {
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: 0.0015em;
+            margin-left: 15px;
+
+            color: #666666;
+        }
+    }
+
+    .image_container {
+
+        margin-left: 20px;
+
+        .image {
+            max-height: 100px;
+            object-fit: contain;
+        }
+    }
+}
