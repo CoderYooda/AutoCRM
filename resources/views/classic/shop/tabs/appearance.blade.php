@@ -10,7 +10,23 @@
 
         <div class="box m-15 p-15 w-100">
 
+            <div class="form-group">
 
+                <label>Шапка сайта</label>
+
+                <div class="d-flex">
+
+                    <div>
+                        <div class=""
+                    </div>
+
+                    <div>
+                        <img class="image_main" src="{{ $shop->backgroundImage->path ?? 'http://via.placeholder.com/1920x500' }}" />
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
