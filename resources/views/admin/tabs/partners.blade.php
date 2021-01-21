@@ -1,7 +1,6 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.TabXHR' : 'admin.layouts.tabs')
 
 @section('tab')
-
     <div id="ajax-table-companies" class="bottom-container" style="height: calc(100% - 79px) !important;">
         <div class="box-lister">
             <div class="" data-simplebar style="max-height: calc(100% - 28px)">
@@ -98,5 +97,4 @@
             </div>
         </div>
     </div>
-
 @endsection
