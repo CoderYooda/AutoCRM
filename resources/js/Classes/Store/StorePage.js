@@ -207,10 +207,12 @@ class storePage extends Page{
             if(model.index == element_index) index = array_index;
         });
 
+        let model = this.items[type][index];
+
         let data = {
             provider_key: service_input.value,
-            article: this.search,
-            product: this.items[type][index],
+            article: model.article,
+            product: model,
             count: count
         };
 

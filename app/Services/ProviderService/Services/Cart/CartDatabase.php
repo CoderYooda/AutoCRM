@@ -21,6 +21,8 @@ class CartDatabase implements CartInterface
     {
         $hash = md5($product['model']['hash_info']['stock'] . $product['model']['hash_info']['manufacturer'] . $article . $product['model']['hash_info']['days'] . $product['model']['hash_info']['price']);
 
+//        dd($hash, [ $product['model']['hash_info']['stock'] , $product['model']['hash_info']['manufacturer'] , $article , $product['model']['hash_info']['days'] , $product['model']['hash_info']['price'] ]);
+
         $values = [
             'user_id' => $this->user_id,
             'provider_key' => $provider_key,
@@ -50,6 +52,8 @@ class CartDatabase implements CartInterface
     public function addProduct($provider_key, $article, $product, $count)
     {
         $hash = md5($product['model']['hash_info']['stock'] . $product['model']['hash_info']['manufacturer'] . $article . $product['model']['hash_info']['days'] . $product['model']['hash_info']['price']);
+
+//        dd($hash, [ $product['model']['hash_info']['stock'] , $product['model']['hash_info']['manufacturer'] , $article , $product['model']['hash_info']['days'] , $product['model']['hash_info']['price'] ]);
 
         $values = [
             'user_id' => $this->user_id,
