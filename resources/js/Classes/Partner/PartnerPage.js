@@ -114,7 +114,6 @@ class partnerPage extends Page{
         this.page = window.helper.findGetParameter('page');
         this.search = window.helper.findGetParameter('search');
         this.searchInit();
-        //this.initTableData();
 
         let container = 'ajax-table-' + this.active_tab;
 
@@ -129,8 +128,8 @@ class partnerPage extends Page{
         let header, context_menu, dbl_click, slug;
         header = [
             {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-            {min_with: 100, width: 'auto', name: 'Контакт', table_name: 'name'},
-            {min_with: 150, width: 200, name: 'Категория', table_name: 'category'},
+            {min_with: 100, width: 'auto', name: 'Контакт', table_name: 'partner_name'},
+            {min_with: 150, width: 200, name: 'Категория', table_name: 'category_name'},
             {min_with: 150, width: 200, name: 'Телефон', table_name: 'phone', transform: 'transform_phone'},
             {min_with: 150, width: 200, name: 'Баланс', table_name: 'balance', transform: 'transform_price'},
         ];
@@ -213,24 +212,6 @@ class partnerPage extends Page{
         }
     }
 
-    getUrlString(){
-        let url = '?view_as=json';
-        url += '&target=ajax-table-partner';
-        if(this.category_id !== null){
-            url += '&category_id=';
-            url += this.category_id;
-        }
-        if(this.search && this.search !== 'null' && this.search !== '' && this.search !== null){
-            url += '&search=';
-            url += this.search;
-        }
-        if(this.page !== null || this.page !== 'null'){
-            url += '&page=';
-            url += this.page;
-        }
-        return url;
-    }
-
     searchFn(){
         let object = this;
         object.prepareParams();
@@ -244,117 +225,6 @@ class partnerPage extends Page{
         object.search = string;
         if (isXHRloading) { return; } window.isXHRloading = true;
         this.table.setRequest('search', string);
-    }
-
-    initTableData(){
-        let object = this;
-        let table_container = document.getElementById('table-container');
-        let height = 500;
-
-        if(table_container){
-            height = table_container.offsetHeight;
-        }
-        let cleanHeight = height - 110;
-        let elements = cleanHeight / 44;
-
-        object.table = new Tabulator("#partner-table", {
-            locale:true,
-            langs:{
-                "ru":{
-                    "ajax":{
-                        "loading":"Загрузка", //ajax loader text
-                        "error":"Ошибка", //ajax error text
-                    },
-                    "pagination":{
-                        "page_size":"Кол-во элементов",
-                        "first":"Первая",
-                        "first_title":"Первая страница",
-                        "last":"Последняя",
-                        "last_title":"Последняя страница",
-                        "prev":"Предыдущая",
-                        "prev_title":"Предыдущая страница",
-                        "next":"Следующая",
-                        "next_title":"Следующая страница",
-                        "show_page":"След.",
-                    },
-                    "headerFilters":{
-                        "default":"filter column...",
-                        "columns":{
-                            "name":"filter name...",
-                        }
-                    }
-                }
-            },
-            clipboard:true,
-            selectable:true,
-            selectableRangeMode:"click",
-            resizableColumns:false,
-            height:height-15,
-            pagination:"remote",
-            layout:"fitColumns",
-            ajaxSorting:true,
-            ajaxURL:'/partner/tabledata',
-            ajaxRequesting:function(url, params){
-                window.isXHRloading = true;
-                document.body.classList.add('loading');
-            },
-            ajaxResponse:function(url, params, response){
-                window.isXHRloading = false;
-                document.body.classList.remove('loading');
-                return response;
-            },
-            ajaxParams:object.prepareDataForTable(),//object.prepareUrlForTable(), //ajax parametersвфеу
-            paginationSize:Math.floor(elements),
-            placeholder:"По данным критериям ничего нет",
-            columns: object.generateColumns(),
-            rowDblClick:function(e, row){
-                openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)
-            },
-            rowContext:function(e, row){
-                e.preventDefault();
-                object.selectedData = object.table.getSelectedData();
-                let items = [
-                    new ContextualItem({label:'Открыть', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
-                    new ContextualItem({label:'Редактировать', onClick: () => {openDialog(object.contextDop + 'Dialog', '&' + object.parametr + '_id=' + row.getData().id)}, shortcut:'Что то' }),
-                    new ContextualItem({type:'seperator'}),
-                    new ContextualItem({label:'Удалить', onClick: () => {window.entity.remove(object.contextDop, row.getData().id, object)}, shortcut:'Ctrl+A' }),
-                ];
-                if(object.selectedData.length > 0){
-                    items.push(new ContextualItem({label:'Удалить выделенные', onClick: () => {window.entity.remove(object.contextDop, window.helper.pluck(object.selectedData, 'id'), object)}, shortcut:'Ctrl+A' }));
-                }
-                object.tableContextual = null;
-                object.tableContextual = new Contextual({
-                    isSticky: false,
-                    items:items,
-                });
-            },
-            tableBuilt:function(){
-            },
-            rowClick:function(e, row){
-                let addsCard = document.getElementById('adds-card');
-                if(object.active_tab != 'store'){
-                    console.log('Загружаем инфо');
-                    let data = {};
-                    data.id = row.getData().id;
-                    window.axios({
-                        method: 'post',
-                        url: '/partner/side_info',
-                        data: data
-                    }).then(function (resp) {
-                        document.getElementById('contact_block').innerHTML = resp.data.info;
-                        if(addsCard){
-                            addsCard.classList.remove('hide');
-                        }
-                        //document.getElementById('comment_block').innerHTML = resp.data.comment;
-                        //console.log(resp);
-                    }).catch(function (error) {
-                        console.log(error);
-                    }).finally(function () {
-                        window.isXHRloading = false;
-                    });
-                }
-            },
-        });
     }
 
     loadCategory(category_id, clean_search = null, update_data = null){
@@ -405,62 +275,6 @@ class partnerPage extends Page{
         }
     }
 
-    generateColumns(){
-        let object = this;
-        object.contextDop = 'partner';
-        object.parametr = 'partner';
-
-        var phoneFormatter = function(cell, formatterParams, onRendered){
-            onRendered(function(){
-
-                if(cell.getValue() != null){
-                    cell.getElement().innerHTML = '<input disabled class="table_input" id="phone_'+ cell.getData().id +'" type="text" value="'+ cell.getValue() +'"/>';
-                    window.IMask(document.getElementById('phone_' + cell.getData().id), {
-                            mask: [
-                                {
-                                    mask: '+{7}(000)000-00-00',
-                                    startsWith: '7',
-                                    lazy: true,
-                                    country: 'Россия'
-                                },
-                                {
-                                    mask: '{8}(000)000-00-00',
-                                    startsWith: '8',
-                                    lazy: true,
-                                    country: 'Россия'
-                                },
-                                {
-                                    mask: '+{380}(000)000-00-00',
-                                    startsWith: '3',
-                                    lazy: true,
-                                    country: 'Украина'
-                                },
-                            ]
-                        }
-                    );
-                } else {
-                    cell.getElement().innerHTML = 'Не указано';
-                }
-            });
-        };
-        var priceFormatter = function(cell, formatterParams, onRendered){
-            onRendered(function(){
-                cell.getElement().innerHTML = helper.numberFormat(cell.getValue()) + ' руб.';
-            });
-        };
-        let columns = [
-            {formatter:"rowSelection", width:34, titleFormatter:"rowSelection", align:"center", headerSort:false, cellClick:function(e, cell){
-                    cell.getRow().toggleSelect();
-                }},
-            {title:"ID", field:"id", width:80},
-            {title:"Фио", field:"name", align:"left"},
-            {title:"Категория", field:"category", align:"left"},
-            {title:"Телефон", field:"phone", align:"left", formatter:phoneFormatter},
-            {title:"Баланс", field:"balance", width:130, align:"left", formatter:priceFormatter},
-        ];
-        return columns;
-    }
-
     prepareDataForTable(){
         let object = this;
         let data = {};
@@ -496,44 +310,5 @@ class partnerPage extends Page{
             });
         }
     }
-
-    // reload(){
-    //     let object = this;
-    //     object.prepareParams();
-    //     if (isXHRloading) { return; } window.isXHRloading = true;
-    //     window.axios({
-    //         method: 'get',
-    //         url: object.getUrlString(),
-    //     }).then(function (resp) {
-    //         var results_container = document.getElementById(resp.data.target);
-    //         results_container.innerHTML = resp.data.html;
-    //         window.helper.insertParamUrl('search', object.search);
-    //         window.helper.insertParamUrl('category_id', object.category_id);
-    //         window.helper.insertParamUrl('page', object.page);
-    //
-    //         if(object.search.length > 0){
-    //             let root = document.getElementById(object.root_id)
-    //             let category_header = root.querySelector("#category_header");
-    //             let category_list = root.querySelector("#category_list_aside");
-    //             category_header.innerHTML = 'Поиск';
-    //
-    //             let list =
-    //                 '<li class="d-flex flex category-aside">'+
-    //                 '<a href="partner" class="ajax-nav d-flex text-ellipsis" style="flex: auto;">'+
-    //                 '<span class="nav-text text-ellipsis"><i class="fa fa-chevron-left"></i> К категориям</span>'+
-    //                 '</a>'+
-    //                 '</li>';
-    //             category_list.innerHTML = list;
-    //         }
-    //
-    //
-    //         window.rebuildLinks();
-    //         object.load();
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     }).finally(function () {
-    //         window.isXHRloading = false;
-    //     });
-    // }
 }
 export default partnerPage;

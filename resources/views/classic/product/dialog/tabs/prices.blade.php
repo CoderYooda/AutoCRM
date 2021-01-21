@@ -1,4 +1,4 @@
-<div data-simplebar class="tab-pane p-3 prices" id="{{ $class }}_tab_prices" style="max-height: 600px;">
+<div class="tab-pane p-3 prices" id="{{ $class }}_tab_prices" style="max-height: 600px;">
 
     <div class="form-group @if($priceSource != 'purchase') d-none @endif">
         @foreach($stores as $store)
