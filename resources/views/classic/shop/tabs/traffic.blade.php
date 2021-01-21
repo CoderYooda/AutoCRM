@@ -10,7 +10,41 @@
 
         <div class="box m-15 p-15 w-100">
 
+            <div class="methods">
 
+                <div class="method">
+
+                    <div class="image">
+                        <img src="{{ asset('/images/icons/shop-settings/yandex_metric.svg') }}" />
+                    </div>
+
+                    <div class="status">
+                        <span class="ml-2">
+                            <label class="ui-switch orange mt-1">
+                                <input class="d-none" onclick="event.preventDefault();" type="checkbox"><i></i>
+                            </label>
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="method">
+
+                    <div class="image">
+                        <img src="{{ asset('/images/icons/shop-settings/google_analytics.svg') }}" />
+                    </div>
+
+                    <div class="status">
+                        <span class="ml-2">
+                            <label class="ui-switch orange mt-1">
+                                <input class="d-none" onclick="event.preventDefault();" type="checkbox"><i></i>
+                            </label>
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 

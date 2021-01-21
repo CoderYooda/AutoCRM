@@ -17,6 +17,8 @@
 
                 <div class="slide copy d-none">
 
+                    <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
+
                     <img class="image" src="" />
 
                     <div class="input-group">
@@ -25,25 +27,26 @@
 
                 </div>
 
-                @foreach($shop->sliderImages as $image)
+                @if($shop)
+                    @foreach($shop->sliderImages as $image)
 
-                    <div class="slide">
+                        <div class="slide">
 
-                        <img class="image" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
+                            <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
 
-                        <div class="input-group">
-                            <input type="text" data-error="image_urls[{{ $loop->index }}]" name="image_urls[{{ $loop->index }}]" class="form-control" placeholder="Ссылка" value="{{ $image->pivot->target_url }}" />
+                            <img class="image" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
+
+                            <div class="input-group">
+                                <input type="text" data-error="image_urls[{{ $loop->index }}]" name="image_urls[{{ $loop->index }}]" class="form-control" placeholder="Ссылка" value="{{ $image->pivot->target_url }}" />
+                            </div>
+
                         </div>
 
-                    </div>
-
-                @endforeach
+                    @endforeach
+                @endif
 
 {{--                    <div class="image relative mb-5 copy d-flex flex-column d-none">--}}
 
-{{--                        <button type="button" class="right-remove" onclick="{{ $class }}.removeImage(this);">--}}
-{{--                            <i class="fa fa-trash" aria-hidden="true"></i>--}}
-{{--                        </button>--}}
 
 {{--                        <img src=""  alt=""/>--}}
 

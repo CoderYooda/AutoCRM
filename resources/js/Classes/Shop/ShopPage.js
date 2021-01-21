@@ -52,14 +52,14 @@ class shopPage {
                 language: 'ru',
             };
 
-            let editor_element = document.querySelector('#editor');
+            let editor_elements = document.querySelectorAll('.editor');
 
-            if(editor_element) {
-                TextEditor.create(editor_element, config)
+            editor_elements.forEach(element => {
+                TextEditor.create(element, config)
                     .then(newEditor => {
                         this.texteditor = newEditor
                     });
-            }
+            });
         }
         else if(this.active_tab == 'settings') {
             // this.addSubdomainMask();

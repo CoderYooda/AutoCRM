@@ -15,6 +15,9 @@
             <li id="pages-tab" data-tab="pages" class="@if($request['active_tab'] == 'pages') active @endif">
                 <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'pages', 'target' => 'ajax-tab-content']) }}">Страницы</a>
             </li>
+            <li id="payments-tab" data-tab="payments" class="@if($request['active_tab'] == 'payments') active @endif">
+                <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'payments', 'target' => 'ajax-tab-content']) }}">Способы оплаты</a>
+            </li>
             <li id="traffic-tab" data-tab="traffic" class="@if($request['active_tab'] == 'traffic') active @endif">
                 <a class="ajax-nav" href="{{ route('ShopIndex', ['active_tab' => 'traffic', 'target' => 'ajax-tab-content']) }}">Посещаемость</a>
             </li>

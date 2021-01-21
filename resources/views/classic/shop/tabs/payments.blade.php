@@ -10,17 +10,27 @@
 
         <div class="box m-15 p-15 w-100">
 
-            <div class="paymenys">
+            <div class="payments">
 
-                <div class="payment">
+                @foreach(['sberbank', 'tinkoff', 'yandex'] as $bank)
 
-                    <div class="logotype"></div>
+                    <div class="payment">
 
-                    <div class="status">
-                        <label class="ui-switch float-left"></label>
+                        <div class="image">
+                            <img src="{{ asset('/images/icons/shop-settings/' . $bank . '.svg') }}" />
+                        </div>
+
+                        <div class="status">
+                            <span class="ml-2">
+                                <label class="ui-switch orange mt-1">
+                                    <input class="d-none" onclick="event.preventDefault();" type="checkbox"><i></i>
+                                </label>
+                            </span>
+                        </div>
+
                     </div>
 
-                </div>
+                @endforeach
 
             </div>
 

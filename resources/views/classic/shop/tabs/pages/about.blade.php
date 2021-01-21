@@ -3,8 +3,8 @@
     <div class="form-group">
 
         <label>Описание компании</label>
-        <div data-error="about_desc">
-            <div id="editor">{!! $shop->about_desc ?? '' !!}</div>
+        <div>
+            <div id="about_editor" class="editor">{!! $shop->about_desc ?? '' !!}</div>
         </div>
 
     </div>
@@ -25,6 +25,48 @@
             <textarea class="form-control resize-none" rows="4">{{ $shop->seo_about_desc ?? '' }}</textarea>
         </div>
 
+    </div>
+
+    <div class="form-group">
+        <label>Фотографии</label>
+
+        <div class="d-flex">
+
+            <div class="mr-15">
+
+                <div class="upload" onclick="{{ $class }}.selectFiles(this);">
+                    <input type="file" class="d-none" onchange="{{ $class }}.uploadFiles(this);" multiple accept="image/jpeg,image/png,image/gif">
+                </div>
+
+            </div>
+
+            <div class="sliders">
+
+                <div class="slide copy d-none">
+
+                    <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
+
+                    <img class="image" src="" />
+
+                </div>
+
+                @if($shop)
+                    @foreach($shop->aboutImages as $image)
+
+                        <div class="slide">
+
+                            <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
+
+                            <img class="image" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
+
+                        </div>
+
+                    @endforeach
+                @endif
+
+            </div>
+
+        </div>
     </div>
 
 </div>

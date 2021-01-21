@@ -1,11 +1,10 @@
-#ajax-shop-payments {
-
-    .payments {
+#ajax-shop-traffic {
+    .methods {
 
         display: flex;
         flex-wrap: wrap;
 
-        .payment {
+        .method {
 
             margin-right: 15px;
             cursor: pointer;
@@ -34,5 +33,4 @@
         }
 
     }
-
 }
