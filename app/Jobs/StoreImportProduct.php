@@ -151,13 +151,23 @@ class StoreImportProduct implements ShouldQueue
             $category_id = $category->id;
         }
 
-        $product = Product::updateOrCreate(['company_id' => $company_id, 'article' => Product::makeCorrectArticle($attributes['article']), 'supplier_id' => $supplier->id], [
+        $unique = [
+            'company_id' => $company_id,
+            'article' => Product::makeCorrectArticle($attributes['article']),
+            'supplier_id' => $supplier->id
+        ];
+
+        $update = [
             'name'          => $attributes['name'],
             'creator_id'    => $user_id,
             'supplier_id'   => $supplier->id,
             'barcode'       => $attributes['barcode_manufacturer'],
             'barcode_local' => $attributes['barcode_warehouse']
-        ]);
+        ];
+
+        $product = Product::updateOrCreate($unique, $update);
+
+//        $product = DB::table('products')->updateOrInsert($unique, $update);
 
         if ((int)$attributes['count'] > 0) {
             DB::table('article_entrance')->insert([

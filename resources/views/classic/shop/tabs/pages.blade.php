@@ -53,7 +53,7 @@
                 </li>
             </ul>
 
-            <div class="w-80">
+            <div data-simplebar class="w-80" style="height: calc(100% - 35px);">
 
                 @include(get_template() . '.shop.tabs.pages.index')
                 @include(get_template() . '.shop.tabs.pages.about')

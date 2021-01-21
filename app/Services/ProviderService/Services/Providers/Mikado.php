@@ -217,11 +217,7 @@ class Mikado implements ProviderInterface
         $this->login = $fields['login'];
         $this->password = $fields['password'];
 
-        $params = [
-            'ZakazCode' => 'xka-k1279'
-        ];
-
-        $this->query('ws1/service.asmx/Code_Info', $params);
+        $this->searchBrandsCount('k1279');
 
         return true;
     }
