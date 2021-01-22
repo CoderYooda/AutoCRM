@@ -55,11 +55,19 @@
 
             <div data-simplebar class="w-80" style="height: calc(100% - 35px);">
 
-                @include(get_template() . '.shop.tabs.pages.index')
-                @include(get_template() . '.shop.tabs.pages.about')
-                @include(get_template() . '.shop.tabs.pages.delivery')
-                @include(get_template() . '.shop.tabs.pages.warranty')
-                @include(get_template() . '.shop.tabs.pages.contacts')
+                <form action="{{ route('ShopUpdatePages') }}" method="POST">
+
+                    @include(get_template() . '.shop.tabs.pages.index')
+                    @include(get_template() . '.shop.tabs.pages.about')
+                    @include(get_template() . '.shop.tabs.pages.delivery')
+                    @include(get_template() . '.shop.tabs.pages.warranty')
+                    @include(get_template() . '.shop.tabs.pages.contacts')
+
+                    <div class="form-group mt-10">
+                        <button type="button" class="button primary" onclick="{{ $class }}.savePages(this);">Сохранить</button>
+                    </div>
+
+                </form>
 
             </div>
 

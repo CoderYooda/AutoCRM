@@ -7,7 +7,7 @@
 
             <div class="mr-15">
 
-                <div class="upload" onclick="{{ $class }}.selectFiles(this);">
+                <div class="select_images" onclick="{{ $class }}.selectFiles(this);">
                     <input type="file" class="d-none" onchange="{{ $class }}.uploadFiles(this);" multiple accept="image/jpeg,image/png,image/gif">
                 </div>
 
@@ -15,7 +15,7 @@
 
             <div class="sliders">
 
-                <div class="slide copy d-none">
+                <div class="slide upload copy d-none">
 
                     <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
 

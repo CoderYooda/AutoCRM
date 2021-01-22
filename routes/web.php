@@ -324,13 +324,18 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/settings/master/close', 'SettingsController@closeSettingsMaster')->name('CloseMaster');
 
         Route::get('/shop', 'ShopController@index')->name('ShopIndex');
-        Route::post('/shop', 'ShopController@update')->name('ShopUpdate');
-        Route::post('/shop/about', 'ShopController@updateAbout')->name('ShopUpdateAbout');
-        Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
-        Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
-        Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
-        Route::post('/shop/analytics', 'ShopController@updateAnalytics')->name('ShopUpdateAnalytics');
+//        Route::post('/shop', 'ShopController@update')->name('ShopUpdate');
+//        Route::post('/shop/about', 'ShopController@updateAbout')->name('ShopUpdateAbout');
+//        Route::post('/shop/delivery', 'ShopController@updateDelivery')->name('ShopUpdateDelivery');
+//        Route::post('/shop/warranty', 'ShopController@updateWarranty')->name('ShopUpdateWarranty');
+//        Route::post('/shop/settings', 'ShopController@updateSettings')->name('ShopUpdateSettings');
+//        Route::post('/shop/analytics', 'ShopController@updateAnalytics')->name('ShopUpdateAnalytics');
+        Route::post('/shop/update_pages', 'ShopController@updatePages')->name('ShopUpdatePages');
+        Route::post('/shop/update_main', 'ShopController@updateMain')->name('ShopUpdateMain');
+        Route::post('/shop/update_contacts', 'ShopController@updateContacts')->name('ShopUpdateContacts');
         Route::post('/shop/payment_methods', 'ShopController@updatePaymentMethods')->name('ShopUpdatePaymentMethods');
+        Route::get('/shop/payments/{payment}', 'ShopController@paymentModal')->name('ShopPaymentModal');
+        Route::get('/shop/traffic/{method}', 'ShopController@trafficModal')->name('ShopTrafficModal');
 
         Route::post('/shop_orders/tabledata', 'ShopController@tableData')->name('ShopTableData');
         Route::post('/shop_orders/side_info', 'ShopController@getSideInfo')->name('ShopSideInfo');

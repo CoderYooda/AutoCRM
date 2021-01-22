@@ -14,7 +14,7 @@ class CheckPaymentMethodSberbank implements Rule
 
         $response = $api->getOrderStatus(Str::random(36));
 
-        return $response['ErrorCode'] != 5;
+        return $response['errorCode'] != 5;
     }
 
     public function message()

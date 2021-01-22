@@ -293,6 +293,8 @@
                 @endif
                 @include(get_template(). '.system.settings_provider_dialog')
                 @include(get_template(). '.system.markup_source_dialog')
+                @include(get_template(). '.shop.tabs.modals.payment')
+                @include(get_template(). '.shop.tabs.modals.traffic')
             </div>
 
         </div>

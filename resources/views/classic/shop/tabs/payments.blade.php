@@ -14,7 +14,7 @@
 
                 @foreach(['sberbank', 'tinkoff', 'yandex'] as $bank)
 
-                    <div class="payment">
+                    <div class="payment" onclick="{{ $class }}.openPaymentModal('{{ $bank }}');">
 
                         <div class="image">
                             <img src="{{ asset('/images/icons/shop-settings/' . $bank . '.svg') }}" />
@@ -23,7 +23,7 @@
                         <div class="status">
                             <span class="ml-2">
                                 <label class="ui-switch orange mt-1">
-                                    <input class="d-none" onclick="event.preventDefault();" type="checkbox"><i></i>
+                                    <input class="d-none" onclick="event.preventDefault();" @if($activePayment['name'] == $bank) checked @endif type="checkbox"><i></i>
                                 </label>
                             </span>
                         </div>

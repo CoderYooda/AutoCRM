@@ -12,37 +12,25 @@
 
             <div class="methods">
 
-                <div class="method">
+                @foreach(['yandex_metric', 'google_analytics'] as $method)
 
-                    <div class="image">
-                        <img src="{{ asset('/images/icons/shop-settings/yandex_metric.svg') }}" />
+                    <div class="method" onclick="{{ $class }}.openTrafficModal('{{ $method }}');">
+
+                        <div class="image">
+                            <img src="{{ asset('/images/icons/shop-settings/' . $method . '.svg') }}" />
+                        </div>
+
+                        <div class="status">
+                            <span class="ml-2">
+                                <label class="ui-switch orange mt-1">
+                                    <input class="d-none" onclick="event.preventDefault();" @if($isActivated[$method]) checked @endif type="checkbox"><i></i>
+                                </label>
+                            </span>
+                        </div>
+
                     </div>
 
-                    <div class="status">
-                        <span class="ml-2">
-                            <label class="ui-switch orange mt-1">
-                                <input class="d-none" onclick="event.preventDefault();" type="checkbox"><i></i>
-                            </label>
-                        </span>
-                    </div>
-
-                </div>
-
-                <div class="method">
-
-                    <div class="image">
-                        <img src="{{ asset('/images/icons/shop-settings/google_analytics.svg') }}" />
-                    </div>
-
-                    <div class="status">
-                        <span class="ml-2">
-                            <label class="ui-switch orange mt-1">
-                                <input class="d-none" onclick="event.preventDefault();" type="checkbox"><i></i>
-                            </label>
-                        </span>
-                    </div>
-
-                </div>
+                @endforeach
 
             </div>
 

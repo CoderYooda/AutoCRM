@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateAboutRequest extends FormRequest
+class UpdatePagesRequest extends FormRequest
 {
     public function authorize()
     {
@@ -23,9 +23,22 @@ class UpdateAboutRequest extends FormRequest
     public function rules()
     {
         return [
-            'about_desc' => ['required', 'string', 'max:65535'],
-            'seo_about_title' => ['nullable', 'string', 'max:65535'],
-            'seo_about_desc' => ['nullable', 'string', 'max:65535'],
+            'contacts_desc' => ['nullable', 'string', 'max:65535'],
+            'contacts_about_title' => ['nullable', 'string', 'max:65535'],
+            'contacts_about_desc' => ['nullable', 'string', 'max:65535'],
+
+            'about_desc' => ['nullable', 'string', 'max:65535'],
+            'about_about_title' => ['nullable', 'string', 'max:65535'],
+            'about_about_desc' => ['nullable', 'string', 'max:65535'],
+
+            'delivery_desc' => ['nullable', 'string', 'max:65535'],
+            'delivery_about_title' => ['nullable', 'string', 'max:65535'],
+            'delivery_about_desc' => ['nullable', 'string', 'max:65535'],
+
+            'warranty_desc' => ['nullable', 'string', 'max:65535'],
+            'warranty_about_title' => ['nullable', 'string', 'max:65535'],
+            'warranty_about_desc' => ['nullable', 'string', 'max:65535'],
+
             'image_ids' => ['array'],
             'image_ids.*' => ['exists:images,id'],
             'delete_image_ids' => ['nullable', 'array'],

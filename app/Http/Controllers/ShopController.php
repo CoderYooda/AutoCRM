@@ -5,13 +5,10 @@ namespace App\Http\Controllers;
 use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
-use App\Http\Requests\Shop\UpdateAboutRequest;
 use App\Http\Requests\Shop\UpdateAnalyticsRequest;
-use App\Http\Requests\Shop\UpdateDeliveryRequest;
+use App\Http\Requests\Shop\UpdateMainRequest;
+use App\Http\Requests\Shop\UpdatePagesRequest;
 use App\Http\Requests\Shop\UpdatePaymentMethodsRequest;
-use App\Http\Requests\Shop\UpdateRequest;
-use App\Http\Requests\Shop\UpdateSettingsRequest;
-use App\Http\Requests\Shop\UpdateWarrantyRequest;
 use App\Mail\Shop\CanceledOrder;
 use App\Mail\Shop\ConfirmOrder;
 use App\Models\Product;
@@ -25,7 +22,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class ShopController extends Controller
 {
@@ -55,7 +51,7 @@ class ShopController extends Controller
         $shop = Shop::with('phones', 'aboutImages', 'sliderImages')->where('company_id', Auth::user()->company_id)->first();
 
         $view->with([
-            'shop' => $shop,
+            'shop'    => $shop,
             'company' => $company
         ]);
 
@@ -94,12 +90,62 @@ class ShopController extends Controller
 
     public function paymentsTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.payments', compact('request'));
+        $shop = Auth::user()->shop;
+
+        $activePayment = null;
+
+        if ($shop) $activePayment = $shop->getActivePaymentMethod();
+
+        return view(get_template() . '.shop.tabs.payments', compact('request', 'activePayment'));
     }
 
     public function trafficTab(Request $request)
     {
-        return view(get_template() . '.shop.tabs.traffic', compact('request'));
+        $shop = Auth::user()->shop;
+
+        $isActivated = [
+            'yandex_metric'    => $shop && $shop->yandex_metrics && $shop->yandex_verification,
+            'google_analytics' => $shop->google_analytics ?? false
+        ];
+
+        return view(get_template() . '.shop.tabs.traffic', compact('request', 'isActivated'));
+    }
+
+    public function trafficModal($method)
+    {
+        $shop = Auth::user()->shop;
+
+        $info = [
+            'yandex_metric'    => [
+                'name'   => 'Яндекс Метрика',
+                'fields' => [
+                    'yandex_verification' => [
+                        'placeholder' => '3609912de29702c5',
+                        'value'       => $shop->yandex_verification ?? ''
+                    ],
+                    'yandex_metrics'      => [
+                        'placeholder' => '69589330',
+                        'value'       => $shop->yandex_metrics ?? ''
+                    ]
+                ]
+            ],
+            'google_analytics' => [
+                'name'   => 'Google Analytics',
+                'fields' => [
+                    'google_analytics' => [
+                        'placeholder' => 'G-TMZTM3E3K7',
+                        'value'       => $shop->google_analytics ?? ''
+                    ]
+                ]
+            ]
+        ];
+
+        $view = view(get_template() . '.shop.tabs.modals.traffic_inner', compact('method', 'shop'))
+            ->with('info', $info[$method]);
+
+        return response()->json([
+            'html' => $view->render()
+        ]);
     }
 
     public function appearanceTab(Request $request)
@@ -107,72 +153,63 @@ class ShopController extends Controller
         return view(get_template() . '.shop.tabs.appearance', compact('request'));
     }
 
-//    public function contactsTab(Request $request)
-//    {
-//        return view(get_template() . '.shop.tabs.contacts', compact('request'));
-//    }
-//
-//    public function aboutTab(Request $request)
-//    {
-//        return view(get_template() . '.shop.tabs.about', compact('request'));
-//    }
-//
-//    public function deliveryTab(Request $request)
-//    {
-//        return view(get_template() . '.shop.tabs.delivery', compact('request'));
-//    }
-//
-//    public function warrantyTab(Request $request)
-//    {
-//        return view(get_template() . '.shop.tabs.warranty', compact('request'));
-//    }
-//
-//    public function settingsTab(Request $request)
-//    {
-//        $user = Auth::user();
-//
-//        $prices = Markup::where('company_id', $user->company_id)->get();
-//
-//        return view(get_template() . '.shop.tabs.settings', compact('request', 'prices'));
-//    }
-//
-//    public function analyticsTab(Request $request)
-//    {
-//        return view(get_template() . '.shop.tabs.analytics', compact('request'));
-//    }
-//
-//    public function payment_methodsTab(Request $request)
-//    {
-//        $shop = Auth::user()->shop;
-//
-//        $filteredArray = [];
-//
-//        if($shop) {
-//            $paymentMethods = $shop->paymentMethods ? $shop->paymentMethods->toArray() : [];
-//
-//            foreach ($paymentMethods as $paymentMethod) {
-//                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
-//                $filteredArray[$paymentMethod['name']] = $paymentMethod;
-//            }
-//        }
-//
-//        $paymentMethods = $filteredArray;
-//
-//        return view(get_template() . '.shop.tabs.payment_methods', compact('request', 'paymentMethods'));
-//    }
+    public function paymentModal($bank)
+    {
+        $shop = Auth::user()->shop;
 
-    public function update(UpdateRequest $request)
+        $info = [
+            'tinkoff'  => [
+                'name'   => 'Tinkoff Merchant',
+                'fields' => [
+                    'terminal_key' => ['placeholder' => 'Ключ терминала'],
+                    'secret_key'   => ['placeholder' => 'Секретный ключ']
+                ]
+            ],
+            'yandex'   => [
+                'name'   => 'Yandex Checkout',
+                'fields' => [
+                    'shop_id'    => ['placeholder' => 'ID магазина'],
+                    'secret_key' => ['placeholder' => 'Секретный ключ']
+                ]
+            ],
+            'sberbank' => [
+                'name'   => 'Sberbank Merchant',
+                'fields' => [
+                    'login'    => ['placeholder' => 'Логин'],
+                    'password' => ['placeholder' => 'Пароль']
+                ]
+            ]
+        ];
+
+        $filteredArray = [];
+
+        if ($shop) {
+            $paymentMethods = optional($shop->paymentMethods)->toArray() ?: [];
+
+            foreach ($paymentMethods as $paymentMethod) {
+                $paymentMethod['params'] = json_decode($paymentMethod['params'], true);
+                $filteredArray[$paymentMethod['name']] = $paymentMethod;
+            }
+        }
+
+        $paymentMethods = $filteredArray;
+
+        $view = view(get_template() . '.shop.tabs.modals.payment_inner', compact('shop', 'bank', 'paymentMethods'))
+            ->with('info', $info[$bank]);
+
+        return response()->json([
+            'html' => $view->render()
+        ]);
+    }
+
+    public function updateContacts(Request $request)
     {
         return DB::transaction(function () use ($request) {
 
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
-                'name'               => $request->name,
-                'address_name'       => $request->address_name,
-                'address_coords'     => $request->address_coords,
-                'address_desc'       => $request->address_desc,
-                'seo_contacts_title' => $request->seo_contacts_title,
-                'seo_contacts_desc'  => $request->seo_contacts_desc,
-                'contacts_desc'      => $request->contacts_desc
+                'address_name'   => $request->address_name,
+                'address_coords' => $request->address_coords,
+                'address_desc'   => $request->address_desc,
             ]);
 
             $shop->phones()->delete();
@@ -214,7 +251,7 @@ class ShopController extends Controller
         return $data;
     }
 
-    public function updateAbout(UpdateAboutRequest $request)
+    public function updatePages(UpdatePagesRequest $request)
     {
         $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
             'about_desc'      => $request->about_desc,
@@ -240,29 +277,29 @@ class ShopController extends Controller
         ]);
     }
 
-    public function updateDelivery(UpdateDeliveryRequest $request)
-    {
-        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
+//    public function updateDelivery(UpdateDeliveryRequest $request)
+//    {
+//        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], $request->validated());
+//
+//        return response()->json([
+//            'type'    => 'success',
+//            'message' => 'Настройки успешно сохранены.'
+//        ]);
+//    }
 
-        return response()->json([
-            'type'    => 'success',
-            'message' => 'Настройки успешно сохранены.'
-        ]);
-    }
-
-    public function updateWarranty(UpdateWarrantyRequest $request)
-    {
-        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
-            'warranty_desc'      => $request->warranty_desc,
-            'seo_warranty_title' => $request->seo_warranty_title,
-            'seo_warranty_desc'  => $request->seo_warranty_desc
-        ]);
-
-        return response()->json([
-            'type'    => 'success',
-            'message' => 'Настройки успешно сохранены.'
-        ]);
-    }
+//    public function updateWarranty(UpdateWarrantyRequest $request)
+//    {
+//        Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
+//            'warranty_desc'      => $request->warranty_desc,
+//            'seo_warranty_title' => $request->seo_warranty_title,
+//            'seo_warranty_desc'  => $request->seo_warranty_desc
+//        ]);
+//
+//        return response()->json([
+//            'type'    => 'success',
+//            'message' => 'Настройки успешно сохранены.'
+//        ]);
+//    }
 
     public function updateAnalytics(UpdateAnalyticsRequest $request)
     {
@@ -274,7 +311,7 @@ class ShopController extends Controller
         ]);
     }
 
-    public function updateSettings(UpdateSettingsRequest $request)
+    public function updateMain(UpdateMainRequest $request)
     {
         return DB::transaction(function () use ($request) {
 
@@ -289,36 +326,38 @@ class ShopController extends Controller
             }
 
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
-                'show_empty'          => $request->show_empty,
-                'show_amount'         => $request->show_amount,
-                'storage_days'        => $request->storage_days,
-                'image_favicon_id'    => $request->image_favicon_id,
-                'image_logotype_id'   => $request->image_logotype_id,
-                'image_header_id'     => $request->image_header_id,
-                'image_background_id' => $request->image_background_id,
-                'domain'              => $request->domain,
-                'subdomain'           => $request->subdomain,
-                'supplier_offers'     => $request->supplier_offers,
-                'price_id'            => $request->price_id
+                'name'            => $request->name,
+                'show_empty'      => $request->show_empty,
+                'show_amount'     => $request->show_amount,
+//                'storage_days'        => $request->storage_days,
+//                'image_favicon_id'    => $request->image_favicon_id,
+//                'image_logotype_id'   => $request->image_logotype_id,
+//                'image_header_id'     => $request->image_header_id,
+//                'image_background_id' => $request->image_background_id,
+                'domain'          => $request->domain,
+                'subdomain'       => $request->subdomain,
+                'supplier_offers' => $request->supplier_offers,
+                'price_id'        => $request->price_id,
+                'domain_type'     => $request->domain_type
             ]);
 
-            $images = [];
+//            $images = [];
+//
+//            for ($i = 0; $i < count($request->image_ids); $i++) {
+//
+//                $image_id = $request->image_ids[$i];
+//                $target_url = $request->image_urls[$i];
+//
+//                $images[$image_id] = [
+//                    'target_url' => $target_url
+//                ];
+//            }
+//
+//            $shop->sliderImages()->sync($images);
 
-            for ($i = 0; $i < count($request->image_ids); $i++) {
-
-                $image_id = $request->image_ids[$i];
-                $target_url = $request->image_urls[$i];
-
-                $images[$image_id] = [
-                    'target_url' => $target_url
-                ];
-            }
-
-            $shop->sliderImages()->sync($images);
-
-            foreach ($shop->sliderImages as $key => $image) {
-                $image->update(['rank' => $key]);
-            }
+//            foreach ($shop->sliderImages as $key => $image) {
+//                $image->update(['rank' => $key]);
+//            }
 
             $shop->orderEmails()->delete();
             $shop->orderEmails()->createMany($request->emails);

@@ -22,6 +22,18 @@ class shopPage {
         };
 
         this.clicked_input = null;
+
+        if(this.active_tab == 'payments' || this.active_tab == 'traffic') {
+
+            let modal_element = document.getElementById(this.active_tab  + '_dialog');
+
+            console.log(modal_element);
+
+            this.modal = new bootstrap.Modal(modal_element, {
+                backdrop: true,
+                keyboard: true
+            });
+        }
     }
 
     linked() {
@@ -54,10 +66,12 @@ class shopPage {
 
             let editor_elements = document.querySelectorAll('.editor');
 
+            this.texteditor = [];
+
             editor_elements.forEach(element => {
                 TextEditor.create(element, config)
                     .then(newEditor => {
-                        this.texteditor = newEditor
+                        this.texteditor.push(newEditor);
                     });
             });
         }
@@ -293,16 +307,16 @@ class shopPage {
 
                 let image = response.data.images[0];
 
-                let copy_element = document.querySelector('.image.copy').cloneNode(true);
+                let copy_element = document.querySelector('.tab-pane.active .slide.copy').cloneNode(true);
 
                 copy_element.querySelector('img').src = image.url;
 
-                copy_element.querySelector('button').dataset.id = image.id;
+                copy_element.querySelector('.remove').dataset.id = image.id;
 
                 copy_element.classList.remove('d-none');
                 copy_element.classList.remove('copy');
 
-                let list_element = document.querySelector('.images');
+                let list_element = document.querySelector('.tab-pane.active .sliders');
 
                 list_element.append(copy_element);
 
@@ -319,7 +333,7 @@ class shopPage {
     }
 
     removeImage(element) {
-        let target_element = element.closest('.image');
+        let target_element = element.closest('.slide');
         target_element.remove();
 
         this.freshImagesIndexes();
@@ -554,10 +568,41 @@ class shopPage {
         return true;
     }
 
-    saveContacts(element) {
+    savePages(element) {
+
+        let main_ids = [];
+        let main_urls = [];
+
+        let main_elements = document.querySelectorAll('#shop_tab_index .slide:not(.copy)');
+
+        main_elements.forEach(element => {
+
+            let image_id = element.querySelector('button').dataset.id;
+            let target_url = element.querySelector('input').value;
+
+            main_ids.push(image_id);
+            main_urls.push(target_url);
+        });
+
+        //
+
+        let about_ids = [];
+
+        let image_elements = document.querySelectorAll('#shop_tab_about .slide:not(.copy)');
+
+        image_elements.forEach((element, index) => {
+
+            let image_id = element.querySelector('button').dataset.id;
+
+            about_ids.push(image_id);
+        });
+
+        //
 
         let data = {
-            contacts_desc: this.texteditor.getData()
+            main_ids: main_ids,
+            main_urls: main_urls,
+            about_ids: about_ids
         };
 
         axform.send(element, response => {
@@ -565,6 +610,23 @@ class shopPage {
                 //
             }
         }, null, data);
+    }
+
+    saveMain(element) {
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        });
+    }
+
+    saveContacts(element) {
+
+        axform.send(element, response => {
+            if (response.status == 200) {
+                //
+            }
+        });
     }
 
     saveAnalytics(element) {
@@ -585,79 +647,10 @@ class shopPage {
         });
     }
 
-    saveSettings(element) {
-
-        let image_ids = [];
-        let image_urls = [];
-
-        let image_elements = document.querySelectorAll('.image:not(.copy):not(.upload)');
-
-        image_elements.forEach(element => {
-
-            let image_id = element.querySelector('button').dataset.id;
-            let target_url = element.querySelector('input').value;
-
-            image_ids.push(image_id);
-            image_urls.push(target_url);
-        });
-
-        let data = {
-            image_ids: image_ids,
-            image_urls: image_urls
-        };
-
-        axform.send(element, response => {
-            if (response.status == 200) {
-                //
-            }
-        }, null, data);
-    }
-
-    saveAbout(element) {
-
-        let image_ids = [];
-
-        let image_elements = document.querySelectorAll('.image');
-
-        image_elements.forEach((element, index) => {
-
-            if(index > 1) {
-
-                let image_id = element.querySelector('button').dataset.id;
-
-                image_ids.push(image_id);
-            }
-        });
-
-        let data = {
-            image_ids: image_ids,
-            about_desc: this.texteditor.getData()
-        };
-
-        axform.send(element, response => {
-            if (response.status == 200) {
-                //
-            }
-        }, null, data);
-    }
-
     saveDelivery(element) {
 
         let dataset = {
             delivery_desc: this.texteditor.getData(),
-        };
-
-        axform.send(element, response => {
-            if (response.status == 200) {
-                //
-            }
-        }, null, dataset);
-    }
-
-    saveWarranty(element) {
-
-        let dataset = {
-            warranty_desc: this.texteditor.getData(),
         };
 
         axform.send(element, response => {
@@ -677,17 +670,59 @@ class shopPage {
         return active_tab;
     }
 
-    freshImagesIndexes()
-    {
-        let image_elements = document.querySelectorAll('.image:not(.copy):not(.upload)');
+    freshImagesIndexes() {
+
+        let image_elements = document.querySelectorAll('.tab-pane.active .slide:not(.copy):not(.upload)');
+
+        console.log(image_elements);
 
         image_elements.forEach((element, index) => {
 
-            console.log(element, element.querySelector('img'), element.querySelector('input'));
+            // console.log(element, element.querySelector('img'), element.querySelector('input'));
 
-            element.querySelector('img').dataset.index = index;
-            element.querySelector('input').dataset.error = 'image_urls[' + index + ']';
+            let image_element = element.querySelector('img');
+            let input_element = element.querySelector('input');
+
+            if(image_element) image_element.dataset.index = index;
+            if(input_element) input_element.dataset.error = 'image_urls[' + index + ']';
         });
+    }
+
+    openTrafficModal(method) {
+
+        event.preventDefault();
+
+        axios.get('/shop/traffic/' + method)
+            .then(({ data }) => {
+                this.modal.setContent(data.html);
+                this.modal.show();
+            });
+    }
+
+    openPaymentModal(bank) {
+
+        event.preventDefault();
+
+        axios.get('/shop/payments/' + bank)
+            .then(({ data }) => {
+
+                this.modal.setContent(data.html);
+                this.modal.show();
+            });
+    }
+
+    changeDomainType(element) {
+        let selected_type = element.value;
+
+        let type_elements = document.querySelectorAll('.domain_types > div');
+
+        type_elements.forEach(type_element => {
+            type_element.classList.add('d-none');
+        });
+
+        let target_element = document.querySelector('.input-group.' + selected_type);
+
+        target_element.classList.remove('d-none');
     }
 }
 

@@ -23,11 +23,12 @@
     opacity: 1;
 }
 .modal-dialog {
-    position: relative;
-    width: auto;
+    position: absolute;
     pointer-events: none;
     max-width: 50%;
-    margin: 52px auto;
+    top: calc(100% / 3);
+    right: calc(100% / 4);
+    width: 500px;
 }
 #croppr-container{
 
