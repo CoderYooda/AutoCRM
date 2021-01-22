@@ -691,8 +691,20 @@ button:disabled, textarea:disabled {
     border-radius: 3px;
     box-shadow: 4px 4px 4px 0px #00000029;
     padding: 20px 20px;
+    .invalid-text{
+        position: absolute;
+        left: calc(100% + 40px);
+        white-space: nowrap;
+        height: 30px;
+        line-height: 30px;
+        top: 0;
+        background: #fff;
+        padding: 0 10px;
+        border-radius: 2px;
+        max-width: 1000px;
+    }
     .form-group{
-        display: flex;
+        //display: flex;
     }
     label{
         flex: 1;

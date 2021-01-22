@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router);
 
-export default new Router({
+let router =  new Router({
     mode: 'history',
     base: '/',//process.env.BASE_URL,
     routes: [
@@ -106,4 +106,6 @@ export default new Router({
             redirect: '/404'
         }
     ]
-})
+});
+
+export default router;

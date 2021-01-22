@@ -5,9 +5,20 @@ Route::get('/evotor/getWarrantToPrint/{uuid}', 'API\EvotorController@getWarrantT
 Route::get('/evotor/getWarrantItems/{id}', 'API\EvotorController@getWarrantItems');
 Route::post('/evotor/setWarrantPayed', 'API\EvotorController@setWarrantPayed');
 
-Route::post('login', 'Auth\LoginController@login')->middleware('web')->name('PostLogin');
+Route::post('/test', function(){
+    return 1;
+});
+
+# Auth
+Route::namespace('API')->group(function() {
+    Route::post('/login', 'Auth\LoginController@login')->name('auth.login');
+    Route::post('/register', 'Auth\RegisterController@register')->name('auth.register');
+});
 
 Route::namespace('API')->middleware('auth:api')->group(function() {
+
+
+
     #Категории
     Route::get('/categories/{category}',            'CategoryController@show')->name('categories.show');
     Route::get('/categories/{category}/children',   'CategoryController@children')->name('categories.children');

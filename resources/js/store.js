@@ -10,11 +10,17 @@ export default new Vuex.Store({
     state: {
         user : null,
         isLogged : false,
+        needSmsConfirm : false,
+        token: localStorage.getItem('token') || '',
+
 
         todos : null,
         cash_aside_menu: null,
     },
     getters : {
+        isLoggedIn: state => !!state.token,
+        authStatus: state => state.status,
+        needSmsConfirm: state => state.needSmsConfirm,
         USER : state => {
             return state.user
         },
@@ -28,22 +34,99 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+
+        auth_request(state){
+            state.status = 'loading';
+        },
+
+        sms_confirm(state, needSmsConfirm){
+            state.needSmsConfirm = needSmsConfirm;
+        },
+
+        auth_success(state, token, user){
+            state.status = 'success';
+            state.token = token;
+            state.user = user;
+        },
+
+        auth_error(state){
+            state.status = 'error';
+        },
+
+        logout(state){
+            state.status = '';
+            state.token = '';
+        },
+
         SET_USER : (state, payload) => {
             state.user = payload
         },
 
-
         SET_CASH_ASIDE_MENU : (state,payload) => {
             state.cash_aside_menu = payload
         },
+
         SET_TODO : (state,payload) => {
             state.todos = payload
         },
+
         ADD_TODO : (state,payload) => {
             state.todos.push(payload)
         },
     },
     actions:{
+        login({commit}, user){
+            return new Promise((resolve, reject) => {
+                commit('auth_request');
+                axios({url: '/login', data: user, method: 'POST' })
+                    .then(resp => {
+                        const token = resp.data.token;
+                        const user = resp.data.user;
+                        localStorage.setItem('token', token);
+                        axios.defaults.headers.common['Authorization'] = token;
+                        commit('auth_success', token, user);
+                        resolve(resp)
+                    })
+                    .catch(err => {
+                        commit('auth_error');
+                        localStorage.removeItem('token');
+                        reject(err)
+                    })
+            })
+        },
+        register({commit}, registerData){
+            return new Promise((resolve, reject) => {
+                commit('auth_request');
+                axios({url: '/register', data: registerData, method: 'POST' })
+                    .then(resp => {
+
+                        if(resp.data.needSmsConfirm){
+                            commit('sms_confirm', resp.data.needSmsConfirm);
+                        } else {
+                            const token = resp.data.token;
+                            const user = resp.data.user;
+                            localStorage.setItem('token', token);
+                            axios.defaults.headers.common['Authorization'] = token;
+                            commit('auth_success', token, user);
+                            resolve(resp);
+                        }
+                    })
+                    .catch(err => {
+                        commit('auth_error', err);
+                        localStorage.removeItem('token');
+                        reject(err);
+                    })
+            })
+        },
+        logout({commit}){
+            return new Promise((resolve, reject) => {
+                commit('logout');
+                localStorage.removeItem('token');
+                delete axios.defaults.headers.common['Authorization'];
+                resolve();
+            })
+        },
+
         GET_USER : async (context,payload) => {
             let { data } = await axios.get('http://yourwebsite.com/api/todo')
             context.commit('SET_USER',data)

@@ -59,6 +59,10 @@ router.beforeEach((to, from, next) => {
     } else {
         next() // не требует авторизации
     }
+
+    let text = '123';
+
+    return
 });
 
 let app = new Vue({
@@ -69,7 +73,6 @@ let app = new Vue({
 
 
 window.axios.interceptors.request.use(function (request){
-    console.log(request);
     let token = localStorage['api_token'];
     if (token) {
         request.headers.common['Authorization'] = 'Bearer ' + token;
