@@ -15,6 +15,7 @@ use App\Services\ProviderService\Services\Providers\Mikado;
 use App\Services\ProviderService\Services\Providers\AvtoImport;
 use App\Services\ProviderService\Services\Providers\ArmTek;
 use App\Services\ProviderService\Services\Providers\MskRechie;
+use App\Services\ProviderService\Services\Providers\Rossko;
 use App\Services\ProviderService\Services\Providers\StParts;
 use App\Services\ProviderService\Services\Providers\Trinity;
 use Illuminate\Contracts\Foundation\Application;
@@ -38,7 +39,8 @@ class AppProviderStoreService extends ServiceProvider
             MskRechie::class,
             StParts::class,
             Berg::class,
-            FavoritParts::class
+            FavoritParts::class,
+            Rossko::class
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {
