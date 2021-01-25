@@ -16,7 +16,7 @@ class Rossko implements ProviderInterface
 {
     use CartProviderOrderCreator;
 
-    protected $host = 'http://api.rossko.ru/service/v2.1';
+    protected $host = 'http://api.rossko.ru/service/v2.1/';
 
     protected $name = 'Росско';
     protected $service_key = 'rossko';
@@ -29,6 +29,17 @@ class Rossko implements ProviderInterface
 
     /** @var User $user */
     protected $user = null;
+
+    protected $errors = [
+        401 => [
+            'error' => 'Неверный KEY1 и/или KEY2',
+            'return' => 'Not auth'
+        ],
+        404 => [
+            'error' => 'Ничего не найдено',
+            'return' => 'Not found'
+        ]
+    ];
 
     public function __construct()
     {
@@ -63,42 +74,78 @@ class Rossko implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'ArticleId' => $article,
-            'SearchCross' => 1
+            'text' => $article ,
+            'delivery_id' => '000000001'
         ];
 
-        $items = $this->query('GetSearch', $params);
+        $response = $this->query('GetSearch', $params);
 
         $results = [
             'originals' => [],
             'analogues' => []
         ];
 
-        if ($items == []) return $results;
 
         $originalIndex = 0;
         $analogueIndex = 0;
 
-        $items = $items['GetPriceIdResult']['PriceSearchModel'];
+        $unfilteredItems = $response['SearchResult']['PartsList']['Part'];
 
-        foreach ($items as $key => $item) {
+        $items = [];
 
-            if(isset($item['NumberChange'])) continue;
 
-            $items[$key]['index'] = $key;
+        dd($unfilteredItems);
 
-            $items[$key]['hash_info'] = [
-                'stock' => $item['Region'],
-                'manufacturer' => $item['CatalogName'],
-                'article' => $item['Number'],
-                'days' => $item['NumberOfDaysSupply'],
-                'price' => $item['SalePrice'],
-                'packing' => $item['MinNumberOfSales'] > 0 ? $item['MinNumberOfSales'] : 1,
-                'desc' => $item['Name'],
-                'rest' => $item['NumberOfAvailable'] > 1 ? $item['NumberOfAvailable'] : 'n/a',
-                'supplier' => $this->name
-            ];
+        //Проверяем есть ли у товара аналоги, далее идет лютый говнокод, ПАМАГИТЕ!!!
+        if(isset($unfilteredItems['crosses']['Part'])) {
+
+            foreach ($unfilteredItems['crosses']['Part'] as $key => $item) {
+
+                    foreach ($item['stocks']['stock'] as $key1 => $offer) {
+
+                        $items[] = [
+                            'guid' => $item['guid'],
+                            'brand' => $item['brand'],
+                            'partnumber' => $item['partnumber'],
+                            'name' => $item['name'],
+                            'stock_id' => $offer['id'],
+                            'price' => $offer['price'],
+                            'count' => $offer['count'],
+                            'multiplicity' => $offer['multiplicity'],
+                            'type' => $offer['type'],
+                            'delivery' => $offer['delivery'],
+                            'extra' => $offer['extra'],
+                            'description' => $offer['description'],
+                            'deliveryStart' => $offer['deliveryStart'],
+                            'deliveryEnd' => $offer['deliveryEnd']
+                        ];
+                    }
+
+
+            }
         }
+
+        $items[] = [
+            'guid' => $item['guid'],
+            'brand' => $item['brand'],
+            'partnumber' => $item['partnumber'],
+            'name' => $item['name'],
+            'stock_id' => $offer['id'],
+            'price' => $offer['price'],
+            'count' => $offer['count'],
+            'multiplicity' => $offer['multiplicity'],
+            'type' => $offer['type'],
+            'delivery' => $offer['delivery'],
+            'extra' => $offer['extra'],
+            'description' => $offer['description'],
+            'deliveryStart' => $offer['deliveryStart'],
+            'deliveryEnd' => $offer['deliveryEnd']
+        ];
+
+//        unset($unfilteredItems['crosses']);
+
+        dd($unfilteredItems, $items);
+
 
         foreach ($items as $store) {
 
@@ -133,21 +180,14 @@ class Rossko implements ProviderInterface
 
     protected function query($method, $params = [])
     {
-        $url = $this->host;
+
+        $url = $this->host . $method;
 
         $client = new SoapClient($url);
 
-        dd($client);
+        $params['KEY1'] = $this->api_key1;
+        $params['KEY2'] = $this->api_key2;
 
-        $response = $client->GetCheckoutDetails([
-            "UserID" => $this->user_id,
-            "Password" => $this->password,
-            "Save" => false
-        ]);
-
-        if (!$response->AuthorizationResult) {
-            throw new Exception('No auth', 401);
-        }
 
         try {
             $response = $client->$method($params);
@@ -166,23 +206,18 @@ class Rossko implements ProviderInterface
     {
         if (is_array($response)) {
 
-            if (isset($response['FindCatalogResult']) && $response['FindCatalogResult'] == []) {
+            if (isset($response['SearchResult']['success']) && $response['SearchResult']['success'] == false) {
 
-                throw new \Exception('Not found', 404);
+                $response = $response['SearchResult']['message'];
+
+                foreach ($this->errors as $code => $info) {
+                    if (strtolower($info['error']) != strtolower($response)) continue;
+                    throw new \Exception($info['return'], $code);
+                }
 
             }
 
         }
-
-//        if (is_object($response)) {
-//
-//            $errorMessage = $response->getMessage();
-//
-//            foreach ($this->errors as $code => $info) {
-//                if (strpos($errorMessage, $info['search']) === false) continue;
-//                throw new \Exception($info['return'], $code);
-//            }
-//        }
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -192,7 +227,6 @@ class Rossko implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-
         if (!isset($fields['api_key1']) && !isset($fields['api_key2'])) return false;
 
         $this->api_key1 = $fields['api_key1'];
@@ -207,16 +241,17 @@ class Rossko implements ProviderInterface
     public function searchBrandsCount(string $article): array
     {
         $params = [
-            'text' => $article
+            'text' => $article,
+            'delivery_id' => '000000001'
         ];
 
-        $response = $this->query('FindCatalog', $params);
+        $response = $this->query('GetSearch', $params);
+
+        $response = $response['SearchResult']['PartsList']['Part'];
 
         $results = [];
 
-        $response = $response['FindCatalogResult']['SearchCatalogModel'];
-
-        if (isset($response['CatalogName'])) {
+        if (isset($response['name'])) {
             $results[] = $this->getBrandInfoFromItem($response);
         }
         else {
@@ -231,10 +266,10 @@ class Rossko implements ProviderInterface
     private function getBrandInfoFromItem ($item): array
     {
         return [
-            'brand' => $item['CatalogName'],
-            'article' => $item['Number'],
-            'desc' => strlen($item['Name']) ? $item['Name'] : 'Отсутствует',
-            'searchArticle' => $item['ArticleId']
+            'brand' => $item['brand'],
+            'article' => $item['partnumber'],
+            'desc' => strlen($item['name']) ? $item['name'] : 'Отсутствует',
+            'searchArticle' => $item['guid']
         ];
     }
 
