@@ -38,7 +38,7 @@ class ProviderStoreController extends Controller
                 $code = $exception->getCode();
 
                 $counts[$service_key] = [];
-                if($code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
+                if($code && $code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
             }
 
             if ($service_key == $request->selected_service) {

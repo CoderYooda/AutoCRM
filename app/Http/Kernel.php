@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\CompanyHasPayedDays;
 use App\Http\Middleware\DebugBarChecker;
+use App\Http\Middleware\RedirectFork;
 use App\Http\Middleware\RequestLimit;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -66,8 +67,10 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'banned' => \App\Http\Middleware\banned::class,
         'superAdmin' => \App\Http\Middleware\SuperAdmin::class,
+        'Partner' => \App\Http\Middleware\Partner::class,
         'hasPayedDays' => CompanyHasPayedDays::class,
-        'requestLimit' => RequestLimit::class
+        'requestLimit' => RequestLimit::class,
+        'fork' => RedirectFork::class
     ];
 
     /**

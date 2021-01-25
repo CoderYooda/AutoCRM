@@ -2,11 +2,9 @@
 
 @section('tab')
     <div id="ajax-table-entrance" class="bottom-container full-box-cont">
-        <div class="box-lister box w-px">
-            <div id="table-container" class="box-content">
-                <div data-data="{{ $data }}" id="entranceTable" ></div>
-            </div>
-        </div>
+
+        @include(get_template() . '.store.elements.search')
+
         <div class="content-rightside">
             @can('Создавать поступления')
                 <button onclick="openDialog('entranceDialog')" class="button primary mb-15 w-100">Оформить поступление</button>

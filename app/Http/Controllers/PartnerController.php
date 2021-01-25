@@ -409,19 +409,13 @@ class PartnerController extends Controller
             $field = 'id';
             $dir = 'DESC';
         }
-        $partners = Partner::select(DB::raw('IF(partners.type != 2, partners.fio, partners.companyName) as name, partners.id, partners.fio, partners.companyName, partners.created_at, partners.company_id, partners.balance, partners.created_at as date, cat.name as category'))
-            ->leftJoin('categories as cat', 'cat.id', '=', 'partners.category_id')
-//            ->from(DB::raw('
-//                partners
-//                left join categories as cat on cat.id = partners.category_id
-//            '))
-            ->where('partners.company_id', Auth::user()->company_id)
+        $partners = Partner::with('category')
+            ->where('company_id', Auth::user()->company_id)
             ->where(function($q) use ($request){
                 if(isset($request['category_id']) && $request['category_id'] != "" && $request['category_id'] != 3 && $request['category_id'] != "null"){
                     $q->where('partners.category_id', (int)$request['category_id']);
                 }
             })
-
             ->when($request['search'] != null, function($query) use ($request) {
                 if(mb_strlen($request['search']) == 1){
                     $query->where(function($q) use ($request){
@@ -431,14 +425,13 @@ class PartnerController extends Controller
                     $query->where('foundstring', 'like', '%' . str_replace(array('(', ')', ' ', '-'), '', $request['search']) . '%');
                 }
             })
-            //->groupBy('partners.id')
-
             ->orderBy($field, $dir)
             ->paginate($size);
-//        ->toSql();
 
         foreach ($partners as $key => $partner) {
             $partners[$key]->phone = $partner->firstActivePhoneNumber();
+            $partners[$key]->category_name = $partner->category->name;
+            $partners[$key]->partner_name = $partner->official_name;
         }
 
         return $partners;

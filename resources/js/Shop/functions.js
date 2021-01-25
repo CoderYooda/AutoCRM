@@ -1,18 +1,19 @@
 window.phoneMask = function phoneMask(element) {
     window.IMask(element, {
 
-            mask: '+{7}(000)000-00-00',
-            lazy: true,
+        mask: '+7(000)000-00-00',
+        startsWith: '7',
+        lazy: true,
+    });
 
-            dispatch: function (appended, dynamicMasked) {
-                let number = (dynamicMasked.value + appended).replace(/\D/g,'');
+    element.addEventListener('paste', event => {
 
-                return dynamicMasked.compiledMasks.find(function (m) {
-                    return number.indexOf(m.startsWith) === 0;
-                });
-            }
-        }
-    );
+        let text = event.clipboardData.getData('Text')
+
+        if(text[0] == '7' || text[0] == '8') text = text.substr(1);
+
+        element.value = text;
+    });
 };
 
 window.createModal = function(header_name, html = null){

@@ -42,7 +42,7 @@ class Mikado implements ProviderInterface
     {
         $params = [
             'Search_Code'   => $article,
-            'FromStockOnly' => 'FromStockAndByOrder'
+            'FromStockOnly' => 'FromStockOnly'
         ];
 
         $response = $this->query('ws1/service.asmx/Code_Search', $params);
@@ -63,6 +63,8 @@ class Mikado implements ProviderInterface
         $key = 'АНАЛОГИ ПРОЧИЕ (БРЭНД НЕИЗВЕСТЕН). ВНИМАНИЕ!!! ТОЛЬКО ДЛЯ ИНФОРМАЦИИ! ВОЗМОЖНЫ ОШИБКИ!!!';
 
         if(array_search($key, array_keys($results)) !== false) unset($results[$key]);
+
+        $results = collect($results)->where('article', $article)->toArray();
 
         return $results;
     }
@@ -217,11 +219,7 @@ class Mikado implements ProviderInterface
         $this->login = $fields['login'];
         $this->password = $fields['password'];
 
-        $params = [
-            'ZakazCode' => 'xka-k1279'
-        ];
-
-        $this->query('ws1/service.asmx/Code_Info', $params);
+        $this->searchBrandsCount('k1279');
 
         return true;
     }

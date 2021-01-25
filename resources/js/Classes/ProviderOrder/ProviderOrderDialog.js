@@ -6,7 +6,7 @@ class providerOrderDialog extends Modal{
 
     constructor(dialog, response){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно заявки поставщику инициализировано');
         // this.items = [];
         this.nds = true;
         this.nds_included = true;
@@ -46,11 +46,14 @@ class providerOrderDialog extends Modal{
             }
         });
 
-        this.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  () => {
+        this.root_dialog.addEventListener('WarrantStored',  () => {
+
+            console.log(1);
+
             let id = this.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
+            if(id !== null) {
                 let root_id = this.root_dialog.id;
-                this.freshContent(id,function(){
+                this.freshContent(id,() => {
                     delete window[root_id];
                     window.helper.initDialogMethods();
                 });

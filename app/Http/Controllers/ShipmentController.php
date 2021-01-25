@@ -71,7 +71,7 @@ class ShipmentController extends Controller
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment','request', 'articles'))
+            'html' => view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment','request', 'products'))
                 ->render()
         ]);
     }
@@ -184,7 +184,7 @@ class ShipmentController extends Controller
             $product->supplier_name = $product->supplier->name;
         }
 
-        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request', 'articles'))
+        $content = view(get_template() . '.shipments.dialog.form_shipment', compact( 'shipment', 'class', 'inner', 'request', 'products'))
             ->render();
 
         return response()->json([
@@ -384,26 +384,31 @@ class ShipmentController extends Controller
             $request['dates'] = $dates;
         }
 
-        return Shipment::select(DB::raw('
-                shipments.*, shipments.created_at as date, IF(partners.type != 2, partners.fio,partners.companyName) as partner, CONCAT(shipments.discount, IF(shipments.inpercents = 1, \' %\',\' ₽\')) as discount, shipments.summ as price, shipments.itogo as total
-            '))
-                ->leftJoin('partners',  'partners.id', '=', 'shipments.partner_id')
-                ->where('shipments.company_id', Auth::user()->company_id)
-                ->when($request['client'] != null, function($query) use ($request) {
-                    $query->whereIn('shipments.partner_id', $request['client']);
-                })
-                ->when($request['dates_range'] != null, function($query) use ($request) {
-                    $query->whereBetween('shipments.created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
-                })
-                ->orderBy($field, $dir)
-                ->paginate($size);
+        $shipments = Shipment::with('partner')
+            ->where('company_id', Auth::user()->company_id)
+            ->when($request['client'] != null, function($query) use ($request) {
+                $query->whereIn('partner_id', $request['client']);
+            })
+            ->when($request['dates_range'] != null, function($query) use ($request) {
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+            })
+            ->when($request['search'], function ($query) use($request) {
+                $query->where(function ($query) use($request) {
+                    $query->where('shipments.id', 'like', "%{$request->search}%")
+                        ->orWhereHas('partner', function ($query) use($request) {
+                            $query->where('company_id', Auth::user()->company_id)
+                                ->where('foundstring', 'like', "%{$request->search}%");
+                        });
+                });
+            })
+            ->orderBy($field, $dir)
+            ->paginate($size);
 
-//        select shipments.id, shipments.created_at, IF(partners.type != 2, partners.fio,partners.companyName) as partner, shipments.discount, shipments.summ as price, shipments.itogo as total
-//        from shipments
-//        left join `partners` on `partners`.`id` = `shipments`.`partner_id`
-//        and `shipments`.`company_id` = 2
-//        group by `shipments`.`id`
-//        order by `created_at` desc
+        foreach ($shipments as $index => $shipment) {
+            $shipments[$index]['partner_name'] = $shipment->partner->official_name;
+        }
+
+        return $shipments;
     }
 
     public function events(Request $request)

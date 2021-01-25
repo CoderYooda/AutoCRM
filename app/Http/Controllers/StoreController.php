@@ -420,11 +420,11 @@ class StoreController extends Controller
     public function getAnalogues(Request $request)
     {
         $brand = $request->brand;
-        $product = $request->product;
+        $article = $request->article;
 
         $controller = new AnalogController();
 
-        $analogues = $controller->getAnalogues($brand, $product);
+        $analogues = $controller->getAnalogues($brand, $article);
 
         $products = [];
 

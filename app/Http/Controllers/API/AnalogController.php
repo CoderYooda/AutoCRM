@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 class AnalogController extends Controller
 {
     protected $host = 'http://id8341.public.api.abcp.ru/';
-    protected $login = 'audi-31@yandex.ru';
-    protected $password = 'i7r7o7n7';
+    protected $login = 'avtodrive31@yandex.ru';
+    protected $password = '15081984';
 
     public function getManufacturersByArticle(string $article)
     {
@@ -38,11 +38,10 @@ class AnalogController extends Controller
     public function getAnalogues($brand, $article)
     {
         $params = [
-            'number' => $article,
-            'brand'  => $brand,
-            'useOnlineStocks' => 0,
-            'disableOnlineFiltering' => 1,
-            'withOutAnalogs' => 0
+            'number'          => $article,
+            'brand'           => $brand,
+            'useOnlineStocks' => 1,
+            'withOutAnalogs'  => 0
         ];
 
         $response = $this->query('search/articles/', $params, 'GET');

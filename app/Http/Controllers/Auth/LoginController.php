@@ -30,7 +30,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/store';
+//    protected $redirectTo = '/dada';
 
     /**
      * Create a new controller instance.
@@ -57,7 +57,6 @@ class LoginController extends Controller
 
     protected function validateLogin(Request $request)
     {
-
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
         $request->validate([
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11'],
@@ -77,13 +76,17 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
+        //d(Auth::user()->roles->first()->name);
+        $return = null;
+
         if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Суперадмин') {
-            return '/admin';
+            $return = '/admin';
+        } elseif(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Реферальный партнёр') {
+            $return = '/ref_partner';
+        } else {
+            $return = '/store';
         }
-        if(Auth::user()->roles->first() && Auth::user()->roles->first()->name == 'Партнёр') {
-            return '/member';
-        }
-        return '/store';
+        return $return;
     }
 
     public function login(Request $request)
@@ -103,7 +106,6 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
-
             if($request->expectsJson()){
                 $request->session()->regenerate();
                 $this->clearLoginAttempts($request);
@@ -111,6 +113,7 @@ class LoginController extends Controller
                     'status' => 'success'
                 ]);
             }
+
             return $this->sendLoginResponse($request);
         } else {
             $this->incrementLoginAttempts($request);
@@ -138,7 +141,7 @@ class LoginController extends Controller
     public function authenticated(Request $request, $user)
     {
         if(!$user->current_store && isset($user->partner)) {
-            $user->update(['current_store' => $this->partner->store_id]);
+            $user->update(['current_store' => $this->partner->store_id ?? null]);
         }
     }
 

@@ -5,7 +5,7 @@ class clientorderDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно заказа клиенту инициализировано');
         this.items = [];
         this.nds = true;
         this.totalPrice = 0.0;
@@ -41,50 +41,25 @@ class clientorderDialog extends Modal{
         //     object.finitaLaComedia();
         // });
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
-        });
+        let dialogEvents = [
+            'WarrantStored',
+            'ShipmentStored',
+            'clientOrderSMS',
+            'EntranceStored',
+        ];
 
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('ShipmentStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
+        dialogEvents.forEach(dialogEvent => {
+            this.root_dialog.addEventListener(dialogEvent, () => {
+                let id = this.root_dialog.querySelector('input[name=id]').value;
+                if(id !== null) {
+                    let root_id = this.root_dialog.id;
+                    this.freshContent(id,() => {
+                        delete window[root_id];
+                        window.helper.initDialogMethods();
+                    });
+                }
+            });
         });
-
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('clientOrderSMS',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
-        });
-
-        object.root_dialog.getElementsByTagName('form')[0].addEventListener('EntranceStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
-        });
-
 
         let id = this.current_dialog.dataset.id;
         let prefix = id ? id : '';

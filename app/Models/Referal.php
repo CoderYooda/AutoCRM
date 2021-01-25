@@ -10,6 +10,7 @@ class Referal extends Model
     protected $table = 'referal';
 
     public $fields = [
+        'name',
         'user_id',
         'code',
         'percent_first_b',
@@ -22,4 +23,9 @@ class Referal extends Model
         'rubbles_each_value',
         'comment',
     ];
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'referal_company', 'referal_id', 'company_id');
+    }
 }

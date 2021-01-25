@@ -29,7 +29,7 @@ class ReferalPartnerRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'refer' => ['required'],
+            'code' => ['required', 'unique:referal'],
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
             'password' => 'required|string',
         ];

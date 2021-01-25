@@ -47,9 +47,7 @@ class Product extends Model
 
     public function path()
     {
-        $categoryPath = $this->category->path();
-
-        return $categoryPath . '/' . $this->slug;
+        return '/products/' . $this->slug;
     }
 
     public function image()
@@ -91,11 +89,18 @@ class Product extends Model
     {
         $stock = $store_id;
         $manufacturer = $this->supplier->name;
-        $article = $this->product;
+        $article = $this->article;
         $days = 0;
         $price = $this->stores->find($store_id)->pivot->retail_price;
 
         return md5($stock . $manufacturer . $article . $days . $price);
+    }
+
+    public function getRetailPriceInCurrentStore()
+    {
+        $store_id = Auth::user()->current_store;
+
+        return $this->stores->find($store_id)->pivot->retail_price;
     }
 
     public function fillShopFields($request)
@@ -256,6 +261,12 @@ class Product extends Model
         return $count - $released_count;
     }
 
+    public function entrances()
+    {
+        return $this->belongsToMany(Entrance::class, 'article_entrance', 'product_id')
+            ->withPivot('price', 'count', 'released_count', 'created_at');
+    }
+
     public function getCount()
     {
         return $this->pivot->count ?? 1;
@@ -320,12 +331,6 @@ class Product extends Model
         $price += sum_percent($price, $percent);
 
         return $price;
-    }
-
-    public function entrances()
-    {
-        return $this->belongsToMany(Entrance::class, 'article_entrance', 'product_id')
-            ->withPivot('price', 'count', 'released_count', 'created_at');
     }
 
     public static function makeCorrectArticle(string $article)

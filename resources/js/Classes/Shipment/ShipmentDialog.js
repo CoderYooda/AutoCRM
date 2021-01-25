@@ -5,7 +5,7 @@ class shipmentDialog extends Modal{
 
     constructor(dialog){
         super(dialog);
-        console.log('Окно штрихкода инициализировано');
+        console.log('Окно продажи инициализировано');
         this.items = [];
         this.nds = true;
         this.totalPrice = 0.0;
@@ -23,13 +23,19 @@ class shipmentDialog extends Modal{
     printScore() {
         let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        window.helper.printDocument('shipment-score', id);
+        helper.printDocument('shipment-score', id);
     }
 
     printUpd() {
         let id = this.root_dialog.querySelector('input[name=id]').value;
 
-        window.helper.printDocument('shipment-upd', id);
+        helper.printDocument('shipment-upd', id);
+    }
+
+    printProductReceipt() {
+        let id = this.root_dialog.querySelector('input[name=id]').value;
+
+        helper.printDocument('product-receipt', id);
     }
 
     getPayment(){
@@ -105,33 +111,31 @@ class shipmentDialog extends Modal{
     }
 
     init(){
-        let object = this;
 
-        object.root_dialog.querySelector('form').addEventListener('keyup',  function(e){
+        this.current_dialog.querySelector('form').addEventListener('keyup',  (e) => {
             if (e.which == 13) {
                 e.preventDefault();
-                object.save(object.root_dialog.getElementsByTagName('form')[0]);
+                this.save(this.current_dialog.getElementsByTagName('form')[0]);
             }
         });
-        object.root_dialog.querySelector('form').addEventListener('WarrantStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
-        });
-        object.root_dialog.querySelector('form').addEventListener('ShipmentStored',  function(){
-            let id = object.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null){
-                let root_id = object.root_dialog.id;
-                object.freshContent(id,function(){
-                    delete window[root_id];
-                    window.helper.initDialogMethods();
-                });
-            }
+
+        let dialogEvents = [
+            'WarrantStored',
+            'ShipmentStored'
+        ];
+
+        dialogEvents.forEach(dialogEvent => {
+            this.current_dialog.addEventListener(dialogEvent,  (e) => {
+
+                let id = this.current_dialog.querySelector('input[name=id]').value;
+                if(id !== null){
+                    let root_id = this.current_dialog.id;
+                    this.freshContent(id,() => {
+                        delete window[root_id];
+                        window.helper.initDialogMethods();
+                    });
+                }
+            });
         });
 
         let id = this.current_dialog.dataset.id;

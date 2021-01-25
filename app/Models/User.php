@@ -28,6 +28,10 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class, 'company_id');
     }
 
+    public function referal(){
+        return $this->hasOne(Referal::class, 'user_id');
+    }
+
     public function partner(){
         return $this->hasOne(Partner::class, 'user_id');
     }
@@ -40,6 +44,11 @@ class User extends Authenticatable
         $shop = $shopManager->getCurrentShop();
 
         return $this->belongsTo(Partner::class, 'id', 'user_id')->where('company_id', $shop->company_id);
+    }
+
+    public function store()
+    {
+        return $this->hasOne(Store::class, 'id', 'current_store');
     }
 
     public function shop()

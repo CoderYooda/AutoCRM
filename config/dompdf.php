@@ -106,7 +106,7 @@ return array(
          * @link http://www.ros.co.nz/pdf
          * @link http://www.php.net/image
          */
-        "pdf_backend" => "CPDF",
+        "pdf_backend" => "PDFLib",
 
         /**
          * PDFlib license key
@@ -132,7 +132,7 @@ return array(
          * the desired content might be different (e.g. screen or projection view of html file).
          * Therefore allow specification of content here.
          */
-        "default_media_type" => "screen",
+        "default_media_type" => "all",
 
         /**
          * The default paper size.

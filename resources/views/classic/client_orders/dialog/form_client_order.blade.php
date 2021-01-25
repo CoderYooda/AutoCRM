@@ -402,9 +402,6 @@
         </div>
 
         <div class="modal-footer" style="white-space: nowrap">
-            @if(!isset($client_order) || isset($client_order) && !$client_order->isShipped)
-            <button name="products" type="button" onclick="{{ $class }}.openProductmodal()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Добавить товар</button>
-            @endif
 {{--            <button name="products" type="button" onclick="{{ $class }}.addQuickProduct()" class="button primary uppercase-btn mr-15"><i class="fa fa-plus"></i> Быстрый товар</button>--}}
 
             <button type="button" class="button white uppercase-btn" onclick="{{ $class }}.finitaLaComedia()">Закрыть</button>
@@ -415,7 +412,7 @@
             @endif
 
             @if(isset($client_order) && $client_order->id != NULL)
-                <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="window.helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
+                <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
             @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== \App\Models\Order::CANCELED_STATUS && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn  mr-15" @if($client_order->status < 2) disabled @endif onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>

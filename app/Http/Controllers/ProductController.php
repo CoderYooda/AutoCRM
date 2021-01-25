@@ -278,7 +278,7 @@ class ProductController extends Controller
             $availableCount = $availableCounts->where('product_id', $product->id)->first();
 
             $products[$index]['available'] = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
-            $products[$index]['price'] = $product->getPrice();
+            $products[$index]['price'] = $request->refer == 'providerorderDialog' ? $product->getRetailPriceInCurrentStore() : $product->getPrice();
             $products[$index]['supplier_name'] = $product->supplier->name;
             $products[$index]['product_id'] = $product->id;
             $products[$index]['shipped_count'] = 0;

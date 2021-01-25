@@ -18,6 +18,9 @@
                     @if($selectedCategory->category_id != 2)
                         <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
                         <a href="{{ $selectedCategory->parent->path() }}">Назад</a>
+                    @else
+                        <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+                        <a href="{{ route('pages.catalogue') }}">Каталог</a>
                     @endif
                 </div>
 
@@ -26,15 +29,15 @@
                         @foreach($selectedCategory->childs as $category)
                             <li @if($category->id == $selectedCategory->id) class="active" @endif>
                                 <a title="{{ $category->name }}" href="{{ $category->path() }}">{{ $category->name }}</a>
-    {{--                            @if($category->id == $selectedCategory->id && count($category->childs))--}}
-    {{--                                <ul>--}}
-    {{--                                    @foreach($category->childs as $childrenCategory)--}}
-    {{--                                        <li>--}}
-    {{--                                            <a href="{{ $childrenCategory->path() }}">{{ $childrenCategory->name }}</a>--}}
-    {{--                                        </li>--}}
-    {{--                                    @endforeach--}}
-    {{--                                </ul>--}}
-    {{--                            @endif--}}
+                                @if($category->id == $selectedCategory->id && count($category->childs))
+                                    <ul>
+                                        @foreach($category->childs as $childrenCategory)
+                                            <li>
+                                                <a href="{{ $childrenCategory->path() }}">{{ $childrenCategory->name }}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

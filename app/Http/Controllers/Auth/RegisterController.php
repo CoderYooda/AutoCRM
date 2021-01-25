@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\SettingsController;
+use App\Jobs\CreateBaseCategoriesForCompany;
 use App\Models\Cashbox;
 use App\Models\Partner;
 use App\Models\Markup;
+use App\Models\Referal;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -39,12 +42,11 @@ class RegisterController extends Controller
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
         $request['phone'] = 7 . substr($request['phone'],1);
         $request['name'] = $request['fio'];
-        //SmsController::sendTo($data['phone']);
         return Validator::make($request->all(), [
             'fio' => ['required', 'string', 'min:5', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
-//            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'refer' => ['nullable', 'exists:referal,code'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -61,7 +63,6 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $validation = $this->validator($request);
-
         if($request->expectsJson()){
             if($validation->fails()){
                 if(request()->expectsJson()){
@@ -82,20 +83,23 @@ class RegisterController extends Controller
                     ],200);
                 }
             } else {
-                event(new Registered($user = $this->create($request->all())));
+
+                $user = $this->create($request->all());
+                event(new Registered($user));
                 $this->guard()->login($user);
 
                 $redirect = '/';
                 $this->registered($request, $user) ?: $redirect = $this->redirectPath();
 
-                return response()->json(['redirect' => $redirect],200);
+                return response()->json(['redirect' => $redirect],302);
             }
         } else {
             $validation->validate();
         }
 
         if(SmsController::smsConfirmed($request)){
-            event(new Registered($user = $this->create($request->all())));
+            $user = $this->create($request->all());
+            event(new Registered($user));
             $this->guard()->login($user);
             return $this->registered($request, $user) ?: redirect($this->redirectPath());
         } else{
@@ -109,84 +113,90 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
+        return DB::transaction(function() use ($data) {
 
-        $name = explode( ' ', $data['name'] );
+            $name = explode(' ', $data['name']);
 
-        if(count($name) >= 2){
-            $name = $name[1];
-        } else {
-            $name = $data['name'];
-        }
+            if (count($name) >= 2) {
+                $name = $name[1];
+            } else {
+                $name = $data['name'];
+            }
 
-        $user = User::create([
-            'name' => $name,
-            'phone' => $data['phone'],
-            'password' => Hash::make($data['password']),
-        ]);
+            $user = User::create([
+                'phone' => $data['phone'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-        $company = new Company();
-        $company->name = 'Новая компания';
-        $company->refer = $data['refer'];
-        $company->payed_days = Carbon::now()->timestamp + (86400 * 14);
-        $company->save();
+            $company = new Company();
+            $company->name = 'Новая компания';
+            $company->refer = $data['refer'];
+            $company->payed_days = Carbon::now()->timestamp + (86400 * 14);
+            $company->save();
 
-        $user->company()->associate($company);
-        $user->save();
+            $referOwner = Referal::where('code', $data['refer'])->first();
 
-        $roles = RoleController::createStartRoles($company);
-	    $user->assignRole($roles['main']);
-        SettingsController::createCompanySettingsPack($company, $roles['default']);
+            if($referOwner){
+                $referOwner->companies()->attach($company);
+            }
 
-        $store = new Store();
-        $store->company_id = $company->id;
-        $store->type = 'casual';
-        $store->locked = 0;
-        $store->name = 'Мой магазин';
-        $store->save();
+            $user->company()->associate($company);
+            $user->save();
+            $roles = RoleController::createStartRoles($company);
+            $user->assignRole($roles['main']);
+            SettingsController::createCompanySettingsPack($company, $roles['default']);
 
-        $user->current_store = $store->id;
-        $user->save();
+            $store = new Store();
+            $store->company_id = $company->id;
+            $store->type = 'casual';
+            $store->locked = 0;
+            $store->name = 'Мой магазин';
+            $store->save();
 
-        $cashbox = new Cashbox();
-        $cashbox->company_id = $company->id;
-        $cashbox->manager_id = $user->id;
-        $cashbox->name = 'Основная касса';
-        $cashbox->balance = 0.00;
-        $cashbox->save();
+            $user->current_store = $store->id;
+            $user->save();
 
-        $partner = new Partner();
-        $partner->type = 0;
-        $partner->user_id = $user->id;
-        $partner->category_id = 5; //Сотрудник
-        $partner->fio = $data['fio'];
-        $partner->company_id = $company->id;
-        $partner->store_id = $store->id;
-        $phones_str = '';
-        foreach($partner->phones as $phone){
-            $phones_str .= $phone->number;
-        }
-        $partner->save();
+            $cashbox = new Cashbox();
+            $cashbox->company_id = $company->id;
+            $cashbox->manager_id = $user->id;
+            $cashbox->name = 'Основная касса';
+            $cashbox->balance = 0.00;
+            $cashbox->save();
 
-        Company::flushEventListeners();
+            $partner = new Partner();
+            $partner->type = 0;
+            $partner->user_id = $user->id;
+            $partner->category_id = 5; //Сотрудник
+            $partner->fio = $data['fio'];
+            $partner->company_id = $company->id;
+            $partner->store_id = $store->id;
+            $phones_str = '';
+            foreach ($partner->phones as $phone) {
+                $phones_str .= $phone->number;
+            }
 
-        Artisan::call('categories:init', ['company' => $company->id]);
+            $partner->save();
 
-        //
+            Company::flushEventListeners();
 
-        $price = Markup::create([
-            'company_id' => $company->id,
-            'name' => 'Розничная'
-        ]);
+            $this->dispatch(new CreateBaseCategoriesForCompany($company->id));
 
-        $params = [
-            'from' => 0,
-            'to' => 1000,
-            'percent' => 30
-        ];
+            $price = Markup::create([
+                'company_id' => $company->id,
+                'name' => 'Розничная'
+            ]);
 
-        $price->options()->create($params);
+            $params = [
+                'from' => 0,
+                'to' => 1000,
+                'percent' => 30
+            ];
 
-        return $user;
+            $price->options()->create($params);
+
+            return $user;
+
+        });
     }
 
 }

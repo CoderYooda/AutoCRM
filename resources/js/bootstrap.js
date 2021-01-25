@@ -60,9 +60,11 @@ window.togglePreloader = function togglePreloader(element, status) {
 };
 
 window.axios.interceptors.response.use(function (response) {
+
     document.body.classList.remove('loading');
     window.isXHRloading = false;
     // window.unsetPreloader();
+
     if(response.data.event){
         let event = new CustomEvent(response.data.event, {
             'detail' : {
@@ -79,6 +81,7 @@ window.axios.interceptors.response.use(function (response) {
     }
     return response;
 }, function (error) {
+
     // window.unsetPreloader();
     if (error.response.status === 401) {
         window.location.href = "/login";
@@ -89,6 +92,11 @@ window.axios.interceptors.response.use(function (response) {
 
         if(error.response.data.message && error.response.data.type){
             window.notification.notify( error.response.data.type, error.response.data.message);
+        }
+    }
+    if(error.response.status == 302) {
+        if(error.response.data.redirect != null) {
+            window.location.href = error.response.data.redirect;
         }
     }
     if (error.response.status === 419) {

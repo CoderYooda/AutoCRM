@@ -336,14 +336,16 @@ class Helper{
         return tabs;
     }
 
-    openDocument(id) {
-        axios.get('/documents/' + id)
-            .then(response => {
-                this.showDocument(response);
-            })
-            .catch(response => {
-                console.log(response);
-            });
+    printCheque(id, data = null) {
+
+        let params = new URLSearchParams({
+            id: id,
+            data: JSON.stringify(data)
+        });
+
+        let url = '/documents/cheque?' + params.toString();
+
+        window.open(url);
     }
 
     printDocument(doc, id, data = null, landscape = false){
@@ -356,64 +358,17 @@ class Helper{
                 data: data
             }
         }).then(response => {
-            this.showDocument(response, landscape);
+
+            let document = response.data.document;
+
+            this.openDocument(document.id);
         });
     }
 
-    showDocument(response, landscape = false) {
-        let printContents = response.data;
-
-        let css = '@page { size: landscape; }',
-            head = document.head || document.getElementsByTagName('head')[0],
-            style = document.createElement('style');
-
-        style.type = 'text/css';
-        style.media = 'print';
-
-        if (style.styleSheet){
-            style.styleSheet.cssText = css;
-        } else {
-            style.appendChild(document.createTextNode(css));
-        }
-
-        if(landscape === true) {
-            head.appendChild(style);
-        }
-
-        let unprinted = document.getElementById('unprinted');
-        let printed = document.getElementById('printed');
-        printed.innerHTML = printContents;
-
-        setTimeout(()=> {
-            window.print();
-            unprinted.classList.remove('hide');
-            printed.innerHTML = '';
-            let print_style = document.querySelector('style[media="print"]');
-            if(print_style){
-                print_style.remove();
-            }
-        }, 700);
+    openDocument(id) {
+        window.open('/documents/' + id, '_blank');
     }
 
-    insertParam(elem, key, value)
-    {
-        key = encodeURI(key); value = encodeURI(value);
-
-        var kvp = elem.getAttribute("href").split('&');
-
-        var i=kvp.length; var x; while(i--)
-        {
-            x = kvp[i].split('=');
-            if (x[0]==key)
-            {
-                x[1] = value;
-                kvp[i] = x.join('=');
-                break;
-            }
-        }
-        if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-        elem.setAttribute("href", kvp.join('&'));
-    }
     insertParamUrl(key, value)
     {
         if(value == null){ value = ''}

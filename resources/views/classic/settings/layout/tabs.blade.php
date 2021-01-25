@@ -45,6 +45,12 @@
                     <span class="nav-text">Сервисы</span>
                 </a>
             </li>
+            <li id="setting-payment-tab" data-tab="payment" class="@if($request['active_tab'] == 'payment') active @endif tab">
+                <a href="{{ route('SettingsIndex', ['active_tab' => 'payment', 'target' => 'ajax-tab-content']) }}" class="ajax-nav update_url">
+                    <span class="nav-text">Оплата</span>
+                </a>
+            </li>
+
         </ul>
         <div onclick="system.toggleMenu()" id="left_menu_toggle" class="toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
     </div>

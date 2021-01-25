@@ -79,6 +79,8 @@ class ForumAuto implements ProviderInterface
             ];
         }
 
+        $results = collect($results)->unique(['brand', 'article'])->toArray();
+
         return $results;
     }
 

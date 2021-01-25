@@ -3,19 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\DocumentType;
-use App\Http\Requests\Documents\StoreRequest;
 use App\Models\Product;
 use App\Models\ClientOrder;
 use App\Models\Document;
-use App\Models\Refund;
 use App\Models\Shipment;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PhpParser\Comment\Doc;
-use stdClass;
 use Illuminate\Support\Facades\DB;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class DocumentController extends Controller
 {
@@ -81,6 +78,16 @@ class DocumentController extends Controller
                 'view' => 'documents.upd',
                 'name' => 'Универсальный передаточный документ',
                 'class' => Shipment::class
+            ],
+            'defective-act' => [
+                'view' => 'documents.defective-act',
+                'name' => 'Торг 16',
+                'class' => Product::class
+            ],
+            'product-receipt' => [
+                'view' => 'documents.product-receipt',
+                'name' => 'Товарный чек',
+                'class' => Product::class
             ]
         ];
 
@@ -130,7 +137,7 @@ class DocumentController extends Controller
             $data['partner_name'] = $warrant->partner->official_name;
             $data['reason'] = $warrant->reason;
             $data['wsumm'] = $warrant->wsumm;
-            $data['nds'] = $warrant->payable->nds;
+            $data['nds'] = $warrant->payable->nds ?? 0;
         }
         else if($request->doc == 'defective-act') {
             $products = Product::whereIn('id', $request->data)->get();
@@ -142,7 +149,7 @@ class DocumentController extends Controller
             $data['created_at'] = Carbon::now()->format('d.m.Y');
 
         }
-        else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score') {
+        else if($request->doc == 'shipment-upd' || $request->doc == 'shipment-score' || $request->doc == 'product-receipt') {
 
             $shipment = Shipment::with('company', 'partner')->find($request->id);
 
@@ -163,6 +170,7 @@ class DocumentController extends Controller
             $data['bank'] = $company->bank;
             $data['cs'] = $company->cs;
             $data['rs'] = $company->rs;
+            $data['ogrn'] = $company->ogrn;
 
             //Партнёр
             $data['partner_name'] = $shipment->partner->official_name;
@@ -195,7 +203,6 @@ class DocumentController extends Controller
             }
         }
 
-
         $document_data = $names[$request->doc];
 
         $partner = Auth::user()->partner;
@@ -206,14 +213,17 @@ class DocumentController extends Controller
             'manager_id' => $partner->id,
             'documentable_id' => $request['id'],
             'documentable_type' => $document_data['class'],
-            'data' => json_encode($data)
+            'data' => json_encode(['data' => $data])
         ]);
 
         $barcode = '9991' . sprintf('%09d', $document->id);
 
         $document->update(['barcode' => $barcode]);
 
-        return response()->json($document);
+        return response()->json([
+            'document' => $document,
+            'event' => 'DocumentStored'
+        ]);
     }
 
     public function show(Document $document)
@@ -222,44 +232,35 @@ class DocumentController extends Controller
 
         $view_name = $data['data']['view'];
 
-        $view = view($view_name)->with([
+        return view($view_name)->with([
             'data' => $data['data'],
             'barcode' => $document->barcode
         ]);
-
-        $html = $view->render();
-
-        $pdf = \PDF::loadHTML($html);
-
-        return $pdf->stream();
     }
 
-    public function cheque (Request $request) {
+    public function cheque(Request $request)
+    {
+        //            'statistic-result' => ['view' => 'documents.statistic-result']
 
-        $names = [
-            'cheque' => ['view' => 'cheques.'],
-            'statistic-result' => ['view' => 'documents.statistic-result']
+        $id = $request->id;
+        $data = json_decode($request->data, true);
+
+        $view_name = 'cheques.';
+
+        $types = [
+            'simple',
+            'barcode',
+            'label',
+            'thermal-printer29',
+            'thermal-printer58'
         ];
 
-        $view_name = $names[$request->doc]['view'];
+        $view_name .= $types[$id];
 
-        if($request->doc == 'cheques') {
+        $products = Product::with('supplier')->whereIn('id', $data['ids'])->get();
 
-            $types = [
-                'simple',
-                'barcode',
-                'label',
-                'thermal-printer29',
-                'thermal-printer58'
-            ];
-
-            $view_name .= $types[$request->id];
-        }
-
-        $products = Product::with('supplier')->whereIn('id', $request->data['ids'])->get();
-
-        $count_type = $request->data['count_type'];
-        $count = $request->data['count'];
+        $count_type = $data['count_type'];
+        $count = $data['count'];
 
         $full_count = 0;
 
@@ -270,13 +271,7 @@ class DocumentController extends Controller
             $full_count += $product->count;
         }
 
-        $view = view($view_name, compact('products'));
-
-        $html = $view->render();
-
-        $pdf = \PDF::loadHTML($html);
-
-        return $pdf->stream();
+        return view($view_name, compact('products'));
     }
 
     public static function getDocuments($request){

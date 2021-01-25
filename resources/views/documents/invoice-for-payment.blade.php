@@ -27,13 +27,13 @@
     <![endif]>
 </head>
 
-<img style="width: 70mm; height: 6mm; right: 0; top: 38.5mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
-<p style="right: 25mm; top: 40mm; position: absolute;" > bbcrm.ru </p>
+<body link=blue vlink=purple style="position: relative;">
 
-<body link=blue vlink=purple>
+<img style="width: 70mm; height: 6mm; left: 120mm; top: 33.5mm; position: absolute;" src="data:image/png;base64,{!! getBarCodePNG($barcode) !!}" alt="barcode" />
+<p style="left: 146mm; top: 36mm; position: absolute;">bbcrm.ru</p>
 
-<table border=0 cellpadding=0 cellspacing=0 width=712 style='border-collapse:
- collapse;table-layout:fixed;width:539pt'>
+<table border=0 cellpadding=0 cellspacing=0 style='border-collapse:
+ collapse;table-layout:fixed;'>
     <col width=7 style='mso-width-source:userset;mso-width-alt:298;width:5pt'>
     <col width=21 span=2 style='mso-width-source:userset;mso-width-alt:896;
  width:16pt'>
@@ -548,6 +548,14 @@
     </tr>
     <![endif]>
 </table>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        window.print();
+    });
+
+</script>
 
 </body>
 

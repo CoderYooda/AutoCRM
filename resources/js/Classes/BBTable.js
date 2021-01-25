@@ -66,6 +66,7 @@ class Table {
     }
 
     draw(elem = null, data = null){
+
         if(elem){
             this.elem = document.getElementById(elem);
         }

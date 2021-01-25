@@ -90,12 +90,6 @@
                         </li>
                         @endcanany
                         @endcan
-
-                        <li id="shop_link" class="top-nav-item @if(!auth()->user()->company->getSettingField('Интернет магазин')) d-none @endif">
-                            <a class="header-tab ajax-nav" href="{{ route('ShopIndex') }}">
-                                Интернет-магазин
-                            </a>
-                        </li>
                     </ul>
                     <span class="md-auto  mr-auto"><span id="shop_name"></span></span>
                     {{--{{ Auth::user()->current_store }}--}}
@@ -125,11 +119,36 @@
                                 <span id="stack_bell_count" class="badge-pill"></span>
                             </a>
                         </li>
+
+                        <li class="top-nav-item dropdown pointer d-flex align-items-center p-10" onclick="window.helper.openModal(this, event)">
+                            <div>
+                                <div style="line-height: 14px;">{{ Auth::user()->company->name ?? 'Название компании' }}</div>
+                                <div style="font-size: 12px;font-weight: bold;line-height: 14px;">{{ Auth::user()->store->name }}</div>
+                            </div>
+
+                            <div class="dropdown_container">
+                                <div class="arrow"></div>
+
+                                @canany(['Смотреть настройки'])
+                                    <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}" onclick="window.helper.closeModal(this, event)">
+                                        Настройки компании
+                                    </a>
+                                @endcanany
+
+{{--                                @can('Смотреть настройки')--}}
+                                    <a id="shop_link" class="element ajax-nav @if(!auth()->user()->company->getSettingField('Интернет магазин')) d-none @endif" href="{{ route('ShopIndex') }}" onclick="window.helper.closeModal(this, event)">
+                                        Настройки интернет-магазина
+                                    </a>
+{{--                                @endcan--}}
+
+                            </div>
+                        </li>
+
                         <li class="top-nav-item dropdown pointer" onclick="window.helper.openModal(this, event)">
                             <div class="d-flex align-items-center">
                                 <div class="w-52 p-10">
                                     <div class="avatar w-32 mr-3">
-                                        <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() }}" alt="...">
+                                        <img class="user_thumb" src="{{ Auth::user()->partner->getPicUrl() ?? '' }}" alt="...">
                                     </div>
                                 </div>
                                 <div class="pr-10">
@@ -142,13 +161,6 @@
                                 <div class="arrow"></div>
 
                                 <a class="element ajax-nav" href="{{ route('UserIndex', ['id' => auth()->user()->id, 'active_tab' => 'profile']) }}">Личный кабинет</a>
-                                <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'service', 'id' => auth()->user()->id]) }}">Мои услуги</a>
-
-                                @canany(['Смотреть настройки'])
-                                    <a class="element ajax-nav" href="{{ route('SettingsIndex', ['active_tab' => 'index']) }}" onclick="window.helper.closeModal(this, event)">
-                                        Настройки
-                                    </a>
-                                @endcanany
 
                                 @if(auth()->user()->partner->category_id == 7)
                                     <a class="element ajax-nav" href="{{ route('UserIndex', ['active_tab' => 'vehicles', 'id' => Auth::user()->partner_id]) }}">Гараж</a>
@@ -171,7 +183,16 @@
             <div id="app" class="app-content">
                 <div class="aside">
                     <ul class="nav">
-                        @can('СуперАдмин')
+
+                        @if(Auth::user()->hasRole('Реферальный партнёр'))
+                            <li><span class="admin_letter">П</span></li>
+                            <li><span class="admin_letter">А</span></li>
+                            <li><span class="admin_letter">Р</span></li>
+                            <li><span class="admin_letter">Т</span></li>
+                            <li><span class="admin_letter">Н</span></li>
+                            <li><span class="admin_letter">Ё</span></li>
+                            <li><span class="admin_letter">Р</span></li>
+                        @elseif(Auth::user()->hasRole('Суперадмин'))
                             <li><span class="admin_letter">А</span></li>
                             <li><span class="admin_letter">Д</span></li>
                             <li><span class="admin_letter">М</span></li>
@@ -234,7 +255,7 @@
                                 </a>
                             </li>
                             @endcan
-                        @endcan
+                        @endif
                         {{--<li>--}}
                             {{--<a href="#" class="ajax-nav update_url">--}}
                                     {{--<span class="nav-icon">--}}
@@ -288,6 +309,9 @@
             @csrf
         </form>
         <div id="login-form" class="hide"></div>
+
+        <script src="//code.jivosite.com/widget/aSI6oZDcjJ" async></script>
+
     </body>
 
 </html>

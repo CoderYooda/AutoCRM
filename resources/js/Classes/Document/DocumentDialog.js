@@ -1,5 +1,22 @@
 import Modal from "../Modal/Modal";
 
+class Items {
+
+    constructor(obj){
+        this.obj = obj;
+        this.items = obj.items;
+    }
+
+    add(elemWithData, refer){
+
+        let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);
+
+        elemWithData.classList.add('already_selected');
+
+        this.obj.addProduct(cell_item.id);
+    }
+}
+
 class documentDialog extends Modal {
 
     constructor(dialog, response) {
@@ -15,6 +32,12 @@ class documentDialog extends Modal {
     }
 
     init() {
+
+        this.items = new Items(this);
+        this.itemses = [];
+
+        console.log(this.items);
+
         let search_element = this.current_dialog.querySelector('[name="search"]');
 
         search_element.addEventListener('keyup', (event) => {
@@ -59,47 +82,70 @@ class documentDialog extends Modal {
 
         params += '&isIncoming=' + (document.print == 'in-warrant' ? 1 : 0);
 
-        this.items = [];
+        this.itemses = [];
 
         openDialog(document.dialog, params);
     }
 
     selectShipment(shipment_id) {
-
-        console.log(shipment_id);
-
-        this.print(shipment_id, 'ShipmentSelected');
+        this.create(shipment_id, 'ShipmentSelected');
     }
 
     selectClientOrder(clientorder_id) {
-        this.print(clientorder_id, 'ClientOrderSelected');
+        this.create(clientorder_id, 'ClientOrderSelected');
     }
 
     selectWarrant(warrant_id) {
-        this.print(warrant_id, 'WarrantSelected');
+        this.create(warrant_id, 'WarrantSelected');
     }
 
-    addProduct(element) {
+    addProduct(pid) {
 
-        let product_id = element.dataset.article_id;
+        let product_id = pid;
 
-        let toggle = element.classList.toggle('already_selected');
+        let isset = this.itemses.map(function (e) {
+            return e.id;
+        }).indexOf(pid);
 
-        if (toggle) {
-            this.items.push(product_id);
+        if(isset >= 0){
+            window.notification.notify('error', 'Товар уже в списке');
         } else {
-            this.items.remove(product_id);
+            axios.get('/adjustments/search', {
+                params: {
+                    product_id: product_id,
+                    refer: this.current_dialog.id
+                }
+            })
+                .then(response => {
+
+                    this.itemses.push(product_id);
+
+                    window.notification.notify( 'success', 'Продукт успешно добавлен.');
+                })
+                .catch(response => console.log(response));
         }
     }
 
     acceptProducts() {
-        this.print(-1, 'ProductsSelected');
+        this.create(-1, 'ProductsSelected');
     }
 
-    print(entity_id, event_name) {
+    create(entity_id, event_name) {
         let id = this.current_dialog.querySelector('.selected input').value;
 
-        helper.printDocument(this.documents[id].print, entity_id, this.items);
+        let data = {
+            id: entity_id,
+            doc: this.documents[id].print,
+            data: this.itemses
+        };
+
+        axios.post('/document', data)
+            .then(response => {
+                let document = response.data.document;
+
+                helper.openDocument(document.id);
+            })
+            .catch(error => console.log(error));
 
         this.finitaLaComedia(true);
 
