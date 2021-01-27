@@ -254,7 +254,7 @@ class AutoPiter implements ProviderInterface
 
 
         $result = $this->query('MakeOrderByItems', $params);
-        dd($result);
+
         $this->createProviderOrder($data);
 
         return true;

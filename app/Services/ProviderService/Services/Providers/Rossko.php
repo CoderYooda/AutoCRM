@@ -74,7 +74,7 @@ class Rossko implements ProviderInterface
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
         $params = [
-            'text' => $article ,
+            'text' => $article,
             'delivery_id' => '000000001'
         ];
 
@@ -93,83 +93,104 @@ class Rossko implements ProviderInterface
 
         $items = [];
 
-
-        dd($unfilteredItems);
-
         //Проверяем есть ли у товара аналоги, далее идет лютый говнокод, ПАМАГИТЕ!!!
-        if(isset($unfilteredItems['crosses']['Part'])) {
+        if (isset($unfilteredItems['crosses']['Part'])) {
 
-            foreach ($unfilteredItems['crosses']['Part'] as $key => $item) {
+            foreach ($unfilteredItems['crosses']['Part'] as $item_key => $item) {
 
-                    foreach ($item['stocks']['stock'] as $key1 => $offer) {
+                if (is_int($item_key)) {
 
-                        $items[] = [
-                            'guid' => $item['guid'],
-                            'brand' => $item['brand'],
-                            'partnumber' => $item['partnumber'],
-                            'name' => $item['name'],
-                            'stock_id' => $offer['id'],
-                            'price' => $offer['price'],
-                            'count' => $offer['count'],
-                            'multiplicity' => $offer['multiplicity'],
-                            'type' => $offer['type'],
-                            'delivery' => $offer['delivery'],
-                            'extra' => $offer['extra'],
-                            'description' => $offer['description'],
-                            'deliveryStart' => $offer['deliveryStart'],
-                            'deliveryEnd' => $offer['deliveryEnd']
-                        ];
+                    foreach ($item['stocks']['stock'] as $offer_key => $offer) {
+
+                        if (is_int($offer_key)) {
+
+                            $items[] = $this->getInfoFromIndexArray($item, $offer);
+
+                        } else {
+
+                            $items[] = $this->getInfoFromAssociatedArray($item);
+                            break;
+                        }
                     }
 
+                } else {
 
+                    foreach ($unfilteredItems['crosses']['Part']['stocks']['stock'] as $offer_key => $offer) {
+
+                        if (is_int($offer_key)) {
+
+                            $items[] = $this->getInfoFromIndexArray($unfilteredItems['crosses']['Part'], $offer);
+
+                        } else {
+
+                            $items[] = $this->getInfoFromAssociatedArray($unfilteredItems['crosses']['Part']);
+                            break;
+                        }
+                    }
+
+                    break;
+                }
             }
         }
 
-        $items[] = [
-            'guid' => $item['guid'],
-            'brand' => $item['brand'],
-            'partnumber' => $item['partnumber'],
-            'name' => $item['name'],
-            'stock_id' => $offer['id'],
-            'price' => $offer['price'],
-            'count' => $offer['count'],
-            'multiplicity' => $offer['multiplicity'],
-            'type' => $offer['type'],
-            'delivery' => $offer['delivery'],
-            'extra' => $offer['extra'],
-            'description' => $offer['description'],
-            'deliveryStart' => $offer['deliveryStart'],
-            'deliveryEnd' => $offer['deliveryEnd']
-        ];
+        unset($unfilteredItems['crosses']);
 
-//        unset($unfilteredItems['crosses']);
+        if (isset($unfilteredItems['stocks']['stock'])) {
 
-        dd($unfilteredItems, $items);
+            foreach ($unfilteredItems['stocks']['stock'] as $offer_key => $offer) {
 
+                if (is_int($offer_key)) {
+
+                    $items[] = $this->getInfoFromIndexArray($unfilteredItems, $offer);
+
+                } else {
+
+                    $items[] = $this->getInfoFromAssociatedArray($unfilteredItems);
+                    break;
+                }
+            }
+        }
+
+        foreach ($items as $key => $item) {
+
+            $items[$key]['index'] = $key;
+            $items[$key]['hash_info'] = [
+                'stock' => $item['stock_id'],
+                'manufacturer' => $item['brand'],
+                'article' => $item['partnumber'],
+                'days' => $item['delivery'],
+                'price' => $item['price'],
+                'packing' => $item['multiplicity'] > 0 ? $item['multiplicity'] : 1,
+                'desc' => $item['name'],
+                'rest' => $item['count'],
+                'supplier' => $this->name
+            ];
+        }
 
         foreach ($items as $store) {
 
-            $is_analogue = $store['CatalogName'] != $brand;
+            $is_analogue = $store['brand'] != $brand;
+
 
             $listName = $is_analogue ? 'analogues' : 'originals';
 
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['Name'],
-                'code' => $store['DetailUid'],
-                'rest' => $store['NumberOfAvailable'] > 1 ? $store['NumberOfAvailable'] : 0,
-                'days_min' => $store['NumberOfDaysSupply'],
-                'days_max' => $store['NumberOfDaysSupply'],
-                'packing' => $store['MinNumberOfSales'] > 0 ? $store['MinNumberOfSales'] : 1,
-                'min_count' => $store['MinNumberOfSales'] > 0 ? $store['MinNumberOfSales'] : 1,
-                'delivery' => $store['NumberOfDaysSupply'] . ' дн.',
-                'price' => $store['SalePrice'],
-                'manufacturer' => $store['CatalogName'],
-                'article' => $store['Number'],
+                'name' => $store['name'],
+                'code' => $store['guid'],
+                'rest' => $store['count'] > 1 ? $store['count'] : 0,
+                'days_min' => $store['delivery'],
+                'days_max' => $store['delivery'],
+                'packing' => $store['multiplicity'] > 0 ? $store['multiplicity'] : 1,
+                'min_count' => $store['multiplicity'] > 0 ? $store['multiplicity'] : 1,
+                'delivery' => $store['delivery'] . ' дн.',
+                'price' => $store['price'],
+                'manufacturer' => $store['brand'],
+                'article' => $store['partnumber'],
                 'model' => $store,
-                'stock' => $store['Region'],
-                'can_return' => ($store['TypeRefusal'] != 3 && $store['TypeRefusal'] != 4) ? 'Да' : 'Нет',
-                'hash' => md5($store['Region'] . $store['CatalogName'] . $store['Number'] . $store['NumberOfDaysSupply'] . $store['SalePrice'])
+                'stock' => $store['stock_id'],
+                'can_return' => 'n/a',
+                'hash' => md5($store['stock_id'] . $store['brand'] . $store['partnumber'] . $store['delivery'] . $store['price'])
             ];
 
             $is_analogue ? $analogueIndex++ : $originalIndex++;
@@ -202,7 +223,7 @@ class Rossko implements ProviderInterface
         return $result;
     }
 
-    private function errorHandler($response) : void
+    private function errorHandler($response): void
     {
         if (is_array($response)) {
 
@@ -253,17 +274,17 @@ class Rossko implements ProviderInterface
 
         if (isset($response['name'])) {
             $results[] = $this->getBrandInfoFromItem($response);
-        }
-        else {
+        } else {
             foreach ($response as $index => $item) {
                 $results[] = $this->getBrandInfoFromItem($item);
             }
         }
 
+
         return $results;
     }
 
-    private function getBrandInfoFromItem ($item): array
+    private function getBrandInfoFromItem($item): array
     {
         return [
             'brand' => $item['brand'],
@@ -273,23 +294,80 @@ class Rossko implements ProviderInterface
         ];
     }
 
+    private function getInfoFromIndexArray($item, $offer)
+    {
+
+        return [
+            'guid' => $item['guid'],
+            'brand' => $item['brand'],
+            'partnumber' => $item['partnumber'],
+            'name' => $item['name'],
+            'stock_id' => $offer['id'],
+            'price' => $offer['price'],
+            'count' => $offer['count'],
+            'multiplicity' => $offer['multiplicity'],
+            'type' => $offer['type'],
+            'delivery' => $offer['delivery'],
+            'extra' => $offer['extra'],
+            'description' => $offer['description'],
+            'deliveryStart' => $offer['deliveryStart'],
+            'deliveryEnd' => $offer['deliveryEnd']
+        ];
+    }
+
+    private function getInfoFromAssociatedArray($item)
+    {
+
+        return [
+            'guid' => $item['guid'],
+            'brand' => $item['brand'],
+            'partnumber' => $item['partnumber'],
+            'name' => $item['name'],
+            'stock_id' => $item['stocks']['stock']['id'],
+            'price' => $item['stocks']['stock']['price'],
+            'count' => $item['stocks']['stock']['count'],
+            'multiplicity' => $item['stocks']['stock']['multiplicity'],
+            'type' => $item['stocks']['stock']['type'],
+            'delivery' => $item['stocks']['stock']['delivery'],
+            'extra' => $item['stocks']['stock']['extra'],
+            'description' => $item['stocks']['stock']['description'],
+            'deliveryStart' => $item['stocks']['stock']['deliveryStart'],
+            'deliveryEnd' => $item['stocks']['stock']['deliveryEnd']
+        ];
+    }
+
     public function sendOrder(array $data): bool
     {
-        $params =[];
+        $params = [];
+
+        $params['delivery'] = [
+            'delivery_id' => $data['delivery_type_id'],
+            'address_id' => $data['delivery_type_id'] == '000000002' ? $data['delivery_address_id'] : ' '
+        ];
+        $params['payment'] = [
+            'payment_id' => $data['payment_type_id']
+        ];
+
+        $params['contact'] = [
+            'name' => $this->user->partner->outputName(),
+            'phone' => empty($this->user->partner->firstActivePhoneNumber()) ? $this->user->phone : $this->user->partner->firstActivePhoneNumber()
+        ];
+        $params['delivery_parts'] = false;
 
         foreach ($data['orders'] as $product) {
 
             $orderInfo = json_decode($product->data, true);
-            $params['Items']['ItemAddCartModel'][] = [
-                'DetailUid' => $orderInfo['code'],
-                'SalePrice' => $orderInfo['price'],
-                'Quantity' => $product->count
+
+            $params['PARTS'][] = [
+                'partnumber' => $orderInfo['article'],
+                'brand' => $orderInfo['manufacturer'],
+                'stock' => $orderInfo['model']['stock_id'],
+                'count' => $product->count
             ];
         }
 
+        $result = $this->query('GetCheckout', $params);
 
-        $result = $this->query('MakeOrderByItems', $params);
-        dd($result);
         $this->createProviderOrder($data);
 
         return true;
@@ -297,22 +375,51 @@ class Rossko implements ProviderInterface
 
     public function getPickupAddresses(): array
     {
+        $result = $this->query('GetOrders');
+        dd($result);
+
         return [];
     }
 
     public function getDeliveryToAddresses(): array
     {
-        return [];
-    }
+        $result = $this->query('GetCheckoutDetails');
+        $result = $result['CheckoutDetailsResult']['DeliveryAddress'];
 
+        if(isset($result['address']['id'])) {
+
+            return [$result['address']['id'] => $result['address']['city'].' '.$result['address']['street']. ' '.$result['address']['house']];
+        }
+
+        $addresses = [];
+
+        foreach ($result['address'] as $address) {
+
+            $addresses[$address['id']] = $address['city'].' '.$address['street']. ' '.$address['house'];
+        }
+
+        return $addresses;
+    }
+// добавить позднее оплату банковской картой
     public function getPaymentTypes(): array
     {
-        return [];
+        return [
+            '2' => 'Оплата наличными при получении товара'
+        ];
     }
 
     public function getDeliveryTypes(): array
     {
-        return [];
+        $result = $this->query('GetCheckoutDetails');
+        $result = $result['CheckoutDetailsResult']['DeliveryType'];
+
+        $delivery_types = [];
+
+        foreach ($result['delivery'] as $deliver) {
+
+            $delivery_types[$deliver['id']] = $deliver['name'];
+        }
+        return $delivery_types;
     }
 
     public function getDateOfShipment(): array
