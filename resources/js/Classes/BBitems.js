@@ -311,8 +311,6 @@ class Items {
 
     insertProduct(cell_item, check_isset = true){
 
-        console.log(cell_item);
-
         this.key = null;
 
         if(this.index === 'ordinal'){

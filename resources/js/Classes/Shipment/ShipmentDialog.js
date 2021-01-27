@@ -221,20 +221,22 @@ class shipmentDialog extends Modal{
     {
         let object = this;
         let data = {};
-        if(object.refer){
-            data.refer = object.refer;
+        if(!!id){
+            if(object.refer){
+                data.refer = object.refer;
+            }
+            window.axios({
+                method: 'post',
+                url: 'shipment/' + id + '/fresh',
+                data: data,
+            }).then(function (resp) {
+                document.getElementById(resp.data.target).innerHTML = resp.data.html;
+            }).catch(function (error) {
+                console.log(error);
+            }).finally(function () {
+                callback();
+            });
         }
-        window.axios({
-            method: 'post',
-            url: 'shipment/' + id + '/fresh',
-            data: data,
-        }).then(function (resp) {
-            document.getElementById(resp.data.target).innerHTML = resp.data.html;
-        }).catch(function (error) {
-            console.log(error);
-        }).finally(function () {
-            callback();
-        });
     }
 
     addInputPriceMask(element) {
