@@ -16,7 +16,7 @@ use App\Models\Store;
 
 class ProviderOrdersController extends Controller
 {
-    public static function providerorderDialog($request)
+    public static function providerorderDialog(Request $request)
     {
         $po_id = $request['provider_order_id'] ?? $request['providerorder_id'];
         $provider_order = ProviderOrder::find($po_id);
@@ -26,7 +26,7 @@ class ProviderOrdersController extends Controller
         $products = [];
 
         if ($request->products) {
-            $ids = json_decode($request->products, true);
+            $ids = explode(',', $request->products);
             $products = Product::owned()->whereIn('id', $ids)->get();
         }
 
