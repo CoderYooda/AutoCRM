@@ -67,7 +67,8 @@ class Kernel extends HttpKernel
         'banned' => \App\Http\Middleware\banned::class,
         'superAdmin' => \App\Http\Middleware\SuperAdmin::class,
         'hasPayedDays' => CompanyHasPayedDays::class,
-        'requestLimit' => RequestLimit::class
+        'requestLimit' => RequestLimit::class,
+        'dynamic' => \App\Http\Middleware\DynamicDatabase::class,
     ];
 
     /**

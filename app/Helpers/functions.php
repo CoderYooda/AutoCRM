@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\System\Account;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Milon\Barcode\DNS1D;
 

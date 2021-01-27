@@ -83,7 +83,7 @@
                     surname: '',
                     name: '',
                     patronymic: '',
-                    phone:'',
+                    phone:' ',
                     password:'',
                     password_confirmation:'',
                     sms_code:'',

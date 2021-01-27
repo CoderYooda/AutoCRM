@@ -13,7 +13,7 @@ class User extends Authenticatable
     use OwnedTrait, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password', 'company_id', 'banned_at', 'current_store'
+        'name', 'email', 'phone', 'password', 'company_id', 'banned_at', 'current_store', 'api_token'
     ];
 
     protected $hidden = [
@@ -23,6 +23,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function account(){
+        return $this->belongsTo(Account::class, 'account_id');
+    }
 
     public function company(){
         return $this->belongsTo(Company::class, 'company_id');

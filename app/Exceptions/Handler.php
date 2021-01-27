@@ -21,16 +21,16 @@ class Handler extends ExceptionHandler
 
     public function report(Exception $exception)
     {
-        $user = Auth::user();
-
-        $exc = new Exceptions();
-        $exc->message = $exception->getMessage();
-        $exc->session = serialize(session()->all());
-        if($user && $user !== null){
-            $exc->company_id = $user->company_id;
-            $exc->user_id = $user->id;
-        }
-        $exc->save();
+//        $user = Auth::user();
+//
+//        $exc = new Exceptions();
+//        $exc->message = $exception->getMessage();
+//        $exc->session = serialize(session()->all());
+//        if($user && $user !== null){
+//            $exc->company_id = $user->company_id;
+//            $exc->user_id = $user->id;
+//        }
+//        $exc->save();
 
         parent::report($exception);
 

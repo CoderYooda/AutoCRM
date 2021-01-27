@@ -8,5 +8,6 @@ class SmsConfirmation extends Model
 {
     protected $table = 'sms_confirmation';
     public $guarded = [];
+    protected $connection = '';
 
 }

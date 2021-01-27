@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers\API\Auth;
 
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingsController;
+use App\Models\Cashbox;
+use App\Models\Company;
+use App\Models\Partner;
 use App\Models\SMS;
 use App\Models\SmsConfirmation;
+use App\Models\Store;
+use App\Models\System\Account;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SmsController;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -21,7 +32,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'min:5', 'max:255'],
             'surname' => ['required', 'string', 'min:5', 'max:255'],
             'patronymic' => ['required', 'string', 'min:5', 'max:255'],
-            'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:users'],
+            //'phone' => ['required', 'regex:/[0-9]{10}/', 'digits:11', 'unique:accounts,rawPhone'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -35,45 +46,53 @@ class RegisterController extends Controller
                 return response()->json(['messages' => $validation->errors()],422);
             }
         }
-        if(!$this->isSmsConfirmed($request)){
-            # Если телефон не подтвержден
 
-            if($this->isSmsBlocked($request)){
-                # Если телефон заблокирован
+        $account = new Account();
+        $account->db_connection = 'db_' . $request['phone'];
+        $account->db_name =  'db_' . $request['phone'];
 
-                return response()->json([
-                    'status' => 'error',
-                    'service_message' => 'Слишком частая отправка сообщений. Телефон заблокирован'
-                ],422);
-            } else {
-                # Если телефон не заблокирован
+        $account->db_user = env('DB_USERNAME');
+        $account->db_password = env('DB_PASSWORD');
 
-                $sms = $this->sendConfirmSms($request['phone']);
+        $account->save();
 
-                return response()->json([
-                    'needSmsConfirm' => true,
-                ],200);
-            }
-        } else {
-            # Если телефон подтвержден
+        $account->generate();
 
-            //event(new Registered($user = $this->create($request->all())));
-
-            $user = $this->create($request->all());
-            $this->guard()->login($user);
-
-            $redirect = '/';
-            $this->registered($request, $user) ?: $redirect = $this->redirectPath();
-
-            return response()->json(['redirect' => $redirect],200);
-        }
-
-//        if(SmsController::smsConfirmed($request)){
-//            event(new Registered($user = $this->create($request->all())));
-//            $this->guard()->login($user);
-//            return $this->registered($request, $user) ?: redirect($this->redirectPath());
-//        } else{
-//            return redirect()->back()->with('sms', ['SMS не было подтвеждено']);
+//
+//        //Пробуем подтвердить SMS
+//        $sms_confirmed = $this->confirmSms($request);
+//
+//        if(!$this->isSmsConfirmed($request)){
+//            # Если телефон не подтвержден
+//
+//            if($this->isSmsBlocked($request)){
+//                # Если телефон заблокирован
+//
+//                return response()->json([
+//                    'status' => 'error',
+//                    'service_message' => 'Слишком частая отправка сообщений. Телефон заблокирован'
+//                ],422);
+//            } else {
+//                # Если телефон не заблокирован
+//                $sms = $this->sendConfirmSms($request['phone']);
+//
+//                if($sms->status === "OK"){
+//                    return response()->json([
+//                        'needSmsConfirm' => true,
+//                    ],200);
+//                } else {
+//                    return response()->json([
+//                        'error' => true,
+//                    ],200);
+//                }
+//
+//
+//            }
+//        } else {
+//            # Если телефон подтвержден
+//            $user = $this->create($request->all());
+//
+//            return response()->json(['user' => $user],200);
 //        }
     }
     private function sendConfirmSms($phone)
@@ -86,6 +105,7 @@ class RegisterController extends Controller
         $data->from = 'BB-CRM';
         $data->test = 0;
         $sms = $smsru->send_one($data);
+
         if ($sms->status == "OK") {
             $sms_confirmation = SmsConfirmation::firstOrNew(['ip' => request()->ip(), 'phone' => $phone]);
 
@@ -105,8 +125,24 @@ class RegisterController extends Controller
             $sms_confirmation->ip = request()->ip();
 
             $sms_confirmation->save();
+        } else {
+            // $sms->status == "ERROR"
         }
         return $sms;
+    }
+
+    private function confirmSms(Request $request)
+    {
+        $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
+
+        if($sms != null && $sms->code != null && $sms->code === (int)$request['sms_code']){
+            $sms->attempts = $sms->attempts + 1;
+            $sms->confirmed = true;
+            $sms->save();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function isSmsConfirmed($request)
@@ -119,5 +155,71 @@ class RegisterController extends Controller
     private function isSmsBlocked($request){
         $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
         return $sms != null && $sms->isblocked;
+    }
+
+    protected function create(array $data)
+    {
+
+        $name = explode( ' ', $data['name'] );
+
+        if(count($name) >= 2){
+            $name = $name[1];
+        } else {
+            $name = $data['name'];
+        }
+
+        $user = User::create([
+            'name' => $name,
+            'phone' => $data['phone'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $company = new Company();
+        $company->name = 'Новая компания';
+        $company->payed_days = Carbon::now()->timestamp + (86400 * 14);
+        $company->save();
+
+        $user->company()->associate($company);
+        $user->save();
+
+        $roles = RoleController::createStartRoles($company);
+        $user->assignRole($roles['main']);
+        SettingsController::createCompanySettingsPack($company, $roles['default']);
+
+        $store = new Store();
+        $store->company_id = $company->id;
+        $store->type = 'casual';
+        $store->locked = 0;
+        $store->name = 'Мой магазин';
+        $store->save();
+
+        $user->current_store = $store->id;
+        $user->save();
+
+        $cashbox = new Cashbox();
+        $cashbox->company_id = $company->id;
+        $cashbox->manager_id = $user->id;
+        $cashbox->name = 'Основная касса';
+        $cashbox->balance = 0.00;
+        $cashbox->save();
+
+        $partner = new Partner();
+        $partner->type = 0;
+        $partner->user_id = $user->id;
+        $partner->category_id = 5; //Сотрудник
+        $partner->fio = $data['surname'] . ' ' . $data['name'] . ' ' . $data['patronymic'];
+        $partner->company_id = $company->id;
+        $partner->store_id = $store->id;
+        $phones_str = '';
+        foreach($partner->phones as $phone){
+            $phones_str .= $phone->number;
+        }
+        $partner->save();
+
+        Company::flushEventListeners();
+
+        Artisan::call('categories:init', ['company' => $company->id]);
+
+        return $user;
     }
 }
