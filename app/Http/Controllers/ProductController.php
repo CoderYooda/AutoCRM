@@ -342,6 +342,8 @@ class ProductController extends Controller
 
                 $oldEntrancesState = Cache::get('user[' . Auth::id() . '][entrances]');
 
+                $productEntranceId = null;
+
                 foreach ($request->entrances as $entrance_id => $params) {
 
                     if($entrance_id == 'new') {

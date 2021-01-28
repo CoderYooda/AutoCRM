@@ -162,6 +162,15 @@ class ProductDialog extends Modal {
     save(elem) {
         if (window.isXHRloading) return;
 
+        //Удаляем скрытую корректировку, чтобы не было бага с умножением склада
+        let hidden_element = this.current_dialog.querySelector('.entrance.copy.d-none');
+
+        console.log(hidden_element);
+
+        if(hidden_element) {
+            hidden_element.remove();
+        }
+
         window.axform.send(elem, (e) => {
             if (e.status === 200) this.finitaLaComedia(true);
         });

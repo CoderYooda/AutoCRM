@@ -12,13 +12,13 @@ class providerOrderDialog extends Modal{
         this.nds_included = true;
         this.refer = null;
 
-        if(response && response.products != undefined) {
+        this.init();
+
+        if(response && response.products) {
             Object.values(response.products).forEach(product_id => {
-                window.entity.addProductToList(product_id.id, this, 'providerOrder');
+                this.items.insertProduct(product_id, false);
             });
         }
-
-        this.init();
     }
 
     init(){
