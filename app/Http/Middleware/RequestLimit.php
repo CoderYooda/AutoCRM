@@ -20,18 +20,18 @@ class RequestLimit
 
     public function handle(Request $request, Closure $next)
     {
-        $key = Auth::id() . '.' . $request->route()->name;
-
-        if(Cache::has($key)) {
-            return response()->json([
-                'type' => 'error',
-                'message' => 'Слишком частые запросы к серверу.'
-            ]);
-        }
-
-        Cache::remember($key, Carbon::now()->addSeconds(2), function () {
-            return true;
-        });
+//        $key = Auth::id() . '.' . $request->route()->name;
+//
+//        if(Cache::has($key)) {
+//            return response()->json([
+//                'type' => 'error',
+//                'message' => 'Слишком частые запросы к серверу.'
+//            ]);
+//        }
+//
+//        Cache::remember($key, Carbon::now()->addSeconds(5), function () {
+//            return true;
+//        });
 
         return $next($request);
     }
