@@ -23,6 +23,7 @@ class WarrantRequest extends FormRequest
     {
         if ($this->refer == !null) {
             $refer = 'App\Models\\' . $this->refer;
+
             if (!is_subclass_of($refer, 'Illuminate\Database\Eloquent\Model')) {
                 throw new HttpResponseException(
                     response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)
@@ -30,6 +31,7 @@ class WarrantRequest extends FormRequest
             }
 
             $model = $refer::owned()->find($this->refer_id);
+
             if ($model == null) {
                 throw new HttpResponseException(
                     response()->json(['message' => 'Попытка взлома зафиксирована', 'type' => 'error'], 422)

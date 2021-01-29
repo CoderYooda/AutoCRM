@@ -238,6 +238,9 @@ class ShopController extends Controller
 
     public function updateSettings(UpdateSettingsRequest $request)
     {
+        dd(gethostbyname('gorin31.ru'));
+
+
         return DB::transaction(function () use ($request) {
 
             $shop = Shop::where('company_id', Auth::user()->company_id)->first();
@@ -249,7 +252,6 @@ class ShopController extends Controller
                 if (str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
                 exec('sh test.sh ' . $domain);
             }
-
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,

@@ -7,10 +7,13 @@ require('./select');                                            // Селект�
 require('./vue');
 
 import "sceditor/src/sceditor";
-
-window.Tabulator = require('tabulator-tables');
+import Tabulator from 'tabulator-tables';
+import flatpickr from 'flatpickr';
+window.Tabulator = Tabulator;
 window.Swal = require('sweetalert2');
-window.flatpickr = require('flatpickr');
+
+
+window.flatpickr = flatpickr;
 
 window.choices = require('choices.js');
 window.chartjs = require('chart.js');
@@ -24,8 +27,8 @@ window.debug = false;
 import Sortable from 'sortablejs';
 import IMask from 'imask';
 
-import { Russian } from "flatpickr/dist/l10n/ru";
-window.flatpickr.localize(Russian);
+//import { Russian } from "flatpickr/dist/l10n/ru";
+//window.flatpickr.localize(Russian);
 import Pagination from './Classes/Pagination.js';
 import AxForm from './Classes/Form.js';
 import Helper from './Classes/Helper.js';

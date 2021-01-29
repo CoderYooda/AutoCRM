@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Store;
+use Illuminate\Support\Facades\Hash;
 use SystemMessage;
 use App\Http\Controllers\UserActionsController as UA;
 use Illuminate\Support\Facades\Gate;
@@ -59,7 +60,6 @@ class PartnerController extends Controller
         }
 
         return $view;
-
     }
 
     public static function partnerDialog(Request $request)
@@ -171,7 +171,8 @@ class PartnerController extends Controller
 
                 $user = User::updateOrCreate(['phone' => $request['phone']], [
                     'company_id' => Auth::user()->company->id,
-                    'password' => bcrypt($password)
+                    'current_store' => $request['store_id'],
+                    'password' =>  Hash::make($password)
                 ]);
 
                 if($request->category_id == 5 && $request['role']) {
@@ -295,7 +296,7 @@ class PartnerController extends Controller
 
         return response()->json([
             'phone_exists' => $phone_exists,
-            'code' => $code
+            'code' => $code ?? null
         ], 200);
     }
 

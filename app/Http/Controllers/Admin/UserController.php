@@ -56,7 +56,12 @@ class UserController extends Controller
 
         foreach ($users as $index => $user) {
             $users[$index]['name'] = $user->partner->fio;
-            $users[$index]['role'] = $user->roles->first()->name;
+            if($user->roles->first()){
+                $users[$index]['role'] = $user->roles->first()->name;
+            } else {
+                $users[$index]['role'] = "ошибка роли";
+            }
+
             $users[$index]['company_name'] = 'ID(' . $user->company_id . '): ' . ($user->company->name ?? 'Новая компания');
         }
 
