@@ -6,6 +6,7 @@ class partnerDialog extends Modal{
     constructor(dialog){
         super(dialog);
         console.log('Диалог партнёра инициализирован');
+        this.phone_checked = false;
         this.root_category = 3;
         this.active = true;
         this.bithdayFlatpkr = null;
@@ -89,7 +90,10 @@ class partnerDialog extends Modal{
 
     save(elem){
         if(window.isXHRloading) return;
-
+        if(!this.phone_checked){
+            window.notification.notify( 'error', 'Необходимо SMS подтверждение');
+            return;
+        }
         window.axform.send(elem, e => {
             if(e.status === 200) this.finitaLaComedia(true);
         });
@@ -396,7 +400,7 @@ class partnerDialog extends Modal{
     }
 
     writingPhone(element) {
-
+        this.phone_checked = false;
         if(this.phoneLoginMask.unmaskedValue.length !== 11) return;
 
         axios({
@@ -407,7 +411,7 @@ class partnerDialog extends Modal{
             }
         })
             .then(response => {
-
+                this.phone_checked = true;
                 let data = response.data;
 
                 let code_element = this.current_dialog.querySelector('[name="code"]');
@@ -415,10 +419,12 @@ class partnerDialog extends Modal{
                 if(data.phone_exists) {
                     code_element.parentElement.classList.remove('hide');
                     code_element.disabled = false;
+                    this.phone_checked = false;
                 }
                 else {
                     code_element.parentElement.classList.add('hide');
                     code_element.disabled = true;
+                    this.phone_checked = true;
                 }
             })
             .catch(response => {
