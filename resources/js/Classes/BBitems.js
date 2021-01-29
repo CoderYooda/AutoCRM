@@ -493,8 +493,12 @@ class Items {
             this.recalculateItem(body_elem.dataset.id);
         }
     }
-
-    add(elemWithData, refer){
+    addProduct(product){
+        let cell = product;
+        this.insertProduct(cell);
+    }
+    add(elemWithData, refer)
+    {
         let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);
         this.insertProduct(cell_item);
     }
