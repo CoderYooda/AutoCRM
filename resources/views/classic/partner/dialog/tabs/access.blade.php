@@ -60,7 +60,7 @@
 
     <div class="form-group fl ip ul hide">
         <label>SMS код</label>
-        <input maxlength="4" type="text" name="code" class="form-control" placeholder="SMS код" disabled>
+        <input onkeydown="{{ $class }}.phone_checked = true;" maxlength="4" type="text" name="code" class="form-control" placeholder="SMS код" disabled>
         <div class="primary mt-15 p-15">
             Данный номер привязан к другой учетной записи, для подтверждения введите код из SMS с указанного номера
         </div>

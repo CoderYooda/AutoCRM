@@ -175,10 +175,8 @@ class PartnerController extends Controller
                     'password' =>  Hash::make($password)
                 ]);
 
-                if($request->category_id == 5 && $request['role']) {
-                    $role = Role::where('name', $request['role'])->first();
-                    $user->syncRoles([ $role->id ]);
-                }
+                $role = Role::where('id', SettingsController::getSettingByKey('role_id')->value)->first();
+                $user->syncRoles([ $role->id ]);
 
                 if(!$user->wasRecentlyCreated && $user->partner) {
                     $user->partner->update([

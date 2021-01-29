@@ -6,7 +6,7 @@ class partnerDialog extends Modal{
     constructor(dialog){
         super(dialog);
         console.log('Диалог партнёра инициализирован');
-        this.phone_checked = false;
+        this.phone_checked = true;
         this.root_category = 3;
         this.active = true;
         this.bithdayFlatpkr = null;
@@ -90,6 +90,7 @@ class partnerDialog extends Modal{
 
     save(elem){
         if(window.isXHRloading) return;
+        dd(this.phone_checked);
         if(!this.phone_checked){
             window.notification.notify( 'error', 'Необходимо SMS подтверждение');
             return;
@@ -467,7 +468,7 @@ class partnerDialog extends Modal{
     toggleAccess() {
         let account_data = this.current_dialog.querySelector('.account_data');
         account_data.classList.toggle('hide');
-
+        this.phone_checked = !this.phone_checked;
         let inputs = account_data.querySelectorAll('input');
 
         inputs.forEach(element => {
