@@ -57,7 +57,7 @@
 
                             <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
 
-                            <img class="image" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
+                            <img class="image" data-id="{{ $image->id }}" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
 
                         </div>
 

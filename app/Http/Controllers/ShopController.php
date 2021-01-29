@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ModelWasStored;
 use App\Http\Controllers\HelpController as HC;
+use App\Http\Requests\Shop\ContactsRequest;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAnalyticsRequest;
 use App\Http\Requests\Shop\UpdateMainRequest;
@@ -202,7 +203,7 @@ class ShopController extends Controller
         ]);
     }
 
-    public function updateContacts(Request $request)
+    public function updateContacts(ContactsRequest $request)
     {
         return DB::transaction(function () use ($request) {
 
@@ -253,6 +254,7 @@ class ShopController extends Controller
 
     public function updatePages(UpdatePagesRequest $request)
     {
+        /** @var Shop $shop */
         $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
             'about_desc'      => $request->about_desc,
             'seo_about_title' => $request->seo_about_title,
@@ -261,15 +263,23 @@ class ShopController extends Controller
 
         $images = [];
 
-        foreach ($request->image_ids as $image_id) {
-            $images[] = $image_id;
+        for ($i = 0; $i < count($request->main_ids); $i++) {
+
+            $image_id = $request->main_ids[$i];
+            $target_url = $request->main_urls[$i];
+
+            $images[$image_id] = [
+                'target_url' => $target_url
+            ];
         }
 
-        $shop->aboutImages()->sync($images);
+        $shop->sliderImages()->sync($images);
 
         foreach ($shop->sliderImages as $key => $image) {
             $image->update(['rank' => $key]);
         }
+
+        $shop->aboutImages()->sync($request->about_ids);
 
         return response()->json([
             'type'    => 'success',
@@ -340,24 +350,6 @@ class ShopController extends Controller
                 'price_id'        => $request->price_id,
                 'domain_type'     => $request->domain_type
             ]);
-
-//            $images = [];
-//
-//            for ($i = 0; $i < count($request->image_ids); $i++) {
-//
-//                $image_id = $request->image_ids[$i];
-//                $target_url = $request->image_urls[$i];
-//
-//                $images[$image_id] = [
-//                    'target_url' => $target_url
-//                ];
-//            }
-//
-//            $shop->sliderImages()->sync($images);
-
-//            foreach ($shop->sliderImages as $key => $image) {
-//                $image->update(['rank' => $key]);
-//            }
 
             $shop->orderEmails()->delete();
             $shop->orderEmails()->createMany($request->emails);

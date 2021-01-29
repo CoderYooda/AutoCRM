@@ -22,18 +22,6 @@ class shopPage {
         };
 
         this.clicked_input = null;
-
-        if(this.active_tab == 'payments' || this.active_tab == 'traffic') {
-
-            let modal_element = document.getElementById(this.active_tab  + '_dialog');
-
-            console.log(modal_element);
-
-            this.modal = new bootstrap.Modal(modal_element, {
-                backdrop: true,
-                keyboard: true
-            });
-        }
     }
 
     linked() {
@@ -78,6 +66,18 @@ class shopPage {
         else if(this.active_tab == 'settings') {
             // this.addSubdomainMask();
             this.addEmailMask();
+        }
+
+        if(this.active_tab == 'payments' || this.active_tab == 'traffic') {
+
+            let modal_element = document.getElementById(this.active_tab  + '_dialog');
+
+            console.log(modal_element);
+
+            this.modal = new bootstrap.Modal(modal_element, {
+                backdrop: true,
+                keyboard: true
+            });
         }
     }
 
@@ -310,8 +310,7 @@ class shopPage {
                 let copy_element = document.querySelector('.tab-pane.active .slide.copy').cloneNode(true);
 
                 copy_element.querySelector('img').src = image.url;
-
-                copy_element.querySelector('.remove').dataset.id = image.id;
+                copy_element.querySelector('img').dataset.id = image.id;
 
                 copy_element.classList.remove('d-none');
                 copy_element.classList.remove('copy');
@@ -577,7 +576,7 @@ class shopPage {
 
         main_elements.forEach(element => {
 
-            let image_id = element.querySelector('button').dataset.id;
+            let image_id = element.querySelector('img').dataset.id;
             let target_url = element.querySelector('input').value;
 
             main_ids.push(image_id);
@@ -592,7 +591,7 @@ class shopPage {
 
         image_elements.forEach((element, index) => {
 
-            let image_id = element.querySelector('button').dataset.id;
+            let image_id = element.querySelector('img').dataset.id;
 
             about_ids.push(image_id);
         });
@@ -672,9 +671,7 @@ class shopPage {
 
     freshImagesIndexes() {
 
-        let image_elements = document.querySelectorAll('.tab-pane.active .slide:not(.copy):not(.upload)');
-
-        console.log(image_elements);
+        let image_elements = document.querySelectorAll('.tab-pane.active .slide:not(.copy)');
 
         image_elements.forEach((element, index) => {
 
@@ -684,7 +681,7 @@ class shopPage {
             let input_element = element.querySelector('input');
 
             if(image_element) image_element.dataset.index = index;
-            if(input_element) input_element.dataset.error = 'image_urls[' + index + ']';
+            if(input_element) input_element.dataset.error = 'main_urls[' + index + ']';
         });
     }
 

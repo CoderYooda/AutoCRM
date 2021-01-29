@@ -23,7 +23,7 @@
                         <div class="status">
                             <span class="ml-2">
                                 <label class="ui-switch orange mt-1">
-                                    <input class="d-none" onclick="event.preventDefault();" @if($activePayment['name'] == $bank) checked @endif type="checkbox"><i></i>
+                                    <input class="d-none" onclick="event.preventDefault();" @if($activePayment && $activePayment['name'] == $bank) checked @endif type="checkbox"><i></i>
                                 </label>
                             </span>
                         </div>

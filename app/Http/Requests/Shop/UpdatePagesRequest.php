@@ -14,8 +14,14 @@ class UpdatePagesRequest extends FormRequest
             $this['delete_image_ids'] = explode(',', $this['delete_image_ids']);
         }
 
-        if($this['image_ids'] == null) $this['image_ids'] = [];
-        else $this['image_ids'] = explode(',', $this['image_ids']);
+        if($this['main_ids'] == null) $this['main_ids'] = [];
+        else $this['main_ids'] = explode(',', $this['main_ids']);
+
+        if($this['main_urls'] == null) $this['main_urls'] = [];
+        else $this['main_urls'] = explode(',', $this['main_urls']);
+
+        if($this['about_ids'] == null) $this['about_ids'] = [];
+        else $this['about_ids'] = explode(',', $this['about_ids']);
 
         return true;
     }
@@ -39,10 +45,13 @@ class UpdatePagesRequest extends FormRequest
             'warranty_about_title' => ['nullable', 'string', 'max:65535'],
             'warranty_about_desc' => ['nullable', 'string', 'max:65535'],
 
-            'image_ids' => ['array'],
-            'image_ids.*' => ['exists:images,id'],
-            'delete_image_ids' => ['nullable', 'array'],
-            'delete_image_ids.*' => ['integer', 'exists:images,id']
+            'main_ids' => ['array'],
+            'main_ids.*' => ['exists:images,id'],
+            'main_urls' => ['array', 'min:' . count($this->main_ids)],
+            'main_urls.*' => ['required', 'string', 'active_url'],
+
+            'about_ids' => ['array'],
+            'about_ids.*' => ['exists:images,id'],
         ];
     }
 

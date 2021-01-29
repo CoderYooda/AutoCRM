@@ -34,10 +34,10 @@
 
                             <span class="remove" onclick="{{ $class }}.removeImage(this);"></span>
 
-                            <img class="image" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
+                            <img class="image" data-id="{{ $image->id }}" data-index="{{ $loop->index }}" src="{{ $image->url }}" />
 
                             <div class="input-group">
-                                <input type="text" data-error="image_urls[{{ $loop->index }}]" name="image_urls[{{ $loop->index }}]" class="form-control" placeholder="Ссылка" value="{{ $image->pivot->target_url }}" />
+                                <input type="text" data-error="main_urls[{{ $loop->index }}]" name="main_urls[{{ $loop->index }}]" class="form-control" placeholder="Ссылка" value="{{ $image->pivot->target_url }}" />
                             </div>
 
                         </div>

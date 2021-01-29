@@ -15,10 +15,6 @@ class UpdateMainRequest extends FormRequest
 {
     public function authorize()
     {
-        if($this['delete_image_ids'] != null) {
-            $this['delete_image_ids'] = explode(',', $this['delete_image_ids']);
-        }
-
         if(!isset($this['show_empty'])) $this['show_empty'] = 0;
         if(!isset($this['show_amount'])) $this['show_amount'] = 0;
         if(!isset($this['supplier_offers'])) $this['supplier_offers'] = 0;
