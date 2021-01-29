@@ -504,5 +504,8 @@ class settingsPage{
 
         input_address.disabled = checkbox_element.checked;
     }
+    openProviderModal(){
+        window.openDialog('providerDialog');
+    }
 }
 export default settingsPage;

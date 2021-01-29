@@ -375,9 +375,6 @@ class Rossko implements ProviderInterface
 
     public function getPickupAddresses(): array
     {
-        $result = $this->query('GetOrders');
-        dd($result);
-
         return [];
     }
 

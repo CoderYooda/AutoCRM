@@ -317,6 +317,10 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         #SMS сообщения
         Route::post('/sms/send', 'SMSMessageController@sendsms')->name('SendSMS');
 
+        #E-mail сообщения
+        Route::post('/feedback/send','System\FeedbackController@sendEmail')->name('SendEmail');
+
+
         #Штрихкоды
         Route::post('/barcode/search', 'BarcodeController@search')->name('BarcodeSearch');
 

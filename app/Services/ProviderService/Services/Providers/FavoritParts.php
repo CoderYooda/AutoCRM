@@ -23,7 +23,8 @@ class FavoritParts implements ProviderInterface
     protected $name = 'Фаворит Автозапчасти';
     protected $service_key = 'favoritparts';
 
-    protected $api_key;
+    protected $api_key1;
+    protected $api_key2;
 
     /** @var Company */
     protected $company = null;
@@ -55,7 +56,8 @@ class FavoritParts implements ProviderInterface
 
         $this->company = $shop->company ?? $this->user->company;
 
-        $this->api_key = $this->company->getServiceFieldValue($this->service_key, 'api_key');
+        $this->api_key1 = $this->company->getServiceFieldValue($this->service_key, 'api_key1');
+        $this->api_key2 = $this->company->getServiceFieldValue($this->service_key, 'api_key2');
 
         $this->client = new Client();
     }
@@ -223,7 +225,8 @@ class FavoritParts implements ProviderInterface
         $bodyType = $method == 'GET' ? 'query': 'body';
 
         if ($bodyType == 'query') {
-            $params['key'] = $this->api_key;
+            $params['key'] = $this->api_key1;
+
         }
 
         $params = $bodyType == 'query' ? http_build_query($params) : json_encode($params);
@@ -235,7 +238,8 @@ class FavoritParts implements ProviderInterface
                 $bodyType => $params,
                 'headers' => [
                     'Content-Type'=>'application/json',
-                    'X-Favorit-ClientKey' => $this->api_key
+                    'X-Favorit-ClientKey' => $this->api_key1,
+                    'X-Favorit-DeveloperKey' => $this->api_key2
                 ]
             ]);
 

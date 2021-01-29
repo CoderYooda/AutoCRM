@@ -62,6 +62,7 @@ import companyDialog from "./Admin/Company/CompanyDialog";
 import userDialog from "./Admin/User/UserDialog";
 import selectCompanyDialog from "./Company/SelectCompanyDialog";
 import shopPage from "./Shop/ShopPage";
+import providerDialog from "./Providers/providerDialog";
 
 const classes = {
     entranceDialog,
@@ -107,6 +108,7 @@ const classes = {
     orderDialog,
     referalPartnerDialog,
     priceDialog,
+    providerDialog,
 };
 
 const pages = {

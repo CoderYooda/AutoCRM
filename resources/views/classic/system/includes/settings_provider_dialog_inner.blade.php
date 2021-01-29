@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="form-group pt-15 mb-3">
-                    <label>Активировать API-ключ</label>
+                    <label>Активировать поставщика</label>
                 </div>
 
                 @foreach($service->fields as $field)

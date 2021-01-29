@@ -85,6 +85,10 @@ class DialogController extends Controller
 
             //Referal System
             'referalPartnerDialog'      => [ReferalSystemController::class, 'referalPartnerDialog'],
+
+            //todo написать контроллер для модалки у поставщиков
+            //Provider
+            'providerDialog'            => [SettingsController::class, 'providerDialog'],
         ];
 
         if (!in_array($tag, array_keys($dialogs))) {
