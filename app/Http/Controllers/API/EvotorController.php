@@ -85,7 +85,6 @@ class EvotorController extends Controller
                 ->orderByDesc('id')->limit(20)
                 ->get();
         }
-
         $warrants_arr = [];
 
         foreach($warrants as $warrant){
