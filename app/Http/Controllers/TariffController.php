@@ -87,7 +87,7 @@ class TariffController extends Controller
                     break;
                 case 180:
                     $type = 'pay_to_store';
-                    $amount = 7200;
+                    $amount = 14400;
                     $days = 180;
                     break;
                 case 360:

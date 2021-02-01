@@ -21,7 +21,7 @@ class Scanner{
                                 data: {upc: object.UPC}
                             }).then(function (resp) {
                                 try {
-                                    window[elem.id].scanOperation(resp.data.id);
+                                    window[elem.id].scanOperation(resp.data.id, resp.data.product);
                                     targeted = true;
                                 } catch (e) {
                                     console.warn(elem.id + ' не содержит метода scanOperation');

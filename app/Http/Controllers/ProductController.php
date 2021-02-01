@@ -50,10 +50,24 @@ class ProductController extends Controller
 
     public function getByUpc(Request $request)
     {
-        $product = Product::owned()->where('barcode', $request['upc'])->first();
+        $product = Product::owned()->with('specifications', 'supplier', 'entrances', 'stores')->where('barcode', $request['upc'])->first();
+
+        $availableCounts = DB::table('article_entrance')
+            ->where('product_id', $product->id)
+            ->selectRaw('id, product_id, SUM(count) as count, SUM(released_count) as released_count')
+            ->get();
+
+        $availableCount = $availableCounts->where('product_id', $product->id)->first();
+
+        $product->available = $availableCount ? ($availableCount->count - $availableCount->released_count) : 0;
+        $product->price = $request->refer == 'providerorderDialog' ? $product->getRetailPriceInCurrentStore() : $product->getPrice();
+        $product->supplier_name = $product->supplier->name;
+        $product->product_id = $product->id;
+        $product->shipped_count = 0;
 
         return response()->json([
             'id' => $product->id ?? null,
+            'product' => $product,
         ], 200);
     }
 
