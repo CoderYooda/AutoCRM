@@ -55,7 +55,7 @@ class UserController extends Controller
             ->paginate($request->size);
 
         foreach ($users as $index => $user) {
-            $users[$index]['name'] = $user->partner->fio;
+            $users[$index]['name'] = $user->partner->fio ?? 'Ошибка имени';
             if($user->roles->first()){
                 $users[$index]['role'] = $user->roles->first()->name;
             } else {
