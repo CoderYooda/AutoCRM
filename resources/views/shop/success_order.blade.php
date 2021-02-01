@@ -38,7 +38,7 @@
 
                             <div class="w-10">{{ $loop->index }}</div>
                             <div class="w-20">{{ $position->name }}</div>
-                            <div class="w-15">{{ $position->product }}</div>
+                            <div class="w-15">{{ $position->article }}</div>
                             <div class="w-15">{{ $position->manufacturer }}</div>
                             <div class="w-10">{{ $position->source }}</div>
                             <div class="w-10">{{ $position->count }}</div>
