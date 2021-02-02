@@ -12,7 +12,7 @@
 {{--                    @foreach(\App\Models\Product::where('barcode', '=', null)->get() as $product)--}}
 {{--                        @for($i = 0; $i != -1; $i--)--}}
 
-            <div style="width: 25%; position:relative; height: calc(100vh / 4); float: left; display: inline-block;" >
+            <div style="width: 25%; position:relative; height: calc(100vh / 3); float: left; display: inline-block;" >
 
                 <div class="border-top border-left border-right">
 
@@ -31,7 +31,7 @@
 
                     </div>
 
-                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 167px); @else calc(100% - 100px);  @endif">
+                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 190px); @else calc(100% - 145px);  @endif">
                         <b>{{ $product->name }}</b>
                     </div>
 
