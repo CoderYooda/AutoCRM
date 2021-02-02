@@ -204,7 +204,7 @@ class Berg implements ProviderInterface
                 $bodyType => http_build_query($params),
                 'headers' => [
                     'Content-Type'=>'application/x-www-form-urlencoded',
-                    'X-Berg-API-Key' => '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e730'
+                    'X-Berg-API-Key' => $this->api_key
                 ]]);
         }
         catch (\Exception $exception) {

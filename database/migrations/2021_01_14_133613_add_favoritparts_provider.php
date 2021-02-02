@@ -22,8 +22,15 @@ class AddFavoritpartsProvider extends Migration
         ]);
 
         \App\Models\ServiceField::create([
-            'name' => 'api_key',
-            'placeholder' => 'API-ключ',
+            'name' => 'api_key1',
+            'placeholder' => 'Первый API-ключ',
+            'service_key' => 'favoritparts',
+            'type' => 'text'
+        ]);
+
+        \App\Models\ServiceField::create([
+            'name' => 'api_key2',
+            'placeholder' => 'Второй API-ключ',
             'service_key' => 'favoritparts',
             'type' => 'text'
         ]);

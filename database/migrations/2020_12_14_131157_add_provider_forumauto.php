@@ -15,7 +15,7 @@ class AddProviderForumauto extends Migration
     {
         \App\Models\Service::create([
             'name' => 'Форум-Авто',
-            'url' => 'https://forum-auto.ru/',
+            'url' => 'https://itrade.forum-auto.ru/',
             'key' => 'forumauto'
         ]);
 

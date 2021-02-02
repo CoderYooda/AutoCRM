@@ -16,7 +16,7 @@ class AddAutoeuroService extends Migration
         \App\Models\Service::create([
             'category_id' => 0,
             'name' => 'АВТО-ЕВРО',
-            'url' => 'https://autoeuro.ru/',
+            'url' => 'https://shop.autoeuro.ru/',
             'key' => 'autoeuro'
         ]);
 

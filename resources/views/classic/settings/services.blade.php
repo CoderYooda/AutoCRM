@@ -45,6 +45,14 @@
 
                     @endforeach
 
+                        <div class="statistic-filter pr-15 mb-15">
+                            <div class="p-10 d-flex service-box pointer text-center" onclick="settings.openProviderModal()" style="min-height: 143px; position: relative; justify-content: center; flex-direction: column;">
+                                <div>
+                                    <div class="service-title title-elipsed">Добавить поставщика</div>
+                                </div>
+                            </div>
+                        </div>
+
                 </div>
             </div>
 

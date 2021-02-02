@@ -14,10 +14,10 @@
             <div class="entrance">
                 <div class="field">{{ $entrance->created_at->format('d.m.Y') }}</div>
                 <div class="field with_input">
-                    <input type="number" min="0" name="entrances[{{ $entrance->id }}][price]" value="{{ $entrance->price }}">
+                    <input type="number" min="0" name="entrances[{{ $entrance->id }}][price]" value="{{ $entrance->pivot->price }}">
                 </div>
                 <div class="field with_input">
-                    <input type="number" min="0" name="entrances[{{ $entrance->id }}][count]" value="{{ $entrance->count }}">
+                    <input type="number" min="0" name="entrances[{{ $entrance->id }}][count]" value="{{ $entrance->pivot->count }}">
                 </div>
             </div>
 
