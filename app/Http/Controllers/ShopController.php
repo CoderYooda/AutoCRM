@@ -238,8 +238,6 @@ class ShopController extends Controller
 
     public function updateSettings(UpdateSettingsRequest $request)
     {
-        dd(gethostbyname('gorin31.ru'));
-
 
         return DB::transaction(function () use ($request) {
 

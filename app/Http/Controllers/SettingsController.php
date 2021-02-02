@@ -344,10 +344,11 @@ class SettingsController extends Controller
     public static function providerDialog($request)
     {
         $tag = 'providerDialog';
+        $class = 'providerDialog';
 
         return response()->json([
             'tag' => $tag,
-            'html' => view(get_template() . '.settings.dialog.form_provider', compact('request'))->render()
+            'html' => view(get_template() . '.settings.dialog.form_provider', compact('request', 'class'))->render()
         ]);
     }
 

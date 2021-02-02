@@ -358,6 +358,7 @@ class ProductController extends Controller
 
                 $productEntranceId = null;
 
+
                 foreach ($request->entrances as $entrance_id => $params) {
 
                     if($entrance_id == 'new') {
@@ -379,7 +380,11 @@ class ProductController extends Controller
 
                         $oldEntranceState = $oldEntrancesState->where('id', $entrance_id)->first();
 
-                        $productEntranceId = $oldEntranceState->id;
+                        if(isset($oldEntranceState->id)) {
+
+                            $productEntranceId = $oldEntranceState->id;
+                        }
+
 
                         if($oldEntranceState->count == $params['count'] && $oldEntranceState->price == $params['price']) continue;
 

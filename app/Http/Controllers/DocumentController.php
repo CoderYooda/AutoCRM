@@ -106,6 +106,7 @@ class DocumentController extends Controller
             $data['company_name'] = $company->official_name;
             $data['id'] = $request->id;
 
+
             $data['partner_name'] = $clientOrder->partner->outputName();
             $data['phone'] = $clientOrder->phone;
             $data['summ'] = $clientOrder->summ;
@@ -118,12 +119,13 @@ class DocumentController extends Controller
 
             foreach ($clientOrder->products->load('supplier') as $product) {
 
+
                 $data['products'][$product->id]['name'] = $product->name;
                 $data['products'][$product->id]['article'] = $product->article;
                 $data['products'][$product->id]['manufacturer'] = $product->supplier->name;
-                $data['products'][$product->id]['count'] = $product->pivot->count;
-                $data['products'][$product->id]['price'] = $product->pivot->price;
-                $data['products'][$product->id]['total'] = $product->pivot->total;
+                $data['products'][$product->id]['count'] = $product->count;
+                $data['products'][$product->id]['price'] = $product->price;
+                $data['products'][$product->id]['total'] = $product->total;
             }
         }
         else if($request->doc == 'out-warrant' || $request->doc == 'in-warrant') {

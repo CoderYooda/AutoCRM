@@ -36,6 +36,10 @@
                     </div>
 
                     <div class="border-bottom d-flex flex-column pl-5">
+                        <div>Артикул: {{ $product->article }}</div>
+                    </div>
+
+                    <div class="border-bottom d-flex flex-column pl-5">
                         <div>Производитель: {{ $product->supplier->name }}</div>
                         <div>Цена за 1 шт</div>
                     </div>

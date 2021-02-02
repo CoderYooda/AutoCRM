@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Http\Requests\Providers\Feedback\FeedbackRequest;
 use App\Mail\Provider\ProviderEmail;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class FeedbackController extends Controller
 {
-    public static function sendEmail (Request $request) {
+    public static function sendEmail (FeedbackRequest $request) {
 
         $data = [];
 

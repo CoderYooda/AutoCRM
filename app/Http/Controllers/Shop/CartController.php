@@ -195,11 +195,13 @@ class CartController extends Controller
                 DB::table('order_positions')->insert($fields);
             }
 
-            $orderEmails = $this->shop->orderEmails->pluck('email');
 
-            Mail::to($orderEmails)->send(new NewOrderEmail($order));
+//            $orderEmails = $this->shop->orderEmails->pluck('email');
+//
+//            Mail::to($orderEmails)->send(new NewOrderEmail($order));
+//
+//            Mail::to($partner->email)->send(new ModerateOrder($order));
 
-            Mail::to($partner->email)->send(new ModerateOrder($order));
 
             $cart->clear();
 
