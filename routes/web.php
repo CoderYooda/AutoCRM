@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Partner;
+use App\Models\User;
+
 Route::get('/test', function () {
     $document = \App\Models\Document::find(28);
 
@@ -11,6 +14,16 @@ Route::get('/test', function () {
         'data' => $data['data'],
         'barcode' => $document->barcode
     ]);
+
+//    $user = User::query()->first();
+//
+//    Auth::login($user);
+//
+//    $parnter = Partner::query()->first();
+//
+//    Auth::guard('referals')->login($parnter);
+//
+//    Auth::guard('referals')->user();
 
     return $view;
 });

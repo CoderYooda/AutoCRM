@@ -16,6 +16,7 @@ class Providers
         404 => 'Ничего не найдено'
     ];
 
+
     public function __construct($providers)
     {
         $this->providers = $providers;

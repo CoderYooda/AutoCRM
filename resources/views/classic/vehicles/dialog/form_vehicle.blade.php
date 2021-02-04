@@ -6,7 +6,7 @@
     <button class="btn_close" onclick="window.{{ $tag }}.finitaLaComedia()">×</button>
 
     <form id="save_vehicle_form" action="{{ route('StoreVehicle') }}" method="post">
-        <div class="modal-body">
+        <div class="modal-body" data-simplebar style="max-height: 400px">
             <div class="p-15">
                 @csrf
 
