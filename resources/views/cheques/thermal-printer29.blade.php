@@ -21,14 +21,22 @@
                     </div>
                 @endif
 
-                <div style="font-size: 10em; line-height: 2em;" class="flex-1 pl-5 border-top border-bottom text-center">
-                    <b>{{ $product->price ?? '1000.0 Р' }}</b>
-                </div>
-
             </div>
 
-            <div style="padding: 10%; flex: auto; font-size: 400%;" class="font-weight-bolder all-center">
+            <div style="padding: 10%; flex: auto; font-size: 300%;" class="font-weight-bolder all-center">
                 <div>{{ $product->name }}</div>
+            </div>
+
+            <div style="padding: 2%; font-size: 250%;" class="border-bottom border-top d-flex flex-column pl-5">
+                <div>Артикул: <b>{{ $product->article }}</b></div>
+            </div>
+
+            <div style="padding: 2%; font-size: 250%;" class="border-bottom d-flex flex-column pl-5">
+                <div>Производитель: <b>{{ $product->supplier->name }}</b></div>
+            </div>
+
+            <div style="font-size: 8em; line-height: 2em;" class="pl-5  text-center">
+                <b>{{ $product->price ?? '0.0 Р' }}</b>
             </div>
 
         </div>

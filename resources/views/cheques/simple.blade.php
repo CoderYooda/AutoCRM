@@ -15,13 +15,17 @@
                 <div class="w-100 h-100 text-center">
 
                     <div class="border-left h-100 border-right white">
-                        <div class="w-100 all-center border-top border-bottom ov-hidden" style="height: 46px;">
+                        <div class="w-100 all-center border-top border-bottom ov-hidden" style="height: 40px;">
                             <span>{{ auth()->user()->company->official_name }}</span>
                         </div>
 
-                        <div style="height: calc(100% - 135px);"><b>{{ $product->name }}</b></div>
+                        <div class="all-center" style="height: calc(100% - 173px);"><b>{{ $product->name }}</b></div>
 
-                        <div class="border-top"><b>{{ $product->price }} руб.</b></div>
+                        <div class="border-top">
+                            Артикул:  <b> {{ $product->article }} </b><br>
+                            Производитель: <b> {{ $product->supplier->name  }} </b>
+                        </div>
+                        <div class="border-top"><b>{{ $product->price ?? '0.0 Р' }} руб.</b></div>
 
                         <div class="d-flex border-top border-bottom">
                             <div class="flex-1 border-right p-5">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>

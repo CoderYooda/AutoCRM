@@ -27,13 +27,16 @@
                     <div>{{ $product->name }}</div>
                 </div>
 
-                <div class="d-flex flex-column" style="font-size: 250%; padding-left: 2%;">
-                    <div>Производитель: {{ $product->supplier->name }}</div>
-                    <div>Цена за 1 шт</div>
+                <div style="padding: 2%; font-size: 350%;" class="border-bottom border-top d-flex flex-column pl-5">
+                    <div>Артикул: <b>{{ $product->article }}</b></div>
                 </div>
 
-                <div style="font-size: 8em; line-height: 2em;" class="pl-5 border-top text-center">
-                    <b>{{ $product->price ?? '1000.0 Р' }}</b>
+                <div style="padding: 2%; font-size: 350%;" class="border-bottom d-flex flex-column pl-5">
+                    <div>Производитель: <b>{{ $product->supplier->name }}</b></div>
+                </div>
+
+                <div style="font-size: 8em; line-height: 2em;" class="pl-5  text-center">
+                    <b>{{ $product->price ?? '0.0 Р' }}</b>
                 </div>
 
             </div>
