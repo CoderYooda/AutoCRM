@@ -20,31 +20,31 @@
 
                         @if($product->barcode)
                             <div class="flex-1">
-                                <img style="height: 45px;padding: 9px 9px 0; width: 100%;" src="data:image/png;base64,{!! getBarCodePNG($product->barcode) !!}" alt="barcode"   />
+                                <img class="p-5" style=" width: auto; max-width: 100%; margin: auto; display: block" src="data:image/png;base64,{!! getBarcodePNG($product->barcode) !!}" alt="barcode"   />
                             </div>
                         @endif
 
-                        <div class="flex-1 pl-5">
-                            <div>{{ auth()->user()->company->official_name }}</div>
-                            <div>{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
-                        </div>
+                            <div class="d-flex border-top border-bottom">
+                                <div class="flex-1 border-right p-5">{{ auth()->user()->company->official_name }}</div>
+                                <div class="flex-1 all-center">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
+                            </div>
+
 
                     </div>
 
-                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 190px); @else calc(100% - 145px);  @endif">
+                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 167px); @else calc(100% - 124px);  @endif">
                         <b>{{ $product->name }}</b>
                     </div>
 
-                    <div class="border-bottom d-flex flex-column pl-5">
-                        <div>Артикул: {{ $product->article }}</div>
+                    <div class="border-bottom border-top d-flex flex-column pl-5">
+                        <div>Артикул: <b>{{ $product->article }}</b></div>
                     </div>
 
                     <div class="border-bottom d-flex flex-column pl-5">
-                        <div>Производитель: {{ $product->supplier->name }}</div>
-                        <div>Цена за 1 шт</div>
+                        <div>Производитель: <b>{{ $product->supplier->name }}</b></div>
                     </div>
 
-                    <div class="text-center border-bottom" style="font-size: 20px;">
+                    <div class="text-center border-bottom" style="font-size: 25px;">
                         <b>{{ $product->price ?? '0 Р' }}</b>
                     </div>
 
