@@ -42,6 +42,7 @@ class ProductRequest extends FormRequest
             'image' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:5120'],
 
             'barcode' => ['nullable', 'digits_between:13,13', Rule::unique('products', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
+            'barcode_local' => ['nullable', 'digits_between:13,13', Rule::unique('products', 'barcode_local')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
 
             'shop.name' => ['nullable', 'string', 'max:255'],
             'shop.desc' => ['nullable', 'string', 'max:1024'],
