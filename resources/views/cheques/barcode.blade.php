@@ -25,14 +25,16 @@
                         @endif
 
                             <div class="d-flex border-top border-bottom">
-                                <div class="flex-1 border-right p-5">{{ auth()->user()->company->official_name }}</div>
-                                <div class="flex-1 all-center">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
+                                <div class="flex-1 p-5">
+                                    {{ auth()->user()->company->official_name }}<br>
+                                    {{ \Carbon\Carbon::now()->format('d.m.Y') }}
+                                </div>
                             </div>
 
 
                     </div>
 
-                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 167px); @else calc(100% - 124px);  @endif">
+                    <div class="font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 187px); @else calc(100% - 142px);  @endif">
                         <b>{{ $product->name }}</b>
                     </div>
 
@@ -44,7 +46,7 @@
                         <div>Производитель: <b>{{ $product->supplier->name }}</b></div>
                     </div>
 
-                    <div class="text-center border-bottom" style="font-size: 25px;">
+                    <div class="text-center border-bottom" style="font-size: 24px;">
                         <b>{{ $product->price ?? '0 Р' }}</b>
                     </div>
 

@@ -25,8 +25,10 @@
                         @endif
 
                         <div class="d-flex border-top border-bottom">
-                            <div class="flex-1 border-right p-5">{{ auth()->user()->company->official_name }}</div>
-                            <div class="flex-1 all-center">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
+                            <div class="flex-1 p-5">
+                                {{ auth()->user()->company->official_name }}<br>
+                                {{ \Carbon\Carbon::now()->format('d.m.Y') }}
+                            </div>
                         </div>
 
                         <div style="font-size: 20px;" class="flex-1 pl-5 border-top border-bottom text-center">
@@ -35,7 +37,7 @@
 
                     </div>
 
-                    <div class="border-bottom font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 160px); @else calc(100% - 115px);  @endif">
+                    <div class="border-bottom font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 181px); @else calc(100% - 136px);  @endif">
                         <b>{{ $product->name }}</b>
                     </div>
 
