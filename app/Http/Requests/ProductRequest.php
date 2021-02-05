@@ -32,6 +32,7 @@ class ProductRequest extends FormRequest
             'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
             'article' => ['required', 'string', 'max:64'],
+            'min_stock' => ['required', 'integer'],
 
             'storage_zone' => ['string', 'max:2'],
             'storage_rack' => ['string', 'max:2'],
@@ -51,7 +52,7 @@ class ProductRequest extends FormRequest
             'price_id' => ['required', 'integer', 'exists:prices,id'],
             'entrances' => ['array'],
             'entrances.*.price' => ['required', 'numeric', 'between:0,999999'],
-            'entrances.*.count' => ['required', 'integer', 'between:0,100'],
+            'entrances.*.count' => ['required', 'integer', 'between:0,1000'],
         ];
 
         if(isset($this['shop']['discounts']['discount'])) {

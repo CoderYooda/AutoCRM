@@ -28,6 +28,6 @@ class Store extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'article_store', 'store_id', 'product_id')
-            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
+            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal','min_stock');
     }
 }

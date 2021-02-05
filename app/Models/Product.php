@@ -132,6 +132,11 @@ class Product extends Model
         return strlen($this->sp_name) ? $this->sp_name : ($this->name ?? 'Название отсутствует');
     }
 
+    public function getMinStock()
+    {
+        return $this->stores->where('id', Auth::user()->current_store)->first()->pivot->min_stock;
+    }
+
     public function getImagePathAttribute()
     {
         return $this->image ? $this->image->url : asset('/images/shop/no-photo.svg');
@@ -140,7 +145,7 @@ class Product extends Model
     public function stores()
     {
         return $this->belongsToMany(Store::class, 'article_store', 'product_id', 'store_id')
-            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price');
+            ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal', 'retail_price','min_stock');
     }
 
     public function getStorageZone($id){
