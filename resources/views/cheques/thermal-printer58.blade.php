@@ -15,7 +15,7 @@
 
                 <div class="d-flex flex-column">
 
-                    @if($product->barcode)
+                    @if($product->barcode && $product->barcode != null)
                         <div class="flex-1">
                             <img class="p-10" style=" width: 100%; max-width: 100%; margin: auto; display: block" src="data:image/png;base64,{!! getBarcodePNG($product->barcode) !!}" alt="barcode"   />
                         </div>
