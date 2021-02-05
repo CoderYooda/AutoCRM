@@ -12,7 +12,7 @@
 {{--                    @foreach(\App\Models\Product::where('barcode', '!=', null)->get() as $product)--}}
 {{--                        @for($i = 0; $i != -1; $i--)--}}
 
-            <div style="width: 25%; position:relative; height: calc(100vh / 5); float: left; display: block;" >
+            <div style="width: 25%; position:relative; height: calc(100vh / 4); float: left; display: block;" >
 
                 <div class="border-top border-left border-right border-bottom">
 
@@ -20,9 +20,14 @@
 
                         @if($product->barcode)
                             <div class="flex-1">
-                                <img style="height: 45px;padding: 9px; width: 100%;" src="data:image/png;base64,{!! getBarCodePNG($product->barcode) !!}" alt="barcode"   />
+                                <img class="p-5" style=" width: auto; max-width: 100%; margin: auto; display: block" src="data:image/png;base64,{!! getBarcodePNG($product->barcode) !!}" alt="barcode"   />
                             </div>
                         @endif
+
+                        <div class="d-flex border-top border-bottom">
+                            <div class="flex-1 border-right p-5">{{ auth()->user()->company->official_name }}</div>
+                            <div class="flex-1 all-center">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
+                        </div>
 
                         <div style="font-size: 20px;" class="flex-1 pl-5 border-top border-bottom text-center">
                             <b>{{ $product->price ?? '0.0 Р'}} руб. </b>
@@ -30,7 +35,7 @@
 
                     </div>
 
-                    <div class="border-bottom font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 125px); @else calc(100% - 80px);  @endif">
+                    <div class="border-bottom font-weight-bolder all-center" style="height: @if($product->barcode) calc(100% - 160px); @else calc(100% - 115px);  @endif">
                         <b>{{ $product->name }}</b>
                     </div>
 

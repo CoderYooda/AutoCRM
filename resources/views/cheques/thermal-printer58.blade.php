@@ -17,9 +17,14 @@
 
                     @if($product->barcode)
                         <div class="flex-1">
-                            <img style="padding: 2%;width: 100%;display: block;" src="data:image/png;base64,{!! getBarCodePNG($product->barcode) !!}" alt="barcode"   />
+                            <img class="p-10" style=" width: 100%; max-width: 100%; margin: auto; display: block" src="data:image/png;base64,{!! getBarcodePNG($product->barcode) !!}" alt="barcode"   />
                         </div>
                     @endif
+
+                    <div class="d-flex border-top border-bottom">
+                        <div style="font-size: 350%;" class="flex-1 border-right p-5">{{ auth()->user()->company->official_name }}</div>
+                        <div style="font-size: 350%;" class="flex-1 all-center">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
+                    </div>
 
                 </div>
 
