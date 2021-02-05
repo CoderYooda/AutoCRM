@@ -352,14 +352,13 @@ class ProductController extends Controller
 
             $product->save();
 
-            if($request->entrances) {
+            if($request->adjustment_entrances) {
 
                 $oldEntrancesState = Cache::get('user[' . Auth::id() . '][entrances]');
 
                 $productEntranceId = null;
 
-
-                foreach ($request->entrances as $entrance_id => $params) {
+                foreach ($request->adjustment_entrances as $entrance_id => $params) {
 
                     if($entrance_id == 'new') {
 
@@ -380,11 +379,7 @@ class ProductController extends Controller
 
                         $oldEntranceState = $oldEntrancesState->where('id', $entrance_id)->first();
 
-                        if(isset($oldEntranceState->id)) {
-
-                            $productEntranceId = $oldEntranceState->id;
-                        }
-
+                        $productEntranceId = $oldEntranceState->id;
 
                         if($oldEntranceState->count == $params['count'] && $oldEntranceState->price == $params['price']) continue;
 
@@ -449,7 +444,8 @@ class ProductController extends Controller
                         'storage_zone' => $storage['storage_zone'],
                         'storage_rack' => $storage['storage_rack'],
                         'storage_vertical' => $storage['storage_vertical'],
-                        'storage_horizontal' => $storage['storage_horizontal']
+                        'storage_horizontal' => $storage['storage_horizontal'],
+                        'min_stock' => $request->min_stock
                     ];
 
                     if(isset($storage['retail_price'])){
