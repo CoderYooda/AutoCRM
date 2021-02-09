@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ModelWasStored;
 use App\Http\Requests\ProviderOrdersRequest;
 use App\Models\ProviderOrder;
+use App\Models\System\StockOfProduct;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,56 @@ class ProviderOrdersController extends Controller
             'products' => $products
         ]);
     }
+
+    public static function stockOfProductDialog(Request $request)
+    {
+        $stock_of_product_id = $request['stockofproduct_id'];
+
+        $stock_of_product = StockOfProduct::find($stock_of_product_id);
+        $stock_of_product = json_decode($stock_of_product->data);
+        $stock_of_product = object_to_array($stock_of_product);
+
+        $po_id = $request['provider_order_id'] ?? $request['providerorder_id'];
+        $provider_order = ProviderOrder::find($po_id);
+
+        $class = 'providerorderDialog' . ($provider_order->id ?? '');
+
+        $products = [];
+
+        if ($request->products) {
+            $ids = explode(',', $request->products);
+            $products = Product::owned()->whereIn('id', $ids)->get();
+        }
+
+        $stores = Store::owned()->get();
+
+        $prefs = [
+            'index' => 'ordinal',
+            'use_nds' => true,
+            'can_add_items' => true,
+            'nds' => $provider_order->nds ?? true,
+            'nds_included' => $provider_order->nds_included ?? true
+        ];
+
+        $items = $stock_of_product;
+        foreach ($items as $key => $item) {
+            $items[$key]['product_id'] = $item['product_id'];
+            $items[$key]['name'] = $item['product_name'];
+            $items[$key]['article'] = $item['product_article'];
+            $items[$key]['price'] = $item['price'];
+        }
+
+        $view = view(get_template() . '.provider_orders.dialog.form_provider_order', compact('provider_order', 'stores', 'request', 'class'))
+            ->with('prefs', json_encode($prefs))
+            ->with('items', json_encode($items));
+
+        return response()->json([
+            'tag'      => $class,
+            'html'     => $view->render(),
+            'products' => $products
+        ]);
+    }
+
 
     public function tableData(Request $request)
     {

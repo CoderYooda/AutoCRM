@@ -159,9 +159,9 @@ class PartnerController extends Controller
         //SystemMessage::sendToAllButOne();
 
         UA::makeUserAction($partner, $wasExisted ? 'fresh' : 'create');
-
         if($request['access']){
-            SystemMessage::sendToCompany(Auth::user()->company_id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), $partner);
+
+            SystemMessage::sendToCompany(Auth::user()->company_id, 'success', 'Предоставлен доступ к системе, ' . $partner->outputName(), $partner,'App\Events\SystemMessage');
             $user = $partner->user;
             if($user != null){
                 $user->banned_at = null;
