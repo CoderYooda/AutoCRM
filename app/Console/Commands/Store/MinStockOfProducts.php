@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Store;
 
-use App\Models\Partner;
 use App\Models\Store;
 use App\Models\System\StockOfProduct;
 use App\Traits\OwnedTrait;
@@ -10,10 +9,10 @@ use Illuminate\Console\Command;
 use SystemMessage;
 
 
-
 class MinStockOfProducts extends Command
 {
     use OwnedTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -53,23 +52,17 @@ class MinStockOfProducts extends Command
 
 
         $stores = Store::with('products')->get();
-        $bar = $this->output->createProgressBar(Store::count());
-        $bar->start();
 
         foreach ($stores as $store) {
 
-
-            $bar->advance();
-
-            $items =[];
+            $items = [];
 
             foreach ($store->products as $product) {
 
                 $countInStore = $product->getCountInStoreId($product->stores->first()->id);
                 $minCount = $product->stores->first()->pivot->min_stock;
 
-                if ($countInStore < $minCount){
-
+                if ($countInStore < $minCount) {
 
 
                     $items[] = [
@@ -83,7 +76,7 @@ class MinStockOfProducts extends Command
                 }
             }
 
-            if($items != []) {
+            if ($items != []) {
 
                 $stocks = new StockOfProduct();
                 $stocks->company_id = $store->company_id;
@@ -92,15 +85,12 @@ class MinStockOfProducts extends Command
                 $stocks->save();
 
 
-                $stocks = StockOfProduct::where('company_id',$store->company_id)->latest('created_at')->first();
-                SystemMessage::sendToCompany($store->company_id,'warning','На складе кончаются товары, нажмите чтобы посмотреть',$stocks,'App\Events\CompaniesStocksOfProduct');
+                $stocks = StockOfProduct::where('company_id', $store->company_id)->latest('created_at')->first();
+                SystemMessage::sendToCompany($store->company_id, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\CompaniesStocksOfProduct');
 
             }
 
         }
-
-
-        $bar->finish();
 
 
     }
