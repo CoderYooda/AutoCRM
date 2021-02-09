@@ -1153,6 +1153,9 @@ select:not(.is-valid):not(.is-invalid):focus, textarea:not(.is-valid):not(.is-in
     color: hsla(0,0%,100%,.85);
     background-color: #22b66e!important;
 }
+.warning {
+    color: rgba(255, 255, 255, 0.85);
+    background-color: #fdab29; }
 .primary {
     color: #fff;
     background-color: #1f98e9;

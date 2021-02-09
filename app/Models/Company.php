@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\System\StockOfProduct;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,11 @@ class Company extends Model
     public function confirmedPayments()
     {
         return $this->hasMany(Payment::class, 'company_id', 'id')->where('status', 'CONFIRMED');
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(StockOfProduct::class, 'company_id', 'id');
     }
 
     public function getPayedDays()
