@@ -49,18 +49,17 @@ class MinStockOfProducts extends Command
         foreach ($stores as $store) {
 
             $items = [];
-
             foreach ($store->products as $product) {
 
-                $countInStore = $product->getCountInStoreId($product->stores->first()->id);
-                $minCount = $store->pivot->min_stock;
+                $countInStore = $product->getCountInStoreId($store->id);
+                $minCount = $product->pivot->min_stock;;
 
                 if ($countInStore < $minCount) {
                     $items[] = [
                         'product_id' => $product->id,
                         'product_article' => $product->article,
                         'product_name' => $product->name,
-                        'price' => floatval($store->pivot->retail_price),
+                        'price' => floatval($product->pivot->retail_price),
                     ];
 
                 }
@@ -74,7 +73,7 @@ class MinStockOfProducts extends Command
                 $stocks->processed = false;
                 $stocks->save();
 
-                SystemMessage::sendToCompany($store->company_id, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\CompaniesStocksOfProduct');
+                SystemMessage::sendToCompany($store->company_id, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\SystemMessage');
             }
         }
     }

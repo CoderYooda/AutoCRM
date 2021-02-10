@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Partner;
 use App\Models\System\StockOfProduct;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SystemMessageController as SM;
+use SystemMessage;
 
 class TestCommand extends Command
 {
@@ -42,8 +44,9 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $stocks = StockOfProduct::latest()->first();
-
-        SM::sendToCompany(2, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\CompaniesStocksOfProduct');
+        //$stocks = StockOfProduct::latest()->first();
+        $partner = Partner::whereId(2)->first();
+        SystemMessage::sendToCompany(2, 'success', 'тестовый мессадж ', $partner,'App\Events\SystemMessage');
+        //SM::sendToCompany(2, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\SystemMessage');
     }
 }
