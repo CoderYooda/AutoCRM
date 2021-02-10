@@ -2,10 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Partner;
+use App\Models\System\StockOfProduct;
 use App\Models\Warrant;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\SystemMessageController as SM;
+use SystemMessage;
 
 class TestCommand extends Command
 {
@@ -14,7 +18,7 @@ class TestCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'test:payEvotor';
+    protected $signature = 'test:send_mess';
 
     /**
      * The console command description.
@@ -40,11 +44,9 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $warrant = Warrant::find(115);
-        if($warrant->cashbox_id == 3){
-            $warrant->payed_by = 'evotor';
-            $warrant->payed_at = Carbon::now();
-            $warrant->saveQuietly();
-        }
+        //$stocks = StockOfProduct::latest()->first();
+        $partner = Partner::whereId(2)->first();
+        SystemMessage::sendToCompany(2, 'success', 'тестовый мессадж ', $partner,'App\Events\SystemMessage');
+        //SM::sendToCompany(2, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\SystemMessage');
     }
 }

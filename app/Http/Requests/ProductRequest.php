@@ -17,6 +17,11 @@ class ProductRequest extends FormRequest
         return true;
     }
 
+    public function getDTO()
+    {
+        return null;
+    }
+
     public function prepareForValidation()
     {
         if ($this['new_supplier_name'] != null && $this['supplier_id'] == null) {
@@ -41,8 +46,8 @@ class ProductRequest extends FormRequest
 
             'image' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:5120'],
 
-            'barcode' => ['nullable', 'digits_between:13,13', Rule::unique('products', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
-            'barcode_local' => ['nullable', 'digits_between:13,13', Rule::unique('products', 'barcode_local')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
+            'barcode' => ['nullable', 'digits:13', Rule::unique('products', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
+            'barcode_local' => ['nullable', 'digits:13', Rule::unique('products', 'barcode_local')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
 
             'shop.name' => ['nullable', 'string', 'max:255'],
             'shop.desc' => ['nullable', 'string', 'max:1024'],
@@ -85,5 +90,11 @@ class ProductRequest extends FormRequest
         }
 
         parent::failedValidation($validator);
+    }
+
+    public function messages(){
+        return [
+            'barcode.digits' => 'Длинна поля штрихкод должна быть 13 сиволов'
+        ];
     }
 }
