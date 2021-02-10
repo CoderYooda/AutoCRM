@@ -169,7 +169,12 @@ if(!function_exists('sum_cents')) {
 if(!function_exists('getBarcodePNG')) {
     function getBarcodePNG($code)
     {
-        return DNS1D::getBarcodePNG($code, "C39");
+        try {
+            return DNS1D::getBarcodePNG($code, "C39",1,35,array(0,0,0), true);
+        }
+        catch (Exception $exception) {
+            return null;
+        }
     }
 }
 

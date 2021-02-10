@@ -13,7 +13,6 @@ class providerOrderDialog extends Modal{
         this.refer = null;
 
         this.init();
-
         if(response && response.products) {
             Object.values(response.products).forEach(product_id => {
                 this.items.insertProduct(product_id, false);
@@ -74,7 +73,10 @@ class providerOrderDialog extends Modal{
             {min_with: 100, width: 100, name: 'Итого', table_name: 'total', type: 'passive',},
         ];
         this.items = new BBlist(this, 'po_list', 'products', header);
+
     }
+
+
 
     scanOperation(product_id){
         this.addProduct(product_id);

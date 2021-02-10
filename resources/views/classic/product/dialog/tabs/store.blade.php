@@ -35,4 +35,12 @@
         <div class="bb_faq faq_3">Номер вертикальной секции стеллажа</div>
         <div class="bb_faq faq_4">Номер полки</div>
     </div>
+    <div class="form-group">
+        <label>Минимальный остаток на складе <i id="trin_preload" class="fa fa-spinner fa-spin hide"></i></label>
+        <input  type="text" name="min_stock" id="product_dialog_focused"
+                @if(isset($product))value="{{ $product->getMinStock() }}"@endif
+                @if(isset($request) && $request['min_stock'] != NULL)value="{{ $request['min_stock'] }}"@endif
+                class="form-control" placeholder="Кол-во шт.">
+    </div>
+
 </div>

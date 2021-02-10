@@ -72,6 +72,7 @@ class DialogController extends Controller
             //ProviderOrder
             'providerOrderDialog'       => [ProviderOrdersController::class, 'providerorderDialog'],
             'selectProviderOrderDialog' => [ProviderOrdersController::class, 'selectProviderOrderDialog'],
+            'stockofproductDialog'      => [ProviderOrdersController::class, 'stockOfProductDialog'],
             //Adjustment
             'adjustmentDialog'          => [AdjustmentController::class, 'adjustmentDialog'],
             //Schedule

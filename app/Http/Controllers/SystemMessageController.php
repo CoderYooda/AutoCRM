@@ -66,6 +66,22 @@ class SystemMessageController extends Controller
         }
     }
 
+    public static function sendToOneUser($user, $message){
+
+            $system_message = new SM();
+            $system_message->user_id = 1;
+            $system_message->reciever_id = $user->id;
+            $system_message->type = 'test';
+            $system_message->message = $message;
+            $system_message->save();
+
+
+            event(
+                new SystemMessage($system_message)
+            );
+
+    }
+
     public function load()
     {
         $messages = self::getMessagesAside();
@@ -89,7 +105,7 @@ class SystemMessageController extends Controller
 //        ]);
     }
 
-    public static function sendToCompany($company_id, $type, $message, $model, $pause = null)
+    public static function sendToCompany($company_id, $type, $message, $model,$event,$pause = null)
     {
         $company = Company::where('id', $company_id)->first();
         foreach($company->members()->get() as $user){
@@ -111,7 +127,7 @@ class SystemMessageController extends Controller
                     $system_message->save();
 
                     event(
-                        new SystemMessage($system_message)
+                        new $event($system_message)
                     );
                 }
 
@@ -128,8 +144,10 @@ class SystemMessageController extends Controller
                 $system_message->save();
 
                 event(
-                    new SystemMessage($system_message)
+                    new $event($system_message)
                 );
+
+
             }
 
         }

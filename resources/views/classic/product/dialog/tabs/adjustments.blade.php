@@ -13,21 +13,21 @@
         <div class="entrance copy d-none">
             <div class="field">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
             <div class="field with_input">
-                <input type="number" min="0" name="entrances[new][price]" value="{{ $product ? $product->getPrice() : 0 }}">
+                <input type="number" min="0" name="adjustment_entrances[new][price]" value="0">
             </div>
             <div class="field with_input">
-                <input type="number" min="0" name="entrances[new][count]" value="{{ $product ? $product->getCountInCurrentStore() : 0 }}">
+                <input type="number" min="0" name="adjustment_entrances[new][count]" value="0">
             </div>
         </div>
 
-        @foreach($adjustmentEntrances as $entrance)
+        @foreach($adjustmentEntrances as $adjustmentEntrance)
             <div class="entrance">
-                <div class="field">{{ \Carbon\Carbon::parse($entrance->created_at)->format('d.m.Y') }}</div>
+                <div class="field">{{ \Carbon\Carbon::parse($adjustmentEntrance->created_at)->format('d.m.Y') }}</div>
                 <div class="field with_input">
-                    <input type="number" min="0" name="entrances[{{ $entrance->id }}][price]" value="{{ $entrance->price }}">
+                    <input type="number" min="0" name="adjustment_entrances[{{ $adjustmentEntrance->id }}][price]" value="{{ $adjustmentEntrance->price }}">
                 </div>
                 <div class="field with_input">
-                    <input type="number" min="0" name="entrances[{{ $entrance->id }}][count]" value="{{ $entrance->count }}">
+                    <input type="number" min="0" name="adjustment_entrances[{{ $adjustmentEntrance->id }}][count]" value="{{ $adjustmentEntrance->count }}">
                 </div>
             </div>
         @endforeach

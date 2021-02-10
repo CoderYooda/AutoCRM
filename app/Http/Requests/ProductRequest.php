@@ -37,6 +37,7 @@ class ProductRequest extends FormRequest
             'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
             'article' => ['required', 'string', 'max:64'],
+            'min_stock' => ['required', 'integer'],
 
             'storage_zone' => ['string', 'max:2'],
             'storage_rack' => ['string', 'max:2'],
@@ -45,7 +46,8 @@ class ProductRequest extends FormRequest
 
             'image' => ['file', 'mimes:jpg,jpeg,png,gif', 'max:5120'],
 
-            'barcode' => ['nullable', Rule::unique('products', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
+            'barcode' => ['nullable', 'digits_between:13,13', Rule::unique('products', 'barcode')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
+            'barcode_local' => ['nullable', 'digits_between:13,13', Rule::unique('products', 'barcode_local')->where('company_id', Auth::user()->company_id)->ignore($this->id)],
 
             'shop.name' => ['nullable', 'string', 'max:255'],
             'shop.desc' => ['nullable', 'string', 'max:1024'],
@@ -56,7 +58,7 @@ class ProductRequest extends FormRequest
             'price_id' => ['required', 'integer', 'exists:prices,id'],
             'entrances' => ['array'],
             'entrances.*.price' => ['required', 'numeric', 'between:0,999999'],
-            'entrances.*.count' => ['required', 'integer', 'between:0,100'],
+            'entrances.*.count' => ['required', 'integer', 'between:0,1000'],
         ];
 
         if(isset($this['shop']['discounts']['discount'])) {
