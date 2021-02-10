@@ -165,8 +165,6 @@ class ProductDialog extends Modal {
         //Удаляем скрытую корректировку, чтобы не было бага с умножением склада
         let hidden_element = this.current_dialog.querySelector('.entrance.copy.d-none');
 
-        console.log(hidden_element);
-
         if(hidden_element) {
             hidden_element.remove();
         }

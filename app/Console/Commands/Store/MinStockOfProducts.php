@@ -18,7 +18,7 @@ class MinStockOfProducts extends Command
      *
      * @var string
      */
-    protected $signature = 'product:stock';
+    protected $signature = 'product:checkOutOfStock';
 
     /**
      * The console command description.
@@ -44,13 +44,6 @@ class MinStockOfProducts extends Command
      */
     public function handle()
     {
-//        $user = \App\Models\User::where('id',12)->first();
-//        $partner = Partner::where('user_id',$user->id)->get();
-//        $products = Product::whereHas('stores', function($q) use ($user){
-//           $q->where('store_id', $user->current_store);
-//        })->get();
-
-
         $stores = Store::with('products')->get();
 
         foreach ($stores as $store) {
@@ -60,17 +53,14 @@ class MinStockOfProducts extends Command
             foreach ($store->products as $product) {
 
                 $countInStore = $product->getCountInStoreId($product->stores->first()->id);
-                $minCount = $product->stores->first()->pivot->min_stock;
+                $minCount = $store->pivot->min_stock;
 
                 if ($countInStore < $minCount) {
-
-
                     $items[] = [
                         'product_id' => $product->id,
                         'product_article' => $product->article,
                         'product_name' => $product->name,
-                        'price' => floatval($product->stores->find($store->id)->pivot->retail_price),
-
+                        'price' => floatval($store->pivot->retail_price),
                     ];
 
                 }
@@ -84,14 +74,8 @@ class MinStockOfProducts extends Command
                 $stocks->processed = false;
                 $stocks->save();
 
-
-                $stocks = StockOfProduct::where('company_id', $store->company_id)->latest('created_at')->first();
                 SystemMessage::sendToCompany($store->company_id, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\CompaniesStocksOfProduct');
-
             }
-
         }
-
-
     }
 }
