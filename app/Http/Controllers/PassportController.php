@@ -15,8 +15,9 @@ class PassportController extends Controller
         } else {
             $passport = new Passport();
         }
+
         $passport->partner_id = $partner->id;
-        $passport->number = $request['number'];
+        $passport->number = str_replace(' ','',$request['number']);
         $passport->issued_by = $request['issued_by'];
         $passport->issued_date = Carbon::parse($request['issued_date']);
         $passport->issued_place = $request['issued_place'];
