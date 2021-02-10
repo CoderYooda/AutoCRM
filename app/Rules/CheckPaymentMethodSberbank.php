@@ -14,7 +14,11 @@ class CheckPaymentMethodSberbank implements Rule
 
         $response = $api->getOrderStatus(Str::random(36));
 
-        return $response['ErrorCode'] != 5;
+        if($value['login'] != null && $value['password'] != null){
+            return $response['errorCode'] != 5;
+        } else {
+            return true;
+        }
     }
 
     public function message()

@@ -19,6 +19,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
+
         PermissionController::canByPregMatch('Редактировать товары');
 
         return DB::transaction(function () use($request) {

@@ -17,6 +17,11 @@ class ProductRequest extends FormRequest
         return true;
     }
 
+    public function getDTO()
+    {
+        return null;
+    }
+
     public function prepareForValidation()
     {
         if ($this['new_supplier_name'] != null && $this['supplier_id'] == null) {
