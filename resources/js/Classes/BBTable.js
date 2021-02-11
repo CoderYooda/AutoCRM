@@ -157,6 +157,15 @@ class Table {
         return div;
     };
 
+
+    transform_status(val){
+        let div = document.createElement('div');
+        div.classList.add('ico_' + val.ico);
+        div.classList.add('status_ico');
+        div.innerHTML = val.text;
+        return div;
+    };
+
     transform_price(val){
         let div = document.createElement('div');
         div.classList.add('tablePrice');

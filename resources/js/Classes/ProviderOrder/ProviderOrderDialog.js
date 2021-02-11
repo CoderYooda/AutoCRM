@@ -15,7 +15,7 @@ class providerOrderDialog extends Modal{
         this.init();
         if(response && response.products) {
             Object.values(response.products).forEach(product_id => {
-                this.items.insertProduct(product_id, false);
+                this.items.insertProduct(product_id);
             });
         }
     }
@@ -46,8 +46,6 @@ class providerOrderDialog extends Modal{
         });
 
         this.root_dialog.addEventListener('WarrantStored',  () => {
-
-            console.log(1);
 
             let id = this.root_dialog.querySelector('input[name=id]').value;
             if(id !== null) {
