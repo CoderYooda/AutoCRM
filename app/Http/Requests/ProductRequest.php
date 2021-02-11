@@ -37,7 +37,7 @@ class ProductRequest extends FormRequest
             'category_id' => ['required', 'min:0', 'max:255', 'exists:categories,id'],
             'supplier_id' => ['required', 'min:0', 'max:255', 'exists:suppliers,id'],
             'article' => ['required', 'string', 'max:64'],
-            'min_stock' => ['required', 'integer'],
+            'min_stock' => ['integer'],
 
             'storage_zone' => ['string', 'max:2'],
             'storage_rack' => ['string', 'max:2'],

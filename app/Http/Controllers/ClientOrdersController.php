@@ -400,7 +400,10 @@ class ClientOrdersController extends Controller
             ->paginate($size);
 
         foreach ($client_orders as $key => $client_order) {
-            $client_orders[$key]['status'] = Order::$statuses[$client_order->status];
+            $client_orders[$key]['status'] = [
+                'text' => Order::$statuses[$client_order->status],
+                'ico' => $client_order->status
+            ];
             $client_orders[$key]['partner_name'] = $client_order->partner->official_name;
         }
 

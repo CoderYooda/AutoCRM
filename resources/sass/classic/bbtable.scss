@@ -248,6 +248,30 @@
                 content: '';
                 position: absolute;
             }
+
+                .status_ico{
+                    position: relative;
+                    &:before{
+                        content: '';
+                        position: absolute;
+                        right: 2%;
+                        top: 27%;
+                        width: 15px;
+                        height: 15px;
+                        border-radius: 50%;
+                        border: 1px solid #FFF;
+                        box-shadow: 0 0 0 1px #E1E2E1;
+                    }
+                    &.ico_0::before{background-color: #D6D6D6;}
+                    &.ico_1::before{background-color: #F2B657;}
+                    &.ico_2::before{background-color: #7783F3;}
+                    &.ico_3::before{background-color: #81CCEC;}
+                    &.ico_4::before{background-color: #8EED85;}
+                    &.ico_5::before{background-color: #FFE55F;}
+                    &.ico_6::before{background-color: #EC7474;}
+
+                }
+
             &.selected{
                 background: #5181b8 !important;
                 color: #fff;
