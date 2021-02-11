@@ -100,7 +100,9 @@ class Product extends Model
     {
         $store_id = Auth::user()->current_store;
 
-        return $this->stores->find($store_id)->pivot->retail_price;
+        $store = $this->stores->find($store_id);
+
+        return $store && $store->pivot ? $store->pivot->retail_price : 0;
     }
 
     public function fillShopFields($request)
