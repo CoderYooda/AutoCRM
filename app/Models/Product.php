@@ -331,7 +331,7 @@ class Product extends Model
             $price = $lastEntrance->price ?? 0;
         }
 
-        $percent = $this->markup->getPercentByAmount($price);
+        $percent = $this->markup ? $this->markup->getPercentByAmount($price) : 0;
 
         $price += sum_percent($price, $percent);
 
