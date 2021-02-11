@@ -134,7 +134,8 @@ class Product extends Model
 
     public function getMinStock()
     {
-        return $this->stores->where('id', Auth::user()->current_store)->first()->pivot->min_stock;
+        $store = $this->stores->where('id', Auth::user()->current_store)->first();
+        return $store && $store->pivot ? $store->pivot->min_stock : 0;
     }
 
     public function getImagePathAttribute()
