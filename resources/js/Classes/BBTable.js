@@ -320,7 +320,6 @@ class Table {
 
                 let title = document.createElement('div');
                 title.className = 'title';
-
                 if(header_elem.transform != null){ //transform_ico
                     title.appendChild(this[header_elem.transform](elem[header_elem.table_name]));
                 } else {
