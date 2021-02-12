@@ -5,6 +5,9 @@
     <h3 class="result_info">
         Поиск по связке: <span id="manufacturer">{{ $request->manufacturer }}</span> & {{ $request->article }}
     </h3>
+    <h3 class="result_info">
+        Поставщик: <span id="manufacturer">{{ $request->selected_service}}</span>
+    </h3>
 
 </div>
 
