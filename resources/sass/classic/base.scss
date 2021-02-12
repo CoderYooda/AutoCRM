@@ -968,6 +968,22 @@ a.button, button {
     background-color: #1d87cf;
 }
 
+.provider_tabs button.button{
+    padding: 0px 15px;
+    line-height: 26px !important;
+    border-radius: 0 !important;
+    border: none;
+    border-bottom: 4px solid #eee;
+}
+.provider_tabs button.button:hover{
+    border-bottom: 4px solid #1267a0;
+}
+.provider_tabs button.button.active{
+    box-shadow: inset 0 -4px 10px #186ca57d;
+    border-bottom: 4px solid #1267a0;
+    background-color: #1d87cf;
+}
+
 input.sm{
     padding: 0px 5px 0px !important;
     height: 20px !important;
