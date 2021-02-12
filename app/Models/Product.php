@@ -100,7 +100,9 @@ class Product extends Model
     {
         $store_id = Auth::user()->current_store;
 
-        return $this->stores->find($store_id)->pivot->retail_price;
+        $store = $this->stores->find($store_id);
+
+        return $store && $store->pivot ? $store->pivot->retail_price : 0;
     }
 
     public function fillShopFields($request)
@@ -134,7 +136,8 @@ class Product extends Model
 
     public function getMinStock()
     {
-        return $this->stores->where('id', Auth::user()->current_store)->first()->pivot->min_stock;
+        $store = $this->stores->where('id', Auth::user()->current_store)->first();
+        return $store && $store->pivot ? $store->pivot->min_stock : 0;
     }
 
     public function getImagePathAttribute()
@@ -331,7 +334,7 @@ class Product extends Model
             $price = $lastEntrance->price ?? 0;
         }
 
-        $percent = $this->markup->getPercentByAmount($price);
+        $percent = $this->markup ? $this->markup->getPercentByAmount($price) : 0;
 
         $price += sum_percent($price, $percent);
 

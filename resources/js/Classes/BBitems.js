@@ -1,4 +1,5 @@
 class Items {
+
     constructor(object, container, form_name, header, events = []){
         this.container = document.getElementById(container);
 
@@ -493,10 +494,12 @@ class Items {
             this.recalculateItem(body_elem.dataset.id);
         }
     }
+
     addProduct(product){
         let cell = product;
         this.insertProduct(cell);
     }
+
     add(elemWithData, refer)
     {
         let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);

@@ -97,8 +97,7 @@ class ProviderOrdersController extends Controller
             'nds_included' => $provider_order->nds_included ?? true
         ];
 
-        $items = $stock_of_product;
-        foreach ($items as $key => $item) {
+        foreach ($stock_of_product as $key => $item) {
             $items[$key]['product_id'] = $item['product_id'];
             $items[$key]['name'] = $item['product_name'];
             $items[$key]['article'] = $item['product_article'];

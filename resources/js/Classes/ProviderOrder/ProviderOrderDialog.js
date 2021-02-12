@@ -74,8 +74,6 @@ class providerOrderDialog extends Modal{
 
     }
 
-
-
     scanOperation(product_id){
         this.addProduct(product_id);
     }
