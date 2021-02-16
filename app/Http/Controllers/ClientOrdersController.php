@@ -119,7 +119,7 @@ class ClientOrdersController extends Controller
             /** @var ClientOrder $client_order */
             $client_order = ClientOrder::firstOrNew(['id' => $request['id']]);
 
-            if($request->shipping && $client_order->status < 2) {
+            if($request->shipping && ( $client_order->isCanceled || $client_order->isOutcome )) {
                 return response()->json([
                     'system_message' => ['В данный момент отгрузка недоступна.']
                 ], 422);

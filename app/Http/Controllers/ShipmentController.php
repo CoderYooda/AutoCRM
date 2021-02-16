@@ -261,6 +261,7 @@ class ShipmentController extends Controller
                 foreach ($shipment->products as $product) {
                     if ($shipment->clientOrder) {
                         $shipment->clientOrder->status = 'complete';
+                        $shipment->clientOrder->isComplete = true;
                         $shipment->clientOrder->decreaseShippedCount($product->id, $product->count);
                     }
                 }
