@@ -1,15 +1,15 @@
 class Items {
 
-    constructor(object, container, form_name, header, events = []){
+    constructor(object, container, form_name, header, events = []) {
         this.container = document.getElementById(container);
 
-        if(!form_name)
+        if (!form_name)
             throw new Error('Не указано имя формы');
 
-        if(!this.container)
+        if (!this.container)
             throw new Error('Не указан контейнер');
 
-        if(!this.container.hasAttribute('data-items'))
+        if (!this.container.hasAttribute('data-items'))
             throw new Error('Не передан параметр items');
 
         this.events = events;
@@ -17,20 +17,20 @@ class Items {
         this.header = header;
         this.parent_object = object;
 
-        if(this.container.dataset.prefs){
+        if (this.container.dataset.prefs) {
             this.prefs = JSON.parse(this.container.dataset.prefs);
             this.container.removeAttribute('data-prefs');
         }
 
         this.items = JSON.parse(this.container.dataset.items);
 
-        if(this.prefs && this.prefs.use_nds !== null){
+        if (this.prefs && this.prefs.use_nds !== null) {
             this.use_nds = this.prefs.use_nds;
         } else {
             this.use_nds = null;
         }
 
-        if(this.prefs && this.prefs.index !== 'undefined'){
+        if (this.prefs && this.prefs.index !== 'undefined') {
             this.index = this.prefs.index;
             this.item_index = 0;
         } else {
@@ -38,26 +38,25 @@ class Items {
         }
 
 
-
-        if(this.prefs && this.prefs.freeze !== null){
+        if (this.prefs && this.prefs.freeze !== null) {
             this.freeze = this.prefs.freeze;
         } else {
             this.freeze = null;
         }
 
-        if(this.prefs && this.prefs.can_add_items !== null){
+        if (this.prefs && this.prefs.can_add_items !== null) {
             this.can_add_items = this.prefs.can_add_items;
         } else {
             this.can_add_items = false;
         }
 
-        if(this.prefs && this.prefs.nds_included !== null){
+        if (this.prefs && this.prefs.nds_included !== null) {
             this.nds_included = this.prefs.nds_included;
         } else {
             this.nds_included = null;
         }
 
-        if(this.prefs && this.prefs.nds !== null){
+        if (this.prefs && this.prefs.nds !== null) {
             this.nds = this.prefs.nds;
         } else {
             this.nds = null;
@@ -77,16 +76,16 @@ class Items {
         this.draw();
     }
 
-    init(){
+    init() {
         let fn = window.helper.debounce(e => {
-            if(this.items){
+            if (this.items) {
                 this.recalculateTotal();
             }
         }, 300);
 
         let discount = this.parent_object.root_dialog.querySelector('input[name=discount]');
-        if(discount){
-            this.discount =  discount;
+        if (discount) {
+            this.discount = discount;
             discount.addEventListener("keyup", fn);
             discount.addEventListener("paste", fn);
             discount.addEventListener("delete", fn);
@@ -94,18 +93,18 @@ class Items {
         }
 
         let inpercents = this.parent_object.root_dialog.querySelector('input[name=inpercents]');
-        if(inpercents){
+        if (inpercents) {
             this.inpercents = inpercents;
             inpercents.addEventListener("change", fn);
         }
     }
 
-    setItems(items){
+    setItems(items) {
         this.items = items;
         this.draw();
     }
 
-    draw(){
+    draw() {
 
         this.container.innerHTML = '';
         let container = document.createElement('div');
@@ -116,13 +115,13 @@ class Items {
         title_cont.classList.add('title_cont');
         container.appendChild(title_cont);
 
-        let title =  document.createElement('div');
+        let title = document.createElement('div');
         title.classList.add('header_title');
         title.innerText = "Список номенклатур";
         title_cont.appendChild(title);
 
-        if(this.use_nds){
-            let nds_container =  document.createElement('div');
+        if (this.use_nds) {
+            let nds_container = document.createElement('div');
             nds_container.classList.add('nds_container');
             title_cont.appendChild(nds_container);
 
@@ -139,7 +138,7 @@ class Items {
 
             let checkbox = document.createElement('div');
             checkbox.classList.add('checkbox');
-            checkbox.addEventListener('click', ()=> {
+            checkbox.addEventListener('click', () => {
                 this.ndsCnabged();
             });
             nds_container.appendChild(checkbox);
@@ -164,7 +163,7 @@ class Items {
 
             checkbox = document.createElement('div');
             checkbox.classList.add('checkbox');
-            checkbox.addEventListener('click', ()=> {
+            checkbox.addEventListener('click', () => {
                 this.ndsIncludedCnanged();
             });
             nds_container.appendChild(checkbox);
@@ -174,7 +173,7 @@ class Items {
             this.nds_included_input.id = 'nds_included';
             this.nds_included_input.type = 'checkbox';
             this.nds_included_input.checked = this.nds_included;
-            if(this.freeze){
+            if (this.freeze) {
                 this.nds_included_input.disable();
             }
             checkbox.appendChild(this.nds_included_input);
@@ -194,16 +193,16 @@ class Items {
             let header_elem = document.createElement('div');
             header_elem.classList.add('header-elem');
 
-            if(item.width === 'auto'){
+            if (item.width === 'auto') {
                 header_elem.style.flex = 1;
             } else {
                 header_elem.style.width = item.width + 'px';
             }
-            if(item.min_with){
+            if (item.min_with) {
                 header_elem.style.minWidth = item.min_with + 'px';
             }
 
-            if(item.type !== 'hidden')
+            if (item.type !== 'hidden')
                 header.appendChild(header_elem);
 
             let title = document.createElement('span');
@@ -220,7 +219,7 @@ class Items {
         bottom.classList.add('list-bottom');
         container.appendChild(bottom);
 
-        if(this.can_add_items){
+        if (this.can_add_items) {
             let add_button = document.createElement('button');
             add_button.setAttribute('type', 'button');
             add_button.name = 'products';
@@ -238,22 +237,22 @@ class Items {
         placeholder.classList.add('list-placeholder');
         this.body.appendChild(placeholder);
 
-        for (let i = 10; i--; i< 0){
+        for (let i = 10; i--; i < 0) {
             let placeholder_item = document.createElement('div');
             placeholder_item.classList.add('list-placeholder_item');
             placeholder.appendChild(placeholder_item);
             this.header.forEach((item) => {
-                let placeholder_cell= document.createElement('div');
+                let placeholder_cell = document.createElement('div');
                 placeholder_cell.classList.add('list-placeholder_cell');
-                if(item.width === 'auto'){
+                if (item.width === 'auto') {
                     placeholder_cell.style.flex = 1;
                 } else {
                     placeholder_cell.style.width = item.width + 'px';
                 }
-                if(item.min_with){
+                if (item.min_with) {
                     placeholder_cell.style.minWidth = item.min_with + 'px';
                 }
-                if(item.type !== 'hidden')
+                if (item.type !== 'hidden')
                     placeholder_item.appendChild(placeholder_cell);
             });
         }
@@ -264,57 +263,55 @@ class Items {
         });
     }
 
-    ndsCnabged(){
-        if(this.nds_input.value){
-            if(this.nds_input.checked === false) {
+    ndsCnabged() {
+        if (this.nds_input.value) {
+            if (this.nds_input.checked === false) {
                 this.nds_input.checked = true;
-            }
-            else {
-                if(this.nds_input.checked === true) {
+            } else {
+                if (this.nds_input.checked === true) {
                     this.nds_input.checked = false;
                     this.nds_included_input.checked = false;
                 }
             }
         }
-        this.items.forEach((elem, key)=>{
+        this.items.forEach((elem, key) => {
             this.recalculateItem(key);
         })
     }
 
-    ndsIncludedCnanged(){
-        if(this.nds_included_input.value){
-            if(this.nds_included_input.checked === false) {
+    ndsIncludedCnanged() {
+        if (this.nds_included_input.value) {
+            if (this.nds_included_input.checked === false) {
                 this.nds_included_input.checked = true;
-            }
-            else {
-                if(this.nds_included_input.checked === true) {
+            } else {
+                if (this.nds_included_input.checked === true) {
                     this.nds_included_input.checked = false;
                 }
             }
         }
 
-        this.items.forEach((elem, key)=>{
+        this.items.forEach((elem, key) => {
             this.recalculateItem(key);
         })
     }
 
-    removeItem(id){
+    removeItem(id) {
         event.preventDefault();
         let elem = this.body.querySelector('#' + this.form_name + '_' + id);
         elem.remove();
         this.items.splice(
-            this.items.map(function(e){
+            this.items.map(function (e) {
                 return e.key === id
             }), 1
         );
         this.recalculateTotal();
     }
 
-    insertProduct(cell_item, check_isset = true){
+    insertProduct(cell_item, check_isset = true, byScanner = false) {
 
         this.key = null;
 
-        if(this.index === 'ordinal'){
+        if (this.index === 'ordinal') {
             this.key = this.item_index;
             this.item_index++;
         } else {
@@ -323,15 +320,37 @@ class Items {
 
         cell_item.key = this.key;
 
+
         let isset = this.items.map(function (e) {
             return e.id;
         }).indexOf(cell_item.id);
 
-        if(isset >= 0 && check_isset){
+        if (isset >= 0 && check_isset && !byScanner) {
             window.notification.notify('error', 'Товар уже в списке');
+        } else if (isset >= 0 && byScanner) {
+            let object = this;
+            let finded_item = object.items.map(function (e) {
+                if (e.id === cell_item.id) {
+                    return e;
+                }
+            });
+
+            if (finded_item[0]) {
+                finded_item = finded_item[0];
+            }
+            finded_item.count++;
+
+            //Message
+            if (finded_item.key !== finded_item.id) {
+                this.freshCount(finded_item.key, finded_item.count)
+                window.notification.notify('success', 'Колличество товара в списке: ' + finded_item.count);
+            } else {
+                this.freshCount(finded_item.id, finded_item.count)
+                window.notification.notify('success', 'Колличество товара в списке: ' + finded_item.count);
+            }
         } else {
 
-            if(check_isset) {
+            if (check_isset) {
                 this.items.push(cell_item);
                 window.notification.notify('success', 'Товар успешно добавлен в список.');
             }
@@ -342,7 +361,7 @@ class Items {
             body_elem.dataset.id = this.key;
             this.body.prepend(body_elem);
 
-            if(!this.freeze){
+            if (!this.freeze) {
                 let actions = document.createElement('div');
                 actions.classList.add('list-actions');
                 body_elem.appendChild(actions);
@@ -350,7 +369,7 @@ class Items {
                 remove.classList.add('button');
                 remove.classList.add('list-remove');
                 remove.innerText = '✖';
-                remove.addEventListener('click', ()=>{
+                remove.addEventListener('click', () => {
                     this.removeItem(body_elem.dataset.id);
                 });
                 actions.appendChild(remove);
@@ -361,15 +380,15 @@ class Items {
                 let cell = document.createElement('div');
                 cell.classList.add('cell');
 
-                if(item.type === 'hidden')
+                if (item.type === 'hidden')
                     cell.style.display = 'none';
 
-                if(item.width === 'auto'){
+                if (item.width === 'auto') {
                     cell.style.flex = 1;
                 } else {
                     cell.style.width = item.width + 'px';
                 }
-                if(item.min_with){
+                if (item.min_with) {
                     cell.style.minWidth = item.min_with + 'px';
                 }
 
@@ -379,7 +398,7 @@ class Items {
                 title.classList.add('title-' + item.type);
                 cell.appendChild(title);
 
-                switch(item.type) {
+                switch (item.type) {
                     case 'text':
                         title.innerText = cell_item[item.table_name];
                         break;
@@ -395,7 +414,7 @@ class Items {
                     case 'counter':
                         let input = document.createElement("input");
                         let value = 1;
-                        if(cell_item[item.table_name]){
+                        if (cell_item[item.table_name]) {
                             value = cell_item[item.table_name];
                         }
                         input.value = value;
@@ -405,7 +424,7 @@ class Items {
                         input.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
 
                         this.events.forEach(event_item => {
-                            if(event_item.field == item.table_name) {
+                            if (event_item.field == item.table_name) {
 
                                 let types = ['keyup', 'delete', 'paste'];
 
@@ -423,18 +442,22 @@ class Items {
                         input.addEventListener('change', () => {
                             this.recalculateItem(body_elem.dataset.id);
                         });
-                        if(this.freeze){input.disabled = true;}
+                        if (this.freeze) {
+                            input.disabled = true;
+                        }
                         title.appendChild(input);
                         break;
                     case 'hidden':
                         let hidden = document.createElement("input");
-                        hidden.value = cell_item[item.table_name] ?  cell_item[item.table_name] : null;
+                        hidden.value = cell_item[item.table_name] ? cell_item[item.table_name] : null;
                         hidden.type = 'hidden';
                         hidden.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
-                        if(!cell_item[item.table_name]){
+                        if (!cell_item[item.table_name]) {
                             hidden.disabled = true;
                         }
-                        if(this.freeze){hidden.disabled = true;}
+                        if (this.freeze) {
+                            hidden.disabled = true;
+                        }
                         body_elem.appendChild(hidden);
                         break;
                     case 'price':
@@ -444,19 +467,21 @@ class Items {
                         price.setAttribute('min', '1');
                         price.setAttribute('step', '0.1');
                         price.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
-                        price.addEventListener('keyup',  () => {
+                        price.addEventListener('keyup', () => {
                             this.recalculateItem(body_elem.dataset.id);
                         });
-                        price.addEventListener('change',  () => {
+                        price.addEventListener('change', () => {
                             this.recalculateItem(body_elem.dataset.id);
                         });
-                        if(this.freeze){price.disabled = true;}
+                        if (this.freeze) {
+                            price.disabled = true;
+                        }
                         title.appendChild(price);
                         break;
                     case 'passive':
                         let passive = document.createElement("input");
 
-                        if(!this.use_nds && (item.table_name === 'nds' || item.table_name === 'nds_percent')){
+                        if (!this.use_nds && (item.table_name === 'nds' || item.table_name === 'nds_percent')) {
                             passive.value = Number(0).toFixed(2);
                         } else {
                             passive.value = Number(cell_item[item.table_name]).toFixed(2);
@@ -465,13 +490,15 @@ class Items {
                         passive.setAttribute('type', 'number');
                         passive.disabled = true;
                         passive.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
-                        if(this.freeze){passive.disabled = true;}
+                        if (this.freeze) {
+                            passive.disabled = true;
+                        }
                         title.appendChild(passive);
                         break;
                     case 'passive-count':
                         let passive_count = document.createElement("input");
 
-                        if(!this.use_nds && (item.table_name === 'nds' || item.table_name === 'nds_percent')){
+                        if (!this.use_nds && (item.table_name === 'nds' || item.table_name === 'nds_percent')) {
                             passive_count.value = Number(0).toFixed(2);
                         } else {
                             passive_count.value = Number(cell_item[item.table_name]);
@@ -480,14 +507,16 @@ class Items {
                         passive_count.setAttribute('type', 'number');
                         passive_count.disabled = true;
                         passive_count.name = this.form_name + '[' + this.key + '][' + item.table_name + ']';
-                        if(this.freeze){passive_count.disabled = true;}
+                        if (this.freeze) {
+                            passive_count.disabled = true;
+                        }
                         title.prepend(passive_count);
                         break;
                     default:
                         throw new Error('Неверный тип данных');
 
                 }
-                if(item.type !== 'hidden')
+                if (item.type !== 'hidden')
                     body_elem.appendChild(cell);
             });
 
@@ -495,18 +524,17 @@ class Items {
         }
     }
 
-    addProduct(product){
+    addProduct(product, byScanner = false) {
         let cell = product;
-        this.insertProduct(cell);
+        this.insertProduct(cell, true, byScanner);
     }
 
-    add(elemWithData, refer)
-    {
+    add(elemWithData, refer) {
         let cell_item = window[refer].getProductDataById(elemWithData.dataset.article_id);
         this.insertProduct(cell_item);
     }
 
-    recalculateItem(id){
+    recalculateItem(id) {
         id = parseInt(id);
 
         let object = this;
@@ -524,25 +552,25 @@ class Items {
         let vnds = nds ? Number(nds.value) : 0;
         let vtotal = total ? Number(total.value) : 0;
 
-        if(this.use_nds && this.nds_input.checked && !this.nds_included_input.checked){
+        if (this.use_nds && this.nds_input.checked && !this.nds_included_input.checked) {
             vnds_percent = 20;
             vtotal = vprice * vcount;
             vnds = vtotal / 100 * vnds_percent;
             vtotal = vnds + vtotal;
-        } else if(this.use_nds && this.nds_input.checked && this.nds_included_input.checked){
+        } else if (this.use_nds && this.nds_input.checked && this.nds_included_input.checked) {
             vnds_percent = 20;
             vtotal = vprice * vcount;
-            vnds = vtotal / ( 100 + vnds_percent ) * vnds_percent;
+            vnds = vtotal / (100 + vnds_percent) * vnds_percent;
         } else {
             vtotal = vprice * vcount;
             vnds = 0.00;
             vnds_percent = 0;
         }
-        if(nds_percent)
+        if (nds_percent)
             nds_percent.value = vnds_percent ? vnds_percent.toFixed(2) : 0;
-        if(nds)
+        if (nds)
             nds.value = vnds ? vnds.toFixed(2) : 0;
-        if(total)
+        if (total)
             total.value = vtotal ? vtotal.toFixed(2) : 0;
 
         object.items.map(function (e) {
@@ -556,24 +584,30 @@ class Items {
         this.recalculateTotal();
     }
 
-    recalculateTotal(){
+    freshCount(id, val) {
+        let elem = this.container.querySelector('input[name="products[' + id + '][count]"]');
+        elem.value = val;
+        return true;
+    }
+
+    recalculateTotal() {
         let total_price = 0;
         let total_count = 0;
         let itogo = 0;
 
-        this.items.map(function(e){
+        this.items.map(function (e) {
             total_price = total_price + Number(e.total);
             total_count = total_count + Number(e.count);
         });
 
-        if(this.inpercents){
-            if(this.inpercents && parseInt(this.inpercents.value) === 1){
+        if (this.inpercents) {
+            if (this.inpercents && parseInt(this.inpercents.value) === 1) {
                 itogo = total_price - (total_price / 100 * Number(this.discount.value).toFixed(2));
             } else {
                 itogo = total_price - Number(this.discount.value).toFixed(2);
             }
 
-            if(parseInt(this.inpercents.value) && (parseInt(this.discount.value) >= 100)){
+            if (parseInt(this.inpercents.value) && (parseInt(this.discount.value) >= 100)) {
                 this.discount.value = 100;
             }
             let discount_val = this.discount.value + (parseInt(this.inpercents.value) ? ' %' : ' р');
@@ -596,4 +630,5 @@ class Items {
     }
 
 }
+
 export default Items

@@ -879,7 +879,7 @@ class storePage extends Page{
         } else if(this.active_tab === 'client_orders'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
-                {min_with: 130, width: 200, name: 'Статус', table_name: 'status', transform: 'transform_status'},
+                {min_with: 180, width: 200, name: 'Статус', table_name: 'status', transform: 'transform_status'},
                 {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner_name'},
                 {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
                 {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount', transform: 'transform_price'},

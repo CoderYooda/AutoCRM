@@ -77,6 +77,10 @@ class createEntrance extends Modal{
         });
     }
 
+    scanOperation(id, product){
+        this.items.addProduct(product, true);
+    }
+
     saveAndClose(elem){
         if(window.isXHRloading) return;
 

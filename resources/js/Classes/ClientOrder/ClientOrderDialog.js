@@ -119,8 +119,8 @@ class clientorderDialog extends Modal{
 
     }
 
-    scanOperation(product_id){
-        this.addProduct(product_id);
+    scanOperation(id, product){
+        this.items.addProduct(product, true);
     }
 
     addProduct(elem_or_id, refer = null){

@@ -17,7 +17,7 @@ class shipmentDialog extends Modal{
     }
 
     scanOperation(id, product){
-        this.items.addProduct(product);
+        this.items.addProduct(product, true);
     }
 
     printScore() {

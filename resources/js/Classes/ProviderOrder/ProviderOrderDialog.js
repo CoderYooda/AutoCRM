@@ -74,8 +74,8 @@ class providerOrderDialog extends Modal{
 
     }
 
-    scanOperation(product_id){
-        this.addProduct(product_id);
+    scanOperation(id, product){
+        this.items.addProduct(product, true);
     }
 
     freshContent(id, callback = null){
