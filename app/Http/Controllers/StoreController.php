@@ -9,9 +9,9 @@ use App\Http\Requests\StoreGetRequest;
 use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
-use App\Models\Product;
 use App\Models\Company;
 use App\Models\ImportHistory;
+use App\Models\Product;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -157,6 +157,68 @@ class StoreController extends Controller
         return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data', 'breadcrumbs'));
     }
 
+    public function exportToCSV($hash)
+    {
+
+        $store = Store::where('hash', $hash)->first();
+
+        if (!$store) {
+            return response()->json([
+                'message' => 'Склад не найден'
+            ], 404);
+        }
+
+        $products = Product::selectRaw(
+            'products.id,
+                 products.article as Артикул,
+                 products.name as Наименование,
+                 products.barcode as Штрихкод,
+                 suppliers.name as Производитель,
+                 categories.name as Категория,
+                 SUM(article_entrance.count) - SUM(article_entrance.released_count) as Колличество')
+            ->leftJoin('article_store', 'products.id', '=', 'article_store.product_id')
+            ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('article_entrance', 'products.id', '=', 'article_entrance.product_id')
+            ->where('article_store.store_id', '=', $store->id)
+            ->groupBy('products.id')
+            ->get();
+//
+        foreach ($products as $product) {
+            $product->Цена = $product->getPrice();
+        }
+        $products = $products->makeHidden(['id','stores','markup'])->toArray();
+
+        $columns = array_keys($products[0]);
+
+        $headers = [
+            "Content-type" => 'application/excel',
+            "Content-Disposition" => "attachment; filename=products_" . " (" . date("d.m.Y") . ")" . ".csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+
+        $callback = function () use ($products, $columns) {
+
+            $file = fopen('php://output', 'w');
+            fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM
+            fputcsv($file, $columns, ';', '"');
+
+            foreach ($products as $row) {
+                fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+                fputcsv($file, $row, ';', '"');
+            }
+            fclose($file);
+
+        };
+
+
+        return \Response::stream($callback, 200, $headers);
+
+    }
+
     public static function entrance_refundsTab($request)
     {
         $data = EntranceRefundController::getEntranceRefunds($request);
@@ -286,8 +348,7 @@ class StoreController extends Controller
                     'barcode_warehouse' => (string)$product->barcode_warehouse
                 ];
             }
-        }
-        else {
+        } else {
             #Парсим файл txt или csv формата
 
             if (($handle = fopen($file, 'r')) !== FALSE) {
@@ -351,6 +412,7 @@ class StoreController extends Controller
         if ($store->exists) {
             $message = 'Склад обновлен';
         } else {
+            $store->generateHash();
             $message = 'Склад создан';
         }
         $store->fill($request->all());
@@ -436,11 +498,11 @@ class StoreController extends Controller
 
         $brands = array_keys($analogues);
 
-        $brands = array_map(function ($brand){
+        $brands = array_map(function ($brand) {
             return strtoupper($brand);
         }, $brands);
 
-        $analogueProducts = $analogueProducts->filter(function ($product) use($brands, $analogues) {
+        $analogueProducts = $analogueProducts->filter(function ($product) use ($brands, $analogues) {
             return in_array(strtoupper($product->supplier->name), $brands);
         });
 
