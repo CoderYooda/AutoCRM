@@ -30,4 +30,9 @@ class Store extends Model
         return $this->belongsToMany(Product::class, 'article_store', 'store_id', 'product_id')
             ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal','min_stock','retail_price');
     }
+
+    public function generateHash()
+    {
+        $this->hash = \Hash::make($this->id . env('APP_DOMAIN') . $this->company_id);
+    }
 }

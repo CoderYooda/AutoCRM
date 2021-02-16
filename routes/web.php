@@ -52,6 +52,9 @@ Route::post('/tariff/get_payment', 'TariffController@takePayment')->name('TakePa
 Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('CheckPayment');
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
+#Экспорт товаров склада
+Route::get('/store/export/{hash}','StoreController@exportToCSV')->name('ExportProducts');
+
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
     Route::post('/prices', 'PriceController@store')->name('StorePrice');
