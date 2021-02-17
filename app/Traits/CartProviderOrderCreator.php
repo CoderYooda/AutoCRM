@@ -76,7 +76,7 @@ trait CartProviderOrderCreator
             'manager_id' => $this->user->partner->id,
             'nds' => 1,
             'nds_included' => 1,
-            'itogo' => $totalPrice
+            'summ' => $totalPrice
         ]);
 
         foreach ($products as $product) {
