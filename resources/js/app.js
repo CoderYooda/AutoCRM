@@ -27,8 +27,8 @@ window.debug = false;
 import Sortable from 'sortablejs';
 import IMask from 'imask';
 
-//import { Russian } from "flatpickr/dist/l10n/ru";
-//window.flatpickr.localize(Russian);
+import { Russian } from "flatpickr/dist/l10n/ru";
+window.flatpickr.localize(Russian);
 import Pagination from './Classes/Pagination.js';
 import AxForm from './Classes/Form.js';
 import Helper from './Classes/Helper.js';
