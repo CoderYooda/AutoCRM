@@ -24,9 +24,12 @@
             <span class="item-title _500">Закупочная цена</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ correct_price($product->stores->find(Auth::user()->current_store)->pivot->retail_price ?? '0') }}
+                   @if($priceSource != 'purchase')
+                        {{ correct_price(DB::table('article_entrance')->where('product_id', $product->id)->orderByDesc('id')->first()->price  ?? '0') }}
+                    @else
+                        {{ correct_price($product->stores->find(Auth::user()->current_store)->pivot->retail_price  ?? '0') }}
+                    @endif
                 </span>
-                руб.
             </div>
             <div class="item-tag tag hide">
             </div>
