@@ -38,8 +38,10 @@
     <div class="form-group">
         <label>Минимальный остаток на складе <i id="trin_preload" class="fa fa-spinner fa-spin hide"></i></label>
         <input  type="text" name="min_stock" id="product_dialog_focused"
-                @if(isset($product))value="{{ $product->getMinStock() }}"@endif
-                @if(isset($request) && $request['min_stock'] != NULL)value="{{ $request['min_stock'] }}"@endif
+                @if(isset($product))value="{{ $product->getMinStock() }}"
+                @elseif (isset($request) && $request['min_stock'] != NULL)value="{{ $request['min_stock'] }}"
+                @else value ="0"
+                @endif
                 class="form-control" placeholder="Кол-во шт.">
     </div>
 
