@@ -159,7 +159,6 @@ class StoreController extends Controller
 
     public function exportToCSV($hash)
     {
-
         $store = Store::where('hash', $hash)->first();
 
         if (!$store) {
