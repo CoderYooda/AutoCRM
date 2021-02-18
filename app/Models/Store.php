@@ -33,6 +33,6 @@ class Store extends Model
 
     public function generateHash()
     {
-        $this->hash = \Hash::make($this->id . env('APP_DOMAIN') . $this->company_id);
+        $this->hash = md5($this->id . env('APP_DOMAIN') . $this->company_id);
     }
 }
