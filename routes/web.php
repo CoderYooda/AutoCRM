@@ -318,6 +318,7 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::get('/documents/{document}', 'DocumentController@show')->name('DocumentShow');
         Route::post('/documents/side_info', 'DocumentController@getPartnerSideInfo')->name('GetDocumentPartnerSideInfo');
         Route::get('/document/{document}', 'DocumentController@show')->name('PrintDocument');
+        Route::get('/documents/get_requisites/{price}' , 'DocumentController@getRequisites')->name('getRequisites');
 
 
         #Отчеты
