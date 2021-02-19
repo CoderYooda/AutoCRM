@@ -415,8 +415,6 @@
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
 
-            {{ $client_order->status }}
-
             @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== \App\Models\Order::CANCELED_STATUS && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn  mr-15" @if($client_order->status < 2) disabled @endif onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
             @endif
