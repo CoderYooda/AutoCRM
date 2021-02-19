@@ -4,6 +4,7 @@
     <div class="m-15 box">
 
         <button onclick="openDialog('storeImportDialog')" class="button primary float-right m-15">Импорт товаров</button>
+        <a class="button primary float-right m-15" href="{{ route('ExportProducts',['hash' => \App\Models\Store::where('id',Auth::user()->current_store)->first()->hash])}}">Экспорт товаров в CSV</a>
 
         <div class="m-15">
             <h2 class="mt-0 mb-0 style_header">Магазины</h2>

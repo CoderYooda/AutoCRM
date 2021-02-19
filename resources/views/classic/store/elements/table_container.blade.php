@@ -27,8 +27,6 @@
                 <button type="button" onclick="{{ $class }}.openProductModal()" class="button primary ml-15">Новый товар</button>
             @endcan
 
-                <a class="button primary ml-15" href="{{ route('ExportProducts',['hash' => \App\Models\Store::where('id',Auth::user()->current_store)->first()->hash])}}">Экспорт товаров в CSV</a>
-
         </div>
     </div>
     <div class="box h-100 d-flex" style="flex-direction: column">

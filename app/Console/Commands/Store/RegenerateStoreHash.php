@@ -25,7 +25,7 @@ class RegenerateStoreHash extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Комманда генерирует хеш для каждого склада в md5';
 
     /**
      * Create a new command instance.
@@ -50,6 +50,8 @@ class RegenerateStoreHash extends Command
             $store->generateHash();
             $store->save();
         }
+        $this->info('Хеш для складов успешно перегенерирован');
+
         return 0;
     }
 }
