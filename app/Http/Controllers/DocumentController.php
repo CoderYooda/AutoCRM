@@ -330,4 +330,18 @@ class DocumentController extends Controller
 
         return $documents;
     }
+
+    public static function getRequisites ($price) {
+
+        $strPrice = num2str($price);
+        $strPrice = mb_ucfirst($strPrice);
+
+        $comany = Auth::user()->company;
+        $company_name = $comany->opf. ' ' . $comany->name;
+        $company_id = $comany->id;
+
+        return view('documents.requisites', compact('strPrice','company_name','price','company_id'));
+
+
+    }
 }

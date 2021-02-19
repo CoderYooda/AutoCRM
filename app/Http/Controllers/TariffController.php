@@ -180,7 +180,8 @@ class TariffController extends Controller
 
         if($request->expectsJson()){
             return response()->json([
-                'redirect' => $payment->paymentUrl
+                'redirect' => $payment->paymentUrl,
+                'price' => $payment->add_balance
             ]);
         } else {
             return $payment;

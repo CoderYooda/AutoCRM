@@ -40,6 +40,7 @@
                             </ul>
                             <div class="text-center p-3">
                                 <button class="button primary" onclick="settings.getPayment(30)">Оплатить</button>
+                                <button class="button primary" onclick="settings.printRequisites(30)">Скачать реквизиты</button>
                             </div>
                         </div>
                     </div>
@@ -62,6 +63,7 @@
                             </ul>
                             <div class="text-center p-3">
                                 <button class="button primary" onclick="settings.getPayment(180)">Оплатить</button>
+                                <button class="button primary" onclick="settings.printRequisites(180)">Скачать реквизиты</button>
                             </div>
                         </div>
                     </div>
@@ -84,6 +86,7 @@
                             </ul>
                             <div class="text-center p-3">
                                 <button class="button primary" onclick="settings.getPayment(360)">Оплатить</button>
+                                <button class="button primary" onclick="settings.printRequisites(360)">Скачать реквизиты</button>
                             </div>
                         </div>
                     </div>
