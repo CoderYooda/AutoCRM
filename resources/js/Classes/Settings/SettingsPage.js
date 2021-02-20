@@ -296,21 +296,22 @@ class settingsPage{
         });
     }
 
-    async getPaymentPrice(tariff_id){
+    printRequisites(tariff_id){
         let data = {tariff_id: tariff_id};
-        let response = await axios({
+        axios({
             method: 'POST',
             url: '/tariff/get_payment',
             data: data
-        });
-        return response.data.price;
-    }
+        }).then(({data})=>{
+            console.log(data)
 
-    async printRequisites(tariff_id){
-        let price = await this.getPaymentPrice(tariff_id);
-        let url = '/documents/get_requisites/' + price;
-        window.open(url).print();
-        };
+                let price = data.price;
+                let url = '/documents/get_requisites/' + price;
+                window.open(url).print();
+
+        })
+
+    }
 
     checkPayment(order_id){
         axios({
