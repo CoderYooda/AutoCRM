@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
 use App\Models\Shipment;
+use App\Models\Store;
 use App\Models\User;
 use App\Models\Warrant;
 use App\Observers\ProductObserver;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -94,6 +96,10 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::directive('elsecan', function($expression) {
             return "<?php elseif (Gate::check{$expression}): ?>";
+        });
+
+        Route::bind('store_hash', function ($value) {
+            return Store::query()->where('hash', $value)->first() ?? abort(404);
         });
     }
 

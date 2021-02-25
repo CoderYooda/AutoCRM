@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Shop;
-use App\Models\Supplier;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class SearchController extends Controller
 {
@@ -53,23 +52,31 @@ class SearchController extends Controller
 
         $brands = [];
 
-        if($this->shop->supplier_offers) {
+        if ($this->shop->supplier_offers) {
             /** @var ProviderInterface $provider */
             foreach ($providers->activated() as $provider_key => $provider) {
                 try {
                     $brands = array_merge($brands, $provider->searchBrandsCount($request->search));
-                }
-                catch (\Exception $exception) {
+                } catch (\Exception $exception) {
 
                 }
             }
         }
 
-        $brands = collect($brands)->unique(['brand', 'article'])->toArray();
+        usort($brands, function ($item) {
+            return isset($item['searchArticle']);
+        });
+        $brands = array_reverse($brands);
+
+        $brands = collect($brands)->unique(function ($item) {
+            return strtolower($item['brand']);
+        })->toArray();
+
 
         foreach ($products as $product) {
 
-            if($this->isBrandAlreadyInArray($product->supplier->name, $product->article, $brands)) continue;
+            if ($this->isBrandAlreadyInArray($product->supplier->name, $product->article, $brands)) continue;
+
 
             $brands[] = [
                 'article' => $product->article,
@@ -91,7 +98,7 @@ class SearchController extends Controller
             $brand = strtoupper($info['brand']);
             $article = strtoupper($info['article']);
 
-            if($brand == $searchBrand && $article == $searchArticle) return true;
+            if ($brand == $searchBrand && $article == $searchArticle) return true;
         }
 
         return false;
@@ -102,7 +109,7 @@ class SearchController extends Controller
         $product = Product::with('stores')
             ->where('company_id', $this->shop->company_id)
             ->where('article', $request->article)
-            ->whereHas('supplier', function (Builder $query) use($request) {
+            ->whereHas('supplier', function (Builder $query) use ($request) {
                 $query->where('name', $request->manufacturer);
             })
             ->first();
@@ -110,15 +117,15 @@ class SearchController extends Controller
         $providersOrders = [];
 
         foreach ($providers->activated() as $provider_key => $provider) {
+            if (isset($request->searchArticle)) {
+                try {
+                    $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->searchArticle, $request->manufacturer);
+                } catch (\Exception $exception) {
 
-            try {
-                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
-            }
-            catch (\Exception $exception) {
-                $providersOrders[$provider_key] = [
-                    'originals' => [],
-                    'analogues' => []
-                ];
+                    $providersOrders[$provider_key] = $this->trySeacrhByArticleAndBrand($provider, $request->manufacturer, $request->article);
+                }
+            } else {
+                $providersOrders[$provider_key] = $this->trySeacrhByArticleAndBrand($provider, $request->manufacturer, $request->article);
             }
 
             $this->applyPriceSettingsOnOrders($providersOrders[$provider_key]);
@@ -134,14 +141,26 @@ class SearchController extends Controller
         ]);
     }
 
+    protected function trySeacrhByArticleAndBrand(ProviderInterface $provider, $brand, $article)
+    {
+        try {
+            $providersOrders = $provider->getStoresByArticleAndBrand($article, $brand);
+        } catch (\Exception $exception) {
+            $providersOrders = [
+                'originals' => [],
+                'analogues' => []
+            ];
+        }
+        return $providersOrders;
+    }
+
     public function providerOffersFilter(Request $request, Providers $providers)
     {
         $provider = $providers->find($request->selected_service);
 
         try {
             $orders = $provider->getStoresByArticleAndBrand($request->article, $request->manufacturer);
-        }
-        catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $orders = [
                 'originals' => [],
                 'analogues' => []
@@ -154,11 +173,11 @@ class SearchController extends Controller
 
         foreach (['originals', 'analogues'] as $type) {
 
-            if($request->field) {
+            if ($request->field) {
                 $orders[$type] = collect($orders[$type])->sortBy($request->field, $request->is_desc ? SORT_DESC : SORT_ASC)->toArray();
             }
 
-            if($request->is_desc == true) $orders[$type] = array_reverse($orders[$type]);
+            if ($request->is_desc == true) $orders[$type] = array_reverse($orders[$type]);
         }
 
         $orders = $orders->toArray();
