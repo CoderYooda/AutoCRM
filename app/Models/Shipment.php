@@ -6,9 +6,9 @@ use App\Traits\DocumentableTrait;
 use App\Traits\HasManagerAndPartnerTrait;
 use App\Traits\OwnedTrait;
 use App\Traits\PayableTrait;
-use Illuminate\Database\Eloquent\Model;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Shipment extends Model
@@ -134,22 +134,30 @@ class Shipment extends Model
 
         foreach ($products as $product) {
 
-            for($i = $product->count - $product->refunded_count; $i > 0; $i--) {
+            $product_count = $product->count;
+
+            for ($i = $product->count - $product->refunded_count; $i > 0; $i--) {
 
                 if ($amount == 0) break;
 
                 if ($product->refunded_count >= $product->count) continue;
 
-                $product->count++;
-                $amount--;
-
                 DB::table('article_shipment')
                     ->where('id', $product->id)
                     ->increment('refunded_count', 1);
+                DB::table('article_entrance')
+                    ->where('product_id', $product->product_id)
+                    ->where('released_count', $product_count)
+                    ->decrement('released_count', 1);
+
+                $product->count++;
+                $product_count--;
+                $amount--;
 
                 if (!isset($entrances[$product->entrance_id])) $entrances[$product->entrance_id] = 0;
                 $entrances[$product->entrance_id]++;
             }
+
         }
 
         return $entrances;
