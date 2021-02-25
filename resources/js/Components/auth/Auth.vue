@@ -7,57 +7,60 @@
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Фамилия</label>
-                        <input v-model="registerData.surname" class="form-control" v-bind:class="{ 'is-invalid': formErrors.surname }" placeholder="" />
+                        <input v-model="registerData.surname" class="form-control" v-bind:class="{'is-invalid' : !!$store.getters.register_errors.surname}" placeholder="" />
                     </div>
-                    <div v-if="formErrors.surname" class="invalid-text"><div class="left arrow"></div>{{ formErrors.surname[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.surname" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_surname_error }}</div>
                 </div>
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Имя</label>
-                        <input v-model="registerData.name" class="form-control" v-bind:class="{ 'is-invalid': formErrors.name }" placeholder="" />
+                        <input v-model="registerData.name" class="form-control" v-bind:class="{ 'is-invalid': !!$store.getters.register_errors.name }" placeholder="" />
                     </div>
-                    <div v-if="formErrors.name" class="invalid-text"><div class="left arrow"></div>{{ formErrors.name[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.name" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_errors.name[0] }}</div>
                 </div>
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Отчество</label>
-                        <input v-model="registerData.patronymic" class="form-control" v-bind:class="{ 'is-invalid': formErrors.patronymic }" placeholder="" />
+                        <input v-model="registerData.patronymic" class="form-control" v-bind:class="{ 'is-invalid': !!$store.getters.register_errors.patronymic }" placeholder="" />
                     </div>
-                    <div v-if="formErrors.patronymic" class="invalid-text"><div class="left arrow"></div>{{ formErrors.patronymic[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.patronymic" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_errors.patronymic[0] }}</div>
                 </div>
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Номер телефона</label>
-                        <input v-model="registerData.phone" class="form-control" v-mask="phoneMask" v-bind:class="{ 'is-invalid': formErrors.phone }" placeholder="" />
+                        <input v-model="registerData.phone" class="form-control" v-mask="phoneMask" v-bind:class="{ 'is-invalid': !!$store.getters.register_errors.phone }" placeholder="" />
                     </div>
-                    <div v-if="formErrors.phone" class="invalid-text"><div class="left arrow"></div>{{ formErrors.phone[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.phone" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_errors.phone[0] }}</div>
                 </div>
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Реферальный код</label>
-                        <input v-model="registerData.referal" v-bind:class="{ 'is-invalid': formErrors.referal }" class="form-control" placeholder="" />
+                        <input v-model="registerData.referal" v-bind:class="{ 'is-invalid': !!$store.getters.register_errors.referal }" class="form-control" placeholder="" />
                     </div>
-                    <div v-if="formErrors.referal" class="invalid-text"><div class="left arrow"></div>{{ formErrors.referal[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.referal" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_errors.referal[0] }}</div>
                 </div>
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Пароль</label>
-                        <input v-model="registerData.password" class="form-control" type="password" v-bind:class="{ 'is-invalid': formErrors.password }" placeholder="">
+                        <input v-model="registerData.password" class="form-control" type="password" v-bind:class="{ 'is-invalid': !!$store.getters.register_errors.password }" placeholder="">
                     </div>
-                    <div v-if="formErrors.password" class="invalid-text"><div class="left arrow"></div>{{ formErrors.password[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.password" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_errors.password[0] }}</div>
                 </div>
                 <div class="form-group relative">
                     <div class="d-flex">
                         <label class="" for="">Подтверждение</label>
-                        <input v-model="registerData.password_confirmation" class="form-control" type="password" v-bind:class="{ 'is-invalid': formErrors.password_confirmation }"placeholder="">
+                        <input v-model="registerData.password_confirmation" class="form-control" type="password" v-bind:class="{ 'is-invalid': !!$store.getters.register_errors.password_confirmation }"placeholder="">
                     </div>
-                    <div v-if="formErrors.password_confirmation" class="invalid-text"><div class="left arrow"></div>{{ formErrors.password_confirmation[0] }}</div>
+                    <div v-if="!!$store.getters.register_errors.password_confirmation" class="invalid-text"><div class="left arrow"></div>{{ this.$store.getters.register_errors.password_confirmation[0] }}</div>
                 </div>
-                <div v-if="$store.getters.needSmsConfirm" class="form-group relative">
+                <div v-if="$store.getters.need_sms_confirmation" class="form-group relative">
                     <div class="d-flex">
                         <label class="" >SMS код</label>
                         <input v-model="registerData.sms_code" class="form-control" placeholder="">
                     </div>
+                </div>
+                <div v-if="!!$store.getters.auth_service_message" class="form-group">
+                    <div class="card sys_mess">{{ this.$store.getters.auth_service_message }}</div>
                 </div>
                 <div class="form-group" style="margin-top: 30px">
                     <button type="button" class="button auth_butt" v-on:click="register">Войти</button>
@@ -93,14 +96,6 @@
                 }
             }
         },
-        watch: {
-            registerData :{
-                handler() {
-                    this.formErrors = {};
-                },
-                deep: true,
-            }
-        },
         beforeMount(){
         },
         mounted() {
@@ -110,23 +105,28 @@
         },
         methods:{
             login: function () {
-                let data = this.loginData;
-                this.$store.dispatch('login', data)
-                    .then(() => this.$router.push('/'))
-                    .catch(err => console.log(err))
+                this.$store.dispatch('login', this.loginData)
+                    .then(() => {
+                        this.$router.push('/');
+                    });
             },
             register: function () {
                 this.$store.dispatch('register', this.registerData)
-                    .then(() => this.$router.push('/'))
-                    .catch(err => {
-                        this.formErrors = err.response.data.messages;
-                    });
+                    .then(() => this.$router.push('/')).catch((err) => {
+                        console.log(this.$store.getters.need_sms_confirmation);
+                });
             },
         }
     }
 </script>
 
 <style scoped>
+    .sys_mess{
+        background: #ea6a6a;
+        color: #fff;
+        border-radius: 3px;
+        padding: 6px 10px;
+    }
     #auth_form{
         position: absolute;
         top: 0;

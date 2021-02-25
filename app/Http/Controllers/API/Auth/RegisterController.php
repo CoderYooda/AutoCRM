@@ -2,16 +2,37 @@
 
 namespace App\Http\Controllers\API\Auth;
 
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingsController;
+use App\Models\Cashbox;
+use App\Models\Company;
+use App\Models\Partner;
 use App\Models\SMS;
 use App\Models\SmsConfirmation;
+use App\Models\Store;
+use App\Models\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\SmsController;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\API\System\SmsController;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
+
+    use RegistersUsers;
+
+    protected $redirectTo = '/';
+
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
     protected function validator($request)
     {
         $request['phone'] = str_replace(array('(', ')', ' ', '-', '+'), '', $request['phone']);
@@ -35,7 +56,9 @@ class RegisterController extends Controller
                 return response()->json(['messages' => $validation->errors()],422);
             }
         }
-        if(!$this->isSmsConfirmed($request)){
+        $confirmed = $request['sms_code'] !== null ? SmsController::confirmSms($request) : false;
+
+        if(!$confirmed){
             # Если телефон не подтвержден
 
             if($this->isSmsBlocked($request)){
@@ -47,12 +70,10 @@ class RegisterController extends Controller
                 ],422);
             } else {
                 # Если телефон не заблокирован
-
                 $sms = $this->sendConfirmSms($request['phone']);
-
                 return response()->json([
                     'needSmsConfirm' => true,
-                ],200);
+                ],422);
             }
         } else {
             # Если телефон подтвержден
@@ -62,10 +83,10 @@ class RegisterController extends Controller
             $user = $this->create($request->all());
             $this->guard()->login($user);
 
-            $redirect = '/';
-            $this->registered($request, $user) ?: $redirect = $this->redirectPath();
+//            $redirect = '/';
+//            $this->registered($request, $user) ?: $redirect = $this->redirectPath();
 
-            return response()->json(['redirect' => $redirect],200);
+            return response()->json(['token' => $user->api_token, 'user' => $user],200);
         }
 
 //        if(SmsController::smsConfirmed($request)){
@@ -119,5 +140,69 @@ class RegisterController extends Controller
     private function isSmsBlocked($request){
         $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
         return $sms != null && $sms->isblocked;
+    }
+
+    protected function create(array $data)
+    {
+//        $name = explode( ' ', $data['name'] );
+
+//        if(count($name) >= 2){
+//            $name = $name[1];
+//        } else {
+//            $name = $data['name'];
+//        }
+
+        $user = User::create([
+            'phone' => $data['phone'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $company = new Company();
+        $company->name = 'Новая компания';
+        $company->payed_days = Carbon::now()->timestamp + (86400 * 14);
+        $company->save();
+
+        $user->company()->associate($company);
+        $user->save();
+
+        $roles = RoleController::createStartRoles($company);
+        $user->assignRole($roles['main']);
+        SettingsController::createCompanySettingsPack($company, $roles['default']);
+
+        $store = new Store();
+        $store->company_id = $company->id;
+        $store->type = 'casual';
+        $store->locked = 0;
+        $store->name = 'Мой магазин';
+        $store->save();
+
+        $user->current_store = $store->id;
+        $user->save();
+
+        $cashbox = new Cashbox();
+        $cashbox->company_id = $company->id;
+        $cashbox->manager_id = $user->id;
+        $cashbox->name = 'Основная касса';
+        $cashbox->balance = 0.00;
+        $cashbox->save();
+
+        $partner = new Partner();
+        $partner->type = 0;
+        $partner->user_id = $user->id;
+        $partner->category_id = 5; //Сотрудник
+        $partner->fio = $data['surname'] . ' ' . $data['name'] . ' ' . $data['patronymic'];
+        $partner->company_id = $company->id;
+        $partner->store_id = $store->id;
+        $phones_str = '';
+        foreach($partner->phones as $phone){
+            $phones_str .= $phone->number;
+        }
+        $partner->save();
+
+        Company::flushEventListeners();
+
+        Artisan::call('categories:init', ['company' => $company->id]);
+
+        return $user;
     }
 }

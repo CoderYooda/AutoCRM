@@ -74,7 +74,8 @@ class RegisterController extends Controller
                         'service_message' => 'Слишком частая отправка сообщений. Телефон заблокирован'
                     ],422);
                 } else {
-                    $sms = SmsController::sendTo($request['phone']);
+
+                    $sms = 1;//SmsController::sendTo($request['phone']);
                     return response()->json([
                         'sms' => $sms,
                         'phone' => $request['phone']
@@ -108,7 +109,6 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-
         $name = explode( ' ', $data['name'] );
 
         if(count($name) >= 2){

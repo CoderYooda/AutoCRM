@@ -16,9 +16,6 @@ Route::namespace('API')->group(function() {
 });
 
 Route::namespace('API')->middleware('auth:api')->group(function() {
-
-
-
     #Категории
     Route::get('/categories/{category}',            'CategoryController@show')->name('categories.show');
     Route::get('/categories/{category}/children',   'CategoryController@children')->name('categories.children');

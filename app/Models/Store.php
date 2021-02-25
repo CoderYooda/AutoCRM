@@ -30,4 +30,5 @@ class Store extends Model
         return $this->belongsToMany(Article::class, 'article_store', 'store_id', 'article_id')
             ->withPivot('location', 'isset', 'storage_zone', 'storage_rack', 'storage_vertical', 'storage_horizontal');
     }
+
 }

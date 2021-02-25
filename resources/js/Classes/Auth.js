@@ -14,13 +14,17 @@ class Auth{
         });
     }
 
+    login(){
+
+    }
+
     save(elem, event){
         let object = this;
         event.preventDefault();
         if(window.isXHRloading) return;
 
-        var form = elem.closest("form");
-        var data = new FormData(form);
+        let form = elem.closest("form");
+        let data = new FormData(form);
         axios({
             method: form.getAttribute("method"),
             url: form.getAttribute("action"),

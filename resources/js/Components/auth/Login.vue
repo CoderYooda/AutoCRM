@@ -29,9 +29,7 @@
                 mask: ['+7', '(', /\d/, /\d/, /\d/, ') ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/],
                 loginData: {
                     phone:'',
-                    phoneHasError:false,
                     password:'',
-                    passwordHasError:false,
                 }
             }
         },
@@ -51,34 +49,13 @@
                 let token = localStorage['api_token'];
                 this.showLogin = !token;
             },
-            login(e){
-                e.preventDefault();
-                this.loginData.phoneHasError = false;
-                this.loginData.passwordHasError = false;
-                window.axios({
-                    method: 'post',
-                    url: '/login',
-                    data: this.loginData
-                }).then((resp) =>  {
-                    if(resp.data.status === 'success' && resp.data.api_token){
-                        this.saveToLocalStorage('api_token', resp.data.api_token);
-                        this.saveToLocalStorage('company_id', resp.data.company_id);
-                        this.saveToLocalStorage('user_pic', resp.data.pic);
-                        this.saveToLocalStorage('user_name', resp.data.name);
-                        this.saveToLocalStorage('user_role', resp.data.role);
-                        this.saveToLocalStorage('user_id', resp.data.id);
-                        this.showLogin = false;
-                        this.$router.go();
-                    }
-                }).catch((error)=>{
-                    let errors = error.response.data.errors;
-                    Object.entries(errors);
-                    for (const [key, value] of Object.entries(errors)) {
-                        this.loginData[key + 'HasError'] = true;
-                        this[key + 'InvalidText'] = value[0];
-                    }
-                });
-            }
+
+            login: function () {
+                this.$store.dispatch('login', this.loginData)
+                    .then(() => {
+                        this.$router.push('/');
+                    });
+            },
         }
     }
 </script>

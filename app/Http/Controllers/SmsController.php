@@ -45,6 +45,7 @@ class SmsController extends Controller
         return SMSMessages::owned()->paginate(25);
     }
 
+
     public function confirm(SmsRequest $request)
     {
         $sms = SmsConfirmation::where('ip', $request->ip())->where('phone', $request['phone'])->first();
