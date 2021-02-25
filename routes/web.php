@@ -53,7 +53,7 @@ Route::post('/tariff/check_payment', 'TariffController@checkPayment')->name('Che
 Route::post('/tariff/check_sms_payment', 'TariffController@checkSmsPayment')->name('CheckSmsPayment');
 
 #Экспорт товаров склада
-Route::get('/store/export/{hash}','StoreController@exportToCSV')->name('ExportProducts');
+Route::get('/store/export/{store_hash}','StoreController@exportToCSV')->name('ExportProducts');
 
 Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 

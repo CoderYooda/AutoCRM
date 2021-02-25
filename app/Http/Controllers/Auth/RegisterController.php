@@ -151,6 +151,7 @@ class RegisterController extends Controller
             $store->type = 'casual';
             $store->locked = 0;
             $store->name = 'Мой магазин';
+            $store->generateHash();
             $store->save();
 
             $user->current_store = $store->id;

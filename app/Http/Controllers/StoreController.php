@@ -157,24 +157,23 @@ class StoreController extends Controller
         return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data', 'breadcrumbs'));
     }
 
-    public function exportToCSV($hash)
+    public function exportToCSV(Store $store)
     {
-        $store = Store::where('hash', $hash)->first();
 
-        if (!$store) {
-            return response()->json([
-                'message' => 'Склад не найден'
-            ], 404);
-        }
+        $company = Auth::user()->company;
+        $price_source = $company->getSettingField('Источник цены');
+
+        $sql_raw = $price_source == 'purchase' ? 'article_store.retail_price as Цена,' : 'article_entrance.price as Цена,';
 
         $products = Product::selectRaw(
             'products.id,
-                 products.article as Артикул,
-                 products.name as Наименование,
-                 products.barcode as Штрихкод,
-                 suppliers.name as Производитель,
-                 categories.name as Категория,
-                 SUM(article_entrance.count) - SUM(article_entrance.released_count) as Колличество')
+             products.article as Артикул,
+             products.name as Наименование,
+             products.barcode as Штрихкод,
+             suppliers.name as Производитель,
+             categories.name as Категория,
+             '.$sql_raw.'
+             SUM(article_entrance.count) - SUM(article_entrance.released_count) as Колличество')
             ->leftJoin('article_store', 'products.id', '=', 'article_store.product_id')
             ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
@@ -182,11 +181,9 @@ class StoreController extends Controller
             ->where('article_store.store_id', '=', $store->id)
             ->groupBy('products.id')
             ->get();
-//
-        foreach ($products as $product) {
-            $product->Цена = $product->getPrice();
-        }
-        $products = $products->makeHidden(['id','stores','markup'])->toArray();
+
+
+        $products = $products->makeHidden(['id', 'stores', 'markup'])->toArray();
 
         $columns = array_keys($products[0]);
 
@@ -197,7 +194,6 @@ class StoreController extends Controller
             "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
             "Expires" => "0"
         ];
-
 
         $callback = function () use ($products, $columns) {
 

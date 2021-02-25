@@ -135,14 +135,18 @@ class SettingsController extends Controller
             return view(get_template() . '.settings.elements.store_container', compact('stores', 'request'));
         }
 
-        $company_id = Auth::user()->company->id;
+        $company_id = Auth::user()->company_id;
+
+//        \App\Models\Store::where('id',auth()->user()->current_store)->first()->hash
 
         $last_imports = ImportHistory::with('partner', 'store')
             ->where('company_id', $company_id)
             ->where('created_at', '>', Carbon::now()->addDays(-14))
             ->get();
 
-        return view(get_template() . '.settings.store', compact('stores','request', 'last_imports'));
+
+        $store_hash = Auth::user()->store->hash;
+        return view(get_template() . '.settings.store', compact('stores','request', 'last_imports','store_hash'));
     }
 
     public static function roleTab(Request $request)

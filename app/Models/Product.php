@@ -329,7 +329,7 @@ class Product extends Model
         }
         else {
 
-            $lastEntrance = DB::table('article_entrance')->where('product_id', $this->id)->orderByDesc('id')->first();
+            $lastEntrance = DB::table('article_entrance')->where('product_id', $this->id)->latest()->first();
 
             $price = $lastEntrance->price ?? 0;
         }

@@ -15,7 +15,12 @@
     <div class="search_body">
         @forelse($brands as $info)
 
-            <div class="brand" onclick="search.showProvidersOffers(this, '{{ $info['brand'] }}', '{{ $info['article'] }}');">
+            <div class="brand" onclick="search.showProvidersOffers(
+                this,
+                '{{ $info['brand'] }}',
+                '{{$info['article'] }}',
+                '{{$info['searchArticle'] ?? null}}'
+                );">
 
                 <div class="w-60 name">{{ $info['desc'] }}</div>
                 <div class="w-20 name">{{ $info['brand'] }}</div>
