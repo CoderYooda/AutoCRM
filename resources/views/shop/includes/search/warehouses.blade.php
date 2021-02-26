@@ -12,34 +12,86 @@
         <span class="float-r">Назад</span>
     </div>
 
+    @if($product)
+    <div class="in-category container bg-white">
+        <div class="product_title">
+            <h2 class="d-flex">
+                {{ $product->name }}
+                @if($product->sp_stock)
+                    <div class="discount">
+                        Акция
+                    </div>
+                @endif
+            </h2>
+            <h3>Производитель {{ $product->supplier->name }}</h3>
+            <h3>Артикул {{ $product->article }}</h3>
+        </div>
+
+        @if($product->image != null || strlen($product->sp_desc) || count($product->specifications))
+
+            <div class="in-category-container">
+
+                <div class="product_info w-100 d-flex">
+
+                    <div class="flex-1 photo">
+                        <img class="w-100 h-100" src="{{ $product->image_path }}" title="{{ $product->name }}" alt="{{ $product->name }}" />
+                    </div>
+
+                    <div class="flex-2 description">
+                        <div class="relative"> {{-- is-full --}}
+                            <div class="param_title">Описание</div>
+                            <div class="param_desc"><span>{{ strlen($product->sp_desc) ? $product->sp_desc : 'Описание не указано' }}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-2 specifications">
+                        <div class="relative"> {{-- is-full --}}
+                            <div class="param_title">Характеристики</div>
+                            <div class="specifications_table">
+                                @forelse($product->specifications as $specification)
+
+                                    <div class="specification_element">
+                                        <div class="flex-1">{{ $specification->label }}</div>
+                                        <div class="flex-1">{{ $specification->value }}</div>
+                                    </div>
+
+                                @empty
+
+                                    Характеристики не указаны
+
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        @endif
+    </div>
+    @endif
+
     <div class="name">
-        На нашем складе
+        <p>На нашем складе</p>
+        <p>Адрес: {{ $shop->address_name }}</p>
     </div>
 
     <div class="header">
 
         <div class="flex-1 manufacturer">
             <span>Производитель</span>
-            {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
         </div>
 
         <div class="flex-1 article">
             <span>Артикул</span>
-            {{--                            <i class="fa fa-caret-up ml-10" aria-hidden="true"></i>--}}
         </div>
 
         <div class="flex-1 availability">
             <span>В наличии</span>
-            {{--                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
         </div>
-
-        <div class="flex-1 shop">
-            Адрес
-        </div>
-
         <div class="flex-2 price">
             <span>Цена</span>
-            {{--                    <i class="fa fa-caret-down ml-10" aria-hidden="true"></i>--}}
         </div>
 
     </div>
@@ -67,8 +119,6 @@
                             {{ $product->getCountInStoreId($store->id) ? 'В Наличии' : 'Нет в Наличии' }}
                         @endif
                     </div>
-                    <div class="flex-1 shop" title="{{ $shop->address_name }}">{{ $shop->address_name }}</div>
-
                     <div class="flex-2 price">
                         @if(!$product->sp_stock)
                             <span class="current">{{ correct_price($product->getPrice()) }} ₽</span>

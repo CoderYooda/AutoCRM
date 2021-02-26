@@ -56,25 +56,39 @@ class MinStockOfProducts extends Command
 
                 if ($countInStore < $minCount) {
                     $items[] = [
-                        'product_id' => $product->id,
-                        'product_article' => $product->article,
-                        'product_name' => $product->name,
                         'price' => floatval($product->pivot->retail_price),
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'product_article' => $product->article
                     ];
 
                 }
             }
 
+
             if ($items != []) {
 
-                $stocks = new StockOfProduct();
-                $stocks->company_id = $store->company_id;
-                $stocks->data = json_encode($items);
-                $stocks->processed = false;
-                $stocks->save();
+                $latestStocks = StockOfProduct::where('company_id', $store->company_id)->latest()->first();
+                $latestArray = json_decode($latestStocks->data, true);
+                $newArray = $items;
+                if (array_diff_assoc_recursive($latestArray, $newArray) != 0) {
 
-                SystemMessage::sendToCompany($store->company_id, 'warning', 'На складе кончаются товары, нажмите чтобы посмотреть', $stocks, 'App\Events\SystemMessage');
+                    $stocks = new StockOfProduct();
+                    $stocks->company_id = $store->company_id;
+                    $stocks->data = json_encode($items);
+                    $stocks->processed = false;
+                    $stocks->save();
+
+                    SystemMessage::sendToCompany(
+                        $store->company_id,
+                        'warning',
+                        'На складе кончаются товары, нажмите чтобы посмотреть',
+                        $stocks,
+                        'App\Events\SystemMessage');
+
+                }
             }
         }
     }
+
 }
