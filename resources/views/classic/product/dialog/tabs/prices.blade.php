@@ -23,7 +23,7 @@
         <div class="input-group">
             <select custom_select name="price_id" onchange="{{ $class }}.recalculateMarkup();">
                 @foreach($prices as $price)
-                    <option value="{{ $price->id }}">{{ $price->name }}</option>
+                    <option value="{{ $price->id }}" @if($price->id === $product->price_id) selected @endif>{{ $price->name }}</option>
                 @endforeach
             </select>
         </div>
