@@ -51,6 +51,7 @@ class ShopController extends Controller
         $view->with('class', $class);
 
         $shop = Shop::with('phones', 'aboutImages', 'sliderImages')->where('company_id', Auth::user()->company_id)->first();
+
         $view->with('shop', $shop);
 
         if (class_basename($view) == "JsonResponse") {

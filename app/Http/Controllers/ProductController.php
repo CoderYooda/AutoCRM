@@ -332,7 +332,7 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $product = Product::with('specifications')->firstOrNew($compare);
+            $product = Product::where('company_id', Auth::user()->company_id)->with('specifications')->firstOrNew($compare);
             if ($product->exists) {
                 $this->message = 'Товар обновлен';
             } else {

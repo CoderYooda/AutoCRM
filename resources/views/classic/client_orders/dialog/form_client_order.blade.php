@@ -89,7 +89,7 @@
             </div>
         @endif
 
-        @if(($client_order && $client_order->status === \App\Models\Order::CANCELED_STATUS) || ($client_order && ($client_order->wsumm > $client_order->itogo)))
+        @if(($client_order && $client_order->isCanceled) || ($client_order && ($client_order->wsumm > $client_order->itogo)))
             <div id="return_money" class="modal-alt-header">
                 <button onclick="{{ $class }}.getBackPayment()" class="button success uppercase-btn">Вернуть средства</button>
             </div>
@@ -251,7 +251,7 @@
                                 <div class="form-group row row-sm">
                                     <label class="col-sm-3" for="discount">Статус заказа</label>
                                     <div class="col-sm-9 input-group">
-                                        <select onchange="{{ $class }}.changeOrderStatus(this);" class="form-control" @if($client_order && ($client_order->status == \App\Models\Order::WAIT_PAYMENT_STATUS || $client_order->status >= 5) || $client_order->isShipped) disabled @endif>
+                                        <select onchange="{{ $class }}.changeOrderStatus(this);" class="form-control" @if($client_order && $client_order->status >= 5 || $client_order->isShipped) disabled @endif>
 
                                             @foreach($statuses as $id => $status)
 
@@ -414,6 +414,7 @@
             @if(isset($client_order) && $client_order->id != NULL)
                 <button type="button" class="button primary pull-right uppercase-btn mr-15" onclick="helper.printDocument('client-order', {{ $client_order->id }})" >Печать</button>
             @endif
+
             @if(isset($client_order) && $client_order->id != NULL && !$client_order->IsAllProductsShipped() && $client_order->status !== \App\Models\Order::CANCELED_STATUS && !$client_order->isShipped)
                 <button type="button" class="button primary pull-right uppercase-btn  mr-15" @if($client_order->status < 2) disabled @endif onclick="{{ $class }}.makeShipped(this)">Отгрузка</button>
             @endif
