@@ -362,7 +362,7 @@ class ProductController extends Controller
 
                     if($entrance_id == 'new') {
 
-                        if($params['price'] < 1 || $params['count'] < 1) continue;
+                        if($params['price'] < 1) continue;
 
                         $fields = [
                             'product_id' => $product->id,

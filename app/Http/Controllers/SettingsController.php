@@ -58,12 +58,14 @@ class SettingsController extends Controller
 
     public static function indexTab(Request $request)
     {
-        $company = Auth::user()->company;
+        $user = Auth::user();
+        $company = $user->company();
 
         $settings = Setting::owned()->orderBy('sort')->get();
-        $roles = Role::where('company_id', $company->id)->get();
+        $roles = Role::where('company_id', $user->company_id)->get();
+        $prices = Markup::where('company_id', $user->company_id)->get();
 
-        return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles'));
+        return view(get_template() . '.settings.index', compact('request', 'company', 'settings', 'roles','prices'));
     }
 
     public function pricesTab(Request $request)
@@ -202,6 +204,13 @@ class SettingsController extends Controller
         Setting::create(['name' => 'Способ ведения складского учёта', 'company_id' => $company->id, 'model' => 'RRC',  'type' => 'select', 'key' => 'rrc_name', 'value' => 'fifo']);
         Setting::create(['name' => 'Источник цены', 'company_id' => $company->id, 'model' => 'PriceSource',  'type' => 'select', 'key' => 'price_source', 'value' => 'purchase']);
         Setting::create(['name' => 'Интернет магазин', 'company_id' => $company->id, 'model' => 'ShopEnabled',  'type' => 'select', 'key' => 'shop_enabled', 'value' => '0']);
+
+    }
+
+    public static function createCompanyDefaultPriceToProduct($company,$price)
+    {
+        Setting::create(['name' => 'Источник формирования цены для новых товаров', 'company_id' => $company->id, 'model' => 'DefaultMarkup',  'type' => 'select', 'key' => 'default_markup', 'value' => $price->id]);
+
     }
 
     public function baseStore(Request $request)

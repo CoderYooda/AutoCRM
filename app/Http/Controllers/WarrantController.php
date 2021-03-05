@@ -33,8 +33,10 @@ class WarrantController extends Controller
             }
         }
 
+        $refund_summ = $request['ostatok'] != $request['itogo'] ? $request['itogo'] - $request['ostatok'] : $request['ostatok'] ;
+
         if ($request['ostatok']) {
-            $data->summ = $request['ostatok'];
+            $data->summ = $refund_summ;
         }
         if ($request['reason']) {
             $data->reason = $request['reason'];

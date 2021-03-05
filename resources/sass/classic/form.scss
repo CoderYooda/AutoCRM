@@ -13,7 +13,20 @@ Switch
     height: 18px;
     border-radius: 30px;
     background-color: #22b66e;
-    margin: 0; }
+    margin: 0;
+}
+.ui-switch-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.disabled{
+     pointer-events: none;
+     opacity: 0.4;
+ }
+.ui-switch-desc {
+    margin-left: 10px;
+}
 .ui-switch input {
     position: absolute;
     opacity: 0; }

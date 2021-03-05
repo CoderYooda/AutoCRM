@@ -293,9 +293,9 @@ class FavoritParts implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-        if(!isset($fields['api_key'])) return false;
+        if(!isset($fields['api_key1'])) return false;
 
-        $this->api_key = $fields['api_key'];
+        $this->api_key1 = $fields['api_key1'];
 
         //Если эксепшен не был выкинут, то пропускаем
 

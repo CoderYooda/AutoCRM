@@ -194,6 +194,7 @@ class RegisterController extends Controller
             ];
 
             $price->options()->create($params);
+            SettingsController::createCompanyDefaultPriceToProduct($company,$price);
 
             return $user;
 

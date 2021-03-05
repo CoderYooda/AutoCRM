@@ -26,6 +26,10 @@
                             @foreach(['Деактивирован', 'Активирован'] as $type)
                                 <option value="{{ $loop->index }}" @if($loop->index == $setting->value) selected @endif>{{ strtoupper($type) }}</option>
                             @endforeach
+                        @elseif($setting->model == 'DefaultMarkup')
+                            @foreach($prices as $price)
+                                <option value="{{ $price->id }}" @if($price->id == $setting->value) selected @endif>{{ strtoupper($price->name) }}</option>
+                            @endforeach
                         @endif
                     </select>
                 @else

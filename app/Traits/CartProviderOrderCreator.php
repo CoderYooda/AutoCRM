@@ -8,6 +8,8 @@ use App\Http\Requests\SupplierRequest;
 use App\Models\Product;
 use App\Models\Partner;
 use App\Models\ProviderOrder;
+use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 trait CartProviderOrderCreator
@@ -18,6 +20,7 @@ trait CartProviderOrderCreator
 
         $supplierController = new SupplierController();
         $supplierRequest = new SupplierRequest();
+        $currentStore = Store::find(Auth::user()->current_store);
 
         $totalPrice = 0;
         $totalCount = 0;
@@ -40,14 +43,32 @@ trait CartProviderOrderCreator
 
             $dataFields = [
                 'company_id' => $this->company->id,
-                'category_id' => 2,
+                'category_id' => 10,
                 'creator_id' => $this->user->id,
                 'supplier_id' => $supplier->id,
                 'article' => $orderInfo['model']['hash_info']['article'],
-                'name' => $orderInfo['model']['hash_info']['desc']
+                'name' => $orderInfo['model']['hash_info']['desc'],
+                'price_id' => $this->company->getSettingField('Источник формирования цены для новых товаров')
             ];
 
             $product = Product::firstOrCreate($uniqueFields, $dataFields);
+
+            if($product->wasRecentlyCreated) {
+
+                $currentStore->products()->syncWithoutDetaching($product->id);
+
+                $product->stores()->updateExistingPivot($currentStore->id,['retail_price' => $orderInfo['model']['hash_info']['price'] ]);
+
+
+                DB::table('article_entrance')->insert([
+                    'product_id' => $product->id,
+                    'entrance_id' => null,
+                    'company_id' => $product->company_id,
+                    'store_id' => $currentStore->id,
+                    'count' => 0,
+                    'price' => $orderInfo['model']['hash_info']['price']
+                ]);
+            }
 
             $products[] = [
                 'id' => $product->id,

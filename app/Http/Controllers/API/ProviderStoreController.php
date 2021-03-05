@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\ClientOrdersController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\PermissionController;
+use App\Http\Requests\ClientOrdersRequest;
 use App\Http\Requests\DeleteCartProviderRequest;
 use App\Http\Requests\DeleteCartRequest;
 use App\Http\Requests\Providers\Cart\AddCartRequest;
 use App\Http\Requests\Providers\Cart\OrderCartRequest;
 use App\Http\Requests\Providers\Cart\SetCartRequest;
+use App\Models\Product;
+use App\Models\Supplier;
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ProviderService\Providers;
 use App\Services\ProviderService\Services;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
 class ProviderStoreController extends Controller
@@ -32,13 +36,12 @@ class ProviderStoreController extends Controller
 
             try {
                 $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
-            }
-            catch (\Exception $exception) {
+            } catch (\Exception $exception) {
 
                 $code = $exception->getCode();
 
                 $counts[$service_key] = [];
-                if($code && $code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
+                if ($code && $code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
             }
 
             if ($service_key == $request->selected_service) {
@@ -93,8 +96,7 @@ class ProviderStoreController extends Controller
 
         try {
             $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
-        }
-        catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $stores = [
                 'originals' => [],
                 'analogues' => []
@@ -116,11 +118,11 @@ class ProviderStoreController extends Controller
 
         foreach (['originals', 'analogues'] as $type) {
 
-            if($request->field) {
+            if ($request->field) {
                 $stores[$type] = collect($stores[$type])->sortBy($request->field, $request->is_desc ? SORT_DESC : SORT_ASC)->toArray();
             }
 
-            if($request->is_desc == true) $stores[$type] = array_reverse($stores[$type]);
+            if ($request->is_desc == true) $stores[$type] = array_reverse($stores[$type]);
         }
 
         $existedStores = DB::table('providers_cart')->whereIn('hash', $hashes)->get();
@@ -129,7 +131,7 @@ class ProviderStoreController extends Controller
 
         foreach (['originals', 'analogues'] as $type) {
 
-            foreach($stores[$type] as $key => $store) {
+            foreach ($stores[$type] as $key => $store) {
 
                 $amount = $existedStores
                     ->where('hash', $store['hash'])
@@ -157,8 +159,7 @@ class ProviderStoreController extends Controller
                         . 'Authorization: Basic ' . base64_encode("{$request->login}:{$request->password}") . "\r\n",
                 ],
             ]));
-        }
-        catch (\Exception $exception) {
+        } catch (\Exception $exception) {
 
             return response()->json([
                 'type' => 'error',
@@ -233,17 +234,18 @@ class ProviderStoreController extends Controller
 
         foreach ($ordersCollection as $order) {
 
-            if(isset($request->orders[$order->id]['count'])) {
+            if (isset($request->orders[$order->id]['count'])) {
                 $order->count = $request->orders[$order->id]['count'];
             }
 
             $orders[$order->provider_key][] = $order;
         }
 
+
         /** @var ProviderInterface $provider */
         foreach ($providers->activated() as $provider_key => $provider) {
 
-            if(!in_array($provider_key, $ordersKeys)) continue;
+            if (!in_array($provider_key, $ordersKeys)) continue;
 
             $providerParams = $request->providers[$provider_key];
 
@@ -261,6 +263,52 @@ class ProviderStoreController extends Controller
 
             $provider->sendOrder($data);
         }
+
+        if ($request->client_order_status) {
+
+            $products = [];
+
+            foreach ($orders as $provider) {
+                foreach ($provider as $provider_product) {
+
+                    $product_data = json_decode($provider_product->data, true);
+
+                    $supplier = $product_data['model']['hash_info']['manufacturer'];
+                    $supplier_name = strtoupper($supplier); //В верхний регистр
+                    $supplier_name = str_replace(' ', '', $supplier_name); //Удаляем пробелы
+
+                    $uniqueFields = [
+                        'supplier_id' => Supplier::where('name', $supplier_name)->first()->id,
+                        'article' => $product_data['model']['hash_info']['article']
+                    ];
+
+                    $product = Product::where('supplier_id', $uniqueFields['supplier_id'])
+                        ->where('article', $uniqueFields['article'])
+                        ->first();
+
+                    $products[] = [
+                        'product_id' => $product->id,
+                        'count' => $provider_product->count,
+                        'price' => correct_price($product->getPrice())
+                    ];
+                }
+            }
+
+            $fake_request = new ClientOrdersRequest();
+
+            $fake_request['id'] = null;
+            $fake_request['inpercents'] = $request['inpercents'];
+            $fake_request['partner_id'] = $request['partner_id'];
+            $fake_request['discount'] = $request['discount'];
+            $fake_request['phone'] = $request['phone'];
+            $fake_request['comment'] = null;
+            $fake_request['products'] = $products;
+
+            $client_order = new ClientOrdersController;
+            $client_order->store($fake_request);
+
+        }
+
 
         return response()->json([
             'type' => 'success',
@@ -321,7 +369,7 @@ class ProviderStoreController extends Controller
 
             $provider_key = $order->provider_key;
 
-            if(!in_array($provider_key, array_keys($providers))) continue;
+            if (!in_array($provider_key, array_keys($providers))) continue;
 
             $order->data = json_decode($order->data);
 
@@ -329,13 +377,13 @@ class ProviderStoreController extends Controller
 
             $total = $order->data->model->hash_info->price * $order->count;
 
-            if(!isset($providersInfo[$provider_key]['count'])) $providersInfo[$provider_key]['count'] = 0;
-            if(!isset($providersInfo[$provider_key]['total_price'])) $providersInfo[$provider_key]['total_price'] = 0;
-            if(!isset($providersInfo[$provider_key]['positions'])) $providersInfo[$provider_key]['positions'] = 0;
+            if (!isset($providersInfo[$provider_key]['count'])) $providersInfo[$provider_key]['count'] = 0;
+            if (!isset($providersInfo[$provider_key]['total_price'])) $providersInfo[$provider_key]['total_price'] = 0;
+            if (!isset($providersInfo[$provider_key]['positions'])) $providersInfo[$provider_key]['positions'] = 0;
 
             $providersInfo[$provider_key]['count'] += $order->count;
             $providersInfo[$provider_key]['total_price'] += $total;
-            $providersInfo[$provider_key]['positions'] ++;
+            $providersInfo[$provider_key]['positions']++;
         }
 
         $providersInfo = collect($providersInfo);
