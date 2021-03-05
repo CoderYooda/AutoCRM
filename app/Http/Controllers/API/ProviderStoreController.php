@@ -289,7 +289,7 @@ class ProviderStoreController extends Controller
                     $products[] = [
                         'product_id' => $product->id,
                         'count' => $provider_product->count,
-                        'price' => correct_price($product->getPrice())
+                        'price' => decimal_price($product->getPrice())
                     ];
                 }
             }
