@@ -1,4 +1,11 @@
 <div id="selectEntranceDialog" class="dialog" style="width:600px;">
+    <div id="select_entrance_container" class="select_entrance_container fade" data-simplebar style="height: 400px;">
+        <div class="cont"></div>
+        <div class="empty_desc">
+            <div class="out_of_search"></div>
+            <div class="text-center">Товаров нет</div>
+        </div>
+    </div>
     <div class="titlebar">Выбор поступления</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="window.{{ $class }}.finitaLaComedia();">×</button>

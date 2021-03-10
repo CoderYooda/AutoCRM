@@ -14,6 +14,8 @@ class selectEntranceDialog  extends Modal{
         this.search_obj = dialog.querySelector("#selectentrance_search");
 
         this.active = true;
+        this.select_entrance_cont = this.root_dialog.querySelector('.cont');
+        this.select_entrance_container = this.root_dialog.querySelector('#select_entrance_container');
         this.init();
     }
 
@@ -79,6 +81,37 @@ class selectEntranceDialog  extends Modal{
                 object.search(object);
             });
         });
+    }
+
+    entranceDescription(entrance) {
+
+        this.select_entrance_container.classList.add('show');
+
+        let html = '';
+
+        Object.values(entrance.products).forEach(item => {
+            let p_article = item.article;
+            let p_count = item.pivot.count;
+            let p_name = item.name;
+
+            html += '<div class="tr_result">' +
+                '<span class="article">' + p_name + '</span>' +
+                '<span class="article">Кол-во: ' + p_count + '</span>' +
+                '<span class="article">Артикул: ' + p_article + '</span>' +
+                '</div>'
+        });
+
+        this.select_entrance_cont.innerHTML = html;
+
+        let empty_desc = this.root_dialog.querySelector('.empty_desc');
+
+        if(html.length) {
+            empty_desc.classList.add('d-none');
+        }
+        else {
+            empty_desc.classList.remove('d-none');
+        }
+
     }
 }
 export default selectEntranceDialog;

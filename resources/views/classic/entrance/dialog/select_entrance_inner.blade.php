@@ -4,16 +4,26 @@
             <div class="box-body">
                 <ul class="nav select-list-modal mb-0">
                     @foreach($entrances as $entrance)
-                        <li id="entrance_item_{{ $entrance->id }}" onclick="try{window.{{$request['refer']}}.selectEntrance({{ $entrance->id }}@if(isset($request['target']) && $request['target'] != null), '{{$request['target']}}' @endif)}catch (e) {}" class="pointer d-flex " >
-{{--                            <div class="ring-ico">--}}
-{{--                                <span class="first_letter">1</span>--}}
-{{--                            </div>--}}
+                        <li id="entrance_item_{{ $entrance->id }}"
+                            onclick="
+                                try{window.{{$request['refer']}}.selectEntrance({{ $entrance->id }}
+                            @if(isset($request['target']) && $request['target'] != null),
+                                '{{$request['target']}}'
+                            @endif)
+                                }
+                                catch (e) {}"
+                            onmouseenter="setTimeout(function() {  window.{{ $class }}.entranceDescription({{$entrance}})}, 800)"
+                            class="pointer d-flex ">
+                            {{--                            <div class="ring-ico">--}}
+                            {{--                                <span class="first_letter">1</span>--}}
+                            {{--                            </div>--}}
                             <div class="list-title" style="max-width: unset;">
                                 Поступление № {{ $entrance->id }}
-                                <div class="secondary">Поставщик: {{ $entrance->partner->official_name ?? 'Не указано' }}</div>
+                                <div class="secondary">
+                                    Поставщик: {{ $entrance->partner->official_name ?? 'Не указано' }}</div>
                             </div>
                             <div class="list-body">
-{{--                                <div class="date">Сумма: {{ $entrance->itogo }} р.</div>--}}
+                                {{--                                <div class="date">Сумма: {{ $entrance->itogo }} р.</div>--}}
                                 <div class="secondary">Дата: {{ $entrance->created_at }}</div>
                             </div>
                         </li>

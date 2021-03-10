@@ -723,7 +723,7 @@ li.active .header-tab{
     color: #fff;
     border-radius: 4px 4px 0 0;
 }
-.provider_search_container{
+.provider_search_container {
     position: absolute;
     height: calc(100% - 20px);
     width: 320px;
@@ -741,7 +741,25 @@ li.active .header-tab{
     }
 }
 
-.select_shipment_container{
+.select_shipment_container {
+    position: absolute;
+    height: calc(100% - 20px);
+    width: 320px;
+    top: 0;
+    left: 100%;
+    background: #6fc5ff;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 0 6px 6px 0;
+    margin-left: 2px;
+
+    .out_of_search {
+        margin-top: 90px;
+    }
+}
+
+.select_entrance_container {
     position: absolute;
     height: calc(100% - 20px);
     width: 320px;
