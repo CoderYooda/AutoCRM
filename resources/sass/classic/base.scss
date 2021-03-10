@@ -740,6 +740,24 @@ li.active .header-tab{
         margin-top: 90px;
     }
 }
+
+.select_shipment_container{
+    position: absolute;
+    height: calc(100% - 20px);
+    width: 320px;
+    top: 0;
+    left: 100%;
+    background: #6fc5ff;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 0 6px 6px 0;
+    margin-left: 2px;
+
+    .out_of_search {
+        margin-top: 90px;
+    }
+}
 .tr_result{
     margin: 10px;
     color: #fff;

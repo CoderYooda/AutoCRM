@@ -4,10 +4,12 @@
             <div class="box-body">
                 <ul class="nav select-list-modal mb-0">
                     @foreach($shipments as $shipment)
-                        <li id="shipment_item_{{ $shipment->id }}" onclick="try{window.{{$request['refer']}}.selectShipment({{ $shipment->id }}@if(isset($request['target']) && $request['target'] != null), '{{$request['target']}}' @endif)}catch (e) {}" class="pointer d-flex " >
-{{--                            <div class="ring-ico">--}}
-{{--                                <span class="first_letter">1</span>--}}
-{{--                            </div>--}}
+                        <li id="shipment_item_{{ $shipment->id }}"
+                            onclick="try{window.{{$request['refer']}}.selectShipment({{ $shipment->id }}
+                            @if(isset($request['target']) && $request['target'] != null),'{{$request['target']}}' @endif)}
+                                catch (e) {}"
+                            onmouseenter="setTimeout(function() {  window.{{ $class }}.shipmentDescription({{$shipment}})}, 800)"
+                            class="pointer d-flex ">
                             <div class="list-title" style="max-width: unset;">
                                 Продажа № {{ $shipment->id }}
                                 <div class="secondary">Покупатель: {{ $shipment->partner->outputName() }}</div>
