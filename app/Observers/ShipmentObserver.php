@@ -20,11 +20,11 @@ class ShipmentObserver
     {
         $status = 0;
 
-        if($shipment->wsumm > 0 && $shipment->wsumm < $shipment->summ){
+        if($shipment->wsumm > 0 && $shipment->wsumm < $shipment->itogo){
             $status = 1;
-        } else if($shipment->wsumm == $shipment->summ){
+        } else if($shipment->wsumm == $shipment->itogo){
             $status = 2;
-        } else if($shipment->wsumm > $shipment->summ){
+        } else if($shipment->wsumm > $shipment->itogo){
             $status = 3;
         }
 

@@ -14,7 +14,7 @@
                     <li class="nav-item ip ul" role="tab">
                         <a id="tab_company{{ $class }}-tab" href="#tab_company{{ $class }}" data-height="false" aria-controls="tab_company{{ $class }}" aria-selected="false" class="nav-link">
                             Реквизиты
-                            <span class="float-right helper_danger d-none">
+                            <span class="float-right helper_danger hide">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                         </span>
                         </a>
@@ -22,7 +22,7 @@
                     <li class="nav-item fl" role="tab">
                         <a id="tab_passport{{ $class }}-tab" href="#tab_passport{{ $class }}"  data-height="false" aria-controls="tab_passport{{ $class }}" aria-selected="false" class="nav-link">
                             Паспорт
-                            <span class="float-right helper_danger d-none">
+                            <span class="float-right helper_danger hide">
                             <i class="fa fa-exclamation-triangle text-md ml-2 text-danger"></i>
                         </span>
                         </a>
@@ -43,7 +43,7 @@
                         </span>
                         </a>
                     </li>
-                    <li class="nav-item fl ip ul" role="tab">
+                    <li id="access" class="nav-item fl ip ul hide" role="tab">
                         <a id="tab_access{{ $class }}-tab" href="#tab_access{{ $class }}"  data-height="false" aria-controls="tab_access{{ $class }}" aria-selected="false" class="nav-link">
                             Доступ в систему
                             <span class="float-right helper_danger d-none">
@@ -51,7 +51,7 @@
                         </span>
                         </a>
                     </li>
-                    <li class="nav-item fl ip ul" role="tab">
+                    <li id="salary" class="nav-item fl ip ul hide" role="tab">
                         <a id="tab_salary{{ $class }}-tab" href="#tab_salary{{ $class }}"  data-height="false" aria-controls="tab_salary{{ $class }}" aria-selected="false" class="nav-link">
                             Зарплата
                             <span class="float-right helper_danger d-none">

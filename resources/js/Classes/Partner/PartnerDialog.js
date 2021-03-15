@@ -162,13 +162,18 @@ class partnerDialog extends Modal{
             let role_element = this.current_dialog.querySelector('.role_select_cont').parentElement;
 
             this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
+            this.current_dialog.querySelector('#access').classList.remove('hide');
+            this.current_dialog.querySelector('#salary').classList.remove('hide');
             role_element.classList.add('hide');
             role_element.querySelector('input').disabled = true;
 
-            //Показываем вкладку с транспортом
+            //Показываем вкладку с транспортом (настройки для категории "Покупатель")
             if(resp.data.id === 7) {
                 this.current_dialog.querySelector('#vehicle_tab').classList.remove('d-none');
+                this.current_dialog.querySelector('#access').classList.add('hide');
+                this.current_dialog.querySelector('#salary').classList.add('hide');
             }
+            //Настройки для категории "Сотрудник"
             if(resp.data.id === 5) {
                 role_element.classList.remove('hide');
                 role_element.querySelector('input').disabled = false;

@@ -264,7 +264,7 @@ class ProviderStoreController extends Controller
             $provider->sendOrder($data);
         }
 
-        if ($request->client_order_status) {
+        if ($request->client_order_status && $orders != [] ) {
 
             $products = [];
 
@@ -293,6 +293,8 @@ class ProviderStoreController extends Controller
                     ];
                 }
             }
+
+            dd($products);
 
             $fake_request = new ClientOrdersRequest();
 
