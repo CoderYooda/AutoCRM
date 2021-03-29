@@ -23,8 +23,7 @@ class FavoritParts implements ProviderInterface
     protected $name = 'Фаворит Автозапчасти';
     protected $service_key = 'favoritparts';
 
-    protected $api_key1;
-    protected $api_key2;
+    protected $api_key;
 
     /** @var Company */
     protected $company = null;
@@ -56,8 +55,7 @@ class FavoritParts implements ProviderInterface
 
         $this->company = $shop->company ?? $this->user->company;
 
-        $this->api_key1 = $this->company->getServiceFieldValue($this->service_key, 'api_key1');
-        $this->api_key2 = $this->company->getServiceFieldValue($this->service_key, 'api_key2');
+        $this->api_key = $this->company->getServiceFieldValue($this->service_key, 'api_key');
 
         $this->client = new Client();
     }
@@ -225,7 +223,7 @@ class FavoritParts implements ProviderInterface
         $bodyType = $method == 'GET' ? 'query': 'body';
 
         if ($bodyType == 'query') {
-            $params['key'] = $this->api_key1;
+            $params['key'] = $this->api_key;
 
         }
 
@@ -238,8 +236,8 @@ class FavoritParts implements ProviderInterface
                 $bodyType => $params,
                 'headers' => [
                     'Content-Type'=>'application/json',
-                    'X-Favorit-ClientKey' => $this->api_key1,
-                    'X-Favorit-DeveloperKey' => $this->api_key2
+                    'X-Favorit-ClientKey' => $this->api_key,
+                    'X-Favorit-DeveloperKey' => '903EB8A5-2ECF-4B23-94CA-FB88E4FD1FEE'
                 ]
             ]);
 
@@ -280,7 +278,8 @@ class FavoritParts implements ProviderInterface
 
         $result = json_decode($json ,true);
 
-        if(empty($result['goods'][0]['brand'])) {
+
+        if(empty($result['goods'][0]['brand']) && isset($result['goods'][0]['brand'])) {
 
             throw new \Exception('Not fond', 404);
         }
@@ -293,9 +292,9 @@ class FavoritParts implements ProviderInterface
 
     public function checkConnect(array $fields): bool
     {
-        if(!isset($fields['api_key1'])) return false;
+        if(!isset($fields['api_key'])) return false;
 
-        $this->api_key1 = $fields['api_key1'];
+        $this->api_key = $fields['api_key'];
 
         //Если эксепшен не был выкинут, то пропускаем
 
