@@ -1404,6 +1404,13 @@ input:-moz-placeholder { /* Firefox 18- */
     outline: none;
     color: #000;
 }
+.info {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    float: right;
+    margin: 15px 0px 0px 5px;
+}
 
 .checkbox-list .item:not(:last-child){
     border-bottom: 1px dashed #eee;
@@ -1864,7 +1871,18 @@ input:-moz-placeholder { /* Firefox 18- */
 .mr-3{
     margin-right: 16px !important;
 }
+#user_view {
+     img {
+         width: 100%;
+     }
 
+     figure {
+         margin: 0 auto;
+     }
+     figcaption {
+         text-align: center;
+     }
+ }
 .all-center {
     display: flex;
     justify-content: center;

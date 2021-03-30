@@ -334,6 +334,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         #SMS сообщения
         Route::post('/sms/send', 'SMSMessageController@sendsms')->name('SendSMS');
 
+        #Информация
+        Route::get('/info/get_info_by_{source}', 'System\InformationController@getInfoBySource')->name('getInfo');
+        Route::post('/info/save_info', 'System\InformationController@saveInfo')->name('saveInfo');
+        Route::post('/info/upload_image', 'System\InformationController@uploadImage')->name('uploadImage');
+
         #E-mail сообщения
         Route::post('/feedback/send','System\FeedbackController@sendEmail')->name('SendEmail');
 

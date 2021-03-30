@@ -24,7 +24,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
-        "@ckeditor/ckeditor5-build-classic": "^22.0.0",
+        "@artemminos/ckeditor": "^1.1.2",
         "@fullcalendar/core": "^4.3.1",
         "@fullcalendar/daygrid": "^4.3.0",
         "@fullcalendar/interaction": "^4.3.0",
