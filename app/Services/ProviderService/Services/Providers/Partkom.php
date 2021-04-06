@@ -67,11 +67,11 @@ class Partkom implements ProviderInterface
 
         $results = [];
 
-        foreach ($response['resources'] as $item) {
+        foreach ($response as $item) {
             $results[] = [
-                'brand' => $item['brand']['name'],
-                'article' => $item['article'],
-                'desc' => $item['name']
+                'brand' => $item['maker'],
+                'article' => $item['number'],
+                'desc' => $item['description']
             ];
         }
 
@@ -95,42 +95,39 @@ class Partkom implements ProviderInterface
 
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
+        //Сначала необходимо получить ид производителя, (Требования спецификации API поставщика)
+        $branId = $this->query('ref/brands');
+        $branId = collect($branId)->where('name',$brand)->first()['id'];
         $params = [
-            'items' => [
-                [
-                    'resource_article' => $article,
-                    'brand_name' => $brand
-                ]
-            ],
-            'analogs' => 1
+            'number' => $article,
+            'maker_id' => $branId,
+            'find_substitutes' => true
         ];
 
-        $response = $this->query('/ordering/get_stock', $params);
+        $items = $this->query('search/parts', $params);
 
-        $unfilteredItems = $response['resources'];
+//        $unfilteredItems = $response['resources'];
 
-        $items = [];
-
-        foreach ($unfilteredItems as $item) {
-            foreach ($item['offers'] as $offer) {
-                $items[] = [
-                    'resource_id' => $item['id'],
-                    'stock' => $offer['warehouse']['name'],
-                    'brand' => $item['brand']['name'],
-                    'article' => $item['article'],
-                    'days' => $offer['assured_period'],
-                    'price' => $offer['price'],
-                    'packing' => $offer['multiplication_factor'],
-                    'desc' => $item['name'],
-                    'rest' => $offer['quantity'],
-                    'supplier' => $this->name,
-                    'code' => $offer['warehouse']['id'],
-                    'days_min' => $offer['average_period'],
-                    'days_max' => $offer['assured_period'],
-                    'delivery_type' => $offer['delivery_type']
-                ];
-            }
-        }
+//        foreach ($unfilteredItems as $item) {
+//            foreach ($item['offers'] as $offer) {
+//                $items[] = [
+//                    'resource_id' => $item['id'],
+//                    'stock' => $offer['warehouse']['name'],
+//                    'brand' => $item['brand']['name'],
+//                    'article' => $item['article'],
+//                    'days' => $offer['assured_period'],
+//                    'price' => $offer['price'],
+//                    'packing' => $offer['multiplication_factor'],
+//                    'desc' => $item['name'],
+//                    'rest' => $offer['quantity'],
+//                    'supplier' => $this->name,
+//                    'code' => $offer['warehouse']['id'],
+//                    'days_min' => $offer['average_period'],
+//                    'days_max' => $offer['assured_period'],
+//                    'delivery_type' => $offer['delivery_type']
+//                ];
+//            }
+//        }
 
         $results = [
             'originals' => [],
@@ -147,41 +144,41 @@ class Partkom implements ProviderInterface
             $items[$key]['index'] = $key;
 
             $items[$key]['hash_info'] = [
-                'stock' => $item['stock'],
-                'manufacturer' => $item['brand'],
-                'article' => $item['article'],
-                'days' => $item['days'],
+                'stock' => $item['placement'],
+                'manufacturer' => $item['maker'],
+                'article' => $item['number'],
+                'days' => $item['guaranteedDays'],
                 'price' => $item['price'],
-                'packing' => $item['packing'] > 0 ? $item['packing'] : 1,
-                'desc' => $item['desc'],
-                'rest' => $item['rest'],
+                'packing' => $item['minQuantity'] > 0 ? $item['minQuantity'] : 1,
+                'desc' => $item['description'],
+                'rest' => $item['quantity'],
                 'supplier' => $this->name
             ];
         }
 
         foreach ($items as $store) {
 
-            $is_analogue = $store['brand'] != $brand;
+            $is_analogue = $store['maker'] != $brand;
 
             $listName = $is_analogue ? 'analogues' : 'originals';
 
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['desc'],
-                'code' => $store['code'],
-                'rest' => $store['rest'],
-                'days_min' => $store['days_min'],
-                'days_max' => $store['days_max'],
-                'packing' => $store['packing'] > 0 ? $store['packing'] : 1,
-                'min_count' => $store['packing'] > 0 ? $store['packing'] : 1,
-                'delivery' => $store['days'] . ' дн.',
+                'name' => $store['description'],
+                'code' => $store['placementId'],
+                'rest' => $store['quantity'],
+                'days_min' => $store['expectedDays'],
+                'days_max' => $store['guaranteedDays'],
+                'packing' => $store['minQuantity'] > 0 ? $store['minQuantity'] : 1,
+                'min_count' => $store['minQuantity'] > 0 ? $store['minQuantity'] : 1,
+                'delivery' => $store['guaranteedDays'] . ' дн.',
                 'price' => $store['price'],
-                'manufacturer' => $store['brand'],
-                'article' => $store['article'],
+                'manufacturer' => $store['maker'],
+                'article' => $store['number'],
                 'model' => $store,
-                'stock' => $store['stock'],
-                'can_return' => 'n/a',
-                'hash' => md5($store['stock'] . $store['brand'] . $store['article'] . $store['days'] . $store['price'])
+                'stock' => $store['placement'],
+                'can_return' => $store['flagReturnImpossible'] ? 'Да' : 'Нет',
+                'hash' => md5($store['placement'] . $store['maker'] . $store['number'] . $store['guaranteedDays'] . $store['price'])
             ];
 
             $is_analogue ? $analogueIndex++ : $originalIndex++;
@@ -201,7 +198,7 @@ class Partkom implements ProviderInterface
         try {
             $result = $this->client->request($method, $url, [
 
-                $bodyType => http_build_query($params),
+                $bodyType => $method == 'GET' ? http_build_query($params) : json_encode($params),
                 'headers' => [
                     'Content-Type'=>'application/json',
                     'Accept' => 'application/json',
@@ -212,12 +209,11 @@ class Partkom implements ProviderInterface
           $result =$exception;
         }
 
-//        $this->errorHandler($result);
+        $this->errorHandler($result);
 
         $json = $result->getBody();
 
         $result = json_decode($json, true);
-        dd($result);
 
         return $result;
     }
@@ -235,16 +231,21 @@ class Partkom implements ProviderInterface
 
         $errorCode = $response->$method();
 
+
         foreach ($this->errors as $code => $info) {
             if ($errorCode != $code) continue;
             throw new \Exception($info['return'], $code);
         }
 
-        $json = $response->getBody();
+        if($class == 'ClientException') {
+            $json = $response->getResponse()->getBody(true);
+        } else {
+            $json = $response->getBody();
+        }
 
         $result = json_decode($json, true);
 
-        if (isset($result['resources']) && empty($result['resources']))
+        if (empty($result))
             throw new \Exception('Not found', 404);
     }
 
@@ -277,31 +278,24 @@ class Partkom implements ProviderInterface
             $orderInfo = json_decode($product->data, true);
 
             $products[] = [
-                'resource_id' => $orderInfo['model']['resource_id'],
-                'warehouse_id' => $orderInfo['model']['code'],
-                'quantity' => $product->count
+                'detailNum' => $orderInfo['article'],
+                'makerId' => $orderInfo['model']['makerId'],
+                'description' => $orderInfo['name'],
+                'price' => $orderInfo['price'],
+                'providerId' => $orderInfo['model']['providerId'],
+                'quantity' => $product->count,
+                'comment' => $data['comment'],
             ];
         }
 
         $params = [
-            'order' => [
-                'is_test' => 1,
-                'payment_type' => $data['payment_type_id'],
-                'dispatch_type' => $data['delivery_type_id'],
-                'dispatch_at' => $data['date_shipment_id'],
-                'dispatch_time' => 1, //Тестовое (метод времени отправки не реализован на фронте
-                'comment' => $data['comment'],
-                'shipment_address_id' => $data['delivery_address_id'],
-                'items' => $products
-            ]
+                'flag_test' => true,
+                'returnOnSuccess' => true,
+                'generateReference' => true,
+                'orderItems' => $products
         ];
 
-        if($params['order']['dispatch_type'] == 2) {
-
-            unset($params['order']['shipment_address_id']);
-        }
-
-        $this->query('/ordering/place_order', $params, 'POST'); //Подтверждение заказа
+        $this->query('order', $params, 'POST'); //Подтверждение заказа
 
         $this->createProviderOrder($data);
 
@@ -315,56 +309,24 @@ class Partkom implements ProviderInterface
 
     public function getDeliveryToAddresses(): array
     {
-        $request = $this->query('/references/shipment_address/active');
-
-        if ($request == []) return $request;
-
-        $request =$request['shipment_address_list'];
-
-        $deliveryAddress =[];
-
-        foreach ($request as $address) {
-
-            if ($address['state'] == 1) {
-
-                $deliveryAddress[$address['id']] = $address['address'];
-
-            }
-        }
-
-        return $deliveryAddress;
+        return [];
     }
 
     public function getPaymentTypes(): array
     {
-        return [
-            '1' => 'Наличный расчет',
-            '2' => 'Безналичный расчет'
-        ];
+        return [];
     }
 
     public function getDeliveryTypes(): array
     {
         return [
-            '2' => 'Самовывоз',
-            '3' => 'Доставка'
+            '2' => 'Самовывоз'
         ];
     }
 
     public function getDateOfShipment(): array
     {
-        $currentDate = Carbon::now();
-
-        $dates = [];
-
-        for($i = 0; $i < 30; $i++) {
-
-            $currentDate = $currentDate->addDay();
-
-            $dates[$currentDate->format('Y-m-d')] = $currentDate->format('d.m.Y');
-        }
-
-        return $dates;
+        return [];
     }
 
     public function getTimeOfShipment(): array
