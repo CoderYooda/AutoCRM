@@ -43,13 +43,15 @@ class Table {
 
     setHeader(header){
         this.header = header;
-        this.header.forEach((elem) =>{
-            this.sorters[elem.table_name] = {
-                field: elem.table_name,
-                dir: this.start_sort,
-                active: false
-            }
-        });
+        if(header){
+            this.header.forEach((elem) =>{
+                this.sorters[elem.table_name] = {
+                    field: elem.table_name,
+                    dir: this.start_sort,
+                    active: false
+                }
+            });
+        }
         return true;
     }
     setContextMenu(context_menu){

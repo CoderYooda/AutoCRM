@@ -55,3 +55,75 @@
 .swal2-styled {
     padding: 0 15px!important;
 }
+.catalogue{
+    h2{
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
+    .cat_item_container{
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    .cat_item{
+        display: inline-block;
+        text-align: center;
+        width: 100px;
+        height: 150px;
+        padding: 15px;
+        float: left;
+        margin: 10px;
+        cursor: pointer;
+        &:hover{
+            transition: all 0.4s;
+            box-shadow: 0 1px 4px 0 #5a6fab, 0 0 2px 1px #ffffff;
+        }
+        img{
+            display: block;
+            margin: 0 auto;
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+    }
+    .model_item{
+        display: inline-block;
+        text-align: center;
+        width: 300px;
+        height: 240px;
+        padding: 15px;
+        float: left;
+        margin: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        &:hover{
+            transition: all 0.4s;
+            box-shadow: 0 1px 4px 0 #5a6fab, 0 0 2px 1px #ffffff;
+        }
+        img{
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+    }
+    .modification_item{
+        display: inline-block;
+        text-align: center;
+        width: 300px;
+        height: 240px;
+        padding: 15px;
+        float: left;
+        margin: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        &:hover{
+            transition: all 0.4s;
+            box-shadow: 0 1px 4px 0 #5a6fab, 0 0 2px 1px #ffffff;
+        }
+    }
+}

@@ -244,6 +244,12 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/ddsarticle/{id}/select', 'DdsarticleController@select')->name('SelectDdsarticle');
         Route::post('/ddsarticle/dialog/search', 'DdsarticleController@dialogSearch')->name('DdsarticleDialogSearch');
 
+        #Каталоги
+        Route::get('/store', 'CatalogueController@index')->name('CatalogueIndex'); // Строгое название
+        Route::post('/icat/models', 'CatalogueController@getModels')->name('CatalogueModels');
+        Route::post('/icat/marks', 'CatalogueController@getMarks')->name('CatalogueMarks');
+        Route::post('/icat/modifications', 'CatalogueController@getModifications')->name('CatalogueModifications');
+
         #Склады
         Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
         Route::post('/store/tabledata', 'StoreController@tableData')->name('StoreTableProductData');

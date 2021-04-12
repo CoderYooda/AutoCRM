@@ -30,3 +30,28 @@ if(mix.inProduction() ) {
     mix.minify('public/css/base.css');
     mix.version();
 }
+
+////////
+
+// mix.options({
+//     hmrOptions: {
+//         host: 'online.autocrm',  // site's host name
+//         port: 8080,
+//     }
+// });
+
+// // fix css files 404 issue
+// mix.webpackConfig({
+//     // add any webpack dev server config here
+//     devServer: {
+//         proxy: {
+//             host: '127.0.0.1',  // host machine ip
+//             port: 8080,
+//         },
+//         watchOptions:{
+//             aggregateTimeout:200,
+//             poll:5000
+//         },
+//
+//     }
+// });
