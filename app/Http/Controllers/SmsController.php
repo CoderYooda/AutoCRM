@@ -116,4 +116,20 @@ class SmsController extends Controller
         }
         return $sms;
     }
+
+    public static function sendSMSAboutPayment($phone, $text)
+    {
+        $smsru = new SMS(env('SMS_RU_CODE'));
+        $data = new stdClass();
+        $data->to = $phone;
+        $data->text = $text;
+        $data->from = 'BB-CRM';
+        $data->test = 0;
+        $sms = $smsru->send_one($data);
+        if ($sms->status == "OK") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
