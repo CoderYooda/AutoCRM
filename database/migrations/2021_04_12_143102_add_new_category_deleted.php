@@ -14,7 +14,7 @@ class AddNewCategoryDeleted extends Migration
      */
     public function up()
     {
-        Category::create(['name' => 'Удаленные', 'category_id' => 2, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'store',]);
+        Category::create(['name' => 'Удаленные', 'category_id' => 2, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'del',]);
 
     }
 
