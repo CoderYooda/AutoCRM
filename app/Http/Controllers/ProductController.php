@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ModelWasStored;
 use App\Http\Requests\ProductRequest;
 use App\Models\Adjustment;
+use App\Models\Company;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Markup;
@@ -358,11 +359,17 @@ class ProductController extends Controller
 
                 $productEntranceId = null;
 
+
                 foreach ($request->adjustment_entrances as $entrance_id => $params) {
 
                     if($entrance_id == 'new') {
 
-                        if($params['price'] < 1) continue;
+                        $params['price'] = $params['price'] ?? $params['price'] ?? 0;
+
+                        $company = Company::where('id',$product->company_id)->first();
+                        $priceSource = $company->getSettingField('Источник цены');
+
+                        if($params['price'] < 1 && $priceSource != 'purchase') continue;
 
                         $fields = [
                             'product_id' => $product->id,
@@ -496,12 +503,21 @@ class ProductController extends Controller
 
         $company_id = Auth::user()->company_id;
 
+        /** @var Category $category */
         $category = Category::find($request->category_id);
 
         $childrenCategories = collect();
+        $deleted = null;
 
         if($category && !$category->isRoot()) {
             $childrenCategories = $category->getDescendantsAndSelf();
+        }
+
+        if (($category && $category->isRoot() || (isset($request->search) && $request->search != ""))) {
+            $deleted = Category::where('company_id',null)
+                ->where('locked',true)
+                ->where('name','Удаленные')
+                ->first();
         }
 
         return Product::selectRaw('products.*, supplier.name as supplier')
@@ -512,6 +528,9 @@ class ProductController extends Controller
             })
             ->when($category && !$category->isRoot(), function ($q) use($request, $childrenCategories) {
                 $q->whereIn('products.category_id', $childrenCategories->pluck('id'));
+            })
+            ->when($deleted != null, function ($q) use($request, $deleted) {
+                $q->where('products.category_id','!=',$deleted->id);
             })
             ->when($request->analogues, function (Builder $query) use($request) {
                 $query->whereIn('products.id', json_decode($request->analogues));
