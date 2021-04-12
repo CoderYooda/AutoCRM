@@ -16,10 +16,10 @@
                         <div data-id="1" id="step_1" class="m_step p-15 pt-0 mb-15 active" data-simplebar style="max-height: calc(100vh - 350px);">
                             <div class="fl-ul-tab">
                                 <h3 class="mb-10 mt-0">Данные вашей компании</h3>
-                                <div class="form-group">
-                                    <label>Стандартная наценка (%)</label>
-                                    <input name="markup" type="number" class="form-control" value="30">
-                                </div>
+                                {{--<div class="form-group">--}}
+                                    {{--<label>Стандартная наценка (%)</label>--}}
+                                    {{--<input name="markup" type="number" class="form-control" value="30">--}}
+                                {{--</div>--}}
                                 <div class="d-flex">
                                     <button onclick="setting_master.activeTab(this, 'fl')" class="button primary flex-1 active" >Индивидуальный предприниматель</button>
                                     <button onclick="setting_master.activeTab(this, 'ul')" class="ml-15 button flex-1 primary">Юридическое лицо</button>
@@ -150,30 +150,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div data-id="3" id="step_3" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">
-                            <div class="fl-ul-tab">
-                                <h3 class="mb-10 mt-0">Добавьте поставщиков</h3>
-                                <div id="partners">
-                                    <div class="unit_elem mb-10 p-15">
-                                        <div class="form-group">
-                                            <label>Названия организации</label>
-                                            <input type="text" name="partners[1][companyName]" value="" class="form-control" placeholder="Названия организации">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Контактное лицо</label>
-                                            <input type="text" name="partners[1][fio]" value="" class="form-control" placeholder="Контактное лицо">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Номер телефона</label>
-                                            <input type="text" name="partners[1][phone]" class="form-control phone_input" value="" placeholder="Телефон">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="add_more_container">
-                                    <button type="button" onclick="setting_master.insertPartner();" class="button primary">Добавить еще</button>
-                                </div>
-                            </div>
-                        </div>
+                        {{--<div data-id="3" id="step_3" class="m_step p-15 pt-0 mb-15 hide" data-simplebar style="max-height: calc(100vh - 350px);">--}}
+                            {{--<div class="fl-ul-tab">--}}
+                                {{--<h3 class="mb-10 mt-0">Добавьте поставщиков</h3>--}}
+                                {{--<div id="partners">--}}
+                                    {{--<div class="unit_elem mb-10 p-15">--}}
+                                        {{--<div class="form-group">--}}
+                                            {{--<label>Названия организации</label>--}}
+                                            {{--<input type="text" name="partners[1][companyName]" value="" class="form-control" placeholder="Названия организации">--}}
+                                        {{--</div>--}}
+                                        {{--<div class="form-group">--}}
+                                            {{--<label>Контактное лицо</label>--}}
+                                            {{--<input type="text" name="partners[1][fio]" value="" class="form-control" placeholder="Контактное лицо">--}}
+                                        {{--</div>--}}
+                                        {{--<div class="form-group">--}}
+                                            {{--<label>Номер телефона</label>--}}
+                                            {{--<input type="text" name="partners[1][phone]" class="form-control phone_input" value="" placeholder="Телефон">--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                                {{--<div class="add_more_container">--}}
+                                    {{--<button type="button" onclick="setting_master.insertPartner();" class="button primary">Добавить еще</button>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                         <div class="steps">
                             <div id="stepb_1" onclick="setting_master.goToStep(1)" class="current">
                                 <div class="letter">1</div>
@@ -181,9 +181,9 @@
                             <div id="stepb_2" onclick="setting_master.goToStep(2)" class="wait">
                                 <div class="letter">2</div>
                             </div>
-                            <div id="stepb_3" onclick="setting_master.goToStep(3)" class="wait">
-                                <div class="letter">3</div>
-                            </div>
+                            {{--<div id="stepb_3" onclick="setting_master.goToStep(3)" class="wait">--}}
+                                {{--<div class="letter">3</div>--}}
+                            {{--</div>--}}
                         </div>
                     </div>
                     <div class="right-s p-15">

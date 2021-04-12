@@ -5,12 +5,11 @@ class SettingMaster
         this.root_dialog = document.getElementById('settings_master');
         if(this.root_dialog){
             this.step = 1;
-            this.steps = 3;
+            this.steps = 2;
             this.init();
             this.steps_icon = {
                 1:'current',
                 2:'wait',
-                3:'wait'
             }
         }
     }

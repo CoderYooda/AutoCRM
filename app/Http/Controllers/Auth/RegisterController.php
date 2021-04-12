@@ -182,6 +182,8 @@ class RegisterController extends Controller
 
             $this->dispatch(new CreateBaseCategoriesForCompany($company->id));
 
+            Category::insert(['id' => 10, 'name' => 'Неотсортированные', 'category_id' => 2, 'company_id' => null, 'creator_id' => 1, 'locked' => true, 'type' => 'store',]);
+
             $price = Markup::create([
                 'company_id' => $company->id,
                 'name' => 'Розничная'
