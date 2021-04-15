@@ -72,14 +72,16 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function delete($id, Request $request)
+    public function delete(Request $request)
     {
         PermissionController::canByPregMatch('Удалять товары');
 
+        $id = $request->id;
+
         $returnIds = null;
 
-        if ($id == 'array') {
-            $products = Product::owned()->whereIn('id', $request['ids']);
+        if (is_array($id)) {
+            $products = Product::owned()->whereIn('id', $id);
             $this->message = 'Товары удалены';
             $returnIds = $products->get()->pluck('id');
             $products->delete();
@@ -95,6 +97,7 @@ class ProductController extends Controller
 
         return response()->json([
             'id' => $returnIds,
+            'type' => 'success',
             'message' => $this->message
         ], $this->status);
     }
@@ -104,15 +107,42 @@ class ProductController extends Controller
         return response()->json(['price' => $product->getPrice($request->count)]);
     }
 
-    public function restore(Product $product)
+    public function restore(Request $request)
     {
-        $product->update(['deleted_at' => null]);
+        PermissionController::canByPregMatch('Создавать товары');
+
+        $id = $request->id;
+
+        $returnIds = null;
+
+        if (is_array($id)) {
+            $products = Product::owned()->onlyTrashed()->whereIn('id', $id);
+            $this->message = 'Товары восстановлены';
+            $returnIds = $products->get()->pluck('id');
+            $products->restore();
+        }
+        else {
+            $product = Product::where('id', $id)->onlyTrashed()->first();
+            $this->message = 'Товар восстановлен';
+            $returnIds = $product->id;
+            $product->restore();
+        }
+
+        $this->status = 200;
 
         return response()->json([
-            'id' => $product->id,
-            'message' => 'Продукт был успешно восстановлен',
-            'type' => 'success'
-        ], 200);
+            'id' => $returnIds,
+            'type' => 'success',
+            'message' => $this->message
+        ], $this->status);
+
+//        $product->update(['deleted_at' => null]);
+//
+//        return response()->json([
+//            'id' => $product->id,
+//            'message' => 'Продукт был успешно восстановлен',
+//            'type' => 'success'
+//        ], 200);
     }
 
     public function addToList(Request $request)
@@ -513,31 +543,42 @@ class ProductController extends Controller
             $childrenCategories = $category->getDescendantsAndSelf();
         }
 
-        if (($category && $category->isRoot() || (isset($request->search) && $request->search != ""))) {
-            $deleted = Category::where('company_id',null)
-                ->where('locked',true)
-                ->where('name','Удаленные')
-                ->first();
-        }
-
         return Product::selectRaw('products.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'products.supplier_id', '=', 'supplier.id')
             ->where('products.company_id', $company_id)
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('products.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
-            ->when($category && !$category->isRoot(), function ($q) use($request, $childrenCategories) {
+            ->when($category && !$category->isRoot() && !$category->isTrashed(), function ($q) use($request, $childrenCategories) {
                 $q->whereIn('products.category_id', $childrenCategories->pluck('id'));
-            })
-            ->when($deleted != null, function ($q) use($request, $deleted) {
-                $q->where('products.category_id','!=',$deleted->id);
             })
             ->when($request->analogues, function (Builder $query) use($request) {
                 $query->whereIn('products.id', json_decode($request->analogues));
             })
-            ->where('deleted_at', null) #fix soft delete
+            ->trashedCondition($category)
             ->orderBy($field, $dir)
             ->paginate($size);
+    }
+
+    public function deleteProduct(Request $request) {
+
+        $category = Category::where('type','del')->first()->id;
+
+        $fake_request = new Request();
+        $fake_request['products'] = $request->products;
+        $fake_request['category_id'] = $category;
+
+        return $this->move($fake_request);
+
+    }
+
+    public function getCategoryById(Request $request) {
+
+        $category =  Category::find($request->id);
+        return response()->json([
+            'type' => 'success',
+            'category' => $category->toArray(),
+        ]);
     }
 
     public static function searchByArticleAndBrand($articles)

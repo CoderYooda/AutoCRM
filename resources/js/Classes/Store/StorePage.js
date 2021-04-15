@@ -65,7 +65,7 @@ class storePage extends Page{
         this.tabledata = {};
         this.contextDop = null;
         this.parametr = null;
-
+        this.context_menu = null;
         this.manufacture_id = null;
         this.manufacture_show = true;
     }
@@ -332,6 +332,36 @@ class storePage extends Page{
         this.table.setRequest(type, this[type]);
     }
 
+    freshContextual(category_id = this.category_id){
+        axios.post('/product/get_category_by_id', {id: category_id})
+            .then(response => {
+                this.cat = response.data.category;
+
+                // TODO Удалить елемент с тегом del
+
+                this.context_menu.forEach((e,index)=>{
+                    if(e.tag == 'del') {
+                        this.context_menu.splice(index);
+                    }
+                })
+                if(this.cat.type === 'del'){
+                    this.context_menu.push(
+                        {name: 'Восстановить товар', tag: 'del', action: (data) => {
+                                this.restoreProduct(data);
+                            }}
+                    )
+                } else {
+                    this.context_menu.push(
+                        {name: 'Удалить товар', tag: 'del', action: (data) => {
+                                this.deleteProduct(data);
+                            }}
+                    )
+                }
+                this.table.setContextMenu(this.context_menu);
+                this.table.draw(this.active_tab + 'Table', this.data);
+            });
+    }
+
     loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
         if(clean_search != null && clean_search){
@@ -340,7 +370,7 @@ class storePage extends Page{
             this.table.setRequest('search', null, false);
             window.helper.insertParamUrl('search', '');
         }
-
+        this.freshContextual(category_id);
         window.isXHRloading = true;
         window.helper.insertParamUrl('category_id', category_id);
 
@@ -657,6 +687,62 @@ class storePage extends Page{
             });
     }
 
+    deleteProduct(data) {
+        let product_list = data.selected;
+        let object = this;
+        Swal.fire({
+            title: 'Вы точно хотите удалить товар?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, удалить',
+            cancelButtonText: 'Нет'
+        }).then((result) => {
+            if (result.value) {
+                let data = {
+                    id: product_list,
+                };
+                axios.post('/product/delete',data)
+                    .then(function (resp) {
+                    let data = resp.data;
+                    window.notification.notify(data.type, data.message);
+                    object.table.freshData();
+                }).catch(response => {
+                    console.log(response);
+                });
+            }
+        });
+    }
+
+    restoreProduct(data) {
+        let product_list = data.selected;
+        let object = this;
+        Swal.fire({
+            title: 'Вы точно хотите вернуть товар в продажу?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, вернуть',
+            cancelButtonText: 'Нет'
+        }).then((result) => {
+            if (result.value) {
+                let data = {
+                    id: product_list,
+                };
+                axios.post('/product/restore',data)
+                    .then(function (resp) {
+                        let data = resp.data;
+                        window.notification.notify(data.type, data.message);
+                        object.table.freshData();
+                    }).catch(response => {
+                    console.log(response);
+                });
+            }
+        });
+    }
+
     linked()
     {
         this.baseParams();
@@ -747,8 +833,7 @@ class storePage extends Page{
             start_sort: 'DESC'
         });
 
-        let header, context_menu, dbl_click, slug;
-
+        let header, dbl_click, slug;
         if(this.active_tab === 'store'){
             header = [
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
@@ -756,7 +841,7 @@ class storePage extends Page{
                 {min_with: 150, width: 200, name: 'Артикул', table_name: 'article'},
                 {min_with: 150, width: 200, name: 'Производитель', table_name: 'supplier'},
             ];
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('productDialog', '&product_id=' + data.contexted.id)}},
                 {name:'Создать заявку поставщику', action: (data) => {
@@ -790,6 +875,8 @@ class storePage extends Page{
                         });
                 }},
             ];
+
+            this.freshContextual();
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
         } else if(this.active_tab === 'provider_orders'){
             header = [
@@ -801,7 +888,7 @@ class storePage extends Page{
                 {min_with: 90, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
                 {min_with: 90, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('providerOrderDialog', '&provider_order_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('providerOrderDialog', '&provider_order_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
@@ -817,7 +904,7 @@ class storePage extends Page{
                 {min_with: 150, width: 200, name: 'Комментарий', table_name: 'comment', transform: 'transform_comment'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('entranceDialog', '&entrance_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('entranceDialog', '&entrance_id=' + data.contexted.id)}},
                 {name:'Открыть заявку', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.ordid)}},
@@ -835,7 +922,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('entranceRefundDialog', '&entrance_refund_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('entranceRefundDialog', '&entrance_refund_id=' + data.contexted.id)}},
                 {name:'Открыть поступление', action: function(data){openDialog('entranceDialog', '&entrance_id=' + data.contexted.entrance_id)}},
@@ -853,7 +940,7 @@ class storePage extends Page{
                 {min_with: 150, width: 200, name: 'Итого', table_name: 'itogo', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('shipmentDialog', '&shipment_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('shipmentDialog', '&shipment_id=' + data.contexted.id)}},
                 {name:'Оформить возврат', action: function(data){openDialog('refundDialog', '&shipment_id=' + data.contexted.id)}},
@@ -870,7 +957,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('refundDialog', '&refund_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('refundDialog', '&refund_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
@@ -888,7 +975,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('clientorderDialog', '&client_order_id=' + data.contexted.id)}},
                 {name:'Печать', action: function(data){helper.printDocument('client-order', data.contexted.id)}},
@@ -906,7 +993,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
-            context_menu = [
+            this.context_menu = [
                 {name:'Редактировать', action: function(data){openDialog('adjustmentDialog', '&adjustment_id=' + data.contexted.id)}},
                 {name:'Открыть', action: function(data){openDialog('adjustmentDialog', '&adjustment_id=' + data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
@@ -921,7 +1008,7 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
-            context_menu = [
+            this.context_menu = [
                 {name:'Открыть', action: function(data){window.helper.openDocument(data.contexted.id)}},
                 // {name:'Удалить', action: function(data){dd(data);}},
                 // {name:'Удалить выделенные', action: function(data){dd(data);}, only_group:true},
@@ -937,19 +1024,19 @@ class storePage extends Page{
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
 
-            context_menu = [
+            this.context_menu = [
                 { name:'Открыть', action: data => openDialog('orderDialog', '&order_id=' + data.contexted.id) },
             ];
 
             dbl_click = function(id) { openDialog('orderDialog', '&order_id=' + id) };
         }
-
         this.table.setHeader(header);
-        this.table.setContextMenu(context_menu);
+        this.table.setContextMenu(this.context_menu);
         this.table.setBblClick(dbl_click);
         this.table.setSlug(this.active_tab);
 
         this.table.draw(this.active_tab + 'Table', this.data);
+
     }
 
     checkActive(){
@@ -1108,5 +1195,6 @@ class storePage extends Page{
         }, null, dataset);
 
     }
+
 }
 export default storePage;
