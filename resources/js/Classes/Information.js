@@ -61,7 +61,8 @@ class Information{
                     '|',
                     'imageUpload',
                     'ImageResize',
-                    'heading'
+                    'heading',
+                    'mediaEmbed'
                 ]
             },
             heading: {
@@ -83,7 +84,10 @@ class Information{
                 ]
             },
             extraPlugins: [uploadAdapterPlugin],
-            language: 'ru'
+            language: 'ru',
+            mediaEmbed: {
+                previewsInData: true
+            }
         };
 
         let editor_element = this.container.querySelector('#editor');

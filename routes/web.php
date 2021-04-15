@@ -114,6 +114,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
         Route::post('/products/move', 'ProductController@move')->name('MoveProducts');
         Route::post('/products/change_mark_source', 'ProductController@changeMarkupSource')->name('ChangeMarkupSourceProducts');
+        Route::post('/product/delete','ProductController@delete')->name('DeleteProduct');
+        Route::post('/product/restore','ProductController@restore')->name('RestoreProduct');
+        Route::post('/product/get_category_by_id','ProductController@getCategoryById')->name('GetCategoryById');
 
         #Поступления товаров
         Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название

@@ -3632,6 +3632,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .ck-editor__editable_inline {
     min-height: 150px;
 }
+.ck  {
+    z-index: 1000000 !important;
+}
 
 #ajax-shop-about, #ajax-shop-settings {
 

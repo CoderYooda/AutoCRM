@@ -55,6 +55,10 @@ class Company extends Model
         return $this->hasMany(User::class, 'company_id');
     }
 
+    public function getOwner()
+    {
+        return $this->members()->first();
+    }
     public function partners()
     {
         return $this->hasMany(Partner::class, 'company_id');
