@@ -573,12 +573,14 @@ class ProductController extends Controller
     }
 
     public function getCategoryById(Request $request) {
-
-        $category =  Category::find($request->id);
-        return response()->json([
-            'type' => 'success',
-            'category' => $category->toArray(),
-        ]);
+        if($request->id)
+        {
+            $category =  Category::find($request->id);
+            return response()->json([
+                'type' => 'success',
+                'category' => $category->toArray(),
+            ]);
+        }
     }
 
     public static function searchByArticleAndBrand($articles)

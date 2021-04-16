@@ -1,5 +1,5 @@
 <div class="box-header {{ $class }}">
-    <img class="info" src={{asset('images/icons/info.png')}} onclick="Information.loadInfo('nomenclature')"></img>
+{{--    <img class="info" src={{asset('images/icons/info.png')}} onclick="Information.loadInfo('{{$categories['parent']->name}}')"></img>--}}
 @if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
         @if(isset($cat_info) && $cat_info != NULL)
             @if($categories['parent']->id != $cat_info['root_id'])
