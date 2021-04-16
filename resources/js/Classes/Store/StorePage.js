@@ -332,7 +332,7 @@ class storePage extends Page{
         this.table.setRequest(type, this[type]);
     }
 
-    freshContextual(category_id = this.category_id){
+    freshContextual(category_id = this.category_id ?? 2){
         axios.post('/product/get_category_by_id', {id: category_id})
             .then(response => {
                 this.cat = response.data.category;
@@ -361,7 +361,6 @@ class storePage extends Page{
                 this.table.draw(this.active_tab + 'Table', this.data);
             });
     }
-
     loadCategory(category_id, clean_search = null, update_data = null){
         let object = this;
         if(clean_search != null && clean_search){
