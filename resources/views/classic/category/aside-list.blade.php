@@ -1,5 +1,6 @@
 <div class="box-header {{ $class }}">
-    @if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
+    <img class="info" src={{asset('images/icons/info.png')}} onclick="Information.loadInfo('nomenclature')"></img>
+@if($request['search'] == null || $request['search'] == '' || $request['search'] == 'undefined')
         @if(isset($cat_info) && $cat_info != NULL)
             @if($categories['parent']->id != $cat_info['root_id'])
                 <a class="category-back-button" onclick="window.{{ $class }}.loadCategory({{ $categories['parent']->category_id }}, true, true)">

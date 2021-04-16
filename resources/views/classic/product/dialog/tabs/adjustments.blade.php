@@ -13,7 +13,7 @@
         <div class="entrance copy d-none">
             <div class="field">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
             <div class="field with_input">
-                <input type="number" min="0" name="adjustment_entrances[new][price]" value="0">
+                <input type="number" min="0" name="adjustment_entrances[new][price]" value="0" @if($priceSource == 'purchase') disabled @endif >
             </div>
             <div class="field with_input">
                 <input type="number" min="0" name="adjustment_entrances[new][count]" value="0">

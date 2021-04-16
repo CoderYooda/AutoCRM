@@ -287,6 +287,7 @@
                 </div>
                 <div id="dialogs"></div>
                 @include(get_template() . '.system.aside_messages')
+                @include(get_template() . '.system.information')
                 @include(get_template() . '.system.system_dialog')
                 @include(get_template() . '.system.croppr_dialog')
                 @if(!Auth::user()->company->set_master_complite)

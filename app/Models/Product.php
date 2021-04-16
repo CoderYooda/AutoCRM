@@ -38,12 +38,13 @@ class Product extends Model
 
     protected $guarded = [];
 
-    public static function bootSoftDeletes()
-    {
-//        static::addGlobalScope(new SoftDeletingScope);
 
-        return false;
-    }
+//    public static function bootSoftDeletes()
+//    {
+////        static::addGlobalScope(new SoftDeletingScope);
+//
+////        return false;
+//    }
 
     public function path()
     {
@@ -428,5 +429,14 @@ class Product extends Model
             ->first();
 
         return $response->count - $response->released_count;
+    }
+
+    public function scopeTrashedCondition($query, $category = null) {
+
+        if ($category && $category->isTrashed()) {
+            return $query->onlyTrashed();
+        } else {
+            return;
+        }
     }
 }

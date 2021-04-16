@@ -31,6 +31,11 @@ class Category extends Model
         return $this->id < 3;
     }
 
+    public function isTrashed()
+    {
+        return $this->type === 'del';
+    }
+
     public function parent()
     {
         return $this->HasOne(Category::class, 'id', 'category_id');

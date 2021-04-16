@@ -1,6 +1,6 @@
 import ymaps from 'ymaps';
-import TextEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
-import '@ckeditor/ckeditor5-build-classic/build/translations/ru';
+import TextEditor from '@artemminos/ckeditor';
+import '@artemminos/ckeditor/build/ru';
 import Croppr from "croppr";
 
 class shopPage {

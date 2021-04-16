@@ -65,9 +65,9 @@ class TariffController extends Controller
 
         $isShipping = false;
 
-        if (!empty($isShipping[2]['Name'] === 'shipping')) {
-            $isShipping = true;
-        }
+//        if (!empty($isShipping[2]['Name'] === 'shipping')) {
+//            $isShipping = true;
+//        }
 
 
 

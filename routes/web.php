@@ -114,6 +114,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/product/{product}/price', 'ProductController@getPrice')->name('GetProductPrice');
         Route::post('/products/move', 'ProductController@move')->name('MoveProducts');
         Route::post('/products/change_mark_source', 'ProductController@changeMarkupSource')->name('ChangeMarkupSourceProducts');
+        Route::post('/product/delete','ProductController@delete')->name('DeleteProduct');
+        Route::post('/product/restore','ProductController@restore')->name('RestoreProduct');
+        Route::post('/product/get_category_by_id','ProductController@getCategoryById')->name('GetCategoryById');
 
         #Поступления товаров
         Route::get('/entrance/events', 'EntranceController@events')->name('EntranceOrderEvents');// Строгое название
@@ -333,6 +336,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #SMS сообщения
         Route::post('/sms/send', 'SMSMessageController@sendsms')->name('SendSMS');
+
+        #Информация
+        Route::get('/info/get_info_by_{source}', 'System\InformationController@getInfoBySource')->name('getInfo');
+        Route::post('/info/save_info', 'System\InformationController@saveInfo')->name('saveInfo');
+        Route::post('/info/upload_image', 'System\InformationController@uploadImage')->name('uploadImage');
 
         #E-mail сообщения
         Route::post('/feedback/send','System\FeedbackController@sendEmail')->name('SendEmail');
