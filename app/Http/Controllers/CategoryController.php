@@ -226,8 +226,9 @@ class CategoryController extends Controller
             ->when($request['category_id'], function(Builder $q) use ($request){
                 $q->where('category_id', $request['category_id']);
             })
+            ->where('type', '!=', 'del')
             ->orderBy('name')
-            ->limit(30)
+            ->limit(90)
             ->get();
 
         $categories = CategoryController::getModalCategories($request['root_category'], $request);
@@ -320,7 +321,7 @@ class CategoryController extends Controller
             abort(404);
         }
 
-        $categories['stack'] = $parent->childs()->orderBy('name')->get();
+        $categories['stack'] = $parent->childs()->where('type', '!=', 'del')->orderBy('name')->get();
         $categories['parent'] = $parent;
         $categories['parent_root'] = $parent->id == $root_category;
 

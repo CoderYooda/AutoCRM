@@ -81,6 +81,7 @@ class Shipment extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'article_shipment', 'shipment_id', 'product_id')
+            ->withTrashed()
             ->withPivot('count', 'refunded_count', 'entrance_id', 'price', 'total')
             ->selectRaw('*, SUM(count) as count, SUM(total) as total, SUM(refunded_count) as refunded_count, products.id as id, price')
             ->groupBy(['products.id']);
