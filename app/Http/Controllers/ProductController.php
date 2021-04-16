@@ -539,23 +539,25 @@ class ProductController extends Controller
         $childrenCategories = collect();
         $deleted = null;
 
-        if($category && !$category->isRoot()) {
+        if($category && !$category->isRoot() && !$category->isTrashed()) {
             $childrenCategories = $category->getDescendantsAndSelf();
         }
 
         return Product::selectRaw('products.*, supplier.name as supplier')
             ->leftJoin('suppliers as supplier',  'products.supplier_id', '=', 'supplier.id')
             ->where('products.company_id', $company_id)
+
             ->when(isset($request->search) && $request->search != "", function ($q) use($request) {
                 $q->where('products.foundstring', 'LIKE', '%' . search_formatter($request->search) . '%');
             })
+            ->trashedCondition($category)
             ->when($category && !$category->isRoot() && !$category->isTrashed(), function ($q) use($request, $childrenCategories) {
                 $q->whereIn('products.category_id', $childrenCategories->pluck('id'));
             })
             ->when($request->analogues, function (Builder $query) use($request) {
                 $query->whereIn('products.id', json_decode($request->analogues));
             })
-            ->trashedCondition($category)
+
             ->orderBy($field, $dir)
             ->paginate($size);
     }

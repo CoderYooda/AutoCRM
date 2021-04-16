@@ -101,6 +101,15 @@ class Table {
         }
     }
 
+    freshContext(){
+        let context_old = document.getElementById('context');
+        if(context_old){
+            context_old.remove();
+        }
+        let container = document.getElementsByClassName('bbtable-container')[0];
+        container.appendChild(this.drawContext());
+    }
+
     drawDragger(){
         let dragger = document.createElement('div');
         dragger.className = 'dragger';
