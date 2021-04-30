@@ -8,10 +8,13 @@ use App\Models\iCat\CatModel;
 use App\Models\iCat\CatModify;
 use App\Models\iCat\CatType;
 use Illuminate\Http\Request;
+use App\Http\Controllers\HelpController as HC;
 
 class CatalogueController extends Controller
 {
-    public static function getMarks()
+
+
+    public static function getMarks(Request $request)
     {
         $types = CatType::with('marks')->get();
 
@@ -48,23 +51,43 @@ class CatalogueController extends Controller
             }
             $types = CatType::with('marks')->get();
         }
-        return $types;
+
+        $content = view(get_template() . '.catalogue.marks', compact('types', 'request'));
+        $target = HC::selectTarget();
+
+        if ($request['view_as'] != null && $request['view_as'] == 'json') {
+            return response()->json([
+                'target' => $target,
+                'page' => 'Марки',
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
+
+
+
+        //return view(get_template() . '.catalogue.marks', compact('types', 'request'));
+//        return $types;
     }
 
-    public function getModels(Request $request)
+    public function getModels(Request $request, $type, $mark)
     {
-        $models = CatModel::where('mark_id', $request['mark_id'])->get();
+        $m = CatMark::where('value', $mark)->first();
+        $t = CatType::where('value', $type)->first();
+        $models = CatModel::where('mark_id', $m->id)->get();
         if(!$models->count()){
-            $mark = CatMark::find($request['mark_id']);
 
-            $href = '/' . $mark->type()->first()->value . '/' . $mark->value;
+
+            $href = '/' . $type . '/' . $mark;
             $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
+
             $result = $acat->getModels($href);
 
             foreach($result->models as $model) {
                 $m = CatModel::create([
-                    'type_id' => $mark->type()->first()->id,
-                    'mark_id' => $mark->id ?? null,
+                    'type_id' => $t->id,
+                    'mark_id' => $m->id ?? null,
                     'image' => $model->image ?? $model->img ?? null,
                     'model' => $model->id ?? null,
                     'archival' => $model->archival ?? false,
@@ -78,53 +101,71 @@ class CatalogueController extends Controller
                 ]);
             }
 
-            $models = CatModel::where('mark_id', $request['mark_id'])->get();
+            $models = CatModel::where('mark_id', $m->id)->get();
         }
 
-        $view = view(get_template() . '.catalogue.models', compact('models', 'request'))->render();
-        return response()->json(['view' => $view]);
+        $content = view(get_template() . '.catalogue.models', compact('type','mark', 'models', 'request'));
+        $target = HC::selectTarget();
+
+        if ($request['view_as'] != null && $request['view_as'] == 'json') {
+            return response()->json([
+                'target' => $target,
+                'page' => 'Модели',
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
     }
 
-    public function getModifications(Request $request)
+    public function getModifications(Request $request, $type, $mark, $model)
     {
-        $modifications = CatModify::where('model_id', $request['model_id'])->paginate(25);
-        $model = CatModel::find($request['model_id']);
-        if(!$modifications->count()) {
+//        $modifications = CatModify::where('model_id', $request['model_id'])->paginate(25);
+//        $model = CatModel::find($request['model_id']);
+//        if(!$modifications->count()) {
+        $m = CatMark::where('value', $mark)->first();
+        $t = CatType::where('value', $type)->first();
+        $mo = CatModel::where('name', $model)->first();
 
-            $model = CatModel::find($request['model_id']);
-
-            $mark = $model->mark()->first();
-
-            $href = '/' . $mark->type()->first()->value . '/' . $mark->value . '/' . $model->model;
-
+            $href = '/' . $type . '/' . $mark . '/' . $model;
             $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
-            $result = $acat->getModificationsByModel($href);
-
-            foreach ($result->pages as $page){
-                $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
-                $result = $acat->getModificationsByModel($href . '?page=' . $page);
-                foreach($result->modifications as $modification) {
-                    $m = CatModify::create([
-                        'model_id' => $model->id,
-                        'cat_id' => $modification->id ?? null,
-                        'catalogId' => $modification-> catalogId ?? null,
-                        'name' => $modification->name ?? null,
-                        'description' => $modification->description ?? null,
-                        'region' => $modification->region ?? null,
-                        'year' => $modification->year ?? null,
-                        'steering' => $modification->steering ?? null,
-                        'steeringId' => $modification->steeringId ?? null,
-                        'bodyType' => $modification->bodyType ?? null,
-                        'engine' => $modification->engine ?? null,
-                        'transmission' => $modification->transmission->name ?? null,
-                    ]);
-                }
-            }
+            $modifications = $acat->getModificationsByModel($href);
+            dd($modifications);
+//            foreach ($result->pages as $page){
+//                $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
+//                $result = $acat->getModificationsByModel($href . '?page=' . $page);
+//                foreach($result->modifications as $modification) {
+//                    $m = CatModify::create([
+//                        'model_id' => $model->id,
+//                        'cat_id' => $modification->id ?? null,
+//                        'catalogId' => $modification-> catalogId ?? null,
+//                        'name' => $modification->name ?? null,
+//                        'description' => $modification->description ?? null,
+//                        'region' => $modification->region ?? null,
+//                        'year' => $modification->year ?? null,
+//                        'steering' => $modification->steering ?? null,
+//                        'steeringId' => $modification->steeringId ?? null,
+//                        'bodyType' => $modification->bodyType ?? null,
+//                        'engine' => $modification->engine ?? null,
+//                        'transmission' => $modification->transmission->name ?? null,
+//                    ]);
+//                }
+//            }
 
             $modifications = CatModify::where('model_id', $request['model_id'])->paginate(25);
-        }
+//        }
 
-        $view = view(get_template() . '.catalogue.modifications', compact('modifications','model', 'request'))->render();
-        return response()->json(['view' => $view]);
+        $content = view(get_template() . '.catalogue.modifications', compact('modifications', 'request'));
+        $target = HC::selectTarget();
+
+        if ($request['view_as'] != null && $request['view_as'] == 'json') {
+            return response()->json([
+                'target' => $target,
+                'page' => 'Модификации',
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
     }
 }
