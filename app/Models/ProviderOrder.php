@@ -45,6 +45,7 @@ class ProviderOrder extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'article_provider_orders', 'provider_order_id', 'product_id')
+            ->withTrashed()
             ->withPivot('id', 'count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
     }
 
