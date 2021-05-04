@@ -24,12 +24,14 @@ class EntranceRefund extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'article_entrance_refund', 'entrance_refund_id')
+            ->withTrashed()
             ->withPivot('count', 'price', 'total');
     }
 
     public function productsJson()
     {
         return $this->belongsToMany(Product::class, 'article_entrance_refund', 'entrance_refund_id')
+            ->withTrashed()
             ->withPivot('count as count', 'price as price', 'total as total');
     }
 
