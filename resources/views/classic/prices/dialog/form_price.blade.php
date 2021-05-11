@@ -79,7 +79,7 @@
 
                 <div class="form-group info mt-10">
                     <i class="fa fa-info-circle" aria-hidden="true"></i>
-                    <span>Если цена товара не попадает в какой-либо диапазон, то будет использоваться последний.</span>
+                    <span class="info-hover">Если цена товара не попадает в какой-либо диапазон, то будет использоваться последний.</span>
                 </div>
 
                 <div class="form-group mt-10">
