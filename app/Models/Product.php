@@ -253,15 +253,8 @@ class Product extends Model
 
     public function getEntrancesCount()
     {
-        $company = $this->company;
-
-        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
-
         $entrances = DB::table('article_entrance')
             ->where('product_id', $this->id)
-            ->when($method_cost_of_goods == 'lifo', function (Builder $query) {
-                $query->orderByDesc('id');
-            })
             ->get();
 
         $count = $entrances->sum('count');
