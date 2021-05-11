@@ -11,6 +11,7 @@ import refundMethods from "./tabs/RefundMethods";
 import clientOrdersMethods from "./tabs/ClientOrdersMethods";
 import adjustmentMethods from "./tabs/AdjustmentMethods";
 import shopOrdersMethods from "./tabs/ShopOrdersMethods";
+import catalogueMethods from "./tabs/CatalogueMethods";
 import {Table} from "../BBTable";
 import Page from "../Page/Page";
 
@@ -25,7 +26,8 @@ const classes = {
     clientOrdersMethods,
     adjustmentMethods,
     documentsMethods,
-    shopOrdersMethods
+    shopOrdersMethods,
+    catalogueMethods
 };
 
 
@@ -822,7 +824,8 @@ class storePage extends Page{
             client_orders: 'clientOrders',
             documents: 'document',
             shop_orders: 'shopOrders',
-            adjustment: 'adjustment'
+            adjustment: 'adjustment',
+            catalogue: 'catalogue'
         };
 
         let model_name = model_names[this.active_tab] + 'Methods';

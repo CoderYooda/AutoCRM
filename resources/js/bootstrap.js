@@ -59,6 +59,8 @@ window.togglePreloader = function togglePreloader(element, status) {
     status ? classList.add('active') : classList.remove('active');
 };
 
+console.log(1);
+
 window.axios.interceptors.response.use(function (response) {
 
     document.body.classList.remove('loading');

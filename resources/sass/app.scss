@@ -37,9 +37,14 @@
 
 @import '~@fullcalendar/resource-timeline/main.css';
 
-
 #ajax-content{
     max-height: calc(100% - 56px);
+}
+
+.catalogue{
+    .cat_item{
+        display: inline-block;
+    }
 }
 
 .text-theme,

@@ -1,0 +1,65 @@
+.imageLayout{
+    width: fit-content;
+    position: relative;
+    margin: 0 auto;
+    .ladel{
+        background: #2d76a8;
+        border-radius: 3px;
+        color: #fff;
+        border: 1px solid #000;
+    }
+}
+
+.catalogue {
+    .pbox{
+        padding: 15px;
+    }
+    select{
+        color: #656565;
+        padding: 0px 8px;
+        font-size: 13px;
+        border: 1px solid #E7E8EC;
+    }
+    .cattable{
+        border-top: 1px solid #e7e8ec;
+        outline: 0;
+        border-spacing: 0;
+        user-select: text;
+        td{
+            border-right: 1px solid #e7e8ec;
+            border-bottom: 1px solid #e7e8ec;
+        }
+        tr, td{
+            padding: 4px 16px;
+        }
+    }
+    .cat-row{
+        padding: 10px;
+        margin-bottom: 20px;
+        h3{
+            margin-top: 0;
+        }
+    }
+    .cat-row a{
+        display: flex;
+    }
+    .pbox > * {
+        margin-bottom: 10px;
+    }
+    .breadcrumbs{
+        a{
+            position: relative;
+            margin-right: 20px;
+            &:after{
+                position: absolute;
+                content: "";
+                width: 6px;
+                height: 6px;
+                background: #2d76a8;
+                border-radius: 305px;
+                top: 8px;
+                right: -15px;
+            }
+        }
+    }
+}
