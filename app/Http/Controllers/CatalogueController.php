@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ICat\ACat;
+use App\Models\iCat\ACat;
 use App\Models\iCat\CatMark;
 use App\Models\iCat\CatModel;
 use App\Models\iCat\CatModify;
