@@ -255,7 +255,7 @@ class Product extends Model
     {
         $company = $this->company;
 
-        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
+        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта'); // fifo / lifo
 
         $entrances = DB::table('article_entrance')
             ->where('product_id', $this->id)
