@@ -48,8 +48,23 @@ class RoleController extends Controller
 
     public function assignRoleToUser(AssignedRoleUserRequest $request)
     {
+        /** @var User $user */
         $user = User::find($request->user_id);
+        /** @var Role $role */
         $role = Role::find($request->role_id);
+
+        if($role->name == 'Владелец') {
+            $companyUsers = User::query()->where('company_id',Auth::user()->company_id)->get();
+            foreach ($companyUsers as $user)
+            {
+                if ($user->hasRole('Владелец')) {
+                    return response()->json([
+                        'type' => 'error',
+                        'message' => 'Запрещено назначать более одного владельца'
+                    ]);
+                }
+            }
+        }
 
         if($user->hasRole('Владелец')) {
             return response()->json([
