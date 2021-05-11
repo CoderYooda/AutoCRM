@@ -4,5 +4,4 @@
 
 @section('tab')
     @yield('meta')
-
 @endsection

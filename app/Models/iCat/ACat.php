@@ -46,6 +46,17 @@ class ACat
         return $this->CheckReplyError($request, 'getModifications');
     }
 
+
+    /**
+     * Получение групп
+     */
+    public function getGroups($href)
+    {
+        $url = $this->protocol . '://' . $this->domain . $href;
+        $request = $this->Request($url);
+        return $this->CheckReplyError($request, 'getGroups');
+    }
+
     private function Request($url) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

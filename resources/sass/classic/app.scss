@@ -25,6 +25,7 @@
 @import 'streamline';
 /*Schedule*/
 @import 'schedule';
+@import 'catalogues';
 /*FlatPiker*/
 @import '~flatpickr/dist/flatpickr.min.css';
 /*FlatPikerTheme*/
@@ -73,6 +74,7 @@
         float: left;
         margin: 10px;
         cursor: pointer;
+        word-break: break-word;
         &:hover{
             transition: all 0.4s;
             box-shadow: 0 1px 4px 0 #5a6fab, 0 0 2px 1px #ffffff;

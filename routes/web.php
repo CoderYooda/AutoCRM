@@ -246,9 +246,11 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
 
         #Каталоги
         Route::get('/store', 'CatalogueController@index')->name('CatalogueIndex'); // Строгое название
-        Route::get('/store/catalogue', 'CatalogueController@getMarks')->name('CatalogueMarks');
-        Route::get('/store/catalogue/{type}/{mark}', 'CatalogueController@getModels')->name('CatalogueMark');
-        Route::get('/store/catalogue/{type}/{mark}/{model}', 'CatalogueController@getModifications')->name('CatalogueModifications');
+        Route::get('/store/catalogs', 'CatalogueController@getMarks')->name('CatalogueMarks');
+        Route::get('/store/catalogs/{type}/{mark}', 'CatalogueController@getModels')->name('CatalogueMark');
+        Route::get('/store/catalogs/{type}/{mark}/{model}', 'CatalogueController@getModifications')->name('CatalogueModifications');
+        Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp?}', 'CatalogueController@getGroups')->name('CatalogueGroups');
+        Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp}/{subgrp}', 'CatalogueController@getNumbers')->name('CatalogueNumbers');
 
 
         //Route::post('/icat/models', 'CatalogueController@getModels')->name('CatalogueModels');
