@@ -68,6 +68,7 @@ class storePage extends Page{
         this.contextDop = null;
         this.parametr = null;
         this.context_menu = null;
+        this.context_menu_store_old = null;
         this.manufacture_id = null;
         this.manufacture_show = true;
     }
@@ -335,11 +336,10 @@ class storePage extends Page{
     }
 
     freshContextual(category_id = this.category_id ?? this.root_category){
+        let dbl_click = id => openDialog('productDialog', '&product_id=' + id);
         axios.post('/product/get_category_by_id', {id: category_id})
             .then(response => {
                 this.cat = response.data.category;
-
-                // TODO Удалить елемент с тегом del
 
                 this.context_menu.forEach((e,index)=>{
                     if(e.tag == 'del') {
@@ -347,11 +347,24 @@ class storePage extends Page{
                     }
                 })
                 if(this.cat.type === 'del'){
+                    this.context_menu.forEach((e,index)=>{
+                        this.context_menu.splice(index);
+                    })
+                    this.table.setBblClick(null);
                     this.context_menu.push(
                         {name: 'Восстановить товар', tag: 'del', action: (data) => {
                                 this.restoreProduct(data);
                             }}
                     )
+                } else if (this.context_menu.length < 2) {
+                    this.context_menu = this.context_menu_store_old.slice(0)
+                    this.context_menu.push(
+                        {name: 'Удалить товар', tag: 'del', action: (data) => {
+                                this.deleteProduct(data);
+                            }}
+                    )
+                    this.table.setBblClick(dbl_click);
+
                 } else {
                     this.context_menu.push(
                         {name: 'Удалить товар', tag: 'del', action: (data) => {
@@ -877,7 +890,7 @@ class storePage extends Page{
                         });
                 }},
             ];
-
+            this.context_menu_store_old = this.context_menu.slice(0);
             this.freshContextual();
             dbl_click = function(id){openDialog('productDialog', '&product_id=' + id)};
         } else if(this.active_tab === 'provider_orders'){

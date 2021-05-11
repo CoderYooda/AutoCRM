@@ -45,12 +45,14 @@ class Entrance extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'article_entrance', 'entrance_id', 'product_id')->withTimestamps()
+            ->withTrashed()
             ->withPivot('id', 'count', 'price', 'released_count', 'provider_pivot_id');
     }
 
     public function productsJson()
     {
         return $this->belongsToMany(Product::class, 'article_entrance', 'entrance_id', 'product_id')
+            ->withTrashed()
             ->withPivot('count as count', 'price as price', 'released_count as released_count');
     }
 

@@ -10,6 +10,8 @@ class selectProviderOrderDialog extends Modal{
         this.refer = dialog.querySelector("#refer").value;
         this.articles_container = dialog.querySelector("#articles_container");
         this.results_obj = this.root_dialog.querySelector("#search_providerorder_results");
+        this.select_provider_order_cont = this.root_dialog.querySelector('.cont');
+        this.select_provider_order_container = this.root_dialog.querySelector('#select_provider_order_container');
         this.init();
     }
 
@@ -86,6 +88,38 @@ class selectProviderOrderDialog extends Modal{
         let object = this;
         window[object.refer].selectProviderOrder(id);
     }
+
+    providerOrderDescription(provider_order) {
+
+        this.select_provider_order_container.classList.add('show');
+
+        let html = '';
+
+        Object.values(provider_order.products).forEach(item => {
+            let p_article = item.article;
+            let p_count = item.pivot.count;
+            let p_name = item.name;
+
+            html += '<div class="tr_result">' +
+                '<span class="article">' + p_name + '</span>' +
+                '<span class="article">Кол-во: ' + p_count + '</span>' +
+                '<span class="article">Артикул: ' + p_article + '</span>' +
+                '</div>'
+        });
+
+        this.select_provider_order_cont.innerHTML = html;
+
+        let empty_desc = this.root_dialog.querySelector('.empty_desc');
+
+        if(html.length) {
+            empty_desc.classList.add('d-none');
+        }
+        else {
+            empty_desc.classList.remove('d-none');
+        }
+
+    }
+
 
 }
 export default selectProviderOrderDialog;

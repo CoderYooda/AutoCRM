@@ -293,6 +293,9 @@ class partnerDialog extends Modal{
 
         let category_id = this.current_dialog.querySelector('[name="category_id"]').value;
         if(category_id != 7) this.current_dialog.querySelector('#vehicle_tab').classList.add('d-none');
+        category_id == 5
+            ? this.current_dialog.querySelector('#access').classList.remove('hide')
+            :this.current_dialog.querySelector('#access').classList.add('hide');
 
         let field_elements = this.current_dialog.querySelectorAll('.tab-content .form-group');
 

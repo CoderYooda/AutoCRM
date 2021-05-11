@@ -1,5 +1,12 @@
 @php $class = 'selectProviderOrderDialog' @endphp
 <div id="selectProviderOrderDialog" class="dialog" style="width:600px;">
+    <div id="select_provider_order_container" class="select_provider_order_container fade" data-simplebar style="height: 400px;">
+        <div class="cont"></div>
+        <div class="empty_desc">
+            <div class="out_of_search"></div>
+            <div class="text-center">Товаров нет</div>
+        </div>
+    </div>
     <div class="titlebar">Поиск заявки поставщику</div>
     <button class="btn_minus" onclick="window.alerts.hideDialog('{{ $class }}')">_</button>
     <button class="btn_close" onclick="{{ $class }}.finitaLaComedia()">×</button>

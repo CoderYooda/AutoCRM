@@ -307,10 +307,10 @@ class CategoryController extends Controller
             $categories['parent'] = null;
         }
 
-        foreach($categories['stack'] as $category){
+        foreach($categories['stack'] as $key => $category){
             if($category->name === "Удаленные"){
                 $last = $category;
-                unset($category);
+                $categories['stack']->forget($key);
                 $categories['stack'][] = $last;
 
             }

@@ -65,6 +65,7 @@ class Refund extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'article_refund', 'refund_id', 'product_id')
+            ->withTrashed()
             ->withPivot('count as count', 'price as price', 'total as total');
     }
 

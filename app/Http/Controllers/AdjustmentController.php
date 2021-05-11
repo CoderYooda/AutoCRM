@@ -33,7 +33,7 @@ class AdjustmentController extends Controller
 
             $productsAdjustment = DB::table('article_adjustment')->where('adjustment_id', $adjustment->id)->get();
 
-            $productNames = Product::with('supplier')->whereIn('id', $productsAdjustment->pluck('product_id'))->get();
+            $productNames = Product::with('supplier')->withTrashed()->whereIn('id', $productsAdjustment->pluck('product_id'))->get();
 
             foreach ($productsAdjustment as $productAdjustment) {
 

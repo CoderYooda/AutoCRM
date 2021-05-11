@@ -111,8 +111,12 @@ class SettingsController extends Controller
         /** @var Payment $payments */
         $payments = Payment::owned()->where('type', 'pay_to_store')->orderBy('id', 'DESC')->get();
 
+        /** @var Payment $payment */
         foreach ($payments as $payment){
-            $payment->freshStatus();
+
+            if(in_array($payment->status, ['NEW','FORM_SHOWED','3DS_CHECKING'])){
+                $payment->freshStatus();
+            }
         }
 
         $company = Auth::user()->company;
@@ -201,7 +205,7 @@ class SettingsController extends Controller
         //Setting::create(['name' => 'Стандартная наценка (%)', 'company_id' => $company->id, 'model' => NULL,  'type' => 'number', 'key' => 'markup', 'value' => '10']);
         Setting::create(['name' => 'Роль для новых пользователей', 'company_id' => $company->id, 'model' => 'Role', 'type' => 'select', 'key' => 'role_id', 'value' => $defaultrole->id]);
         Setting::create(['name' => 'Расчётный день', 'company_id' => $company->id, 'model' => null, 'type' => 'number', 'key' => 'day_id', 'value' => '1']);
-        Setting::create(['name' => 'Способ ведения складского учёта', 'company_id' => $company->id, 'model' => 'RRC',  'type' => 'select', 'key' => 'rrc_name', 'value' => 'fifo']);
+//        Setting::create(['name' => 'Способ ведения складского учёта', 'company_id' => $company->id, 'model' => 'RRC',  'type' => 'select', 'key' => 'rrc_name', 'value' => 'fifo']);
         Setting::create(['name' => 'Источник цены', 'company_id' => $company->id, 'model' => 'PriceSource',  'type' => 'select', 'key' => 'price_source', 'value' => 'purchase']);
         Setting::create(['name' => 'Интернет магазин', 'company_id' => $company->id, 'model' => 'ShopEnabled',  'type' => 'select', 'key' => 'shop_enabled', 'value' => '0']);
 
@@ -217,9 +221,10 @@ class SettingsController extends Controller
     {
         PermissionController::canByPregMatch('Редактировать настройки');
 
-        $company = Company::firstOrNew(['id' => $request['id']]);
-        $company->name = $request['company_name'];
-        $company->save();
+        $company = Auth::user()->company()->first();
+//        $company = Company::firstOrNew(['id' => $request['id']]);
+//        $company->name = $request['company_name'];
+//        $company->save();
 
         $settings = Setting::owned()->get();
 
@@ -241,7 +246,7 @@ class SettingsController extends Controller
 
     public function freshBaseStore(Request $request)
     {
-        $company = Company::where('id', $request['id'])->first();
+        $company = Auth::user()->company()->first();
         $settings = Setting::owned()->get();
 
         $content = view(get_template() . '.settings.elements.base_settings', compact( 'company','request', 'settings'))
