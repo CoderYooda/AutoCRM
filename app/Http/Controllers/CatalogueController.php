@@ -163,7 +163,7 @@ class CatalogueController extends Controller
 //        dd($result);
 //        dd((isset($result->units) || isset($result->groups)));
 //        dd($result->group->image);
-        if(isset($result->group) && is_object($result->group) && $result->group->image){
+        if(isset($result->group) && $result->group && is_object($result->group) && $result->group->image){
             $opts = array('http' =>
                 array(
                     'method'  => 'GET',

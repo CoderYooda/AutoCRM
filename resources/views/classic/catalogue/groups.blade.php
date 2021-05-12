@@ -7,14 +7,14 @@
                 @include(get_template() . '.catalogue.breadcrumbs', ['breadcrumbs' => $result->breadcrumbs])
             @endif
             <div>
-                <h1>Каталог запчастей {{ $result->model->name ?? 1 }}</h1>
+                <h1>Каталог запчастей {{ (isset($result->model) && isset($result->model->name)) ? $result->model->name : '' }}</h1>
             </div>
             <div id="cat_box" class="">
                 <div class="cat_item_container">
 
                         @if(isset($native))
                             <div class="d-flex" style="flex-wrap: wrap;">
-                                @foreach($result->groups ?? $result->units as $group)
+                                @foreach(($result->groups ?? $result->units) as $group)
                                     <div style="flex-grow: 1;width: 100%;" class="cat-fl-box">
                                     <h2>{{ $group->name }}</h2>
                                         @if(isset($group->childs) && $group->childs != null)
@@ -42,14 +42,15 @@
                         @else
 
                             @foreach(($result->groups ?? $result->units) as $group)
+                            {{--@dd($group)--}}
                                 @php
                                     $url = (!$grp ? ('./' . $result->breadcrumbs[4]->url . '/' . ($group->id ?? $group->short_name)) : ( isset($group->hasSubgroups) && !$group->hasSubgroups ? ( ('./' . $group->parentId . '/' . $group->id) ) : './' . $group->id)) . ($request['criteria'] ? ('?criteria='.urlencode($request['criteria'])) : '') . '?active_tab=catalogue';
 
                                 @endphp
                                 <a class="ajax-nav" href="{{ $url }}">
                                     <div class="box model_item">
-                                        <img src="{{ $group->img ?? (isset($group->hasSubgroups) && $group->hasSubgroups ? 'https://storage.yandexcloud.net/acat/public/images/folder.jpg' : ('/images/no_image.png') ) }}" alt="">
-                                        {{ $group->name }}
+                                        <img src="{{ $group->img ?? $group->image ?? '/images/no-cat-img.svg' }}" alt="">
+                                        {{ $group->name ?? $group->full_name ?? 'Без названия' }}
                                     </div>
                                 </a>
                             @endforeach

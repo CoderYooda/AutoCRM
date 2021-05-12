@@ -255,6 +255,9 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp?}', 'CatalogueController@getGroups')->name('CatalogueGroups');
         Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp}/{subgrp}', 'CatalogueController@getNumbers')->name('CatalogueNumbers');
 
+        #Каталоги редиректы
+        Route::get('/store/catalogs/{type}', function(){return redirect()->route('CatalogueMarks');});
+
 
         //Route::post('/icat/models', 'CatalogueController@getModels')->name('CatalogueModels');
 //        Route::post('/icat/marks', 'CatalogueController@getMarks')->name('CatalogueMarks');

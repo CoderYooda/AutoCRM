@@ -42,12 +42,14 @@
                     <tbody>
                     @foreach($result->modifications as $modify)
                         <tr class="table-row bottom-line active">
-                            <td class="table-cell"><a class="ajax-nav" href="{{ './' . $result->breadcrumbs[3]->url . '/' . ($modify->id ?? $modify->short_name) . '?active_tab=catalogue'}}">{{ $modify->name ?? $modify->full_name }}</a><br><span>{{ $modify->steering ?? 1 }}</span></td>
-                            <td class="table-cell">{{ $modify->year ?? 1 }}</td>
-                            <td class="table-cell">{{ $modify->engine ?? 1 }}</td>
-                            <td class="table-cell">{{ $modify->transmission->name ?? 1 }}</td>
-                            <td class="table-cell">{{ $modify->region ?? 1 }}</td>
-                            <td class="table-cell">{{ $modify->description ?? 1 }}</td>
+                            <td class="table-cell">
+                                <a class="ajax-nav" href="{{ './' . $result->breadcrumbs[3]->url . '/' . ($modify->id ?? $modify->short_name) . '?active_tab=catalogue'}}">{{ $modify->name ?? $modify->short_name ?? $modify->full_name }}</a>
+                                <br><span>{{ $modify->steering ?? $modify->full_name ?? 'Не указано' }}</span></td>
+                            <td class="table-cell">{{ $modify->year ?? 'Не указано' }}</td>
+                            <td class="table-cell">{{ $modify->engine ?? 'Не указано' }}</td>
+                            <td class="table-cell">{{ $modify->transmission->name ?? 'Не указано' }}</td>
+                            <td class="table-cell">{{ $modify->region ?? 'Не указано' }}</td>
+                            <td class="table-cell">{{ $modify->description ?? 'Не указано' }}</td>
                         </tr>
                     @endforeach
                     </tbody>
