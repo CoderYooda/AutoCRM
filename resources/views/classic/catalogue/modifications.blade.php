@@ -1,6 +1,7 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.metaXHR' : 'classic.catalogue.index')
 
 @section('meta')
+    @include(get_template() . '.catalogue.search')
     <div style="overflow: auto" class="box-lister catalogue">
         <div id="ajax-table-store" class="">
 
